@@ -1,5 +1,48 @@
 # Change log
 
+## Version 0.7.16 (2023/05/29)
+
+### Features and enhancements
+
+* [PR#358](https://github.com/SamR1/FitTrackee/pull/358) - Add user preference for filtering of GPX speed data
+
+
+### Bugs Fixed
+
+* [#359](https://github.com/SamR1/FitTrackee/issues/359) - Footer overlaps content on user preferences page
+
+
+### Translations
+
+* [PR#350](https://github.com/SamR1/FitTrackee/pull/350) - Translations update from Hosted Weblate (Galician)
+* [PR#352](https://github.com/SamR1/FitTrackee/pull/352) - Translations update from Hosted Weblate (Dutch)
+* [PR#356](https://github.com/SamR1/FitTrackee/pull/356) - Init Polish translation files
+* [PR#357](https://github.com/SamR1/FitTrackee/pull/357) - Translations update from Hosted Weblate (Polish)
+* [PR#365](https://github.com/SamR1/FitTrackee/pull/365) - Translations update from Hosted Weblate (Spanish)
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 99%
+- Italian: 87%
+- Norwegian Bokmål: 36%
+- Polish: 3%
+- Spanish: 100%
+
+**Note:** Polish is not yet available in FitTrackee interface.
+
+Thanks to the contributors:
+- @bjornclauw
+- @gallegonovato
+- @gnu-ewm
+- @jat255
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/installation.html#upgrade))
+
+
 ## Version 0.7.15 (2023/04/12)
 
 Among enhancements and fixes, **FitTrackee** is now available in Galician, Spanish and partially in Norwegian Bokmål (see translation status below).

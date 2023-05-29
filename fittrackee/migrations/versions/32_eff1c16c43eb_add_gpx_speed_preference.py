@@ -1,4 +1,4 @@
-"""Add user prefrence for gpx speed calculation
+"""Add user preference for gpx speed calculation
 
 Revision ID: eff1c16c43eb
 Revises: db58d195c5bf
