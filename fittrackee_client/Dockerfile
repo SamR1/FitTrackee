@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 MAINTAINER SamR1@users.noreply.github.com
 
@@ -17,6 +17,7 @@ ENV VUE_APP_API_URL $VUE_APP_API_URL
 
 # install dependencies
 COPY package.json /usr/src/app/package.json
+COPY yarn.lock /usr/src/app/yarn.lock
 RUN yarn install --silent
 RUN yarn global add @vue/cli
 
