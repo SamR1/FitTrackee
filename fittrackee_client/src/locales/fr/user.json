@@ -96,6 +96,11 @@
         "PREFERENCES_EDITION": "Mise à jour des préférences",
         "PRIVACY-POLICY_EDITION": "Politique de confidentialité",
         "PROFILE_EDITION": "Mise à jour du profil",
+        "PROFILE_IN_USERS_DIRECTORY": {
+            "DISPLAYED": "Affiché",
+            "HIDDEN": "Masqué",
+            "LABEL": "Profil dans l'annuaire des utilisateurs"
+        },
         "REGISTRATION_DATE": "Date d'inscription",
         "SPORT": {
             "ACTION": "action",

@@ -1467,6 +1467,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     map_visibility='followers_only',
                     workouts_visibility='public',
                     manually_approves_followers=False,
+                    hide_profile_in_users_directory=False,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1485,6 +1486,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
         assert data['data']['manually_approves_followers'] is False
+        assert data['data']['hide_profile_in_users_directory'] is False
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -1520,6 +1522,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     use_raw_gpx_speed=False,
                     workouts_visibility=input_workout_visibility.value,
                     manually_approves_followers=True,
+                    hide_profile_in_users_directory=True,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

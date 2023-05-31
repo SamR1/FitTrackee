@@ -300,6 +300,7 @@ def get_authenticated_user_profile(
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
@@ -422,6 +423,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
@@ -598,6 +600,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
@@ -831,6 +834,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
@@ -909,6 +913,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json boolean hide_profile_in_users_directory: if true, user does not
+                                                    appear in users directory
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
     :<json string map_visibility: workouts map visibility
@@ -939,15 +945,16 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     user_mandatory_data = {
         'date_format',
         'display_ascent',
+        'hide_profile_in_users_directory',
         'imperial_units',
         'language',
+        'manually_approves_followers',
+        'map_visibility',
         'start_elevation_at_zero',
         'timezone',
         'use_raw_gpx_speed',
         'weekm',
-        'map_visibility',
         'workouts_visibility',
-        'manually_approves_followers',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -963,6 +970,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     map_visibility = post_data.get('map_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
     manually_approves_followers = post_data.get('manually_approves_followers')
+    hide_profile_in_users_directory = post_data.get(
+        'hide_profile_in_users_directory'
+    )
 
     try:
         auth_user.date_format = date_format
@@ -978,6 +988,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             PrivacyLevel(map_visibility), auth_user.workouts_visibility
         )
         auth_user.manually_approves_followers = manually_approves_followers
+        auth_user.hide_profile_in_users_directory = (
+            hide_profile_in_users_directory
+        )
         db.session.commit()
 
         return {

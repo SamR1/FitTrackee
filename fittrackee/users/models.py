@@ -174,12 +174,16 @@ class User(BaseModel):
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
-    manually_approves_followers = db.Column(
-        db.Boolean, default=True, nullable=False
-    )
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
     accepted_policy_date = db.Column(db.DateTime, nullable=True)
     start_elevation_at_zero = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
+    use_raw_gpx_speed = db.Column(db.Boolean, default=False, nullable=False)
+    manually_approves_followers = db.Column(
+        db.Boolean, default=True, nullable=False
+    )
+    hide_profile_in_users_directory = db.Column(
         db.Boolean, default=True, nullable=False
     )
     workouts_visibility = db.Column(
@@ -253,7 +257,6 @@ class User(BaseModel):
         ),
         cascade='all, delete-orphan',
     )
-    use_raw_gpx_speed = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -527,6 +530,9 @@ class User(BaseModel):
                     'workouts_visibility': self.workouts_visibility.value,
                     'manually_approves_followers': (
                         self.manually_approves_followers
+                    ),
+                    'hide_profile_in_users_directory': (
+                        self.hide_profile_in_users_directory
                     ),
                 },
             }

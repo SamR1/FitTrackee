@@ -142,6 +142,11 @@ def upgrade():
         )
         batch_op.add_column(
             sa.Column(
+                'hide_profile_in_users_directory', sa.Boolean(), nullable=True
+            )
+        )
+        batch_op.add_column(
+            sa.Column(
                 'workouts_visibility',
                 privacy_levels,
                 server_default='PRIVATE',
@@ -164,11 +169,13 @@ def upgrade():
         op.execute(
             "UPDATE users "
             "SET manually_approves_followers = True, "
+            "    hide_profile_in_users_directory = True, "
             "    workouts_visibility = 'PRIVATE', "
             "    map_visibility = 'PRIVATE' "
             f"WHERE users.id = {user.id}"
         )
     op.alter_column('users', 'manually_approves_followers', nullable=False)
+    op.alter_column('users', 'hide_profile_in_users_directory', nullable=False)
     op.alter_column('users', 'workouts_visibility', nullable=False)
     op.alter_column('users', 'map_visibility', nullable=False)
 
@@ -228,6 +235,7 @@ def downgrade():
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workouts_visibility')
+        batch_op.drop_column('hide_profile_in_users_directory')
         batch_op.drop_column('manually_approves_followers')
 
     op.drop_table('mentions')

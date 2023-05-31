@@ -96,6 +96,11 @@
         "PREFERENCES_EDITION": "Preferences edition",
         "PRIVACY-POLICY_EDITION": "Privacy policy",
         "PROFILE_EDITION": "Profile edition",
+        "PROFILE_IN_USERS_DIRECTORY": {
+            "DISPLAYED": "Displayed",
+            "HIDDEN": "Hidden",
+            "LABEL": "Profile in users directory"
+        },
         "REGISTRATION_DATE": "Registration date",
         "SPORT": {
             "ACTION": "action",

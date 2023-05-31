@@ -51,6 +51,7 @@ const getUsers = (
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
   if (forAdmin) {
     payload.with_inactive = 'true'
+    payload.with_hidden = 'true'
   }
   authApi
     .get('users', { params: payload })

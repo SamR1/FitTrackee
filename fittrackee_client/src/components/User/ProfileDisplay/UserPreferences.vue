@@ -23,6 +23,16 @@
           )
         }}
       </dd>
+      <dt>{{ $t('user.PROFILE.PROFILE_IN_USERS_DIRECTORY.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.PROFILE_IN_USERS_DIRECTORY.${
+              user.hide_profile_in_users_directory ? 'HIDDEN' : 'DISPLAYED'
+            }`
+          )
+        }}
+      </dd>
     </dl>
     <p class="preferences-section">{{ $t('workouts.WORKOUT') }}</p>
     <dl>

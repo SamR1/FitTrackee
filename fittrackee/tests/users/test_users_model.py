@@ -90,6 +90,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user['manually_approves_followers']
             == user_1.manually_approves_followers
         )
+        assert (
+            serialized_user['hide_profile_in_users_directory']
+            == user_1.hide_profile_in_users_directory
+        )
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(user_1)
@@ -172,6 +176,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         assert 'workouts_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -223,6 +228,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'workouts_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -267,6 +273,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert 'workouts_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User

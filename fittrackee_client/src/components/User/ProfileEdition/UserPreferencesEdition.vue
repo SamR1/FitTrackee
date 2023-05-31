@@ -21,7 +21,7 @@
           <TimezoneDropdown
             :input="userForm.timezone"
             :disabled="loading"
-            @updateTimezone="updateTZ"
+            @updateTimezone="(e) => updateValue('timezone', e)"
           />
         </label>
         <label class="form-items">
@@ -52,7 +52,7 @@
                 :name="start.label"
                 :checked="start.value === userForm.weekm"
                 :disabled="loading"
-                @input="updateWeekM(start.value)"
+                @input="updateValue('weekm', start.value)"
               />
               <span class="checkbox-label">
                 {{ $t(`user.PROFILE.${start.label}`) }}
@@ -76,11 +76,42 @@
                 :name="status.label"
                 :checked="status.value === userForm.manually_approves_followers"
                 :disabled="loading"
-                @input="updateManuallyApprovesFollowersValues(status.value)"
+                @input="
+                  updateValue('manually_approves_followers', status.value)
+                "
               />
               <span class="checkbox-label">
                 {{
                   $t(`user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${status.label}`)
+                }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.PROFILE_IN_USERS_DIRECTORY.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label
+              v-for="status in profileInUsersDirectory"
+              :key="status.label"
+            >
+              <input
+                type="radio"
+                :id="`hide_profile_${status.label}`"
+                :name="`hide_profile_${status.label}`"
+                :checked="
+                  status.value === userForm.hide_profile_in_users_directory
+                "
+                :disabled="loading"
+                @input="
+                  updateValue('hide_profile_in_users_directory', status.value)
+                "
+              />
+              <span class="checkbox-label">
+                {{
+                  $t(`user.PROFILE.PROFILE_IN_USERS_DIRECTORY.${status.label}`)
                 }}
               </span>
             </label>
@@ -99,7 +130,7 @@
                 :name="unit.label"
                 :checked="unit.value === userForm.imperial_units"
                 :disabled="loading"
-                @input="updateImperialUnit(unit.value)"
+                @input="updateValue('imperial_units', unit.value)"
               />
               <span class="checkbox-label">
                 {{ $t(`user.PROFILE.UNITS.${unit.label}`) }}
@@ -119,7 +150,7 @@
                 :name="status.label"
                 :checked="status.value === userForm.display_ascent"
                 :disabled="loading"
-                @input="updateAscentDisplay(status.value)"
+                @input="updateValue('display_ascent', status.value)"
               />
               <span class="checkbox-label">
                 {{ $t(`common.${status.label}`) }}
@@ -142,7 +173,7 @@
                 :name="status.label"
                 :checked="status.value === userForm.start_elevation_at_zero"
                 :disabled="loading"
-                @input="updateStartElevationAtZero(status.value)"
+                @input="updateValue('start_elevation_at_zero', status.value)"
               />
               <span class="checkbox-label">
                 {{ $t(`user.PROFILE.ELEVATION_CHART_START.${status.label}`) }}
@@ -162,7 +193,7 @@
                 :name="status.label"
                 :checked="status.value === userForm.use_raw_gpx_speed"
                 :disabled="loading"
-                @input="updateUseRawGpxSpeed(status.value)"
+                @input="updateValue('use_raw_gpx_speed', status.value)"
               />
               <span class="checkbox-label">
                 {{ $t(`user.PROFILE.USE_RAW_GPX_SPEED.${status.label}`) }}
@@ -246,12 +277,14 @@
   const userForm: IUserPreferencesPayload = reactive({
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
+    hide_profile_in_users_directory: true,
     imperial_units: false,
     language: '',
     manually_approves_followers: true,
     map_visibility: 'private',
     start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
+    use_raw_gpx_speed: false,
     weekm: false,
     workouts_visibility: 'private',
   })
@@ -315,6 +348,16 @@
       value: false,
     },
   ]
+  const profileInUsersDirectory = [
+    {
+      label: 'HIDDEN',
+      value: true,
+    },
+    {
+      label: 'DISPLAYED',
+      value: false,
+    },
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -362,36 +405,20 @@
     userForm.workouts_visibility = user.workouts_visibility
       ? user.workouts_visibility
       : 'private'
+    userForm.hide_profile_in_users_directory =
+      user.hide_profile_in_users_directory
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
   }
-  function updateTZ(value: string) {
-    userForm.timezone = value
-  }
-  function updateStartElevationAtZero(value: boolean) {
-    userForm.start_elevation_at_zero = value
-  }
-  function updateUseRawGpxSpeed(value: boolean) {
-    userForm.use_raw_gpx_speed = value
-  }
-  function updateAscentDisplay(value: boolean) {
-    userForm.display_ascent = value
-  }
-  function updateImperialUnit(value: boolean) {
-    userForm.imperial_units = value
-  }
-  function updateWeekM(value: boolean) {
-    userForm.weekm = value
+  function updateValue(key: string, value: string | boolean) {
+    userForm[key] = value
   }
   function updateMapVisibility() {
     userForm.map_visibility = getUpdatedMapVisibility(
       userForm.map_visibility,
       userForm.workouts_visibility
     )
-  }
-  function updateManuallyApprovesFollowersValues(value: boolean) {
-    userForm.manually_approves_followers = value
   }
 
   onUnmounted(() => {
