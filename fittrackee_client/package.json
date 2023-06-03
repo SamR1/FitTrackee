@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.7.16",
+  "version": "0.7.17",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,7 +11,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
-    "@tmcw/togeojson": "^5.6.1",
+    "@tmcw/togeojson": "^5.6.2",
     "@vue-leaflet/vue-leaflet": "^0.9.0",
     "@zxcvbn-ts/core": "^3.0.1",
     "@zxcvbn-ts/language-common": "^3.0.2",
@@ -36,7 +36,7 @@
     "vue-chart-3": "3.1.1",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.2.1",
+    "vue-router": "^4.2.2",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
@@ -44,8 +44,8 @@
     "@types/chai": "^4.3.5",
     "@types/mocha": "^10.0.1",
     "@types/sanitize-html": "^2.9.0",
-    "@typescript-eslint/eslint-plugin": "^5.59.7",
-    "@typescript-eslint/parser": "^5.59.7",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-plugin-pwa": "~5.0.8",
@@ -57,7 +57,7 @@
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.3.2",
     "chai": "^4.3.7",
-    "eslint": "8.41.0",
+    "eslint": "8.42.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
