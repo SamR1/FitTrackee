@@ -207,6 +207,9 @@ Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
 
+.. note::
+  Polish is not yet available in **FitTrackee** interface.
+
 Screenshots
 ^^^^^^^^^^^^
 
