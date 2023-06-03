@@ -29,7 +29,7 @@ Prerequisites
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
-    - `Yarn <https://yarnpkg.com>`__ (for development only)
+    - `Node <https://nodejs.org>`__ 16+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
@@ -509,13 +509,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.16):
+-  Download the last release (for now, it is the release v0.7.17):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.16.tar.gz
-   $ tar -xzf v0.7.16.tar.gz
-   $ mv FitTrackee-0.7.16 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
+   $ tar -xzf v0.7.17.tar.gz
+   $ mv FitTrackee-0.7.17 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -635,13 +635,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.16) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.17) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.16.tar.gz
-   $ tar -xzf v0.7.16.tar.gz
-   $ cp -R FitTrackee-0.7.16/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
+   $ tar -xzf v0.7.17.tar.gz
+   $ cp -R FitTrackee-0.7.17/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

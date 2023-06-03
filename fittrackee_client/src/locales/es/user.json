@@ -120,7 +120,7 @@
         "USE_RAW_GPX_SPEED": {
             "FILTERED_SPEED": "Filtrado",
             "LABEL": "Estrategia de velocidad máxima",
-            "RAW_SPEED": "Crudo",
+            "RAW_SPEED": "En bruto",
             "HELP": "Si se filtra, excluye los valores extremos (que pueden ser errores del GPS) al calcular la velocidad máxima."
         }
     },
