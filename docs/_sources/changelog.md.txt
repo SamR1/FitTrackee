@@ -1,5 +1,24 @@
 # Change log
 
+## Version 0.7.17 (2023/06/03)
+
+### Translations
+
+* [PR#366](https://github.com/SamR1/FitTrackee/pull/366), [PR#369](https://github.com/SamR1/FitTrackee/pull/369) - Translations update from Hosted Weblate (Galician, thanks to @xmgz)
+* [PR#367](https://github.com/SamR1/FitTrackee/pull/367) - Translations update (Spanish, French)
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 99%
+- Italian: 87%
+- Norwegian Bokmål: 36%
+- Polish: 3%
+- Spanish: 100%
+
+
 ## Version 0.7.16 (2023/05/29)
 
 ### Features and enhancements
