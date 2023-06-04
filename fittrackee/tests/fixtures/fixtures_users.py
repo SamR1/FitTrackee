@@ -13,6 +13,7 @@ from ..utils import generate_follow_request, random_string
 def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.flush()
@@ -25,6 +26,7 @@ def user_1() -> User:
 def user_1_upper() -> User:
     user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.flush()
@@ -39,6 +41,7 @@ def user_1_admin() -> User:
         username='admin', email='admin@example.com', password='12345678'
     )
     admin.admin = True
+    admin.hide_profile_in_users_directory = False
     admin.is_active = True
     admin.accepted_policy = datetime.datetime.utcnow()
     db.session.add(admin)
@@ -59,6 +62,26 @@ def user_1_full() -> User:
     user.timezone = 'America/New_York'
     user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
+def user_1_raw_speed() -> User:
+    user = User(username='test', email='test@test.com', password='12345678')
+    user.first_name = 'John'
+    user.last_name = 'Doe'
+    user.bio = 'just a random guy'
+    user.location = 'somewhere'
+    user.language = 'en'
+    user.timezone = 'America/New_York'
+    user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
+    user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.use_raw_gpx_speed = True
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.flush()
@@ -72,6 +95,7 @@ def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.timezone = 'Europe/Paris'
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.flush()
@@ -84,6 +108,7 @@ def user_1_paris() -> User:
 def user_2() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.flush()
@@ -96,6 +121,7 @@ def user_2() -> User:
 def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.admin = True
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
@@ -109,6 +135,7 @@ def user_2_admin() -> User:
 def user_3() -> User:
     user = User(username='sam', email='sam@test.com', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.weekm = True
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
@@ -122,6 +149,7 @@ def user_3() -> User:
 def user_4() -> User:
     user = User(username='john', email='john@doe.com', password='12345678')
     user.is_active = True
+    user.hide_profile_in_users_directory = False
     user.weekm = True
     db.session.add(user)
     db.session.flush()

@@ -1,7 +1,7 @@
 <template>
   <div id="workout-note">
     <Card>
-      <template #title>{{ $t('workouts.NOTES') }}</template>
+      <template #title>{{ capitalize($t('workouts.NOTES')) }}</template>
       <template #content>
         <span
           v-html="
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { capitalize, toRefs, withDefaults } from 'vue'
 
   import { linkifyAndClean } from '@/utils/inputs'
 
@@ -33,7 +33,6 @@
 <style lang="scss" scoped>
   #workout-note {
     ::v-deep(.card-content) {
-      font-style: italic;
       white-space: pre-wrap;
     }
   }

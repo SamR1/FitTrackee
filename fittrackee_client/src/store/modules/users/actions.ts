@@ -54,6 +54,7 @@ const getUsers = (
   const isRemote = payload.q && payload.q.match(ACCOUNT_REGEX) ? '/remote' : ''
   if (forAdmin) {
     payload.with_inactive = 'true'
+    payload.with_hidden = 'true'
   }
   authApi
     .get(`users${isRemote}`, { params: payload })

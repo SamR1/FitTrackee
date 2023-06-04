@@ -22,7 +22,7 @@ import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import store from '@/store'
-import { AUTH_USER_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
@@ -249,6 +249,14 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: '/notifications',
+    name: 'Notifications',
+    component: () =>
+      import(
+        /* webpackChunkName: 'notifications' */ '@/views/user/NotificationsView.vue'
+      ),
+  },
+  {
     path: '/statistics',
     name: 'Statistics',
     component: () =>
@@ -310,6 +318,21 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
     props: { displaySegment: true },
+  },
+  {
+    path: '/workouts/:workoutId/comments/:commentId',
+    name: 'WorkoutComment',
+    component: () =>
+      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    props: { displaySegment: false },
+  },
+  {
+    path: '/comments/:commentId',
+    name: 'Comment',
+    component: () =>
+      import(
+        /* webpackChunkName: 'workouts' */ '@/views/workouts/CommentView.vue'
+      ),
   },
   {
     path: '/workouts/add',
@@ -394,7 +417,13 @@ const pathsWithoutAuthentication = [
   '/account-confirmation/email-sent',
 ]
 
-const pathNamesWithoutChecks = ['EmailUpdate', 'About', 'User', 'Workout', 'PrivacyPolicy']
+const pathNamesWithoutChecks = [
+  'EmailUpdate',
+  'About',
+  'User',
+  'Workout',
+  'PrivacyPolicy',
+]
 
 router.beforeEach((to, from, next) => {
   store
@@ -402,6 +431,10 @@ router.beforeEach((to, from, next) => {
     .then(() => {
       if (to.name && pathNamesWithoutChecks.includes(to.name.toString())) {
         return next()
+      }
+
+      if (store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
+        store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
       }
 
       if (

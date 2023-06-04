@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Authentication and account &#8212; FitTrackee 0.7.15
+    <title>Authentication and account &#8212; FitTrackee 0.7.17
  documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
@@ -43,7 +43,7 @@
         </button>
         <a class="navbar-brand" href="../index.html">
           FitTrackee</a>
-        <span class="navbar-text navbar-version pull-left"><b>0.7.15
+        <span class="navbar-text navbar-version pull-left"><b>0.7.17
 </b></span>
       </div>
 
@@ -424,6 +424,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;use_raw_gpx_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sam&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;weekm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="w">  </span><span class="p">},</span>
@@ -542,6 +543,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;use_raw_gpx_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
 <span class="w">    </span><span class="nt">&quot;weekm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="p">},</span>
@@ -688,6 +690,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;use_raw_gpx_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
 <span class="w">    </span><span class="nt">&quot;weekm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="p">},</span>
@@ -705,6 +708,7 @@ character “_” allowed</p></li>
 <li><p><strong>language</strong> (<em>string</em>) – language preferences</p></li>
 <li><p><strong>start_elevation_at_zero</strong> (<em>boolean</em>) – do elevation plots start at zero?</p></li>
 <li><p><strong>timezone</strong> (<em>string</em>) – user time zone</p></li>
+<li><p><strong>use_raw_gpx_speed</strong> (<em>boolean</em>) – Use unfiltered gpx to calculate speeds</p></li>
 <li><p><strong>weekm</strong> (<em>boolean</em>) – does week start on Monday?</p></li>
 </ul>
 </dd>
@@ -1069,6 +1073,7 @@ character “_” allowed</p></li>
 <span class="w">    </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">720.35</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">67.895</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;6:50:27&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;use_raw_gpx_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;sam&quot;</span>
 <span class="w">    </span><span class="nt">&quot;weekm&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="p">},</span>
@@ -1464,7 +1469,7 @@ for other reasons.</p></li>
     </p>
     <p>
         &copy; Copyright 2018 - 2023, SamR1 <a rel="me" href="https://fosstodon.org/@FitTrackee"><i class="fa fa-mastodon" aria-hidden="true"></i></a>.
-      Last updated on Apr 12, 2023.<br/>
+      Last updated on Jun 03, 2023.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br/>
     </p>
   </div>

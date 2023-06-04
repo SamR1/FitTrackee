@@ -1,6 +1,7 @@
 {
     "APP_ERROR": "L'application semble rencontrer quelques problèmes.<br />Veuillez réessayer plus tard ou contacter l'administrateur.",
     "NOT_FOUND": {
+        "COMMENT": "Commentaire introuvable",
         "PAGE": "Page introuvable",
         "WORKOUT": "Séance introuvable"
     },

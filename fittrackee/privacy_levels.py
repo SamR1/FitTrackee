@@ -50,7 +50,7 @@ def can_view(
 
     if (
         target_object.__class__.__name__ == "Comment"
-        and user in target_object.mentions.all()
+        and user in target_object.mentioned_users.all()
     ):
         return True
 

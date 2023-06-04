@@ -1,6 +1,7 @@
 {
     "APP_ERROR": "The application seems to have encountered some issues.<br />Please try again later or contact the administrator.",
     "NOT_FOUND": {
+        "COMMENT": "Comment not found",
         "PAGE": "Page not found",
         "WORKOUT": "Workout not found"
     },

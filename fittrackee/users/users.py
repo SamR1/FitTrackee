@@ -92,6 +92,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     with_inactive = params.get('with_inactive', 'false').lower()
     if not auth_user or not auth_user.admin:
         with_inactive = 'false'
+    with_hidden_users = params.get('with_hidden', 'false').lower()
+    if not auth_user or not auth_user.admin:
+        with_hidden_users = 'false'
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
@@ -99,6 +102,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             True
             if with_inactive == 'true'
             else User.is_active == True,  # noqa
+            True
+            if with_hidden_users == 'true' or remote
+            else User.hide_profile_in_users_directory == False,  # noqa
         )
         .order_by(asc(user_column) if order == 'asc' else desc(user_column))
         .paginate(page=page, per_page=per_page, error_out=False)

@@ -39,7 +39,7 @@ class CommentObject(BaseObject):
             activity_type == 'Create'
             and comment.text_visibility
             in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
-            and not comment.mentions.all()
+            and not comment.mentioned_users.all()
         ):
             raise InvalidVisibilityException(
                 f"object visibility is: '{comment.text_visibility.value}'"

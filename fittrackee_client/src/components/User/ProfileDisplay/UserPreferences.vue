@@ -1,5 +1,6 @@
 <template>
   <div id="user-preferences" class="description-list">
+    <p class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</p>
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
@@ -9,6 +10,32 @@
       <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <p class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</p>
+    <dl>
+      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
+              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.PROFILE_IN_USERS_DIRECTORY.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.PROFILE_IN_USERS_DIRECTORY.${
+              user.hide_profile_in_users_directory ? 'HIDDEN' : 'DISPLAYED'
+            }`
+          )
+        }}
+      </dd>
+    </dl>
+    <p class="preferences-section">{{ $t('workouts.WORKOUT') }}</p>
+    <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -20,7 +47,33 @@
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
       <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
-      <dd>{{ $t(`user.PROFILE.ELEVATION_CHART_START.${user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'}`) }}</dd>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.ELEVATION_CHART_START.${
+              user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.USE_RAW_GPX_SPEED.${
+              user.use_raw_gpx_speed ? 'RAW_SPEED' : 'FILTERED_SPEED'
+            }`
+          )
+        }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+        </span>
+      </div>
+    </dl>
+    <dl>
       <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{
@@ -94,3 +147,17 @@
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences {
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+    }
+    .raw-speed-help {
+      margin-top: -$default-margin * 0.5;
+    }
+  }
+</style>

@@ -23,6 +23,11 @@ export const loadLanguagePackage = async (language: string) => {
       return await import(
         /* webpackChunkName: "password.es" */ '@zxcvbn-ts/language-es-es'
       )
+    // TODO: add package
+    // case 'pl':
+    //   return await import(
+    //     /* webpackChunkName: "password.pl" */ '@zxcvbn-ts/language-pl'
+    //   )
     default:
       return await import(
         /* webpackChunkName: "password.en" */ '@zxcvbn-ts/language-en'
@@ -36,10 +41,10 @@ export const setZxcvbnOptions = async (language: string) => {
   )
   const zxcvbnLanguagePackage = await loadLanguagePackage(language)
   const options = {
-    graphs: zxcvbnCommonPackage.default.adjacencyGraphs,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
     dictionary: {
-      ...zxcvbnCommonPackage.default.dictionary,
-      ...zxcvbnLanguagePackage.default.dictionary,
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnLanguagePackage.dictionary,
     },
   }
   zxcvbnOptions.setOptions(options)

@@ -89,6 +89,7 @@
   import { computed, reactive } from 'vue'
 
   import { OAUTH2_STORE } from '@/store/constants'
+  import { ICustomTextareaData } from '@/types/forms'
   import { IOAuth2ClientPayload } from '@/types/oauth'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -121,8 +122,8 @@
     }
     store.dispatch(OAUTH2_STORE.ACTIONS.CREATE_CLIENT, payload)
   }
-  function updateDescription(value: string) {
-    appForm.client_description = value
+  function updateDescription(textareaData: ICustomTextareaData) {
+    appForm.client_description = textareaData.value
   }
   function updateScopes(scope: string) {
     const index = scopes.indexOf(scope)

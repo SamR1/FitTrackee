@@ -107,6 +107,11 @@ Account & preferences
 - A user can choose to display or hide ascent records and total on Dashboard (*new in 0.6.11*)
 - A user can choose format used to display dates (*new in 0.7.3*)
 - A user can choose elevation chart axis start: zero or minimum altitude (*new in 0.7.15*)
+- A user can choose to exclude extreme values (which may be GPS errors) when calculating the maximum speed (by default, extreme values are excluded) (*new in 0.7.16*)
+
+.. note::
+  Changing this preference will only affect next file uploads.
+
 - A user can set sport preferences (*new in 0.5.0*):
      - change sport color (used for sport image and charts)
      - can override stopped speed threshold (for next uploaded gpx files)
@@ -201,6 +206,9 @@ Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
+
+.. note::
+  Polish is not yet available in **FitTrackee** interface.
 
 Screenshots
 ^^^^^^^^^^^^

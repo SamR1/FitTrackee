@@ -16,7 +16,7 @@ from ...mixins import ApiTestCaseMixin, BaseTestMixin
 @patch('fittrackee.federation.utils.user.update_remote_user')
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/comments/{comment_uuid}/like'
+    route = '/api/comments/{comment_uuid}/like'
 
     def test_it_creates_workout_like(
         self,
@@ -42,10 +42,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -82,10 +79,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -112,10 +106,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -130,7 +121,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 @patch('fittrackee.federation.utils.user.update_remote_user')
 @patch('fittrackee.comments.comments.send_to_remote_inbox')
 class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/comments/{comment_uuid}/like/undo'
+    route = '/api/comments/{comment_uuid}/like/undo'
 
     def test_it_removes_comment_like(
         self,
@@ -159,10 +150,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         db.session.commit()
 
         response = client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_2.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -202,10 +190,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -236,10 +221,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         undo_activity = CommentLike.query.first().get_activity(is_undo=True)
 
         client.post(
-            self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id,
-                comment_uuid=comment.short_id,
-            ),
+            self.route.format(comment_uuid=comment.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

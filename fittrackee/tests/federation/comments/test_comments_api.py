@@ -466,8 +466,7 @@ class TestGetWorkoutCommentAsUser(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -505,8 +504,7 @@ class TestGetWorkoutCommentAsFollower(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -544,8 +542,7 @@ class TestGetWorkoutCommentAsRemoteFollower(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -580,8 +577,7 @@ class TestGetWorkoutCommentAsOwner(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -616,8 +612,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         client = app_with_federation.test_client()
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
         )
 
@@ -654,8 +649,7 @@ class TestGetWorkoutCommentWithReplies(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_1.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1008,8 +1002,7 @@ class TestGetWorkoutCommentWithMention(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -1088,8 +1081,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1124,8 +1116,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1155,8 +1146,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1190,8 +1180,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         note_activity = comment.get_activity(activity_type='Delete')
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1230,8 +1219,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1271,8 +1259,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1309,8 +1296,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1344,8 +1330,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1386,8 +1371,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=f"@{remote_user.fullname} bar")),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1433,8 +1417,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1477,8 +1460,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1520,8 +1502,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=f"@{remote_user.fullname}")),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1566,8 +1547,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(
                 dict(text=f"@{remote_user.fullname} @{remote_user_2.fullname}")

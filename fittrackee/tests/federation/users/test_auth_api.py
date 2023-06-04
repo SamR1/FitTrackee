@@ -98,6 +98,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     map_visibility=input_map_visibility.value,
                     start_elevation_at_zero=False,
                     workouts_visibility=input_workout_visibility.value,
+                    use_raw_gpx_speed=True,
+                    manually_approves_followers=False,
+                    hide_profile_in_users_directory=False,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

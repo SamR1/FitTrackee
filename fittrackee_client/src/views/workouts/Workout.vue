@@ -30,7 +30,11 @@
             v-if="!displaySegment && isWorkoutOwner"
             :notes="workoutData.workout.notes"
           />
-          <Comments :workoutData="workoutData" :auth-user="authUser"/>
+          <Comments
+            v-if="!displaySegment"
+            :workoutData="workoutData"
+            :auth-user="authUser"
+          />
           <div id="bottom" />
         </div>
         <div v-else>
@@ -61,7 +65,11 @@
   import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
-  import { AUTH_USER_STORE, SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    SPORTS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'

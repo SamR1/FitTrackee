@@ -25,7 +25,9 @@
     </div>
     <div
       class="follows-you"
-      v-if="displayFollowsYou && user.follows === 'true'"
+      v-if="
+        displayFollowsYou && user.follows === 'true' && from !== 'notifications'
+      "
     >
       {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
     </div>

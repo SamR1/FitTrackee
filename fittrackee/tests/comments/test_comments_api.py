@@ -5,13 +5,14 @@ import pytest
 from flask import Flask
 from werkzeug import Response
 
+from fittrackee import db
 from fittrackee.comments.models import Comment, Mention
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 from .utils import CommentMixin
 
 
@@ -399,17 +400,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -454,32 +445,6 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 class TestGetWorkoutCommentAsUser(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
-    def test_it_returns_404_when_workout_does_not_exist(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-    ) -> None:
-        workout_short_id = self.random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"/api/workouts/{workout_short_id}/"
-            f"comments/{self.random_short_id()}",
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"workout not found (id: {workout_short_id})",
-        )
-
     def test_it_returns_404_when_workout_comment_does_not_exist(
         self,
         app: Flask,
@@ -495,8 +460,7 @@ class TestGetWorkoutCommentAsUser(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{workout_comment_short_id}",
+            f"/api/comments/{workout_comment_short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -532,8 +496,7 @@ class TestGetWorkoutCommentAsUser(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -565,8 +528,41 @@ class TestGetWorkoutCommentAsUser(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+
+    def test_it_returns_comment_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -606,8 +602,7 @@ class TestGetWorkoutCommentAsFollower(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -645,8 +640,7 @@ class TestGetWorkoutCommentAsFollower(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -688,8 +682,7 @@ class TestGetWorkoutCommentAsOwner(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {auth_token}",
@@ -729,8 +722,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         client = app.test_client()
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
         )
 
@@ -756,8 +748,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         client = app.test_client()
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_1.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
         )
 
@@ -768,17 +759,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -808,8 +789,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             headers=dict(
                 Authorization=f"Bearer {access_token}",
@@ -822,6 +802,78 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 class TestGetWorkoutCommentWithReplies(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
+    def test_it_gets_comment_with_replies(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        reply = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            parent_comment=comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['replies'] == [
+            jsonify_dict(reply.serialize(user_1))
+        ]
+
+    def test_it_gets_comment_when_reply_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        # not visible reply
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PRIVATE,
+            parent_comment=comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['replies'] == []
+
     def test_it_gets_reply(
         self,
         app: Flask,
@@ -846,8 +898,7 @@ class TestGetWorkoutCommentWithReplies(
         )
 
         response = client.get(
-            f"/api/workouts/{workout_cycling_user_1.short_id}/"
-            f"comments/{comment.short_id}",
+            f"/api/comments/{reply.short_id}",
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -855,9 +906,47 @@ class TestGetWorkoutCommentWithReplies(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment']['replies'] == [
-            jsonify_dict(reply.serialize(user_1))
-        ]
+        assert data['comment']['reply_to'] == jsonify_dict(
+            comment.serialize(user_1, with_replies=False)
+        )
+        assert data['comment']['replies'] == []
+
+    def test_it_gets_reply_when_parent_is_not_visible_anymore(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        reply = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            parent_comment=comment,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        comment.text_visibility = PrivacyLevel.PRIVATE
+
+        response = client.get(
+            f"/api/comments/{reply.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['reply_to'] is None
+        assert data['comment']['replies'] == []
 
 
 class GetWorkoutCommentsTestCase(
@@ -997,17 +1086,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1382,34 +1461,11 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         client = app.test_client()
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
         )
 
         self.assert_401(response)
-
-    def test_it_returns_404_if_workout_does_not_exist(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-    ) -> None:
-        workout_short_id = self.random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.delete(
-            f"/api/workouts/{workout_short_id}"
-            f"/comments/{self.random_short_id()}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"workout not found (id: {workout_short_id})",
-        )
 
     def test_it_returns_404_if_comment_does_not_exist(
         self,
@@ -1425,8 +1481,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment_short_id}",
+            f"/api/comments/{comment_short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1462,8 +1517,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1491,8 +1545,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1516,8 +1569,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1549,8 +1601,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1579,8 +1630,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         client.delete(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1588,17 +1638,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1624,8 +1664,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 
@@ -1648,8 +1687,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         client = app.test_client()
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(
                 dict(
@@ -1660,35 +1698,6 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         self.assert_401(response)
-
-    def test_it_returns_404_if_workout_does_not_exist(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-    ) -> None:
-        workout_short_id = self.random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            f"/api/workouts/{workout_short_id}"
-            f"/comments/{self.random_short_id()}",
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
-                )
-            ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"workout not found (id: {workout_short_id})",
-        )
 
     def test_it_returns_404_if_comment_does_not_exist(
         self,
@@ -1704,8 +1713,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment_short_id}",
+            f"/api/comments/{comment_short_id}",
             content_type="application/json",
             data=json.dumps(
                 dict(
@@ -1748,8 +1756,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(
                 dict(
@@ -1784,8 +1791,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(
                 dict(
@@ -1816,8 +1822,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps({}),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1844,8 +1849,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         updated_text = self.random_string()
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1875,8 +1879,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         updated_text = "<script>alert('evil!')</script> Hello"
 
         client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1905,8 +1908,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1938,8 +1940,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         client.patch(
-            f"/api/workouts/{workout_cycling_user_2.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=f"@{user_3.username}")),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1957,17 +1958,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1993,8 +1984,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
         response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
-            f"/comments/{comment.short_id}",
+            f"/api/comments/{comment.short_id}",
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 

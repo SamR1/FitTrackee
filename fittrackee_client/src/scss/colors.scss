@@ -2,6 +2,7 @@
   --app-background-color: #FFFFFF;
   --app-color: #2c3e50;
   --app-color-light: #808b96;
+  --app-color-lighter: #959ea7;
   --app-a-color: #40578a;
   --app-shadow-color: lightgrey;
   --app-loading-color:  #f3f3f3;
@@ -78,4 +79,7 @@
 
   --text-background-color: rgb(114, 114, 114, 0.1);
   --text-visibilty: rgba(37, 37, 37, 0.65);
+
+  --comment-background: #FFF;
+  --comment-background-highlight: linear-gradient(to right, #eef1f4, #f3f7fa);
 }

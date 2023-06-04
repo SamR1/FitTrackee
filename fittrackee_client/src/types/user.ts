@@ -45,9 +45,12 @@ export interface IAuthUserProfile extends IUserProfile {
   accepted_privacy_policy: boolean
   display_ascent: boolean
   email: string
+  hide_profile_in_users_directory: boolean
   imperial_units: boolean
   start_elevation_at_zero: boolean
+  use_raw_gpx_speed: boolean
   language: string | null
+  manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   nb_sports: number
   records: IRecord[]
@@ -94,13 +97,16 @@ export interface IUserRelationshipActionPayload {
 }
 
 export interface IUserPreferencesPayload {
+  date_format: string
   display_ascent: boolean
-  start_elevation_at_zero: boolean
+  hide_profile_in_users_directory: boolean
   imperial_units: boolean
   language: string
+  manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
+  start_elevation_at_zero: boolean
   timezone: string
-  date_format: string
+  use_raw_gpx_speed: boolean
   weekm: boolean
   workouts_visibility: TPrivacyLevels
 }
@@ -169,4 +175,5 @@ export interface IFollowRequestsPayload {
 export interface IFollowRequestsActionPayload {
   username: string
   action: TFollowRequestAction
+  getFollowRequests?: boolean
 }

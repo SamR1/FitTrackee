@@ -12,6 +12,8 @@ VALID_SCOPES = [
     'application:write',
     'follow:read',
     'follow:write',
+    'notifications:read',
+    'notifications:write',
     'profile:read',
     'profile:write',
     'users:read',

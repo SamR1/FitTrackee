@@ -40,6 +40,8 @@ see [Installations instructions](https://samr1.github.io/FitTrackee/installation
 
 ### Pull Requests
 
+**Note**: Before starting, please open an issue to discuss implementation if the feature requires major changes or involves the addition of a new sport or language.
+
 Please make your changes from the development branch (`dev`).
 
 * Fork the repository (see [GitHub instructions](https://docs.github.com/en/get-started/quickstart/contributing-to-projects))
@@ -71,7 +73,7 @@ Please make your changes from the development branch (`dev`).
   $ make test-e2e
   ```
 
-* If needed, update translations.
+* If needed, update translations (at least add English strings).
    * On client side, update files in `fittrackee_client/src/locales` folder.  
    * On API side (emails), to extract new strings into `messages.pot`:
      ```shell
@@ -99,6 +101,8 @@ Please make your changes from the development branch (`dev`).
 * Create your pull request to merge on `dev` branch.
 
 * Ensure the pull requests description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+* Check that all tests have been successfully passed.
 
 * If needed, [update your branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch). 
 

@@ -13,7 +13,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestGetUserAsAdmin(ApiTestCaseMixin):
@@ -126,19 +126,30 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         user = data['data']['users'][0]
         assert user == jsonify_dict(inactive_user.serialize(user_1_admin))
 
+    def test_it_gets_hidden_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user == jsonify_dict(user_2.serialize(user_1_admin))
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', True),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -272,6 +283,27 @@ class TestGetUserAsUser(ApiTestCaseMixin):
             user_1.serialize(user_1)
         )
 
+    def test_it_gets_hidden_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user == jsonify_dict(user_2.serialize(user_1))
+
 
 class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_does_not_exist(
@@ -344,11 +376,33 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(user_1.serialize())
 
+    def test_it_gets_hidden_user(self, app: Flask, user_1: User) -> None:
+        user_1.hide_profile_in_users_directory = True
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user == jsonify_dict(user_1.serialize())
+
 
 class TestGetUsersAsAdmin(ApiTestCaseMixin):
-    def test_it_get_users_list_without_inactive_users(
-        self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
+    def test_it_gets_users_list_without_inactive_and_hidden_users(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+        user_2: User,
+        user_3: User,
     ) -> None:
+        user_2.hide_profile_in_users_directory = True
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -376,9 +430,10 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 2,
         }
 
-    def test_it_get_users_list_regardless_their_account_status(
+    def test_it_gets_users_list_regardless_their_account_status(
         self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
     ) -> None:
+        inactive_user.hide_profile_in_users_directory = False
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -407,6 +462,82 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'page': 1,
             'pages': 1,
             'total': 3,
+        }
+
+    def test_it_gets_users_list_regardless_their_hidden_profile_preference(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_hidden=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_all_users(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_inactive=true&with_hidden=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 4
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            inactive_user.serialize(user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_3.serialize(user_1_admin)
+        )
+        assert data['data']['users'][3] == jsonify_dict(
+            user_2.serialize(user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 4,
         }
 
 
@@ -888,7 +1019,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&with_inactive=true',
+            '/api/users?order_by=is_active&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -919,7 +1051,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=asc&with_inactive=true',
+            '/api/users?order_by=is_active&order=asc&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -950,7 +1083,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=desc&with_inactive=true',
+            '/api/users?order_by=is_active&order=desc&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1094,6 +1228,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
     def test_it_returns_inactive_user(
         self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
     ) -> None:
+        inactive_user.hide_profile_in_users_directory = False
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1180,17 +1315,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', True),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1222,10 +1347,12 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         'input_description, input_params',
         [
             ("without params", ""),
-            ("only inactive users", "?with_inactive=true"),
+            ("with inactive users", "?with_inactive=true"),
+            ("with hidden users", "?with_hidden=true"),
+            ("all params", "?with_hidden=true&with_inactive=true"),
         ],
     )
-    def test_it_gets_users_list_without_inactive_users(
+    def test_it_gets_users_list_without_inactive_and_hidden_users(
         self,
         app: Flask,
         user_1: User,
@@ -1235,6 +1362,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         input_description: str,
         input_params: str,
     ) -> None:
+        user_2.hide_profile_in_users_directory = True
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1247,22 +1375,19 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert len(data['data']['users']) == 3
+        assert len(data['data']['users']) == 2
         assert data['data']['users'][0] == jsonify_dict(
             user_3.serialize(user_1)
         )
         assert data['data']['users'][1] == jsonify_dict(
             user_1.serialize(user_1)
         )
-        assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(user_1)
-        )
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
             'page': 1,
             'pages': 1,
-            'total': 3,
+            'total': 2,
         }
 
     def test_it_gets_users_list_with_workouts(
@@ -1821,17 +1946,7 @@ class TestUpdateUser(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', True),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -2115,17 +2230,7 @@ class TestDeleteUser(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('follow:read', False),
-            ('follow:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', True),
-            ('workouts:read', False),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

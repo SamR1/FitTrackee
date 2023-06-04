@@ -6,7 +6,12 @@ import {
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
 import { IPagination } from '@/types/api'
-import { IComment, IWorkout, IWorkoutApiChartData } from '@/types/workouts'
+import {
+  IComment,
+  ICurrentCommentEdition,
+  IWorkout,
+  IWorkoutApiChartData,
+} from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   [WORKOUTS_STORE.MUTATIONS.ADD_TIMELINE_WORKOUTS](
@@ -78,7 +83,8 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       workout: <IWorkout>{},
       chartData: [],
       comments: [],
-      comments_loading: null,
+      commentsLoading: null,
+      currentCommentEdition: <ICurrentCommentEdition>{},
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -97,6 +103,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState,
     commentId: string | null
   ) {
-    state.workoutData.comments_loading = commentId
+    state.workoutData.commentsLoading = commentId
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION](
+    state: IWorkoutsState,
+    currentCommentEdition: ICurrentCommentEdition
+  ) {
+    state.workoutData.currentCommentEdition = currentCommentEdition
   },
 }

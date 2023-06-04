@@ -163,13 +163,19 @@ export interface IWorkoutApiChartData {
   time: string
 }
 
+export interface ICurrentCommentEdition {
+  type: string
+  comment?: IComment
+}
+
 export interface IWorkoutData {
   gpx: string
   loading: boolean
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
   comments: IComment[]
-  comments_loading: string | null
+  commentsLoading: string | null
+  currentCommentEdition: ICurrentCommentEdition
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'

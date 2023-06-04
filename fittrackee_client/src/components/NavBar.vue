@@ -63,6 +63,22 @@
               <UserPicture :user="authUser" />
               <span class="user-name">{{ authUser.username }}</span>
             </router-link>
+            <router-link
+              class="nav-item nav-profile-img notifications"
+              to="/notifications?status=unread"
+              @click="closeMenu"
+            >
+              <i
+                class="notifications-icons"
+                :class="`fa fa-bell${
+                  hasUnreadNotifications ? '-ringing' : ''
+                }-o`"
+                aria-hidden="true"
+              />
+              <span class="notifications-label">
+                {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
+              </span>
+            </router-link>
             <div
               class="nav-item nav-link logout-fa"
               @click="updateDisplayModal(true)"
@@ -104,7 +120,11 @@
   import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    NOTIFICATIONS_STORE,
+    ROOT_STORE,
+  } from '@/store/constants'
   import { IDropdownOption } from '@/types/forms'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -123,6 +143,9 @@
   )
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const hasUnreadNotifications: ComputedRef<string> = computed(
+    () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
   )
   const isMenuOpen = ref(false)
 
@@ -192,6 +215,11 @@
       font-size: 1.2em;
     }
 
+    .notifications-icons {
+      font-size: 1em;
+      padding-top: 5px;
+    }
+
     .nav-icon-open {
       display: none;
     }
@@ -230,6 +258,12 @@
           z-index: 1000;
           margin-left: -110px !important;
           width: 131px !important;
+        }
+
+        &.notifications {
+          .notifications-label {
+            display: none;
+          }
         }
       }
 
@@ -286,7 +320,9 @@
       .nav-icon-open.menu-open {
         display: none;
       }
-
+      .notifications-icons {
+        padding: 6px 0 0 4px;
+      }
       .close-icon {
         display: block;
       }
@@ -348,6 +384,12 @@
             margin-left: initial !important;
             width: auto !important;
           }
+          &.notifications {
+            padding-top: $default-padding;
+            .notifications-label {
+              display: block;
+            }
+          }
         }
 
         .nav-separator {
@@ -358,6 +400,9 @@
           width: 88%;
         }
       }
+    }
+    .fa-language {
+      cursor: pointer;
     }
   }
 </style>

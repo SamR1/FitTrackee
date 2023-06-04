@@ -1,20 +1,25 @@
 <template>
-  <div class="workout-comment">
+  <div class="workout-comment" :id="comment.id">
     <UserPicture :user="comment.user" />
     <div class="comment-detail">
       <div class="comment-info">
-        <Username :user="comment.user"/>
+        <Username :user="comment.user" />
         <div v-if="comment.user.is_remote" class="user-remote-fullname">
           {{ comment.user.fullname }}
         </div>
-        <div class="spacer"/>
-        <div
+        <div class="spacer" />
+        <router-link
           class="comment-date"
-          :title="formatDate(
-            comment.created_at,
-            displayOptions.timezone,
-            displayOptions.dateFormat
-          )"
+          :to="`${
+            comment.workout_id ? `/workouts/${comment.workout_id}` : ''
+          }/comments/${comment.id}`"
+          :title="
+            formatDate(
+              comment.created_at,
+              displayOptions.timezone,
+              displayOptions.dateFormat
+            )
+          "
         >
           {{
             formatDistance(new Date(comment.created_at), new Date(), {
@@ -22,15 +27,17 @@
               locale,
             })
           }}
-        </div>
+        </router-link>
         <div
           class="comment-edited"
           v-if="comment.modification_date"
-          :title="formatDate(
-            comment.modification_date,
-            displayOptions.timezone,
-            displayOptions.dateFormat
-          )"
+          :title="
+            formatDate(
+              comment.modification_date,
+              displayOptions.timezone,
+              displayOptions.dateFormat
+            )
+          "
         >
           ({{ $t('common.EDITED') }})
         </div>
@@ -39,122 +46,171 @@
           :is-comment="true"
         />
         <i
-          class="fa fa-edit"
-          v-if="isCommentOwner(authUser, comment.user)"
+          class="fa fa-edit comment-action"
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
-          @click="() => displayCommentEdition(comment)"
+          @click="() => displayCommentEdition('edit')"
         />
         <i
-          class="fa fa-trash"
-          v-if="isCommentOwner(authUser, comment.user)"
+          class="fa fa-trash comment-action"
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           aria-hidden="true"
           @click="deleteComment(comment)"
         />
-        <span class="likes" @click="updateLike(comment)">
-          <i class="fa" :class="`fa-heart${comment.liked ? '' : '-o'}`"/>
-          <span class="likes-count" v-if="comment.likes_count > 0">{{ comment.likes_count }}</span>
+        <span class="likes">
+          <i
+            class="fa comment-action"
+            :class="{
+              disabled: forNotification,
+              'fa-heart': comment.liked,
+              'fa-heart-o': !comment.liked,
+            }"
+            @click="forNotification ? null : updateLike(comment)"
+          />
+          <span class="likes-count" v-if="comment.likes_count > 0">
+            {{ comment.likes_count }}
+          </span>
         </span>
         <i
-          class="fa fa-comment-o"
-          v-if="authUser.username && (!addReply || addReply !== comment)"
-          @click="() => displayReplyTextArea(comment)"
+          class="fa fa-comment-o comment-action"
+          v-if="displayCommentIcon()"
+          @click="() => displayCommentEdition('add')"
         />
       </div>
       <span
-        v-if="commentToEdit !== comment"
+        v-if="!isCommentEdited()"
         class="comment-text"
+        :class="{
+          highlight:
+            comment.id === paramsCommentId ||
+            (currentCommentEdition.type === 'delete' &&
+              currentCommentEdition.comment.id === comment.id),
+        }"
         v-html="linkifyAndClean(comment.text_html)"
       />
       <WorkoutCommentEdition
         v-else
         :workout="workout"
         :comment="comment"
-        :comments_loading="comments_loading"
-        @closeEdition="() => commentToEdit = null"
-      />
-      <Comment
-        v-for="reply in comment.replies"
-        :key="reply.id"
-        :comment="reply"
-        :workout="workout"
+        :comments-loading="commentsLoading"
+        :name="`text-${comment.id}`"
         :authUser="authUser"
-        :comments_loading="comments_loading"
-        @deleteComment="deleteComment(reply)"
       />
-      <WorkoutCommentEdition
-        v-if="addReply === comment"
-        class="add-comment-reply"
-        :workout="workout"
-        :reply-to="comment.id"
-        :comments_loading="comments_loading"
-        @closeEdition="() => addReply = null"
-      />
+      <template v-if="!forNotification">
+        <WorkoutCommentEdition
+          v-if="isNewReply()"
+          class="add-comment-reply"
+          :workout="workout"
+          :reply-to="comment.id"
+          :comments-loading="commentsLoading"
+          :name="`text-${comment.id}`"
+          :authUser="authUser"
+          :mentions="comment.mentions"
+        />
+        <Comment
+          v-for="reply in comment.replies"
+          :key="reply.id"
+          :comment="reply"
+          :workout="workout"
+          :authUser="authUser"
+          :comments-loading="commentsLoading"
+          :current-comment-edition="currentCommentEdition"
+          @deleteComment="deleteComment(reply)"
+        />
+      </template>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from "date-fns"
-  import { ComputedRef, Ref, computed, ref, toRefs } from "vue"
+  import { Locale, formatDistance } from 'date-fns'
+  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import { useRoute } from 'vue-router'
 
-  import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
-  import Username from "@/components/User/Username.vue"
-  import UserPicture from "@/components/User/UserPicture.vue"
-  import { ROOT_STORE, WORKOUTS_STORE } from "@/store/constants"
-  import { IDisplayOptions } from "@/types/application"
-  import { IAuthUserProfile, IUserProfile } from "@/types/user"
-  import { IComment, IWorkout } from "@/types/workouts"
-  import { useStore } from "@/use/useStore"
-  import { formatDate } from "@/utils/dates"
-  import { linkifyAndClean } from "@/utils/inputs"
-  import { getUserName } from "@/utils/user"
+  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import Username from '@/components/User/Username.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { IDisplayOptions } from '@/types/application'
+  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { IComment, ICurrentCommentEdition, IWorkout } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
+  import { linkifyAndClean } from '@/utils/inputs'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     comment: IComment
-    workout: IWorkout
+    workout?: IWorkout | null
     authUser: IAuthUserProfile
-    comments_loading: string | null
+    commentsLoading: string | null
+    currentCommentEdition?: ICurrentCommentEdition
+    forNotification?: boolean
   }
 
-  const props = defineProps<Props>()
-  const { authUser, comment, workout } = toRefs(props)
-
-  const emit = defineEmits(['deleteComment'])
+  const props = withDefaults(defineProps<Props>(), {
+    currentCommentEdition: {},
+    forNotification: false,
+    workout: null,
+  })
+  const { authUser, comment, currentCommentEdition, forNotification, workout } =
+    toRefs(props)
 
   const store = useStore()
+  const route = useRoute()
+
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
-  const commentToEdit: Ref<IComment | null> = ref(null)
-  const addReply: Ref<IComment | null> = ref(null)
+  const paramsCommentId: ComputedRef<string | null> = computed(
+    () => route.params.commentId
+  )
 
-  function isCommentOwner(authUser: IAuthUserProfile | null, commentUser: IUserProfile) {
+  function isCommentOwner(
+    authUser: IAuthUserProfile | null,
+    commentUser: IUserProfile
+  ) {
     return authUser && getUserName(authUser) === getUserName(commentUser)
   }
-  function deleteComment(comment: IComment) {
-    emit('deleteComment', comment)
+  function isCommentEdited() {
+    return (
+      currentCommentEdition.value.type === 'edit' &&
+      currentCommentEdition.value.comment.id === comment.value.id
+    )
   }
-  function focusOnTextArea(commentId: string) {
+  function isNewReply() {
+    return (
+      currentCommentEdition.value.type === 'add' &&
+      currentCommentEdition.value.comment.id === comment.value.id
+    )
+  }
+  function displayCommentIcon() {
+    return (
+      authUser.value.username &&
+      comment.value.workout_id &&
+      !forNotification.value
+    )
+  }
+  function deleteComment() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: 'delete',
+      comment: comment.value,
+    })
+  }
+  function displayCommentEdition(actionType: string) {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: actionType,
+      comment: comment.value,
+    })
     setTimeout(() => {
-      const textarea = document.getElementById(`text-${commentId}`)
+      const textarea = document.getElementById(`text-${comment.value.id}`)
       if (textarea) {
         textarea.focus()
       }
     }, 100)
-  }
-  function displayCommentEdition(comment: IComment) {
-    commentToEdit.value = comment
-    addReply.value = null
-    focusOnTextArea(comment.id)
-  }
-  function displayReplyTextArea(comment: IComment) {
-    commentToEdit.value = null
-    addReply.value = comment
-    focusOnTextArea(comment.id)
   }
   function updateLike(comment: IComment) {
     store.dispatch(
@@ -164,16 +220,17 @@
       comment
     )
   }
-
 </script>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
   .workout-comment {
     display: flex;
+    background-color: var(--comment-background);
     ::v-deep(.user-picture) {
       min-width: min-content;
       align-items: flex-start;
+      background-color: var(--comment-background);
       img {
         height: 25px;
         width: 25px;
@@ -191,6 +248,7 @@
         gap: $default-padding;
         flex-wrap: wrap;
         align-items: flex-end;
+        padding-right: $default-padding * 0.5;
         .user-name {
           font-weight: bold;
           padding-left: $default-padding;
@@ -198,43 +256,59 @@
         .spacer {
           flex-grow: 3;
         }
-        .comment-date, .user-remote-fullname, .comment-edited {
+        .comment-date,
+        .user-remote-fullname,
+        .comment-edited {
           font-size: 0.85em;
           font-style: italic;
           white-space: nowrap;
         }
-        .fa-trash, .fa-comment-o, .fa-heart , .fa-heart-o {
+        .comment-date:hover {
+          text-decoration: underline;
+        }
+        .fa-trash,
+        .fa-comment-o,
+        .fa-heart,
+        .fa-heart-o {
           padding-bottom: 3px;
         }
-        .fa-heart , .fa-heart-o {
-          font-size: .9em;
+        .fa-heart,
+        .fa-heart-o {
+          font-size: 0.9em;
         }
         .fa-heart {
           color: #ee2222;
         }
-        .fa-edit{
+        .fa-edit {
           padding-bottom: 2px;
         }
         ::v-deep(.fa-users) {
-          font-size: .8em;
+          font-size: 0.8em;
         }
       }
       .comment-text {
-        border-radius: 5px;
-        margin: $default-margin 0;
-        padding-left: $default-padding;
+        margin: $default-margin * 0.5 0;
+        padding: $default-padding;
+        white-space: pre-wrap;
+        &.highlight {
+          border-radius: 5px;
+          background-image: var(--comment-background-highlight);
+        }
       }
       .add-comment-reply {
         margin: 0 0 40px;
       }
       .likes {
         .likes-count {
-          padding-left: $default-padding *.3;
+          padding-left: $default-padding * 0.3;
           font-size: 0.8em;
         }
       }
-      .likes:hover {
+      .comment-action:hover {
         cursor: pointer;
+        &.disabled {
+          cursor: default;
+        }
       }
     }
   }

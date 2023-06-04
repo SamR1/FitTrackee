@@ -330,6 +330,7 @@
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { TAppConfig } from '@/types/application'
+  import { ICustomTextareaData } from '@/types/forms'
   import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -418,8 +419,8 @@
     }
   })
 
-  function updateNotes(value: string) {
-    workoutForm.notes = value
+  function updateNotes(textareaData: ICustomTextareaData) {
+    workoutForm.notes = textareaData.value
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value

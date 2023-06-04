@@ -3,6 +3,7 @@ from datetime import datetime
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee import db
 from fittrackee.comments.models import CommentLike
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
@@ -52,3 +53,23 @@ class TestCommentLikeModel(CommentMixin):
         assert like.user_id == user_2.id
         assert like.comment_id == comment.id
         assert like.created_at == now
+
+    def test_it_deletes_comment_like_on_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_1
+        )
+        like = CommentLike(user_id=user_2.id, comment_id=comment.id)
+        db.session.add(like)
+        db.session.commit()
+        like_id = like.id
+
+        db.session.delete(user_2)
+
+        assert CommentLike.query.filter_by(id=like_id).first() is None

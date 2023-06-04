@@ -5,38 +5,38 @@
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.COMMENTS.DELETION_CONFIRMATION')"
       :loading="isDeleting"
-      @confirmAction="deleteComment(commentToDelete)"
-      @cancelAction="() => commentToDelete = null"
+      @confirmAction="deleteComment"
+      @cancelAction="cancelDelete"
     />
     <Card>
       <template #title>
-        {{ $t('workouts.COMMENTS.LABEL', 0) }}
+        {{ capitalize($t('workouts.COMMENTS.LABEL', 0)) }}
       </template>
       <template v-if="isLoading" #content>
         <Loader />
       </template>
       <template v-else #content>
         <Comment
-          v-for="comment in workoutData.comments"
+          v-for="comment in comments"
           :key="comment.id"
           :comment="comment"
           :workout="workoutData.workout"
+          :current-comment-edition="workoutData.currentCommentEdition"
           :authUser="authUser"
-          :comments_loading="workoutData.comments_loading"
-          @deleteComment="(c) => commentToDelete = c"
+          comments-loading="workoutData.commentsLoading"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
-          {{ $t('workouts.COMMENTS.NO_COMMENTS')}}
+          {{ $t('workouts.COMMENTS.NO_COMMENTS') }}
         </div>
         <div class="add-comment" v-if="displayAddComment">
           <WorkoutCommentEdition
             v-if="authUser.username"
             :workout="workoutData.workout"
-            :comments_loading="workoutData.comments_loading"
-            @closeEdition="displayAddComment = false"
+            comments-loading="workoutData.commentsLoading"
+            :auth-user="authUser"
           />
         </div>
-        <div class="add-comment-button" v-else>
+        <div class="add-comment-button" v-else-if="workoutData.workout.id">
           <button @click.prevent="displayCommentTextArea">
             {{ $t('workouts.COMMENTS.ADD') }}
           </button>
@@ -47,55 +47,128 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, computed, onMounted, ref, toRefs, watch } from "vue"
+  import {
+    ComputedRef,
+    capitalize,
+    computed,
+    nextTick,
+    onMounted,
+    onUnmounted,
+    ref,
+    toRefs,
+    watch,
+    withDefaults,
+  } from 'vue'
+  import { useRoute } from 'vue-router'
 
-  import WorkoutCommentEdition from "@/components/Comment/CommentEdition.vue"
-  import { WORKOUTS_STORE } from "@/store/constants"
-  import { IAuthUserProfile } from "@/types/user"
-  import { IComment, IWorkoutData } from "@/types/workouts"
-  import { useStore } from "@/use/useStore"
+  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import { WORKOUTS_STORE } from '@/store/constants'
+  import { IAuthUserProfile } from '@/types/user'
+  import { IComment, IWorkoutData } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     workoutData: IWorkoutData
     authUser: IAuthUserProfile
+    withParent?: boolean
   }
 
-  const props = defineProps<Props>()
-  const { workoutData } = toRefs(props)
+  const props = withDefaults(defineProps<Props>(), {
+    withParent: false,
+  })
+  const { workoutData, withParent } = toRefs(props)
 
+  const route = useRoute()
   const store = useStore()
-  const commentToDelete: Ref<IComment | null> = ref(null)
-  const displayAddComment: Ref<boolean> = ref(false)
-  const isLoading = computed(() => workoutData.value.comments_loading === 'all')
-  const isDeleting = computed(() => workoutData.value.comments_loading === 'delete')
 
-  onMounted(() =>
-    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all'))
+  const comments: ComputedRef<IComment[]> = computed(() => getComments())
+  const commentToDelete: ComputedRef<boolean> = computed(
+    () => workoutData.value.currentCommentEdition.type === 'delete'
+  )
+  const displayAddComment: ComputedRef<boolean> = computed(
+    () => workoutData.value.currentCommentEdition.type === 'new'
+  )
+  const isLoading: ComputedRef<boolean> = computed(
+    () => workoutData.value.commentsLoading === 'all'
+  )
+  const isDeleting: ComputedRef<boolean> = computed(
+    () => workoutData.value.commentsLoading === 'delete'
+  )
+  const commentId: ComputedRef<string | null> = computed(
+    () => route.params.commentId
+  )
+  const timer = ref<number | undefined>()
 
-
-  function deleteComment(comment: IComment) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
-      workoutId: comment.workout_id,
-      commentId: comment.id
+  onMounted(() => {
+    nextTick(() => {
+      if (commentId.value) {
+        scrollToComment(commentId.value)
+      }
     })
+  })
+
+  function getComments(): IComment[] {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
+    let allComments = []
+    if (!withParent.value || !workoutData.value.comments[0].reply_to) {
+      allComments = workoutData.value.comments
+    } else {
+      const replyToComment = Object.assign(
+        {},
+        workoutData.value.comments[0].reply_to
+      )
+      replyToComment.replies = workoutData.value.comments
+      allComments = [replyToComment]
+    }
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+    return allComments
+  }
+
+  function deleteComment() {
+    const commentToDelete: IComment | null =
+      workoutData.value.currentCommentEdition.comment
+    if (commentToDelete) {
+      store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
+        workoutId: commentToDelete.workout_id,
+        commentId: commentToDelete.id,
+      })
+    }
+  }
+  function cancelDelete() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
   }
   function displayCommentTextArea() {
-    displayAddComment.value = true
-    setTimeout(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: 'new',
+    })
+    timer.value = setTimeout(() => {
       const textarea = document.getElementById('text')
       if (textarea) {
         textarea.focus()
+        textarea.scrollIntoView({ behavior: 'smooth' })
       }
     }, 100)
   }
-
+  function scrollToComment(commentId) {
+    timer.value = setTimeout(() => {
+      const comment = document.getElementById(commentId)
+      if (comment) {
+        comment.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 500)
+  }
   watch(
     () => workoutData.value.comments,
     () => {
-      commentToDelete.value = null
+      store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
     }
   )
 
+  onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
+  })
 </script>
 
 <style scoped lang="scss">

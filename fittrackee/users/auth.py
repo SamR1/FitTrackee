@@ -303,12 +303,14 @@ def get_authenticated_user_profile(
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -370,6 +372,7 @@ def get_authenticated_user_profile(
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam",
           "weekm": false,
           "workouts_visibility": "private"
@@ -424,12 +427,14 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -491,6 +496,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
           "workouts_visibility": "private"
@@ -599,11 +605,14 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -664,8 +673,10 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user account updated",
         "status": "success"
@@ -828,12 +839,14 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "first_name": null,
           "followers": 0,
           "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
           "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
@@ -895,7 +908,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
-          "username": "sam",
+          "use_raw_gpx_speed": true,
+          "username": "sam"
           "weekm": true,
           "workouts_visibility": "public"
         },
@@ -905,12 +919,17 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json boolean hide_profile_in_users_directory: if true, user does not
+                                                    appear in users directory
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
     :<json string map_visibility: workouts map visibility
                                   ('public', 'followers_only', 'private')
+    :<json boolean manually_approves_followers: if false, follow requests are
+                        automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
+    :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
     :<json string workouts_visibility: user workouts visibility
                                       ('public', 'followers_only', 'private')
@@ -932,12 +951,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     user_mandatory_data = {
         'date_format',
         'display_ascent',
+        'hide_profile_in_users_directory',
         'imperial_units',
         'language',
+        'manually_approves_followers',
+        'map_visibility',
         'start_elevation_at_zero',
         'timezone',
+        'use_raw_gpx_speed',
         'weekm',
-        'map_visibility',
         'workouts_visibility',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
@@ -948,10 +970,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     imperial_units = post_data.get('imperial_units')
     language = get_language(post_data.get('language'))
     start_elevation_at_zero = post_data.get('start_elevation_at_zero')
+    use_raw_gpx_speed = post_data.get('use_raw_gpx_speed')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
+    manually_approves_followers = post_data.get('manually_approves_followers')
+    hide_profile_in_users_directory = post_data.get(
+        'hide_profile_in_users_directory'
+    )
 
     if not current_app.config['FEDERATION_ENABLED'] and (
         map_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
@@ -966,10 +993,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.language = language
         auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
+        auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
         auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
         auth_user.map_visibility = get_map_visibility(
             PrivacyLevel(map_visibility), auth_user.workouts_visibility
+        )
+        auth_user.manually_approves_followers = manually_approves_followers
+        auth_user.hide_profile_in_users_directory = (
+            hide_profile_in_users_directory
         )
         db.session.commit()
 

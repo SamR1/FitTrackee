@@ -48,6 +48,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'replies': [],
             'liked': False,
             'likes_count': 0,
+            'mentions': [],
         }
 
 
@@ -131,6 +132,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             'replies': [],
             'liked': False,
             'likes_count': 0,
+            'mentions': [],
         }
 
 

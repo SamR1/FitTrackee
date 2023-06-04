@@ -38,15 +38,6 @@ class UserModelAssertMixin:
         assert serialized_user['username'] == user.username
 
     @staticmethod
-    def assert_user_follow_infos(
-        serialized_user: Dict, user: User, follows: bool, is_followed_by: bool
-    ) -> None:
-        assert serialized_user['followers'] == user.followers
-        assert serialized_user['following'] == user.following
-        assert serialized_user['follows'] == follows
-        assert serialized_user['is_followed_by'] == is_followed_by
-
-    @staticmethod
     def assert_user_profile(serialized_user: Dict, user: User) -> None:
         assert serialized_user['bio'] == user.bio
         assert serialized_user['birth_date'] == user.birth_date
@@ -92,6 +83,19 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['timezone'] == user_1.timezone
         assert serialized_user['weekm'] == user_1.weekm
         assert serialized_user['display_ascent'] == user_1.display_ascent
+        assert (
+            serialized_user['workouts_visibility']
+            == user_1.workouts_visibility
+        )
+        assert serialized_user['map_visibility'] == user_1.map_visibility
+        assert (
+            serialized_user['manually_approves_followers']
+            == user_1.manually_approves_followers
+        )
+        assert (
+            serialized_user['hide_profile_in_users_directory']
+            == user_1.hide_profile_in_users_directory
+        )
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(user_1)
@@ -171,6 +175,10 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -219,6 +227,10 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -260,6 +272,10 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'workouts_visibility' not in serialized_user
+        assert 'map_visibility' not in serialized_user
+        assert 'manually_approves_followers' not in serialized_user
+        assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -316,18 +332,6 @@ class TestUserRecords(UserModelAssertMixin):
         assert records[0]['value'] > 0
         assert records[0]['workout_id'] == workout_cycling_user_1.short_id
         assert records[0]['workout_date']
-
-    def test_it_returns_user_1_and_user_2_dont_not_follow_each_other(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-    ) -> None:
-        serialized_user = user_2.serialize(user_1)
-        assert serialized_user['followers'] == 0
-        assert serialized_user['following'] == 0
-        assert serialized_user['follows'] == 'false'
-        assert serialized_user['is_followed_by'] == 'false'
 
     def test_it_returns_totals_when_user_has_workout_without_ascent(
         self,
@@ -560,6 +564,44 @@ class TestFollowRequestModel:
             match='Federation is disabled.',
         ):
             follow_request_from_user_1_to_user_2.get_activity()
+
+    def test_it_deletes_follow_request_on_followed_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        followed_user_id = user_2.id
+
+        db.session.delete(user_2)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=user_1.id,
+                followed_user_id=followed_user_id,
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_follow_request_on_follower_user_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follower_user_id = user_1.id
+
+        db.session.delete(user_1)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=follower_user_id,
+                followed_user_id=user_2.id,
+            ).first()
+            is None
+        )
 
 
 class TestUserFollowingModel:
@@ -803,6 +845,84 @@ class TestUserFullname:
         user_1: User,
     ) -> None:
         assert user_1.fullname == user_1.actor.fullname
+
+
+class TestUserFollowRequestStatus(UserModelAssertMixin):
+    def test_it_returns_user_1_and_user_2_dont_not_follow_each_other(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        serialized_user = user_2.serialize(user_1)
+
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'false'
+
+    def test_status_when_follow_request_is_pending(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.send_follow_request_to(user_2)
+
+        serialized_user = user_2.serialize(user_1)
+
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'pending'
+
+    def test_status_when_user_rejects_follow_request(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.send_follow_request_to(user_2)
+        user_2.rejects_follow_request_from(user_1)
+
+        serialized_user = user_2.serialize(user_1)
+
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'pending'
+
+    def test_followed_user_status_when_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1)
+
+        serialized_user = user_2.serialize(user_1)
+
+        assert serialized_user['followers'] == 1
+        assert serialized_user['following'] == 0
+        assert serialized_user['follows'] == 'false'
+        assert serialized_user['is_followed_by'] == 'true'
+
+    def test_follower_status_when_follow_request_is_approved(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1)
+
+        serialized_user = user_1.serialize(user_2)
+
+        assert serialized_user['followers'] == 0
+        assert serialized_user['following'] == 1
+        assert serialized_user['follows'] == 'true'
+        assert serialized_user['is_followed_by'] == 'false'
 
 
 class TestUserLinkifyMention:

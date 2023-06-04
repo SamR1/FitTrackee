@@ -256,11 +256,13 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .post(`follow-requests/${payload.username}/${payload.action}`)
       .then((res) => {
         if (res.data.status === 'success') {
-          context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS)
-            .then(() =>
-              context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
-            )
+          if (payload.getFollowRequests) {
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS)
+              .then(() =>
+                context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              )
+          }
         } else {
           handleError(context, null)
         }

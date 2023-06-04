@@ -1,5 +1,5 @@
 <template>
-  <div class="timeline-workout">
+  <div class="timeline-workout workout-card">
     <div class="box">
       <div class="workout-card-title">
         <div class="workout-user-date">

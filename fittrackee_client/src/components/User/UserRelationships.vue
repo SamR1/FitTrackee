@@ -121,9 +121,11 @@
   )
   watch(
     () => route.query,
-    (newQuery: LocationQuery) => {
-      payload.page = newQuery.page ? +newQuery.page : 1
-      loadRelationships(payload)
+    (newQuery: LocationQuery, oldQuery: LocationQuery) => {
+      if (newQuery.page !== oldQuery.page) {
+        payload.page = newQuery.page ? +newQuery.page : 1
+        loadRelationships(payload)
+      }
     }
   )
   watch(

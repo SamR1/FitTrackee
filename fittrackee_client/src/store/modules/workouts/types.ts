@@ -18,6 +18,7 @@ import {
   IWorkoutForm,
   IComment,
   ICommentPayload,
+  ICurrentCommentEdition,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -72,6 +73,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    commentId: string
   ): void
   [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -154,6 +159,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING](
     state: S,
     commentId: string | null
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION](
+    state: S,
+    currentCommentEdition: ICurrentCommentEdition
   ): void
 }
 
