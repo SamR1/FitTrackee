@@ -120,7 +120,8 @@
         "USE_RAW_GPX_SPEED": {
             "FILTERED_SPEED": "Gefilterd",
             "LABEL": "Strategie voor maximale snelheid",
-            "RAW_SPEED": "Rauw"
+            "RAW_SPEED": "Rauw",
+            "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen."
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
