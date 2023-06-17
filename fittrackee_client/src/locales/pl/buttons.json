@@ -1,1 +1,14 @@
-{ }
+{
+    "DELETE_MY_ACCOUNT": "Usuń moje konto",
+    "DISABLE": "Wyłącz",
+    "ACCOUNT-CONFIRMATION-RESEND": "Wyślij ponownie potwierdzenie adresu e-mail",
+    "BACK": "Wstecz",
+    "CANCEL": "Anuluj",
+    "CLEAR_FILTER": "Wyczyść filtry",
+    "EDIT": "Edytuj",
+    "ENABLE": "Włącz",
+    "LOGIN": "Zaloguj się",
+    "NO": "Nie",
+    "SUBMIT": "Wyślij",
+    "YES": "Tak"
+}
