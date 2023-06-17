@@ -1,1 +1,14 @@
-{ }
+{
+    "CONTENT": {
+        "DATA_COLLECTED": {
+            "TITLE": "Jakie informacje zbieramy?"
+        },
+        "ACCOUNT_DELETION": {
+            "TITLE": "Usuwanie konta"
+        },
+        "YOUR_CONSENT": {
+            "TITLE": "Twoja zgoda"
+        }
+    },
+    "TITLE": "polityka prywatności"
+}
