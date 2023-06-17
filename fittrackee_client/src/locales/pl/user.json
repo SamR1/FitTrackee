@@ -17,7 +17,16 @@
             "COLOR": "kolor"
         },
         "SUNDAY": "Niedziela",
-        "TIMEZONE": "Strefa czasowa"
+        "TIMEZONE": "Strefa czasowa",
+        "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Link do aktywacji konta został wysłany e-mailem na podany adres.",
+        "SUCCESSFUL_REGISTRATION": "Twoje konto zostało pomyślnie utworzone.",
+        "SUCCESSFUL_UPDATE": "Twoje konto zostało pomyślnie zaktualizowane.",
+        "SUCCESSFUL_EMAIL_UPDATE": "Twoje konto zostało zaktualizowane. Sprawdź swój e-mail aby potwierdzić nowy adres.",
+        "UNITS": {
+            "LABEL": "Jednostki dystansu",
+            "METRIC": "System metryczny (m, km, m/s, °C)",
+            "IMPERIAL": "System imperialny (stopy, mile, °F)"
+        }
     },
     "USERNAME_INFO": "Wymagane od 3 do 30 znaków, można używać tylko liter, cyfr i podkreślenia \"_\".",
     "EMAIL": "E-mail",
@@ -57,7 +66,11 @@
             "recentYears": "Unikaj ostatnich lat.",
             "repeated": "Unikaj powtarzania słów i znaków.",
             "reverseWords": "Unikaj pisania wspak popularnych słów.",
-            "sequences": "Unikaj popularnych sekwencji znaków."
+            "sequences": "Unikaj popularnych sekwencji znaków.",
+            "useWords": "Użyj wielu słów, ale unikaj znanych sformułowań.",
+            "pwned": "Jeśli używasz tego hasła także gdzieś indziej, zmień je.",
+            "longerKeyboardPattern": "Użyj dłuższych wzorców na klawiaturze i zmieniaj kierunek pisania wiele razy.",
+            "noNeed": "Możesz tworzyć silne hasła bez użycia symboli, liczb czy wielkich liter."
         },
         "WEAK": "słabe"
     },
@@ -66,5 +79,9 @@
     "RESENT_ACCOUNT_CONFIRMATION": "Wyślij ponownie e-mail potwierdzenia konta",
     "RESET_PASSWORD": "Zresetuj swoje hasło",
     "SHOW_PASSWORD": "pokaż hasło",
-    "THIS_USER_ACCOUNT_IS_INACTIVE": "To konto użytkownika jest nieaktywne."
+    "THIS_USER_ACCOUNT_IS_INACTIVE": "To konto użytkownika jest nieaktywne.",
+    "ACCOUNT_CONFIRMATION_SENT": "Sprawdź swój e-mail. Nowa wiadomość z potwierdzeniem została wysłana na podany adres.",
+    "ALREADY_HAVE_ACCOUNT": "Masz już konto?",
+    "CURRENT_PASSWORD": "Aktualne hasło",
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Przeczytałem(-am) i zaakceptowałem(-am) {0}."
 }
