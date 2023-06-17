@@ -247,24 +247,24 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
 
 class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
-        self, app: Flask, user_1: User, user_2: User
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(user_1)
+        serialized_user = user_1.serialize()
 
-        self.assert_user_account(serialized_user, user_2)
+        self.assert_user_account(serialized_user, user_1)
         assert 'email_to_confirm' not in serialized_user
 
     def test_it_returns_user_profile_infos(
-        self, app: Flask, user_1: User, user_2: User
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(user_1)
+        serialized_user = user_1.serialize()
 
         self.assert_user_profile(serialized_user, user_1)
 
     def test_it_does_return_user_preferences(
-        self, app: Flask, user_1: User, user_2: User
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(user_1)
+        serialized_user = user_1.serialize()
 
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
@@ -275,17 +275,23 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
 
-    def test_it_returns_workouts_infos(
-        self, app: Flask, user_1_admin: User, user_2: User
+    def test_it_returns_some_workouts_infos(
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(user_1_admin)
+        serialized_user = user_1.serialize()
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert 'nb_workouts' in serialized_user
+        assert 'nb_sports' not in serialized_user
+        assert 'records' not in serialized_user
+        assert 'sports_list' not in serialized_user
+        assert 'total_ascent' not in serialized_user
+        assert 'total_distance' not in serialized_user
+        assert 'total_duration' not in serialized_user
 
     def test_it_does_not_return_confirmation_token(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(user_1_admin)
+        serialized_user = user_1.serialize()
 
         assert 'confirmation_token' not in serialized_user
 
