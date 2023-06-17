@@ -1,3 +1,7 @@
+class BlockUserException(Exception):
+    ...
+
+
 class FollowRequestAlreadyProcessedError(Exception):
     ...
 

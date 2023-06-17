@@ -8,11 +8,13 @@ from freezegun import freeze_time
 from fittrackee import db
 from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
+    BlockUserException,
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
 )
 from fittrackee.users.models import (
     BlacklistedToken,
+    BlockedUser,
     FollowRequest,
     User,
     UserDataExport,
@@ -70,6 +72,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(user_1)
 
         self.assert_user_profile(serialized_user, user_1)
+        assert 'blocked' not in serialized_user
 
     def test_it_returns_user_preferences(
         self, app: Flask, user_1: User
@@ -163,6 +166,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         serialized_user = user_2.serialize(user_1_admin)
 
         self.assert_user_profile(serialized_user, user_1_admin)
+        assert serialized_user["blocked"] is False
 
     def test_it_does_return_user_preferences(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -215,6 +219,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         serialized_user = user_2.serialize(user_1)
 
         self.assert_user_profile(serialized_user, user_1)
+        assert serialized_user["blocked"] is False
 
     def test_it_does_return_user_preferences(
         self, app: Flask, user_1: User, user_2: User
@@ -253,6 +258,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
 
         self.assert_user_account(serialized_user, user_1)
         assert 'email_to_confirm' not in serialized_user
+        assert 'blocked' not in serialized_user
 
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1: User
@@ -883,3 +889,100 @@ class TestUserLinkifyMention:
             f'<a href="{user_1.get_user_url()}" target="_blank" '
             f'rel="noopener noreferrer">@{user_1.username}</a>'
         )
+
+
+class TestBlocksUser:
+    def test_it_blocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.blocks_user(user_2)
+
+        assert (
+            BlockedUser.query.filter_by(
+                user_id=user_2.id,
+                by_user_id=user_1.id,
+            ).first()
+            is not None
+        )
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['blocked'] is True
+
+    def test_it_inits_created_at(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        now = datetime.utcnow()
+        with freeze_time(now):
+            user_1.blocks_user(user_2)
+
+        blocked_user = BlockedUser.query.filter_by(
+            user_id=user_2.id,
+            by_user_id=user_1.id,
+        ).first()
+        assert blocked_user.created_at == now
+
+    def test_it_does_not_raises_error_when_user_is_already_blocked(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.blocks_user(user_2)
+
+        user_1.blocks_user(user_2)
+
+        assert (
+            BlockedUser.query.filter_by(
+                user_id=user_2.id,
+                by_user_id=user_1.id,
+            ).first()
+            is not None
+        )
+
+    def test_user_can_not_block_itself(self, app: Flask, user_1: User) -> None:
+        with pytest.raises(BlockUserException):
+            user_1.blocks_user(user_1)
+
+
+class TestUnBlocksUser:
+    def test_it_unblocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.blocks_user(user_2)
+
+        user_1.unblocks_user(user_2)
+
+        assert (
+            BlockedUser.query.filter_by(
+                user_id=user_2.id,
+                by_user_id=user_1.id,
+            ).first()
+            is None
+        )
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['blocked'] is False
+
+    def test_it_does_not_raises_error_when_user_is_not_blocked(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.unblocks_user(user_2)
+
+        assert (
+            BlockedUser.query.filter_by(
+                user_id=user_2.id,
+                by_user_id=user_1.id,
+            ).first()
+            is None
+        )
+
+
+class TestIsBlockedBy:
+    def test_it_returns_false_when_user_is_not_blocked(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        assert user_1.is_blocked_by(user_2) is False
+
+    def test_it_returns_true_when_user_is_blocked(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.blocks_user(user_1)
+
+        user_1.is_blocked_by(user_2)
+
+        assert user_1.is_blocked_by(user_2) is True

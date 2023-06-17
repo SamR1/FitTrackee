@@ -25,6 +25,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .exceptions import (
+    BlockUserException,
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
     NotExistingFollowRequestError,
@@ -841,6 +842,9 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         )
         return UserNotFoundErrorResponse()
 
+    if auth_user.is_blocked_by(target_user):
+        return InvalidPayloadErrorResponse("you can not follow this user")
+
     try:
         auth_user.send_follow_request_to(target_user)
     except FollowRequestAlreadyRejectedError:
@@ -1139,3 +1143,42 @@ def get_following(
 
     """
     return get_user_relationships(auth_user, user_name, 'following')
+
+
+@users_blueprint.route('/users/<user_name>/block', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    try:
+        auth_user.blocks_user(target_user)
+        # delete follow request is exists (approved or pending)
+        FollowRequest.query.filter_by(
+            follower_user_id=target_user.id, followed_user_id=auth_user.id
+        ).delete()
+        db.session.commit()
+
+    except BlockUserException:
+        return InvalidPayloadErrorResponse()
+
+    return {"status": "success"}
+
+
+@users_blueprint.route('/users/<user_name>/unblock', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    auth_user.unblocks_user(target_user)
+
+    return {"status": "success"}
