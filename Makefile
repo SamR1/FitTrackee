@@ -135,15 +135,11 @@ downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
 
 html:
-	rm -rf docsrc/build
+	rm -rf $(BUILDDIR)
 	rm -rf docs/*
 	touch docs/.nojekyll
 	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	rm -rf docsrc/build/html/_static/bootstrap-2.3.2
-	rm -rf docsrc/build/html/_static/bootswatch-2.3.2
-	find docsrc/build/html/_static/bootswatch-3.4.1/. -maxdepth 1 -not -name flatly -not -name fonts -exec rm -rf '{}' \; 2>/tmp/NULL
-	sed -i "s/\@import url(\"https:\/\/fonts.googleapis.com\/css?family=Lato:400,700,400italic\");//" docsrc/build/html/_static/bootswatch-3.4.1/flatly/bootstrap.min.css
-	cp -a docsrc/build/html/. docs
+	cp -a $(BUILDDIR)/html/. docs
 
 install-db:
 	psql -U postgres -f db/create.sql

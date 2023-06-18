@@ -523,7 +523,7 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     :form string  response_type: client response type (only 'code' is supported
                                 by FitTrackee)
     :form string  scopes: OAuth2 client scopes
-    :form boolean confirm: confirmation (must be 'true')
+    :form boolean confirm: confirmation (must be ``true``)
     :form string  state: unique value to prevent cross-site request forgery
                          (not mandatory but recommended)
     :form string  code_challenge: string generated from a code verifier
