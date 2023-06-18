@@ -119,7 +119,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
-    :<json boolean accepted_policy: true if user accepted privacy policy
+    :<json boolean accepted_policy: ``true`` if user accepted privacy policy
 
     :statuscode 200: success
     :statuscode 400:
@@ -1678,7 +1678,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :<json boolean accepted_policy: true if user accepted privacy policy
+    :<json boolean accepted_policy: ``true`` if user accepted privacy policy
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

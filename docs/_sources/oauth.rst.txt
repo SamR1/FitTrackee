@@ -67,12 +67,12 @@ Flow
   - ``code_challenge_method``: method used to create challenge, for instance "S256"
 
   | Example for PKCE:
-  | `https://<FITTRACKEE_HOST>/profile/apps/authorize?response_type=code&client_id=<CLIENT_ID>&scope=profile%3Aread+workouts%3Awrite&state=<STATE>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=S256`
+  | ``https://<FITTRACKEE_HOST>/profile/apps/authorize?response_type=code&client_id=<CLIENT_ID>&scope=profile%3Aread+workouts%3Awrite&state=<STATE>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=S256``
 
 
 - | After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint `/api/oauth/token <https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token>`_).
   | Example of a redirect URL:
-  | `https://example.com/callback?code=<AUTHORIZATION_CODE>&state=<STATE>`
+  | ``https://example.com/callback?code=<AUTHORIZATION_CODE>&state=<STATE>``
 
 
 .. note::
@@ -80,7 +80,7 @@ Flow
 
 .. warning::
   | If FitTrackee is running behind a proxy, the ``X-Forwarded-Proto`` header must be set.
-  | For instance for `nginx`:
+  | For instance for ``nginx``:
 
   .. code-block::
 

@@ -22,7 +22,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python 3.7+
+    - Python 3.8+
     - PostgreSQL 11+
 - optional
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
@@ -104,9 +104,9 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    **Absolute path** to the directory where `uploads` folder will be created.
+    **Absolute path** to the directory where ``uploads`` folder will be created.
 
-    :default: `<application_directory>/fittrackee`
+    :default: ``<application_directory>/fittrackee``
 
     .. danger::
         | With installation from PyPI, the directory will be located in
@@ -119,7 +119,7 @@ deployment method.
 
     .. warning::
         | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
-          engine URL should begin with `postgresql://`.
+          engine URL should begin with ``postgresql://``.
 
 .. envvar:: DATABASE_DISABLE_POOLING
 
@@ -128,7 +128,7 @@ deployment method.
     Disable pooling if needed (when starting application with **FitTrackee** entry point and not directly with **Gunicorn**),
     see `SqlAlchemy documentation <https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork>`__.
 
-    :default: false
+    :default: ``false``
 
 .. envvar:: UI_URL
 
@@ -180,7 +180,7 @@ deployment method.
 
     API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
 
-    :default: `300 per 5 minutes`
+    :default: ``300 per 5 minutes``
 
 
 .. envvar:: TILE_SERVER_URL
@@ -190,7 +190,7 @@ deployment method.
     | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)
 
-    :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
+    :default: ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
 
 
 .. envvar:: STATICMAP_SUBDOMAINS
@@ -209,20 +209,20 @@ deployment method.
 
     Map attribution (if using another tile server), see `Map tile server <installation.html#map-tile-server>`__.
 
-    :default: `&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors`
+    :default: ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
 
 
 .. envvar:: DEFAULT_STATICMAP
 
     .. versionadded:: 0.4.9
 
-    | If `True`, it keeps using default tile server to generate static maps (Komoot.de tile server).
+    | If ``True``, it keeps using default tile server to generate static maps (Komoot.de tile server).
     | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
 
     .. versionchanged:: 0.6.10
 
     | This variable is now case-insensitive.
-    | If `False`, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
+    | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
     :default: False
 
@@ -371,7 +371,7 @@ Installation
 ~~~~~~~~~~~~
 
 .. warning::
-    | Note that FitTrackee is under heavy development, some features may be unstable.
+    | Note that **FitTrackee** is under heavy development, some features may be unstable.
 
 From PyPI
 ^^^^^^^^^
@@ -445,19 +445,15 @@ From sources
 ^^^^^^^^^^^^
 
 .. warning::
-    | Since FitTrackee 0.2.1, Python packages installation needs Poetry.
-    | To install it on ArchLinux:
+    | Since **FitTrackee** 0.2.1, Python packages installation needs Poetry.
+    | For more information, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
+
+.. note::
+    | To keep virtualenv in project directory, update Poetry configuration.
 
     .. code-block:: bash
 
-        $ yay poetry
-        $ poetry --version
-        Poetry 1.0.17
-
-        # optional
         $ poetry config virtualenvs.in-project true
-
-    For other OS, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
 
 Dev environment
 """""""""""""""
@@ -674,7 +670,7 @@ There are several ways to start **FitTrackee** web application and task queue
 library.
 One way is to use a **systemd** services and **Nginx** to proxy pass to **Gunicorn**.
 
-Examples (to update depending on your application configuration and given distribution):
+Examples (to adapt depending on your instance configuration and operating system):
 
 - for application: ``fittrackee.service``
 
@@ -860,7 +856,7 @@ Development
 
 .. versionadded:: 0.5.0
 
-- an additional step is needed to install `fittrackee_client`
+- an additional step is needed to install ``fittrackee_client``
 
 .. code-block:: bash
 
@@ -875,7 +871,7 @@ Development
 Open http://localhost:3000
 
 .. note::
-    Some environment variables need to be updated like `UI_URL`
+    Some environment variables need to be updated like ``UI_URL``
 
 - to run lint or tests:
 
