@@ -182,7 +182,9 @@ lint-client-fix:
 	cd fittrackee_client && $(NPM) lint-fix
 
 lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
+	$(PYTEST) --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations
+	echo 'Running flake8...'
+	$(FLAKE8) fittrackee e2e
 
 lint-python-fix:
 	$(BLACK) fittrackee e2e
