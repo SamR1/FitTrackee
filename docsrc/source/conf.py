@@ -95,3 +95,15 @@ source_suffix = {
     '.txt': 'markdown',
     '.md': 'markdown',
 }
+
+# -- Internationalization ----------------------------------------------------
+
+language = "en"
+locale_dirs = ["../locales"]
+gettext_compact = "docs"
+
+languages = [
+    ("English", "en"),  # English
+    ("Français", "fr"),  # French
+]
+html_context = { "langs": languages }

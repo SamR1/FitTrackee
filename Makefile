@@ -134,12 +134,30 @@ docker-upgrade-db:
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
 
+gettext:
+	$(SPHINXBUILD) -M gettext "$(SOURCEDIR)" "$(DOCSRC)"
+
+LANGUAGE := en
 html:
-	rm -rf $(BUILDDIR)
-	rm -rf docs/*
-	touch docs/.nojekyll
-	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	cp -a $(BUILDDIR)/html/. docs
+	rm -rf $(BUILDDIR)/$(LANGUAGE)
+	rm -rf docs/$(LANGUAGE)/*
+	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)/$(LANGUAGE)" -D language=$(LANGUAGE)
+	cp -a $(BUILDDIR)/$(LANGUAGE)/html/. docs/$(LANGUAGE)
+
+html-all:
+	for language in en fr ; do \
+		echo -e "\r\nGenerating documentation for '$$language'...\r\n" ; \
+		$(MAKE) html LANGUAGE=$$language ; \
+	done
+
+html-update:
+	$(SPHINXINTL) update -p "$(GETTEXT)" -d "$(LOCALES_DIRS)" -l $(LANGUAGE)
+
+html-update-all:
+	for language in en fr ; do \
+		echo -e "\r\nUpdating .po files for '$$language'...\r\n" ; \
+		$(MAKE) html-update LANGUAGE=$$language ; \
+	done
 
 install-db:
 	psql -U postgres -f db/create.sql
