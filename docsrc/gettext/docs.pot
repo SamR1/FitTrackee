@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-18 15:19+0200\n"
+"POT-Creation-Date: 2023-06-18 20:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,11 +38,11 @@ msgid "**Example responses**:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "success"
+msgid "success:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error on registration"
+msgid "error on registration:"
 msgstr ""
 
 #: ../../<autoflask>:0
@@ -74,43 +74,47 @@ msgid "Status Codes"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - sorry, that username is already taken - Errors:     - username: 3 to 30 characters required     - username:       only alphanumeric characters and the underscore       character \"_\" allowed     - email: valid email must be provided     - password: 8 characters required"
+msgid "``success``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "invalid payload"
+msgid "- ``invalid payload`` - ``sorry, that username is already taken`` - ``sorry, you must agree privacy policy to register`` - ``username: 3 to 30 characters required`` - ``username: only alphanumeric characters and the underscore   character \"_\" allowed`` - ``email: valid email must be provided`` - ``password: 8 characters required``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "sorry, that username is already taken"
+msgid "``invalid payload``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Errors:"
+msgid "``sorry, that username is already taken``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "username: 3 to 30 characters required"
+msgid "``sorry, you must agree privacy policy to register``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "username: only alphanumeric characters and the underscore character \"_\" allowed"
+msgid "``username: 3 to 30 characters required``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "email: valid email must be provided"
+msgid "``username: only alphanumeric characters and the underscore character \"_\" allowed``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "password: 8 characters required"
+msgid "``email: valid email must be provided``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error, registration is disabled"
+msgid "``password: 8 characters required``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error, please try again or contact the administrator"
+msgid "``error, registration is disabled``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``error, please try again or contact the administrator``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -126,7 +130,7 @@ msgid "confirmation token"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "account confirmation successful"
+msgid "``account confirmation successful``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -138,11 +142,11 @@ msgid "If email sending is disabled, this endpoint is not available."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "confirmation email resent"
+msgid "``confirmation email resent``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "the requested URL was not found on the server"
+msgid "``the requested URL was not found on the server``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -154,7 +158,7 @@ msgid "Only user with an active account can log in."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "successful login"
+msgid "successful login:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -166,11 +170,11 @@ msgid "password"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "successfully logged in"
+msgid "``successfully logged in``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "invalid credentials"
+msgid "``invalid credentials``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -190,23 +194,19 @@ msgid "OAuth 2.0 Bearer Token"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "success."
+msgid "- ``provide a valid auth token`` - ``signature expired, please log in again`` - ``invalid token, please log in again``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- provide a valid auth token - signature expired, please log in again - invalid token, please log in again"
+msgid "``provide a valid auth token``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "provide a valid auth token"
+msgid "``signature expired, please log in again``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "signature expired, please log in again"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "invalid token, please log in again"
+msgid "``invalid token, please log in again``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -238,11 +238,7 @@ msgid "user birth date (format: ``%Y-%m-%d``)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user profile updated"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "- invalid payload"
+msgid "``user profile updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -314,15 +310,15 @@ msgid "does week start on Monday?"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user preferences updated"
+msgid "``user preferences updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - password: password and password confirmation don't match"
+msgid "- ``invalid payload`` - ``password: password and password confirmation don't match``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "password: password and password confirmation don't match"
+msgid "``password: password and password confirmation don't match``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -342,19 +338,19 @@ msgid "stopped speed threshold used by gpxpy"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - invalid hexadecimal color"
+msgid "``user sport preferences updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "invalid hexadecimal color"
+msgid "- ``invalid payload`` - ``invalid hexadecimal color``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- sport does not exist"
+msgid "``invalid hexadecimal color``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "sport does not exist"
+msgid "``sport does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -386,31 +382,31 @@ msgid "image file (allowed extensions: .jpg, .png, .gif)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user picture updated"
+msgid "``user picture updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - no file part - no selected file - file extension not allowed"
+msgid "- ``invalid payload`` - ``no file part`` - ``no selected file`` - ``file extension not allowed``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "no file part"
+msgid "``no file part``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "no selected file"
+msgid "``no selected file``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "file extension not allowed"
+msgid "``file extension not allowed``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error during picture update: file size exceeds 1.0MB"
+msgid "``error during picture update: file size exceeds 1.0MB``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error during picture update"
+msgid "``error during picture update``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -422,7 +418,7 @@ msgid "picture deleted"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error during picture deletion"
+msgid "``error during picture deletion``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -434,7 +430,7 @@ msgid "If email sending is disabled, this endpoint is not available"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "password reset request processed"
+msgid "``password reset request processed``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -470,23 +466,23 @@ msgid "user new password"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user account updated"
+msgid "``user account updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - email is missing - current password is missing - email: valid email must be provided - password: 8 characters required"
+msgid "- ``invalid payload`` - ``email is missing`` - ``current password is missing`` - ``email: valid email must be provided`` - ``password: 8 characters required``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "email is missing"
+msgid "``email is missing``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "current password is missing"
+msgid "``current password is missing``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- provide a valid auth token - signature expired, please log in again - invalid token, please log in again - invalid credentials"
+msgid "- ``provide a valid auth token`` - ``signature expired, please log in again`` - ``invalid token, please log in again`` - ``invalid credentials``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -502,11 +498,11 @@ msgid "password reset token"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "password updated"
+msgid "``password updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "invalid token, please request a new token"
+msgid "``invalid token, please request a new token``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -514,7 +510,7 @@ msgid "Update user email after confirmation."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "email updated"
+msgid "``email updated``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -522,39 +518,31 @@ msgid "User logout. If a valid token is provided, it will be blacklisted."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "successful logout"
+msgid "successful logout:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error on logout"
+msgid "error on logout:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "successfully logged out"
+msgid "``successfully logged out``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- provide a valid auth token - The access token provided is expired, revoked, malformed, or invalid   for other reasons."
+msgid "- ``provide a valid auth token`` - ``The access token provided is expired, revoked, malformed, or invalid   for other reasons.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "The access token provided is expired, revoked, malformed, or invalid for other reasons."
+msgid "``The access token provided is expired, revoked, malformed, or invalid for other reasons.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- error on token blacklist"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "error on token blacklist"
+msgid "``error on token blacklist``"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid "The authenticated user accepts the privacy policy."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "internal server error"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -578,11 +566,11 @@ msgid "file name and size (in bytes) when export is successful"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "if a request exists"
+msgid "if a request exists:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "if no request"
+msgid "if no request:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -590,15 +578,15 @@ msgid "Request a data export for authenticated user."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- ongoing request exists - completed request already exists"
+msgid "- ``ongoing request exists`` - ``completed request already exists``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "ongoing request exists"
+msgid "``ongoing request exists``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "completed request already exists"
+msgid "``completed request already exists``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -610,7 +598,7 @@ msgid "filename"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "file not found"
+msgid "``file not found``"
 msgstr ""
 
 #: ../source/api/configuration.rst:2
@@ -622,7 +610,7 @@ msgid "Get Application configuration."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error on getting configuration"
+msgid "``error on getting configuration``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -670,19 +658,19 @@ msgid "instance privacy policy"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- provide a valid auth token - signature expired, please log in again - invalid token, please log in again - valid email must be provided for admin contact"
+msgid "- ``provide a valid auth token`` - ``signature expired, please log in again`` - ``invalid token, please log in again`` - ``valid email must be provided for admin contact``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "valid email must be provided for admin contact"
+msgid "``valid email must be provided for admin contact``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "you do not have permissions"
+msgid "``you do not have permissions``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "error when updating configuration"
+msgid "``error when updating configuration``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -711,11 +699,11 @@ msgid "This endpoint is only accessible by FitTrackee client (first-party applic
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "without parameters"
+msgid "without parameters:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "with 'page' parameter"
+msgid "with 'page' parameter:"
 msgstr ""
 
 #: ../../<autoflask>:0
@@ -751,7 +739,7 @@ msgid "client scopes"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "client description (`OPTIONAL`)"
+msgid "client description (``OPTIONAL``)"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -759,7 +747,7 @@ msgid "Get an OAuth2 client (app) by 'client_id'."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "not found"
+msgid "not found:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -767,7 +755,7 @@ msgid "OAuth2 client client_id"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "OAuth2 client not found"
+msgid "``OAuth2 client not found``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -823,7 +811,7 @@ msgid "method used to create challenge, for instance \"S256\" (mandatory if `cod
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - errors returned by Authlib library"
+msgid "- ``invalid payload`` - errors returned by Authlib library"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -852,10 +840,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "refresh token (for token refresh)"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "- errors returned by Authlib library"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -920,11 +904,11 @@ msgid "Get all sports"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "for non admin user :"
+msgid "for non admin user:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "for admin user :"
+msgid "for admin user:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -932,15 +916,19 @@ msgid "Get a sport"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "success for non admin user :"
+msgid "success for non admin user:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "success for admin user :"
+msgid "success for admin user:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "sport not found"
+msgid "sport not found:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``sport not found``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -973,11 +961,11 @@ msgid "**Example requests**:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "with parameters"
+msgid "with parameters:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "no workouts"
+msgid "no workouts:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1017,11 +1005,7 @@ msgid "``year``: year (default)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- user does not exist"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "user does not exist"
+msgid "``user does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1029,15 +1013,15 @@ msgid "Get workouts statistics for a user by sport."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "without parameters (get stats for all sports with workouts)"
+msgid "without parameters (get stats for all sports with workouts):"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "with sport id"
+msgid "with sport id:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- user does not exist - sport does not exist"
+msgid "- ``user does not exist`` - ``sport does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1063,7 +1047,7 @@ msgid "**Scope**: ``users:read``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "with some query parameters"
+msgid "with some query parameters:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1095,15 +1079,19 @@ msgid "user name"
 msgstr ""
 
 #: ../../<autoflask>:1
+msgid "- ``user does not exist``"
+msgstr ""
+
+#: ../../<autoflask>:1
 msgid "get user picture"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- user does not exist - No picture."
+msgid "- ``user does not exist`` - ``No picture.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "No picture."
+msgid "``No picture.``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1151,15 +1139,15 @@ msgid "reset user password"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload - valid email must be provided - new email must be different than curent email"
+msgid "- ``invalid payload`` - ``valid email must be provided`` - ``new email must be different than curent email``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "valid email must be provided"
+msgid "``valid email must be provided``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "new email must be different than curent email"
+msgid "``new email must be different than curent email``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1179,11 +1167,11 @@ msgid "user account deleted"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- you do not have permissions - you can not delete your account, no other user has admin rights"
+msgid "- ``you do not have permissions`` - ``you can not delete your account, no other user has admin rights``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "you can not delete your account, no other user has admin rights"
+msgid "``you can not delete your account, no other user has admin rights``"
 msgstr ""
 
 #: ../source/api/workouts.rst:2
@@ -1196,7 +1184,7 @@ msgid "Get workouts for the authenticated user."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "returning at least one workout"
+msgid "returning at least one workout:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1268,7 +1256,7 @@ msgid "workout short id"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "workout not found"
+msgid "``workout not found``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1276,11 +1264,11 @@ msgid "Get gpx file for a workout displayed on map with Leaflet."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- workout not found - no gpx file for this workout"
+msgid "- ``workout not found`` - ``no gpx file for this workout``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "no gpx file for this workout"
+msgid "``no gpx file for this workout``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1308,7 +1296,7 @@ msgid "workout map id"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "map does not exist"
+msgid "``map does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1340,11 +1328,11 @@ msgid "Download gpx file."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- workout not found - no gpx file for workout"
+msgid "- ``workout not found`` - ``no gpx file for workout``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "no gpx file for workout"
+msgid "``no gpx file for workout``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1360,7 +1348,7 @@ msgid "sport id and notes (example: ``{\"sport_id\": 1, \"notes\": \"\"}``). Dou
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "workout created"
+msgid "``workout created``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1397,6 +1385,10 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "workout date, in user timezone (format: ``%Y-%m-%d %H:%M``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "workout created"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -3006,7 +2998,8 @@ msgid "Hiking"
 msgstr ""
 
 #: ../source/changelog.md:1016
-msgid "Montain Biking"
+#: ../source/features.rst:19
+msgid "Mountain Biking"
 msgstr ""
 
 #: ../source/changelog.md:1017
@@ -3339,10 +3332,6 @@ msgstr ""
 
 #: ../source/features.rst:17
 msgid "Cycling (Virtual)  (*new in 0.7.3*)"
-msgstr ""
-
-#: ../source/features.rst:19
-msgid "Mountain Biking"
 msgstr ""
 
 #: ../source/features.rst:20

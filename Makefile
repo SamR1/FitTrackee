@@ -150,13 +150,13 @@ html-all:
 		$(MAKE) html LANGUAGE=$$language ; \
 	done
 
-html-update:
+html-update-po:
 	$(SPHINXINTL) update -p "$(GETTEXT)" -d "$(LOCALES_DIRS)" -l $(LANGUAGE)
 
-html-update-all:
+html-update-po-all:
 	for language in en fr ; do \
 		echo -e "\r\nUpdating .po files for '$$language'...\r\n" ; \
-		$(MAKE) html-update LANGUAGE=$$language ; \
+		$(MAKE) html-update-po LANGUAGE=$$language ; \
 	done
 
 install-db:

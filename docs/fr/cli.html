@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Third-party tools" href="third_party_tools.html" /><link rel="prev" title="Installation" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Outils tiers" href="third_party_tools.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>Command line interface - Documentation FitTrackee 0.7.17</title>
+        <title>Interface de ligne de commande - Documentation FitTrackee 0.7.17</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -163,24 +163,24 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Fonctionnalités</a></li>
 <li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Command line interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Third-party tools</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/users.html">Users</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Workouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Troubleshooting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
@@ -230,8 +230,8 @@
         </div>
         <article role="main">
           <section id="command-line-interface">
-<h1>Command line interface<a class="headerlink" href="#command-line-interface" title="Lien permanent vers cette rubrique">#</a></h1>
-<p>A command line interface (CLI) is available to manage database, OAuth2 tokens and users.</p>
+<h1>Interface de ligne de commande<a class="headerlink" href="#command-line-interface" title="Lien permanent vers cette rubrique">#</a></h1>
+<p>Une interface en ligne de commande (CLI) est disponible pour gérer la base de données, les jetons OAuth2 et les utilisateurs.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli
 Usage:<span class="w"> </span>ftcli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
@@ -249,27 +249,27 @@ Commands:
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
-<div class="line">The following commands are now deprecated and will be removed in a next version:</div>
+<div class="line">Les commandes suivantes sont désormais obsolètes et seront supprimées dans une prochaine version :</div>
 <div class="line">- <code class="docutils literal notranslate"><span class="pre">fittrackee_set_admin</span></code></div>
 <div class="line">- <code class="docutils literal notranslate"><span class="pre">fittrackee_upgrade_db</span></code></div>
 <div class="line">- <code class="docutils literal notranslate"><span class="pre">fittrackee_worker</span></code> (disabled)</div>
 </div>
 </div>
 <section id="database">
-<h2>Database<a class="headerlink" href="#database" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Base de données<a class="headerlink" href="#database" title="Lien permanent vers cette rubrique">#</a></h2>
 <section id="ftcli-db-drop">
 <h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">drop</span></code><a class="headerlink" href="#ftcli-db-drop" title="Lien permanent vers cette rubrique">#</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
 </div>
-<p>Empty database and delete uploaded files, only on development environments.</p>
+<p>Vider la base de données et supprimer les fichiers téléchargés, uniquement pour les environnements de développement.</p>
 </section>
 <section id="ftcli-db-upgrade">
 <h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">upgrade</span></code><a class="headerlink" href="#ftcli-db-upgrade" title="Lien permanent vers cette rubrique">#</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
 </div>
-<p>Apply migrations.</p>
+<p>Appliquer les migrations</p>
 </section>
 </section>
 <section id="oauth2">
@@ -279,7 +279,7 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
 </div>
-<p>Remove tokens expired for more than provided number of days</p>
+<p>Supprimer les jetons expirés depuis plus d’un certain nombre de jours</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -293,7 +293,7 @@ Commands:
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--days</span></code></p></td>
-<td><p>Number of days.</p></td>
+<td><p>Nombre de jours.</p></td>
 </tr>
 </tbody>
 </table>
@@ -301,13 +301,13 @@ Commands:
 </section>
 </section>
 <section id="users">
-<h2>Users<a class="headerlink" href="#users" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Utilisateurs<a class="headerlink" href="#users" title="Lien permanent vers cette rubrique">#</a></h2>
 <section id="ftcli-users-clean-archives">
 <h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_archives</span></code><a class="headerlink" href="#ftcli-users-clean-archives" title="Lien permanent vers cette rubrique">#</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.13.</span></p>
 </div>
-<p>Delete export requests and related archives created more than provided number of days.</p>
+<p>Supprimer les demandes d’export et les archives associées créées depuis plus d’un certain nombre de jours.</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -321,7 +321,7 @@ Commands:
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--days</span></code></p></td>
-<td><p>Number of days.</p></td>
+<td><p>Nombre de jours.</p></td>
 </tr>
 </tbody>
 </table>
@@ -332,7 +332,7 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
 </div>
-<p>Remove blacklisted tokens expired for more than provided number of days.</p>
+<p>Supprimer les jetons de la liste noire expirés depuis plus d’un certain nombre de jours.</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -346,7 +346,7 @@ Commands:
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--days</span></code></p></td>
-<td><p>Number of days.</p></td>
+<td><p>Nombre de jours.</p></td>
 </tr>
 </tbody>
 </table>
@@ -357,12 +357,12 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.15.</span></p>
 </div>
-<p>Create a user account.</p>
+<p>Créer un compte utilisateur.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
-<li><p>the newly created account is already active.</p></li>
-<li><p>the CLI allows to create users when registration is disabled.</p></li>
+<li><p>le compte nouvellement créé est déjà actif.</p></li>
+<li><p>le CLI permet de créer des utilisateurs lorsque l’enregistrement est désactivé.</p></li>
 </ul>
 </div>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -378,13 +378,13 @@ Commands:
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">USERNAME</span></code></p></td>
-<td><p>Username.</p></td>
+<td><p>Nom de l’utilisateur</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--email</span> <span class="pre">EMAIL</span></code></p></td>
-<td><p>User email (mandatory).</p></td>
+<td><p>adresse électronique de l’utilisateur.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--password</span> <span class="pre">PASSWORD</span></code></p></td>
-<td><p>User password (if not provided, a random password is generated).</p></td>
+<td><p>Mot de passe de l’utilisateur (s’il n’est pas fourni, un mot de passe aléatoire est généré).</p></td>
 </tr>
 </tbody>
 </table>
@@ -395,8 +395,7 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.13.</span></p>
 </div>
-<p>Process incomplete user export requests.
-Can be used if redis is not set (no dramatiq workers running).</p>
+<p>Traite les demandes d’export des données utilisateurs incomplètes. Peut être utilisé si redis n’est pas activé (pas de <em>workers*</em> dramatiq en cours d’exécution).</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -410,7 +409,7 @@ Can be used if redis is not set (no dramatiq workers running).</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--max</span></code></p></td>
-<td><p>Maximum number of export requests to process.</p></td>
+<td><p>Nombre maximal de demandes d’export à traiter.</p></td>
 </tr>
 </tbody>
 </table>
@@ -421,7 +420,7 @@ Can be used if redis is not set (no dramatiq workers running).</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
 </div>
-<p>Modify a user account (admin rights, active status, email and password).</p>
+<p>Modifier le compte d’un utilisateur (droits d’administration, statut actif, email et mot de passe).</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -435,19 +434,19 @@ Can be used if redis is not set (no dramatiq workers running).</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">USERNAME</span></code></p></td>
-<td><p>Username.</p></td>
+<td><p>Nom de l’utilisateur</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--set-admin</span> <span class="pre">BOOLEAN</span></code></p></td>
-<td><p>Add/remove admin rights (when adding admin rights, it also activates user account if not active).</p></td>
+<td><p>Ajouter/supprimer des droits d’administration (lors de l’ajout de droits d’administration, le compte de l’utilisateur est également activé s’il ne l’est pas.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
-<td><p>Activate user account.</p></td>
+<td><p>Activer le compte d’un utilisateur.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--reset-password</span></code></p></td>
-<td><p>Reset user password (a new password will be displayed).</p></td>
+<td><p>Réinitialiser le mot de passe de l’utilisateur (un nouveau mot de passe sera affiché).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--update-email</span> <span class="pre">EMAIL</span></code></p></td>
-<td><p>Update user email.</p></td>
+<td><p>Mettre à jour l’adresse électronique de l’utilisateur.</p></td>
 </tr>
 </tbody>
 </table>
@@ -466,7 +465,7 @@ Can be used if redis is not set (no dramatiq workers running).</p>
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Third-party tools</div>
+                <div class="title">Outils tiers</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -515,8 +514,8 @@ Can be used if redis is not set (no dramatiq workers running).</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Command line interface</a><ul>
-<li><a class="reference internal" href="#database">Database</a><ul>
+<li><a class="reference internal" href="#">Interface de ligne de commande</a><ul>
+<li><a class="reference internal" href="#database">Base de données</a><ul>
 <li><a class="reference internal" href="#ftcli-db-drop"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">drop</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-db-upgrade"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">upgrade</span></code></a></li>
 </ul>
@@ -525,7 +524,7 @@ Can be used if redis is not set (no dramatiq workers running).</p>
 <li><a class="reference internal" href="#ftcli-oauth2-clean"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">oauth2</span> <span class="pre">clean</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#users">Users</a><ul>
+<li><a class="reference internal" href="#users">Utilisateurs</a><ul>
 <li><a class="reference internal" href="#ftcli-users-clean-archives"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_archives</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-clean-tokens"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code></a></li>
 <li><a class="reference internal" href="#ftcli-users-create"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">create</span></code></a></li>

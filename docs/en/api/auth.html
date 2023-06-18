@@ -244,7 +244,7 @@ to activate it.</p>
 </div>
 <p><strong>Example responses</strong>:</p>
 <ul class="simple">
-<li><p>success</p></li>
+<li><p>success:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -255,7 +255,7 @@ to activate it.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>error on registration</p></li>
+<li><p>error on registration:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">BAD REQUEST</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -279,26 +279,20 @@ fallback to ‘en’ (english))</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>sorry, that username is already taken</p></li>
-<li><dl class="simple">
-<dt>Errors:</dt><dd><ul>
-<li><p>username: 3 to 30 characters required</p></li>
-<li><p>username:
-only alphanumeric characters and the underscore
-character “_” allowed</p></li>
-<li><p>email: valid email must be provided</p></li>
-<li><p>password: 8 characters required</p></li>
-</ul>
-</dd>
-</dl>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sorry,</span> <span class="pre">that</span> <span class="pre">username</span> <span class="pre">is</span> <span class="pre">already</span> <span class="pre">taken</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sorry,</span> <span class="pre">you</span> <span class="pre">must</span> <span class="pre">agree</span> <span class="pre">privacy</span> <span class="pre">policy</span> <span class="pre">to</span> <span class="pre">register</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username:</span> <span class="pre">3</span> <span class="pre">to</span> <span class="pre">30</span> <span class="pre">characters</span> <span class="pre">required</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username:</span> <span class="pre">only</span> <span class="pre">alphanumeric</span> <span class="pre">characters</span> <span class="pre">and</span> <span class="pre">the</span> <span class="pre">underscore</span>
+<span class="pre">character</span> <span class="pre">&quot;_&quot;</span> <span class="pre">allowed</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">email:</span> <span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password:</span> <span class="pre">8</span> <span class="pre">characters</span> <span class="pre">required</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – error, registration is disabled</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">registration</span> <span class="pre">is</span> <span class="pre">disabled</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -332,9 +326,9 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – account confirmation successful</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">account</span> <span class="pre">confirmation</span> <span class="pre">successful</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -368,10 +362,10 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – confirmation email resent</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – the requested URL was not found on the server</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">confirmation</span> <span class="pre">email</span> <span class="pre">resent</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">requested</span> <span class="pre">URL</span> <span class="pre">was</span> <span class="pre">not</span> <span class="pre">found</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">server</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -389,7 +383,7 @@ character “_” allowed</p></li>
 </div>
 <p><strong>Example responses</strong>:</p>
 <ul class="simple">
-<li><p>successful login</p></li>
+<li><p>successful login:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -422,10 +416,10 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – successfully logged in</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – invalid credentials</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">successfully</span> <span class="pre">logged</span> <span class="pre">in</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">credentials</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -538,11 +532,11 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -667,18 +661,15 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user profile updated</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">profile</span> <span class="pre">updated</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -817,19 +808,19 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user preferences updated</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">preferences</span> <span class="pre">updated</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>password: password and password confirmation don’t match</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password:</span> <span class="pre">password</span> <span class="pre">and</span> <span class="pre">password</span> <span class="pre">confirmation</span> <span class="pre">don't</span> <span class="pre">match</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -877,23 +868,20 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user preferences updated</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">sport</span> <span class="pre">preferences</span> <span class="pre">updated</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>invalid hexadecimal color</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">hexadecimal</span> <span class="pre">color</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
-<li><p>sport does not exist</p></li>
-</ul>
-</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">sport</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -929,16 +917,13 @@ character “_” allowed</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – user preferences deleted</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
-<li><p>sport does not exist</p></li>
-</ul>
-</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">sport</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -977,22 +962,22 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user picture updated</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">picture</span> <span class="pre">updated</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>no file part</p></li>
-<li><p>no selected file</p></li>
-<li><p>file extension not allowed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">file</span> <span class="pre">part</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">selected</span> <span class="pre">file</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">extension</span> <span class="pre">not</span> <span class="pre">allowed</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a></span> – error during picture update: file size exceeds 1.0MB</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error during picture update</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">during</span> <span class="pre">picture</span> <span class="pre">update:</span> <span class="pre">file</span> <span class="pre">size</span> <span class="pre">exceeds</span> <span class="pre">1.0MB</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">during</span> <span class="pre">picture</span> <span class="pre">update</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1023,12 +1008,12 @@ character “_” allowed</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – picture deleted</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error during picture deletion</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">during</span> <span class="pre">picture</span> <span class="pre">deletion</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1062,9 +1047,9 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – password reset request processed</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – the requested URL was not found on the server</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">password</span> <span class="pre">reset</span> <span class="pre">request</span> <span class="pre">processed</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">requested</span> <span class="pre">URL</span> <span class="pre">was</span> <span class="pre">not</span> <span class="pre">found</span> <span class="pre">on</span> <span class="pre">the</span> <span class="pre">server</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1195,23 +1180,23 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – user account updated</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">account</span> <span class="pre">updated</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>email is missing</p></li>
-<li><p>current password is missing</p></li>
-<li><p>email: valid email must be provided</p></li>
-<li><p>password: 8 characters required</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">email</span> <span class="pre">is</span> <span class="pre">missing</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">current</span> <span class="pre">password</span> <span class="pre">is</span> <span class="pre">missing</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">email:</span> <span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password:</span> <span class="pre">8</span> <span class="pre">characters</span> <span class="pre">required</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
-<li><p>invalid credentials</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">credentials</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1246,10 +1231,10 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – password updated</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – invalid token, please request a new token</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">password</span> <span class="pre">updated</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">request</span> <span class="pre">a</span> <span class="pre">new</span> <span class="pre">token</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1282,9 +1267,9 @@ character “_” allowed</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – email updated</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">email</span> <span class="pre">updated</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1302,7 +1287,7 @@ If a valid token is provided, it will be blacklisted.</p>
 </div>
 <p><strong>Example responses</strong>:</p>
 <ul class="simple">
-<li><p>successful logout</p></li>
+<li><p>successful logout:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1314,7 +1299,7 @@ If a valid token is provided, it will be blacklisted.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>error on logout</p></li>
+<li><p>error on logout:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">401</span> <span class="ne">UNAUTHORIZED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1333,17 +1318,14 @@ If a valid token is provided, it will be blacklisted.</p>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – successfully logged out</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">successfully</span> <span class="pre">logged</span> <span class="pre">out</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>The access token provided is expired, revoked, malformed, or invalid
-for other reasons.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">access</span> <span class="pre">token</span> <span class="pre">provided</span> <span class="pre">is</span> <span class="pre">expired,</span> <span class="pre">revoked,</span> <span class="pre">malformed,</span> <span class="pre">or</span> <span class="pre">invalid</span>
+<span class="pre">for</span> <span class="pre">other</span> <span class="pre">reasons.</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <ul>
-<li><p>error on token blacklist</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">on</span> <span class="pre">token</span> <span class="pre">blacklist</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1380,18 +1362,15 @@ for other reasons.</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – internal server error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1414,7 +1393,7 @@ for other reasons.</p></li>
 </div>
 <p><strong>Example response</strong>:</p>
 <ul class="simple">
-<li><p>if a request exists</p></li>
+<li><p>if a request exists:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1431,7 +1410,7 @@ for other reasons.</p></li>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>if no request</p></li>
+<li><p>if no request:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1450,11 +1429,11 @@ for other reasons.</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -1494,19 +1473,19 @@ for other reasons.</p></li>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>ongoing request exists</p></li>
-<li><p>completed request already exists</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ongoing</span> <span class="pre">request</span> <span class="pre">exists</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">completed</span> <span class="pre">request</span> <span class="pre">already</span> <span class="pre">exists</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – internal server error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1539,14 +1518,14 @@ for other reasons.</p></li>
 </dd>
 <dt class="field-odd">Status Codes<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – file not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>

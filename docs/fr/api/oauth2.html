@@ -163,24 +163,24 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Fonctionnalités</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Third-party tools</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication and account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sports.html">Sports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l2"><a class="reference internal" href="workouts.html">Workouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workouts.html">Séances</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Troubleshooting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
@@ -234,26 +234,24 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-oauth-apps">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#get--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get OAuth2 clients (apps) for authenticated user with pagination
-(5 clients/page).</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Obtenir les clients OAuth2 pour l’utilisateur authentifié avec pagination (5 clients/page).</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <ul class="simple">
-<li><p>without parameters</p></li>
+<li><p>sans paramètres :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>with “page” parameter</p></li>
+<li><p>avec le paramètre “page” :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps?page=2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -288,21 +286,21 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page for pagination (default: 1)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) – page pour la pagination (par défaut : 1)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -313,15 +311,14 @@ application).</p>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-apps">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#post--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Create an OAuth2 client (app) for the authenticated user.</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Créer un client OAuth2 pour l’utilisateur authentifié.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -348,29 +345,26 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètre JSON<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_name</strong> (<em>string</em>) – client name</p></li>
-<li><p><strong>client_uri</strong> (<em>string</em>) – client URL</p></li>
-<li><p><strong>redirect_uri</strong> (<em>array</em>) – list of client redirect URLs (string)</p></li>
-<li><p><strong>scope</strong> (<em>string</em>) – client scopes</p></li>
-<li><p><strong>client_description</strong> (<em>string</em>) – client description (<cite>OPTIONAL</cite>)</p></li>
+<li><p><strong>client_name</strong> (<em>string</em>) – nom du client</p></li>
+<li><p><strong>client_uri</strong> (<em>string</em>) – URl du client</p></li>
+<li><p><strong>redirect_uri</strong> (<em>array</em>) – liste des URL de redirection du client (chaîne de caractères)</p></li>
+<li><p><strong>scope</strong> (<em>string</em>) – scopdes du client</p></li>
+<li><p><strong>client_description</strong> (<em>string</em>) – description du client (optionnelle)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -381,17 +375,16 @@ application).</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-oauth-apps-(string-client_client_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">client_client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-oauth-apps-(string-client_client_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get an OAuth2 client (app) by “client_id”.</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Obtenir un client OAuth2 avec le “client_id”.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/o22a27s2aBPUoxJbxV3UjDOx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example responses</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <ul class="simple">
-<li><p>success</p></li>
+<li><p>success:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -416,7 +409,7 @@ application).</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>not found</p></li>
+<li><p>non trouvé :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -430,24 +423,24 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_client_id</strong> (<em>string</em>) – OAuth2 client client_id</p></li>
+<li><p><strong>client_client_id</strong> (<em>string</em>) – client_id du client OAuth2</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – OAuth2 client not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">OAuth2</span> <span class="pre">client</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -456,17 +449,16 @@ application).</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-oauth-apps-(int-client_id)-by_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_id</span></span><a class="headerlink" href="#get--api-oauth-apps-(int-client_id)-by_id" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get an OAuth2 client (app) by id (integer value).</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Obtenir un client OAuth2 avec l’identifiant (entier).</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/1/by_id</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example responses</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <ul class="simple">
-<li><p>success</p></li>
+<li><p>success:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -491,7 +483,7 @@ application).</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>not found</p></li>
+<li><p>non trouvé :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -505,24 +497,24 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_id</strong> (<em>integer</em>) – OAuth2 client id</p></li>
+<li><p><strong>client_id</strong> (<em>integer</em>) – Identifiant du client OAuth2</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – OAuth2 client not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">OAuth2</span> <span class="pre">client</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -532,14 +524,13 @@ application).</p>
 <dt class="sig sig-object http" id="delete--api-oauth-apps-(int-client_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-oauth-apps-(int-client_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Delete an OAuth2 client (app).</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/oauth/apps/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -547,24 +538,24 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_id</strong> (<em>integer</em>) – OAuth2 client id</p></li>
+<li><p><strong>client_id</strong> (<em>integer</em>) – Identifiant du client OAuth2</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – OAuth2 client deleted</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – Supprimer un client OAuth2</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – OAuth2 client not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">OAuth2</span> <span class="pre">client</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -573,15 +564,14 @@ application).</p>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-apps-(int-client_id)-revoke">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/revoke</span></span><a class="headerlink" href="#post--api-oauth-apps-(int-client_id)-revoke" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Revoke all tokens associated to an OAuth2 client (app).</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Révoquer tous les tokens associés à un client OAuth2</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps/1/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -593,24 +583,24 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>client_id</strong> (<em>integer</em>) – OAuth2 client id</p></li>
+<li><p><strong>client_id</strong> (<em>integer</em>) – Identifiant du client OAuth2</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – OAuth2 client not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">OAuth2</span> <span class="pre">client</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -619,17 +609,14 @@ application).</p>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-authorize">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/authorize</span></span><a class="headerlink" href="#post--api-oauth-authorize" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Authorize an OAuth2 client (app).
-If successful, it redirects to the client callback URL with the code to
-issue a token.</p>
-<p>This endpoint is only accessible by FitTrackee client (first-party
-application).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Autoriser un client OAuth2 (app). En cas de succès, il redirige vers l’URL de redirection du client avec le code pour émettre un jeton.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/authorize</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -641,37 +628,32 @@ application).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>string  client_id</strong> – OAuth2 client “client_id”</p></li>
-<li><p><strong>string  response_type</strong> – client response type (only “code” is supported
-by FitTrackee)</p></li>
-<li><p><strong>string  scopes</strong> – OAuth2 client scopes</p></li>
+<li><p><strong>string  client_id</strong> – “client_id” du client OAuth2</p></li>
+<li><p><strong>string  response_type</strong> – type de réponse du client (seul “code” est supporté par FitTrackee)</p></li>
+<li><p><strong>string  scopes</strong> – scope du client OAuth2</p></li>
 <li><p><strong>boolean confirm</strong> – confirmation (must be <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p></li>
-<li><p><strong>string  state</strong> – unique value to prevent cross-site request forgery
-(not mandatory but recommended)</p></li>
-<li><p><strong>string  code_challenge</strong> – string generated from a code verifier
-(for PKCE, not mandatory but recommended)</p></li>
-<li><p><strong>string  code_challenge_method</strong> – method used to create challenge,
-for instance « S256 » (mandatory if <cite>code_challenge</cite>
-provided)</p></li>
+<li><p><strong>string  state</strong> – valeur unique pour éviter la falsification des requêtes entre les sites (non obligatoire mais recommandée)</p></li>
+<li><p><strong>string  code_challenge</strong> – chaîne générée par un vérificateur de code (pour PKCE, non obligatoire mais recommandée)</p></li>
+<li><p><strong>string  code_challenge_method</strong> – méthode utilisée pour créer le challenge, par exemple « S256 » (obligatoire si <cite>code_challenge</cite> fourni)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>errors returned by Authlib library</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p>erreurs renvoyées par la librairie Authlib</p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -682,13 +664,13 @@ provided)</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-token">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/token</span></span><a class="headerlink" href="#post--api-oauth-token" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Issue or refresh token for a given OAuth2 client (app).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Délivrer ou rafraîchir un jeton pour un client OAuth2 donné</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -705,30 +687,22 @@ provided)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>string  client_id</strong> – OAuth2 client “client_id”</p></li>
-<li><p><strong>string  client_secret</strong> – OAuth2 client secret</p></li>
-<li><p><strong>string  grant_type</strong> – OAuth2 client grant type
-(only “authorization_code” (for token issue)
-and “refresh_token” (for token refresh)
-are supported by FitTrackee)</p></li>
-<li><p><strong>string  code</strong> – code generated after authorizing the client
-(for token issue)</p></li>
-<li><p><strong>string  code_verifier</strong> – code verifier
-(for token issue with PKCE, not mandatory)</p></li>
-<li><p><strong>string  refresh_token</strong> – refresh token (for token refresh)</p></li>
+<li><p><strong>string  client_id</strong> – “client_id” du client OAuth2</p></li>
+<li><p><strong>string  client_secret</strong> – secret du client OAuth2</p></li>
+<li><p><strong>string  grant_type</strong> – Type d’autorisation du client OAuth2 (seuls “authorization_code” (pour l’émission de jetons) et “refresh_token” (pour le rafraîchissement de jeton) sont pris en charge par FitTrackee)</p></li>
+<li><p><strong>string  code</strong> – code généré après l’autorisation du client (pour l’émission de jetons)</p></li>
+<li><p><strong>string  code_verifier</strong> – vérificateur de code (pour l’émission de jetons avec PKCE, non obligatoire)</p></li>
+<li><p><strong>string  refresh_token</strong> – jeton de rafraîchissement (pour le rafraîchissement du jeton)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>errors returned by Authlib library</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – erreurs renvoyées par la librairie Authlib</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -739,13 +713,13 @@ are supported by FitTrackee)</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-revoke">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/revoke</span></span><a class="headerlink" href="#post--api-oauth-revoke" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Revoke a token for a given OAuth2 client (app).</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Révoquer un jeton pour un client OAuth2 donné</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -755,22 +729,19 @@ are supported by FitTrackee)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>string client_id</strong> – OAuth2 client “client_id”</p></li>
-<li><p><strong>string client_secret</strong> – OAuth2 client secret</p></li>
-<li><p><strong>string token</strong> – access token to revoke</p></li>
+<li><p><strong>string client_id</strong> – “client_id” du client OAuth2</p></li>
+<li><p><strong>string client_secret</strong> – secret du client OAuth2</p></li>
+<li><p><strong>string token</strong> – jeton d’accès à révoquer</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>errors returned by Authlib library</p></li>
-</ul>
-</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – erreurs renvoyées par la librairie Authlib</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 </ul>

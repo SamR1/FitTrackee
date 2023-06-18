@@ -1013,7 +1013,7 @@ In this release 7 issues were closed.
    - Cycling (Sport)
    - Cycling (Transport)
    - Hiking
-   - Montain Biking
+   - Mountain Biking
    - Running
    - Walking 
 - Activity creation by uploading a gpx file. An activity can even be created without gpx (the user must enter date, time, duration and distance)

@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Troubleshooting" href="../troubleshooting/index.html" /><link rel="prev" title="Users" href="users.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Dépannage" href="../troubleshooting/index.html" /><link rel="prev" title="Utilisateurs" href="users.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>Workouts - Documentation FitTrackee 0.7.17</title>
+        <title>Séances - Documentation FitTrackee 0.7.17</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -163,24 +163,24 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Fonctionnalités</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Third-party tools</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication and account</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sports.html">Sports</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stats.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="users.html">Users</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Workouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users.html">Utilisateurs</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Séances</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Troubleshooting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrator</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
@@ -230,28 +230,28 @@
         </div>
         <article role="main">
           <section id="workouts">
-<h1>Workouts<a class="headerlink" href="#workouts" title="Lien permanent vers cette rubrique">#</a></h1>
+<h1>Séances<a class="headerlink" href="#workouts" title="Lien permanent vers cette rubrique">#</a></h1>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#get--api-workouts" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get workouts for the authenticated user.</p>
+<dd><p>Obtenir les séances de l’utilisateur authentifié.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example requests</strong>:</p>
+<p><strong>Exemple de requêtes</strong>:</p>
 <ul class="simple">
-<li><p>without parameters</p></li>
+<li><p>sans paramètres :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>with some query parameters</p></li>
+<li><p>avec quelques paramètres de requête :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts?from=2019-07-02&amp;to=2019-07-31&amp;sport_id=1</span>  <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Example responses</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <ul class="simple">
-<li><p>returning at least one workout</p></li>
+<li><p>renvoyant au moins une séance :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -341,7 +341,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>returning no workouts</p></li>
+<li><p>renvoyant aucune séance</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -357,45 +357,41 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page if using pagination (default: 1)</p></li>
-<li><p><strong>per_page</strong> (<em>integer</em>) – number of workouts per page
-(default: 5, max: 100)</p></li>
-<li><p><strong>sport_id</strong> (<em>integer</em>) – sport id</p></li>
-<li><p><strong>from</strong> (<em>string</em>) – start date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
-<li><p><strong>to</strong> (<em>string</em>) – end date (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
-<li><p><strong>distance_from</strong> (<em>float</em>) – minimal distance</p></li>
-<li><p><strong>distance_to</strong> (<em>float</em>) – maximal distance</p></li>
-<li><p><strong>duration_from</strong> (<em>string</em>) – minimal duration (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
-<li><p><strong>duration_to</strong> (<em>string</em>) – maximal distance (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
-<li><p><strong>ave_speed_from</strong> (<em>float</em>) – minimal average speed</p></li>
-<li><p><strong>ave_speed_to</strong> (<em>float</em>) – maximal average speed</p></li>
-<li><p><strong>max_speed_from</strong> (<em>float</em>) – minimal max. speed</p></li>
-<li><p><strong>max_speed_to</strong> (<em>float</em>) – maximal max. speed</p></li>
-<li><p><strong>order</strong> (<em>string</em>) – sorting order: <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (default: <code class="docutils literal notranslate"><span class="pre">desc</span></code>)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
+<li><p><strong>per_page</strong> (<em>integer</em>) – nombre d’entraînements par page (par défaut : 5, max : 100)</p></li>
+<li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – une partie (ou la totalité) du titre de la séance, la correspondance entre les titres ne tient pas compte des majuscules et des minuscules</p></li>
+<li><p><strong>from</strong> (<em>string</em>) – date de début (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>string</em>) – date de fin (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>distance_from</strong> (<em>float</em>) – distance minimale</p></li>
+<li><p><strong>distance_to</strong> (<em>float</em>) – distance maximale</p></li>
+<li><p><strong>duration_from</strong> (<em>string</em>) – durée minimale (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>duration_to</strong> (<em>string</em>) – distance maximale (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>ave_speed_from</strong> (<em>float</em>) – vitesse moyenne minimale</p></li>
+<li><p><strong>ave_speed_to</strong> (<em>float</em>) – vitesse moyenne maximale</p></li>
+<li><p><strong>max_speed_from</strong> (<em>float</em>) – vitesse max. minimale</p></li>
+<li><p><strong>max_speed_to</strong> (<em>float</em>) – vitesse max. maximale</p></li>
+<li><p><strong>order</strong> (<em>string</em>) – ordre de tri : <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">desc</span></code>)</p></li>
 <li><p><strong>order_by</strong> (<em>string</em>) – sorting criteria: <code class="docutils literal notranslate"><span class="pre">ave_speed</span></code>, <code class="docutils literal notranslate"><span class="pre">distance</span></code>,
 <code class="docutils literal notranslate"><span class="pre">duration</span></code>, <code class="docutils literal notranslate"><span class="pre">workout_date</span></code> (default:
 <code class="docutils literal notranslate"><span class="pre">workout_date</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Quert string title<span class="colon">:</span></dt>
-<dd class="field-even"><p>any part (or all) of the workout title;
-title matching is case-insensitive</p>
-</dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -404,15 +400,15 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get a workout.</p>
+<dd><p>Obtenir une séance.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Example responses</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <ul class="simple">
-<li><p>success</p></li>
+<li><p>success:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -456,7 +452,7 @@ title matching is case-insensitive</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>workout not found:</p></li>
+<li><p>séance non trouvé :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -472,25 +468,25 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – you do not have permissions</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – workout not found</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -499,14 +495,14 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get gpx file for a workout displayed on map with Leaflet.</p>
+<dd><p>Obtenir un fichier gpx pour une séance affichée sur une carte avec Leaflet.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -522,29 +518,29 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
-<li><p>workout not found</p></li>
-<li><p>no gpx file for this workout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">this</span> <span class="pre">workout</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -553,14 +549,14 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get chart data from a workout gpx file, to display it with Chart.js.</p>
+<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -595,29 +591,29 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
-<li><p>workout not found</p></li>
-<li><p>no gpx file for this workout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">this</span> <span class="pre">workout</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -626,14 +622,14 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get chart data from a workout gpx file, to display it with Recharts</p>
+<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -668,27 +664,27 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
-<li><p><strong>segment_id</strong> (<em>integer</em>) – segment id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+<li><p><strong>segment_id</strong> (<em>integer</em>) – identifiant du segment</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – no gpx file for this workout</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">this</span> <span class="pre">workout</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – workout not found</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -697,14 +693,14 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get gpx file for a workout segment displayed on map with Leaflet.</p>
+<dd><p>Obtenir un fichier gpx pour le segment d’une séance pour l’afficher sur la carte avec Leaflet.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -720,27 +716,27 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
-<li><p><strong>segment_id</strong> (<em>integer</em>) – segment id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+<li><p><strong>segment_id</strong> (<em>integer</em>) – identifiant du segment</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – no gpx file for this workout</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">this</span> <span class="pre">workout</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – workout not found</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -749,13 +745,13 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-map-(map_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/map/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">map_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-map-(map_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get map image for workouts with gpx.</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Obtenir l’image de la carte pour les séances avec gpx.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772</span>
   <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
 </pre></div>
@@ -763,20 +759,20 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>map_id</strong> (<em>string</em>) – workout map id</p></li>
+<li><p><strong>map_id</strong> (<em>string</em>) – identifiant de la carte de la séance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – map does not exist</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">map</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -785,12 +781,12 @@ title matching is case-insensitive</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-map_tile-(s)-(z)-(x)-(y).png">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/map_tile/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">z</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">.png</span></span><a class="headerlink" href="#get--api-workouts-map_tile-(s)-(z)-(x)-(y).png" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Get map tile from tile server.</p>
-<p><strong>Example request</strong>:</p>
+<dd><p>Obtenir une tuile de la carte à partir du serveur de tuiles.</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/map_tile/c/13/4109/2930.png</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
 </pre></div>
@@ -798,26 +794,26 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<em>string</em>) – subdomain</p></li>
+<li><p><strong>s</strong> (<em>string</em>) – sous-domaine</p></li>
 <li><p><strong>z</strong> (<em>string</em>) – zoom</p></li>
-<li><p><strong>x</strong> (<em>string</em>) – index of the tile along the map’s x axis</p></li>
-<li><p><strong>y</strong> (<em>string</em>) – index of the tile along the map’s y axis</p></li>
+<li><p><strong>x</strong> (<em>string</em>) – index de la tuile sur l’axe x de la carte</p></li>
+<li><p><strong>y</strong> (<em>string</em>) – index de la tuile sur l’axe y de la carte</p></li>
 </ul>
 </dd>
 </dl>
-<p>Status codes are status codes returned by tile server</p>
+<p>Les codes d’état sont des codes d’état renvoyés par le serveur de tuiles.</p>
 </dd></dl>
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-download">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/download</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-download" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Download gpx file.</p>
+<dd><p>Télécharger le fichier gpx.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/gpx+xml</span>
 </pre></div>
@@ -825,21 +821,21 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – success</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
-<li><p>workout not found</p></li>
-<li><p>no gpx file for workout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">workout</span></code></p></li>
 </ul>
 </p></li>
 </ul>
@@ -850,14 +846,14 @@ title matching is case-insensitive</p>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-workouts">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#post--api-workouts" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Post a workout with a gpx file.</p>
+<dd><p>Créer une séance à partir d’un fichier gpx.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -939,34 +935,33 @@ title matching is case-insensitive</p>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> – gpx file (allowed extensions: .gpx, .zip)</p></li>
-<li><p><strong>data</strong> – sport id and notes (example: <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>).
-Double quotes in notes must be escaped.</p></li>
+<li><p><strong>file</strong> – fichier gpx (extensions autorisées : .gpx, .zip)</p></li>
+<li><p><strong>data</strong> – l’identifiant du sport et les notes (exemple : <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>). Les guillemets doubles dans les notes doivent être échappés.</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – workout created</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – séance créée</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
-<li><p>invalid payload</p></li>
-<li><p>no file part</p></li>
-<li><p>no selected file</p></li>
-<li><p>file extension not allowed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">file</span> <span class="pre">part</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">selected</span> <span class="pre">file</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file</span> <span class="pre">extension</span> <span class="pre">not</span> <span class="pre">allowed</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a></span> – error during picture update: file size exceeds 1.0MB</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">during</span> <span class="pre">picture</span> <span class="pre">update:</span> <span class="pre">file</span> <span class="pre">size</span> <span class="pre">exceeds</span> <span class="pre">1.0MB</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -975,14 +970,14 @@ Double quotes in notes must be escaped.</p></li>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-workouts-no_gpx">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/no_gpx</span></span><a class="headerlink" href="#post--api-workouts-no_gpx" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Post a workout without gpx file.</p>
+<dd><p>Créer une séance sans fichier gpx.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/no_gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1066,33 +1061,31 @@ Double quotes in notes must be escaped.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ascent</strong> (<em>float</em>) – workout ascent (not mandatory,
 must be provided with descent)</p></li>
-<li><p><strong>descent</strong> (<em>float</em>) – workout descent (not mandatory,
-must be provided with ascent)</p></li>
-<li><p><strong>distance</strong> (<em>float</em>) – workout distance in km</p></li>
-<li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds</p></li>
-<li><p><strong>notes</strong> (<em>string</em>) – notes (not mandatory)</p></li>
-<li><p><strong>sport_id</strong> (<em>integer</em>) – workout sport id</p></li>
-<li><p><strong>title</strong> (<em>string</em>) – workout title (not mandatory)</p></li>
-<li><p><strong>workout_date</strong> (<em>string</em>) – workout date, in user timezone
-(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>descent</strong> (<em>float</em>) – dénivelé négatif (non obligatoire, à fournir avec le dénivelé positif)</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – distance de la séance en km</p></li>
+<li><p><strong>duration</strong> (<em>integer</em>) – durée de la séance en secondes</p></li>
+<li><p><strong>notes</strong> (<em>string</em>) – notes (non obligatoire)</p></li>
+<li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – titre de la séance (non obligatoire)</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance, dans le fuseau horaire de l’utilisateur (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – workout created</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – séance créée</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1101,14 +1094,14 @@ must be provided with ascent)</p></li>
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Update a workout.</p>
+<dd><p>Mettre à jour une séance</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/workouts/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1190,44 +1183,38 @@ must be provided with ascent)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
 <dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ascent</strong> (<em>float</em>) – workout ascent
-(only for workout without gpx, must be provided with descent)</p></li>
-<li><p><strong>descent</strong> (<em>float</em>) – workout descent
-(only for workout without gpx, must be provided with ascent)</p></li>
-<li><p><strong>distance</strong> (<em>float</em>) – workout distance in km
-(only for workout without gpx)</p></li>
-<li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds
-(only for workout without gpx)</p></li>
+<li><p><strong>ascent</strong> (<em>float</em>) – dénivelé positif de la séance (seulement pour les séances sans gpx, doit être fourni avec le dénivelé négatif)</p></li>
+<li><p><strong>descent</strong> (<em>float</em>) – dénivelé négatif de la séance (seulement pour les séances sans gpx, doit être fourni avec le dénivelé positif)</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – distance de la séance en km (seulement pour les séances sans gpx)</p></li>
+<li><p><strong>duration</strong> (<em>integer</em>) – durée de la séance en secondes (seulement pour les séances sans gpx)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes</p></li>
-<li><p><strong>sport_id</strong> (<em>integer</em>) – workout sport id</p></li>
-<li><p><strong>title</strong> (<em>string</em>) – workout title</p></li>
-<li><p><strong>workout_date</strong> (<em>string</em>) – workout date in user timezone
-(format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)
-(only for workout without gpx)</p></li>
+<li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – titre de la séance</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance dans le fuseau horaire de l’utilisateur (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>) (seulement pour les séances sans gpx)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – workout updated</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – invalid payload</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – séance mise à jour</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – workout not found</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1236,14 +1223,14 @@ must be provided with ascent)</p></li>
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Delete a workout.</p>
+<dd><p>Supprimer la séance</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Example request</strong>:</p>
+<p><strong>Exemple de requête</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Example response</strong>:</p>
+<p><strong>Exemple de réponse</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -1251,25 +1238,25 @@ must be provided with ascent)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workout_short_id</strong> (<em>string</em>) – workout short id</p></li>
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – OAuth 2.0 Bearer Token</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – workout deleted</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – séance supprimée</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
-<li><p>provide a valid auth token</p></li>
-<li><p>signature expired, please log in again</p></li>
-<li><p>invalid token, please log in again</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – workout not found</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – error, please try again or contact the administrator</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -1287,7 +1274,7 @@ must be provided with ascent)</p></li>
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Troubleshooting</div>
+                <div class="title">Dépannage</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -1298,7 +1285,7 @@ must be provided with ascent)</p></li>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Users</div>
+                <div class="title">Utilisateurs</div>
                 
               </div>
             </a>
