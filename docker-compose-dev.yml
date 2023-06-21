@@ -28,7 +28,6 @@ services:
       - mail
     volumes:
       - .:/usr/src/app
-      - ./data/workouts:/usr/src/app/workouts
       - ./data/uploads:/usr/src/app/uploads
     networks:
       - fittrackee-net
