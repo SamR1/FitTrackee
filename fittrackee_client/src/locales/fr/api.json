@@ -23,7 +23,7 @@
         "new email must be different than curent email": "La nouvelle addresse électronique doit être differente de l'adresse actuelle",
         "no file part": "Pas de fichier fourni.",
         "no selected file": "Pas de fichier sélectionné.",
-        "no tracks in gpx file": "Pas de trace (<trk>) dans le fichier .gpx",
+        "no tracks in gpx file": "Pas de trace (<trk>) dans le fichier .gpx.",
         "ongoing request exists": "Une demande d'exportation de données existe déjà.",
         "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
         "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
