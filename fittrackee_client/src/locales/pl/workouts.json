@@ -1,1 +1,21 @@
-{ }
+{
+    "NOTES": "notatki",
+    "NO_NOTES": "Brak notatek",
+    "WEATHER": {
+        "DARK_SKY": {
+            "clear-day": "bezchmurny dzień",
+            "clear-night": "bezchmurna noc",
+            "cloudy": "pochmurnie",
+            "fog": "mgła",
+            "partly-cloudy-day": "trochę pochmurny dzień",
+            "partly-cloudy-night": "trochę pochmurna noc",
+            "rain": "deszcz",
+            "snow": "śnieg",
+            "wind": "wiatr",
+            "sleet": "deszcz ze śniegiem"
+        },
+        "HUMIDITY": "wilgotność",
+        "TEMPERATURE": "temperatura",
+        "WIND": "wiatr"
+    }
+}
