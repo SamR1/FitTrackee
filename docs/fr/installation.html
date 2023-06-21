@@ -271,7 +271,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>optionels</dt><dd><ul>
+<dt>optionnels</dt><dd><ul>
 <li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API</p></li>
 <li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
 <li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
@@ -614,8 +614,8 @@
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
-<div class="line">- If the email URL is invalid, the application may not start.</div>
-<div class="line">L’envoi de courriels avec Office365 peut ne pas fonctionner si l’authentification SMTP est désactivée.</div>
+<div class="line">Si l’URL du serveur est invalide, l’envoi des courriels sera désactivé.</div>
+<div class="line">Sending emails with Office365 may not work if SMTP auth is disabled.</div>
 </div>
 </div>
 <div class="versionchanged">
@@ -637,12 +637,12 @@
 <li><p>demande de réinitialisation du mot de passe</p></li>
 <li><p>changement d’adresse électronique (vers l’ancienne et la nouvelle adresse)</p></li>
 <li><p>changement de mot de passe</p></li>
-<li><p>notification lorsqu’une archive d’exportation de données est prête à être téléchargée (<em>ajouté dans la version 0.7.13</em>)</p></li>
+<li><p>notification lorsqu’une archive d’export de données est prête à être téléchargée (<em>ajouté dans la version 0.7.13</em>)</p></li>
 </ul>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
 </div>
-<p>Dans le cas des instance avec un seul utilisateur, il est possible de désactiver l’envoi de courriel en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
+<p>Dans le cas des instance avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
 <p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
 </section>
 <section id="map-tile-server">
@@ -666,7 +666,7 @@
 <p><span class="versionmodified changed">Modifié dans la version 0.6.10.</span></p>
 </div>
 <p>Depuis que le serveur de tuiles peut être utilisé pour la génération des images statiques de cartes, certains serveurs nécessitent un sous-domaine.</p>
-<p>par exemple, pour configurer le serveur d'OSM France, les valeurs attendues sont :</p>
+<p>Par exemple, pour configurer le serveur d'OSM France, les valeurs attendues sont :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION='fond</span> <span class="pre">de</span> <span class="pre">carte</span> <span class="pre">par</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.fr/mentions-legales/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;OpenStreetMap</span> <span class="pre">France&lt;/a&gt;,</span> <span class="pre">sous&amp;nbsp;&lt;a</span> <span class="pre">href=&quot;http://creativecommons.org/licenses/by-sa/2.0/fr/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;licence</span> <span class="pre">CC</span> <span class="pre">BY-SA&lt;/a&gt;'</span></code></p></li>
@@ -680,7 +680,7 @@
 <p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
 </div>
 <div class="line-block">
-<div class="line">La limitation d’accès à l’API est gérée par <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, et basé sur l’adresse IP avec une stratégie de fenêtre fixe.</div>
+<div class="line">La limitation d’accès à l’API est gérée par <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, et basé sur l’adresse IP avec une stratégie de période fixe.</div>
 <div class="line">Pour activer la limitation d’accès, <strong>Redis</strong> doit être accessible.</div>
 </div>
 <div class="admonition note">
@@ -690,14 +690,14 @@
 </div>
 </div>
 <div class="line-block">
-<div class="line">Tous les points d’accès sont soumis à des limitations d’accès sauf les points servant des _assets_.</div>
+<div class="line">Tous les points d’accès sont soumis à des limitations d’accès sauf les points servant des <em>assets</em>.</div>
 <div class="line">Les limites peuvent être modifiées en configurant la variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> (cf. la <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">documentation Flask-Limiter sur la notation</a>).</div>
 <div class="line">Les limites doivent être séparées par des virgules, par exemple :</div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
 </pre></div>
 </div>
-<p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de lignes de commande</a> à des fins de maintenance  et de diagnostic</p>
+<p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de lignes de commande</a> à des fins de maintenance et de diagnostic.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>limiter
 Usage:<span class="w"> </span>flask<span class="w"> </span>limiter<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
@@ -826,7 +826,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">To keep virtualenv in project directory, update Poetry configuration.</div>
+<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la configuration de Poetry.</div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
 </pre></div>
@@ -1244,7 +1244,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-build
 <p>Certaines variables d’environnement doivent être mise à jour comme <code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p>
 </div>
 <ul class="simple">
-<li><p>pour lancer le lint et les tests :</p></li>
+<li><p>pour lancer le <em>lint</em> et les tests :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-lint-client<span class="w">  </span><span class="c1"># run lint on javascript files</span>
 $<span class="w"> </span>make<span class="w"> </span>docker-test-client<span class="w">  </span><span class="c1"># run unit tests on Client</span>
@@ -1256,7 +1256,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </section>
 <section id="yunohost">
 <h2>Yunohost<a class="headerlink" href="#yunohost" title="Lien permanent vers cette rubrique">#</a></h2>
-<p>un paquet est available, cf. <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
+<p>Un paquet est disponible, cf. <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
 </section>
 </section>
 

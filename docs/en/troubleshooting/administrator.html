@@ -238,7 +238,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">NoSuchModuleError</span><span class="p">:</span> <span class="n">Can</span><span class="s1">&#39;t load plugin: sqlalchemy.dialects:postgres</span>
 </pre></div>
 </div>
-<p>It must start with <code class="docutils literal notranslate"><span class="pre">postgresql://</span></code> (engine URLs starting with <code class="docutils literal notranslate"><span class="pre">postgres://</span></code> are no longer supported).</p>
+<p>The variable <code class="docutils literal notranslate"><span class="pre">DATABASE_URL</span></code> must start with <code class="docutils literal notranslate"><span class="pre">postgresql://`</span> <span class="pre">(engine</span> <span class="pre">URLs</span> <span class="pre">starting</span> <span class="pre">with</span> <span class="pre">``postgres://</span></code> are no longer supported).</p>
 </li>
 <li><p>Check the email URL in <a class="reference external" href="../installation.html#envvar-EMAIL_URL">environment variables</a> if the following error is displayed in <strong>gunicorn</strong> logs:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fittrackee</span><span class="o">.</span><span class="n">emails</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidEmailUrlScheme</span>

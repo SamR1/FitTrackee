@@ -632,7 +632,7 @@
 <li><p><strong>string  response_type</strong> – type de réponse du client (seul “code” est supporté par FitTrackee)</p></li>
 <li><p><strong>string  scopes</strong> – scope du client OAuth2</p></li>
 <li><p><strong>boolean confirm</strong> – confirmation (must be <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p></li>
-<li><p><strong>string  state</strong> – valeur unique pour éviter la falsification des requêtes entre les sites (non obligatoire mais recommandée)</p></li>
+<li><p><strong>string  state</strong> – valeur unique pour éviter la falsification des requêtes entre les sites (<em>cross-site request forgery</em> (CSRF)), non obligatoire mais recommandée</p></li>
 <li><p><strong>string  code_challenge</strong> – chaîne générée par un vérificateur de code (pour PKCE, non obligatoire mais recommandée)</p></li>
 <li><p><strong>string  code_challenge_method</strong> – méthode utilisée pour créer le challenge, par exemple « S256 » (obligatoire si <cite>code_challenge</cite> fourni)</p></li>
 </ul>

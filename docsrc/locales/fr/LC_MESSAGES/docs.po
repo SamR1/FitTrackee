@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-18 20:36+0200\n"
+"POT-Creation-Date: 2023-06-21 19:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -33,7 +33,7 @@ msgid ""
 " activate it."
 msgstr ""
 "Le compte nouvellement créé est inactif. L'utilisateur doit confirmer son"
-" courriel pour l'activer."
+" adresse électronique pour l'activer."
 
 #: ../../<autoflask>:1
 msgid "**Example request**:"
@@ -63,7 +63,7 @@ msgstr "nom d'utilisateur (3 à 30 caractères requis)"
 
 #: ../../<autoflask>:1
 msgid "user email"
-msgstr "courriel de l'utilisateur"
+msgstr "adresse électronique de l'utilisateur"
 
 #: ../../<autoflask>:1
 msgid "password (8 characters required)"
@@ -462,7 +462,7 @@ msgstr "Traiter les demandes de réinitialisation de mot de passe."
 #: ../../<autoflask>:1
 msgid "If email sending is disabled, this endpoint is not available"
 msgstr ""
-"Si l'envoi de courriel est désactivé, ce point d'accès n'est pas "
+"Si l'envoi de courriels est désactivé, ce point d'accès n'est pas "
 "disponible."
 
 #: ../../<autoflask>:1
@@ -869,7 +869,7 @@ msgid ""
 "recommended)"
 msgstr ""
 "valeur unique pour éviter la falsification des requêtes entre les sites "
-"(non obligatoire mais recommandée)"
+"(*cross-site request forgery* (CSRF)), non obligatoire mais recommandée"
 
 #: ../../<autoflask>:1
 msgid ""
@@ -1321,6 +1321,12 @@ msgid "number of workouts per page (default: 5, max: 100)"
 msgstr "nombre d'entraînements par page (par défaut : 5, max : 100)"
 
 #: ../../<autoflask>:1
+msgid "any part (or all) of the workout title; title matching is case-insensitive"
+msgstr ""
+"une partie (ou la totalité) du titre de la séance, la correspondance "
+"entre les titres ne tient pas compte des majuscules et des minuscules"
+
+#: ../../<autoflask>:1
 msgid "minimal distance"
 msgstr "distance minimale"
 
@@ -1362,17 +1368,6 @@ msgid ""
 "``workout_date`` (default: ``workout_date``)"
 msgstr ""
 
-#: ../../<autoflask>
-#, fuzzy
-msgid "quert string title"
-msgstr "chaine de caractère vide"
-
-#: ../../<autoflask>:1
-msgid "any part (or all) of the workout title; title matching is case-insensitive"
-msgstr ""
-"une partie (ou la totalité) du titre de la séance, la correspondance "
-"entre les titres ne tient pas compte des majuscules et des minuscules"
-
 #: ../../<autoflask>:1
 msgid "Get a workout."
 msgstr "Obtenir une séance."
@@ -1405,13 +1400,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Get chart data from a workout gpx file, to display it with Chart.js."
-msgstr ""
-"Récupérer les données d'une séance avec gpx pour les afficher avec "
-"Chart.js"
-
-#: ../../<autoflask>:1
-#, fuzzy
-msgid "Get chart data from a workout gpx file, to display it with Recharts"
 msgstr ""
 "Récupérer les données d'une séance avec gpx pour les afficher avec "
 "Chart.js"
@@ -1492,8 +1480,7 @@ msgstr ""
 "échappés."
 
 #: ../../<autoflask>:1
-#, fuzzy
-msgid "``workout created``"
+msgid "workout created"
 msgstr "séance créée"
 
 #: ../../<autoflask>:1
@@ -1535,10 +1522,6 @@ msgid "workout date, in user timezone (format: ``%Y-%m-%d %H:%M``)"
 msgstr ""
 "date de la séance, dans le fuseau horaire de l'utilisateur (format: "
 "``%Y-%m-%d %H:%M``)"
-
-#: ../../<autoflask>:1
-msgid "workout created"
-msgstr "séance créée"
 
 #: ../../<autoflask>:1
 msgid "Update a workout."
@@ -3399,7 +3382,7 @@ msgstr "``--email EMAIL``"
 
 #: ../source/cli.rst:124
 msgid "User email (mandatory)."
-msgstr "adresse électronique de l'utilisateur."
+msgstr "Adresse électronique de l'utilisateur (obligatoire)."
 
 #: ../source/cli.rst:125
 msgid "``--password PASSWORD``"
@@ -3421,7 +3404,7 @@ msgid ""
 "(no dramatiq workers running)."
 msgstr ""
 "Traite les demandes d'export des données utilisateurs incomplètes. Peut "
-"être utilisé si redis n'est pas activé (pas de *workers** dramatiq en "
+"être utilisé si redis n'est pas activé (pas de *workers* dramatiq en "
 "cours d'exécution)."
 
 #: ../source/cli.rst:144
@@ -3560,7 +3543,7 @@ msgid ""
 msgstr ""
 "(*nouveau dans la version in 0.5.0*) Le seuil de vitesse arrêté utilisé "
 "par `gpxpy <https://github.com/tkrajina/gpxpy>`_ n'est plus la valeur par"
-" défaut pour sports suivants (0.1 km/h au lieu de 1 km/h):"
+" défaut pour les sports suivants (0.1 km/h au lieu de 1 km/h):"
 
 #: ../source/features.rst:31
 msgid "Mountaineering"
@@ -4023,7 +4006,7 @@ msgstr ""
 
 #: ../source/features.rst:154
 msgid "If email sending is disabled, a warning is displayed."
-msgstr "Si l'envoi de courriel est désactivé, un avertissement s'affiche."
+msgstr "Si l'envoi de courriels est désactivé, un avertissement s'affiche."
 
 #: ../source/features.rst:156
 msgid "**About**"
@@ -4401,7 +4384,7 @@ msgstr "PostgreSQL 11+"
 
 #: ../source/installation.rst:33
 msgid "optional"
-msgstr "optionels"
+msgstr "optionnels"
 
 #: ../source/installation.rst:28
 msgid ""
@@ -4639,7 +4622,7 @@ msgstr "chaine de caractère vide"
 msgid "If the email URL is empty, email sending will be disabled."
 msgstr "Si l'URL du serveur est vide, l'envoi des courriels sera désactivé."
 
-#: ../source/installation.rst:152
+#: ../source/installation.rst ../source/installation.rst:152
 msgid "If the email URL is invalid, the application may not start."
 msgstr "Si l'URL du serveur est invalide, l'envoi des courriels sera désactivé."
 
@@ -4786,7 +4769,9 @@ msgstr "Courriels"
 
 #: ../source/installation.rst:254
 msgid "To send emails, a valid ``EMAIL_URL`` must be provided:"
-msgstr "Pour l'envoi des courriels, une valeur valide pour la variable ``EMAIL_URL`` doit être fourni :"
+msgstr ""
+"Pour l'envoi des courriels, une valeur valide pour la variable "
+"``EMAIL_URL`` doit être fourni :"
 
 #: ../source/installation.rst:256
 msgid ""
@@ -4805,13 +4790,8 @@ msgid "with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True`
 msgstr "avec STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``"
 
 #: ../source/installation.rst
-msgid "- If the email URL is invalid, the application may not start."
-msgstr ""
-"- si l'URl su serveur n'est pas valide, l'application peut ne pas "
-"démarrer."
-
-#: ../source/installation.rst
-msgid "- Sending emails with Office365 may not work if SMTP auth is disabled."
+#, fuzzy
+msgid "Sending emails with Office365 may not work if SMTP auth is disabled."
 msgstr ""
 "L'envoi de courriels avec Office365 peut ne pas fonctionner si "
 "l'authentification SMTP est désactivée."
@@ -4860,8 +4840,8 @@ msgid ""
 "notification when a data export archive is ready to download (*new in "
 "0.7.13*)"
 msgstr ""
-"notification lorsqu'une archive d'exportation de données est prête à être"
-" téléchargée (*ajouté dans la version 0.7.13*)"
+"notification lorsqu'une archive d'export de données est prête à être "
+"téléchargée (*ajouté dans la version 0.7.13*)"
 
 #: ../source/installation.rst:282
 msgid ""
@@ -4869,8 +4849,8 @@ msgid ""
 " empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers)."
 msgstr ""
 "Dans le cas des instance avec un seul utilisateur, il est possible de "
-"désactiver l'envoi de courriel en laissant la variable ``EMAIL_URL`` vide"
-" (dans ce cas il n'est pas nécessaire de lancer les *workers* de "
+"désactiver l'envoi de courriels en laissant la variable ``EMAIL_URL`` "
+"vide (dans ce cas il n'est pas nécessaire de lancer les *workers* de "
 "dramatiq)."
 
 #: ../source/installation.rst:284
@@ -4944,7 +4924,7 @@ msgstr ""
 #: ../source/installation.rst:307
 msgid "For instance, to set OSM France tile server, the expected values are:"
 msgstr ""
-"par exemple, pour configurer le serveur d\\'OSM France, les valeurs "
+"Par exemple, pour configurer le serveur d\\'OSM France, les valeurs "
 "attendues sont :"
 
 #: ../source/installation.rst:309
@@ -4985,7 +4965,7 @@ msgid ""
 msgstr ""
 "La limitation d'accès à l'API est gérée par `Flask-Limiter <https"
 "://flask-limiter.readthedocs.io/en/stable>`_, et basé sur l'adresse IP "
-"avec une stratégie de fenêtre fixe."
+"avec une stratégie de période fixe."
 
 #: ../source/installation.rst:321
 msgid "To enable rate limits, **Redis** must be available."
@@ -5003,7 +4983,7 @@ msgstr ""
 msgid "All endpoints are subject to rate limits, except endpoints serving assets."
 msgstr ""
 "Tous les points d'accès sont soumis à des limitations d'accès sauf les "
-"points servant des _assets_."
+"points servant des *assets*."
 
 #: ../source/installation.rst:327
 msgid ""
@@ -5029,7 +5009,7 @@ msgid ""
 msgstr ""
 "**Flask-Limiter** fournit une `Interface de lignes de commande <https"
 "://flask-limiter.readthedocs.io/en/stable/cli.html>`_ à des fins de "
-"maintenance  et de diagnostic"
+"maintenance et de diagnostic."
 
 #: ../source/installation.rst:353
 msgid "Weather data"
@@ -5189,6 +5169,8 @@ msgstr ""
 #: ../source/installation.rst
 msgid "To keep virtualenv in project directory, update Poetry configuration."
 msgstr ""
+"Pour conserver l'environnement virtuel dans le répertoire du projet, "
+"mettre à jour la configuration de Poetry."
 
 #: ../source/installation.rst:459 ../source/installation.rst:593
 msgid "Dev environment"
@@ -5492,7 +5474,7 @@ msgstr ""
 
 #: ../source/installation.rst:876
 msgid "to run lint or tests:"
-msgstr "pour lancer le lint et les tests :"
+msgstr "pour lancer le *lint* et les tests :"
 
 #: ../source/installation.rst:887
 msgid "Yunohost"
@@ -5503,7 +5485,7 @@ msgid ""
 "A package is available, see https://github.com/YunoHost-"
 "Apps/fittrackee_ynh."
 msgstr ""
-"un paquet est available, cf. https://github.com/YunoHost-"
+"Un paquet est disponible, cf. https://github.com/YunoHost-"
 "Apps/fittrackee_ynh."
 
 #: ../source/oauth.rst:2
@@ -5542,7 +5524,7 @@ msgid ""
 msgstr ""
 "Les points d'entrée OAuth2 nécessitant une authentification ne sont pas "
 "accessibles par des applications tierces (`documentation "
-"<api/oauth2.html>`__), seulement par l'application web FitTrackee)."
+"<api/oauth2.html>`__), seulement par l'application web de FitTrackee)."
 
 #: ../source/oauth.rst:17
 msgid ""
@@ -5553,14 +5535,13 @@ msgid ""
 "client ID and secret must be sent in the POST body. It is recommended to "
 "use PKCE to provide a better security."
 msgstr ""
-"Il ne prend en charge que le flux avec un `Code d'Autorisation "
+"Seul le flux avec `Code d'Autorisation "
 "<https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1>`_ (avec "
-"prise en charge de `PKCE "
-"<https://datatracker.ietf.org/doc/html/rfc7636>`_). Il permet d'échanger "
-"un code d'autorisation contre un jeton d'accès. L'identifiant et le "
-"secret du client doivent être envoyés dans le corps du message (méthode "
-"\"POST\"). Il est recommandé d'utiliser PKCE pour assurer une meilleure "
-"sécurité."
+"`PKCE <https://datatracker.ietf.org/doc/html/rfc7636>`_) est pris en "
+"charge. Il permet d'échanger un code d'autorisation contre un jeton "
+"d'accès. L'identifiant et le secret du client doivent être envoyés dans "
+"le corps du message (méthode \"POST\"). Il est recommandé d'utiliser PKCE"
+" pour assurer une meilleure sécurité."
 
 #: ../source/oauth.rst:24
 msgid "Scopes"
@@ -5675,7 +5656,7 @@ msgid ""
 "``response_type``:  ``code``, since FitTrackee only supports "
 "Authorization Code flow."
 msgstr ""
-"``response_type`` : ``code``, FitTrackee ne supportant que le flux de "
+"``response_type`` : ``code``, FitTrackee ne supportant que le flux avec "
 "code d'autorisation."
 
 #: ../source/oauth.rst:58
@@ -5690,7 +5671,7 @@ msgstr "et des paramètres facultatifs :"
 msgid "``state``: unique value to prevent cross-site request forgery"
 msgstr ""
 "``state`` : valeur unique pour empêcher la falsification des requêtes "
-"entre les sites"
+"entre les sites (*cross-site request forgery* (CSRF))"
 
 #: ../source/oauth.rst
 msgid "For PKCE, the following parameters are mandatory:"
@@ -5727,7 +5708,7 @@ msgid ""
 "<https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-"
 "token>`_)."
 msgstr ""
-"Après l'autorisation, FitTrackee redirige vers l'application tierce, de "
+"Après autorisation, FitTrackee redirige vers l'application tierce, de "
 "sorte que l'application tierce puisse obtenir le code d'autorisation à "
 "partir de l'URL de redirection et récupère ensuite un jeton d'accès avec "
 "l'identifiant et le secret du client (point d'accès `/api/oauth/token "
@@ -5755,7 +5736,7 @@ msgid ""
 "If FitTrackee is running behind a proxy, the ``X-Forwarded-Proto`` header"
 " must be set."
 msgstr ""
-"Si FitTrackee fonctionne derrière un proxy, l'en-tête ``X-Forwarded-"
+"Si FitTrackee fonctionne derrière un *proxy*, l'en-tête ``X-Forwarded-"
 "Proto`` doit être défini."
 
 #: ../source/oauth.rst
@@ -5790,7 +5771,7 @@ msgid ""
 msgstr ""
 "`Web App Example of OAuth 2 web application flow <https://requests-"
 "oauthlib.readthedocs.io/en/latest/examples/real_world_example.html>`_ "
-"with Requests-OAuthlib (python)"
+"avec Requests-OAuthlib (python)"
 
 #: ../source/oauth.rst:96
 msgid ""
@@ -5800,7 +5781,7 @@ msgid ""
 msgstr ""
 "`OAuth 2 Session "
 "<https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session>`_"
-" with Authlib (python)"
+" avec Authlib (python)"
 
 #: ../source/oauth.rst:97
 msgid ""
@@ -5853,13 +5834,12 @@ msgstr ""
 "affichée dans les logs de **gunicorn** :"
 
 #: ../source/troubleshooting/administrator.rst:14
-#, fuzzy
 msgid ""
-"It must start with ``postgresql://`` (engine URLs starting with "
-"``postgres://`` are no longer supported)."
+"The variable ``DATABASE_URL`` must start with ``postgresql://` (engine "
+"URLs starting with ``postgres://`` are no longer supported)."
 msgstr ""
-"Il doit commencer par `postgresql://` (les URL commençant par `postgres://` "
-"ne sont plus supportées)."
+"La variable ``DATABASE_URL`` doit commencer par ``postgresql://`` (les "
+"URL commençant par ``postgres://`` ne sont plus supportées)."
 
 #: ../source/troubleshooting/administrator.rst:16
 msgid ""
@@ -5876,8 +5856,8 @@ msgid ""
 "A valid ``EMAIL_URL`` must be provided (see `emails "
 "<../installation.html#emails>`__)."
 msgstr ""
-"Une valeur valide pour la variable ``EMAIL_URL`` doit être fourni (voir `courriels "
-"<../installation.html#emails>`__)."
+"Une valeur valide pour la variable ``EMAIL_URL`` doit être fourni (voir "
+"`courriels <../installation.html#emails>`__)."
 
 #: ../source/troubleshooting/administrator.rst:26
 msgid "`Map images are not displayed but map is shown in Workout detail`"
@@ -5916,12 +5896,23 @@ msgid ""
 "the following error is displayed in gunicorn log: ``[CRITICAL] WORKER "
 "TIMEOUT``."
 msgstr ""
-"Augmenter le délai d'attente (timeout) **gunicorn** "
-"<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ si "
-"l'erreur suivante est affichée dans le journal de gunicorn : ``[CRITICAL]"
-" WORKER TIMEOUT``."
+"Augmenter le `délai d'attente "
+"<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ (timeout) "
+"**gunicorn**  si l'erreur suivante est affichée dans le journal de "
+"gunicorn : ``[CRITICAL] WORKER TIMEOUT``."
 
 #: ../source/troubleshooting/index.rst:2
 msgid "Troubleshooting"
 msgstr "Dépannage"
+
+#~ msgid "quert string title"
+#~ msgstr "chaine de caractère vide"
+
+#~ msgid "Get chart data from a workout gpx file, to display it with Recharts"
+#~ msgstr ""
+#~ "Récupérer les données d'une séance avec"
+#~ " gpx pour les afficher avec Chart.js"
+
+#~ msgid "``workout created``"
+#~ msgstr "séance créée"
 

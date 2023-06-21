@@ -258,8 +258,8 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
 .. warning::
-    | - If the email URL is invalid, the application may not start.
-    | - Sending emails with Office365 may not work if SMTP auth is disabled.
+    | If the email URL is invalid, the application may not start.
+    | Sending emails with Office365 may not work if SMTP auth is disabled.
 
 .. versionchanged:: 0.5.3
 

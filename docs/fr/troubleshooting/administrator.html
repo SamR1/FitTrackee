@@ -238,7 +238,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">NoSuchModuleError</span><span class="p">:</span> <span class="n">Can</span><span class="s1">&#39;t load plugin: sqlalchemy.dialects:postgres</span>
 </pre></div>
 </div>
-<p>It must start with <code class="docutils literal notranslate"><span class="pre">postgresql://</span></code> (engine URLs starting with <code class="docutils literal notranslate"><span class="pre">postgres://</span></code> are no longer supported).</p>
+<p>La variable <code class="docutils literal notranslate"><span class="pre">DATABASE_URL</span></code> doit commencer par <code class="docutils literal notranslate"><span class="pre">postgresql://</span></code> (les URL commençant par <code class="docutils literal notranslate"><span class="pre">postgres://</span></code> ne sont plus supportées).</p>
 </li>
 <li><p>Vérifiez l’URL du serveur SMTP dans les <a class="reference external" href="../installation.html#envvar-EMAIL_URL">environment variables</a> si l’erreur suivante est affichée dans les logs de <strong>gunicorn</strong> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fittrackee</span><span class="o">.</span><span class="n">emails</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidEmailUrlScheme</span>
@@ -258,7 +258,7 @@
 <h2><cite>Échec du chargement ou du téléchargement de fichiers</cite><a class="headerlink" href="#failed-to-upload-or-download-files" title="Lien permanent vers cette rubrique">#</a></h2>
 <ul class="simple">
 <li><p>Vérifiez <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> dans la configuration <strong>nginx</strong>. Augmentez la valeur pour gérer des fichiers plus volumineux (voir la <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation de **nginx**</a>).</p></li>
-<li><p>Augmenter le délai d’attente (timeout) <strong>gunicorn</strong> &lt;<a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">https://docs.gunicorn.org/en/stable/settings.html#timeout</a>&gt;`__ si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
+<li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d’attente</a> (timeout) <strong>gunicorn</strong>  si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
 </ul>
 </section>
 </section>

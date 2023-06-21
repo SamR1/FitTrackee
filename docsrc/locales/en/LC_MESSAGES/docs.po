@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-18 20:35+0200\n"
+"POT-Creation-Date: 2023-06-21 19:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1255,6 +1255,10 @@ msgid "number of workouts per page (default: 5, max: 100)"
 msgstr ""
 
 #: ../../<autoflask>:1
+msgid "any part (or all) of the workout title; title matching is case-insensitive"
+msgstr ""
+
+#: ../../<autoflask>:1
 msgid "minimal distance"
 msgstr ""
 
@@ -1296,14 +1300,6 @@ msgid ""
 "``workout_date`` (default: ``workout_date``)"
 msgstr ""
 
-#: ../../<autoflask>
-msgid "quert string title"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "any part (or all) of the workout title; title matching is case-insensitive"
-msgstr ""
-
 #: ../../<autoflask>:1
 msgid "Get a workout."
 msgstr ""
@@ -1334,10 +1330,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Get chart data from a workout gpx file, to display it with Chart.js."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "Get chart data from a workout gpx file, to display it with Recharts"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1411,7 +1403,7 @@ msgid ""
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "``workout created``"
+msgid "workout created"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1449,10 +1441,6 @@ msgstr ""
 #: ../../<autoflask>:1
 #, python-format
 msgid "workout date, in user timezone (format: ``%Y-%m-%d %H:%M``)"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "workout created"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -4298,7 +4286,7 @@ msgstr ""
 msgid "If the email URL is empty, email sending will be disabled."
 msgstr ""
 
-#: ../source/installation.rst:152
+#: ../source/installation.rst ../source/installation.rst:152
 msgid "If the email URL is invalid, the application may not start."
 msgstr ""
 
@@ -4435,11 +4423,7 @@ msgid "with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True`
 msgstr ""
 
 #: ../source/installation.rst
-msgid "- If the email URL is invalid, the application may not start."
-msgstr ""
-
-#: ../source/installation.rst
-msgid "- Sending emails with Office365 may not work if SMTP auth is disabled."
+msgid "Sending emails with Office365 may not work if SMTP auth is disabled."
 msgstr ""
 
 #: ../source/installation.rst:266
@@ -5275,8 +5259,8 @@ msgstr ""
 
 #: ../source/troubleshooting/administrator.rst:14
 msgid ""
-"It must start with ``postgresql://`` (engine URLs starting with "
-"``postgres://`` are no longer supported)."
+"The variable ``DATABASE_URL`` must start with ``postgresql://` (engine "
+"URLs starting with ``postgres://`` are no longer supported)."
 msgstr ""
 
 #: ../source/troubleshooting/administrator.rst:16
@@ -5324,4 +5308,13 @@ msgstr ""
 #: ../source/troubleshooting/index.rst:2
 msgid "Troubleshooting"
 msgstr ""
+
+#~ msgid "quert string title"
+#~ msgstr ""
+
+#~ msgid "Get chart data from a workout gpx file, to display it with Recharts"
+#~ msgstr ""
+
+#~ msgid "``workout created``"
+#~ msgstr ""
 

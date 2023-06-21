@@ -236,9 +236,9 @@
 <p>Pour permettre à une application tierce d’interagir avec les points d’accès de l’API, un client <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth2</a> peut être créé dans les paramètres de l’utilisateur (onglet “apps”).</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>Les points d’entrée OAuth2 nécessitant une authentification ne sont pas accessibles par des applications tierces (<a class="reference external" href="api/oauth2.html">documentation</a>), seulement par l’application web FitTrackee).</p>
+<p>Les points d’entrée OAuth2 nécessitant une authentification ne sont pas accessibles par des applications tierces (<a class="reference external" href="api/oauth2.html">documentation</a>), seulement par l’application web de FitTrackee).</p>
 </div>
-<p>Il ne prend en charge que le flux avec un <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1">Code d’Autorisation</a> (avec prise en charge de <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>). Il permet d’échanger un code d’autorisation contre un jeton d’accès. L’identifiant et le secret du client doivent être envoyés dans le corps du message (méthode « POST »). Il est recommandé d’utiliser PKCE pour assurer une meilleure sécurité.</p>
+<p>Seul le flux avec <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1">Code d’Autorisation</a> (avec <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>) est pris en charge. Il permet d’échanger un code d’autorisation contre un jeton d’accès. L’identifiant et le secret du client doivent être envoyés dans le corps du message (méthode « POST »). Il est recommandé d’utiliser PKCE pour assurer une meilleure sécurité.</p>
 <section id="scopes">
 <h2>Scopes<a class="headerlink" href="#scopes" title="Lien permanent vers cette rubrique">#</a></h2>
 <p>Les scopes suivants sont disponibles :</p>
@@ -276,14 +276,14 @@
 </div>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">client_id</span></code> : l’identifiant du client affiché après l’enregistrement</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">response_type</span></code> : <code class="docutils literal notranslate"><span class="pre">code</span></code>, FitTrackee ne supportant que le flux de code d’autorisation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">response_type</span></code> : <code class="docutils literal notranslate"><span class="pre">code</span></code>, FitTrackee ne supportant que le flux avec code d’autorisation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">scope</span></code> : scopes séparés par des espaces.</p></li>
 </ul>
 <div class="line-block">
 <div class="line">et des paramètres facultatifs :</div>
 </div>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code> : valeur unique pour empêcher la falsification des requêtes entre les sites</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code> : valeur unique pour empêcher la falsification des requêtes entre les sites (<em>cross-site request forgery</em> (CSRF))</p></li>
 </ul>
 <div class="line-block">
 <div class="line">Pour PKCE, les paramètres suivants sont obligatoires :</div>
@@ -298,7 +298,7 @@
 </div>
 </li>
 <li><div class="line-block">
-<div class="line">Après l’autorisation, FitTrackee redirige vers l’application tierce, de sorte que l’application tierce puisse obtenir le code d’autorisation à partir de l’URL de redirection et récupère ensuite un jeton d’accès avec l’identifiant et le secret du client (point d’accès <a class="reference external" href="https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
+<div class="line">Après autorisation, FitTrackee redirige vers l’application tierce, de sorte que l’application tierce puisse obtenir le code d’autorisation à partir de l’URL de redirection et récupère ensuite un jeton d’accès avec l’identifiant et le secret du client (point d’accès <a class="reference external" href="https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
 <div class="line">Exemple d’URL de redirection :</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">https://example.com/callback?code=&lt;AUTHORIZATION_CODE&gt;&amp;state=&lt;STATE&gt;</span></code></div>
 </div>
@@ -311,7 +311,7 @@
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
-<div class="line">Si FitTrackee fonctionne derrière un proxy, l’en-tête <code class="docutils literal notranslate"><span class="pre">X-Forwarded-Proto</span></code> doit être défini.</div>
+<div class="line">Si FitTrackee fonctionne derrière un <em>proxy</em>, l’en-tête <code class="docutils literal notranslate"><span class="pre">X-Forwarded-Proto</span></code> doit être défini.</div>
 <div class="line">Par exemple pour <code class="docutils literal notranslate"><span class="pre">nginx</span></code> :</div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>proxy_set_header  X-Forwarded-Proto $scheme;
@@ -324,8 +324,8 @@
 <p>Quelques ressources sur OAuth 2.0 :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.oauth.com">OAuth 2.0 Simplified</a> par <a class="reference external" href="https://aaronparecki.com">Aaron Parecki</a> (exemple pour le flux avec le <a class="reference external" href="https://www.oauth.com/oauth2-servers/server-side-apps/example-flow/">code d’authorisation et PKCE</a>)</p></li>
-<li><p><a class="reference external" href="https://requests-oauthlib.readthedocs.io/en/latest/examples/real_world_example.html">Web App Example of OAuth 2 web application flow</a> with Requests-OAuthlib (python)</p></li>
-<li><p><a class="reference external" href="https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session">OAuth 2 Session</a> with Authlib (python)</p></li>
+<li><p><a class="reference external" href="https://requests-oauthlib.readthedocs.io/en/latest/examples/real_world_example.html">Web App Example of OAuth 2 web application flow</a> avec Requests-OAuthlib (python)</p></li>
+<li><p><a class="reference external" href="https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session">OAuth 2 Session</a> avec Authlib (python)</p></li>
 <li><p><a class="reference external" href="https://codeberg.org/SamR1/ft-oauth-client">Exemple d’une application minimale interagissant avec FitTrackee</a> (python)</p></li>
 </ul>
 </section>
