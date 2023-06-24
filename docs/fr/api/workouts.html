@@ -235,8 +235,8 @@
 <dt class="sig sig-object http" id="get--api-workouts">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#get--api-workouts" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir les séances de l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requêtes</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requêtes</strong> :</p>
 <ul class="simple">
 <li><p>sans paramètres :</p></li>
 </ul>
@@ -249,7 +249,7 @@
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts?from=2019-07-02&amp;to=2019-07-31&amp;sport_id=1</span>  <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>renvoyant au moins une séance :</p></li>
 </ul>
@@ -361,12 +361,12 @@
 <li><p><strong>per_page</strong> (<em>integer</em>) – nombre d’entraînements par page (par défaut : 5, max : 100)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – une partie (ou la totalité) du titre de la séance, la correspondance entre les titres ne tient pas compte des majuscules et des minuscules</p></li>
-<li><p><strong>from</strong> (<em>string</em>) – date de début (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
-<li><p><strong>to</strong> (<em>string</em>) – date de fin (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>from</strong> (<em>string</em>) – date de début (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>string</em>) – date de fin (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
 <li><p><strong>distance_from</strong> (<em>float</em>) – distance minimale</p></li>
 <li><p><strong>distance_to</strong> (<em>float</em>) – distance maximale</p></li>
-<li><p><strong>duration_from</strong> (<em>string</em>) – durée minimale (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
-<li><p><strong>duration_to</strong> (<em>string</em>) – distance maximale (format: <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>duration_from</strong> (<em>string</em>) – durée minimale (format : <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>duration_to</strong> (<em>string</em>) – distance maximale (format : <code class="docutils literal notranslate"><span class="pre">%H:%M</span></code>)</p></li>
 <li><p><strong>ave_speed_from</strong> (<em>float</em>) – vitesse moyenne minimale</p></li>
 <li><p><strong>ave_speed_to</strong> (<em>float</em>) – vitesse moyenne maximale</p></li>
 <li><p><strong>max_speed_from</strong> (<em>float</em>) – vitesse max. minimale</p></li>
@@ -401,12 +401,12 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir une séance.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -496,13 +496,13 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un fichier gpx pour une séance affichée sur une carte avec Leaflet.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -549,14 +549,14 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -622,14 +622,14 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -694,13 +694,13 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un fichier gpx pour le segment d’une séance pour l’afficher sur la carte avec Leaflet.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -746,12 +746,12 @@
 <dt class="sig sig-object http" id="get--api-workouts-map-(map_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/map/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">map_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-map-(map_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir l’image de la carte pour les séances avec gpx.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/map/fa33f4d996844a5c73ecd1ae24456ab8?1563529507772</span>
   <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
 </pre></div>
@@ -782,11 +782,11 @@
 <dt class="sig sig-object http" id="get--api-workouts-map_tile-(s)-(z)-(x)-(y).png">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/map_tile/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">s</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">z</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">x</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">y</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">.png</span></span><a class="headerlink" href="#get--api-workouts-map_tile-(s)-(z)-(x)-(y).png" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir une tuile de la carte à partir du serveur de tuiles.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/map_tile/c/13/4109/2930.png</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
 </pre></div>
@@ -801,19 +801,19 @@
 </ul>
 </dd>
 </dl>
-<p>Les codes d’état sont des codes d’état renvoyés par le serveur de tuiles.</p>
+<p>Les codes d’état sont des codes d’état renvoyés par le serveur de tuiles</p>
 </dd></dl>
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-download">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/download</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-download" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Télécharger le fichier gpx.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/download</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/gpx+xml</span>
 </pre></div>
@@ -847,13 +847,13 @@
 <dt class="sig sig-object http" id="post--api-workouts">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts</span></span><a class="headerlink" href="#post--api-workouts" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Créer une séance à partir d’un fichier gpx.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -936,7 +936,7 @@
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – fichier gpx (extensions autorisées : .gpx, .zip)</p></li>
-<li><p><strong>data</strong> – l’identifiant du sport et les notes (exemple : <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>). Les guillemets doubles dans les notes doivent être échappés.</p></li>
+<li><p><strong>data</strong> – identifiant du sport et notes (exemple : <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;}</span></code>). Les guillemets doubles dans les notes doivent être échappés.</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -971,13 +971,13 @@
 <dt class="sig sig-object http" id="post--api-workouts-no_gpx">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/no_gpx</span></span><a class="headerlink" href="#post--api-workouts-no_gpx" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Créer une séance sans fichier gpx.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/no_gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1067,7 +1067,7 @@ must be provided with descent)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (non obligatoire)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – titre de la séance (non obligatoire)</p></li>
-<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance, dans le fuseau horaire de l’utilisateur (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance, dans le fuseau horaire de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -1094,14 +1094,14 @@ must be provided with descent)</p></li>
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Mettre à jour une séance</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Mettre à jour une séance.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/workouts/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1195,7 +1195,7 @@ must be provided with descent)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – titre de la séance</p></li>
-<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance dans le fuseau horaire de l’utilisateur (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>) (seulement pour les séances sans gpx)</p></li>
+<li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance dans le fuseau horaire de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>) (seulement pour les séances sans gpx)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
@@ -1223,14 +1223,14 @@ must be provided with descent)</p></li>
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-workouts-(string-workout_short_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Supprimer la séance</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Supprimer la séance.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>

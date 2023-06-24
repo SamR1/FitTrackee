@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-21 19:44+0200\n"
+"POT-Creation-Date: 2023-06-24 08:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -37,11 +37,11 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "**Example request**:"
-msgstr "**Exemple de requête**:"
+msgstr "**Exemple de requête** :"
 
 #: ../../<autoflask>:1
 msgid "**Example responses**:"
-msgstr "**Exemple de réponse**:"
+msgstr "**Exemple de réponses** :"
 
 #: ../../<autoflask>:1
 #, fuzzy
@@ -144,7 +144,7 @@ msgstr "Activer le compte utilisateur après l'inscription."
 
 #: ../../<autoflask>:1
 msgid "**Example response**:"
-msgstr "**Exemple de réponse**:"
+msgstr "**Exemple de réponse** :"
 
 #: ../../<autoflask>:1
 msgid "confirmation token"
@@ -174,7 +174,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "User login."
-msgstr "Connexion de l'utilisateur"
+msgstr "Connexion de l'utilisateur."
 
 #: ../../<autoflask>:1
 msgid "Only user with an active account can log in."
@@ -208,7 +208,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``profile:read``"
-msgstr "**Scope**: ``profile:read``"
+msgstr "**Scope** : ``profile:read``"
 
 #: ../../<autoflask>
 msgid "Request Headers"
@@ -242,7 +242,7 @@ msgstr "Modifier le profil de l'utilisateur authentifié."
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``profile:write``"
-msgstr "**Scope**: ``profile:write``"
+msgstr "**Scope** : ``profile:write``"
 
 #: ../../<autoflask>:1
 msgid "user first name"
@@ -250,7 +250,7 @@ msgstr "prénom de l'utilisateur"
 
 #: ../../<autoflask>:1
 msgid "user last name"
-msgstr "nom de l'utilisateur"
+msgstr "nom de famille de l'utilisateur"
 
 #: ../../<autoflask>:1
 msgid "user location"
@@ -263,7 +263,7 @@ msgstr "biographie de l'utilisateur"
 #: ../../<autoflask>:1
 #, python-format
 msgid "user birth date (format: ``%Y-%m-%d``)"
-msgstr "date de naissance de l'utilisateur (format: ``%Y-%m-%d``)"
+msgstr "date de naissance de l'utilisateur (format : ``%Y-%m-%d``)"
 
 #: ../../<autoflask>:1
 msgid "``user profile updated``"
@@ -460,12 +460,6 @@ msgid "Handle password reset request."
 msgstr "Traiter les demandes de réinitialisation de mot de passe."
 
 #: ../../<autoflask>:1
-msgid "If email sending is disabled, this endpoint is not available"
-msgstr ""
-"Si l'envoi de courriels est désactivé, ce point d'accès n'est pas "
-"disponible."
-
-#: ../../<autoflask>:1
 msgid "``password reset request processed``"
 msgstr ""
 
@@ -483,7 +477,7 @@ msgstr "Modification de mot de passe"
 
 #: ../../<autoflask>:1
 msgid "Email change:"
-msgstr "Changement d'adresse électronique"
+msgstr "Changement d'adresse électronique :"
 
 #: ../../<autoflask>:1
 msgid "one to the current address to inform user"
@@ -619,7 +613,7 @@ msgstr "nom du fichier et sa taille (en octets) lorsque l'export est réussi"
 
 #: ../../<autoflask>:1
 msgid "if a request exists:"
-msgstr "si une requête existe"
+msgstr "si une requête existe :"
 
 #: ../../<autoflask>:1
 #, fuzzy
@@ -672,11 +666,11 @@ msgstr "Mettre à jour de la configuration de l'application."
 
 #: ../../<autoflask>:1
 msgid "Authenticated user must be an admin."
-msgstr "L'utilisateur authentifié doit avoir des droits d'administration"
+msgstr "L'utilisateur authentifié doit avoir des droits d'administration."
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``application:write``"
-msgstr "**Scope**: ``application:write``"
+msgstr "**Scope** : ``application:write``"
 
 #: ../../<autoflask>:1
 msgid "instance information"
@@ -735,7 +729,7 @@ msgstr "point d'accès de contrôle"
 
 #: ../source/api/index.rst:4
 msgid "Endpoints:"
-msgstr "Points d'accès"
+msgstr "Points d'accès :"
 
 #: ../source/api/index.rst:2
 msgid "API documentation"
@@ -837,7 +831,7 @@ msgstr "Supprimer un client OAuth2"
 
 #: ../../<autoflask>:1
 msgid "Revoke all tokens associated to an OAuth2 client (app)."
-msgstr "Révoquer tous les tokens associés à un client OAuth2 "
+msgstr "Révoquer tous les tokens associés à un client OAuth2."
 
 #: ../../<autoflask>:1
 msgid ""
@@ -897,7 +891,7 @@ msgstr "erreurs renvoyées par la librairie Authlib"
 
 #: ../../<autoflask>:1
 msgid "Issue or refresh token for a given OAuth2 client (app)."
-msgstr "Délivrer ou rafraîchir un jeton pour un client OAuth2 donné"
+msgstr "Délivrer ou rafraîchir un jeton pour un client OAuth2 donné."
 
 #: ../../<autoflask>:1
 msgid "OAuth2 client secret"
@@ -928,7 +922,7 @@ msgstr "jeton de rafraîchissement (pour le rafraîchissement du jeton)"
 
 #: ../../<autoflask>:1
 msgid "Revoke a token for a given OAuth2 client (app)."
-msgstr "Révoquer un jeton pour un client OAuth2 donné"
+msgstr "Révoquer un jeton pour un client OAuth2 donné."
 
 #: ../../<autoflask>:1
 msgid "access token to revoke"
@@ -948,27 +942,27 @@ msgstr "Les types de records suivants sont disponibles :"
 
 #: ../../<autoflask>:1
 msgid "average speed (record_type: ``AS``)"
-msgstr "vitesse moyenne (record_type: ``AS``)"
+msgstr "vitesse moyenne (record_type : ``AS``)"
 
 #: ../../<autoflask>:1
 msgid "farthest distance (record_type: ``FD``)"
-msgstr "distance la plus elevée (record_type: ``FD``)"
+msgstr "distance la plus elevée (record_type : ``FD``)"
 
 #: ../../<autoflask>:1
 msgid "highest ascent (record_type: ``HA``)"
-msgstr "dénivelé le plus élevé (record_type: ``HA``)"
+msgstr "dénivelé le plus élevé (record_type : ``HA``)"
 
 #: ../../<autoflask>:1
 msgid "longest duration (record_type: ``LD``)"
-msgstr "durée la plus longue (record_type: ``LD``)"
+msgstr "durée la plus longue (record_type : ``LD``)"
 
 #: ../../<autoflask>:1
 msgid "maximum speed (record_type: ``MS``)"
-msgstr "vitesse maximale (record_type: ``MS``)"
+msgstr "vitesse maximale (record_type : ``MS``)"
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``workouts:read``"
-msgstr "**Scope**: ``workouts:read``"
+msgstr "**Scope** : ``workouts:read``"
 
 #: ../../<autoflask>:1
 msgid "returning records"
@@ -988,11 +982,11 @@ msgstr "Obtenir tous les sports"
 
 #: ../../<autoflask>:1
 msgid "for non admin user:"
-msgstr "pour un utilisateur non admin"
+msgstr "pour un utilisateur non admin :"
 
 #: ../../<autoflask>:1
 msgid "for admin user:"
-msgstr "pour un administrateur"
+msgstr "pour un administrateur :"
 
 #: ../../<autoflask>:1
 msgid "Get a sport"
@@ -1000,11 +994,11 @@ msgstr "Obtenir un sport"
 
 #: ../../<autoflask>:1
 msgid "success for non admin user:"
-msgstr "succès pour un utilisateur non admin:"
+msgstr "succès pour un utilisateur non admin :"
 
 #: ../../<autoflask>:1
 msgid "success for admin user:"
-msgstr "succès pour un administrateur"
+msgstr "succès pour un administrateur :"
 
 #: ../../<autoflask>:1
 msgid "sport not found:"
@@ -1016,11 +1010,11 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Update a sport."
-msgstr "Modifier un sport"
+msgstr "Modifier un sport."
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``workouts:write``"
-msgstr "**Scope**: ``workouts:write``"
+msgstr "**Scope** : ``workouts:write``"
 
 #: ../../<autoflask>:1
 msgid "sport active status"
@@ -1038,15 +1032,15 @@ msgstr "Statistiques"
 msgid "Get workouts statistics for a user by time."
 msgstr ""
 "Obtenir des statistiques sur les séances d'entraînement pour un "
-"utilisateur par durée"
+"utilisateur par durée."
 
 #: ../../<autoflask>:1
 msgid "**Example requests**:"
-msgstr "**Exemple de requêtes**:"
+msgstr "**Exemple de requêtes** :"
 
 #: ../../<autoflask>:1
 msgid "with parameters:"
-msgstr "avec des paramètres"
+msgstr "avec des paramètres :"
 
 #: ../../<autoflask>:1
 msgid "no workouts:"
@@ -1059,20 +1053,20 @@ msgstr "nom d'utilisateur"
 #: ../../<autoflask>:1
 #, python-format
 msgid "start date (format: ``%Y-%m-%d``)"
-msgstr "date de début (format: ``%Y-%m-%d``)"
+msgstr "date de début (format : ``%Y-%m-%d``)"
 
 #: ../../<autoflask>:1
 #, python-format
 msgid "end date (format: ``%Y-%m-%d``)"
-msgstr "date de fin (format: ``%Y-%m-%d``)"
+msgstr "date de fin (format : ``%Y-%m-%d``)"
 
 #: ../../<autoflask>:1
 msgid ""
 "time frame:  - ``week``: week starting Sunday - ``weekm``: week starting "
 "Monday - ``month``: month - ``year``: year (default)"
 msgstr ""
-"période de temps :  - ``week``: semaine commençant le dimanche - "
-"``weekm``: semaine commençant le lundi - ``month``: mois - ``year``: "
+"période de temps :  - ``week`` : semaine commençant le dimanche - "
+"``weekm`` : semaine commençant le lundi - ``month`` : mois - ``year`` : "
 "année (default)"
 
 #: ../../<autoflask>:1
@@ -1081,19 +1075,19 @@ msgstr "période de temps :"
 
 #: ../../<autoflask>:1
 msgid "``week``: week starting Sunday"
-msgstr "``week``: semaine commençant le dimanche"
+msgstr "``week`` : semaine commençant le dimanche"
 
 #: ../../<autoflask>:1
 msgid "``weekm``: week starting Monday"
-msgstr "``weekm``: semaine commençant le lundi"
+msgstr "``weekm`` : semaine commençant le lundi"
 
 #: ../../<autoflask>:1
 msgid "``month``: month"
-msgstr "``month``: mois"
+msgstr "``month`` : mois"
 
 #: ../../<autoflask>:1
 msgid "``year``: year (default)"
-msgstr "``year``: année (default)"
+msgstr "``year`` : année (default)"
 
 #: ../../<autoflask>:1
 msgid "``user does not exist``"
@@ -1112,7 +1106,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "with sport id:"
-msgstr "avec l'identifiant du sport"
+msgstr "avec l'identifiant du sport :"
 
 #: ../../<autoflask>:1
 msgid "- ``user does not exist`` - ``sport does not exist``"
@@ -1142,7 +1136,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``users:read``"
-msgstr "**Scope**: ``users:read``"
+msgstr "**Scope** : ``users:read``"
 
 #: ../../<autoflask>:1
 msgid "with some query parameters:"
@@ -1238,7 +1232,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``users:write``"
-msgstr "**Scope**: ``users:write``"
+msgstr "**Scope** : ``users:write``"
 
 #: ../../<autoflask>:1
 msgid "activate user account"
@@ -1246,7 +1240,7 @@ msgstr "activer le compte utilisateur"
 
 #: ../../<autoflask>:1
 msgid "does the user have administrator rights"
-msgstr "l'utilisateur dispose-t-il de droits d'administration ?"
+msgstr "l'utilisateur dispose-t-il de droits d'administration"
 
 #: ../../<autoflask>:1
 msgid "new user email"
@@ -1336,11 +1330,11 @@ msgstr "distance maximale"
 
 #: ../../<autoflask>:1
 msgid "minimal duration (format: ``%H:%M``)"
-msgstr "durée minimale (format: ``%H:%M``)"
+msgstr "durée minimale (format : ``%H:%M``)"
 
 #: ../../<autoflask>:1
 msgid "maximal distance (format: ``%H:%M``)"
-msgstr "distance maximale (format: ``%H:%M``)"
+msgstr "distance maximale (format : ``%H:%M``)"
 
 #: ../../<autoflask>:1
 msgid "minimal average speed"
@@ -1402,7 +1396,7 @@ msgstr ""
 msgid "Get chart data from a workout gpx file, to display it with Chart.js."
 msgstr ""
 "Récupérer les données d'une séance avec gpx pour les afficher avec "
-"Chart.js"
+"Chart.js."
 
 #: ../../<autoflask>:1
 msgid "segment id"
@@ -1448,7 +1442,7 @@ msgstr "index de la tuile sur l'axe y de la carte"
 
 #: ../../<autoflask>:1
 msgid "Status codes are status codes returned by tile server"
-msgstr "Les codes d'état sont des codes d'état renvoyés par le serveur de tuiles."
+msgstr "Les codes d'état sont des codes d'état renvoyés par le serveur de tuiles"
 
 #: ../../<autoflask>:1
 msgid "Download gpx file."
@@ -1475,9 +1469,8 @@ msgid ""
 "sport id and notes (example: ``{\"sport_id\": 1, \"notes\": \"\"}``). "
 "Double quotes in notes must be escaped."
 msgstr ""
-"l'identifiant du sport et les notes (exemple : ``{\"sport_id\": 1, "
-"\"notes\": \"\"}``). Les guillemets doubles dans les notes doivent être "
-"échappés."
+"identifiant du sport et notes (exemple : ``{\"sport_id\": 1, \"notes\": "
+"\"\"}``). Les guillemets doubles dans les notes doivent être échappés."
 
 #: ../../<autoflask>:1
 msgid "workout created"
@@ -1520,12 +1513,12 @@ msgstr "titre de la séance (non obligatoire)"
 #, python-format
 msgid "workout date, in user timezone (format: ``%Y-%m-%d %H:%M``)"
 msgstr ""
-"date de la séance, dans le fuseau horaire de l'utilisateur (format: "
+"date de la séance, dans le fuseau horaire de l'utilisateur (format : "
 "``%Y-%m-%d %H:%M``)"
 
 #: ../../<autoflask>:1
 msgid "Update a workout."
-msgstr "Mettre à jour une séance"
+msgstr "Mettre à jour une séance."
 
 #: ../../<autoflask>:1
 msgid ""
@@ -1565,7 +1558,7 @@ msgid ""
 "workout date in user timezone (format: ``%Y-%m-%d %H:%M``) (only for "
 "workout without gpx)"
 msgstr ""
-"date de la séance dans le fuseau horaire de l'utilisateur (format: "
+"date de la séance dans le fuseau horaire de l'utilisateur (format : "
 "``%Y-%m-%d %H:%M``) (seulement pour les séances sans gpx)"
 
 #: ../../<autoflask>:1
@@ -1574,7 +1567,7 @@ msgstr "séance mise à jour"
 
 #: ../../<autoflask>:1
 msgid "Delete a workout."
-msgstr "Supprimer la séance"
+msgstr "Supprimer la séance."
 
 #: ../../<autoflask>:1
 msgid "workout deleted"
@@ -3296,7 +3289,7 @@ msgstr "``ftcli db upgrade``"
 
 #: ../source/cli.rst:42
 msgid "Apply migrations."
-msgstr "Appliquer les migrations"
+msgstr "Appliquer les migrations."
 
 #: ../source/cli.rst:49
 msgid "``ftcli oauth2 clean``"
@@ -3374,7 +3367,7 @@ msgstr "``USERNAME``"
 
 #: ../source/cli.rst:122 ../source/cli.rst:162
 msgid "Username."
-msgstr "Nom de l'utilisateur"
+msgstr "Nom de l'utilisateur."
 
 #: ../source/cli.rst:123
 msgid "``--email EMAIL``"
@@ -3501,7 +3494,7 @@ msgstr ""
 
 #: ../source/features.rst:27
 msgid "14 sports are supported:"
-msgstr "14 sports sont pris en charge:"
+msgstr "14 sports sont pris en charge :"
 
 #: ../source/features.rst:17
 msgid "Cycling (Virtual)  (*new in 0.7.3*)"
@@ -3543,7 +3536,7 @@ msgid ""
 msgstr ""
 "(*nouveau dans la version in 0.5.0*) Le seuil de vitesse arrêté utilisé "
 "par `gpxpy <https://github.com/tkrajina/gpxpy>`_ n'est plus la valeur par"
-" défaut pour les sports suivants (0.1 km/h au lieu de 1 km/h):"
+" défaut pour les sports suivants (0.1 km/h au lieu de 1 km/h) :"
 
 #: ../source/features.rst:31
 msgid "Mountaineering"
@@ -3587,7 +3580,7 @@ msgstr ""
 
 #: ../source/features.rst
 msgid "Only gpx files with time are supported."
-msgstr "Seuls les fichiers gpx avec l'heure sont pris en charge"
+msgstr "Seuls les fichiers gpx avec l'heure sont pris en charge."
 
 #: ../source/features.rst
 msgid ""
@@ -3783,7 +3776,7 @@ msgid ""
 msgstr ""
 "Après l'enregistrement, le compte d'utilisateur est inactif et un "
 "courriel contenant des instructions de confirmation est envoyé pour "
-"l'activer. Un utilisateur dont le compte est inactif  ne peut pas se "
+"l'activer. Un utilisateur dont le compte est inactif ne peut pas se "
 "connecter (*nouveauté dans la version 0.6.0*)."
 
 #: ../source/features.rst:101
@@ -3820,15 +3813,15 @@ msgid ""
 msgstr ""
 "L'utilisateur peut choisir entre le système métrique et le système "
 "impérial pour la distance, l'affichage de l'altitude et de la vitesse "
-"(*nouveau dans la version 0.5.0*)."
+"(*nouveau dans la version 0.5.0*)"
 
 #: ../source/features.rst:107
 msgid ""
 "A user can choose to display or hide ascent records and total on "
 "Dashboard (*new in 0.6.11*)"
 msgstr ""
-"Un utilisateur peut choisir d'afficher ou cacher les records et le total"
-"  de dénivelé positif sur le tableau de bord (*nouveau dans la version "
+"Un utilisateur peut choisir d'afficher ou cacher les records et le total "
+"de dénivelé positif sur le tableau de bord (*nouveau dans la version "
 "0.6.11*)"
 
 #: ../source/features.rst:108
@@ -3866,7 +3859,7 @@ msgstr ""
 msgid "A user can set sport preferences (*new in 0.5.0*):"
 msgstr ""
 "Un utilisateur peut définir des préférences en matière de sport (*nouveau"
-" dans la version 0.5.0*):"
+" dans la version 0.5.0*) :"
 
 #: ../source/features.rst:116
 msgid "change sport color (used for sport image and charts)"
@@ -4151,11 +4144,13 @@ msgid ""
 msgstr ""
 "Etat d'avancement de la traduction sur `Weblate "
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (peut différer de la "
-"version publiée):"
+"version publiée) :"
 
 #: ../source/features.rst:211
 msgid "Polish is not yet available in **FitTrackee** interface."
-msgstr "Le polonais n'est pas encore disponible dans l'interface de **FitTrackee**"
+msgstr ""
+"Le Polonais n'est pas encore disponible dans l'interface de "
+"**FitTrackee**."
 
 #: ../source/features.rst:214
 msgid "Screenshots"
@@ -4411,7 +4406,7 @@ msgid ""
 "only)"
 msgstr ""
 "`Poetry <https://poetry.eustace.io>`__ (pour l'installation à partir des "
-"sources  uniquement)"
+"sources uniquement)"
 
 #: ../source/installation.rst:32
 msgid ""
@@ -4434,7 +4429,7 @@ msgid ""
 msgstr ""
 "Si l'inscription des utilisateurs est activé, il est recommandé de "
 "configurer un fournisseur SMTP pour l'envoi des courriels et les demandes"
-" d'export de données"
+" d'export de données."
 
 #: ../source/installation.rst
 msgid ""
@@ -4475,7 +4470,7 @@ msgstr ""
 
 #: ../source/installation.rst:57
 msgid "Name of the module to import at flask run."
-msgstr "Nom du module à importer au démarrage de Flask"
+msgstr "Nom du module à importer au démarrage de Flask."
 
 #: ../source/installation.rst:58
 msgid ""
@@ -4487,7 +4482,7 @@ msgstr ""
 
 #: ../source/installation.rst:63
 msgid "**FitTrackee** host."
-msgstr "Hôte **FitTrackee** "
+msgstr "Hôte **FitTrackee**."
 
 #: ../source/installation.rst
 msgid "default"
@@ -4499,7 +4494,7 @@ msgstr "127.0.0.1"
 
 #: ../source/installation.rst:70
 msgid "**FitTrackee** port."
-msgstr "Port de l'application web **FitTrackee**"
+msgstr "Port de l'application web **FitTrackee**."
 
 #: ../source/installation.rst:72
 msgid "5000"
@@ -4507,7 +4502,7 @@ msgstr "5000"
 
 #: ../source/installation.rst:77
 msgid "**FitTrackee** configuration."
-msgstr "Configuration de **FitTrackee**"
+msgstr "Configuration de **FitTrackee**."
 
 #: ../source/installation.rst:79
 msgid "fittrackee.config.ProductionConfig"
@@ -4523,11 +4518,11 @@ msgstr ""
 msgid "Use a strong secret key. This key is used in JWT generation."
 msgstr ""
 "Utiliser une clé secrète forte. Cette clé est utilisée pour la génération"
-" des jetons JWT"
+" des jetons JWT."
 
 #: ../source/installation.rst:91
 msgid "Number of workers spawned by **Gunicorn**."
-msgstr "Nombre de _workers_ lancés par **Gunicorn**"
+msgstr "Nombre de _workers_ lancés par **Gunicorn**."
 
 #: ../source/installation.rst:93
 msgid "1"
@@ -4556,7 +4551,7 @@ msgid ""
 msgstr ""
 "Dans le cas d'une installation avec PyPI, le répertoire sera localisé "
 "dans le répertoire de l'environnement virtuel Python si la variable n'est"
-" pas initialisée"
+" pas initialisée."
 
 #: ../source/installation.rst:117
 msgid ""
@@ -4783,11 +4778,13 @@ msgstr ""
 
 #: ../source/installation.rst:257
 msgid "with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``"
-msgstr "avec SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``"
+msgstr "avec SSL : ``smtp://username:password@smtp.example.com:465/?ssl=True``"
 
 #: ../source/installation.rst:258
 msgid "with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``"
-msgstr "avec STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``"
+msgstr ""
+"avec STARTTLS : "
+"``smtp://username:password@smtp.example.com:587/?tls=True``"
 
 #: ../source/installation.rst
 #, fuzzy
@@ -4799,7 +4796,7 @@ msgstr ""
 #: ../source/installation.rst:266
 msgid "Credentials can be omitted: ``smtp://smtp.example.com:25``."
 msgstr ""
-"Les informations d'identification peuvent être omises: "
+"Les informations d'identification peuvent être omises : "
 "``smtp://smtp.example.com:25``."
 
 #: ../source/installation.rst:267
@@ -5026,7 +5023,7 @@ msgid ""
 "`Visual Crossing <https://www.visualcrossing.com>`__ (**note**: "
 "historical data are provided on hourly period)"
 msgstr ""
-"`Visual Crossing <https://www.visualcrossing.com>`__ (**note**: les "
+"`Visual Crossing <https://www.visualcrossing.com>`__ (**note** : les "
 "données historiques sont fournies sur une période d'une heure)"
 
 #: ../source/installation.rst:360
@@ -5038,7 +5035,7 @@ msgstr ""
 #: ../source/installation.rst:362
 msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
 msgstr ""
-"``WEATHER_API_KEY``: clé d'API correspondant au fournisseur de données "
+"``WEATHER_API_KEY`` : clé d'API correspondant au fournisseur de données "
 "météo"
 
 #: ../source/installation.rst:367
@@ -5063,7 +5060,7 @@ msgstr "A partir de PyPI"
 
 #: ../source/installation.rst
 msgid "Recommended way on production."
-msgstr "Méthode recommandée en production"
+msgstr "Méthode recommandée en production."
 
 #: ../source/installation.rst:382
 msgid "Create and activate a virtualenv"
@@ -5103,7 +5100,7 @@ msgid ""
 "source the file."
 msgstr ""
 "Par exemple, copier et coller le fichier ``.env`` à partir de "
-"``.env.example`` et activer le fichier"
+"``.env.example`` et activer le fichier."
 
 #: ../source/installation.rst:412
 msgid "Initialize database schema"
@@ -5120,7 +5117,7 @@ msgid ""
 msgstr ""
 "Démarrer les *workers* de la file d'attente des tâches si l'envoi des "
 "courriels est activé, avec l'interface de ligne de commandes de flask-"
-"dramatiq"
+"dramatiq :"
 
 #: ../source/installation.rst
 msgid ""
@@ -5202,7 +5199,7 @@ msgstr "Démarrer le serveur et le client :"
 
 #: ../source/installation.rst:485 ../source/installation.rst:621
 msgid "Run dramatiq workers:"
-msgstr "Démarrer les *workers* dramatiq"
+msgstr "Démarrer les *workers* dramatiq :"
 
 #: ../source/installation.rst:491
 msgid "Open http://localhost:3000 and register"
@@ -5220,11 +5217,11 @@ msgstr ""
 
 #: ../source/installation.rst:508
 msgid "Download the last release (for now, it is the release v0.7.17):"
-msgstr "Télécharger la dernière version (à ce jour, la version v0.7.17):"
+msgstr "Télécharger la dernière version (à ce jour, la version v0.7.17) :"
 
 #: ../source/installation.rst:520
 msgid "Install Python virtualenv and all related packages:"
-msgstr "Installer l'environnement virtuel Python et tous les paquets nécessaires:"
+msgstr "Installer l'environnement virtuel Python et tous les paquets nécessaires :"
 
 #: ../source/installation.rst:526
 msgid ""
@@ -5233,7 +5230,7 @@ msgid ""
 msgstr ""
 "Initialiser la base de données (**après avoir mis à jour** "
 "``db/create.sql`` **pour changer les informations de connexion à la base "
-"de données**):"
+"de données**) :"
 
 #: ../source/installation.rst:533
 msgid "Start the server and dramatiq workers:"
@@ -5281,14 +5278,14 @@ msgstr "Mettre à jour avec pip"
 msgid ""
 "Update environment variables if needed and source environment variables "
 "file"
-msgstr "Mettre à jour les variables d'environnements si nécessaire et les activer "
+msgstr "Mettre à jour les variables d'environnements si nécessaire et les activer"
 
 #: ../source/installation.rst:580 ../source/installation.rst:609
 #: ../source/installation.rst:651
 msgid "Upgrade database if needed (see changelog for migrations):"
 msgstr ""
 "Mettre à jour la base de données si nécessaire (voir le journal des "
-"changements pour les migrations)"
+"changements pour les migrations) :"
 
 #: ../source/installation.rst:586
 msgid ""
@@ -5312,11 +5309,11 @@ msgstr ""
 
 #: ../source/installation.rst:603 ../source/installation.rst:645
 msgid "Upgrade packages:"
-msgstr "Mettre à jour les paquets"
+msgstr "Mettre à jour les paquets :"
 
 #: ../source/installation.rst:615
 msgid "Restart the server:"
-msgstr "Redémarrer le serveur"
+msgstr "Redémarrer le serveur :"
 
 #: ../source/installation.rst:628
 msgid "Prod environment"
@@ -5363,11 +5360,11 @@ msgid ""
 " system):"
 msgstr ""
 "Exemples (à adapter selon la configuration de votre instance et votre "
-"système d'exploitation):"
+"système d'exploitation) :"
 
 #: ../source/installation.rst:675
 msgid "for application: ``fittrackee.service``"
-msgstr "pour l'application: ``fittrackee.service``"
+msgstr "pour l'application : ``fittrackee.service``"
 
 #: ../source/installation.rst:715
 msgid ""
@@ -5390,11 +5387,11 @@ msgstr ""
 
 #: ../source/installation.rst:720
 msgid "for task queue workers: ``fittrackee_workers.service``"
-msgstr "pour les *workers* de la file d'attente: ``fittrackee_workers.service``"
+msgstr "pour les *workers* de la file d'attente : ``fittrackee_workers.service``"
 
 #: ../source/installation.rst:755
 msgid "**Nginx** configuration:"
-msgstr "Configuration **Nginx**  :"
+msgstr "Configuration **Nginx** :"
 
 #: ../source/installation.rst:793
 msgid ""
@@ -5416,7 +5413,7 @@ msgid ""
 "**FitTrackee** from **sources**."
 msgstr ""
 "A des fins d'évaluation, des fichiers Docker sont disponible, installant "
-"**FitTrackee** à partir des sources **sources**."
+"**FitTrackee** à partir des **sources**."
 
 #: ../source/installation.rst:806
 msgid "To install **FitTrackee**:"
@@ -5444,7 +5441,7 @@ msgstr "Pour arrêter **Fittrackee** :"
 
 #: ../source/installation.rst:840
 msgid "To start **Fittrackee** (application and dramatiq workers):"
-msgstr "pour démarrer **Fittrackee** (application et *workers* dramatiq):"
+msgstr "pour démarrer **Fittrackee** (application et *workers* dramatiq) :"
 
 #: ../source/installation.rst:847
 msgid "To run shell inside **Fittrackee** container:"
@@ -5460,7 +5457,7 @@ msgstr "une étape additionnelle est nécessaire pour installer `fittrackee_clie
 
 #: ../source/installation.rst:865
 msgid "to start **FitTrackee** with client dev tools:"
-msgstr "pour démarrer **FitTrackee** avec les outils de développement client:"
+msgstr "pour démarrer **FitTrackee** avec les outils de développement client :"
 
 #: ../source/installation.rst:871
 msgid "Open http://localhost:3000"
@@ -5558,7 +5555,7 @@ msgid ""
 msgstr ""
 "``application:write`` : permet d'accéder en écriture à la configuration "
 "de l'application (uniquement pour les utilisateurs ayant des droits "
-"d'administration), "
+"d'administration),"
 
 #: ../source/oauth.rst:29
 msgid "``profile:read``: grants read access to auth endpoints,"
@@ -5587,14 +5584,14 @@ msgstr ""
 #: ../source/oauth.rst:33
 msgid "``workouts:read``: grants read access to workouts-related endpoints,"
 msgstr ""
-"``workouts:read``: accorde un accès en lecture aux points d'entrée "
+"``workouts:read`` : accorde un accès en lecture aux points d'entrée "
 "associés aux séances,"
 
 #: ../source/oauth.rst:34
 msgid "``workouts:write``: grants write access to workouts-related endpoints."
 msgstr ""
-"``workouts:write``: accorde un accès en écriture aux points d'entrée "
-"associés aux séances,"
+"``workouts:write`` : accorde un accès en écriture aux points d'entrée "
+"associés aux séances."
 
 #: ../source/oauth.rst:38
 msgid "Flow"
@@ -5693,7 +5690,7 @@ msgstr ""
 
 #: ../source/oauth.rst
 msgid "Example for PKCE:"
-msgstr "Exemple pour PKCE:"
+msgstr "Exemple pour PKCE :"
 
 #: ../source/oauth.rst
 msgid "``https://<FITTRACKEE_HOST>/profile/apps/authorize?response_type=code&client_id=<CLIENT_ID>&scope=profile%3Aread+workouts%3Awrite&state=<STATE>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=S256``"
@@ -5898,7 +5895,7 @@ msgid ""
 msgstr ""
 "Augmenter le `délai d'attente "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ (timeout) "
-"**gunicorn**  si l'erreur suivante est affichée dans le journal de "
+"**gunicorn** si l'erreur suivante est affichée dans le journal de "
 "gunicorn : ``[CRITICAL] WORKER TIMEOUT``."
 
 #: ../source/troubleshooting/index.rst:2
@@ -5915,4 +5912,10 @@ msgstr "Dépannage"
 
 #~ msgid "``workout created``"
 #~ msgstr "séance créée"
+
+#~ msgid "If email sending is disabled, this endpoint is not available"
+#~ msgstr ""
+#~ "Si l'envoi de courriels est désactivé,"
+#~ " ce point d'accès n'est pas "
+#~ "disponible."
 

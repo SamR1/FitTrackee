@@ -275,7 +275,7 @@
 <li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API</p></li>
 <li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
 <li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (pour l’installation à partir des sources  uniquement)</p></li>
+<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (pour l’installation à partir des sources uniquement)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 16+ et <a class="reference external" href="https://yarnpkg.com">Yarn</a> (pour le développement uniquement)</p></li>
 <li><p>Docker et Docker Compose (pour le développement ou l’évaluation de l’application)</p></li>
 </ul>
@@ -286,7 +286,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Si l’inscription des utilisateurs est activé, il est recommandé de configurer un fournisseur SMTP pour l’envoi des courriels et les demandes d’export de données</div>
+<div class="line">Si l’inscription des utilisateurs est activé, il est recommandé de configurer un fournisseur SMTP pour l’envoi des courriels et les demandes d’export de données.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -310,7 +310,7 @@
 <dt class="sig sig-object std" id="envvar-FLASK_APP">
 <span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Lien permanent vers cette définition">#</a></dt>
 <dd><div class="line-block">
-<div class="line">Nom du module à importer au démarrage de Flask</div>
+<div class="line">Nom du module à importer au démarrage de Flask.</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">FLASK_APP</span></code> doit contenir <code class="docutils literal notranslate"><span class="pre">$(PWD)/fittrackee/__main__.py</span></code> dans le cas de l’installation à partir des sources, sinon <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code>.</div>
 </div>
 </dd></dl>
@@ -318,7 +318,7 @@
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-HOST">
 <span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Hôte <strong>FitTrackee</strong></p>
+<dd><p>Hôte <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p>127.0.0.1</p>
@@ -329,7 +329,7 @@
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-PORT">
 <span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Port de l’application web <strong>FitTrackee</strong></p>
+<dd><p>Port de l’application web <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p>5000</p>
@@ -340,7 +340,7 @@
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_SETTINGS">
 <span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Configuration de <strong>FitTrackee</strong></p>
+<dd><p>Configuration de <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p>fittrackee.config.ProductionConfig</p>
@@ -354,14 +354,14 @@
 <dd><p>clé secrète de <strong>FitTrackee</strong>, doit être initialisé sur un environnement de production.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>Utiliser une clé secrète forte. Cette clé est utilisée pour la génération des jetons JWT</p>
+<p>Utiliser une clé secrète forte. Cette clé est utilisée pour la génération des jetons JWT.</p>
 </div>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_WORKERS">
 <span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Nombre de _workers_ lancés par <strong>Gunicorn</strong></p>
+<dd><p>Nombre de _workers_ lancés par <strong>Gunicorn</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p>1</p>
@@ -393,7 +393,7 @@
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
 <div class="line-block">
-<div class="line">Dans le cas d’une installation avec PyPI, le répertoire sera localisé dans le répertoire de l’environnement virtuel Python si la variable n’est pas initialisée</div>
+<div class="line">Dans le cas d’une installation avec PyPI, le répertoire sera localisé dans le répertoire de l’environnement virtuel Python si la variable n’est pas initialisée.</div>
 </div>
 </div>
 </dd></dl>
@@ -608,8 +608,8 @@
 <p>Pour l’envoi des courriels, une valeur valide pour la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> doit être fourni :</p>
 <ul class="simple">
 <li><p>avec un SMTP server sans chiffrement : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
-<li><p>avec SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
-<li><p>avec STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
+<li><p>avec SSL : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
+<li><p>avec STARTTLS : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -622,7 +622,7 @@
 <p><span class="versionmodified changed">Modifié dans la version 0.5.3.</span></p>
 </div>
 <div class="line-block">
-<div class="line">Les informations d’identification peuvent être omises: <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
+<div class="line">Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
 <div class="line">Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis, the port par défaut est 25.</div>
 </div>
 <div class="admonition warning">
@@ -720,11 +720,11 @@ Commands:
 </div>
 <p>Les fournisseurs de données météo suivants sont pris en charge par <strong>FitTrackee</strong> :</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong>: les données historiques sont fournies sur une période d’une heure)</p></li>
+<li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong> : les données historiques sont fournies sur une période d’une heure)</p></li>
 </ul>
 <p>Pour configurer un fournisseur de données météo, initialiser les variables d’environnement suivantes :</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code>: clé d’API correspondant au fournisseur de données météo</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code> : clé d’API correspondant au fournisseur de données météo</p></li>
 </ul>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.7.15.</span></p>
@@ -745,7 +745,7 @@ Commands:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Méthode recommandée en production</div>
+<div class="line">Méthode recommandée en production.</div>
 </div>
 </div>
 <ul class="simple">
@@ -773,7 +773,7 @@ Commands:
 <ul class="simple">
 <li><p>Initialiser les variables d’environnement, cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a></p></li>
 </ul>
-<p>Par exemple, copier et coller le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> à partir de <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> et activer le fichier</p>
+<p>Par exemple, copier et coller le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> à partir de <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> et activer le fichier.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>nano<span class="w"> </span>.env
 $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.env
 </pre></div>
@@ -791,7 +791,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches si l’envoi des courriels est activé, avec l’interface de ligne de commandes de flask-dramatiq</p></li>
+<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches si l’envoi des courriels est activé, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -856,7 +856,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> dramatiq</p></li>
+<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
 </pre></div>
@@ -882,7 +882,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.17):</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.17) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
 $<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.17.tar.gz
@@ -892,13 +892,13 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </div>
 <ul class="simple">
 <li><p>Créer le fichier <strong>.env</strong> à partir de l’exemple et le mettre à jour (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
-<li><p>Installer l’environnement virtuel Python et tous les paquets nécessaires:</p></li>
+<li><p>Installer l’environnement virtuel Python et tous les paquets nécessaires :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-python
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Initialiser la base de données (<strong>après avoir mis à jour</strong> <code class="docutils literal notranslate"><span class="pre">db/create.sql</span></code> <strong>pour changer les informations de connexion à la base de données</strong>):</p></li>
+<li><p>Initialiser la base de données (<strong>après avoir mis à jour</strong> <code class="docutils literal notranslate"><span class="pre">db/create.sql</span></code> <strong>pour changer les informations de connexion à la base de données</strong>) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-db
 </pre></div>
@@ -954,7 +954,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations)</p></li>
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>db<span class="w"> </span>upgrade
 </pre></div>
@@ -975,25 +975,25 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 <ul class="simple">
 <li><p>Mettre à jour le fichier <strong>.env</strong> si nécessaire (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
-<li><p>Mettre à jour les paquets</p></li>
+<li><p>Mettre à jour les paquets :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations)</p></li>
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>upgrade-db
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Redémarrer le serveur</p></li>
+<li><p>Redémarrer le serveur :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>serve
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> dramatiq</p></li>
+<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
 </pre></div>
@@ -1014,13 +1014,13 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </div>
 <ul class="simple">
 <li><p>Mettre à jour le fichier <strong>.env</strong> si nécessaire (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
-<li><p>Mettre à jour les paquets</p></li>
+<li><p>Mettre à jour les paquets :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations)</p></li>
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>upgrade-db
 </pre></div>
@@ -1041,9 +1041,9 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <section id="deployment">
 <h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">#</a></h2>
 <p>Il y a plusieurs méthodes pour démarrer et servir l’application web <strong>FitTrackee</strong> et l’application de gestion de la file d’attente de tâches. Un des moyens est d’utiliser les services <strong>systemd</strong> et <strong>Nginx</strong> to proxy passer à <strong>Gunicorn</strong>.</p>
-<p>Exemples (à adapter selon la configuration de votre instance et votre système d’exploitation):</p>
+<p>Exemples (à adapter selon la configuration de votre instance et votre système d’exploitation) :</p>
 <ul class="simple">
-<li><p>pour l’application: <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
+<li><p>pour l’application : <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
 <span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">service</span>
@@ -1089,7 +1089,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <p>Plus d’informations sur le déploiement avec Gunicorn dans sa <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
-<li><p>pour les <em>workers</em> de la file d’attente: <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
+<li><p>pour les <em>workers</em> de la file d’attente : <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
 <span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">task</span> <span class="n">queue</span> <span class="n">service</span>
@@ -1124,7 +1124,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Configuration <strong>Nginx</strong>  :</p></li>
+<li><p>Configuration <strong>Nginx</strong> :</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>server {
     listen 443 ssl http2;
@@ -1172,7 +1172,7 @@ server {
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.4.</span></p>
 </div>
-<p>A des fins d’évaluation, des fichiers Docker sont disponible, installant <strong>FitTrackee</strong> à partir des sources <strong>sources</strong>.</p>
+<p>A des fins d’évaluation, des fichiers Docker sont disponible, installant <strong>FitTrackee</strong> à partir des <strong>sources</strong>.</p>
 <ul class="simple">
 <li><p>Pour installer <strong>FitTrackee</strong> :</p></li>
 </ul>
@@ -1209,7 +1209,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-build
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>pour démarrer <strong>Fittrackee</strong> (application et <em>workers</em> dramatiq):</p></li>
+<li><p>pour démarrer <strong>Fittrackee</strong> (application et <em>workers</em> dramatiq) :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-run-all
 </pre></div>
@@ -1233,7 +1233,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-build
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>pour démarrer <strong>FitTrackee</strong> avec les outils de développement client:</p></li>
+<li><p>pour démarrer <strong>FitTrackee</strong> avec les outils de développement client :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-serve-client
 </pre></div>

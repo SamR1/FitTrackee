@@ -236,7 +236,7 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#get--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir les clients OAuth2 pour l’utilisateur authentifié avec pagination (5 clients/page).</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
 <li><p>sans paramètres :</p></li>
 </ul>
@@ -251,7 +251,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -313,12 +313,12 @@
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#post--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Créer un client OAuth2 pour l’utilisateur authentifié.</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -377,12 +377,12 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">client_client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-oauth-apps-(string-client_client_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un client OAuth2 avec le “client_id”.</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/o22a27s2aBPUoxJbxV3UjDOx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -451,12 +451,12 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_id</span></span><a class="headerlink" href="#get--api-oauth-apps-(int-client_id)-by_id" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un client OAuth2 avec l’identifiant (entier).</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/1/by_id</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -525,12 +525,12 @@
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-oauth-apps-(int-client_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Delete an OAuth2 client (app).</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/oauth/apps/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -564,14 +564,14 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-apps-(int-client_id)-revoke">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/revoke</span></span><a class="headerlink" href="#post--api-oauth-apps-(int-client_id)-revoke" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Révoquer tous les tokens associés à un client OAuth2</p>
+<dd><p>Révoquer tous les tokens associés à un client OAuth2.</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps/1/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -611,12 +611,12 @@
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/authorize</span></span><a class="headerlink" href="#post--api-oauth-authorize" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Autoriser un client OAuth2 (app). En cas de succès, il redirige vers l’URL de redirection du client avec le code pour émettre un jeton.</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/authorize</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -664,13 +664,13 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-token">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/token</span></span><a class="headerlink" href="#post--api-oauth-token" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Délivrer ou rafraîchir un jeton pour un client OAuth2 donné</p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Délivrer ou rafraîchir un jeton pour un client OAuth2 donné.</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -713,13 +713,13 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-oauth-revoke">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/revoke</span></span><a class="headerlink" href="#post--api-oauth-revoke" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Révoquer un jeton pour un client OAuth2 donné</p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Révoquer un jeton pour un client OAuth2 donné.</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 

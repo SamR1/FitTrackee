@@ -236,12 +236,12 @@
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Enregistrer un utilisateur et envoyer un courriel de confirmation.</p>
 <p>Le compte nouvellement créé est inactif. L’utilisateur doit confirmer son adresse électronique pour l’activer.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/register</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -300,12 +300,12 @@
 <dt class="sig sig-object http" id="post--api-auth-account-confirm">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Activer le compte utilisateur après l’inscription.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/confirm</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -337,12 +337,12 @@
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Renvoyer le courriel avec les instructions pour confirmer le compte.</p>
 <p>Si l’envoi des courriels est désactivé, ce point d’accès n’est pas disponible.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/resend-confirmation</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -372,14 +372,14 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-login">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Connexion de l’utilisateur</p>
+<dd><p>Connexion de l’utilisateur.</p>
 <p>Seuls les utilisateurs disposant d’un compte actif peuvent se connecter.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/login</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>connexion avec succès :</p></li>
 </ul>
@@ -427,13 +427,13 @@
 <dt class="sig sig-object http" id="get--api-auth-profile">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir des informations sur l’utilisateur authentifié (profil, compte, préférences).</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/auth/profile</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -546,13 +546,13 @@
 <dt class="sig sig-object http" id="post--api-auth-profile-edit">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Modifier le profil de l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -646,10 +646,10 @@
 <dt class="field-odd">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_name</strong> (<em>string</em>) – prénom de l’utilisateur</p></li>
-<li><p><strong>last_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>last_name</strong> (<em>string</em>) – nom de famille de l’utilisateur</p></li>
 <li><p><strong>location</strong> (<em>string</em>) – localisation de l’utilisateur</p></li>
 <li><p><strong>bio</strong> (<em>string</em>) – biographie de l’utilisateur</p></li>
-<li><p><strong>birth_date</strong> (<em>string</em>) – date de naissance de l’utilisateur (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>birth_date</strong> (<em>string</em>) – date de naissance de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -690,13 +690,13 @@
 </ul>
 </li>
 </ul>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit/preferences</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -828,13 +828,13 @@
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-sports">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Modifier les préférences des sports de l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/profile/edit/sports</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -889,13 +889,13 @@
 <dt class="sig sig-object http" id="delete--api-auth-profile-reset-sports-(sport_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Réinitialiser les préférences de l’utilisateur authentifié pour un sport donné.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/profile/reset/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -931,13 +931,13 @@
 <dt class="sig sig-object http" id="post--api-auth-picture">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Mise à jour de l’image de l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -985,13 +985,13 @@
 <dt class="sig sig-object http" id="delete--api-auth-picture">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Supprimer l’image de l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/auth/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
@@ -1021,13 +1021,13 @@
 <dt class="sig sig-object http" id="post--api-auth-password-reset-request">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Traiter les demandes de réinitialisation de mot de passe.</p>
-<p>Si l’envoi de courriels est désactivé, ce point d’accès n’est pas disponible.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p>Si l’envoi des courriels est désactivé, ce point d’accès n’est pas disponible.</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/password/reset-request</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1060,20 +1060,20 @@
 <p>Les courriels suivants sont envoyés si l’envoi est activé :</p>
 <ul class="simple">
 <li><p>Modification de mot de passe</p></li>
-<li><p>Changement d’adresse électronique</p>
+<li><p>Changement d’adresse électronique :</p>
 <ul>
 <li><p>un à l’adresse actuelle pour informer l’utilisateur</p></li>
 <li><p>un autre à la nouvelle adresse pour la confirmer.</p></li>
 </ul>
 </li>
 </ul>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/auth/profile/edit/account</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1205,12 +1205,12 @@
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Mise à jour du mot de passe de l’utilisateur après une demande de réinitialisation du mot de passe.</p>
 <p>Uniquement si l’envoi est activé.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/password/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1242,12 +1242,12 @@
 <dt class="sig sig-object http" id="post--api-auth-email-update">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Mise à jour de l’adresse électronique de l’utilisateur après confirmation.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/email/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1277,12 +1277,12 @@
 <dt class="sig sig-object http" id="post--api-auth-logout">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/logout</span></span><a class="headerlink" href="#post--api-auth-logout" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Déconnexion de l’utilisateur. Si un jeton valide est fourni, il sera invalidé.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>déconnexion avec succès :</p></li>
 </ul>
@@ -1332,12 +1332,12 @@
 <dt class="sig sig-object http" id="post--api-auth-account-privacy-policy">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/privacy-policy</span></span><a class="headerlink" href="#post--api-auth-account-privacy-policy" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>L’utilisateur authentifié accepte la politique de confidentialité.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/privacy-policy</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1383,14 +1383,14 @@
 <li><p>état de l’export (<code class="docutils literal notranslate"><span class="pre">in_progress</span></code>, <code class="docutils literal notranslate"><span class="pre">successful</span></code> and <code class="docutils literal notranslate"><span class="pre">errored</span></code>)</p></li>
 <li><p>nom du fichier et sa taille (en octets) lorsque l’export est réussi</p></li>
 </ul>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/account/export</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <ul class="simple">
-<li><p>si une requête existe</p></li>
+<li><p>si une requête existe :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1442,12 +1442,12 @@
 <dt class="sig sig-object http" id="post--api-auth-account-export-request">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/request</span></span><a class="headerlink" href="#post--api-auth-account-export-request" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Demande d’export de données pour un utilisateur authentifié.</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/export/request</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -1492,12 +1492,12 @@
 <dt class="sig sig-object http" id="get--api-auth-account-export-(string-file_name)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-auth-account-export-(string-file_name)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Télécharger une archive d’export de données</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/account/export/download/archive_rgjsR3fHr5Yp.zip</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/x-gzip</span>
 </pre></div>

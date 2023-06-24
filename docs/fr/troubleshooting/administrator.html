@@ -258,7 +258,7 @@
 <h2><cite>Échec du chargement ou du téléchargement de fichiers</cite><a class="headerlink" href="#failed-to-upload-or-download-files" title="Lien permanent vers cette rubrique">#</a></h2>
 <ul class="simple">
 <li><p>Vérifiez <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> dans la configuration <strong>nginx</strong>. Augmentez la valeur pour gérer des fichiers plus volumineux (voir la <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation de **nginx**</a>).</p></li>
-<li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d’attente</a> (timeout) <strong>gunicorn</strong>  si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
+<li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d’attente</a> (timeout) <strong>gunicorn</strong> si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
 </ul>
 </section>
 </section>

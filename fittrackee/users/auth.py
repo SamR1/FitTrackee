@@ -1253,7 +1253,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     """
     Handle password reset request.
 
-    If email sending is disabled, this endpoint is not available
+    If email sending is disabled, this endpoint is not available.
 
     **Example request**:
 

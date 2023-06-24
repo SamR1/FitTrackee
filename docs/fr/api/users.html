@@ -236,8 +236,8 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users</span></span><a class="headerlink" href="#get--api-users" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir tous les utilisateurs (quel que soit le statut de leur compte), si l’utilisateur authentifié a des droits d’administration.</p>
 <p>Ne renvoie les préférences de l’utilisateur que pour l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
 <li><p>sans paramètres :</p></li>
 </ul>
@@ -252,7 +252,7 @@
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -393,13 +393,13 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_name)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir les information d’un utilisateur. Seul l’utilisateur disposant des droits d’administrateur peut obtenir les informations des autres utilisateurs.</p>
 <p>Ne renvoie les préférences de l’utilisateur que pour l’utilisateur authentifié.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -515,12 +515,12 @@
 <dt class="sig sig-object http" id="get--api-users-(user_name)-picture">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/picture</span></span><a class="headerlink" href="#get--api-users-(user_name)-picture" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>obtenir l’image de l’utilisateur</p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/jpeg</span>
 </pre></div>
@@ -555,13 +555,13 @@
 <li><p>activer le compte d’un utilisateur inactif</p></li>
 </ul>
 <p>Seul l’utilisateur ayant des droits d’administration peut modifier un autre utilisateur.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/users/&lt;user_name&gt;</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
@@ -653,7 +653,7 @@
 <dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>activate</strong> (<em>boolean</em>) – activer le compte utilisateur</p></li>
-<li><p><strong>admin</strong> (<em>boolean</em>) – l’utilisateur dispose-t-il de droits d’administration ?</p></li>
+<li><p><strong>admin</strong> (<em>boolean</em>) – l’utilisateur dispose-t-il de droits d’administration</p></li>
 <li><p><strong>new_email</strong> (<em>boolean</em>) – nouvelle adresse électronique de l’utilisateur</p></li>
 <li><p><strong>reset_password</strong> (<em>boolean</em>) – réinitialiser le mot de passe de l’utilisateur</p></li>
 </ul>
@@ -692,13 +692,13 @@
 <dd><p>Supprimer un compte utilisateur.</p>
 <p>Un utilisateur ne peut supprimer que son propre compte.</p>
 <p>Un administrateur peut supprimer tous les comptes sauf le sien s’il est le seul administrateur.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/users/john_doe</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">NO CONTENT</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>

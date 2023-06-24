@@ -235,15 +235,15 @@
 <dt class="sig sig-object http" id="get--api-sports">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/sports</span></span><a class="headerlink" href="#get--api-sports" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir tous les sports</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/sports</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <ul class="simple">
-<li><p>pour un utilisateur non admin</p></li>
+<li><p>pour un utilisateur non admin :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -306,7 +306,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>pour un administrateur</p></li>
+<li><p>pour un administrateur :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -398,15 +398,15 @@
 <dt class="sig sig-object http" id="get--api-sports-(int-sport_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/sports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-sports-(int-sport_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un sport</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponse</strong> :</p>
 <ul class="simple">
-<li><p>succès pour un utilisateur non admin:</p></li>
+<li><p>succès pour un utilisateur non admin :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -429,7 +429,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>succès pour un administrateur</p></li>
+<li><p>succès pour un administrateur :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -495,15 +495,15 @@
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-sports-(int-sport_id)">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/sports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-sports-(int-sport_id)" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Modifier un sport</p>
-<p>L’utilisateur authentifié doit avoir des droits d’administration</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
-<p><strong>Exemple de requête</strong>:</p>
+<dd><p>Modifier un sport.</p>
+<p>L’utilisateur authentifié doit avoir des droits d’administration.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/sports/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>

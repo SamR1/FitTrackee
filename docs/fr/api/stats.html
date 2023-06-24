@@ -234,9 +234,9 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_time">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_time</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_time" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Obtenir des statistiques sur les séances d’entraînement pour un utilisateur par durée</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requêtes</strong>:</p>
+<dd><p>Obtenir des statistiques sur les séances d’entraînement pour un utilisateur par durée.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requêtes</strong> :</p>
 <ul class="simple">
 <li><p>sans paramètres :</p></li>
 </ul>
@@ -244,13 +244,13 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>avec des paramètres</p></li>
+<li><p>avec des paramètres :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_time?from=2018-01-01&amp;to=2018-06-30&amp;time=week</span>
   <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -316,9 +316,9 @@
 </dd>
 <dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>from</strong> (<em>string</em>) – date de début (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
-<li><p><strong>to</strong> (<em>string</em>) – date de fin (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
-<li><p><strong>time</strong> (<em>string</em>) – période de temps :  - <code class="docutils literal notranslate"><span class="pre">week</span></code>: semaine commençant le dimanche - <code class="docutils literal notranslate"><span class="pre">weekm</span></code>: semaine commençant le lundi - <code class="docutils literal notranslate"><span class="pre">month</span></code>: mois - <code class="docutils literal notranslate"><span class="pre">year</span></code>: année (default)</p></li>
+<li><p><strong>from</strong> (<em>string</em>) – date de début (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>string</em>) – date de fin (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></li>
+<li><p><strong>time</strong> (<em>string</em>) – période de temps :  - <code class="docutils literal notranslate"><span class="pre">week</span></code> : semaine commençant le dimanche - <code class="docutils literal notranslate"><span class="pre">weekm</span></code> : semaine commençant le lundi - <code class="docutils literal notranslate"><span class="pre">month</span></code> : mois - <code class="docutils literal notranslate"><span class="pre">year</span></code> : année (default)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
@@ -345,8 +345,8 @@
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_sport">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_sport</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_sport" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir les statistiques des séances pour un utilisateur par sport.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requêtes</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requêtes</strong> :</p>
 <ul class="simple">
 <li><p>without parameters (get stats for all sports with workouts):</p></li>
 </ul>
@@ -354,12 +354,12 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>avec l’identifiant du sport</p></li>
+<li><p>avec l’identifiant du sport :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/admin/by_sport?sport_id=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
 <li><p>success:</p></li>
 </ul>
@@ -452,12 +452,12 @@
 <dt class="sig sig-object http" id="get--api-stats-all">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/all</span></span><a class="headerlink" href="#get--api-stats-all" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir toutes les statistiques de l’application.</p>
-<p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
-<p><strong>Exemple de requêtes</strong>:</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
+<p><strong>Exemple de requêtes</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/stats/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
 </div>
-<p><strong>Exemple de réponse</strong>:</p>
+<p><strong>Exemple de réponses</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 

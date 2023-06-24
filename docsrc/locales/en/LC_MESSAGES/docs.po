@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-21 19:44+0200\n"
+"POT-Creation-Date: 2023-06-24 08:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -443,10 +443,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Handle password reset request."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "If email sending is disabled, this endpoint is not available"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -5316,5 +5312,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "``workout created``"
+#~ msgstr ""
+
+#~ msgid "If email sending is disabled, this endpoint is not available"
 #~ msgstr ""
 
