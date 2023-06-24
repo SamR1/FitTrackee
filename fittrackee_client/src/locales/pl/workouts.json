@@ -10,9 +10,9 @@
             "partly-cloudy-day": "trochę pochmurny dzień",
             "partly-cloudy-night": "trochę pochmurna noc",
             "rain": "deszcz",
+            "sleet": "deszcz ze śniegiem",
             "snow": "śnieg",
-            "wind": "wiatr",
-            "sleet": "deszcz ze śniegiem"
+            "wind": "wiatr"
         },
         "HUMIDITY": "wilgotność",
         "TEMPERATURE": "temperatura",

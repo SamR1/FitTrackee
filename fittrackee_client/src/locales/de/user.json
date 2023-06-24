@@ -119,9 +119,9 @@
         },
         "USE_RAW_GPX_SPEED": {
             "FILTERED_SPEED": "Gefiltert",
+            "HELP": "Wenn gefiltert wird, werden extreme Werte (welche GPS-Fehler sein können) beim Berechnen der Maximalgeschwindigkeit ausgeschlossen.",
             "LABEL": "Höchstgeschwindigkeitsstrategie",
-            "RAW_SPEED": "Rau",
-            "HELP": "Wenn gefiltert wird, werden extreme Werte (welche GPS-Fehler sein können) beim Berechnen der Maximalgeschwindigkeit ausgeschlossen."
+            "RAW_SPEED": "Rau"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",

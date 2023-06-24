@@ -11,14 +11,14 @@
     "Hiking": {
         "LABEL": "Piesza wycieczka"
     },
-    "Mountaineering": {
-        "LABEL": "Alpinizm"
-    },
     "Mountain Biking": {
         "LABEL": "Kolarstwo górskie"
     },
     "Mountain Biking (Electric)": {
         "LABEL": "Kolarstwo górskie (Elektryczne)"
+    },
+    "Mountaineering": {
+        "LABEL": "Alpinizm"
     },
     "Rowing": {
         "LABEL": "Wioślarstwo"
