@@ -183,7 +183,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Historique des modifications</a></li>
 </ul>
 
 </div>
@@ -243,7 +243,7 @@
 </div>
 <p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
-<li><p>success:</p></li>
+<li><p>succès :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -254,7 +254,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>error on registration:</p></li>
+<li><p>erreur lors de l’enregistrement :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">BAD REQUEST</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -272,7 +272,7 @@
 <li><p><strong>email</strong> (<em>string</em>) – adresse électronique de l’utilisateur</p></li>
 <li><p><strong>password</strong> (<em>string</em>) – mot de passe (8 caractères minimum)</p></li>
 <li><p><strong>lang</strong> (<em>string</em>) – préférence de la langue utilisée sur l’interface (si non fournie, la langue utilisée sera l’anglais (“en”)</p></li>
-<li><p><strong>accepted_policy</strong> (<em>boolean</em>) – <code class="docutils literal notranslate"><span class="pre">true</span></code> if user accepted privacy policy</p></li>
+<li><p><strong>accepted_policy</strong> (<em>boolean</em>) – <code class="docutils literal notranslate"><span class="pre">true</span></code> si l’utilisateur a accepté la politique de confidentialité</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d’état<span class="colon">:</span></dt>
@@ -1349,7 +1349,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>accepted_policy</strong> (<em>boolean</em>) – <code class="docutils literal notranslate"><span class="pre">true</span></code> if user accepted privacy policy</p></li>
+<li><p><strong>accepted_policy</strong> (<em>boolean</em>) – <code class="docutils literal notranslate"><span class="pre">true</span></code> si l’utilisateur a accepté la politique de confidentialité</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -1407,7 +1407,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>if no request:</p></li>
+<li><p>si aucun requête :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>

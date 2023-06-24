@@ -177,7 +177,7 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     :json string client_uri: client URL
     :json array  redirect_uri: list of client redirect URLs (string)
     :json string scope: client scopes
-    :json string client_description: client description (``OPTIONAL``)
+    :json string client_description: client description (optional)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

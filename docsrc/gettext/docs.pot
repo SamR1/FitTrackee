@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.7.17\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-24 08:20+0200\n"
+"POT-Creation-Date: 2023-06-24 12:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -735,7 +735,7 @@ msgid "client scopes"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "client description (``OPTIONAL``)"
+msgid "client description (optional)"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -2374,6 +2374,7 @@ msgstr ""
 #: ../source/changelog.md:678
 #: ../source/changelog.md:808
 #: ../source/changelog.md:840
+#: ../source/changelog.md:877
 #: ../source/changelog.md:919
 msgid "In this release 2 issues were closed."
 msgstr ""
@@ -2773,10 +2774,6 @@ msgstr ""
 msgid "#53 - Simplify FitTrackee installation"
 msgstr ""
 
-#: ../source/changelog.md:877
-msgid "In this release 2 issue were closed."
-msgstr ""
-
 #: ../source/changelog.md:880
 msgid "Version 0.3.0 - Administration (2020/07/15)"
 msgstr ""
@@ -3033,7 +3030,8 @@ msgid "average speed"
 msgstr ""
 
 #: ../source/changelog.md:1027
-msgid "farest distance"
+#: ../source/features.rst:65
+msgid "farthest distance"
 msgstr ""
 
 #: ../source/changelog.md:1028
@@ -3064,7 +3062,7 @@ msgid "no administration for now"
 msgstr ""
 
 #: ../source/changelog.md:1037
-msgid "➡️ more informations: see documentation  and current issues"
+msgid "➡️ more informations: see documentation and current issues"
 msgstr ""
 
 #: ../source/changelog.md:1044
@@ -3452,10 +3450,6 @@ msgstr ""
 
 #: ../source/features.rst:68
 msgid "User records by sports:"
-msgstr ""
-
-#: ../source/features.rst:65
-msgid "farthest distance"
 msgstr ""
 
 #: ../source/features.rst:66

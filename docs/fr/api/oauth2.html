@@ -183,7 +183,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Historique des modifications</a></li>
 </ul>
 
 </div>
@@ -348,7 +348,7 @@
 <li><p><strong>client_name</strong> (<em>string</em>) – nom du client</p></li>
 <li><p><strong>client_uri</strong> (<em>string</em>) – URl du client</p></li>
 <li><p><strong>redirect_uri</strong> (<em>array</em>) – liste des URL de redirection du client (chaîne de caractères)</p></li>
-<li><p><strong>scope</strong> (<em>string</em>) – scopdes du client</p></li>
+<li><p><strong>scope</strong> (<em>string</em>) – scopes du client</p></li>
 <li><p><strong>client_description</strong> (<em>string</em>) – description du client (optionnelle)</p></li>
 </ul>
 </dd>
@@ -384,7 +384,7 @@
 </div>
 <p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
-<li><p>success:</p></li>
+<li><p>succès :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -449,7 +449,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-oauth-apps-(int-client_id)-by_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_id</span></span><a class="headerlink" href="#get--api-oauth-apps-(int-client_id)-by_id" title="Lien permanent vers cette définition">#</a></dt>
-<dd><p>Obtenir un client OAuth2 avec l’identifiant (entier).</p>
+<dd><p>Obtenir un client OAuth2 avec l’identifiant (valeur de type entier).</p>
 <p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/1/by_id</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -458,7 +458,7 @@
 </div>
 <p><strong>Exemple de réponses</strong> :</p>
 <ul class="simple">
-<li><p>success:</p></li>
+<li><p>succès :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">SUCCESS</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -631,7 +631,7 @@
 <li><p><strong>string  client_id</strong> – “client_id” du client OAuth2</p></li>
 <li><p><strong>string  response_type</strong> – type de réponse du client (seul “code” est supporté par FitTrackee)</p></li>
 <li><p><strong>string  scopes</strong> – scope du client OAuth2</p></li>
-<li><p><strong>boolean confirm</strong> – confirmation (must be <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p></li>
+<li><p><strong>boolean confirm</strong> – confirmation (doit être <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p></li>
 <li><p><strong>string  state</strong> – valeur unique pour éviter la falsification des requêtes entre les sites (<em>cross-site request forgery</em> (CSRF)), non obligatoire mais recommandée</p></li>
 <li><p><strong>string  code_challenge</strong> – chaîne générée par un vérificateur de code (pour PKCE, non obligatoire mais recommandée)</p></li>
 <li><p><strong>string  code_challenge_method</strong> – méthode utilisée pour créer le challenge, par exemple « S256 » (obligatoire si <cite>code_challenge</cite> fourni)</p></li>

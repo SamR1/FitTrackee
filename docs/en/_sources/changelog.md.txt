@@ -874,7 +874,7 @@ see [Map tile server in documentation](https://samr1.github.io/FitTrackee/instal
 * [#54](https://github.com/SamR1/Fittrackee/issues/54) - Tile server can be changed
 * [#53](https://github.com/SamR1/Fittrackee/issues/53) - Simplify FitTrackee installation
 
-In this release 2 issue were closed.
+In this release 2 issues were closed.
 
 
 ## Version 0.3.0 - Administration (2020/07/15)
@@ -1024,7 +1024,7 @@ In this release 7 issues were closed.
 - Current month statistics
 - Records by sports:
    - average speed
-   - farest distance
+   - farthest distance
    - longest duration
    - maximum speed
 - Activities list and search
@@ -1034,7 +1034,7 @@ In this release 7 issues were closed.
 - only activity owner can see his activity
 - no administration for now
 
-➡️ more informations: see [documentation](https://samr1.github.io/FitTrackee/)  and [current issues](https://github.com/SamR1/FitTrackee/issues)
+➡️ more informations: see [documentation](https://samr1.github.io/FitTrackee/) and [current issues](https://github.com/SamR1/FitTrackee/issues)
 
 
 ### Issues Closed
