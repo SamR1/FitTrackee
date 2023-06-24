@@ -199,8 +199,8 @@
 
         ::v-deep(.dropdown-list) {
           z-index: 1000;
-          margin-left: -110px !important;
-          width: 131px !important;
+          margin-left: -160px !important;
+          width: 180px !important;
         }
       }
 
@@ -307,6 +307,10 @@
           margin: 0 $default-margin * 2;
           padding: 0;
         }
+      }
+
+      .nav-items-user-menu :nth-child(1) {
+        order: 1;
       }
     }
   }
