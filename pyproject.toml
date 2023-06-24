@@ -61,6 +61,7 @@ pytest-xdist = {extras = ["psutil"], version = "^3.3"}
 recommonmark = "^0.7"
 sphinx = "^7.0"
 sphinx-copybutton = "^0.5.2"
+sphinx-intl = "^2.1.0"
 sphinxcontrib-httpdomain = "^1.8"
 types-freezegun = "^1.1"
 types-pytz = "^2023.3"

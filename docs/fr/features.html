@@ -1,0 +1,648 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
+
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+        <title>Fonctionnalités - Documentation FitTrackee 0.7.17</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.17
+</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.17
+</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Fonctionnalités</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Historique des modifications</a></li>
+</ul>
+
+</div>
+</div><div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    <a href="../en/features.html" hreflang=en lang=en>
+      English
+    </a>
+    <a href="../fr/features.html" hreflang=fr lang=fr>
+      Français
+    </a>
+  </div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="features">
+<h1>Fonctionnalités<a class="headerlink" href="#features" title="Lien permanent vers cette rubrique">#</a></h1>
+<div class="line-block">
+<div class="line"><strong>Fitrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers .gpx et quelques statistiques à partir de vos activités en plein air.</div>
+<div class="line">Pour le moment, l’application est plutôt de type mono-utilisateur. Même s’il est possible pour plusieurs utilisateurs de s’enregistrer, un utilisateur authentifié ne peut voir que ses propres séances.</div>
+</div>
+<p>Les fichier .gpx sont stockés dans un répertoire du serveur (sans aucun chiffrement).</p>
+<p>Avec la configuration par défaut, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> est utilisé comme serveur de tuile sur la page de détail de la séance et pour la génération des images statiques des traces.</p>
+<section id="workouts">
+<h2>Séances<a class="headerlink" href="#workouts" title="Lien permanent vers cette rubrique">#</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>14 sports sont pris en charge :</dt><dd><ul>
+<li><p>Vélo (Sport)</p></li>
+<li><p>Vélo (Transport)</p></li>
+<li><p>Vélo (Virtuel)  (<em>nouveau dans la version 0.7.3</em>)</p></li>
+<li><p>Randonnée</p></li>
+<li><p>VTT</p></li>
+<li><p>VTT (Electrique)  (<em>nouveau dans la version in 0.5.0</em>)</p></li>
+<li><p>Alpinisme  (<em>nouveau dans la version 0.7.9</em>)</p></li>
+<li><p>Aviron  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Course à pied</p></li>
+<li><p>Ski (Alpin) (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Ski (Randonnée)  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Raquettes (<em>nouveau dans la version 0.5.2</em>)</p></li>
+<li><p>Trail (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Marche</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>(<em>nouveau dans la version in 0.5.0</em>) Le seuil de vitesse arrêté utilisé par <a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> n’est plus la valeur par défaut pour les sports suivants (0.1 km/h au lieu de 1 km/h) :</dt><dd><ul>
+<li><p>Randonnée</p></li>
+<li><p>Alpinisme</p></li>
+<li><p>Ski (Randonnée)</p></li>
+<li><p>Raquettes</p></li>
+<li><p>Trail</p></li>
+<li><p>Marche</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Elle peut être remplacée dans les préférences de l’utilisateur.</p>
+</div>
+<ul class="simple">
+<li><p>Tableau de bord avec le calendrier mensuel affichant les séances et les records. La semaine peut commencer le dimanche ou le lundi (ce qui peut être modifié dans les préférences de l’utilisateur). Le calendrier affiche jusqu’à 100 séances.</p></li>
+<li><p>Création d’une séance en téléversant un fichier gpx (les données associées sont stockées dans la base de données dans le système métrique).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Seuls les fichiers gpx avec l’heure sont pris en charge.</div>
+<div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application qui a généré les fichiers gpx à l’origine, en particulier la vitesse maximale.</div>
+</div>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">Une séance peut même être créée sans fichier gpx (l’utilisateur doit entrer la date, l’heure, la durée et la distance).</div>
+<div class="line">Les dénivelés positif et négatif peuvent être également fournis (<em>nouveau dans la version 0.7.10</em>).</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">Une séance avec un fichier gpx est affichée avec une carte et des graphiques (vitesse et élévation).</div>
+<div class="line">Des boutons permettent une visualisation en plein écran et la réinitialisation de la position (<em>nouveau dans la version 0.5.5</em>).</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">Si la clé d’API de <strong>Visual Crossing</strong> (<em>nouveau in 0.7.11</em>) est fournie, la météo est affichée dans les détails de l’entraînement. La source des données est affichée dans la page <strong>A propos</strong>.</div>
+<div class="line">La vitesse du vent est affichée, avec une flèche indiquant la direction (une infobulle peut être affichée avec la direction (provenance du vent)) (<em>nouveau dans la version 0.5.5</em>).</div>
+</div>
+</li>
+<li><p>Les segments peuvent être affichés.</p></li>
+<li><p>Le fichier gpx peut être téléchargé (<em>nouveau dans la version 0.5.1</em>)</p></li>
+<li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une note.</p></li>
+<li><dl class="simple">
+<dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul class="simple">
+<li><p>distance totale</p></li>
+<li><p>durée totale</p></li>
+<li><p>nombre total de séances</p></li>
+<li><p>dénivelé positif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>dénivelé négatif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>vitesse moyenne (<em>nouveau dans la version 0.5.1</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Records de l’utilisateur par sports :</dt><dd><ul class="simple">
+<li><p>vitesse moyenne</p></li>
+<li><p>la plus grande distance</p></li>
+<li><p>dénivelé positif le plus élevé (<em>nouveau dans la version 0.6.11</em>, peut être masqué, cf. préférences utilisateur)</p></li>
+<li><p>durée la plus longue</p></li>
+<li><p>vitesse maximale</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les records peuvent différer des records affichés par l’application qui a généré les fichiers gpx à l’origine.</p>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Liste des séances.</dt><dd><ul>
+<li><dl class="simple">
+<dt>L’utilisateur peut filtrer les séances selon :</dt><dd><ul>
+<li><p>la date</p></li>
+<li><p>le sport (seuls les sports comportant des séances sont affichées dans la liste déroulante)</p></li>
+<li><p>le titre (<em>nouveau dans la version 0.7.15</em>)</p></li>
+<li><p>la distance</p></li>
+<li><p>la durée</p></li>
+<li><p>vitesse moyenne</p></li>
+<li><p>vitesse maximale</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Les séances peuvent être triées par :</dt><dd><ul>
+<li><p>la date</p></li>
+<li><p>la distance</p></li>
+<li><p>la durée</p></li>
+<li><p>vitesse moyenne</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pour l’instant, seul le propriétaire de la séance peut la voir.</p>
+</div>
+</section>
+<section id="account-preferences">
+<h2>Compte et préférences<a class="headerlink" href="#account-preferences" title="Lien permanent vers cette rubrique">#</a></h2>
+<ul class="simple">
+<li><p>Un utilisateur peut créer, modifier et supprimer son compte.</p></li>
+<li><p>L’utilisateur doit accepter la politique de confidentialité pour s’inscrire. Si une politique plus récente est disponible, un message s’affiche sur le tableau de bord pour consulter la nouvelle version (<em>nouveau dans la version 0.7.13</em>).</p></li>
+<li><p>Lors de l’inscription, la langue sélectionnée dans le menu déroulant est enregistrée comme préférence de l’utilisateur (<em>nouveauté dans la version 0.6.9</em>).</p></li>
+<li><p>Après l’enregistrement, le compte d’utilisateur est inactif et un courriel contenant des instructions de confirmation est envoyé pour l’activer. Un utilisateur dont le compte est inactif ne peut pas se connecter (<em>nouveauté dans la version 0.6.0</em>).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Dans le cas où l’envoi des courriels n’est pas configuré, une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande</a> permet d’activer le compte des utilisateurs.</p>
+</div>
+<ul class="simple">
+<li><p>L’utilisateur peut définir la langue, le fuseau horaire et le premier jour de la semaine.</p></li>
+<li><p>L’utilisateur peut réinitialiser son mot de passe (<em>nouveau dans la version in 0.3.0</em>)</p></li>
+<li><p>Un utilisateur peut modifier son adresse électronique (<em>nouveau dans la version 0.6.0</em>)</p></li>
+<li><p>L’utilisateur peut choisir entre le système métrique et le système impérial pour la distance, l’affichage de l’altitude et de la vitesse (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Un utilisateur peut choisir d’afficher ou cacher les records et le total de dénivelé positif sur le tableau de bord (<em>nouveau dans la version 0.6.11</em>)</p></li>
+<li><p>L’utilisateur peut choisir le format d’affichage des dates (<em>nouveau dans la version 0.7.3</em>)</p></li>
+<li><p>L’utilisateur peut choisir le point de départ de l’axe du graphique d’altitude : altitude zéro ou minimale. (<em>nouveau dans la version 0.7.15</em>)</p></li>
+<li><p>Un utilisateur peut choisir d’exclure les valeurs extrêmes (qui peuvent être des erreurs GPS) lors du calcul de la vitesse maximale (par défaut, les valeurs extrêmes sont exclues) (<em>nouveau dans la version 0.7.16</em>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>La modification de cette préférence n’affectera que les prochains fichiers ajoutés.</p>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Un utilisateur peut définir des préférences en matière de sport (<em>nouveau dans la version 0.5.0</em>) :</dt><dd><ul>
+<li><p>changer la couleur du sport (utilisée pour l’image du sport et les graphiques)</p></li>
+<li><p>modifier le seuil de vitesse d’arrêt (pour les prochains fichiers gpx ajoutés)</p></li>
+<li><p>désactiver/activer un sport.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Si un sport est désactivé par un administrateur, il ne peut pas être activé par un utilisateur. Dans ce cas, il n’apparaîtra dans les préférences que si l’utilisateur a des séances et seule la couleur du sport peut être modifiée.</div>
+<div class="line">Un sport désactivé (par l’administrateur ou l’utilisateur) n’apparaîtra pas dans la liste lors de l'<strong>ajout d’une séance</strong>.</div>
+<div class="line">Une séance avec un sport désactivé sera toujours affichée dans l’application.</div>
+</div>
+</div>
+<ul>
+<li><p>Un utilisateur peut créer des <a class="reference external" href="apps.html">clients</a> pour des applications tierces (<em>nouveau dans la version 0.7.0</em>).</p></li>
+<li><div class="line-block">
+<div class="line">Un utilisateur peut demander un export de données (<em>nouveau dans la version 0.7.13</em>).</div>
+<div class="line">Une archive zip sera générée, contenant 2 fichiers <code class="docutils literal notranslate"><span class="pre">json</span></code> (informations de l’utilisateur et données des séances) et tous les fichiers gpx ajoutée.</div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pour l’instant, il n’est pas possible d’importer ces fichiers sur une autre instance de <strong>FitTrackee</strong>.</p>
+</div>
+</section>
+<section id="administration">
+<h2>Administration<a class="headerlink" href="#administration" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>(<em>nouveau dans la version 0.3.0</em>)</p>
+<section id="application">
+<h3>Application<a class="headerlink" href="#application" title="Lien permanent vers cette rubrique">#</a></h3>
+<p><strong>Configuration</strong></p>
+<p>Les paramètres suivants peuvent être définis :</p>
+<ul class="simple">
+<li><p>limite des utilisateurs actifs. S’il est égal à 0, l’inscription est activée (aucune limite n’est définie).</p></li>
+<li><p>taille maximale du fichier gpx (ajouté unitairement ou dans une archive zip) (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>taille maximale de l’archive zip</p></li>
+<li><p>nombre maximum de fichiers dans l’archive zip (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>adresse électronique pour contacter l’administrateur (<em>nouveau dans la version 0.6.0</em>)</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>La mise à jour de la configuration du serveur peut être nécessaire pour gérer des fichiers volumineux (comme <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> par exemple).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si l’envoi de courriels est désactivé, un avertissement s’affiche.</p>
+</div>
+<p><strong>A propos</strong></p>
+<p>(<em>nouveau dans la version 0.7.13</em>)</p>
+<div class="line-block">
+<div class="line">Il est possible d’afficher des informations supplémentaires qui peuvent être utiles aux utilisateurs dans la page <strong>A propos</strong>.</div>
+<div class="line">La syntaxe Markdown peut être utilisée.</div>
+</div>
+<p><strong>Politique de confidentialité</strong></p>
+<p>(<em>nouveau dans la version 0.7.13</em>)</p>
+<div class="line-block">
+<div class="line">Une politique de confidentialité par défaut est disponible (adaptée de la <a class="reference external" href="https://github.com/discourse/discourse">Politique de confidentialité de Discourse</a>).</div>
+<div class="line">Une politique de confidentialité personnalisée peut être définie si nécessaire (la syntaxe Markdown peut être utilisée). Une mise à jour de la politique affichera un message sur le tableau de bord des utilisateurs pour qu’ils puissent en prendre connaissance.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Seule la politique de confidentialité par défaut est traduite (si la traduction est disponible).</p>
+</div>
+</section>
+<section id="users">
+<h3>Utilisateurs<a class="headerlink" href="#users" title="Lien permanent vers cette rubrique">#</a></h3>
+<ul class="simple">
+<li><p>afficher et filtrer la liste des utilisateurs</p></li>
+<li><p>modifier le compte d’un utilisateur pour :</p>
+<ul>
+<li><p>ajouter/supprimer des droits d’administration</p></li>
+<li><p>activer son compte (<em>nouveau dans la version 0.6.0</em>)</p></li>
+<li><p>mettre à jour son adresse électronique (au cas où son compte serait bloqué) (<em>nouveau dans la version 0.6.0</em>)</p></li>
+<li><p>réinitialiser son mot de passe (dans le cas où son compte est verrouillé) (<em>nouveau dans la version 0.6.0</em>). Si l’envoi des courriels est désactivé, cela n’est possible que via l’interface de lignes de commande (CLI).</p></li>
+</ul>
+</li>
+<li><p>supprimer le compte d’un utilisateur</p></li>
+</ul>
+</section>
+<section id="sports">
+<h3>Sports<a class="headerlink" href="#sports" title="Lien permanent vers cette rubrique">#</a></h3>
+<ul class="simple">
+<li><p>activer ou désactiver un sport (un sport peut être désactivé même si une séance avec ce sport existe)</p></li>
+</ul>
+</section>
+</section>
+<section id="translations">
+<h2>Traductions<a class="headerlink" href="#translations" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>FitTrackee est disponible dans les langues suivantes (la langue peut être enregistrée dans les préférences de l’utilisateur) :</p>
+<ul class="simple">
+<li><p>Anglais</p></li>
+<li><p>French (<em>new in 0.2.3</em>)</p></li>
+<li><p>Allemand (<em>nouveau dans la version 0.6.9</em>)</p></li>
+<li><p>Néerlandais (<em>nouveau dans la version 0.7.8</em>)</p></li>
+<li><p>Italien (<em>nouveau dans la version 0.7.10</em>)</p></li>
+<li><p>Galician (<em>new in 0.7.15</em>)</p></li>
+<li><p>Espagnol (<em>nouveau dans la version 0.7.15</em>)</p></li>
+<li><p>Norvégien (Bokmål) (<em>nouveau dans la version 0.7.15</em>)</p></li>
+</ul>
+<p>Etat d’avancement de la traduction sur <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (peut différer de la version publiée) :</p>
+<figure class="align-default">
+<img alt="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" src="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" /></figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le Polonais n’est pas encore disponible dans l’interface de <strong>FitTrackee</strong>.</p>
+</div>
+</section>
+<section id="screenshots">
+<h2>Screenshots<a class="headerlink" href="#screenshots" title="Lien permanent vers cette rubrique">#</a></h2>
+<section id="dashboard">
+<h3>Tableau de bord<a class="headerlink" href="#dashboard" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Séance sur FitTrackee" src="_images/fittrackee_screenshot-01.png" />
+</figure>
+</section>
+<section id="workout-detail">
+<h3>Page de détail d’une séance<a class="headerlink" href="#workout-detail" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Séance sur FitTrackee" src="_images/fittrackee_screenshot-02.png" />
+</figure>
+</section>
+<section id="workouts-list">
+<h3>Liste des séances<a class="headerlink" href="#workouts-list" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Séances sur FitTrackee" src="_images/fittrackee_screenshot-03.png" />
+</figure>
+</section>
+<section id="statistics">
+<h3>Statistiques<a class="headerlink" href="#statistics" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Statistics sur FitTrackee" src="_images/fittrackee_screenshot-04.png" />
+</figure>
+</section>
+<section id="id1">
+<h3>Administration<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Administration de FitTrackee" src="_images/fittrackee_screenshot-05.png" />
+</figure>
+<figure class="align-default">
+<img alt="Administration des sports sur FitTrackee" src="_images/fittrackee_screenshot-06.png" />
+</figure>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="oauth.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">OAuth 2.0</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018 - 2023, SamR1
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link fa fa-github fa-lg" href="https://github.com/SamR1/FitTrackee" aria-label="GitHub"></a>
+              <a class="muted-link fa fa-mastodon fa-lg" href="https://fosstodon.org/@FitTrackee" aria-label="Mastodon"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Fonctionnalités</a><ul>
+<li><a class="reference internal" href="#workouts">Séances</a></li>
+<li><a class="reference internal" href="#account-preferences">Compte et préférences</a></li>
+<li><a class="reference internal" href="#administration">Administration</a><ul>
+<li><a class="reference internal" href="#application">Application</a></li>
+<li><a class="reference internal" href="#users">Utilisateurs</a></li>
+<li><a class="reference internal" href="#sports">Sports</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#translations">Traductions</a></li>
+<li><a class="reference internal" href="#screenshots">Screenshots</a><ul>
+<li><a class="reference internal" href="#dashboard">Tableau de bord</a></li>
+<li><a class="reference internal" href="#workout-detail">Page de détail d’une séance</a></li>
+<li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
+<li><a class="reference internal" href="#statistics">Statistiques</a></li>
+<li><a class="reference internal" href="#id1">Administration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/translations.js"></script>
+    </body>
+</html>

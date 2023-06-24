@@ -35,7 +35,7 @@ def get_sports(auth_user: User) -> Dict:
 
     **Example response**:
 
-    - for non admin user :
+    - for non admin user:
 
     .. sourcecode:: http
 
@@ -98,7 +98,7 @@ def get_sports(auth_user: User) -> Dict:
         "status": "success"
       }
 
-    - for admin user :
+    - for admin user:
 
     .. sourcecode:: http
 
@@ -169,11 +169,11 @@ def get_sports(auth_user: User) -> Dict:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
 
     """
     sports = Sport.query.order_by(Sport.id).all()
@@ -213,7 +213,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
     **Example response**:
 
-    - success for non admin user :
+    - success for non admin user:
 
     .. sourcecode:: http
 
@@ -236,7 +236,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    - success for admin user :
+    - success for admin user:
 
     .. sourcecode:: http
 
@@ -260,7 +260,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    - sport not found
+    - sport not found:
 
     .. sourcecode:: http
 
@@ -278,12 +278,12 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: sport not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``sport not found``
 
     """
     sport = Sport.query.filter_by(id=sport_id).first()
@@ -326,7 +326,7 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -350,7 +350,7 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    - sport not found
+    - sport not found:
 
     .. sourcecode:: http
 
@@ -371,14 +371,14 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: sport updated
-    :statuscode 400: invalid payload
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
-    :statuscode 404: sport not found
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``sport not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     sport_data = request.get_json()
