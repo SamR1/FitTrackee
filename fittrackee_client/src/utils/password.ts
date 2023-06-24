@@ -2,9 +2,9 @@ import { zxcvbnOptions } from '@zxcvbn-ts/core'
 
 export const loadLanguagePackage = async (language: string) => {
   // no package available for
-  // - dutch (Nederlands)
-  // - galician
-  // - norwegian bokmal
+  // - Dutch (Nederlands)
+  // - Galician
+  // - Norwegian bokmal
   // fallback to english
   switch (language) {
     case 'fr':
@@ -23,11 +23,10 @@ export const loadLanguagePackage = async (language: string) => {
       return await import(
         /* webpackChunkName: "password.es" */ '@zxcvbn-ts/language-es-es'
       )
-    // TODO: add package
-    // case 'pl':
-    //   return await import(
-    //     /* webpackChunkName: "password.pl" */ '@zxcvbn-ts/language-pl'
-    //   )
+    case 'pl':
+      return await import(
+        /* webpackChunkName: "password.pl" */ '@zxcvbn-ts/language-pl'
+      )
     default:
       return await import(
         /* webpackChunkName: "password.en" */ '@zxcvbn-ts/language-en'
