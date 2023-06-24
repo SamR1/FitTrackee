@@ -119,9 +119,9 @@
         },
         "USE_RAW_GPX_SPEED": {
             "FILTERED_SPEED": "Gefilterd",
+            "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen.",
             "LABEL": "Strategie voor maximale snelheid",
-            "RAW_SPEED": "Rauw",
-            "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen."
+            "RAW_SPEED": "Rauw"
         }
     },
     "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",

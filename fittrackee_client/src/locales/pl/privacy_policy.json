@@ -1,10 +1,10 @@
 {
     "CONTENT": {
-        "DATA_COLLECTED": {
-            "TITLE": "Jakie informacje zbieramy?"
-        },
         "ACCOUNT_DELETION": {
             "TITLE": "Usuwanie konta"
+        },
+        "DATA_COLLECTED": {
+            "TITLE": "Jakie informacje zbieramy?"
         },
         "YOUR_CONSENT": {
             "TITLE": "Twoja zgoda"

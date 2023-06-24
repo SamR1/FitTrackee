@@ -2298,6 +2298,11 @@
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-it/-/language-it-3.0.1.tgz#3f6dfe8d4951f91c108ec00d941d1ce3b0053393"
   integrity sha512-ejuxUsame0+kR1mJStCrUFtuByFCLGU4sdW9ZvcbjQ7K1UrzMsfLNSmA48M5FoicdY79twyJw1YWSUFyJFmt+g==
 
+"@zxcvbn-ts/language-pl@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-pl/-/language-pl-3.0.1.tgz#4658fe112045a51e2d96277725e546fbf4a04160"
+  integrity sha512-Sqc/u4b0q7rb6pYSQuf34HgdjIqo0Rd5aeouV9jJEUr6TDZl1l9yuj6YdAQy+ZAOMHz1e0lLnp930oY+xI6fGA==
+
 abab@^2.0.5, abab@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
