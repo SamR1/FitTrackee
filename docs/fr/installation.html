@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>Installation - Documentation FitTrackee 0.7.17</title>
+        <title>Installation - Documentation FitTrackee 0.7.18</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.17
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.18
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.17
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.18
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -264,7 +264,7 @@
 <ul class="simple">
 <li><dl class="simple">
 <dt>obligatoires</dt><dd><ul>
-<li><p>Python 3.8+</p></li>
+<li><p>Python &gt;= 3.8.1</p></li>
 <li><p>PostgreSQL 11+</p></li>
 </ul>
 </dd>
@@ -321,7 +321,7 @@
 <dd><p>Hôte <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
-<dd class="field-odd"><p>127.0.0.1</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,7 +343,7 @@
 <dd><p>Configuration de <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
-<dd class="field-odd"><p>fittrackee.config.ProductionConfig</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">fittrackee.config.ProductionConfig</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -571,7 +571,7 @@
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
-<dd class="field-odd"><p>False</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -697,7 +697,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
 </pre></div>
 </div>
-<p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de lignes de commande</a> à des fins de maintenance et de diagnostic.</p>
+<p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de ligne de commande</a> à des fins de maintenance et de diagnostic.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>limiter
 Usage:<span class="w"> </span>flask<span class="w"> </span>limiter<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
@@ -878,15 +878,15 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
-<div class="line">Note that FitTrackee is under heavy development, some features may be unstable.</div>
+<div class="line">Note : FitTrackee est en cours de développement. Certaines fonctionnalités peuvent être instables.</div>
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.17) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.18) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.17.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.17<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.18.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.18<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -933,9 +933,13 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
 <div class="line">Avant de procéder à la mise à jour, faire une sauvegarde de l’ensemble des données :</div>
-<div class="line">- database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</div>
-<div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
+<div class="line">- base de données (avec <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> par exemple)</div>
+<div class="line">- répertoire des fichiers téléversés (voir <a class="reference external" href="installation.html#environment-variables">Variables d'environnement</a>)</div>
 </div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Les versions publiées ne suivent pas la <a class="reference external" href="https://semver.org/lang/fr/">gestion sémantique de version</a>. Toute version peut contenir des changements non rétro-compatibles.</p>
 </div>
 <section id="id3">
 <h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique">#</a></h3>
@@ -1004,11 +1008,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.17) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.18) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.17.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.17/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.18.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.18/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
