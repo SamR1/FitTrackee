@@ -100,7 +100,7 @@ export const dateStringFormats: Record<string, string> = {
   fr: 'd MMM yyyy',
   gl: 'd MMM yyyy',
   it: 'd MMM yyyy',
-  // pl: 'd MMM yyyy', // disabled for now
+  pl: 'd MMM yyyy',
   nb: 'do MMM yyyy',
   nl: 'd MMM yyyy',
 }

@@ -8,7 +8,12 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.federation.models import Actor
-from fittrackee.users.models import User, UserDataExport, UserSportPreference
+from fittrackee.users.models import (
+    FollowRequest,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -2227,6 +2232,210 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         assert Actor.query.filter_by(id=actor_id).first() is None
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestBlockUser(ApiTestCaseMixin):
+    route = '/api/users/{username}/block'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_blocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1)
+
+    def test_it_removes_follow_request_if_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_1.is_followed_by(user_2) == 'false'
+
+    def test_user_can_not_block_itself(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestUnBlockUser(ApiTestCaseMixin):
+    route = '/api/users/{username}/unblock'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_unblocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.blocks_user(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1) is False
+
+    def test_it_does_not_return_error_if_user_is_not_block(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1) is False
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

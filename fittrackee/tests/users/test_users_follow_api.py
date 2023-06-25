@@ -12,7 +12,7 @@ from ..utils import OAUTH_SCOPES, random_string
 
 
 class TestFollowWithoutFederation(ApiTestCaseMixin):
-    def test_it_raises_error_if_target_user_does_not_exist(
+    def test_it_returns_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -30,7 +30,7 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         assert data['status'] == 'not found'
         assert data['message'] == 'user does not exist'
 
-    def test_it_raises_error_if_target_user_has_already_rejected_request(
+    def test_it_returns_error_if_target_user_has_already_rejected_request(
         self,
         app: Flask,
         user_1: User,
@@ -53,6 +53,28 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'error'
         assert data['message'] == 'you do not have permissions'
+
+    def test_it_returns_error_if_target_user_has_blocked_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_2.blocks_user(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/follow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'error'
+        assert data['message'] == 'you can not follow this user'
 
     def test_it_creates_follow_request(
         self, app: Flask, user_1: User, user_2: User
@@ -151,7 +173,7 @@ class TestFollowWithoutFederation(ApiTestCaseMixin):
 
 
 class TestUnfollowWithoutFederation(ApiTestCaseMixin):
-    def test_it_raises_error_if_target_user_does_not_exist(
+    def test_it_returns_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -169,7 +191,7 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
         assert data['status'] == 'not found'
         assert data['message'] == 'user does not exist'
 
-    def test_it_raises_error_if_follow_request_does_not_exist(
+    def test_it_returns_error_if_follow_request_does_not_exist(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -212,6 +234,32 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
             f"'{user_2.username}' is sent."
         )
         assert user_1.following.count() == 0
+
+    def test_it_does_not_return_error_when_user_is_blocked(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.blocks_user(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_2.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == (
+            "Undo for a follow request to user "
+            f"'{user_2.username}' is sent."
+        )
 
     @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(

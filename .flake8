@@ -6,3 +6,4 @@ per-file-ignores =
     fittrackee/tests/test_email_template_password_request.py:E501
     fittrackee/federation/objects/templates/workout_note.py:E501
     fittrackee/tests/federation/federation/test_federation_objects_workout.py:E501
+exclude = fittrackee/migrations

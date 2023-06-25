@@ -221,8 +221,29 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_notifications_from_user_id'), ['from_user_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_notifications_to_user_id'), ['to_user_id'], unique=False)
 
+    op.create_table(
+        'blocked_users',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=True),
+        sa.Column('by_user_id', sa.Integer(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.ForeignKeyConstraint(['by_user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('user_id', 'by_user_id', name='blocked_users_unique'),
+    )
+    with op.batch_alter_table('blocked_users', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_blocked_users_by_user_id'), ['by_user_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_blocked_users_user_id'), ['user_id'], unique=False)
+
 
 def downgrade():
+    with op.batch_alter_table('blocked_users', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_blocked_users_user_id'))
+        batch_op.drop_index(batch_op.f('ix_blocked_users_by_user_id'))
+
+    op.drop_table('blocked_users')
+
     with op.batch_alter_table('notifications', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_notifications_to_user_id'))
         batch_op.drop_index(batch_op.f('ix_notifications_from_user_id'))

@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 import jwt
 from flask import current_app
 from sqlalchemy import and_, func
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -25,6 +26,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
+    BlockUserException,
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
     InvalidNotificationTypeException,
@@ -573,6 +575,35 @@ class User(BaseModel):
             profile_url=self.actor.profile_url, username=mention
         )
 
+    def blocks_user(self, user: 'User') -> None:
+        if self.id == user.id:
+            raise BlockUserException()
+
+        db.session.execute(
+            insert(BlockedUser)
+            .values(
+                user_id=user.id,
+                by_user_id=self.id,
+                created_at=datetime.utcnow(),
+            )
+            .on_conflict_do_nothing()
+        )
+        db.session.commit()
+
+    def unblocks_user(self, user: 'User') -> None:
+        BlockedUser.query.filter_by(
+            user_id=user.id, by_user_id=self.id
+        ).delete()
+        db.session.commit()
+
+    def is_blocked_by(self, user: 'User') -> bool:
+        return (
+            BlockedUser.query.filter_by(
+                user_id=self.id, by_user_id=user.id
+            ).first()
+            is not None
+        )
+
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:
             role = None
@@ -686,6 +717,7 @@ class User(BaseModel):
             serialized_user['is_followed_by'] = self.is_followed_by(
                 current_user
             )
+            serialized_user['blocked'] = self.is_blocked_by(current_user)
 
         return serialized_user
 
@@ -906,3 +938,37 @@ class Notification(BaseModel):
             )
 
         return serialized_notification
+
+
+class BlockedUser(BaseModel):
+    __tablename__ = 'blocked_users'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'by_user_id', name='blocked_users_unique'
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    by_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    def __init__(
+        self,
+        user_id: int,
+        by_user_id: int,
+        created_at: Optional[datetime] = None,
+    ):
+        self.user_id = user_id
+        self.by_user_id = by_user_id
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )

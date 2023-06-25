@@ -19,20 +19,25 @@ The **GitHub** repository contains:
 - source code (note that the repository also includes client build),
 - translations,
 - tests,
-- documentation (source and build).
+- documentation (source, translations and build).
 
 Continuous integration workflows run on **Github Actions** platform (on **push** and **pull requests**).
+
+For now, releases do not follow [semantic versioning](https://semver.org). Any version may contain backward-incompatible changes.
 
 ### Translations
 
 The available languages are:  
 [![Translation status](https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
 
-Translations files are located:
+Application translations files are located:
 - on API side (emails): `fittrackee/emails/translations/` (implemented with [Babel](https://babel.pocoo.org/en/latest/))
 - on client side: `fittrackee_client/src/locales` (implemented with [Vue I18n](https://vue-i18n.intlify.dev/))
 
 Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
+
+Documentation translations are located in following directory: `docsrc/locales`. 
+For now only English and French are available and translations files are not yet on Weblate.
 
 ### How to install FitTrackee
 

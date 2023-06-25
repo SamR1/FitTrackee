@@ -4,7 +4,7 @@ import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import asc, desc, exc
+from sqlalchemy import asc, desc, exc, func
 
 from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
@@ -32,6 +32,7 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .exceptions import (
+    BlockUserException,
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
     InvalidUserException,
@@ -136,14 +137,14 @@ def get_users(auth_user: User) -> Dict:
 
     **Example request**:
 
-    - without parameters
+    - without parameters:
 
     .. sourcecode:: http
 
       GET /api/users HTTP/1.1
       Content-Type: application/json
 
-    - with some query parameters
+    - with some query parameters:
 
     .. sourcecode:: http
 
@@ -275,11 +276,11 @@ def get_users(auth_user: User) -> Dict:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
 
     """
     return get_users_list(auth_user)
@@ -526,13 +527,13 @@ def get_single_user(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token if user is authenticated
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - user does not exist
+        - ``user does not exist``
     """
     try:
         user = get_user_from_username(user_name, with_action='refresh')
@@ -569,10 +570,10 @@ def get_picture(user_name: str) -> Any:
 
     :param integer user_name: user name
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 404:
-        - user does not exist
-        - No picture.
+        - ``user does not exist``
+        - ``No picture.``
 
     """
     try:
@@ -707,19 +708,18 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 400:
-        - invalid payload
-        - valid email must be provided
-        - new email must be different than curent email
+        - ``invalid payload``
+        - ``valid email must be provided``
+        - ``new email must be different than curent email``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
-    :statuscode 404:
-        - user does not exist
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     user_data = request.get_json()
     if not user_data:
@@ -837,15 +837,14 @@ def delete_user(
 
     :statuscode 204: user account deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
-        - you can not delete your account, no other user has admin rights
-    :statuscode 404:
-        - user does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``you do not have permissions``
+        - ``you can not delete your account, no other user has admin rights``
+    :statuscode 404: ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:
@@ -976,6 +975,9 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     except UserNotFoundException as e:
         appLog.error(f'Error when following a user: {e}')
         return UserNotFoundErrorResponse()
+
+    if auth_user.is_blocked_by(target_user):
+        return InvalidPayloadErrorResponse("you can not follow this user")
 
     try:
         auth_user.send_follow_request_to(target_user)
@@ -1284,3 +1286,42 @@ def get_following(
 
     """
     return get_user_relationships(auth_user, user_name, 'following')
+
+
+@users_blueprint.route('/users/<user_name>/block', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    try:
+        auth_user.blocks_user(target_user)
+        # delete follow request is exists (approved or pending)
+        FollowRequest.query.filter_by(
+            follower_user_id=target_user.id, followed_user_id=auth_user.id
+        ).delete()
+        db.session.commit()
+
+    except BlockUserException:
+        return InvalidPayloadErrorResponse()
+
+    return {"status": "success"}
+
+
+@users_blueprint.route('/users/<user_name>/unblock', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    auth_user.unblocks_user(target_user)
+
+    return {"status": "success"}

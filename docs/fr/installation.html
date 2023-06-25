@@ -1,0 +1,1379 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
+
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
+        <title>Installation - Documentation FitTrackee 0.7.18</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.18
+</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.18
+</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Fonctionnalités</a></li>
+<li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Historique des modifications</a></li>
+</ul>
+
+</div>
+</div><div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    <a href="../en/installation.html" hreflang=en lang=en>
+      English
+    </a>
+    <a href="../fr/installation.html" hreflang=fr lang=fr>
+      Français
+    </a>
+  </div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Lien permanent vers cette rubrique">#</a></h1>
+<p>Cette application est développée en Python (API) et Typescript (client) :</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>API :</dt><dd><ul>
+<li><p>Flask</p></li>
+<li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> pour analyser les fichiers gpx</p></li>
+<li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> pour générer une image de la trace à partir des données du fichier gpx</p></li>
+<li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> pour la file d’attente des tâches</p></li>
+<li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> pour le support de l’autorisation OAuth 2.0</p></li>
+<li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> pour les limitations d’accès à l’API</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Client :</dt><dd><ul>
+<li><p>Vue3/Vuex</p></li>
+<li><p><a class="reference external" href="https://leafletjs.com/">Leaflet</a> pour afficher la carte</p></li>
+<li><p><a class="reference external" href="https://www.chartjs.org/">Chart.js</a> pour afficher les graphiques d’élévation et de vitesse</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="line-block">
+<div class="line">Le logo, les icônes de certains sports et celles des icônes météo ont été faites par <a class="reference external" href="https://www.freepik.com/">Freepik</a> sur <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
+<div class="line">FitTrackee utilise également les icônes de <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
+</div>
+<section id="prerequisites">
+<h2>Prérequis<a class="headerlink" href="#prerequisites" title="Lien permanent vers cette rubrique">#</a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt>obligatoires</dt><dd><ul>
+<li><p>Python &gt;= 3.8.1</p></li>
+<li><p>PostgreSQL 11+</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>optionnels</dt><dd><ul>
+<li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API</p></li>
+<li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
+<li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
+<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (pour l’installation à partir des sources uniquement)</p></li>
+<li><p><a class="reference external" href="https://nodejs.org">Node</a> 16+ et <a class="reference external" href="https://yarnpkg.com">Yarn</a> (pour le développement uniquement)</p></li>
+<li><p>Docker et Docker Compose (pour le développement ou l’évaluation de l’application)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Si l’inscription des utilisateurs est activé, il est recommandé de configurer un fournisseur SMTP pour l’envoi des courriels et les demandes d’export de données.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Les étapes suivantes décrivent l’installation sur des systèmes Linux (testée sur Debian et Arch).</div>
+<div class="line">Sur d’autres systèmes d’exploitations, des problèmes peuvent être rencontrés et des adaptations nécessaires.</div>
+</div>
+</div>
+</section>
+<section id="environment-variables">
+<h2>Variables d’environnement<a class="headerlink" href="#environment-variables" title="Lien permanent vers cette rubrique">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Depuis la version 0.4.0 de FitTrackee, le fichier <code class="docutils literal notranslate"><span class="pre">Makefile.custom.config</span></code> est remplacé par le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code></div>
+</div>
+</div>
+<p>Les variables d’environnements suivantes sont utilisées par l’application web de <strong>FitTrackee</strong> ou la librairie de gestion de la file d’attente des tâches. Elles ne sont pas toutes obligatoires selon la méthode de déploiement.</p>
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-FLASK_APP">
+<span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="line-block">
+<div class="line">Nom du module à importer au démarrage de Flask.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">FLASK_APP</span></code> doit contenir <code class="docutils literal notranslate"><span class="pre">$(PWD)/fittrackee/__main__.py</span></code> dans le cas de l’installation à partir des sources, sinon <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code>.</div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-HOST">
+<span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Hôte <strong>FitTrackee</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-PORT">
+<span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Port de l’application web <strong>FitTrackee</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>5000</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-APP_SETTINGS">
+<span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Configuration de <strong>FitTrackee</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">fittrackee.config.ProductionConfig</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-APP_SECRET_KEY">
+<span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>clé secrète de <strong>FitTrackee</strong>, doit être initialisé sur un environnement de production.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Utiliser une clé secrète forte. Cette clé est utilisée pour la génération des jetons JWT.</p>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-APP_WORKERS">
+<span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>Nombre de _workers_ lancés par <strong>Gunicorn</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-APP_LOG">
+<span class="sig-name descname"><span class="pre">APP_LOG</span></span><a class="headerlink" href="#envvar-APP_LOG" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<p>Chemin du fichier log</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-UPLOAD_FOLDER">
+<span class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></span><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<p>Un <strong>chemin absolu</strong> vers le répertoire dans le répertoire <cite>uploads</cite> sera créé.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">&lt;application_directory&gt;/fittrackee</span></code></p>
+</dd>
+</dl>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<div class="line-block">
+<div class="line">Dans le cas d’une installation avec PyPI, le répertoire sera localisé dans le répertoire de l’environnement virtuel Python si la variable n’est pas initialisée.</div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-DATABASE_URL">
+<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><a class="headerlink" href="#envvar-DATABASE_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="line-block">
+<div class="line">URL de la base de données avec le nom et le mot de passe de l’utilisateur, doit être initialisée sur les environnements de production.</div>
+<div class="line">Exemple pour un environnement de développement : <code class="docutils literal notranslate"><span class="pre">postgresql://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Depuis la <a class="reference external" href="https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b">version 1.4+ de SQLAlchemy</a>, l’URL doit commencé avec <cite>postgresql://</cite>.</div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-DATABASE_DISABLE_POOLING">
+<span class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></span><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<p>Désactiver le <em>pooling</em> si nécessaire (dans le cas du démarrage direct avec le point d’entrée de <strong>FitTrackee</strong> et non avec <strong>Gunicorn</strong>), cf. la <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork">documentation de SqlAlchemy</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-UI_URL">
+<span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>URL de <strong>FitTrackee</strong>, nécessaire pour les liens dans les courriels.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-EMAIL_URL">
+<span class="sig-name descname"><span class="pre">EMAIL_URL</span></span><a class="headerlink" href="#envvar-EMAIL_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
+</div>
+<p>URL du serveur d’envoi des courriels avec les informations de connexion, cf. <a class="reference external" href="installation.html#emails">Courriels</a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>chaine de caractère vide</p>
+</dd>
+</dl>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Si l’URL du serveur est vide, l’envoi des courriels sera désactivé.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Si l’URL du serveur est invalide, l’envoi des courriels sera désactivé.</p>
+</div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-SENDER_EMAIL">
+<span class="sig-name descname"><span class="pre">SENDER_EMAIL</span></span><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
+</div>
+<p>Adresse électronique de l’expéditeur <strong>FitTrackee</strong>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-REDIS_URL">
+<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
+</div>
+<p>Instance Redis utilisée par <strong>Dramatiq</strong> et <strong>Flask-Limiter</strong>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>instance locale Redis (<code class="docutils literal notranslate"><span class="pre">redis://</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-WORKERS_PROCESSES">
+<span class="sig-name descname"><span class="pre">WORKERS_PROCESSES</span></span><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
+</div>
+<p>Nombre de processus utilisés par <strong>Dramatiq</strong>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
+<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
+</div>
+<p>Limite d’accès à l’API, cf. <a class="reference external" href="installation.html#api-rate-limits">Limitation d’accès à l’API</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">per</span> <span class="pre">5</span> <span class="pre">minutes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-TILE_SERVER_URL">
+<span class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></span><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<div class="line-block">
+<div class="line">URl du serveur de tuiles (avec la clé de l’API si nécessaire), cf. <a class="reference external" href="installation.html#map-tile-server">Serveur de tuiles</a>.</div>
+<div class="line">Depuis la version <strong>0.4.9</strong>, il est également utiliser pour générer les images statiques des cartes (pour garder le serveur par défaut cf. <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Certains serveurs de tuiles nécessitent un sous-domaine, df. <a class="reference external" href="installation.html#map-tile-server">Serveur de tuiles</a>.</div>
+<div class="line">Par exemple: « a,b,c » pour OSM France.</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>chaine de caractère vide</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-MAP_ATTRIBUTION">
+<span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<p>Attribution de la carte (si une autre serveur de tuile est utilisé), cf. <a class="reference external" href="installation.html#map-tile-server">Serveur de tuiles</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;noopener</span> <span class="pre">noreferrer&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.9.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le serveur de tuile par défaut est conservé pour générer les images statiques de cartes (serveur de tuiles Komoot.de).</div>
+<div class="line">Sinon, le serveur de tuiles configuré dans <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a> sera utilisé.</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.10.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Cette variable est maintenant insensible à la casse.</div>
+<div class="line">Si <code class="docutils literal notranslate"><span class="pre">False</span></code>, selon le serveur de tuile, les <a class="reference external" href="installation.html#envvar-STATICMAP_SUBDOMAINS">sous-domaines</a> peuvent être obligatoires.</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-WEATHER_API_KEY">
+<span class="sig-name descname"><span class="pre">WEATHER_API_KEY</span></span><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.4.0: </span>⚠️ remplace <code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p>
+</div>
+<p>Clé d’API du fournisseur de données météo (non obligatoire), cf. <code class="docutils literal notranslate"><span class="pre">WEATHER_API_PROVIDER</span></code>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-WEATHER_API_PROVIDER">
+<span class="sig-name descname"><span class="pre">WEATHER_API_PROVIDER</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-WEATHER_API_PROVIDER" title="Lien permanent vers cette définition">#</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.7.11.</span></p>
+</div>
+<p>Fournisseur de données météo (non obligatoire), cf <a class="reference external" href="installation.html#weather-data">Données météo</a>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-VUE_APP_API_URL">
+<span class="sig-name descname"><span class="pre">VUE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VUE_APP_API_URL" title="Lien permanent vers cette définition">#</a></dt>
+<dd><p>URL de l’API <strong>FitTrackee</strong>, uniquement pour les environnements de développement.</p>
+</dd></dl>
+
+<section id="emails">
+<h3>Courriels<a class="headerlink" href="#emails" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
+</div>
+<p>Pour l’envoi des courriels, une valeur valide pour la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> doit être fourni :</p>
+<ul class="simple">
+<li><p>avec un SMTP server sans chiffrement : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
+<li><p>avec SSL : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
+<li><p>avec STARTTLS : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Si l’URL du serveur est invalide, l’envoi des courriels sera désactivé.</div>
+<div class="line">L’envoi de courriels avec Office365 peut ne pas fonctionner si l’authentification SMTP est désactivée.</div>
+</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.5.3.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
+<div class="line">Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis, the port par défaut est 25.</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Depuis la version 0.6.0, les comptes nouvellement créés doivent être confirmés (un courriel contenant des instructions de confirmation est envoyé après l’inscription).</div>
+</div>
+</div>
+<p>Les courriels envoyés par FitTrackee sont :</p>
+<ul class="simple">
+<li><p>instructions pour la confirmation du compte</p></li>
+<li><p>demande de réinitialisation du mot de passe</p></li>
+<li><p>changement d’adresse électronique (vers l’ancienne et la nouvelle adresse)</p></li>
+<li><p>changement de mot de passe</p></li>
+<li><p>notification lorsqu’une archive d’export de données est prête à être téléchargée (<em>ajouté dans la version 0.7.13</em>)</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
+</div>
+<p>Dans le cas des instance avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
+<p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
+</section>
+<section id="map-tile-server">
+<h3>Serveur de tuiles<a class="headerlink" href="#map-tile-server" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
+</div>
+<p>Le serveur de tuiles par défaut est maintenant le serveur standard d”<strong>OpenStreetMap</strong> (si les variables d’environnements ne sont pas initialisées). Le serveur de tuile peut être changé en modifiant les variables <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> et <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers">liste des serveurs de tuiles</a>).</p>
+<p>Pour conserver <strong>ThunderForest Outdoors</strong>, la configuration est :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX</span></code> où <strong>XXXX</strong> est la clé d’API de <strong>ThunderForest</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION=&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.thunderforest.com/&quot;&gt;Thunderforest&lt;/a&gt;,</span> <span class="pre">&amp;copy;</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.org/copyright&quot;&gt;OpenStreetMap&lt;/a&gt;</span> <span class="pre">contributors</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Vérifier les conditions d’utilisation du fournisseur de tuiles pour l’attribution des cartes.</div>
+</div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.10.</span></p>
+</div>
+<p>Depuis que le serveur de tuiles peut être utilisé pour la génération des images statiques de cartes, certains serveurs nécessitent un sous-domaine.</p>
+<p>Par exemple, pour configurer le serveur d'OSM France, les valeurs attendues sont :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION='fond</span> <span class="pre">de</span> <span class="pre">carte</span> <span class="pre">par</span> <span class="pre">&lt;a</span> <span class="pre">href=&quot;http://www.openstreetmap.fr/mentions-legales/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;OpenStreetMap</span> <span class="pre">France&lt;/a&gt;,</span> <span class="pre">sous&amp;nbsp;&lt;a</span> <span class="pre">href=&quot;http://creativecommons.org/licenses/by-sa/2.0/fr/&quot;</span> <span class="pre">target=&quot;_blank&quot;</span> <span class="pre">rel=&quot;nofollow</span> <span class="pre">noopener&quot;&gt;licence</span> <span class="pre">CC</span> <span class="pre">BY-SA&lt;/a&gt;'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
+</ul>
+<p>Le sous-domaine sera choisi de manière aléatoire.</p>
+</section>
+<section id="api-rate-limits">
+<h3>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
+</div>
+<div class="line-block">
+<div class="line">La limitation d’accès à l’API est gérée par <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, et basé sur l’adresse IP avec une stratégie de période fixe.</div>
+<div class="line">Pour activer la limitation d’accès, <strong>Redis</strong> doit être accessible.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Si aucune instance Redis n’est disponible, FitTrackee pourra tout de même démarrer.</div>
+</div>
+</div>
+<div class="line-block">
+<div class="line">Tous les points d’accès sont soumis à des limitations d’accès sauf les points servant des <em>assets</em>.</div>
+<div class="line">Les limites peuvent être modifiées en configurant la variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> (cf. la <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">documentation Flask-Limiter sur la notation</a>).</div>
+<div class="line">Les limites doivent être séparées par des virgules, par exemple :</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
+</pre></div>
+</div>
+<p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de ligne de commande</a> à des fins de maintenance et de diagnostic.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>limiter
+Usage:<span class="w"> </span>flask<span class="w"> </span>limiter<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+
+<span class="w">  </span>Flask-Limiter<span class="w"> </span>maintenance<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>utility<span class="w"> </span>commmands
+
+Options:
+<span class="w">  </span>--help<span class="w">  </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+
+Commands:
+<span class="w">  </span>clear<span class="w">   </span>Clear<span class="w"> </span>limits<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>specific<span class="w"> </span>key
+<span class="w">  </span>config<span class="w">  </span>View<span class="w"> </span>the<span class="w"> </span>extension<span class="w"> </span>configuration
+<span class="w">  </span>limits<span class="w">  </span>Enumerate<span class="w"> </span>details<span class="w"> </span>about<span class="w"> </span>all<span class="w"> </span>routes<span class="w"> </span>with<span class="w"> </span>rate<span class="w"> </span>limits
+</pre></div>
+</div>
+</section>
+<section id="weather-data">
+<h3>Données météo<a class="headerlink" href="#weather-data" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.11.</span></p>
+</div>
+<p>Les fournisseurs de données météo suivants sont pris en charge par <strong>FitTrackee</strong> :</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong> : les données historiques sont fournies sur une période d’une heure)</p></li>
+</ul>
+<p>Pour configurer un fournisseur de données météo, initialiser les variables d’environnement suivantes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code> : clé d’API correspondant au fournisseur de données météo</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.15.</span></p>
+</div>
+<p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
+</section>
+</section>
+<section id="id2">
+<h2>Installation<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Remarque : FitTrackee est en cours de développement, certaines fonctionnalités peuvent être instables.</div>
+</div>
+</div>
+<section id="from-pypi">
+<h3>A partir de PyPI<a class="headerlink" href="#from-pypi" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Méthode recommandée en production.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Créer et activer l’environnement virtuel</p></li>
+<li><p>Installer <strong>FitTrackee</strong> à partir de pip</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Créer la base de données <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code></p></li>
+</ul>
+<p>Exemple :</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="n">PASSWORD</span><span class="w"> </span><span class="s1">&#39;&lt;PASSWORD&gt;&#39;</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">AUTHORIZATION</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">fittrackee</span><span class="w"> </span><span class="k">OWNER</span><span class="w"> </span><span class="n">fittrackee</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">cf. <a class="reference external" href="https://www.postgresql.org/docs/15/ddl-schemas.html">documentation</a> PostgreSQL pour les schémas et privilèges.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Initialiser les variables d’environnement, cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a></p></li>
+</ul>
+<p>Par exemple, copier et coller le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> à partir de <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> et activer le fichier.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>nano<span class="w"> </span>.env
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.env
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initialiser le schéma de la base de données</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>db<span class="w"> </span>upgrade
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer l’application</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches si l’envoi des courriels est activé, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Pour démarrer l’application et les <em>workers</em> avec le service <strong>systemd</strong>, cf. <a class="reference external" href="installation.html#deployment">Déploiement</a></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
+<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-admin<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si le compte de l’utilisateur est inactif, il sera alors activée.</p>
+</div>
+</section>
+<section id="from-sources">
+<h3>A partir des sources<a class="headerlink" href="#from-sources" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Depuis la version 0.2.1 de FitTrackee, l’installation des paquets Python nécessite Poetry.</div>
+<div class="line">Pour plus d’information, voir la <a class="reference external" href="https://python-poetry.org/docs/#installation">documentation de Poetry</a></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la configuration de Poetry.</div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+</div>
+<section id="dev-environment">
+<h4>Environnements de développement<a class="headerlink" href="#dev-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<ul class="simple">
+<li><p>Cloner ce dépôt :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamR1/FitTrackee.git
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Créer le fichier <strong>.env</strong> à partir de l’exemple et le mettre à jour (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
+<li><p>Installer l’environnement virtuel Python, Vue et tous les paquets nécessaires et initialiser la base de données :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
+$<span class="w"> </span>make<span class="w"> </span>install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer le serveur et le client :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>serve
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> avec un navigateur et s’inscrire</p></li>
+<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si le compte de l’utilisateur est inactif, il sera alors activée.</p>
+</div>
+</section>
+<section id="production-environment">
+<h4>Environnements de production<a class="headerlink" href="#production-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Note : FitTrackee est en cours de développement. Certaines fonctionnalités peuvent être instables.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.18) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.18.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.18<span class="w"> </span>FitTrackee
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Créer le fichier <strong>.env</strong> à partir de l’exemple et le mettre à jour (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
+<li><p>Installer l’environnement virtuel Python et tous les paquets nécessaires :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-python
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Initialiser la base de données (<strong>après avoir mis à jour</strong> <code class="docutils literal notranslate"><span class="pre">db/create.sql</span></code> <strong>pour changer les informations de connexion à la base de données</strong>) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer le serveur et les <em>workers</em> dramatiq :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si l’envoi des courriels est désactivé : <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">run-server</span></code></p>
+</div>
+<ul class="simple">
+<li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
+<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si le compte de l’utilisateur est inactif, il sera alors activée.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="upgrade">
+<h2>Mise à jour<a class="headerlink" href="#upgrade" title="Lien permanent vers cette rubrique">#</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Avant de procéder à la mise à jour, faire une sauvegarde de l’ensemble des données :</div>
+<div class="line">- base de données (avec <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> par exemple)</div>
+<div class="line">- répertoire des fichiers téléversés (voir <a class="reference external" href="installation.html#environment-variables">Variables d'environnement</a>)</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Les versions publiées ne suivent pas la <a class="reference external" href="https://semver.org/lang/fr/">gestion sémantique de version</a>. Toute version peut contenir des changements non rétro-compatibles.</p>
+</div>
+<section id="id3">
+<h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique">#</a></h3>
+<ul class="simple">
+<li><p>Stopper l’application et activer l’environnement virtuel</p></li>
+<li><p>Mettre à jour avec pip</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>fittrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour les variables d’environnements si nécessaire et les activer</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>nano<span class="w"> </span>.env
+$<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.env
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>db<span class="w"> </span>upgrade
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Redémarrer l’application et les <em>workers</em> de la file d’attente des tâches (si l’envoi des courriels est activé).</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>A partir des sources<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique">#</a></h3>
+<section id="id5">
+<h4>Environnements de développement<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique">#</a></h4>
+<ul class="simple">
+<li><p>Arrêter l’application et récupérer les derniers changements du dépôt :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>pull
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour le fichier <strong>.env</strong> si nécessaire (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
+<li><p>Mettre à jour les paquets :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>upgrade-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Redémarrer le serveur :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>serve
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
+</pre></div>
+</div>
+</section>
+<section id="prod-environment">
+<h4>Environnement de production<a class="headerlink" href="#prod-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<ul class="simple">
+<li><p>Arrêter l’application</p></li>
+<li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.18) et écraser les fichiers existants :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.18.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.18/*<span class="w"> </span>FitTrackee/
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour le fichier <strong>.env</strong> si nécessaire (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
+<li><p>Mettre à jour les paquets :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Mettre à jour la base de données si nécessaire (voir le journal des changements pour les migrations) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>upgrade-db
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Redémarrer le serveur et les <em>workers</em> dramatiq :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si l’envoi des courriels est désactivé : <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">make</span> <span class="pre">run-server</span></code></p>
+</div>
+</section>
+</section>
+</section>
+<section id="deployment">
+<h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>Il y a plusieurs méthodes pour démarrer et servir l’application web <strong>FitTrackee</strong> et l’application de gestion de la file d’attente de tâches. Un des moyens est d’utiliser les services <strong>systemd</strong> et <strong>Nginx</strong> to proxy passer à <strong>Gunicorn</strong>.</p>
+<p>Exemples (à adapter selon la configuration de votre instance et votre système d’exploitation) :</p>
+<ul class="simple">
+<li><p>pour l’application : <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">redis</span><span class="o">.</span><span class="n">service</span>
+<span class="n">StartLimitIntervalSec</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">simple</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+<span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UPLOAD_FOLDER=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;DATABASE_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UI_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;EMAIL_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;TILE_SERVER_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;STATICMAP_SUBDOMAINS=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;MAP_ATTRIBUTION=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;WEATHER_API_KEY=&quot;</span>
+<span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gunicorn</span> <span class="o">-</span><span class="n">b</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span> <span class="s2">&quot;fittrackee:create_app()&quot;</span> <span class="o">--</span><span class="n">error</span><span class="o">-</span><span class="n">logfile</span> <span class="o">/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/</span><span class="n">gunicorn</span><span class="o">.</span><span class="n">log</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pour gérer les fichiers de taille importante, une valeur plus importante pour le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> peut être configurée.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Plus d’informations sur le déploiement avec Gunicorn dans sa <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
+</div>
+<ul class="simple">
+<li><p>pour les <em>workers</em> de la file d’attente : <code class="docutils literal notranslate"><span class="pre">fittrackee_workers.service</span></code></p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">FitTrackee</span> <span class="n">task</span> <span class="n">queue</span> <span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">postgresql</span><span class="o">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">redis</span><span class="o">.</span><span class="n">service</span>
+<span class="n">StartLimitIntervalSec</span><span class="o">=</span><span class="mi">0</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">simple</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+<span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
+<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee_workers</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;FLASK_APP=fittrackee&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UPLOAD_FOLDER=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;DATABASE_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UI_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;EMAIL_URL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
+<span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
+<span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">flask</span> <span class="n">worker</span> <span class="o">--</span><span class="n">processes</span> <span class="o">&lt;</span><span class="n">NUMBER</span> <span class="n">OF</span> <span class="n">PROCESSES</span><span class="o">&gt;</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Configuration <strong>Nginx</strong> :</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>server {
+    listen 443 ssl http2;
+    server_name example.com;
+    ssl_certificate fullchain.pem;
+    ssl_certificate_key privkey.pem;
+
+    ## this parameter controls how large of a file can be
+    ## uploaded, and defaults to 1MB. If you change the FitTrackee
+    ## settings to allow larger uploads, you&#39;ll need to change this
+    ## setting by uncommenting the line below and setting the size limit
+    ## you want. Set to &quot;0&quot; to prevent nginx from checking the
+    ## request body size at all
+    # client_max_body_size 1m;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_redirect    default;
+        proxy_set_header  Host $host;
+        proxy_set_header  X-Real-IP $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header  X-Forwarded-Host $server_name;
+        proxy_set_header  X-Forwarded-Proto $scheme;
+    }
+}
+
+server {
+    listen 80;
+    server_name example.com;
+    location / {
+        return 301 https://example.com$request_uri;
+    }
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si besoin, modifier la configuration pour gérer les fichiers de taille importante (cf. <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
+</div>
+</section>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique">#</a></h2>
+<section id="id6">
+<h3>Installation<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.4.4.</span></p>
+</div>
+<p>A des fins d’évaluation, des fichiers Docker sont disponible, installant <strong>FitTrackee</strong> à partir des <strong>sources</strong>.</p>
+<ul class="simple">
+<li><p>Pour installer <strong>FitTrackee</strong> :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamR1/FitTrackee.git
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
+$<span class="w"> </span>cp<span class="w"> </span>.env.docker<span class="w"> </span>.env
+$<span class="w"> </span>make<span class="w"> </span>docker-build
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Pour initialiser la base de données :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-init
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire.</p></li>
+</ul>
+<p>Ouvrir l’URL <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> pour accéder à l’interface de <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> (outil de test)</p>
+<ul class="simple">
+<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si le compte de l’utilisateur est inactif, il sera alors activée.</p>
+</div>
+<ul class="simple">
+<li><p>Pour arrêter <strong>Fittrackee</strong> :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-stop
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>pour démarrer <strong>Fittrackee</strong> (application et <em>workers</em> dramatiq) :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-run-all
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Pour lancer le shell dans le container <strong>Fittrackee</strong> :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-shell
+</pre></div>
+</div>
+</section>
+<section id="development">
+<h3>Développement<a class="headerlink" href="#development" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.5.0.</span></p>
+</div>
+<ul class="simple">
+<li><p>une étape additionnelle est nécessaire pour installer <cite>fittrackee_client</cite></p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-build-client
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>pour démarrer <strong>FitTrackee</strong> avec les outils de développement client :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-serve-client
+</pre></div>
+</div>
+<p>Ouvrir <a class="reference external" href="http://localhost:3000">http://localhost:3000</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Certaines variables d’environnement doivent être mise à jour comme <code class="docutils literal notranslate"><span class="pre">UI_URL</span></code></p>
+</div>
+<ul class="simple">
+<li><p>pour lancer le <em>lint</em> et les tests :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-lint-client<span class="w">  </span><span class="c1"># run lint on javascript files</span>
+$<span class="w"> </span>make<span class="w"> </span>docker-test-client<span class="w">  </span><span class="c1"># run unit tests on Client</span>
+$<span class="w"> </span>make<span class="w"> </span>docker-lint-python<span class="w">  </span><span class="c1"># run type check and lint on python files</span>
+$<span class="w"> </span>make<span class="w"> </span>docker-test-python<span class="w">  </span><span class="c1"># run unit tests on API</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="yunohost">
+<h2>Yunohost<a class="headerlink" href="#yunohost" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>Un paquet est disponible, cf. <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="cli.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Interface de ligne de commande</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="oauth.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">OAuth 2.0</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018 - 2023, SamR1
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link fa fa-github fa-lg" href="https://github.com/SamR1/FitTrackee" aria-label="GitHub"></a>
+              <a class="muted-link fa fa-mastodon fa-lg" href="https://fosstodon.org/@FitTrackee" aria-label="Mastodon"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prérequis</a></li>
+<li><a class="reference internal" href="#environment-variables">Variables d’environnement</a><ul>
+<li><a class="reference internal" href="#emails">Courriels</a></li>
+<li><a class="reference internal" href="#map-tile-server">Serveur de tuiles</a></li>
+<li><a class="reference internal" href="#api-rate-limits">Limitation d’accès à l’API</a></li>
+<li><a class="reference internal" href="#weather-data">Données météo</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">Installation</a><ul>
+<li><a class="reference internal" href="#from-pypi">A partir de PyPI</a></li>
+<li><a class="reference internal" href="#from-sources">A partir des sources</a><ul>
+<li><a class="reference internal" href="#dev-environment">Environnements de développement</a></li>
+<li><a class="reference internal" href="#production-environment">Environnements de production</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#upgrade">Mise à jour</a><ul>
+<li><a class="reference internal" href="#id3">A partir de PyPI</a></li>
+<li><a class="reference internal" href="#id4">A partir des sources</a><ul>
+<li><a class="reference internal" href="#id5">Environnements de développement</a></li>
+<li><a class="reference internal" href="#prod-environment">Environnement de production</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#deployment">Déploiement</a></li>
+<li><a class="reference internal" href="#docker">Docker</a><ul>
+<li><a class="reference internal" href="#id6">Installation</a></li>
+<li><a class="reference internal" href="#development">Développement</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#yunohost">Yunohost</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/translations.js"></script>
+    </body>
+</html>

@@ -188,13 +188,13 @@ def get_workouts_by_time(
 
     **Example requests**:
 
-    - without parameters
+    - without parameters:
 
     .. sourcecode:: http
 
       GET /api/stats/admin/by_time HTTP/1.1
 
-    - with parameters
+    - with parameters:
 
     .. sourcecode:: http
 
@@ -203,7 +203,7 @@ def get_workouts_by_time(
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -246,7 +246,7 @@ def get_workouts_by_time(
         "status": "success"
       }
 
-    - no workouts
+    - no workouts:
 
     .. sourcecode:: http
 
@@ -273,13 +273,12 @@ def get_workouts_by_time(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404:
-        - user does not exist
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``user does not exist``
 
     """
     return get_workouts(user_name, 'by_time')
@@ -297,13 +296,13 @@ def get_workouts_by_sport(
 
     **Example requests**:
 
-    - without parameters (get stats for all sports with workouts)
+    - without parameters (get stats for all sports with workouts):
 
     .. sourcecode:: http
 
       GET /api/stats/admin/by_sport HTTP/1.1
 
-    - with sport id
+    - with sport id:
 
     .. sourcecode:: http
 
@@ -311,7 +310,7 @@ def get_workouts_by_sport(
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -350,7 +349,7 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
-    - no workouts
+    - no workouts:
 
     .. sourcecode:: http
 
@@ -370,14 +369,14 @@ def get_workouts_by_sport(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - user does not exist
-        - sport does not exist
+        - ``user does not exist``
+        - ``sport does not exist``
 
     """
     return get_workouts(user_name, 'by_sport')
@@ -418,12 +417,12 @@ def get_application_stats(auth_user: User) -> Dict:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
     """
 
     nb_workouts = Workout.query.filter().count()
