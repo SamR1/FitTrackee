@@ -1,5 +1,47 @@
 # Change log
 
+## Version 0.7.18 (2023/06/25)
+
+Polish is available in FitTrackee interface ([partially translated](https://hosted.weblate.org/languages/pl/fittrackee/)).  
+Documentation is now translated in French (**note**: documentation translations are not yet available on Weblate).
+
+**Important**: Python 3.7 is no longer supported, the minimum version is now Python 3.8.1.
+
+### Translations
+
+* [#351](https://github.com/SamR1/FitTrackee/issues/351) - [Translation Request] Polish
+* [PR#370](https://github.com/SamR1/FitTrackee/pull/370) - Translations update (Dutch, thanks to @bjornclauw)
+* [PR#371](https://github.com/SamR1/FitTrackee/pull/371) - Translations update (Polish, thanks to Mariusz on Weblate)
+* [PR#375](https://github.com/SamR1/FitTrackee/pull/375) - Translations update (French, thanks to @Thovi98)
+* [PR#376](https://github.com/SamR1/FitTrackee/pull/376) - Translations update (German, thanks to @qwerty287)
+
+
+### Documentation
+
+* [1375986](https://github.com/SamR1/FitTrackee/commit/1375986837321fa356decadcff89bfc2144c345e) - Change documentation theme for Furo
+* [#377](https://github.com/SamR1/FitTrackee/issues/377) - Init documentation translation
+
+
+### Misc
+
+* [#354](https://github.com/SamR1/FitTrackee/issues/354) - Drop support for Python 3.7
+* [PR#374](https://github.com/SamR1/FitTrackee/pull/374) - Docker - install fittrackee in a virtualenv 
+
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 87%
+- Norwegian Bokmål: 36%
+- Polish: 43%
+- Spanish: 100%
+
+Thanks to all contributors.
+
+
 ## Version 0.7.17 (2023/06/03)
 
 ### Translations

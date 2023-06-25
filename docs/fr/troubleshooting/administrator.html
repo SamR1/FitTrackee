@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Historique des modifications" href="../changelog.html" /><link rel="prev" title="Dépannage" href="index.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>Administrateur - Documentation FitTrackee 0.7.17</title>
+        <title>Administrateur - Documentation FitTrackee 0.7.18</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.7.17
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.7.18
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.17
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.18
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -257,7 +257,7 @@
 <section id="failed-to-upload-or-download-files">
 <h2><cite>Échec du chargement ou du téléchargement de fichiers</cite><a class="headerlink" href="#failed-to-upload-or-download-files" title="Lien permanent vers cette rubrique">#</a></h2>
 <ul class="simple">
-<li><p>Vérifiez <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> dans la configuration <strong>nginx</strong>. Augmentez la valeur pour gérer des fichiers plus volumineux (voir la <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation de **nginx**</a>).</p></li>
+<li><p>Vérifiez <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> dans la configuration <strong>nginx</strong>. Augmentez la valeur pour gérer des fichiers plus volumineux (voir la <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation</a> de <strong>nginx</strong>).</p></li>
 <li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d’attente</a> (timeout) <strong>gunicorn</strong> si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
 </ul>
 </section>

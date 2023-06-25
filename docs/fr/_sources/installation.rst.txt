@@ -22,7 +22,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python 3.8+
+    - Python >= 3.8.1
     - PostgreSQL 11+
 - optional
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
@@ -62,7 +62,7 @@ deployment method.
 
     **FitTrackee** host.
 
-    :default: 127.0.0.1
+    :default: ``127.0.0.1``
 
 
 .. envvar:: PORT
@@ -76,7 +76,7 @@ deployment method.
 
     **FitTrackee** configuration.
 
-    :default: fittrackee.config.ProductionConfig
+    :default: ``fittrackee.config.ProductionConfig``
 
 
 .. envvar:: APP_SECRET_KEY
@@ -224,7 +224,7 @@ deployment method.
     | This variable is now case-insensitive.
     | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
-    :default: False
+    :default: ``False``
 
 
 .. envvar:: WEATHER_API_KEY
@@ -505,13 +505,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.17):
+-  Download the last release (for now, it is the release v0.7.18):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
-   $ tar -xzf v0.7.17.tar.gz
-   $ mv FitTrackee-0.7.17 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+   $ tar -xzf v0.7.18.tar.gz
+   $ mv FitTrackee-0.7.18 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -557,6 +557,10 @@ Upgrade
     | Before upgrading, make a backup of all data:
     | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
     | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+
+.. warning::
+
+    For now, releases do not follow `semantic versioning <https://semver.org>`__). Any version may contain backward-incompatible changes.
 
 
 From PyPI
@@ -631,13 +635,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.17) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.18) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.17.tar.gz
-   $ tar -xzf v0.7.17.tar.gz
-   $ cp -R FitTrackee-0.7.17/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.18.tar.gz
+   $ tar -xzf v0.7.18.tar.gz
+   $ cp -R FitTrackee-0.7.18/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

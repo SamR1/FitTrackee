@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Records" href="records.html" /><link rel="prev" title="Configuration" href="configuration.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>OAuth2 - Documentation FitTrackee 0.7.17</title>
+        <title>OAuth2 - Documentation FitTrackee 0.7.18</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.7.17
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.7.18
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.17
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.18
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -235,7 +235,7 @@
 <dt class="sig sig-object http" id="get--api-oauth-apps">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#get--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir les clients OAuth2 pour l’utilisateur authentifié avec pagination (5 clients/page).</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
 <li><p>sans paramètres :</p></li>
@@ -312,7 +312,7 @@
 <dt class="sig sig-object http" id="post--api-oauth-apps">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps</span></span><a class="headerlink" href="#post--api-oauth-apps" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Créer un client OAuth2 pour l’utilisateur authentifié.</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -376,7 +376,7 @@
 <dt class="sig sig-object http" id="get--api-oauth-apps-(string-client_client_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">client_client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-oauth-apps-(string-client_client_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un client OAuth2 avec le “client_id”.</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/o22a27s2aBPUoxJbxV3UjDOx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -450,7 +450,7 @@
 <dt class="sig sig-object http" id="get--api-oauth-apps-(int-client_id)-by_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_id</span></span><a class="headerlink" href="#get--api-oauth-apps-(int-client_id)-by_id" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Obtenir un client OAuth2 avec l’identifiant (valeur de type entier).</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/oauth/apps/1/by_id</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -524,7 +524,7 @@
 <dt class="sig sig-object http" id="delete--api-oauth-apps-(int-client_id)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-oauth-apps-(int-client_id)" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Delete an OAuth2 client (app).</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/oauth/apps/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -565,7 +565,7 @@
 <dt class="sig sig-object http" id="post--api-oauth-apps-(int-client_id)-revoke">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/apps/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">client_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/revoke</span></span><a class="headerlink" href="#post--api-oauth-apps-(int-client_id)-revoke" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Révoquer tous les tokens associés à un client OAuth2.</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/apps/1/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -610,7 +610,7 @@
 <dt class="sig sig-object http" id="post--api-oauth-authorize">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/oauth/authorize</span></span><a class="headerlink" href="#post--api-oauth-authorize" title="Lien permanent vers cette définition">#</a></dt>
 <dd><p>Autoriser un client OAuth2 (app). En cas de succès, il redirige vers l’URL de redirection du client avec le code pour émettre un jeton.</p>
-<p>Ce point d’accès n’est accessible que par le client web FitTrackee client.</p>
+<p>Ce point d’accès n’est accessible que par le client web FitTrackee.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/oauth/authorize</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">multipart/form-data</span>

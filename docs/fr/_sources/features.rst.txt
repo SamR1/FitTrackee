@@ -201,14 +201,12 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Galician (*new in 0.7.15*)
 - Spanish (*new in 0.7.15*)
 - Norwegian Bokmål (*new in 0.7.15*)
+- Polish (*new in 0.7.18*)
 
-Translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
+Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
-
-.. note::
-  Polish is not yet available in **FitTrackee** interface.
 
 Screenshots
 ^^^^^^^^^^^^
