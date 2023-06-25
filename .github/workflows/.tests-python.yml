@@ -32,7 +32,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        python-version:  [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+        python-version:  [ "3.8", "3.9", "3.10", "3.11" ]
     steps:
       - uses: actions/checkout@v2
       - name: Install Poetry and Dependencies
@@ -44,9 +44,12 @@ jobs:
       - name: Bandit
         if: matrix.python-version == '3.10'
         run: bandit -r fittrackee -c pyproject.toml
-      - name: Lint
+      - name: Lint (isort & black)
         if: matrix.python-version == '3.10'
-        run: pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
+        run: pytest --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
+      - name: Lint (flake8)
+        if: matrix.python-version == '3.10'
+        run: flake8 fittrackee e2e
       - name: Mypy
         if: matrix.python-version == '3.10'
         run: mypy fittrackee

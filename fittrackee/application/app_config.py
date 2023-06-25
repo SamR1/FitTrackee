@@ -52,14 +52,14 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
-          "version": "0.7.17",
+          "version": "0.7.18",
           "weather_provider": null
         },
         "status": "success"
       }
 
-    :statuscode 200: success
-    :statuscode 500: error on getting configuration
+    :statuscode 200: ``success``
+    :statuscode 500: ``error on getting configuration``
     """
 
     try:
@@ -108,7 +108,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
-          "version": "0.7.17",
+          "version": "0.7.18",
           "weather_provider": null
         },
         "status": "success"
@@ -125,15 +125,15 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
-    :statuscode 400: invalid payload
+    :statuscode 200: ``success``
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-        - valid email must be provided for admin contact
-    :statuscode 403: you do not have permissions
-    :statuscode 500: error when updating configuration
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+        - ``valid email must be provided for admin contact``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 500: ``error when updating configuration``
     """
     config_data = request.get_json()
     if not config_data:
@@ -209,6 +209,6 @@ def health_check() -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     """
     return {'status': 'success', 'message': 'pong!'}
