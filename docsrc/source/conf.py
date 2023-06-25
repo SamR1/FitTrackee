@@ -14,8 +14,6 @@ import os
 import sys
 from pathlib import Path
 
-import sphinx_bootstrap_theme
-
 sys.path.insert(0, os.path.abspath('../../fittrackee'))
 
 
@@ -38,7 +36,9 @@ version = release.split('-')[0]
 # ones.
 extensions = [
     'recommonmark',
-    'sphinxcontrib.autohttp.flask'
+    'sphinxcontrib.httpdomain',
+    'sphinxcontrib.autohttp.flask',
+    'sphinx_copybutton',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,19 +55,28 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'bootstrap'
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
+html_logo = "_static/ft-logo.png"
 
 html_theme_options = {
-    'navbar_site_name': 'Docs',
-    'bootswatch_theme': 'flatly',
-    'navbar_links': [
-        ('GitHub', 'https://github.com/SamR1/FitTrackee', True),
+    "footer_icons": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/SamR1/FitTrackee",
+            "html": "",
+            "class": "fa fa-github fa-lg",
+        },
+        {
+            "name": "Mastodon",
+            "url": "https://fosstodon.org/@FitTrackee",
+            "html": "",
+            "class": "fa fa-mastodon fa-lg",
+        },
     ],
 }
 
@@ -76,7 +85,8 @@ html_css_files = [
     'css/custom.css',
 ]
 
-html_last_updated_fmt = ''
+pygments_style = "sphinx"
+pygments_dark_style = "monokai"
 
 # -- Sources configuration ---------------------------------------------------
 
@@ -85,3 +95,15 @@ source_suffix = {
     '.txt': 'markdown',
     '.md': 'markdown',
 }
+
+# -- Internationalization ----------------------------------------------------
+
+language = "en"
+locale_dirs = ["../locales"]
+gettext_compact = "docs"
+
+languages = [
+    ("English", "en"),  # English
+    ("Français", "fr"),  # French
+]
+html_context = { "langs": languages }

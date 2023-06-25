@@ -1,1 +1,23 @@
-{ }
+{
+    "APP_CONFIG": {
+        "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu"
+    },
+    "CONFIRM_USER_PASSWORD_RESET": "Czy na pewno chcesz zresetować {0} hasło?",
+    "CURRENT_EMAIL": "Aktualny e-mail",
+    "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
+    "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
+    "NEW_EMAIL": "Nowy e-mail",
+    "NO_TEXT_ENTERED": "Nie podano tekstu",
+    "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
+    "RESET_USER_PASSWORD": "Zresetuj hasło",
+    "UPDATE_USER_EMAIL": "Zaktualizuj e-mail",
+    "USER": "użytkownik | użytkowników",
+    "USERS": {
+        "SELECTS": {
+            "ORDER_BY": {
+                "USERNAME": "nazwa użytkownika"
+            }
+        }
+    },
+    "USER_EMAIL_UPDATE_SUCCESSFUL": "Adres e-mail został zaktualizowany."
+}

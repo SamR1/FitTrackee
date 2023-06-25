@@ -8,13 +8,12 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 
 # install requirements
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip
 RUN pip install poetry
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-interaction --quiet
-
-# create uploads folder
-CMD mkdir /usr/src/app/uploads
+RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
 
 # run fittrackee server
 CMD flask run --with-threads -h 0.0.0.0

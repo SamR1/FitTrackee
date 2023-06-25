@@ -1,0 +1,12 @@
+<div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    {%- for name, code in langs %}
+    <a href="../{{ '../' if '/' in pagename  else '' }}{{ code }}/{{ pagename }}.html" hreflang={{ code }} lang={{ code }}>
+      {{ name }}
+    </a>
+    {%- endfor %}
+  </div>
+</div>

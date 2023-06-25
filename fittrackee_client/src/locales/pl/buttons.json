@@ -1,1 +1,15 @@
-{ }
+{
+    "ACCOUNT-CONFIRMATION-RESEND": "Wyślij ponownie potwierdzenie adresu e-mail",
+    "AUTHORIZE": "Autoryzuj",
+    "BACK": "Wstecz",
+    "CANCEL": "Anuluj",
+    "CLEAR_FILTER": "Wyczyść filtry",
+    "DELETE_MY_ACCOUNT": "Usuń moje konto",
+    "DISABLE": "Wyłącz",
+    "EDIT": "Edytuj",
+    "ENABLE": "Włącz",
+    "LOGIN": "Zaloguj się",
+    "NO": "Nie",
+    "SUBMIT": "Wyślij",
+    "YES": "Tak"
+}

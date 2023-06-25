@@ -256,8 +256,8 @@
 
         ::v-deep(.dropdown-list) {
           z-index: 1000;
-          margin-left: -110px !important;
-          width: 131px !important;
+          margin-left: -160px !important;
+          width: 180px !important;
         }
 
         &.notifications {
@@ -399,6 +399,10 @@
           padding: 0 0 $default-padding;
           width: 88%;
         }
+      }
+
+      .nav-items-user-menu :nth-child(1) {
+        order: 1;
       }
     }
     .fa-language {

@@ -92,7 +92,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -103,7 +103,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         "status": "success"
       }
 
-    - error on registration
+    - error on registration:
 
     .. sourcecode:: http
 
@@ -120,23 +120,20 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
-    :<json boolean accepted_policy: true if user accepted privacy policy
+    :<json boolean accepted_policy: ``true`` if user accepted privacy policy
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 400:
-        - invalid payload
-        - sorry, that username is already taken
-        - Errors:
-            - username: 3 to 30 characters required
-            - username:
-              only alphanumeric characters and the underscore
-              character "_" allowed
-            - email: valid email must be provided
-            - password: 8 characters required
-    :statuscode 403:
-        error, registration is disabled
-    :statuscode 500:
-        error, please try again or contact the administrator
+        - ``invalid payload``
+        - ``sorry, that username is already taken``
+        - ``sorry, you must agree privacy policy to register``
+        - ``username: 3 to 30 characters required``
+        - ``username: only alphanumeric characters and the underscore
+          character "_" allowed``
+        - ``email: valid email must be provided``
+        - ``password: 8 characters required``
+    :statuscode 403: ``error, registration is disabled``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     if not current_app.config.get('is_registration_enabled'):
         return ForbiddenErrorResponse('error, registration is disabled')
@@ -203,7 +200,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
     **Example responses**:
 
-    - successful login
+    - successful login:
 
     .. sourcecode:: http
 
@@ -231,10 +228,10 @@ def login_user() -> Union[Dict, HttpResponse]:
     :<json string email: user email
     :<json string password: password
 
-    :statuscode 200: successfully logged in
-    :statuscode 400: invalid payload
-    :statuscode 401: invalid credentials
-    :statuscode 500: error, please try again or contact the administrator
+    :statuscode 200: ``successfully logged in``
+    :statuscode 400: ``invalid payload``
+    :statuscode 401: ``invalid credentials``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     # get post data
@@ -378,11 +375,11 @@ def get_authenticated_user_profile(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success.
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     return {'status': 'success', 'data': auth_user.serialize(auth_user)}
 
@@ -508,14 +505,13 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: user profile updated
-    :statuscode 400:
-        - invalid payload
+    :statuscode 200: ``user profile updated``
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     # get post data
     post_data = request.get_json()
@@ -683,19 +679,19 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: user account updated
+    :statuscode 200: ``user account updated``
     :statuscode 400:
-        - invalid payload
-        - email is missing
-        - current password is missing
-        - email: valid email must be provided
-        - password: 8 characters required
+        - ``invalid payload``
+        - ``email is missing``
+        - ``current password is missing``
+        - ``email: valid email must be provided``
+        - ``password: 8 characters required``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-        - invalid credentials
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+        - ``invalid credentials``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     data = request.get_json()
     if not data:
@@ -930,15 +926,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: user preferences updated
+    :statuscode 200: ``user preferences updated``
     :statuscode 400:
-        - invalid payload
-        - password: password and password confirmation don't match
+        - ``invalid payload``
+        - ``password: password and password confirmation don't match``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     # get post data
     post_data = request.get_json()
@@ -1046,17 +1042,16 @@ def edit_user_sport_preferences(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: user preferences updated
+    :statuscode 200: ``user sport preferences updated``
     :statuscode 400:
-        - invalid payload
-        - invalid hexadecimal color
+        - ``invalid payload``
+        - ``invalid hexadecimal color``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404:
-        - sport does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``sport does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     post_data = request.get_json()
     if (
@@ -1141,12 +1136,11 @@ def reset_user_sport_preferences(
 
     :statuscode 204: user preferences deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404:
-        - sport does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``sport does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
@@ -1198,18 +1192,18 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: user picture updated
+    :statuscode 200: ``user picture updated``
     :statuscode 400:
-        - invalid payload
-        - no file part
-        - no selected file
-        - file extension not allowed
+        - ``invalid payload``
+        - ``no file part``
+        - ``no selected file``
+        - ``file extension not allowed``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 413: error during picture update: file size exceeds 1.0MB
-    :statuscode 500: error during picture update
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 413: ``error during picture update: file size exceeds 1.0MB``
+    :statuscode 500: ``error during picture update``
     """
     try:
         response_object = get_error_response_if_file_is_invalid(
@@ -1282,10 +1276,10 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 204: picture deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500: error during picture deletion
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error during picture deletion``
 
     """
     try:
@@ -1306,7 +1300,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     """
     Handle password reset request.
 
-    If email sending is disabled, this endpoint is not available
+    If email sending is disabled, this endpoint is not available.
 
     **Example request**:
 
@@ -1329,9 +1323,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 
     :<json string email: user email
 
-    :statuscode 200: password reset request processed
-    :statuscode 400: invalid payload
-    :statuscode 404: the requested URL was not found on the server
+    :statuscode 200: ``password reset request processed``
+    :statuscode 400: ``invalid payload``
+    :statuscode 404: ``the requested URL was not found on the server``
 
     """
     if not current_app.config['CAN_SEND_EMAILS']:
@@ -1400,10 +1394,10 @@ def update_password() -> Union[Dict, HttpResponse]:
     :<json string password: password (8 characters required)
     :<json string token: password reset token
 
-    :statuscode 200: password updated
-    :statuscode 400: invalid payload
-    :statuscode 401: invalid token, please request a new token
-    :statuscode 500: error, please try again or contact the administrator
+    :statuscode 200: ``password updated``
+    :statuscode 400: ``invalid payload``
+    :statuscode 401: ``invalid token, please request a new token``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     post_data = request.get_json()
@@ -1480,9 +1474,9 @@ def update_email() -> Union[Dict, HttpResponse]:
 
     :<json string token: password reset token
 
-    :statuscode 200: email updated
-    :statuscode 400: invalid payload
-    :statuscode 500: error, please try again or contact the administrator
+    :statuscode 200: ``email updated``
+    :statuscode 400: ``invalid payload``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     post_data = request.get_json()
@@ -1540,9 +1534,9 @@ def confirm_account() -> Union[Dict, HttpResponse]:
 
     :<json string token: confirmation token
 
-    :statuscode 200: account confirmation successful
-    :statuscode 400: invalid payload
-    :statuscode 500: error, please try again or contact the administrator
+    :statuscode 200: ``account confirmation successful``
+    :statuscode 400: ``invalid payload``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     post_data = request.get_json()
@@ -1603,10 +1597,10 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
     :<json string email: user email
 
-    :statuscode 200: confirmation email resent
-    :statuscode 400: invalid payload
-    :statuscode 404: the requested URL was not found on the server
-    :statuscode 500: error, please try again or contact the administrator
+    :statuscode 200: ``confirmation email resent``
+    :statuscode 400: ``invalid payload``
+    :statuscode 404: ``the requested URL was not found on the server``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     if not current_app.config['CAN_SEND_EMAILS']:
@@ -1650,7 +1644,7 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example responses**:
 
-    - successful logout
+    - successful logout:
 
     .. sourcecode:: http
 
@@ -1662,7 +1656,7 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         "status": "success"
       }
 
-    - error on logout
+    - error on logout:
 
     .. sourcecode:: http
 
@@ -1676,13 +1670,12 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: successfully logged out
+    :statuscode 200: ``successfully logged out``
     :statuscode 401:
-      - provide a valid auth token
-      - The access token provided is expired, revoked, malformed, or invalid
-        for other reasons.
-    :statuscode 500:
-      - error on token blacklist
+      - ``provide a valid auth token``
+      - ``The access token provided is expired, revoked, malformed, or invalid
+        for other reasons.``
+    :statuscode 500: ``error on token blacklist``
 
     """
     auth_token = request.headers.get('Authorization', '').split(' ')[1]
@@ -1725,18 +1718,17 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :<json boolean accepted_policy: true if user accepted privacy policy
+    :<json boolean accepted_policy: ``true`` if user accepted privacy policy
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
-    :statuscode 400:
-        - invalid payload
+    :statuscode 200: ``success``
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500: internal server error
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     post_data = request.get_json()
     if not post_data or not post_data.get('accepted_policy'):
@@ -1785,15 +1777,15 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 400:
-        - ongoing request exists
-        - completed request already exists
+        - ``ongoing request exists``
+        - ``completed request already exists``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500: internal server error
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     existing_export_request = UserDataExport.query.filter_by(
         user_id=auth_user.id
@@ -1847,7 +1839,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     **Example response**:
 
-    - if a request exists
+    - if a request exists:
 
     .. sourcecode:: http
 
@@ -1864,7 +1856,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         }
       }
 
-    - if no request
+    - if no request:
 
     .. sourcecode:: http
 
@@ -1878,11 +1870,11 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     export_request = UserDataExport.query.filter_by(
         user_id=auth_user.id
@@ -1921,12 +1913,12 @@ def download_data_export(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: file not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``file not found``
     """
     export_request = UserDataExport.query.filter_by(
         user_id=auth_user.id

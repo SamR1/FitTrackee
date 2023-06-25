@@ -47,14 +47,14 @@ def get_clients(auth_user: User) -> Dict:
 
     **Example request**:
 
-    - without parameters
+    - without parameters:
 
     .. sourcecode:: http
 
       GET /api/oauth/apps HTTP/1.1
       Content-Type: application/json
 
-    - with 'page' parameter
+    - with 'page' parameter:
 
     .. sourcecode:: http
 
@@ -99,11 +99,11 @@ def get_clients(auth_user: User) -> Dict:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     params = request.args.copy()
     page = int(params.get('page', 1))
@@ -177,17 +177,16 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     :json string client_uri: client URL
     :json array  redirect_uri: list of client redirect URLs (string)
     :json string scope: client scopes
-    :json string client_description: client description (`OPTIONAL`)
+    :json string client_description: client description (optional)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
-    :statuscode 400:
-        - invalid payload
+    :statuscode 200: ``success``
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     client_metadata = request.get_json()
     if not client_metadata:
@@ -268,7 +267,7 @@ def get_client_by_client_id(
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -293,7 +292,7 @@ def get_client_by_client_id(
         "status": "success"
       }
 
-    - not found
+    - not found:
 
     .. sourcecode:: http
 
@@ -309,12 +308,12 @@ def get_client_by_client_id(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: OAuth2 client not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``OAuth2 client not found``
     """
     return get_client(
         auth_user, client_id=None, client_client_id=client_client_id
@@ -341,7 +340,7 @@ def get_client_by_id(
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -366,7 +365,7 @@ def get_client_by_id(
         "status": "success"
       }
 
-    - not found
+    - not found:
 
     .. sourcecode:: http
 
@@ -382,12 +381,12 @@ def get_client_by_id(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: OAuth2 client not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``OAuth2 client not found``
     """
     return get_client(auth_user, client_id=client_id, client_client_id=None)
 
@@ -423,10 +422,10 @@ def delete_client(
 
     :statuscode 204: OAuth2 client deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: OAuth2 client not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``OAuth2 client not found``
     """
     client = OAuth2Client.query.filter_by(
         id=client_id,
@@ -474,12 +473,12 @@ def revoke_client_tokens(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: OAuth2 client not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``OAuth2 client not found``
     """
     client = OAuth2Client.query.filter_by(id=client_id).first()
 
@@ -523,7 +522,7 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     :form string  response_type: client response type (only 'code' is supported
                                 by FitTrackee)
     :form string  scopes: OAuth2 client scopes
-    :form boolean confirm: confirmation (must be 'true')
+    :form boolean confirm: confirmation (must be ``true``)
     :form string  state: unique value to prevent cross-site request forgery
                          (not mandatory but recommended)
     :form string  code_challenge: string generated from a code verifier
@@ -534,14 +533,14 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 400:
-        - invalid payload
+        - ``invalid payload``
         - errors returned by Authlib library
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     data = request.form
     if (
@@ -603,13 +602,12 @@ def issue_token() -> Response:
                          (for token issue with PKCE, not mandatory)
     :form string  refresh_token: refresh token (for token refresh)
 
-    :statuscode 200: success
-    :statuscode 400:
-        - errors returned by Authlib library
+    :statuscode 200: ``success``
+    :statuscode 400: errors returned by Authlib library
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     return authorization_server.create_token_response()
 
@@ -639,12 +637,11 @@ def revoke_token() -> Response:
     :form string client_secret: OAuth2 client secret
     :form string token: access token to revoke
 
-    :statuscode 200: success
-    :statuscode 400:
-        - errors returned by Authlib library
+    :statuscode 200: ``success``
+    :statuscode 400: errors returned by Authlib library
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     """
     return authorization_server.create_endpoint_response('revocation')
