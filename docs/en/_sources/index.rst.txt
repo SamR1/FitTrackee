@@ -11,7 +11,6 @@ FitTrackee
   store workouts data locally and export them into a gpx file.
 | Examples for Android (non-exhaustive list):
 | \* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
-| \* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)
 | \* `OpenTracks <https://github.com/OpenTracksApp/OpenTracks>`_ (Apache License)
 | \* `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)
 
