@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-25 12:16+0200\n"
+"POT-Creation-Date: 2023-06-28 08:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -1581,17 +1581,17 @@ msgid ""
 "translations are not yet available on Weblate)."
 msgstr ""
 "L’interface de FitTrackee est disponible en Polonais (traduction "
-"partielle).<br />La documentation est quant à elle disponible en Français "
-"(note: la traduction de la documentation n’est pas encore disponible sur "
-"Weblate)."
+"partielle).<br />La documentation est quant à elle disponible en Français"
+" (note: la traduction de la documentation n’est pas encore disponible sur"
+" Weblate)."
 
 #: ../source/changelog.md:8
 msgid ""
 "Important: Python 3.7 is no longer supported, the minimum version is now "
 "Python 3.8.1."
 msgstr ""
-"Important: la version 3.7 de Python n’est plus prise en charge, la version"
-" minimale est maintenant la version 3.8.1."
+"Important: la version 3.7 de Python n’est plus prise en charge, la "
+"version minimale est maintenant la version 3.8.1."
 
 #: ../source/changelog.md:10 ../source/changelog.md:47
 #: ../source/changelog.md:76 ../source/changelog.md:126
@@ -1845,8 +1845,8 @@ msgid ""
 "Note: This release contains database migration (see upgrade instructions "
 "in documentation)"
 msgstr ""
-"Note : Cette version contient des migrations de base de données (voir les "
-"instructions dans la documentation)"
+"Note : Cette version contient des migrations de base de données (voir les"
+" instructions dans la documentation)"
 
 #: ../source/changelog.md:107
 msgid "Version 0.7.15 (2023/04/12)"
@@ -3624,8 +3624,8 @@ msgid ""
 "statistics from your outdoor activities."
 msgstr ""
 "**Fitrackee** vous permet de stocker et d'afficher les données issues des"
-" fichiers .gpx et quelques statistiques à partir de vos activités en "
-"plein air."
+" fichiers .gpx et quelques statistiques à partir de vos activités sportives "
+"en plein air."
 
 #: ../source/features.rst:5
 msgid ""
@@ -4303,7 +4303,7 @@ msgid ""
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the "
 "released version):"
 msgstr ""
-"Etat d'avancement de la traduction sur `Weblate "
+"Etat d'avancement de la traduction de l'application sur `Weblate "
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (peut différer de la "
 "version publiée) :"
 
@@ -4356,8 +4356,8 @@ msgid ""
 "This web application allows you to track your outdoor activities "
 "(workouts) from gpx files and keep your data on your own server."
 msgstr ""
-"Cette application web vous permet de suivre vos activités de plein air à "
-"partir de fichiers gpx et de conserver vos données sur votre propre "
+"Cette application web vous permet de suivre vos activités sportives de plein "
+"air à partir de fichiers gpx et de conserver vos données sur votre propre "
 "serveur."
 
 #: ../source/index.rst:11
@@ -4378,20 +4378,16 @@ msgid "\\* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:14
-msgid "\\* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)"
-msgstr ""
-
-#: ../source/index.rst:15
 msgid ""
 "\\* `OpenTracks <https://github.com/OpenTracksApp/OpenTracks>`_ (Apache "
 "License)"
 msgstr ""
 
-#: ../source/index.rst:16
+#: ../source/index.rst:15
 msgid "\\* `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
 msgstr ""
 
-#: ../source/index.rst:19
+#: ../source/index.rst:18
 msgid ""
 "Maps are displayed using `Open Street Map "
 "<https://www.openstreetmap.org>`__."
@@ -4399,17 +4395,17 @@ msgstr ""
 "Les cartes sont affichées à l'aide de `Open Street Map "
 "<https://www.openstreetmap.org>`__."
 
-#: ../source/index.rst:20
+#: ../source/index.rst:19
 msgid "It is also possible to add a workout without a gpx file."
 msgstr "Il est également possible d'ajouter une séance sans fichier gpx."
 
-#: ../source/index.rst:22
+#: ../source/index.rst:21
 msgid "**Still under heavy development (some features may be unstable).**"
 msgstr ""
 "**En cours de développement (certaines fonctionnalités peuvent être "
 "instables).**"
 
-#: ../source/index.rst:23
+#: ../source/index.rst:22
 msgid ""
 "(see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more "
 "information)"
@@ -4417,7 +4413,7 @@ msgstr ""
 "(cf. `tickets <https://github.com/SamR1/FitTrackee/issues>`__ pour plus "
 "d'informations)"
 
-#: ../source/index.rst:30
+#: ../source/index.rst:29
 msgid "Table of contents"
 msgstr "Table des matières"
 
@@ -5352,8 +5348,8 @@ msgid ""
 "Note that FitTrackee is under heavy development, some features may be "
 "unstable."
 msgstr ""
-"Note : FitTrackee est en cours de développement. Certaines fonctionnalités "
-"peuvent être instables."
+"Note : FitTrackee est en cours de développement. Certaines "
+"fonctionnalités peuvent être instables."
 
 #: ../source/installation.rst:508
 msgid "Download the last release (for now, it is the release v0.7.18):"
@@ -5384,7 +5380,7 @@ msgstr "Si l'envoi des courriels est désactivé : ``$ make run-server``"
 msgid "Upgrade"
 msgstr "Mise à jour"
 
-#: ../source/installation.rst:0
+#: ../source/installation.rst
 msgid "Before upgrading, make a backup of all data:"
 msgstr ""
 "Avant de procéder à la mise à jour, faire une sauvegarde de l'ensemble "
@@ -5409,8 +5405,8 @@ msgstr ""
 #: ../source/installation.rst:563
 msgid ""
 "For now, releases do not follow `semantic versioning "
-"<https://semver.org>`__). Any version may contain backward-"
-"incompatible changes."
+"<https://semver.org>`__). Any version may contain backward-incompatible "
+"changes."
 msgstr ""
 "Les versions publiées ne suivent pas la `gestion sémantique de version "
 "<https://semver.org/lang/fr/>`__. Toute version peut contenir des "
@@ -6033,8 +6029,9 @@ msgid ""
 msgstr ""
 "Vérifiez ``client_max_body_size`` dans la configuration **nginx**. "
 "Augmentez la valeur pour gérer des fichiers plus volumineux (voir la "
-"`documentation <https://nginx.org/en/docs/http/ngx_http_core_module.html#"
-"client_max_body_size>`_ de **nginx**)."
+"`documentation "
+"<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_"
+" de **nginx**)."
 
 #: ../source/troubleshooting/administrator.rst:36
 msgid ""
@@ -6051,3 +6048,7 @@ msgstr ""
 #: ../source/troubleshooting/index.rst:2
 msgid "Troubleshooting"
 msgstr "Dépannage"
+
+#~ msgid "\\* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)"
+#~ msgstr ""
+
