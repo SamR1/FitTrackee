@@ -25,13 +25,17 @@ def get_comments(
 ) -> List['Comment']:
     if user:
         following_ids = user.get_following_user_ids()
+        blocked_users = user.get_blocked_user_ids()
         comments_filter = Comment.query.join(
             Mention, Mention.comment_id == Comment.id, isouter=True
         ).filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             or_(
-                Comment.text_visibility == PrivacyLevel.PUBLIC,
+                and_(
+                    Comment.text_visibility == PrivacyLevel.PUBLIC,
+                    Comment.user_id.not_in(blocked_users),
+                ),
                 or_(user.id == Mention.user_id),
                 or_(
                     Comment.user_id == user.id,

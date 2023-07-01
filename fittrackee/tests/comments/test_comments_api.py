@@ -505,6 +505,39 @@ class TestGetWorkoutCommentAsUser(
         assert data['status'] == 'success'
         assert data['comment'] == jsonify_dict(comment.serialize(user_1))
 
+    def test_it_returns_404_when_comment_author_is_blocked(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        user_1.blocks_user(user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment.short_id})",
+        )
+
     def test_it_returns_comment_when_workout_is_deleted(
         self,
         app: Flask,
@@ -803,6 +836,42 @@ class TestGetWorkoutCommentWithReplies(
             jsonify_dict(reply.serialize(user_1))
         ]
 
+    def test_it_does_not_return_reply_from_blocked_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=comment,
+        )
+        user_1.blocks_user(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['replies'] == []
+
     def test_it_gets_comment_when_reply_is_not_visible(
         self,
         app: Flask,
@@ -1048,6 +1117,36 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
             response,
             expected_comments=[jsonify_dict(comment.serialize(user_1))],
         )
+
+    def test_it_does_not_return_comment_when_author_is_blocked(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        user_1.blocks_user(user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
