@@ -159,6 +159,27 @@ class TestGetUserTimeline(ApiTestCaseMixin):
 
         self.assert_workout_returned(response, workout_cycling_user_2)
 
+    def test_it_does_not_return_public_workout_form_blocked_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_1.blocks_user(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_no_workout_returned(response)
+
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [

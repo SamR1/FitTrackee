@@ -153,6 +153,40 @@ def on_follow_request_delete(
         ).delete()
 
 
+class BlockedUser(BaseModel):
+    __tablename__ = 'blocked_users'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'by_user_id', name='blocked_users_unique'
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    by_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    def __init__(
+        self,
+        user_id: int,
+        by_user_id: int,
+        created_at: Optional[datetime] = None,
+    ):
+        self.user_id = user_id
+        self.by_user_id = by_user_id
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
+
+
 class User(BaseModel):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -258,6 +292,12 @@ class User(BaseModel):
             single_parent=True,
         ),
         cascade='all, delete-orphan',
+    )
+    blocked_users = db.relationship(
+        'BlockedUser',
+        primaryjoin=id == BlockedUser.by_user_id,
+        lazy='dynamic',
+        viewonly=True,
     )
 
     def __repr__(self) -> str:
@@ -800,37 +840,3 @@ class Notification(BaseModel):
             )
 
         return serialized_notification
-
-
-class BlockedUser(BaseModel):
-    __tablename__ = 'blocked_users'
-    __table_args__ = (
-        db.UniqueConstraint(
-            'user_id', 'by_user_id', name='blocked_users_unique'
-        ),
-    )
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        index=True,
-    )
-    by_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        index=True,
-    )
-    created_at = db.Column(db.DateTime, nullable=False)
-
-    def __init__(
-        self,
-        user_id: int,
-        by_user_id: int,
-        created_at: Optional[datetime] = None,
-    ):
-        self.user_id = user_id
-        self.by_user_id = by_user_id
-        self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
-        )

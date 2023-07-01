@@ -1080,3 +1080,25 @@ class TestIsBlockedBy:
         user_1.is_blocked_by(user_2)
 
         assert user_1.is_blocked_by(user_2) is True
+
+
+class TestBlockedUsers:
+    def test_it_returns_empty_list_when_no_user_blocked(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert user_1.blocked_users.all() == []
+
+    def test_it_returns_blocked_users(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        user_1.blocks_user(user_2)
+        user_1.blocks_user(user_4)
+
+        assert {
+            blocked_user.user_id for blocked_user in user_1.blocked_users.all()
+        } == {user_2.id, user_4.id}

@@ -23,6 +23,10 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
         params = request.args.copy()
         page = int(params.get('page', 1))
         following_ids = get_following(auth_user)
+        blocked_users = [
+            blocked_user.user_id
+            for blocked_user in auth_user.blocked_users.all()
+        ]
         workouts_pagination = (
             Workout.query.filter(
                 or_(
@@ -31,7 +35,10 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                         Workout.user_id.in_(following_ids),
                         Workout.workout_visibility == PrivacyLevel.FOLLOWERS,
                     ),
-                    Workout.workout_visibility == PrivacyLevel.PUBLIC,
+                    and_(
+                        Workout.workout_visibility == PrivacyLevel.PUBLIC,
+                        Workout.user_id.not_in(blocked_users),
+                    ),
                 )
             )
             .order_by(
