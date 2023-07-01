@@ -142,6 +142,7 @@ html:
 	rm -rf $(BUILDDIR)/$(LANGUAGE)
 	rm -rf docs/$(LANGUAGE)/*
 	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)/$(LANGUAGE)" -D language=$(LANGUAGE)
+	grep -rl "fosstodon.org" $(BUILDDIR)/$(LANGUAGE)/html/ | xargs sed -i "s/href=\"https:\/\/fosstodon.org\/\@FitTrackee\"/rel=\"me\" href=\"https:\/\/fosstodon.org\/\@FitTrackee\"/"
 	cp -a $(BUILDDIR)/$(LANGUAGE)/html/. docs/$(LANGUAGE)
 
 html-all:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-06-25 12:16+0200\n"
+"POT-Creation-Date: 2023-06-28 08:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -4027,40 +4027,36 @@ msgid "\\* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:14
-msgid "\\* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)"
-msgstr ""
-
-#: ../source/index.rst:15
 msgid ""
 "\\* `OpenTracks <https://github.com/OpenTracksApp/OpenTracks>`_ (Apache "
 "License)"
 msgstr ""
 
-#: ../source/index.rst:16
+#: ../source/index.rst:15
 msgid "\\* `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
 msgstr ""
 
-#: ../source/index.rst:19
+#: ../source/index.rst:18
 msgid ""
 "Maps are displayed using `Open Street Map "
 "<https://www.openstreetmap.org>`__."
 msgstr ""
 
-#: ../source/index.rst:20
+#: ../source/index.rst:19
 msgid "It is also possible to add a workout without a gpx file."
 msgstr ""
 
-#: ../source/index.rst:22
+#: ../source/index.rst:21
 msgid "**Still under heavy development (some features may be unstable).**"
 msgstr ""
 
-#: ../source/index.rst:23
+#: ../source/index.rst:22
 msgid ""
 "(see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more "
 "information)"
 msgstr ""
 
-#: ../source/index.rst:30
+#: ../source/index.rst:29
 msgid "Table of contents"
 msgstr ""
 
@@ -4862,8 +4858,8 @@ msgstr ""
 #: ../source/installation.rst:563
 msgid ""
 "For now, releases do not follow `semantic versioning "
-"<https://semver.org>`__). Any version may contain backward-"
-"incompatible changes."
+"<https://semver.org>`__). Any version may contain backward-incompatible "
+"changes."
 msgstr ""
 
 #: ../source/installation.rst:569
@@ -5372,4 +5368,7 @@ msgstr ""
 #: ../source/troubleshooting/index.rst:2
 msgid "Troubleshooting"
 msgstr ""
+
+#~ msgid "\\* `ForRunners <https://gitlab.com/brvier/ForRunners>`_ (GPL v3)"
+#~ msgstr ""
 
