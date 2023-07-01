@@ -453,6 +453,12 @@ class User(BaseModel):
             )
             .on_conflict_do_nothing()
         )
+        follow_request = FollowRequest.query.filter_by(
+            follower_user_id=user.id,
+            followed_user_id=self.id,
+        ).first()
+        if follow_request:
+            db.session.delete(follow_request)
         db.session.commit()
 
     def unblocks_user(self, user: 'User') -> None:

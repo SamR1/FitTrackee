@@ -16,6 +16,7 @@ from fittrackee.users.models import (
     BlacklistedToken,
     BlockedUser,
     FollowRequest,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -938,6 +939,99 @@ class TestBlocksUser:
     def test_user_can_not_block_itself(self, app: Flask, user_1: User) -> None:
         with pytest.raises(BlockUserException):
             user_1.blocks_user(user_1)
+
+    def test_it_blocks_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+
+        user_1.blocks_user(user_2)
+
+        assert (
+            BlockedUser.query.filter_by(
+                user_id=user_2.id,
+                by_user_id=user_1.id,
+            ).first()
+            is not None
+        )
+        serialized_user = user_2.serialize(user_1)
+        assert serialized_user['blocked'] is True
+
+    def test_it_deletes_follow_request_when_a_follow_request_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.blocks_user(user_2)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=user_2.id,
+                followed_user_id=user_1.id,
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_follow_request_notification_when_a_follow_request_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.blocks_user(user_2)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_follow_request_when_user_blocks_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+
+        user_1.blocks_user(user_2)
+
+        assert (
+            FollowRequest.query.filter_by(
+                follower_user_id=user_2.id,
+                followed_user_id=user_1.id,
+            ).first()
+            is None
+        )
+
+    def test_it_deletes_follow_request_notification_when_user_blocks_a_follower(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+
+        user_1.blocks_user(user_2)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+            ).first()
+            is None
+        )
 
 
 class TestUnBlocksUser:
