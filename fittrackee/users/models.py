@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import jwt
 from flask import current_app
@@ -264,9 +264,7 @@ class User(BaseModel):
             id == FollowRequest.followed_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=and_(
-            id == FollowRequest.follower_user_id,
-        ),
+        secondaryjoin=id == FollowRequest.follower_user_id,
         lazy='dynamic',
         viewonly=True,
     )
@@ -277,9 +275,7 @@ class User(BaseModel):
             id == FollowRequest.follower_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=and_(
-            id == FollowRequest.followed_user_id,
-        ),
+        secondaryjoin=id == FollowRequest.followed_user_id,
         lazy='dynamic',
         viewonly=True,
     )
@@ -471,6 +467,9 @@ class User(BaseModel):
         ).first()
         return self.follow_request_status(follow_request)
 
+    def get_following_user_ids(self) -> List:
+        return [following.id for following in self.following]
+
     def get_user_url(self) -> str:
         """Return user url on user interface"""
         return f"{current_app.config['UI_URL']}/users/{self.username}"
@@ -514,6 +513,11 @@ class User(BaseModel):
             ).first()
             is not None
         )
+
+    def get_blocked_user_ids(self) -> List:
+        return [
+            blocked_user.user_id for blocked_user in self.blocked_users.all()
+        ]
 
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:

@@ -1099,6 +1099,4 @@ class TestBlockedUsers:
         user_1.blocks_user(user_2)
         user_1.blocks_user(user_4)
 
-        assert {
-            blocked_user.user_id for blocked_user in user_1.blocked_users.all()
-        } == {user_2.id, user_4.id}
+        assert set(user_1.get_blocked_user_ids()) == {user_2.id, user_4.id}

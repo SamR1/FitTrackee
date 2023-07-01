@@ -7,7 +7,6 @@ from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import HttpResponse, handle_error_and_return_response
 from fittrackee.users.models import User
-from fittrackee.users.utils.following import get_following
 
 from .models import Workout
 
@@ -22,11 +21,8 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     try:
         params = request.args.copy()
         page = int(params.get('page', 1))
-        following_ids = get_following(auth_user)
-        blocked_users = [
-            blocked_user.user_id
-            for blocked_user in auth_user.blocked_users.all()
-        ]
+        following_ids = auth_user.get_following_user_ids()
+        blocked_users = auth_user.get_blocked_user_ids()
         workouts_pagination = (
             Workout.query.filter(
                 or_(

@@ -12,7 +12,6 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
 from fittrackee.privacy_levels import PrivacyLevel, can_view
-from fittrackee.users.utils.following import get_following
 from fittrackee.utils import encode_uuid
 
 from .exceptions import CommentForbiddenException
@@ -25,7 +24,7 @@ def get_comments(
     workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
 ) -> List['Comment']:
     if user:
-        following_ids = get_following(user)
+        following_ids = user.get_following_user_ids()
         comments_filter = Comment.query.join(
             Mention, Mention.comment_id == Comment.id, isouter=True
         ).filter(
