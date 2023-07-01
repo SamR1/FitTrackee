@@ -29,9 +29,12 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
     read_status = params.get('read_status')
     event_type = params.get('type')
 
+    blocked_users = auth_user.get_blocked_user_ids()
+
     notifications_pagination = (
         Notification.query.filter(
             Notification.to_user_id == auth_user.id,
+            Notification.from_user_id.not_in(blocked_users),
             (
                 Notification.marked_as_read == json.loads(read_status)
                 if read_status is not None
@@ -97,8 +100,10 @@ def update_user_notifications(
 @notifications_blueprint.route("/notifications/unread", methods=["GET"])
 @require_auth(scopes=["notifications:read"])
 def get_status(auth_user: User) -> Dict:
-    unread_notifications = Notification.query.filter_by(
-        to_user_id=auth_user.id, marked_as_read=False
+    unread_notifications = Notification.query.filter(
+        Notification.to_user_id == auth_user.id,
+        Notification.from_user_id.not_in(auth_user.get_blocked_user_ids()),
+        Notification.marked_as_read == False,  # noqa
     ).count()
     return {
         "status": "success",
