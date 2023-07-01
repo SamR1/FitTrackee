@@ -181,6 +181,28 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
+    def test_it_returns_404_when_user_is_blocked_workout_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_2.blocks_user(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
     def test_it_returns_another_user_workout_when_visibility_is_public(
         self,
         app: Flask,

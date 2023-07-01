@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 from fittrackee.privacy_levels import can_view
 from fittrackee.responses import (
@@ -9,15 +9,23 @@ from fittrackee.responses import (
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Workout
 
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
+
 
 def check_workout(check_owner: bool = True) -> Callable:
     def decorator_check_workout(f: Callable) -> Callable:
         @wraps(f)
         def wrapper_check_workout(*args: Any, **kwargs: Any) -> Callable:
-            auth_user = args[0]
+            auth_user: Optional['User'] = args[0]
             workout_short_id = kwargs["workout_short_id"]
             workout_uuid = decode_short_id(workout_short_id)
-            workout = Workout.query.filter_by(uuid=workout_uuid).first()
+            workout = Workout.query.filter(
+                Workout.uuid == workout_uuid,
+                Workout.user_id.not_in(auth_user.get_blocked_by_user_ids())
+                if auth_user
+                else True,
+            ).first()
             if not workout:
                 return DataNotFoundErrorResponse('workouts')
 

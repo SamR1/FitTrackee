@@ -295,6 +295,12 @@ class User(BaseModel):
         lazy='dynamic',
         viewonly=True,
     )
+    blocked_by_users = db.relationship(
+        'BlockedUser',
+        primaryjoin=id == BlockedUser.user_id,
+        lazy='dynamic',
+        viewonly=True,
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -517,6 +523,12 @@ class User(BaseModel):
     def get_blocked_user_ids(self) -> List:
         return [
             blocked_user.user_id for blocked_user in self.blocked_users.all()
+        ]
+
+    def get_blocked_by_user_ids(self) -> List:
+        return [
+            blocked_user.by_user_id
+            for blocked_user in self.blocked_by_users.all()
         ]
 
     def serialize(self, current_user: Optional['User'] = None) -> Dict:

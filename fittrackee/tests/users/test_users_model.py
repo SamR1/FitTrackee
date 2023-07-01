@@ -1100,3 +1100,23 @@ class TestBlockedUsers:
         user_1.blocks_user(user_4)
 
         assert set(user_1.get_blocked_user_ids()) == {user_2.id, user_4.id}
+
+
+class TestBlockedByUsers:
+    def test_it_returns_empty_list_when_not_blocked(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert user_1.blocked_by_users.all() == []
+
+    def test_it_returns_blocked_by_users_ids(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        user_2.blocks_user(user_1)
+        user_3.blocks_user(user_1)
+
+        assert set(user_1.get_blocked_by_user_ids()) == {user_2.id, user_3.id}
