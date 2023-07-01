@@ -23,16 +23,16 @@ def check_workout_comment(check_owner: bool = True) -> Callable:
             workout_comment_uuid = decode_short_id(comment_short_id)
             comment = Comment.query.filter(
                 Comment.uuid == workout_comment_uuid,
-                Comment.user_id.not_in(auth_user.get_blocked_user_ids())
+                Comment.user_id.not_in(
+                    auth_user.get_blocked_user_ids()
+                    + auth_user.get_blocked_by_user_ids()
+                )
                 if auth_user
                 else True,
             ).first()
-            if not comment:
-                return NotFoundErrorResponse(
-                    f"workout comment not found (id: {comment_short_id})"
-                )
-
-            if not can_view(comment, "text_visibility", auth_user):
+            if not comment or not can_view(
+                comment, "text_visibility", auth_user
+            ):
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )

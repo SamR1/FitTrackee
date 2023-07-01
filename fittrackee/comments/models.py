@@ -26,6 +26,7 @@ def get_comments(
     if user:
         following_ids = user.get_following_user_ids()
         blocked_users = user.get_blocked_user_ids()
+        blocked_by_users = user.get_blocked_by_user_ids()
         comments_filter = Comment.query.join(
             Mention, Mention.comment_id == Comment.id, isouter=True
         ).filter(
@@ -34,7 +35,7 @@ def get_comments(
             or_(
                 and_(
                     Comment.text_visibility == PrivacyLevel.PUBLIC,
-                    Comment.user_id.not_in(blocked_users),
+                    Comment.user_id.not_in(blocked_users + blocked_by_users),
                 ),
                 or_(user.id == Mention.user_id),
                 or_(

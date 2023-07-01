@@ -5,6 +5,7 @@ from fittrackee.privacy_levels import can_view
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
+    NotFoundErrorResponse,
 )
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Workout
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-def check_workout(check_owner: bool = True) -> Callable:
+def check_workout(check_owner: bool = True, as_data: bool = True) -> Callable:
     def decorator_check_workout(f: Callable) -> Callable:
         @wraps(f)
         def wrapper_check_workout(*args: Any, **kwargs: Any) -> Callable:
@@ -26,11 +27,16 @@ def check_workout(check_owner: bool = True) -> Callable:
                 if auth_user
                 else True,
             ).first()
-            if not workout:
-                return DataNotFoundErrorResponse('workouts')
-
-            if not can_view(workout, 'workout_visibility', auth_user):
-                return DataNotFoundErrorResponse('workouts')
+            if not workout or not can_view(
+                workout, 'workout_visibility', auth_user
+            ):
+                return (
+                    DataNotFoundErrorResponse('workouts')
+                    if as_data
+                    else NotFoundErrorResponse(
+                        f"workout not found (id: {workout_short_id})"
+                    )
+                )
 
             if check_owner and (
                 not auth_user or auth_user.id != workout.user.id
