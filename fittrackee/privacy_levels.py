@@ -32,8 +32,8 @@ def can_view(
 ) -> bool:
     if (
         target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC
-        or user == target_object.user
-    ):
+        and (not user or not user.is_blocked_by(target_object.user))
+    ) or user == target_object.user:
         return True
 
     if not user:
