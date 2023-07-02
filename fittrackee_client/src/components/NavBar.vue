@@ -2,9 +2,7 @@
   <div id="nav">
     <div class="nav-container">
       <div class="nav-app-name">
-        <div class="nav-item app-name" @click="$router.push('/')">
-          FitTrackee
-        </div>
+        <router-link class="nav-item app-name" to="/">FitTrackee</router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
@@ -154,10 +152,6 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
-
-      &:hover {
-        cursor: pointer;
-      }
     }
 
     .fa {
