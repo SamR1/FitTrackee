@@ -359,13 +359,14 @@ button {
   gap: $default-padding;
 }
 
-.follows-you {
+.follows-you, .blocked {
   font-size: 0.7em;
   font-style: italic;
   text-transform: uppercase;
   padding: $default-padding * 0.5 $default-padding;
   background-color: var(--text-background-color);
   border-radius: $border-radius;
+  max-height: 16px;
 }
 
 .medium-sport-img {

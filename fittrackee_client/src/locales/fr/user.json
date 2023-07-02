@@ -144,6 +144,8 @@
     "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
     "RELATIONSHIPS": {
         "ACCEPT": "accepter",
+        "BLOCK": "bloquer",
+        "BLOCKED": "bloqué",
         "CANCEL_FOLLOW_REQUEST": "Annuler la demande",
         "FOLLOW": "s'abonner",
         "FOLLOWER": "abonné | abonnés",
@@ -153,6 +155,7 @@
         "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
         "NO_FOLLOW_REQUESTS": "Pas de demandes d'abonnement à valider.",
         "REJECT": "refuser",
+        "UNBLOCK": "débloquer",
         "UNFOLLOW": "se désabonner"
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",

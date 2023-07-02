@@ -144,6 +144,8 @@
     "REGISTER_DISABLED": "Sorry, registration is disabled.",
     "RELATIONSHIPS": {
         "ACCEPT": "accept",
+        "BLOCK": "block",
+        "BLOCKED": "blocked",
         "CANCEL_FOLLOW_REQUEST": "Cancel follow request",
         "FOLLOW": "follow",
         "FOLLOWER": "follower | followers",
@@ -153,6 +155,7 @@
         "NO_FOLLOWING": "No following yet.",
         "NO_FOLLOW_REQUESTS": "No follow requests to check.",
         "REJECT": "reject",
+        "UNBLOCK": "unblock",
         "UNFOLLOW": "unfollow"
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",

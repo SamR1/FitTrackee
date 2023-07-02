@@ -12,6 +12,7 @@ export interface IUserProfile {
   admin: boolean
   bio: string | null
   birth_date: string | null
+  blocked: boolean
   created_at: string
   email?: string
   email_to_confirm?: string
