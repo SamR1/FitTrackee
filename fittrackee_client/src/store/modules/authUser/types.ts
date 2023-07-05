@@ -7,10 +7,10 @@ import {
 
 import { AUTH_USER_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
+import { IPagePayload } from '@/types/api'
 import {
   IAuthUserProfile,
   IFollowRequestsActionPayload,
-  IFollowRequestsPayload,
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserEmailPayload,
@@ -33,6 +33,7 @@ export interface IAuthUserState {
   loading: boolean
   exportRequest: IExportRequest | null
   followRequests: IUserProfile[]
+  blockedUsers: IUserProfile[]
 }
 
 export interface IAuthUserActions {
@@ -56,7 +57,7 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IFollowRequestsPayload
+    payload: IPagePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
@@ -139,6 +140,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT](
     context: ActionContext<IAuthUserState, IRootState>
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_BLOCKED_USERS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void
 }
 
 export interface IAuthUserGetters {
@@ -147,6 +153,8 @@ export interface IAuthUserGetters {
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
     state: IAuthUserState
   ): IAuthUserProfile
+
+  [AUTH_USER_STORE.GETTERS.BLOCKED_USERS](state: IAuthUserState): IUserProfile[]
 
   [AUTH_USER_STORE.GETTERS.EXPORT_REQUEST](
     state: IAuthUserState
@@ -182,6 +190,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,
     authUserProfile: IAuthUserProfile
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS](
+    state: S,
+    blockedUsers: IUserProfile[]
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
     state: S,

@@ -29,7 +29,7 @@
     </div>
     <div v-else>
       <button @click="updateRelationship(user.username, true)">
-        {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
+        {{ $t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST') }}
       </button>
     </div>
     <div

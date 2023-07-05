@@ -40,6 +40,7 @@
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
+      case 'BLOCKED-USERS':
       case 'FOLLOW-REQUESTS':
       case 'PREFERENCES':
       case 'SPORTS':

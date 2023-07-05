@@ -9,4 +9,5 @@ export const authUserState: IAuthUserState = {
   loading: false,
   exportRequest: null,
   followRequests: [],
+  blockedUsers: [],
 }

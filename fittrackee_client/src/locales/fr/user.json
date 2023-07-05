@@ -119,6 +119,7 @@
         "TABS": {
             "ACCOUNT": "compte",
             "APPS": "apps",
+            "BLOCKED-USERS": "utilisateurs bloqués",
             "FOLLOW-REQUESTS": "demandes d'abonnement",
             "PICTURE": "image",
             "PREFERENCES": "préférences",

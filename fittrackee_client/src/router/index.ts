@@ -4,10 +4,10 @@ import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
-import UserFollowRequests from '@/components/User/ProfileDisplay/FollowRequests.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
+import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
@@ -189,7 +189,14 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: 'follow-requests',
             name: 'FollowRequests',
-            component: UserFollowRequests,
+            component: UsersList,
+            props: { itemType: 'follow-requests' },
+          },
+          {
+            path: 'blocked-users',
+            name: 'BlockedUsers',
+            component: UsersList,
+            props: { itemType: 'blocked-users' },
           },
           {
             path: 'followers',

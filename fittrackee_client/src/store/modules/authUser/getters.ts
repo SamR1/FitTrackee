@@ -15,6 +15,9 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]: (state: IAuthUserState) => {
     return state.authUserProfile
   },
+  [AUTH_USER_STORE.GETTERS.BLOCKED_USERS]: (state: IAuthUserState) => {
+    return state.blockedUsers
+  },
   [AUTH_USER_STORE.GETTERS.FOLLOW_REQUESTS]: (state: IAuthUserState) => {
     return state.followRequests
   },

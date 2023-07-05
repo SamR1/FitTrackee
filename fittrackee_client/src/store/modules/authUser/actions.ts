@@ -17,9 +17,9 @@ import {
 } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
+import { IPagePayload } from '@/types/api'
 import {
   IFollowRequestsActionPayload,
-  IFollowRequestsPayload,
   ILoginOrRegisterData,
   IUserAccountPayload,
   IUserDeletionPayload,
@@ -165,7 +165,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
     context: ActionContext<IAuthUserState, IRootState>,
-    payload: IFollowRequestsPayload
+    payload: IPagePayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
@@ -555,5 +555,34 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_BLOCKED_USERS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('auth/blocked-users', { params: payload })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS,
+            res.data.blocked_users
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
 }

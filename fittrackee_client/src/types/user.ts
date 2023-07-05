@@ -1,6 +1,6 @@
 import { LocationQueryValue } from 'vue-router'
 
-import { TPaginationPayload } from '@/types/api'
+import { IPagePayload, TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
@@ -89,6 +89,7 @@ export interface IUserRelationshipActionPayload {
   username: string
   action: TRelationshipAction
   from: string
+  payload?: IPagePayload
 }
 
 export interface IUserPreferencesPayload {
@@ -160,10 +161,6 @@ export type TUsersPayload = TPaginationPayload & {
 export interface IUserRelationshipsPayload {
   username: string
   relationship: TRelationships
-  page: number
-}
-
-export interface IFollowRequestsPayload {
   page: number
 }
 

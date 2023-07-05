@@ -24,3 +24,7 @@ export interface IApiErrorMessage {
   error?: string
   message?: string
 }
+
+export interface IPagePayload {
+  page: number
+}
