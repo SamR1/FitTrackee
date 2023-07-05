@@ -3178,3 +3178,177 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
             mimetype='application/zip',
             as_attachment=True,
         )
+
+
+class TestGetBlockedUsers(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            "/api/auth/blocked-users",
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_empty_list_when_no_blocked_users(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/auth/blocked-users",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["blocked_users"] == []
+        assert data["pagination"] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
+
+    def test_it_returns_blocked_users(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        user_1.blocks_user(user_2)
+        user_3.blocks_user(user_1)
+        user_1.blocks_user(user_4)
+
+        response = client.get(
+            "/api/auth/blocked-users",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["blocked_users"] == [
+            jsonify_dict(user_4.serialize(user_1)),
+            jsonify_dict(user_2.serialize(user_1)),
+        ]
+        assert data["pagination"] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    @patch('fittrackee.users.auth.BLOCKED_USERS_PER_PAGE', 1)
+    def test_it_returns_first(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        user_1.blocks_user(user_2)
+        user_3.blocks_user(user_1)
+        user_1.blocks_user(user_4)
+
+        response = client.get(
+            "/api/auth/blocked-users?page=1",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["blocked_users"] == [
+            jsonify_dict(user_4.serialize(user_1)),
+        ]
+        assert data["pagination"] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 2,
+        }
+
+    @patch('fittrackee.users.auth.BLOCKED_USERS_PER_PAGE', 1)
+    def test_it_returns_last_page(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        user_1.blocks_user(user_2)
+        user_3.blocks_user(user_1)
+        user_1.blocks_user(user_4)
+
+        response = client.get(
+            "/api/auth/blocked-users?page=2",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["blocked_users"] == [
+            jsonify_dict(user_2.serialize(user_1)),
+        ]
+        assert data["pagination"] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 2,
+        }
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'profile:read': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            "/api/auth/blocked-users",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)

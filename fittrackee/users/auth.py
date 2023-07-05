@@ -42,7 +42,13 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .exceptions import UserControlsException, UserCreationException
-from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
+from .models import (
+    BlacklistedToken,
+    BlockedUser,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from .tasks import export_data
 from .utils.admin import UserManagerService
 from .utils.controls import check_password, is_valid_email
@@ -53,6 +59,7 @@ auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
+BLOCKED_USERS_PER_PAGE = 5
 
 
 def send_account_confirmation_email(user: User) -> None:
@@ -1938,3 +1945,33 @@ def download_data_export(
         mimetype='application/zip',
         as_attachment=True,
     )
+
+
+@auth_blueprint.route('/auth/blocked-users', methods=['GET'])
+@require_auth(scopes=['profile:read'])
+def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    try:
+        page = int(params.get('page', 1))
+    except ValueError:
+        page = 1
+
+    paginated_relations = (
+        User.query.join(BlockedUser, User.id == BlockedUser.user_id)
+        .filter(BlockedUser.by_user_id == auth_user.id)
+        .order_by(BlockedUser.created_at.desc())
+        .paginate(page=page, per_page=BLOCKED_USERS_PER_PAGE, error_out=False)
+    )
+    return {
+        "status": "success",
+        "blocked_users": [
+            user.serialize(auth_user) for user in paginated_relations.items
+        ],
+        "pagination": {
+            "has_next": paginated_relations.has_next,
+            "has_prev": paginated_relations.has_prev,
+            "page": paginated_relations.page,
+            "pages": paginated_relations.pages,
+            "total": paginated_relations.total,
+        },
+    }
