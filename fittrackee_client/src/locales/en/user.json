@@ -26,6 +26,7 @@
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
+    "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
     "LOG_IN": "log in",
     "NEW_PASSWORD": "New password",
     "NO_USERS_FOUND": "No users found.",

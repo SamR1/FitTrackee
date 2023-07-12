@@ -1,5 +1,13 @@
 <template>
   <div id="nav">
+    <Modal
+      v-show="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.LOGOUT_CONFIRMATION')"
+      @confirmAction="logout"
+      @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
+    />
     <div class="nav-container">
       <div class="nav-app-name">
         <router-link class="nav-item app-name" to="/">FitTrackee</router-link>
@@ -48,9 +56,13 @@
             <router-link class="nav-item" to="/profile" @click="closeMenu">
               {{ authUser.username }}
             </router-link>
-            <div class="nav-item nav-link" @click="logout">
-              {{ $t('user.LOGOUT') }}
-            </div>
+            <button
+              class="logout-button transparent"
+              @click="updateDisplayModal(true)"
+            >
+              <i class="fa fa-sign-out logout-fa" aria-hidden="true" />
+              <span class="logout-text">{{ $t('user.LOGOUT') }}</span>
+            </button>
           </div>
           <div class="nav-items-group" v-else>
             <router-link class="nav-item" to="/login" @click="closeMenu">
@@ -76,7 +88,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, capitalize } from 'vue'
+  import { ComputedRef, Ref, computed, ref, capitalize } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -98,7 +110,8 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  const isMenuOpen = ref(false)
+  const isMenuOpen: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
 
   function openMenu() {
     isMenuOpen.value = true
@@ -116,6 +129,16 @@
   }
   function logout() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
+    displayModal.value = false
+  }
+  function updateDisplayModal(display: boolean) {
+    displayModal.value = display
+    if (display) {
+      const button = document.getElementById('cancel-button')
+      if (button) {
+        button.focus()
+      }
+    }
   }
 </script>
 
@@ -220,6 +243,16 @@
       .nav-separator {
         display: none;
       }
+      .logout-button {
+        padding: $default-padding * 0.5 $default-padding * 0.75;
+        margin-left: 2px;
+        .logout-fa {
+          display: block;
+        }
+        .logout-text {
+          display: none;
+        }
+      }
     }
 
     @media screen and (max-width: $medium-limit) {
@@ -280,6 +313,19 @@
         .nav-items-group {
           display: flex;
           flex-direction: column;
+
+          .logout-button {
+            padding: $default-padding $default-padding $default-padding
+              $default-padding * 2.4;
+            color: var(--app-a-color);
+            text-align: left;
+            .logout-fa {
+              display: none;
+            }
+            .logout-text {
+              display: block;
+            }
+          }
         }
 
         .nav-item {

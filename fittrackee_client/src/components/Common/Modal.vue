@@ -21,7 +21,12 @@
             >
               {{ $t('buttons.YES') }}
             </button>
-            <button class="cancel" @click="emit('cancelAction')">
+            <button
+              tabindex="0"
+              id="cancel-button"
+              class="cancel"
+              @click="emit('cancelAction')"
+            >
               {{ $t(`buttons.${errorMessages ? 'CANCEL' : 'NO'}`) }}
             </button>
           </div>
