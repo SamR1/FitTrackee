@@ -97,7 +97,7 @@ Please make your changes from the development branch (`dev`).
 
 * If needed, update documentation (no need to build documentation, it will be done when releasing).
 
-* If updated code contains client-side changes, you can generate javascript assets to check **FitTrackee** whithout starting client dev server:
+* If updated code contains client-side changes, you can generate javascript assets to check **FitTrackee** without starting client dev server:
   ```shell
   $ make build-client
   ```
