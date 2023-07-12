@@ -4,6 +4,28 @@
 
 body {
   margin: 0;
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-height;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: $scrollbar-radius;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: var(--scroll-thumb-color);
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
 }
 
 #app {

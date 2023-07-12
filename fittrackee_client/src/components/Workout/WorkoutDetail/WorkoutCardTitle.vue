@@ -131,6 +131,7 @@
 
     .workout-arrow {
       cursor: pointer;
+      padding: $default-padding;
       &.inactive {
         color: var(--disabled-color);
         cursor: default;
@@ -168,12 +169,19 @@
         cursor: pointer;
         padding: 0 $default-padding * 0.3;
       }
+    }
 
-      @media screen and (max-width: $small-limit) {
-        .fa-download,
-        .fa-trash,
-        .fa-edit {
-          padding: 0 $default-padding * 0.7;
+    @media screen and (max-width: $small-limit) {
+      .workout-arrow {
+        padding: $default-padding * 0.5;
+      }
+      .workout-card-title {
+        @media screen and (max-width: $small-limit) {
+          .fa-download,
+          .fa-trash,
+          .fa-edit {
+            padding: 0 $default-padding * 0.7;
+          }
         }
       }
     }
