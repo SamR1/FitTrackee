@@ -19,3 +19,10 @@ $default-padding: 10px;
 $default-margin: $default-padding;
 
 $border-radius: 4px;
+
+/*
+* === SCROLLBAR ===
+*/
+$scrollbar-height : $default-padding * .5;
+$scrollbar-width : $scrollbar-height;
+$scrollbar-radius : $default-padding;
