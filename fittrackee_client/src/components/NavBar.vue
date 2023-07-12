@@ -175,6 +175,7 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
+      line-height: 1.6em;
     }
 
     .fa {
@@ -194,7 +195,7 @@
       display: flex;
       flex: 1;
       justify-content: space-between;
-      line-height: 1.8em;
+      line-height: 2em;
       width: 100%;
 
       .nav-items-close {
@@ -213,11 +214,14 @@
       }
       .nav-item {
         padding: 0 10px;
-
-        ::v-deep(.dropdown-list) {
-          z-index: 1000;
-          margin-left: -160px !important;
-          width: 180px !important;
+        &.dropdown-wrapper {
+          padding: 0;
+          margin-left: 2px;
+          ::v-deep(.dropdown-list) {
+            z-index: 1000;
+            margin-left: -150px !important;
+            width: 180px !important;
+          }
         }
       }
 
@@ -330,10 +334,12 @@
 
         .nav-item {
           padding: 7px 25px;
-
-          ::v-deep(.dropdown-list) {
-            margin-left: initial !important;
-            width: auto !important;
+          &.dropdown-wrapper {
+            padding-left: 15px;
+            ::v-deep(.dropdown-list) {
+              margin-left: initial !important;
+              width: auto !important;
+            }
           }
         }
 
