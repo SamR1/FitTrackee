@@ -9,6 +9,7 @@
       min="0"
       max="4"
       step="1"
+      :tabindex="-1"
     />
     <div v-if="passwordStrength" class="password-strength-details">
       <span class="password-strength-value">
