@@ -184,6 +184,9 @@
     display: flex;
     ::v-deep(.card) {
       width: 100%;
+      .card-title {
+        padding: $default-padding $default-padding * 1.5;
+      }
       .card-content {
         display: flex;
         flex-direction: row;
