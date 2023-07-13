@@ -23,6 +23,7 @@
               class="map-control"
               tabindex="0"
               role="button"
+              :aria-label="$t('workouts.RESET_ZOOM')"
               @click="resetZoom"
             >
               <i class="fa fa-refresh" aria-hidden="true" />
@@ -32,6 +33,9 @@
               class="map-control"
               tabindex="0"
               role="button"
+              :aria-label="
+                $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}}_FULLSCREEN`)
+              "
               @click="toggleFullscreen"
             >
               <i

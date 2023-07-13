@@ -82,6 +82,7 @@
             :options="availableLanguages"
             :selected="language"
             @selected="updateLanguage"
+            :buttonLabel="$t('user.REGISTER')"
           >
             <i class="fa fa-language"></i>
           </Dropdown>

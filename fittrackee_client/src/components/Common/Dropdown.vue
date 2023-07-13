@@ -1,6 +1,7 @@
 <template>
   <div class="dropdown-wrapper">
     <button
+      :aria-label="buttonLabel"
       :aria-expanded="isOpen"
       class="dropdown-selector transparent"
       @click="toggleDropdown"
@@ -32,6 +33,7 @@
   interface Props {
     options: TDropdownOptions
     selected: string
+    buttonLabel: string
   }
   const props = defineProps<Props>()
 

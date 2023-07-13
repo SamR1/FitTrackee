@@ -30,6 +30,7 @@
                 params: { workoutId: workoutObject.workoutId },
               })
             "
+            :aria-label="$t(`workouts.EDIT_WORKOUT`)"
           >
             <i class="fa fa-edit" aria-hidden="true" />
           </button>
@@ -37,6 +38,7 @@
             v-if="workoutObject.with_gpx"
             class="transparent icon-button"
             @click.prevent="downloadGpx(workoutObject.workoutId)"
+            :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
           >
             <i class="fa fa-download" aria-hidden="true" />
           </button>
@@ -44,6 +46,7 @@
             id="delete-workout-button"
             class="transparent icon-button"
             @click="displayDeleteModal"
+            :aria-label="$t(`workouts.DELETE_WORKOUT`)"
           >
             <i class="fa fa-trash" aria-hidden="true" />
           </button>
