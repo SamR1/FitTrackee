@@ -22,8 +22,8 @@
               {{ $t('buttons.YES') }}
             </button>
             <button
-              tabindex="0"
-              id="cancel-button"
+              :tabindex="0"
+              :id="`${name}-cancel-button`"
               class="cancel"
               @click="emit('cancelAction')"
             >
@@ -46,9 +46,11 @@
     title: string
     message: string
     strongMessage?: string | null
+    name?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => null,
+    name: 'modal',
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])

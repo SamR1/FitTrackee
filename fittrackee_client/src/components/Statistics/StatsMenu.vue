@@ -1,12 +1,12 @@
 <template>
   <div class="chart-menu">
-    <div class="chart-arrow">
-      <i
-        class="fa fa-chevron-left"
-        aria-hidden="true"
-        @click="emit('arrowClick', true)"
-      />
-    </div>
+    <button
+      class="chart-arrow transparent"
+      @click="emit('arrowClick', true)"
+      @keydown.enter="emit('arrowClick', true)"
+    >
+      <i class="fa fa-chevron-left" aria-hidden="true" />
+    </button>
     <div class="time-frames custom-checkboxes-group">
       <div class="time-frames-checkboxes custom-checkboxes">
         <div
@@ -22,23 +22,30 @@
               :checked="selectedTimeFrame === frame"
               @input="onUpdateTimeFrame(frame)"
             />
-            <span>{{ $t(`statistics.TIME_FRAMES.${frame}`) }}</span>
+            <span
+              :id="`frame-${frame}`"
+              :tabindex="0"
+              role="button"
+              @keydown.enter="onUpdateTimeFrame(frame)"
+            >
+              {{ $t(`statistics.TIME_FRAMES.${frame}`) }}
+            </span>
           </label>
         </div>
       </div>
     </div>
-    <div class="chart-arrow">
-      <i
-        class="fa fa-chevron-right"
-        aria-hidden="true"
-        @click="emit('arrowClick', false)"
-      />
-    </div>
+    <button
+      class="chart-arrow transparent"
+      @click="emit('arrowClick', false)"
+      @keydown.enter="emit('arrowClick', false)"
+    >
+      <i class="fa fa-chevron-right" aria-hidden="true" />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
 
   const emit = defineEmits(['arrowClick', 'timeFrameUpdate'])
 
@@ -49,11 +56,19 @@
     selectedTimeFrame.value = timeFrame
     emit('timeFrameUpdate', timeFrame)
   }
+
+  onMounted(() => {
+    const input = document.getElementById('frame-month')
+    if (input) {
+      input.focus()
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
   .chart-menu {
     display: flex;
+    align-items: center;
 
     .chart-arrow,
     .time-frames {

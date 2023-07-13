@@ -7,6 +7,7 @@
             <div class="form-item">
               <label> {{ $t('workouts.FROM') }}: </label>
               <input
+                id="from"
                 name="from"
                 type="date"
                 :value="$route.query.from"
@@ -185,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs, watch } from 'vue'
+  import { ComputedRef, computed, toRefs, watch, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
@@ -215,6 +216,13 @@
     translateSports(props.sports, t)
   )
   let params: LocationQuery = Object.assign({}, route.query)
+
+  onMounted(() => {
+    const filter = document.getElementById('from')
+    if (filter) {
+      filter.focus()
+    }
+  })
 
   function handleFilterChange(event: Event & { target: HTMLInputElement }) {
     if (event.target.value === '') {

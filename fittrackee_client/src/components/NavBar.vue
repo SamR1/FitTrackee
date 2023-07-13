@@ -138,7 +138,7 @@
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
     if (display) {
-      const button = document.getElementById('cancel-button')
+      const button = document.getElementById('modal-cancel-button')
       if (button) {
         button.focus()
       }

@@ -85,13 +85,21 @@ button {
     border-color: transparent;
     box-shadow: none;
 
-    &:hover {
+    &:hover, &:disabled {
       background: transparent;
+    }
+
+    &:hover {
       color: var(--app-color);
     }
 
     &:enabled:active {
       box-shadow: none;
+    }
+
+    &:disabled, &.confirm:disabled {
+      border-color: transparent;
+      color: var(--disabled-color);
     }
   }
 

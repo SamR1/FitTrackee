@@ -18,12 +18,20 @@
             @ready="fitBounds(bounds)"
           >
             <LControlLayers />
-            <LControl position="topleft" class="map-control" @click="resetZoom">
+            <LControl
+              position="topleft"
+              class="map-control"
+              tabindex="0"
+              role="button"
+              @click="resetZoom"
+            >
               <i class="fa fa-refresh" aria-hidden="true" />
             </LControl>
             <LControl
               position="topleft"
               class="map-control"
+              tabindex="0"
+              role="button"
               @click="toggleFullscreen"
             >
               <i
