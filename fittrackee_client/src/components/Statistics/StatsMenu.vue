@@ -4,6 +4,7 @@
       class="chart-arrow transparent"
       @click="emit('arrowClick', true)"
       @keydown.enter="emit('arrowClick', true)"
+      :disabled="isDisabled"
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </button>
@@ -21,10 +22,11 @@
               :name="frame"
               :checked="selectedTimeFrame === frame"
               @input="onUpdateTimeFrame(frame)"
+              :disabled="isDisabled"
             />
             <span
               :id="`frame-${frame}`"
-              :tabindex="0"
+              :tabindex="isDisabled ? -1 : 0"
               role="button"
               @keydown.enter="onUpdateTimeFrame(frame)"
             >
@@ -38,6 +40,7 @@
       class="chart-arrow transparent"
       @click="emit('arrowClick', false)"
       @keydown.enter="emit('arrowClick', false)"
+      :disabled="isDisabled"
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </button>
@@ -45,7 +48,12 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, toRefs } from 'vue'
+  interface Props {
+    isDisabled: boolean
+  }
+  const props = defineProps<Props>()
+  const { isDisabled } = toRefs(props)
 
   const emit = defineEmits(['arrowClick', 'timeFrameUpdate'])
 
@@ -58,9 +66,11 @@
   }
 
   onMounted(() => {
-    const input = document.getElementById('frame-month')
-    if (input) {
-      input.focus()
+    if (!isDisabled.value) {
+      const input = document.getElementById('frame-month')
+      if (input) {
+        input.focus()
+      }
     }
   })
 </script>
