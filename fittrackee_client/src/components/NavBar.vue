@@ -13,16 +13,19 @@
         <router-link class="nav-item app-name" to="/">FitTrackee</router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
-        <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
+        <button class="menu-button transparent" @click="openMenu()">
+          <i class="fa fa-bars hamburger-icon"></i>
+        </button>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
         <div class="nav-items-close">
           <div class="app-name">FitTrackee</div>
-          <i
-            class="fa fa-close close-icon nav-item"
-            :class="{ 'menu-closed': !isMenuOpen }"
-            @click="closeMenu()"
-          />
+          <button class="menu-button transparent" @click="closeMenu()">
+            <i
+              class="fa fa-close close-icon nav-item"
+              :class="{ 'menu-closed': !isMenuOpen }"
+            />
+          </button>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
           <div class="nav-items-group" v-if="isAuthenticated">
@@ -189,6 +192,9 @@
     .hamburger-icon,
     .close-icon {
       display: none;
+    }
+    .menu-button {
+      padding: 0;
     }
 
     .nav-items {
