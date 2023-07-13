@@ -341,10 +341,12 @@
         .nav-item {
           padding: 7px 25px;
           &.dropdown-wrapper {
-            padding-left: 15px;
+            padding-left: $default-padding * 2;
             ::v-deep(.dropdown-list) {
               margin-left: initial !important;
               width: auto !important;
+              height: 200px;
+              overflow-y: scroll;
             }
           }
         }
@@ -359,10 +361,6 @@
           margin: 0 $default-margin * 2;
           padding: 0;
         }
-      }
-
-      .nav-items-user-menu :nth-child(1) {
-        order: 1;
       }
     }
   }
