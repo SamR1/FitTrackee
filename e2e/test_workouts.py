@@ -30,7 +30,7 @@ class TestWorkout:
         )
         selenium.find_element(By.NAME, 'workout-distance').send_keys('10')
 
-        confirm_button = selenium.find_element(By.CLASS_NAME, 'confirm')
+        confirm_button = selenium.find_elements(By.CLASS_NAME, 'confirm')[-1]
         confirm_button.click()
 
         WebDriverWait(selenium, 10).until(
