@@ -222,6 +222,7 @@
       }
       .nav-item {
         padding: 0 10px;
+        height: 28px;
         &.dropdown-wrapper {
           padding: 0;
           margin-left: 2px;
