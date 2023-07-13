@@ -69,7 +69,7 @@
               v-if="workoutObject.type === 'SEGMENT'"
               :to="{
                 name: 'Workout',
-                params: { workoutId: workoutObject.workoutId },
+                params: { workoutId: workoutObject.workoutId }
               }"
             >
               > {{ $t('workouts.BACK_TO_WORKOUT') }}

@@ -34,7 +34,7 @@
               tabindex="0"
               role="button"
               :aria-label="
-                $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}}_FULLSCREEN`)
+                $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}_FULLSCREEN`)
               "
               @click="toggleFullscreen"
             >
