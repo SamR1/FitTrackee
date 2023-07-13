@@ -49,13 +49,15 @@
         </dd>
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
-          {{
-            formatDate(
-              client.issued_at,
-              authUser.timezone,
-              authUser.date_format
-            )
-          }}
+          <time>
+            {{
+              formatDate(
+                client.issued_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            }}
+          </time>
         </dd>
         <dt>{{ $t('oauth2.APP.NAME') }}:</dt>
         <dd>{{ client.name }}</dd>

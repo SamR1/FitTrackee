@@ -61,8 +61,9 @@
           </span>
         </div>
         <div class="workout-date">
-          {{ workoutObject.workoutDate }} -
-          {{ workoutObject.workoutTime }}
+          <time>
+            {{ workoutObject.workoutDate }} - {{ workoutObject.workoutTime }}
+          </time>
           <span class="workout-link">
             <router-link
               v-if="workoutObject.type === 'SEGMENT'"

@@ -1,5 +1,5 @@
 <template>
-  <div id="nav">
+  <header id="nav">
     <Modal
       v-show="displayModal"
       :title="$t('common.CONFIRMATION')"
@@ -89,7 +89,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
