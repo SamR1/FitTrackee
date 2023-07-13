@@ -1,5 +1,5 @@
 <template>
-  <div id="modal">
+  <div id="modal" role="dialog">
     <div class="custom-modal">
       <Card>
         <template #title>

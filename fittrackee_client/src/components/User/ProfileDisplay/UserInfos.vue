@@ -2,6 +2,7 @@
   <div id="user-infos" class="description-list">
     <Modal
       v-if="displayModal"
+      name="user"
       :title="$t('common.CONFIRMATION')"
       :message="
         displayModal === 'delete'
@@ -15,6 +16,7 @@
           : resetUserPassword(user.username)
       "
       @cancelAction="updateDisplayModal('')"
+      @keydown.esc="updateDisplayModal('')"
     />
     <div class="info-box success-message" v-if="isSuccess">
       {{
@@ -190,6 +192,10 @@
   function updateDisplayModal(value: string) {
     displayModal.value = value
     if (value !== '') {
+      const button = document.getElementById('user-cancel-button')
+      if (button) {
+        button.focus()
+      }
       store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     }
   }

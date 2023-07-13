@@ -2,10 +2,12 @@
   <div id="oauth2-app" class="description-list">
     <Modal
       v-if="displayModal"
+      name="app"
       :title="$t('common.CONFIRMATION')"
       :message="$t(messageToDisplay)"
       @confirmAction="confirmAction(client.id)"
       @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
     />
     <div v-if="client && client.client_id">
       <div
@@ -178,6 +180,11 @@
     displayModal.value = value
     if (!value) {
       messageToDisplay.value = null
+    } else {
+      const button = document.getElementById('app-cancel-button')
+      if (button) {
+        button.focus()
+      }
     }
   }
   function confirmAction(clientId: number) {
