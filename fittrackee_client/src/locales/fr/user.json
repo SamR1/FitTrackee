@@ -28,7 +28,7 @@
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
     "LOGIN": "Se connecter",
     "LOGOUT": "Se déconnecter",
-    "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter",
+    "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
     "LOG_IN": "connecter",
     "NEW_PASSWORD": "Nouveau mot de passe",
     "NO_USERS_FOUND": "Aucun utilisateur trouvé.",
