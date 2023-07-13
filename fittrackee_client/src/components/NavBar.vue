@@ -62,6 +62,7 @@
             <button
               class="logout-button transparent"
               @click="updateDisplayModal(true)"
+              :aria-label="$t('user.LOGOUT')"
             >
               <i class="fa fa-sign-out logout-fa" aria-hidden="true" />
               <span class="logout-text">{{ $t('user.LOGOUT') }}</span>

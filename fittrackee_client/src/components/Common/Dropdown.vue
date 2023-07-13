@@ -16,6 +16,7 @@
         tabindex="0"
         @click="updateSelected(option)"
         @keydown.enter="updateSelected(option)"
+        role="button"
       >
         {{ option.label }}
       </li>
