@@ -1,4 +1,5 @@
 {
+    "ACCOUNT_CONFIRMATION": "Confirmation du compte",
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Vous n'avez pas reçu les instructions ?",
     "ACCOUNT_CONFIRMATION_SENT": "Vérifiez vos courriels. Un nouveau courriel de confirmation a été envoyé à l'adresse électronique fournie.",
     "ADMIN": "Admin",
@@ -7,6 +8,7 @@
     "CURRENT_PASSWORD": "Mot de passe actuel",
     "EMAIL": "Courriel",
     "EMAIL_INFO": "Saisissez une adresse électronique valide.",
+    "EMAIL_UPDATE": "Mise à jour de l'adresse électronique",
     "ENTER_PASSWORD": "Saisissez un mot de passe",
     "EXPORT_REQUEST": {
         "DATA_EXPORT": "Export des données",
