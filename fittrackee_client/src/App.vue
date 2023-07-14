@@ -1,24 +1,26 @@
 <template>
   <div id="top" />
   <NavBar @menuInteraction="updateHideScrollBar" />
-  <div v-if="appLoading" class="app-container">
-    <div class="app-loading">
-      <Loader />
+  <main>
+    <div v-if="appLoading" class="app-container">
+      <div class="app-loading">
+        <Loader />
+      </div>
     </div>
-  </div>
-  <div v-else class="app-container" :class="{ 'hide-scroll': hideScrollBar }">
-    <router-view v-if="appConfig" />
-    <NoConfig v-else />
-  </div>
-  <div class="container scroll">
-    <div
-      class="scroll-button"
-      :class="{ 'display-button': displayScrollButton }"
-      @click="scrollToTop"
-    >
-      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    <div v-else class="app-container" :class="{ 'hide-scroll': hideScrollBar }">
+      <router-view v-if="appConfig" />
+      <NoConfig v-else />
     </div>
-  </div>
+    <div class="container scroll">
+      <div
+        class="scroll-button"
+        :class="{ 'display-button': displayScrollButton }"
+        @click="scrollToTop"
+      >
+        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+      </div>
+    </div>
+  </main>
   <Footer
     v-if="appConfig"
     :version="appConfig ? appConfig.version : ''"

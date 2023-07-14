@@ -22,7 +22,7 @@
                 params: { workoutId: record.workout_id },
               }"
             >
-              {{ record.workout_date }}
+              <time>{{ record.workout_date }}</time>
             </router-link>
           </span>
         </div>

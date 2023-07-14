@@ -1,8 +1,9 @@
 <template>
   <div id="workout-card-title">
-    <div
-      class="workout-previous workout-arrow"
+    <button
+      class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
+      :disabled="!workoutObject.previousUrl"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -15,33 +16,40 @@
       "
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
-    </div>
+    </button>
     <div class="workout-card-title">
       <SportImage :sport-label="sport.label" :color="sport.color" />
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
-          <i
-            class="fa fa-edit"
-            aria-hidden="true"
+          <button
+            class="transparent icon-button"
             @click="
               $router.push({
                 name: 'EditWorkout',
                 params: { workoutId: workoutObject.workoutId },
               })
             "
-          />
-          <i
+            :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+          >
+            <i class="fa fa-edit" aria-hidden="true" />
+          </button>
+          <button
             v-if="workoutObject.with_gpx"
-            class="fa fa-download"
-            aria-hidden="true"
+            class="transparent icon-button"
             @click.prevent="downloadGpx(workoutObject.workoutId)"
-          />
-          <i
-            class="fa fa-trash"
-            aria-hidden="true"
-            @click="emit('displayModal', true)"
-          />
+            :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
+          >
+            <i class="fa fa-download" aria-hidden="true" />
+          </button>
+          <button
+            id="delete-workout-button"
+            class="transparent icon-button"
+            @click="displayDeleteModal"
+            :aria-label="$t(`workouts.DELETE_WORKOUT`)"
+          >
+            <i class="fa fa-trash" aria-hidden="true" />
+          </button>
         </div>
         <div class="workout-title" v-else>
           {{ workoutObject.title }}
@@ -53,14 +61,15 @@
           </span>
         </div>
         <div class="workout-date">
-          {{ workoutObject.workoutDate }} -
-          {{ workoutObject.workoutTime }}
+          <time>
+            {{ workoutObject.workoutDate }} - {{ workoutObject.workoutTime }}
+          </time>
           <span class="workout-link">
             <router-link
               v-if="workoutObject.type === 'SEGMENT'"
               :to="{
                 name: 'Workout',
-                params: { workoutId: workoutObject.workoutId },
+                params: { workoutId: workoutObject.workoutId }
               }"
             >
               > {{ $t('workouts.BACK_TO_WORKOUT') }}
@@ -69,9 +78,10 @@
         </div>
       </div>
     </div>
-    <div
-      class="workout-next workout-arrow"
+    <button
+      class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
+      :disabled="!workoutObject.nextUrl"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -82,7 +92,7 @@
       "
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
-    </div>
+    </button>
   </div>
 </template>
 
@@ -118,6 +128,10 @@
         document.body.appendChild(gpxLink)
         gpxLink.click()
       })
+  }
+  function displayDeleteModal(event: Event & { target: HTMLInputElement }) {
+    event.target.blur()
+    emit('displayModal', true)
   }
 </script>
 
@@ -166,8 +180,12 @@
       }
 
       .fa {
-        cursor: pointer;
         padding: 0 $default-padding * 0.3;
+      }
+      .icon-button {
+        cursor: pointer;
+        padding: 0;
+        margin-left: 2px;
       }
     }
 

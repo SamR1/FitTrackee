@@ -1,5 +1,5 @@
 <template>
-  <div id="footer">
+  <footer id="footer">
     <div class="footer-items">
       <div class="footer-item">
         <strong>FitTrackee</strong>
@@ -22,7 +22,7 @@
         </router-link>
       </div>
     </div>
-  </div>
+  </footer>
 </template>
 
 <script setup lang="ts">
