@@ -87,6 +87,7 @@ jobs:
         run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
 
   end2end:
+    name: e2e tests
     runs-on: ubuntu-latest
     needs: ["python"]
     container: python:3.10
@@ -131,6 +132,7 @@ jobs:
           pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444
 
   end2end_package:
+    name: e2e tests with package
     runs-on: ubuntu-latest
     needs: ["python"]
     container: python:3.10
