@@ -3,6 +3,7 @@
     <StatsMenu
       @timeFrameUpdate="updateTimeFrame"
       @arrowClick="handleOnClickArrows"
+      :isDisabled="isDisabled"
     />
     <StatChart
       :sports="sports"
@@ -10,6 +11,7 @@
       :chartParams="chartParams"
       :displayed-sport-ids="selectedSportIds"
       :fullStats="true"
+      :isDisabled="isDisabled"
     />
     <SportsMenu
       :selected-sport-ids="selectedSportIds"
@@ -35,6 +37,7 @@
   interface Props {
     sports: ISport[]
     user: IAuthUserProfile
+    isDisabled: boolean
   }
   const props = defineProps<Props>()
 

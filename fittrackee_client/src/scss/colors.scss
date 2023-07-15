@@ -1,7 +1,7 @@
 :root {
   --app-background-color: #FFFFFF;
   --app-color: #2c3e50;
-  --app-color-light: #808b96;
+  --app-color-light: #6f7070;
   --app-a-color: #40578a;
   --app-shadow-color: lightgrey;
   --app-loading-color:  #f3f3f3;
@@ -23,8 +23,8 @@
   --input-error-color: #dc3545;
   --dropdown-hover-color: #eff0f5;
 
-  --custom-checkbox-border-color: #9da3af;
-  --custom-checkbox-checked-bg-color: #9da3af;
+  --custom-checkbox-border-color: #6d797a;
+  --custom-checkbox-checked-bg-color: #6d797a;
   --custom-checkbox-checked-color: #FFFFFF;
 
   --calendar-border-color: #c4c7cf;
@@ -42,7 +42,7 @@
 
   --footer-background-color: #FFFFFF;
   --footer-border-color: #ebeef3;
-  --footer-color: #8b8c8c;
+  --footer-color: #6f7070;
 
   --alert-background-color: #d6dde3;
   --alert-color: #3f3f3f;
@@ -54,7 +54,7 @@
   --success-color: #306430;
 
   --disabled-background-color: #e0e0e0;
-  --disabled-color: #a3a3a3;
+  --disabled-color: #727272;
   --disabled-sport-color: #616161;
 
   --scroll-button-bg-color: rgba(255, 255, 255, .7);
@@ -63,7 +63,7 @@
   --workout-img-color: invert(22%) sepia(25%) saturate(646%) hue-rotate(169deg)
         brightness(97%) contrast(96%);
   --workout-no-map-bg-color: #eaeaea;
-  --workout-no-map-color: #666666;
+  --workout-no-map-color: #585959;
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;
@@ -75,5 +75,7 @@
   --password-color-medium: #f8bc4a;
   --password-color-good: #acc578;
   --password-color-strong: #57c255;
+
+  --scroll-thumb-color: #949697;
 
 }

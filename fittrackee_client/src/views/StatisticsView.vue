@@ -5,9 +5,10 @@
         <template #title>{{ $t('statistics.STATISTICS') }}</template>
         <template #content>
           <Statistics
-            :class="{ 'stats-disabled': authUser.nb_workouts === 0 }"
+            :class="{ 'stats-disabled': isDisabled }"
             :user="authUser"
             :sports="sports"
+            :isDisabled="isDisabled"
           />
         </template>
       </Card>
@@ -35,6 +36,9 @@
     store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>
       authUser.value.sports_list.includes(sport.id)
     )
+  )
+  const isDisabled: ComputedRef<boolean> = computed(
+    () => authUser.value.nb_workouts === 0
   )
 </script>
 

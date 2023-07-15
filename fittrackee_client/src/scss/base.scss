@@ -4,6 +4,28 @@
 
 body {
   margin: 0;
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-height;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: $scrollbar-radius;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: var(--scroll-thumb-color);
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
 }
 
 #app {
@@ -56,6 +78,30 @@ button {
   box-shadow: 2px 2px 2px var(--app-shadow-color);
   color: var(--app-color);
   padding: 6px 14px;
+
+  &.transparent {
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    border-color: transparent;
+    box-shadow: none;
+
+    &:hover, &:disabled {
+      background: transparent;
+    }
+
+    &:hover {
+      color: var(--app-color);
+    }
+
+    &:enabled:active {
+      box-shadow: none;
+    }
+
+    &:disabled, &.confirm:disabled {
+      border-color: transparent;
+      color: var(--disabled-color);
+    }
+  }
 
   &:hover {
     background: var(--app-color);

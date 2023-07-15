@@ -1,4 +1,5 @@
 {
+    "ACCOUNT_CONFIRMATION": "Account confirmation",
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Didn't received instructions?",
     "ACCOUNT_CONFIRMATION_SENT": "Check your email. A new confirmation email has been sent to the address provided.",
     "ADMIN": "Admin",
@@ -7,6 +8,7 @@
     "CURRENT_PASSWORD": "Current password",
     "EMAIL": "Email",
     "EMAIL_INFO": "Enter a valid email address.",
+    "EMAIL_UPDATE": "Email update",
     "ENTER_PASSWORD": "Enter a password",
     "EXPORT_REQUEST": {
         "DATA_EXPORT": "Data export",
@@ -26,6 +28,7 @@
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",
     "LOGOUT": "Logout",
+    "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
     "LOG_IN": "log in",
     "NEW_PASSWORD": "New password",
     "NO_USERS_FOUND": "No users found.",

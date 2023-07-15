@@ -1,3 +1,4 @@
+import { capitalize } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
@@ -19,6 +20,7 @@ import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
+import createI18n from '@/i18n'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
@@ -26,6 +28,8 @@ import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
+
+const { t } = createI18n.global
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
@@ -38,18 +42,27 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
+    meta: {
+      title: 'dashboard.DASHBOARD',
+    },
   },
   {
     path: '/login',
     name: 'Login',
     component: LoginOrRegister,
     props: { action: 'login' },
+    meta: {
+      title: 'user.LOGIN',
+    },
   },
   {
     path: '/register',
     name: 'Register',
     component: LoginOrRegister,
     props: { action: 'register' },
+    meta: {
+      title: 'user.REGISTER',
+    },
   },
   {
     path: '/account-confirmation',
@@ -58,6 +71,9 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmationView.vue'
       ),
+    meta: {
+      title: 'user.ACCOUNT_CONFIRMATION',
+    },
   },
   {
     path: '/account-confirmation/resend',
@@ -67,6 +83,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
       ),
     props: { action: 'account-confirmation-resend' },
+    meta: {
+      title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
+    },
   },
   {
     path: '/account-confirmation/email-sent',
@@ -76,6 +95,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
       ),
     props: { action: 'email-sent' },
+    meta: {
+      title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
+    },
   },
   {
     path: '/password-reset/sent',
@@ -85,6 +107,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'request-sent' },
+    meta: {
+      title: 'user.PASSWORD_RESET',
+    },
   },
   {
     path: '/password-reset/request',
@@ -94,6 +119,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'reset-request' },
+    meta: {
+      title: 'user.PASSWORD_RESET',
+    },
   },
   {
     path: '/password-reset/password-updated',
@@ -103,6 +131,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'password-updated' },
+    meta: {
+      title: 'user.PASSWORD_RESET',
+    },
   },
   {
     path: '/password-reset',
@@ -112,6 +143,9 @@ const routes: Array<RouteRecordRaw> = [
         /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
       ),
     props: { action: 'reset' },
+    meta: {
+      title: 'user.PASSWORD_RESET',
+    },
   },
   {
     path: '/email-update',
@@ -120,6 +154,9 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: 'profile' */ '@/views/user/EmailUpdateView.vue'
       ),
+    meta: {
+      title: 'user.EMAIL_UPDATE',
+    },
   },
   {
     path: '/profile',
@@ -139,17 +176,26 @@ const routes: Array<RouteRecordRaw> = [
             path: '',
             name: 'UserInfos',
             component: UserInfos,
+            meta: {
+              title: 'user.PROFILE.TABS.PROFILE',
+            },
           },
           {
             path: 'preferences',
             name: 'UserPreferences',
             component: UserPreferences,
+            meta: {
+              title: 'user.PROFILE.TABS.PREFERENCES',
+            },
           },
           {
             path: 'sports',
             name: 'UserSportPreferences',
             component: UserSportPreferences,
             props: { isEdition: false },
+            meta: {
+              title: 'user.PROFILE.TABS.SPORTS',
+            },
           },
           {
             path: 'apps',
@@ -160,27 +206,42 @@ const routes: Array<RouteRecordRaw> = [
                 path: '',
                 name: 'UserAppsList',
                 component: UserAppsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.APPS',
+                },
               },
               {
                 path: ':id',
                 name: 'UserApp',
                 component: UserApp,
+                meta: {
+                  title: 'user.PROFILE.TABS.APPS',
+                },
               },
               {
                 path: ':id/created',
                 name: 'CreatedUserApp',
                 component: UserApp,
                 props: { afterCreation: true },
+                meta: {
+                  title: 'user.PROFILE.TABS.APPS',
+                },
               },
               {
                 path: 'new',
                 name: 'AddUserApp',
                 component: AddUserApp,
+                meta: {
+                  title: 'user.PROFILE.TABS.APPS',
+                },
               },
               {
                 path: 'authorize',
                 name: 'AuthorizeUserApp',
                 component: AuthorizeUserApp,
+                meta: {
+                  title: 'user.PROFILE.TABS.APPS',
+                },
               },
             ],
           },
@@ -198,32 +259,50 @@ const routes: Array<RouteRecordRaw> = [
             path: '',
             name: 'UserInfosEdition',
             component: UserInfosEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT',
+            },
           },
           {
             path: 'account',
             name: 'UserAccountEdition',
             component: UserAccountEdition,
+            meta: {
+              title: 'user.PROFILE.ACCOUNT_EDITION',
+            },
           },
           {
             path: 'picture',
             name: 'UserPictureEdition',
             component: UserPictureEdition,
+            meta: {
+              title: 'user.PROFILE.PICTURE_EDITION',
+            },
           },
           {
             path: 'preferences',
             name: 'UserPreferencesEdition',
             component: UserPreferencesEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT_PREFERENCES',
+            },
           },
           {
             path: 'sports',
             name: 'UserSportPreferencesEdition',
             component: UserSportPreferences,
             props: { isEdition: true },
+            meta: {
+              title: 'user.PROFILE.EDIT_SPORTS_PREFERENCES',
+            },
           },
           {
             path: 'privacy-policy',
             name: 'UserPrivacyPolicy',
             component: UserPrivacyPolicyValidation,
+            meta: {
+              title: 'user.PROFILE.PRIVACY-POLICY_EDITION',
+            },
           },
         ],
       },
@@ -234,12 +313,18 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Statistics',
     component: () =>
       import(/* webpackChunkName: 'statistics' */ '@/views/StatisticsView.vue'),
+    meta: {
+      title: 'statistics.STATISTICS',
+    },
   },
   {
     path: '/users/:username',
     name: 'User',
     component: () =>
       import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
+    meta: {
+      title: 'administration.USER',
+    },
   },
   {
     path: '/workouts',
@@ -248,6 +333,10 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: 'workouts' */ '@/views/workouts/WorkoutsView.vue'
       ),
+    meta: {
+      title: 'workouts.WORKOUT',
+      count: 0,
+    },
   },
   {
     path: '/workouts/:workoutId',
@@ -255,6 +344,9 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
     props: { displaySegment: false },
+    meta: {
+      title: 'workouts.WORKOUT',
+    },
   },
   {
     path: '/workouts/:workoutId/edit',
@@ -263,6 +355,9 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: 'workouts' */ '@/views/workouts/EditWorkout.vue'
       ),
+    meta: {
+      title: 'workouts.EDIT_WORKOUT',
+    },
   },
   {
     path: '/workouts/:workoutId/segment/:segmentId',
@@ -270,6 +365,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
     props: { displaySegment: true },
+    meta: {
+      title: 'workouts.SEGMENT',
+      count: 0,
+    },
   },
   {
     path: '/workouts/add',
@@ -278,6 +377,9 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: 'workouts' */ '@/views/workouts/AddWorkout.vue'
       ),
+    meta: {
+      title: 'workouts.ADD_WORKOUT',
+    },
   },
   {
     path: '/admin',
@@ -289,22 +391,34 @@ const routes: Array<RouteRecordRaw> = [
         path: '',
         name: 'AdministrationMenu',
         component: AdminMenu,
+        meta: {
+          title: 'admin.ADMINISTRATION',
+        },
       },
       {
         path: 'application',
         name: 'ApplicationAdministration',
         component: AdminApplication,
+        meta: {
+          title: 'admin.APP_CONFIG.TITLE',
+        },
       },
       {
         path: 'application/edit',
         name: 'ApplicationAdministrationEdition',
         component: AdminApplication,
         props: { edition: true },
+        meta: {
+          title: 'admin.APPLICATION',
+        },
       },
       {
         path: 'sports',
         name: 'SportsAdministration',
         component: AdminSports,
+        meta: {
+          title: 'admin.SPORTS.TITLE',
+        },
       },
       {
         path: 'users/:username',
@@ -312,11 +426,18 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
         props: { fromAdmin: true },
+        meta: {
+          title: 'admin.USER',
+          count: 1,
+        },
       },
       {
         path: 'users',
         name: 'UsersAdministration',
         component: AdminUsers,
+        meta: {
+          title: 'admin.USERS.TITLE',
+        },
       },
     ],
   },
@@ -324,16 +445,25 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     name: 'About',
     component: AboutView,
+    meta: {
+      title: 'common.ABOUT',
+    },
   },
   {
     path: '/privacy-policy',
     name: 'PrivacyPolicy',
     component: PrivacyPolicyView,
+    meta: {
+      title: 'privacy_policy.TITLE',
+    },
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: NotFoundView,
+    meta: {
+      title: 'error.NOT_FOUND.PAGE',
+    },
   },
 ]
 
@@ -357,6 +487,17 @@ const pathsWithoutAuthentication = [
 const pathsWithoutChecks = ['/email-update', '/about', '/privacy-policy']
 
 router.beforeEach((to, from, next) => {
+  if ('title' in to.meta) {
+    const title = typeof to.meta.title === 'string' ? to.meta.title : ''
+    const translatedTitle = title
+      ? typeof to.meta.count === 'number'
+        ? t(title, +to.meta.count)
+        : t(title)
+      : ''
+    window.document.title = `FitTrackee${
+      title ? ` - ${capitalize(translatedTitle)}` : ''
+    }`
+  }
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {

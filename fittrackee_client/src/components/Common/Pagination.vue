@@ -7,6 +7,7 @@
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, -1) }"
           :disabled="!pagination.has_prev"
+          :tabindex="pagination.has_prev ? 0 : -1"
         >
           <slot @click="pagination.has_next ? navigate : null">
             {{ $t('api.PAGINATION.PREVIOUS') }}
@@ -35,6 +36,7 @@
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, 1) }"
           :disabled="!pagination.has_next"
+          :tabindex="pagination.has_next ? 0 : -1"
         >
           <slot @click="pagination.has_next ? navigate : null">
             {{ $t('api.PAGINATION.NEXT') }}

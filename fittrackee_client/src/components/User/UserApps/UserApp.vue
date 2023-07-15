@@ -2,10 +2,12 @@
   <div id="oauth2-app" class="description-list">
     <Modal
       v-if="displayModal"
+      name="app"
       :title="$t('common.CONFIRMATION')"
       :message="$t(messageToDisplay)"
       @confirmAction="confirmAction(client.id)"
       @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
     />
     <div v-if="client && client.client_id">
       <div
@@ -49,13 +51,15 @@
         </dd>
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
-          {{
-            formatDate(
-              client.issued_at,
-              authUser.timezone,
-              authUser.date_format
-            )
-          }}
+          <time>
+            {{
+              formatDate(
+                client.issued_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            }}
+          </time>
         </dd>
         <dt>{{ $t('oauth2.APP.NAME') }}:</dt>
         <dd>{{ client.name }}</dd>
@@ -176,6 +180,11 @@
     displayModal.value = value
     if (!value) {
       messageToDisplay.value = null
+    } else {
+      const button = document.getElementById('app-cancel-button')
+      if (button) {
+        button.focus()
+      }
     }
   }
   function confirmAction(clientId: number) {
