@@ -10,7 +10,7 @@
     />
     <div class="nav-container">
       <div class="nav-app-name">
-        <router-link class="nav-item app-name" to="/">FitTrackee</router-link>
+        <div class="nav-item app-name">FitTrackee</div>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <button class="menu-button transparent" @click="openMenu()">
