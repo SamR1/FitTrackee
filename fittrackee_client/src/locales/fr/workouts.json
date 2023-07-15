@@ -12,13 +12,16 @@
         "NO_COMMENTS": "Pas de commentaires"
     },
     "DATE": "date",
+    "DELETE_WORKOUT": "Supprimer la séance",
     "DESCENT": "dénivelé négatif",
     "DISPLAY_FILTERS": "afficher les filtres",
     "DISTANCE": "distance",
+    "DOWNLOAD_WORKOUT": "Télécharger la séance",
     "DURATION": "durée",
     "EDIT_WORKOUT": "Modifier la séance",
     "ELEVATION": "altitude",
     "END": "fin",
+    "EXIT_FULLSCREEN": "Sortir du plein-écran",
     "FROM": "à partir de",
     "GPX_FILE": "fichier .gpx",
     "HIDE_FILTERS": "masquer les filtres",
@@ -59,6 +62,7 @@
     "RECORD_LD": "Durée la + longue",
     "RECORD_MS": "Vitesse max.",
     "REMAINING_CHARS": "nombre de caractères restants ",
+    "RESET_ZOOM": "Réinitialiser le zoom",
     "SEGMENT": "segment | segments",
     "SPEED": "vitesse",
     "SPORT": "sport | sports",
@@ -69,6 +73,7 @@
     "TO": "jusqu'au",
     "TOTAL_DURATION": "durée totale",
     "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
+    "VIEW_FULLSCREEN": "Afficher en plein-écran",
     "VIEW_ON_REMOTE_INSTANCE": "voir sur l'instance distante",
     "WEATHER": {
         "DARK_SKY": {

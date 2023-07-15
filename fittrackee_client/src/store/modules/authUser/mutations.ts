@@ -54,4 +54,10 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   ) {
     state.exportRequest = exportRequest
   },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS](
+    state: IAuthUserState,
+    blockedUsers: IUserProfile[]
+  ) {
+    state.blockedUsers = blockedUsers
+  },
 }

@@ -24,8 +24,7 @@
   #profile {
     display: flex;
     flex-direction: column;
-    padding: 0 $default-padding;
-    margin-bottom: 40px;
+    padding: 0 $default-padding 40px;
 
     ::v-deep(.profile-form) {
       display: flex;

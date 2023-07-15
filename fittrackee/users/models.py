@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import jwt
 from flask import current_app
@@ -176,6 +176,40 @@ def on_follow_request_delete(
         ).delete()
 
 
+class BlockedUser(BaseModel):
+    __tablename__ = 'blocked_users'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'by_user_id', name='blocked_users_unique'
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    by_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+    )
+    created_at = db.Column(db.DateTime, nullable=False)
+
+    def __init__(
+        self,
+        user_id: int,
+        by_user_id: int,
+        created_at: Optional[datetime] = None,
+    ):
+        self.user_id = user_id
+        self.by_user_id = by_user_id
+        self.created_at = (
+            datetime.utcnow() if created_at is None else created_at
+        )
+
+
 class User(BaseModel):
     __tablename__ = 'users'
     __table_args__ = (
@@ -267,9 +301,7 @@ class User(BaseModel):
             id == FollowRequest.followed_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=and_(
-            id == FollowRequest.follower_user_id,
-        ),
+        secondaryjoin=id == FollowRequest.follower_user_id,
         lazy='dynamic',
         viewonly=True,
     )
@@ -280,9 +312,7 @@ class User(BaseModel):
             id == FollowRequest.follower_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=and_(
-            id == FollowRequest.followed_user_id,
-        ),
+        secondaryjoin=id == FollowRequest.followed_user_id,
         lazy='dynamic',
         viewonly=True,
     )
@@ -295,6 +325,18 @@ class User(BaseModel):
             single_parent=True,
         ),
         cascade='all, delete-orphan',
+    )
+    blocked_users = db.relationship(
+        'BlockedUser',
+        primaryjoin=id == BlockedUser.by_user_id,
+        lazy='dynamic',
+        viewonly=True,
+    )
+    blocked_by_users = db.relationship(
+        'BlockedUser',
+        primaryjoin=id == BlockedUser.user_id,
+        lazy='dynamic',
+        viewonly=True,
     )
     actor = db.relationship(Actor, back_populates='user')
 
@@ -512,6 +554,16 @@ class User(BaseModel):
         ).first()
         return self.follow_request_status(follow_request)
 
+    def get_following_user_ids(self) -> Tuple[List, List]:
+        local_following_ids = []
+        remote_following_ids = []
+        for following in self.following:
+            if following.is_remote is True:
+                remote_following_ids.append(following.id)
+            else:
+                local_following_ids.append(following.id)
+        return local_following_ids, remote_following_ids
+
     @federation_required
     def get_followers_shared_inboxes(self) -> Dict[str, List[str]]:
         """
@@ -588,6 +640,12 @@ class User(BaseModel):
             )
             .on_conflict_do_nothing()
         )
+        follow_request = FollowRequest.query.filter_by(
+            follower_user_id=user.id,
+            followed_user_id=self.id,
+        ).first()
+        if follow_request:
+            db.session.delete(follow_request)
         db.session.commit()
 
     def unblocks_user(self, user: 'User') -> None:
@@ -603,6 +661,17 @@ class User(BaseModel):
             ).first()
             is not None
         )
+
+    def get_blocked_user_ids(self) -> List:
+        return [
+            blocked_user.user_id for blocked_user in self.blocked_users.all()
+        ]
+
+    def get_blocked_by_user_ids(self) -> List:
+        return [
+            blocked_user.by_user_id
+            for blocked_user in self.blocked_by_users.all()
+        ]
 
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:
@@ -938,37 +1007,3 @@ class Notification(BaseModel):
             )
 
         return serialized_notification
-
-
-class BlockedUser(BaseModel):
-    __tablename__ = 'blocked_users'
-    __table_args__ = (
-        db.UniqueConstraint(
-            'user_id', 'by_user_id', name='blocked_users_unique'
-        ),
-    )
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        index=True,
-    )
-    by_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
-        index=True,
-    )
-    created_at = db.Column(db.DateTime, nullable=False)
-
-    def __init__(
-        self,
-        user_id: int,
-        by_user_id: int,
-        created_at: Optional[datetime] = None,
-    ):
-        self.user_id = user_id
-        self.by_user_id = by_user_id
-        self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
-        )

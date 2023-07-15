@@ -1,15 +1,23 @@
 <template>
   <div class="dropdown-wrapper">
-    <div class="dropdown-selected" @click="toggleDropdown">
+    <button
+      :aria-label="buttonLabel"
+      :aria-expanded="isOpen"
+      class="dropdown-selector transparent"
+      @click="toggleDropdown"
+    >
       <slot></slot>
-    </div>
+    </button>
     <ul class="dropdown-list" v-if="isOpen">
       <li
         class="dropdown-item"
         :class="{ selected: option.value === selected }"
         v-for="(option, index) in dropdownOptions"
         :key="index"
+        tabindex="0"
         @click="updateSelected(option)"
+        @keydown.enter="updateSelected(option)"
+        role="button"
       >
         {{ option.label }}
       </li>
@@ -25,6 +33,7 @@
   interface Props {
     options: TDropdownOptions
     selected: string
+    buttonLabel: string
   }
   const props = defineProps<Props>()
 
@@ -51,36 +60,39 @@
 </script>
 
 <style scoped lang="scss">
-  .dropdown-list {
-    list-style-type: none;
-    background-color: #ffffff;
-    padding: 0 !important;
-    margin-top: 5px;
-    margin-left: -20px !important;
-    position: absolute;
-    text-align: left;
-    border: solid 1px lightgrey;
-    box-shadow: 2px 2px 5px lightgrey;
-    width: auto !important;
-
-    li {
-      padding: 3px 8px;
-    }
-  }
-
-  .dropdown-item {
-    cursor: pointer;
-
-    &.selected {
-      font-weight: bold;
+  @import '~@/scss/vars.scss';
+  .dropdown-wrapper {
+    .dropdown-selector {
+      margin: 0;
+      padding: $default-padding * 0.5;
     }
 
-    &.selected::after {
-      content: ' ✔';
-    }
+    .dropdown-list {
+      list-style-type: none;
+      background-color: #ffffff;
+      padding: 0 !important;
+      margin-top: 5px;
+      margin-left: -20px !important;
+      position: absolute;
+      text-align: left;
+      border: solid 1px lightgrey;
+      box-shadow: 2px 2px 5px lightgrey;
+      width: auto !important;
 
-    &:hover {
-      background-color: var(--dropdown-hover-color);
+      .dropdown-item {
+        padding: 3px 12px;
+        &.selected {
+          font-weight: bold;
+        }
+
+        &.selected::after {
+          content: ' ✔';
+        }
+
+        &:hover {
+          background-color: var(--dropdown-hover-color);
+        }
+      }
     }
   }
 </style>

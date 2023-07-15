@@ -1,6 +1,14 @@
 <template>
   <div class="user-actions" v-if="!isAuthUser(user, authUser)">
-    <div v-if="user.is_followed_by !== 'pending'">
+    <div v-if="user.blocked" class="blocked-user">
+      <div class="blocked">
+        {{ $t('user.RELATIONSHIPS.BLOCKED') }}
+      </div>
+      <button @click="updateBlock(user.username, false)">
+        {{ $t('user.RELATIONSHIPS.UNBLOCK') }}
+      </button>
+    </div>
+    <div v-else-if="user.is_followed_by !== 'pending'" class="actions-buttons">
       <button
         @click="
           updateRelationship(getUserName(user), user.is_followed_by === 'true')
@@ -8,19 +16,20 @@
         :class="{ danger: user.is_followed_by === 'true' }"
       >
         {{
-          capitalize(
-            $t(
-              `user.RELATIONSHIPS.${
-                user.is_followed_by === 'true' ? 'UN' : ''
-              }FOLLOW`
-            )
+          $t(
+            `user.RELATIONSHIPS.${
+              user.is_followed_by === 'true' ? 'UN' : ''
+            }FOLLOW`
           )
         }}
+      </button>
+      <button @click="updateBlock(user.username, true)">
+        {{ $t('user.RELATIONSHIPS.BLOCK') }}
       </button>
     </div>
     <div v-else>
       <button @click="updateRelationship(getUserName(user), true)">
-        {{ capitalize($t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST')) }}
+        {{ $t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST') }}
       </button>
     </div>
     <div
@@ -43,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { capitalize, toRefs, withDefaults } from 'vue'
+  import { toRefs, withDefaults } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
@@ -74,6 +83,14 @@
       from: from.value,
     })
   }
+  function updateBlock(username: string, block: boolean) {
+    emit('updatedUser', username)
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP, {
+      username,
+      action: `${block ? '' : 'un'}block`,
+      from: from.value,
+    })
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -89,6 +106,15 @@
       border-radius: $border-radius;
       padding: $default-padding * 0.5 $default-padding;
       background-color: var(--text-background-color);
+    }
+    .actions-buttons,
+    .blocked-user {
+      display: flex;
+      gap: $default-padding;
+      align-items: center;
+      button {
+        text-transform: capitalize;
+      }
     }
   }
 </style>

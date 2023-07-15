@@ -35,7 +35,7 @@ class TestRegistration:
         assert form_infos[1].text == 'Enter a valid email address.'
         assert form_infos[2].text == 'At least 8 characters required.'
 
-        button = selenium.find_element(By.TAG_NAME, 'button')
+        button = selenium.find_elements(By.TAG_NAME, 'button')[-1]
         assert button.get_attribute('type') == 'submit'
         assert 'Register' in button.text
 
@@ -84,7 +84,11 @@ class TestRegistration:
         register(selenium, user)
 
         assert selenium.current_url == URL
-        errors = selenium.find_element(By.CLASS_NAME, 'error-message').text
+        errors = (
+            selenium.find_element(By.ID, 'user-form')
+            .find_element(By.CLASS_NAME, 'error-message')
+            .text
+        )
         assert 'Sorry, that username is already taken.' in errors
 
     def test_user_does_not_return_error_if_email_is_already_taken(

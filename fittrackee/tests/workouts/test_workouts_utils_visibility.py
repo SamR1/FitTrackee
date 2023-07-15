@@ -119,6 +119,22 @@ class TestCanViewWorkout:
             is False
         )
 
+    def test_another_user_can_not_view_workout_when_public_and_user_blocked(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_2.blocks_user(user_1)
+
+        assert (
+            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            is False
+        )
+
     def test_another_user_can_view_workout_when_public(
         self,
         app: Flask,

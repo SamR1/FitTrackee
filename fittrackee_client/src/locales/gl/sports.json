@@ -40,5 +40,8 @@
     },
     "Walking": {
         "LABEL": "Camiñar"
+    },
+    "Paragliding": {
+        "LABEL": "Paracaidismo"
     }
 }

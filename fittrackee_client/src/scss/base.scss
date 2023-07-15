@@ -4,6 +4,28 @@
 
 body {
   margin: 0;
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+    height: $scrollbar-height;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: $scrollbar-radius;
+  }
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: var(--scroll-thumb-color);
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
 }
 
 #app {
@@ -57,6 +79,30 @@ button {
   color: var(--app-color);
   padding: 6px 14px;
   cursor: pointer;
+
+  &.transparent {
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+    font-size: 1em;
+    border-color: transparent;
+    box-shadow: none;
+
+    &:hover, &:disabled {
+      background: transparent;
+    }
+
+    &:hover {
+      color: var(--app-color);
+    }
+
+    &:enabled:active {
+      box-shadow: none;
+    }
+
+    &:disabled, &.confirm:disabled {
+      border-color: transparent;
+      color: var(--disabled-color);
+    }
+  }
 
   &:hover {
     background: var(--app-color);
@@ -359,13 +405,14 @@ button {
   gap: $default-padding;
 }
 
-.follows-you {
+.follows-you, .blocked {
   font-size: 0.7em;
   font-style: italic;
   text-transform: uppercase;
   padding: $default-padding * 0.5 $default-padding;
   background-color: var(--text-background-color);
   border-radius: $border-radius;
+  max-height: 16px;
 }
 
 .medium-sport-img {

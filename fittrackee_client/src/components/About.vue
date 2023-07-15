@@ -5,7 +5,8 @@
       <p>
         <i class="fa fa-book fa-padding" aria-hidden="true"></i>
         <a
-          href="https://samr1.github.io/FitTrackee/"
+          class="documentation-link"
+          :href="documentationLink"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -72,6 +73,12 @@
   const weather_provider: ComputedRef<Record<string, string>> = computed(() =>
     get_weather_provider()
   )
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const documentationLink: ComputedRef<string> = computed(() =>
+    get_documentation_link()
+  )
 
   function get_weather_provider() {
     const weather_provider: Record<string, string> = {}
@@ -80,6 +87,14 @@
       weather_provider['url'] = 'https://www.visualcrossing.com'
     }
     return weather_provider
+  }
+
+  function get_documentation_link() {
+    let link = 'https://samr1.github.io/FitTrackee/'
+    if (language.value === 'fr') {
+      link += 'fr/'
+    }
+    return link
   }
 </script>
 

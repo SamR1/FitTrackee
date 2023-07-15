@@ -11,13 +11,15 @@
       @input="updatePassword"
       @invalid="invalidPassword"
     />
-    <div class="show-password" @click="togglePassword">
-      {{ $t(`user.${showPassword ? 'HIDE' : 'SHOW'}_PASSWORD`) }}
-      <i
-        class="fa"
-        :class="`fa-eye${showPassword ? '-slash' : ''}`"
-        aria-hidden="true"
-      />
+    <div class="show-password">
+      <button class="transparent" @click.prevent="togglePassword" type="button">
+        {{ $t(`user.${showPassword ? 'HIDE' : 'SHOW'}_PASSWORD`) }}
+        <i
+          class="fa"
+          :class="`fa-eye${showPassword ? '-slash' : ''}`"
+          aria-hidden="true"
+        />
+      </button>
     </div>
     <div v-if="checkStrength" class="form-info">
       <i class="fa fa-info-circle" aria-hidden="true" />
@@ -71,6 +73,7 @@
     (newPassword) => {
       if (newPassword === '') {
         passwordValue.value = ''
+        showPassword.value = false
       }
     }
   )
@@ -84,12 +87,15 @@
     flex-direction: column;
 
     .show-password {
-      font-style: italic;
-      font-size: 0.85em;
-      text-align: right;
-      margin-top: -0.75 * $default-margin;
-      padding-right: $default-padding;
-      cursor: pointer;
+      margin-top: -0.5 * $default-margin;
+      display: flex;
+      justify-content: right;
+      button {
+        font-style: italic;
+        font-size: 0.85em;
+        padding: $default-padding * 0.5 $default-padding;
+        cursor: pointer;
+      }
     }
   }
 </style>

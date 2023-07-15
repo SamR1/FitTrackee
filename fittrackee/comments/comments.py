@@ -12,11 +12,11 @@ from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
-    NotFoundErrorResponse,
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
 from fittrackee.utils import clean_input, decode_short_id
+from fittrackee.workouts.decorators import check_workout
 from fittrackee.workouts.models import Workout
 
 from .decorators import check_workout_comment
@@ -62,8 +62,9 @@ def sending_comment_activities_allowed(
     "/workouts/<string:workout_short_id>/comments", methods=["POST"]
 )
 @require_auth(scopes=["workouts:write"])
+@check_workout(check_owner=False, as_data=False)
 def add_workout_comment(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     comment_data = request.get_json()
     if (
@@ -73,25 +74,16 @@ def add_workout_comment(
     ):
         return InvalidPayloadErrorResponse()
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return NotFoundErrorResponse(
-                f"workout not found (id: {workout_short_id})"
-            )
-
-        if not can_view(workout, 'workout_visibility', auth_user):
-            return NotFoundErrorResponse(
-                f"workout not found (id: {workout_short_id})"
-            )
-
         reply_to = comment_data.get('reply_to')
         comment = None
         if reply_to:
-            comment = Comment.query.filter_by(
-                uuid=decode_short_id(reply_to)
+            comment = Comment.query.filter(
+                Comment.uuid == decode_short_id(reply_to),
+                Comment.user_id.not_in(auth_user.get_blocked_by_user_ids()),
             ).first()
-            if not comment:
+            if not comment or not can_view(
+                comment, "text_visibility", auth_user
+            ):
                 return InvalidPayloadErrorResponse("'reply_to' is invalid")
 
         new_comment = Comment(
@@ -164,16 +156,10 @@ def get_workout_comment(
     "/workouts/<string:workout_short_id>/comments", methods=["GET"]
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(check_owner=False, as_data=False)
 def get_workout_comments(
-    auth_user: Optional[User], workout_short_id: str
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return NotFoundErrorResponse(
-            f"workout not found (id: {workout_short_id})"
-        )
-
     try:
         comments = get_comments(
             workout_id=workout.id,

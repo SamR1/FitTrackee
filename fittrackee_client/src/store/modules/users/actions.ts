@@ -188,6 +188,13 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
         if (res.data.status === 'success') {
           authApi.get(`users/${payload.username}`).then((res) => {
             if (res.data.status === 'success') {
+              if (payload.from === 'blocked-users') {
+                context.dispatch(
+                  AUTH_USER_STORE.ACTIONS.GET_BLOCKED_USERS,
+                  payload.payload
+                )
+                return
+              }
               context.commit(
                 payload.from === 'userInfos'
                   ? USERS_STORE.MUTATIONS.UPDATE_USER

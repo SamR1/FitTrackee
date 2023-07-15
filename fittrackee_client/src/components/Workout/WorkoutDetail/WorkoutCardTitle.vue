@@ -1,9 +1,9 @@
 <template>
   <div id="workout-card-title">
-    <div
-      v-if="isWorkoutOwner"
-      class="workout-previous workout-arrow"
+    <button
+      class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
+      :disabled="!workoutObject.previousUrl"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -16,7 +16,7 @@
       "
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
-    </div>
+    </button>
     <div class="workout-card-title">
       <SportImage :sport-label="sport.label" :color="sport.color" />
       <div class="workout-title-date">
@@ -32,35 +32,48 @@
             {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
             <i class="fa fa-external-link-square" aria-hidden="true"></i>
           </a>
-          <div class="icons">
-            <span class="likes" @click="updateLike(workoutObject)">
-              <i class="fa" :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"/>
-              <span class="likes-count" v-if="workoutObject.likes_count > 0">{{ workoutObject.likes_count }}</span>
-            </span>
+          <button
+            class="transparent icon-button likes"
+            @click="updateLike(workoutObject)"
+          >
             <i
-              class="fa fa-edit"
-              aria-hidden="true"
-              v-if="isWorkoutOwner"
-              @click="
-                $router.push({
-                  name: 'EditWorkout',
-                  params: { workoutId: workoutObject.workoutId },
-                })
-              "
+              class="fa"
+              :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"
             />
-            <i
-              v-if="workoutObject.with_gpx && isWorkoutOwner"
-              class="fa fa-download"
-              aria-hidden="true"
-              @click.prevent="downloadGpx(workoutObject.workoutId)"
-            />
-            <i
-              class="fa fa-trash"
-              v-if="isWorkoutOwner"
-              aria-hidden="true"
-              @click="emit('displayModal', true)"
-            />
-          </div>
+            <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
+              workoutObject.likes_count
+            }}</span>
+          </button>
+          <button
+            class="transparent icon-button"
+            v-if="isWorkoutOwner"
+            @click="
+              $router.push({
+                name: 'EditWorkout',
+                params: { workoutId: workoutObject.workoutId },
+              })
+            "
+            :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+          >
+            <i class="fa fa-edit" aria-hidden="true" />
+          </button>
+          <button
+            v-if="workoutObject.with_gpx && isWorkoutOwner"
+            class="transparent icon-button"
+            @click.prevent="downloadGpx(workoutObject.workoutId)"
+            :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
+          >
+            <i class="fa fa-download" aria-hidden="true" />
+          </button>
+          <button
+            v-if="isWorkoutOwner"
+            id="delete-workout-button"
+            class="transparent icon-button"
+            @click="displayDeleteModal"
+            :aria-label="$t(`workouts.DELETE_WORKOUT`)"
+          >
+            <i class="fa fa-trash" aria-hidden="true" />
+          </button>
         </div>
         <div class="workout-title" v-else>
           {{ workoutObject.title }}
@@ -72,8 +85,9 @@
           </span>
         </div>
         <div class="workout-date">
-          {{ workoutObject.workoutDate }} -
-          {{ workoutObject.workoutTime }}
+          <time>
+            {{ workoutObject.workoutDate }} - {{ workoutObject.workoutTime }}
+          </time>
           <span class="workout-link">
             <router-link
               v-if="workoutObject.type === 'SEGMENT'"
@@ -88,10 +102,10 @@
         </div>
       </div>
     </div>
-    <div
-      v-if="isWorkoutOwner"
-      class="workout-next workout-arrow"
+    <button
+      class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
+      :disabled="!workoutObject.nextUrl"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -102,7 +116,7 @@
       "
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
-    </div>
+    </button>
   </div>
 </template>
 
@@ -144,6 +158,10 @@
         gpxLink.click()
       })
   }
+  function displayDeleteModal(event: Event & { target: HTMLInputElement }) {
+    event.target.blur()
+    emit('displayModal', true)
+  }
   function updateLike(workout: IWorkoutObject) {
     store.dispatch(
       workout.liked
@@ -164,6 +182,7 @@
 
     .workout-arrow {
       cursor: pointer;
+      padding: $default-padding;
       &.inactive {
         color: var(--disabled-color);
         cursor: default;
@@ -210,34 +229,24 @@
         padding-left: $default-padding;
       }
 
-      .icons {
-        .fa {
-          cursor: pointer;
-          padding: 0 $default-padding * 0.3;
-        }
-
-        .fa-heart {
-          color: #ee2222;
-        }
-
-        .likes {
-          padding-left: $default-padding * 0.3;
-          margin-right: 0;
-          .fa-heart , .fa-heart-o {
-            font-size: .95em;
-          }
-          .likes-count {
-            font-size: .9em;
-            font-weight: bold;
-          }
-        }
+      .fa {
+        padding: 0 $default-padding * 0.3;
       }
-      @media screen and (max-width: $small-limit) {
-        .icons {
+      .icon-button {
+        cursor: pointer;
+        padding: 0;
+        margin-left: 2px;
+      }
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .workout-arrow {
+        padding: $default-padding * 0.5;
+      }
+      .workout-card-title {
+        @media screen and (max-width: $small-limit) {
           .fa-download,
           .fa-trash,
-          .fa-heart,
-          .fa-heart-o,
           .fa-edit {
             padding: 0 $default-padding * 0.7;
           }

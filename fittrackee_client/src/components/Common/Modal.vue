@@ -1,5 +1,5 @@
 <template>
-  <div id="modal">
+  <div id="modal" role="dialog">
     <div class="custom-modal">
       <Card>
         <template #title>
@@ -24,7 +24,12 @@
             >
               {{ $t('buttons.YES') }}
             </button>
-            <button class="cancel" @click="emit('cancelAction')">
+            <button
+              :tabindex="0"
+              :id="`${name}-cancel-button`"
+              class="cancel"
+              @click="emit('cancelAction')"
+            >
               {{ $t(`buttons.${errorMessages ? 'CANCEL' : 'NO'}`) }}
             </button>
           </div>
@@ -44,10 +49,12 @@
     title: string
     message: string
     strongMessage?: string | null
+    name?: string | null
     loading?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => null,
+    name: 'modal',
     loading: false,
   })
 

@@ -1,4 +1,5 @@
 {
+    "ACCOUNT_CONFIRMATION": "Confirmation du compte",
     "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Vous n'avez pas reçu les instructions ?",
     "ACCOUNT_CONFIRMATION_SENT": "Vérifiez vos courriels. Un nouveau courriel de confirmation a été envoyé à l'adresse électronique fournie.",
     "ACTIVE_USER": "utilisateur actif | utilisateurs actifs",
@@ -8,6 +9,7 @@
     "CURRENT_PASSWORD": "Mot de passe actuel",
     "EMAIL": "Courriel",
     "EMAIL_INFO": "Saisissez une adresse électronique valide.",
+    "EMAIL_UPDATE": "Mise à jour de l'adresse électronique",
     "ENTER_PASSWORD": "Saisissez un mot de passe",
     "EXPORT_REQUEST": {
         "DATA_EXPORT": "Export des données",
@@ -27,7 +29,7 @@
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
     "LOGIN": "Se connecter",
     "LOGOUT": "Se déconnecter",
-    "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter",
+    "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
     "LOG_IN": "connecter",
     "NEW_PASSWORD": "Nouveau mot de passe",
     "NO_USERS_FOUND": "Aucun utilisateur.",
@@ -119,6 +121,7 @@
         "TABS": {
             "ACCOUNT": "compte",
             "APPS": "apps",
+            "BLOCKED-USERS": "utilisateurs bloqués",
             "FOLLOW-REQUESTS": "demandes d'abonnement",
             "PICTURE": "image",
             "PREFERENCES": "préférences",
@@ -144,6 +147,8 @@
     "REGISTER_DISABLED": "Désolé, les inscriptions sont désactivées.",
     "RELATIONSHIPS": {
         "ACCEPT": "accepter",
+        "BLOCK": "bloquer",
+        "BLOCKED": "bloqué",
         "CANCEL_FOLLOW_REQUEST": "Annuler la demande",
         "FOLLOW": "s'abonner",
         "FOLLOWER": "abonné | abonnés",
@@ -153,6 +158,7 @@
         "NO_FOLLOWING": "Pas d'abonnements pour le moment.",
         "NO_FOLLOW_REQUESTS": "Pas de demandes d'abonnement à valider.",
         "REJECT": "refuser",
+        "UNBLOCK": "débloquer",
         "UNFOLLOW": "se désabonner"
     },
     "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",

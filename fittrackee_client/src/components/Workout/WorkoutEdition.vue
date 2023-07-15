@@ -414,8 +414,15 @@
   )
 
   onMounted(() => {
+    let element
     if (props.workout.id) {
       formatWorkoutForm(props.workout)
+      element = document.getElementById('sport')
+    } else {
+      element = document.getElementById('withGpx')
+    }
+    if (element) {
+      element.focus()
     }
   })
 

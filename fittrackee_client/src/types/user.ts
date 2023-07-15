@@ -1,6 +1,6 @@
 import { LocationQueryValue } from 'vue-router'
 
-import { TPaginationPayload } from '@/types/api'
+import { IPagePayload, TPaginationPayload } from '@/types/api'
 import { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels =
@@ -16,6 +16,7 @@ export interface IUserProfile {
   admin: boolean
   bio: string | null
   birth_date: string | null
+  blocked: boolean
   created_at: string
   email?: string
   email_to_confirm?: string
@@ -94,6 +95,7 @@ export interface IUserRelationshipActionPayload {
   username: string
   action: TRelationshipAction
   from: string
+  payload?: IPagePayload
 }
 
 export interface IUserPreferencesPayload {
@@ -165,10 +167,6 @@ export type TUsersPayload = TPaginationPayload & {
 export interface IUserRelationshipsPayload {
   username: string
   relationship: TRelationships
-  page: number
-}
-
-export interface IFollowRequestsPayload {
   page: number
 }
 

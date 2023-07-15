@@ -61,13 +61,15 @@
                   <span class="cell-heading">
                     {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                   </span>
-                  {{
-                    formatDate(
-                      user.created_at,
-                      authUser.timezone,
-                      authUser.date_format
-                    )
-                  }}
+                  <time>
+                    {{
+                      formatDate(
+                        user.created_at,
+                        authUser.timezone,
+                        authUser.date_format
+                      )
+                    }}
+                  </time>
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">

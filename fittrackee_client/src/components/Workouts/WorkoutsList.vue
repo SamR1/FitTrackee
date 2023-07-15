@@ -83,13 +83,15 @@
                 <span class="cell-heading">
                   {{ $t('workouts.DATE') }}
                 </span>
-                {{
-                  formatDate(
-                    workout.workout_date,
-                    user.timezone,
-                    user.date_format
-                  )
-                }}
+                <time>
+                  {{
+                    formatDate(
+                      workout.workout_date,
+                      user.timezone,
+                      user.date_format
+                    )
+                  }}
+                </time>
               </td>
               <td class="text-right">
                 <span class="cell-heading">

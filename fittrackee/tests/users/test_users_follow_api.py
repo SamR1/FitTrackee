@@ -235,7 +235,7 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
         )
         assert user_1.following.count() == 0
 
-    def test_it_does_not_return_error_when_user_is_blocked(
+    def test_it_returns_error_when_user_is_blocked(
         self,
         app: Flask,
         user_1: User,
@@ -253,13 +253,7 @@ class TestUnfollowWithoutFederation(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == (
-            "Undo for a follow request to user "
-            f"'{user_2.username}' is sent."
-        )
+        self.assert_404_with_message(response, 'relationship does not exist')
 
     @patch('fittrackee.users.models.send_to_remote_inbox')
     def test_it_does_not_call_send_to_user_inbox(

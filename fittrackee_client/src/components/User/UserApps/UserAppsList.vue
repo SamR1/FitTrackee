@@ -8,13 +8,15 @@
         </router-link>
         <span class="app-issued-at">
           {{ $t('oauth2.APP.ISSUE_AT') }}
-          {{
-            formatDate(
-              client.issued_at,
-              authUser.timezone,
-              authUser.date_format
-            )
-          }}
+          <time>
+            {{
+              formatDate(
+                client.issued_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            }}
+          </time>
         </span>
       </li>
     </ul>

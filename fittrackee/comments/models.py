@@ -19,7 +19,6 @@ from fittrackee.federation.objects.comment import CommentObject
 from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.privacy_levels import PrivacyLevel, can_view
-from fittrackee.users.utils.following import get_following
 from fittrackee.utils import encode_uuid
 
 from .exceptions import CommentForbiddenException
@@ -32,14 +31,22 @@ def get_comments(
     workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
 ) -> List['Comment']:
     if user:
-        local_following_ids, remote_following_ids = get_following(user)
+        (
+            local_following_ids,
+            remote_following_ids,
+        ) = user.get_following_user_ids()
+        blocked_users = user.get_blocked_user_ids()
+        blocked_by_users = user.get_blocked_by_user_ids()
         comments_filter = Comment.query.join(
             Mention, Mention.comment_id == Comment.id, isouter=True
         ).filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             or_(
-                Comment.text_visibility == PrivacyLevel.PUBLIC,
+                and_(
+                    Comment.text_visibility == PrivacyLevel.PUBLIC,
+                    Comment.user_id.not_in(blocked_users + blocked_by_users),
+                ),
                 or_(user.id == Mention.user_id),
                 or_(
                     Comment.user_id == user.id,

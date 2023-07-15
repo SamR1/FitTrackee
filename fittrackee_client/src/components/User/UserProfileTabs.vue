@@ -11,7 +11,14 @@
             :disabled="disabled"
             @input="$router.push(getPath(tab))"
           />
-          <span>{{ $t(`user.PROFILE.TABS.${tab}`) }}</span>
+          <span
+            :id="`tab-${tab}`"
+            :tabindex="0"
+            role="button"
+            @keydown.enter="$router.push(getPath(tab))"
+          >
+            {{ $t(`user.PROFILE.TABS.${tab}`) }}
+          </span>
         </label>
       </div>
     </div>
@@ -19,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { onMounted, toRefs, withDefaults } from 'vue'
 
   interface Props {
     tabs: string[]
@@ -33,6 +40,13 @@
 
   const { tabs, selectedTab, disabled } = toRefs(props)
 
+  onMounted(() => {
+    const input = document.getElementById(`tab-${tabs.value[0]}`)
+    if (input) {
+      input.focus()
+    }
+  })
+
   function getPath(tab: string) {
     switch (tab) {
       case 'ACCOUNT':
@@ -40,6 +54,7 @@
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
+      case 'BLOCKED-USERS':
       case 'FOLLOW-REQUESTS':
       case 'PREFERENCES':
       case 'SPORTS':
