@@ -101,5 +101,10 @@
     "WORKOUT_DATE": "fecha del entrenamiento",
     "WORKOUT_DELETION_CONFIRMATION": "¿Seguro que quieres eliminar este entrenamiento?",
     "ZIP_ARCHIVE": "fichero .zip",
-    "ZIP_ARCHIVE_DESCRIPTION": "o fichero .zip que contiene ficheros .gpx"
+    "ZIP_ARCHIVE_DESCRIPTION": "o fichero .zip que contiene ficheros .gpx",
+    "EXIT_FULLSCREEN": "Salir de la pantalla completa",
+    "RESET_ZOOM": "Restablecer el zoom",
+    "DELETE_WORKOUT": "Eliminar el entrenamiento",
+    "VIEW_FULLSCREEN": "Ver a pantalla completa",
+    "DOWNLOAD_WORKOUT": "Descarga el entrenamiento"
 }
