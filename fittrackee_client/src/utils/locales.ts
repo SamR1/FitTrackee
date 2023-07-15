@@ -17,14 +17,14 @@ export const localeFromLanguage: Record<string, Locale> = {
 }
 
 export const languageLabels: Record<string, string> = {
-  de: 'Deutsch',
+  de: 'Deutsch (97%)',
   en: 'English',
   es: 'Español',
   fr: 'Français',
-  gl: 'Galego',
+  gl: 'Galego (98%)',
   it: 'Italiano (87%)',
   nb: 'Norsk bokmål (36%)',
-  nl: 'Nederlands',
+  nl: 'Nederlands (97%)',
   pl: 'Polski (43%)',
 }
 

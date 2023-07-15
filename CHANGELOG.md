@@ -1,5 +1,57 @@
 # Change log
 
+## Version 0.7.19 (2023/07/15)
+
+### Features and enhancements
+
+* [PR#380](https://github.com/SamR1/FitTrackee/pull/380) - Update documentation link
+* [#390](https://github.com/SamR1/FitTrackee/issues/390) - Improve UI
+* [#391](https://github.com/SamR1/FitTrackee/issues/391) - Add new sport: paragliding
+
+
+### Bugs Fixed
+
+* [#384](https://github.com/SamR1/FitTrackee/issues/384) - Inconsistent page with between workout with and without GPS data
+* [#393](https://github.com/SamR1/FitTrackee/issues/393) - PIL.Image module has no attribute ANTIALIAS
+
+
+### Translations
+
+* [PR#394](https://github.com/SamR1/FitTrackee/pull/394) - Translations update (Galician)
+* [PR#397](https://github.com/SamR1/FitTrackee/pull/397) - Translations update (Spanish)
+
+
+### Documentation
+
+* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md (thanks to @dkm)
+* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md (thanks to @dkm)
+
+
+### Misc
+
+* [#395](https://github.com/SamR1/FitTrackee/issues/395) - CI - test a packaged version of FitTrackee
+* [cc3fe1c](https://github.com/SamR1/FitTrackee/commit/cc3fe1c82e6fb9f4d5ba94f0b8a9763540bbcab4) CI - update python and postgresql default versions
+
+
+Translation status:
+- Dutch: 97%
+- English: 100%
+- French: 100%
+- Galician: 98%
+- German: 97%
+- Italian: 85%
+- Norwegian Bokmål: 35%
+- Polish: 42%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @dkm
+- @gallegonovato
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.7.18 (2023/06/25)
 
 Polish is available in FitTrackee interface ([partially translated](https://hosted.weblate.org/languages/pl/fittrackee/)).  
