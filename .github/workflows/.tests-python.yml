@@ -15,12 +15,12 @@ env:
 
 jobs:
   python:
-    name: python ${{ matrix.python-version }} (postgresql 14)
+    name: python ${{ matrix.python-version }} (postgresql 15)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -42,24 +42,24 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
       - name: Bandit
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: bandit -r fittrackee -c pyproject.toml
       - name: Lint (isort & black)
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: pytest --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
       - name: Lint (flake8)
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: flake8 fittrackee e2e
       - name: Mypy
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: mypy fittrackee
       - name: Pytest
         run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
 
   postgresql:
-    name: postgresql ${{ matrix.psql-version }} (python 3.10)
+    name: postgresql ${{ matrix.psql-version }} (python 3.11)
     runs-on: ubuntu-latest
-    container: python:3.10
+    container: python:3.11
     services:
       postgres:
         image: postgres:${{ matrix.psql-version }}
@@ -74,7 +74,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        psql-version:  [ "11", "12", "13", "15" ]
+        psql-version:  [ "11", "12", "13", "14" ]
     steps:
       - uses: actions/checkout@v2
       - name: Install Poetry and Dependencies
@@ -90,10 +90,10 @@ jobs:
     name: e2e tests
     runs-on: ubuntu-latest
     needs: ["python"]
-    container: python:3.10
+    container: python:3.11
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -135,10 +135,10 @@ jobs:
     name: e2e tests with package
     runs-on: ubuntu-latest
     needs: ["python"]
-    container: python:3.10
+    container: python:3.11
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
