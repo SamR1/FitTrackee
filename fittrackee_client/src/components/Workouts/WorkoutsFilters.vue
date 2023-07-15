@@ -1,12 +1,13 @@
 <template>
   <div class="workouts-filters">
     <div class="box">
-      <form v-on:submit.prevent="onSubmit" class="form">
+      <form v-on:submit.prevent="onFilter" class="form">
         <div class="form-all-items">
           <div class="form-items-group">
             <div class="form-item">
               <label> {{ $t('workouts.FROM') }}: </label>
               <input
+                id="from"
                 name="from"
                 type="date"
                 :value="$route.query.from"
@@ -31,6 +32,7 @@
                 name="sport_id"
                 :value="$route.query.sport_id"
                 @change="handleFilterChange"
+                @keyup.enter="onFilter"
               >
                 <option value="" />
                 <option
@@ -54,9 +56,9 @@
                   @change="handleFilterChange"
                   placeholder=""
                   type="text"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
-                </div>
+              </div>
             </div>
           </div>
 
@@ -71,7 +73,7 @@
                   step="0.1"
                   :value="$route.query.distance_from"
                   @change="handleFilterChange"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
                 <span>{{ $t('workouts.TO') }}</span>
                 <input
@@ -81,7 +83,7 @@
                   step="0.1"
                   :value="$route.query.distance_to"
                   @change="handleFilterChange"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
               </div>
             </div>
@@ -98,7 +100,7 @@
                   pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                   placeholder="hh:mm"
                   type="text"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
                 <span>{{ $t('workouts.TO') }}</span>
                 <input
@@ -108,7 +110,7 @@
                   pattern="^([0-9]*[0-9]):([0-5][0-9])$"
                   placeholder="hh:mm"
                   type="text"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
               </div>
             </div>
@@ -125,7 +127,7 @@
                   @change="handleFilterChange"
                   step="0.1"
                   type="number"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
                 <span>{{ $t('workouts.TO') }}</span>
                 <input
@@ -135,7 +137,7 @@
                   @change="handleFilterChange"
                   step="0.1"
                   type="number"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
               </div>
             </div>
@@ -153,7 +155,7 @@
                   @change="handleFilterChange"
                   step="0.1"
                   type="number"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
                 <span>{{ $t('workouts.TO') }}</span>
                 <input
@@ -163,7 +165,7 @@
                   @change="handleFilterChange"
                   step="0.1"
                   type="number"
-                  @keyup.enter="submit"
+                  @keyup.enter="onFilter"
                 />
               </div>
             </div>
@@ -184,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs, watch } from 'vue'
+  import { ComputedRef, computed, toRefs, watch, onMounted } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
@@ -214,6 +216,13 @@
     translateSports(props.sports, t)
   )
   let params: LocationQuery = Object.assign({}, route.query)
+
+  onMounted(() => {
+    const filter = document.getElementById('from')
+    if (filter) {
+      filter.focus()
+    }
+  })
 
   function handleFilterChange(event: Event & { target: HTMLInputElement }) {
     if (event.target.value === '') {
@@ -317,7 +326,8 @@
             height: 100%;
 
             .form-item {
-              label, span {
+              label,
+              span {
                 font-size: 0.9em;
               }
 
@@ -395,7 +405,6 @@
       }
       .form {
         .form-all-items {
-
           .form-items-group {
             .form-item-title {
               padding-top: $default-padding;

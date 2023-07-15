@@ -72,6 +72,7 @@ class BaseConfig:
     ]
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days
+        'refresh_token': 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
@@ -105,6 +106,7 @@ class TestingConfig(BaseConfig):
     SENDER_EMAIL = 'fittrackee@example.com'
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 60,
+        'refresh_token': 60,
     }
 
 

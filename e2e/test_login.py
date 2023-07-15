@@ -22,7 +22,7 @@ class TestLogin:
         assert inputs[1].get_attribute('id') == 'password'
         assert inputs[1].get_attribute('type') == 'password'
 
-        button = selenium.find_element(By.TAG_NAME, 'button')
+        button = selenium.find_elements(By.TAG_NAME, 'button')[-1]
         assert button.get_attribute('type') == 'submit'
         assert 'Log in' in button.text
 
@@ -47,4 +47,7 @@ class TestLogin:
         assert 'Statistics' in nav
         assert 'Add a workout' in nav
         assert user['username'] in nav
-        assert 'Logout' in nav
+        logout_button = selenium.find_elements(By.CLASS_NAME, 'logout-button')[
+            0
+        ]
+        assert logout_button

@@ -7,7 +7,7 @@
         <div class="admin-menu description-list">
           <dl>
             <dt>
-              <router-link to="/admin/application">
+              <router-link id="adminLink" to="/admin/application">
                 {{ $t('admin.APPLICATION') }}
               </router-link>
             </dt>
@@ -54,26 +54,27 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, capitalize, computed, onBeforeMount, toRefs } from 'vue'
+  import { capitalize, onMounted, toRefs } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
-  import { ROOT_STORE } from '@/store/constants'
   import { IAppStatistics, TAppConfig } from '@/types/application'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     appConfig: TAppConfig
+    appStatistics?: IAppStatistics
   }
-  const props = defineProps<Props>()
-  const { appConfig } = toRefs(props)
+  const props = withDefaults(defineProps<Props>(), {
+    appStatistics: () => ({} as IAppStatistics),
+  })
+  const { appConfig, appStatistics } = toRefs(props)
 
-  const store = useStore()
-  const appStatistics: ComputedRef<IAppStatistics> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
-  )
-
-  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
+  onMounted(() => {
+    const applicationLink = document.getElementById('adminLink')
+    if (applicationLink) {
+      applicationLink.focus()
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

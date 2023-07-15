@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.18"
+version = "0.7.19"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -24,8 +24,9 @@ exclude = ["fittrackee/tests"]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-authlib = "=1.2.0"
+authlib = "=1.2.1"
 babel = "^2.11.0"
+click = "=8.1.3"
 dramatiq = {version = "^1.14", extras = ["redis"]}
 flask = "^2.2"
 flask-bcrypt = "^1.0"
@@ -34,20 +35,21 @@ flask-limiter = {version = "^3.3", extras = ["redis"]}
 flask-migrate = "^4.0"
 gpxpy = "=1.5.0"
 gunicorn = "^20.1"
-humanize = "^4.6"
+humanize = "^4.7"
+nh3 = "^0.2.7"
+pillow = "9.5.0"
 psycopg2-binary = "^2.9"
 pyjwt = "^2.7"
 pyopenssl = "^23.2"
 pytz = "^2023.3"
 shortuuid = "^1.0.11"
 staticmap = "^0.5.5"
-sqlalchemy = "=1.4.47"
-ua-parser = "^0.16.1"
-nh3 = "^0.2.7"
+sqlalchemy = "=1.4.49"
+ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
-black = "^23.3"
+black = "^23.7"
 flake8 = "^6.0"  # requires Python >=3.8.1
 freezegun = "^1.2"
 furo = "^2023.5"
@@ -67,7 +69,7 @@ sphinx-intl = "^2.1.0"
 sphinxcontrib-httpdomain = "^1.8"
 types-freezegun = "^1.1"
 types-pytz = "^2023.3"
-types-redis = "^4.5"
+types-redis = "^4.6"
 types-requests = "^2.31"
 
 [tool.poetry.scripts]

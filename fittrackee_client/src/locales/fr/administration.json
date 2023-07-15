@@ -59,7 +59,8 @@
         "TABLE": {
             "ADD_ADMIN_RIGHTS": "Ajouter les droits d'admin",
             "REMOVE_ADMIN_RIGHTS": "Retirer les droits d'admin"
-        }
+        },
+        "TITLE": "Administration - Utilisateurs"
     },
     "USER_EMAIL_UPDATE_SUCCESSFUL": "L'adresse email a été mise à jour."
 }

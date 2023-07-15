@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.7.18",
+  "version": "0.7.19",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -24,7 +24,7 @@
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "core-js": "^3.31.0",
+    "core-js": "^3.31.1",
     "date-fns": "2.29.3",
     "date-fns-tz": "^2.0.0",
     "leaflet": "^1.9.4",
@@ -38,7 +38,7 @@
     "vue-chart-3": "3.1.1",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.2.2",
-    "vue-router": "^4.2.2",
+    "vue-router": "^4.2.4",
     "vuex": "^4.1.0"
   },
   "devDependencies": {

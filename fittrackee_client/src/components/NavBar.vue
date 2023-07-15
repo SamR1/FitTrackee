@@ -1,29 +1,31 @@
 <template>
-  <div id="nav">
+  <header id="nav">
     <Modal
-      v-if="displayModal"
+      v-show="displayModal"
       :title="$t('common.CONFIRMATION')"
       :message="$t('user.LOGOUT_CONFIRMATION')"
       @confirmAction="logout"
       @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
     />
     <div class="nav-container">
       <div class="nav-app-name">
-        <div class="nav-item app-name" @click="$router.push('/')">
-          FitTrackee
-        </div>
+        <div class="nav-item app-name">FitTrackee</div>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
-        <i class="fa fa-bars hamburger-icon" @click="openMenu()"></i>
+        <button class="menu-button transparent" @click="openMenu()">
+          <i class="fa fa-bars hamburger-icon"></i>
+        </button>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
         <div class="nav-items-close">
           <div class="app-name">FitTrackee</div>
-          <i
-            class="fa fa-close close-icon nav-item"
-            :class="{ 'menu-closed': !isMenuOpen }"
-            @click="closeMenu()"
-          />
+          <button class="menu-button transparent" @click="closeMenu()">
+            <i
+              class="fa fa-close close-icon nav-item"
+              :class="{ 'menu-closed': !isMenuOpen }"
+            />
+          </button>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
           <div class="nav-items-group" v-if="isAuthenticated">
@@ -79,19 +81,14 @@
                 {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
               </span>
             </router-link>
-            <div
-              class="nav-item nav-link logout-fa"
+            <button
+              class="logout-button transparent"
               @click="updateDisplayModal(true)"
-              :title="$t('user.LOGOUT')"
+              :aria-label="$t('user.LOGOUT')"
             >
-              <i class="fa fa-sign-out" aria-hidden="true" />
-            </div>
-            <div
-              class="nav-item nav-link logout-text"
-              @click="updateDisplayModal(true)"
-            >
-              {{ $t('user.LOGOUT') }}
-            </div>
+              <i class="fa fa-sign-out logout-fa" aria-hidden="true" />
+              <span class="logout-text">{{ $t('user.LOGOUT') }}</span>
+            </button>
           </div>
           <div class="nav-items-group" v-else>
             <router-link class="nav-item" to="/login" @click="closeMenu">
@@ -107,17 +104,18 @@
             :options="availableLanguages"
             :selected="language"
             @selected="updateLanguage"
+            :buttonLabel="$t('user.REGISTER')"
           >
             <i class="fa fa-language"></i>
           </Dropdown>
         </div>
       </div>
     </div>
-  </div>
+  </header>
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, capitalize, Ref } from 'vue'
+  import { ComputedRef, Ref, capitalize, computed, ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import {
@@ -134,7 +132,6 @@
 
   const store = useStore()
 
-  const displayModal: Ref<boolean> = ref(false)
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
@@ -144,10 +141,11 @@
   const language: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
+  const isMenuOpen: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
   const hasUnreadNotifications: ComputedRef<string> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
   )
-  const isMenuOpen = ref(false)
 
   function openMenu() {
     isMenuOpen.value = true
@@ -167,8 +165,14 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.LOGOUT)
     displayModal.value = false
   }
-  function updateDisplayModal(value: boolean) {
-    displayModal.value = value
+  function updateDisplayModal(display: boolean) {
+    displayModal.value = display
+    if (display) {
+      const button = document.getElementById('modal-cancel-button')
+      if (button) {
+        button.focus()
+      }
+    }
   }
 </script>
 
@@ -205,10 +209,7 @@
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
-
-      &:hover {
-        cursor: pointer;
-      }
+      line-height: 1.6em;
     }
 
     .fa {
@@ -228,12 +229,15 @@
     .close-icon {
       display: none;
     }
+    .menu-button {
+      padding: 0;
+    }
 
     .nav-items {
       display: flex;
       flex: 1;
       justify-content: space-between;
-      line-height: 1.8em;
+      line-height: 2em;
       width: 100%;
 
       .nav-items-close {
@@ -253,11 +257,15 @@
       }
       .nav-item {
         padding: 0 10px;
-
-        ::v-deep(.dropdown-list) {
-          z-index: 1000;
-          margin-left: -160px !important;
-          width: 180px !important;
+        height: 28px;
+        &.dropdown-wrapper {
+          padding: 0;
+          margin-left: 2px;
+          ::v-deep(.dropdown-list) {
+            z-index: 1000;
+            margin-left: -150px !important;
+            width: 180px !important;
+          }
         }
 
         &.notifications {
@@ -300,11 +308,15 @@
       .nav-separator {
         display: none;
       }
-      .logout-fa {
-        display: block;
-      }
-      .logout-text {
-        display: none;
+      .logout-button {
+        padding: $default-padding * 0.5 $default-padding * 0.75;
+        margin-left: 2px;
+        .logout-fa {
+          display: block;
+        }
+        .logout-text {
+          display: none;
+        }
       }
     }
 
@@ -369,20 +381,30 @@
           display: flex;
           flex-direction: column;
 
-          .logout-fa {
-            display: none;
-          }
-          .logout-text {
-            display: block;
+          .logout-button {
+            padding: $default-padding $default-padding $default-padding
+              $default-padding * 2.4;
+            color: var(--app-a-color);
+            text-align: left;
+            .logout-fa {
+              display: none;
+            }
+            .logout-text {
+              display: block;
+            }
           }
         }
 
         .nav-item {
           padding: 7px 25px;
-
-          ::v-deep(.dropdown-list) {
-            margin-left: initial !important;
-            width: auto !important;
+          &.dropdown-wrapper {
+            padding-left: $default-padding * 2;
+            ::v-deep(.dropdown-list) {
+              margin-left: initial !important;
+              width: auto !important;
+              height: 200px;
+              overflow-y: scroll;
+            }
           }
           &.notifications {
             padding-top: $default-padding;
@@ -399,10 +421,6 @@
           padding: 0 0 $default-padding;
           width: 88%;
         }
-      }
-
-      .nav-items-user-menu :nth-child(1) {
-        order: 1;
       }
     }
     .fa-language {

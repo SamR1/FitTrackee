@@ -2,6 +2,7 @@
   <div id="user-infos" class="description-list">
     <Modal
       v-if="displayModal"
+      name="user"
       :title="$t('common.CONFIRMATION')"
       :message="
         displayModal === 'delete'
@@ -15,6 +16,7 @@
           : resetUserPassword(user.username)
       "
       @cancelAction="updateDisplayModal('')"
+      @keydown.esc="updateDisplayModal('')"
     />
     <div class="info-box success-message" v-if="isSuccess">
       {{
@@ -58,13 +60,17 @@
     <div v-else>
       <dl>
         <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
-        <dd>{{ registrationDate }}</dd>
+        <dd>
+          <time>{{ registrationDate }}</time>
+        </dd>
         <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
         <dd>{{ user.first_name }}</dd>
         <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
         <dd>{{ user.last_name }}</dd>
         <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-        <dd>{{ birthDate }}</dd>
+        <dd>
+          <time v-if="birthDate">{{ birthDate }}</time>
+        </dd>
         <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
         <dd>{{ user.location }}</dd>
         <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
@@ -201,6 +207,10 @@
   function updateDisplayModal(value: string) {
     displayModal.value = value
     if (value !== '') {
+      const button = document.getElementById('user-cancel-button')
+      if (button) {
+        button.focus()
+      }
       store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     }
   }

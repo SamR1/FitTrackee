@@ -135,5 +135,8 @@
     "USERNAME": "Nombre de usuario",
     "USERNAME_INFO": "Se requieren entre 3 y 30 caracteres, sólo se permiten alfanuméricos y guión bajo \"_\".",
     "USER_PICTURE": "foto del usuario",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Has aceptado la {0}."
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Has aceptado la {0}.",
+    "ACCOUNT_CONFIRMATION": "Confirmacion la cuenta",
+    "LOGOUT_CONFIRMATION": "¿Está seguro de que deseas cerrar la sesión?",
+    "EMAIL_UPDATE": "Actualización el correo electrónico"
 }

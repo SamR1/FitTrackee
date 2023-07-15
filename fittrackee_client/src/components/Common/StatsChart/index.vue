@@ -10,6 +10,7 @@
             type="radio"
             name="total_distance"
             :checked="displayedData === 'total_distance'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.DISTANCE') }}
@@ -19,6 +20,7 @@
             type="radio"
             name="total_duration"
             :checked="displayedData === 'total_duration'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.DURATION') }}
@@ -28,6 +30,7 @@
             type="radio"
             name="nb_workouts"
             :checked="displayedData === 'nb_workouts'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.WORKOUT', 2) }}
@@ -37,6 +40,7 @@
             type="radio"
             name="average_speed"
             :checked="displayedData === 'average_speed'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.AVERAGE_SPEED') }}
@@ -46,6 +50,7 @@
             type="radio"
             name="total_ascent"
             :checked="displayedData === 'total_ascent'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.ASCENT') }}
@@ -55,6 +60,7 @@
             type="radio"
             name="total_descent"
             :checked="displayedData === 'total_descent'"
+            :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.DESCENT') }}
@@ -127,6 +133,10 @@
         default: false,
       },
       hideChartIfNoData: {
+        type: Boolean,
+        default: false,
+      },
+      isDisabled: {
         type: Boolean,
         default: false,
       },
