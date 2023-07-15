@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.7.19\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-15 13:28+0200\n"
+"POT-Creation-Date: 2023-07-15 14:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1544,11 +1544,11 @@ msgid "Documentation"
 msgstr ""
 
 #: ../source/changelog.md:26
-msgid "PR#386 - Minor fix in CONTRIBUTING.md (thanks to @dkm)"
+msgid "PR#386 - Minor fix in CONTRIBUTING.md"
 msgstr ""
 
 #: ../source/changelog.md:27
-msgid "PR#388 - Minor typo in CONTRIBUTING.md (thanks to @dkm)"
+msgid "PR#388 - Minor typo in CONTRIBUTING.md"
 msgstr ""
 
 #: ../source/changelog.md:30
@@ -4648,7 +4648,7 @@ msgid "Note that FitTrackee is under heavy development, some features may be uns
 msgstr ""
 
 #: ../source/installation.rst:508
-msgid "Download the last release (for now, it is the release v0.7.18):"
+msgid "Download the last release (for now, it is the release v0.7.19):"
 msgstr ""
 
 #: ../source/installation.rst:520
@@ -4741,7 +4741,7 @@ msgid "Change to the directory where FitTrackee directory is located"
 msgstr ""
 
 #: ../source/installation.rst:638
-msgid "Download the last release (for now, it is the release v0.7.18) and overwrite existing files:"
+msgid "Download the last release (for now, it is the release v0.7.19) and overwrite existing files:"
 msgstr ""
 
 #: ../source/installation.rst:661

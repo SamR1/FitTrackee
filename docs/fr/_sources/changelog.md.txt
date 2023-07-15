@@ -6,7 +6,7 @@
 
 * [PR#380](https://github.com/SamR1/FitTrackee/pull/380) - Update documentation link
 * [#390](https://github.com/SamR1/FitTrackee/issues/390) - Improve UI
-* [#391](https://github.com/SamR1/FitTrackee/issues/391) - Add new sport: paragliding (thanks to @dkm)
+* [#391](https://github.com/SamR1/FitTrackee/issues/391) - Add new sport: paragliding
 
 
 ### Bugs Fixed
@@ -17,14 +17,14 @@
 
 ### Translations
 
-* [PR#394](https://github.com/SamR1/FitTrackee/pull/394) - Translations update (Galician, thanks to @xmgz)
-* [PR#397](https://github.com/SamR1/FitTrackee/pull/397) - Translations update (Spanish, thanks to @gallegonovato)
+* [PR#394](https://github.com/SamR1/FitTrackee/pull/394) - Translations update (Galician)
+* [PR#397](https://github.com/SamR1/FitTrackee/pull/397) - Translations update (Spanish)
 
 
 ### Documentation
 
-* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md (thanks to @dkm)
-* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md (thanks to @dkm)
+* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md
+* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md
 
 
 ### Misc
@@ -44,7 +44,10 @@ Translation status:
 - Polish: 42%
 - Spanish: 100%
 
-Thanks to all contributors.
+Thanks to the contributors:
+- @dkm
+- @gallegonovato
+- @xmgz
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
 

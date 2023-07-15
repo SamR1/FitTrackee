@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-07-15 13:28+0200\n"
+"POT-Creation-Date: 2023-07-15 14:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -1578,11 +1578,11 @@ msgid "Documentation"
 msgstr ""
 
 #: ../source/changelog.md:26
-msgid "PR#386 - Minor fix in CONTRIBUTING.md (thanks to @dkm)"
+msgid "PR#386 - Minor fix in CONTRIBUTING.md"
 msgstr ""
 
 #: ../source/changelog.md:27
-msgid "PR#388 - Minor typo in CONTRIBUTING.md (thanks to @dkm)"
+msgid "PR#388 - Minor typo in CONTRIBUTING.md"
 msgstr ""
 
 #: ../source/changelog.md:30 ../source/changelog.md:77
@@ -4903,7 +4903,7 @@ msgid ""
 msgstr ""
 
 #: ../source/installation.rst:508
-msgid "Download the last release (for now, it is the release v0.7.18):"
+msgid "Download the last release (for now, it is the release v0.7.19):"
 msgstr ""
 
 #: ../source/installation.rst:520
@@ -5008,7 +5008,7 @@ msgstr ""
 
 #: ../source/installation.rst:638
 msgid ""
-"Download the last release (for now, it is the release v0.7.18) and "
+"Download the last release (for now, it is the release v0.7.19) and "
 "overwrite existing files:"
 msgstr ""
 
@@ -5468,5 +5468,20 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PR#397 - Translations update (Spanish, thanks to @gallegonovato)"
+#~ msgstr ""
+
+#~ msgid "Download the last release (for now, it is the release v0.7.18):"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Download the last release (for now, "
+#~ "it is the release v0.7.18) and "
+#~ "overwrite existing files:"
+#~ msgstr ""
+
+#~ msgid "PR#386 - Minor fix in CONTRIBUTING.md (thanks to @dkm)"
+#~ msgstr ""
+
+#~ msgid "PR#388 - Minor typo in CONTRIBUTING.md (thanks to @dkm)"
 #~ msgstr ""
 

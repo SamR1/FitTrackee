@@ -23,8 +23,8 @@
 
 ### Documentation
 
-* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md (thanks to @dkm)
-* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md (thanks to @dkm)
+* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md
+* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md
 
 
 ### Misc
