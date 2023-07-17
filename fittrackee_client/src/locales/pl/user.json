@@ -10,8 +10,10 @@
         "DOWNLOAD_ARCHIVE": "Pobierz archiwum",
         "GENERATING_LINK": "generowanie linka...",
         "STATUS": {
-            "in_progress": "w trakcie..."
-        }
+            "in_progress": "w trakcie...",
+            "errored": "niepowodzenie (proszę zlecić kolejny eksport)"
+        },
+        "ONLY_ONE_EXPORT_PER_DAY": "Możesz poprosić o archiwum w przeciągu 24 godzin"
     },
     "HIDE_PASSWORD": "ukryj hasło",
     "INVALID_TOKEN": "Niepoprawny token, proszę zlecić nowy reset hasła.",
@@ -83,5 +85,16 @@
     "SHOW_PASSWORD": "pokaż hasło",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "To konto użytkownika jest nieaktywne.",
     "USERNAME_INFO": "Wymagane od 3 do 30 znaków, można używać tylko liter, cyfr i podkreślenia \"_\".",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Zaakceptowałeś(-aś) {0}."
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Zaakceptowałeś(-aś) {0}.",
+    "ACCOUNT_CONFIRMATION": "Potwierdzenie konta",
+    "CONFIRM_ACCOUNT_DELETION": "Czy jesteś pewien, że chcesz usunąć swoje konto? Wszystkie dane zostaną nieodwracalnie skasowane.",
+    "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Nie otrzymałeś(-aś) instrukcji?",
+    "LOGOUT": "Wyloguj",
+    "FILTER_ON_USERNAME": "Filtruj po nazwie użytkownika",
+    "LAST_PRIVACY_POLICY_TO_VALIDATE": "Polityka prywatności uległa zmianie, proszę {0} ją przed przejściem dalej.",
+    "LOGIN": "Zaloguj",
+    "ADMIN": "Administrator",
+    "EMAIL_UPDATE": "Aktualizacja adresu e-mail",
+    "LOGOUT_CONFIRMATION": "Na pewno chcesz się wylogować?",
+    "LOG_IN": "zaloguj się"
 }
