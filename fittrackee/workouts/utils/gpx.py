@@ -42,9 +42,14 @@ def get_gpx_data(
     gpx_data['elevation_max'] = ele.maximum
     gpx_data['elevation_min'] = ele.minimum
 
-    hill = parsed_gpx.get_uphill_downhill()
-    gpx_data['uphill'] = hill.uphill
-    gpx_data['downhill'] = hill.downhill
+    # gpx file contains elevation datat (<ele> element)
+    if ele.maximum is not None:
+        hill = parsed_gpx.get_uphill_downhill()
+        gpx_data['uphill'] = hill.uphill
+        gpx_data['downhill'] = hill.downhill
+    else:
+        gpx_data['uphill'] = None
+        gpx_data['downhill'] = None
 
     moving_data = parsed_gpx.get_moving_data(
         stopped_speed_threshold=stopped_speed_threshold

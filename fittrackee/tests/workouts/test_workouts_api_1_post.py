@@ -499,6 +499,45 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert_workout_data_with_gpx(data)
 
+    def test_it_adds_a_workout_without_elevation(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_without_elevation: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_without_elevation)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        workout = data['data']['workouts'][0]
+        assert workout['duration'] == '0:04:10'
+        assert workout['ascent'] is None
+        assert workout['ave_speed'] == 4.57
+        assert workout['descent'] is None
+        assert workout['distance'] == 0.317
+        assert workout['max_alt'] is None
+        assert workout['max_speed'] == 5.1
+        assert workout['min_alt'] is None
+        assert workout['with_gpx'] is True
+
     def test_it_returns_400_when_quotes_are_not_escaped_in_notes(
         self,
         app: Flask,
