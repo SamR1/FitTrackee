@@ -11,5 +11,9 @@
     "LOGIN": "Zaloguj się",
     "NO": "Nie",
     "SUBMIT": "Wyślij",
-    "YES": "Tak"
+    "YES": "Tak",
+    "FILTER": "Filtruj",
+    "REGISTER": "Zarejestruj",
+    "REQUEST_DATA_EXPORT": "Zleć eksport danych",
+    "RESET": "Reset"
 }
