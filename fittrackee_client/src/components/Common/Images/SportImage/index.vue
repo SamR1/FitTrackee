@@ -14,6 +14,7 @@
     />
     <Mountaineering v-if="sportLabel === 'Mountaineering'" />
     <Paragliding v-if="sportLabel === 'Paragliding'" />
+    <OpenWaterSwimming v-if="sportLabel === 'Open Water Swimming'" />
     <Rowing v-if="sportLabel === 'Rowing'" />
     <Running v-if="sportLabel === 'Running'" />
     <SkiingAlpine v-if="sportLabel === 'Skiing (Alpine)'" />
@@ -34,6 +35,7 @@
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'
   import Mountaineering from '@/components/Common/Images/SportImage/Mountaineering.vue'
+  import OpenWaterSwimming from '@/components/Common/Images/SportImage/OpenWaterSwimming.vue'
   import Paragliding from '@/components/Common/Images/SportImage/Paragliding.vue'
   import Rowing from '@/components/Common/Images/SportImage/Rowing.vue'
   import Running from '@/components/Common/Images/SportImage/Running.vue'
