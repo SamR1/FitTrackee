@@ -1,20 +1,20 @@
 {
     "ABOUT": {
-        "DESCRIPTION": "Calquera información adicional que puidese ser útil para as túas usuarias. Podes usar Markdown.",
-        "TEXT": "Información detallada sobre a instancia"
+        "DESCRIPTION": "Calquera información adicional que poida ser útil para os teus usuarios. Pódese usar a sintaxe de Markdown.",
+        "TEXT": "Información detallada da instancia"
     },
     "ACTION": "Acción",
     "ACTIVATE_USER_ACCOUNT": "Activar conta",
     "ACTIVE": "Activa",
     "ADMIN": "Admin",
     "ADMINISTRATION": "Administración",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/Eliminar permiso de admin, eliminar conta de usuarias.",
+    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/eliminar dereitos de administrador, eliminar a conta do usuario.",
     "APPLICATION": "Aplicación",
     "APP_CONFIG": {
         "ADMIN_CONTACT": "Email de contacto da administración",
-        "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros arquivo zip",
+        "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros con arquivos zip",
         "MAX_USERS_HELP": "Se 0, non hai límite de rexistros.",
-        "MAX_USERS_LABEL": "Número máx. de usuarias activas",
+        "MAX_USERS_LABEL": "Número máx. de usuarios activos",
         "NO_CONTACT_EMAIL": "sen correo de contacto",
         "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. dos ficheiros subidos (en MB)",
         "TITLE": "Configuración da aplicación",
@@ -59,7 +59,8 @@
         "TABLE": {
             "ADD_ADMIN_RIGHTS": "Conceder permisos admin",
             "REMOVE_ADMIN_RIGHTS": "Retirar permisos admin"
-        }
+        },
+        "TITLE": "Administración - Usuarios"
     },
     "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de email."
 }

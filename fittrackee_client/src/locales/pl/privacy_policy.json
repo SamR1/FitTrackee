@@ -1,14 +1,32 @@
 {
     "CONTENT": {
         "ACCOUNT_DELETION": {
-            "TITLE": "Usuwanie konta"
+            "TITLE": "Usuwanie konta",
+            "CONTENT": "Możesz złożyć wniosek usunięcia konta w każdej chwili poprzez wejście na ten adres (po zalogowaniu) i kliknięcie \"Usuń moje konto\" na ekranie edycji konta."
         },
         "DATA_COLLECTED": {
             "TITLE": "Jakie informacje zbieramy?"
         },
         "YOUR_CONSENT": {
-            "TITLE": "Twoja zgoda"
+            "TITLE": "Twoja zgoda",
+            "CONTENT": "Poprzez używanie tej strony, wyrażasz zgodę na naszą politykę prywatności."
+        },
+        "CHANGES_TO_OUR_PRIVACY_POLICY": {
+            "TITLE": "Zmiany w naszej polityce prywatności"
+        },
+        "INFORMATION_DISCLOSURE": {
+            "TITLE": "Czy udostępniamy jakieś informacje zewnętrznym instytucjom?"
+        },
+        "INFORMATION_PROTECTION": {
+            "TITLE": "Jak chronimy twoje dane?"
+        },
+        "INFORMATION_USAGE": {
+            "TITLE": "Do czego używamy twoich danych?"
+        },
+        "SITE_USAGE_BY_CHILDREN": {
+            "TITLE": "Używanie strony przez dzieci"
         }
     },
-    "TITLE": "polityka prywatności"
+    "TITLE": "polityka prywatności",
+    "LAST_UPDATE": "Ostatnia aktualizacja"
 }

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.19"
+version = "0.7.20"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -34,12 +34,12 @@ flask-dramatiq = "^0.6"
 flask-limiter = {version = "^3.3", extras = ["redis"]}
 flask-migrate = "^4.0"
 gpxpy = "=1.5.0"
-gunicorn = "^20.1"
+gunicorn = "^21.0"
 humanize = "^4.7"
 nh3 = "^0.2.7"
 pillow = "9.5.0"
 psycopg2-binary = "^2.9"
-pyjwt = "^2.7"
+pyjwt = "^2.8"
 pyopenssl = "^23.2"
 pytz = "^2023.3"
 shortuuid = "^1.0.11"

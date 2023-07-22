@@ -52,7 +52,7 @@
       </div>
       <div
         class="workout-data"
-        :class="{ 'without-gpx': workout && !workout.with_gpx }"
+        :class="{ 'without-elevation': !hasElevation(workout) }"
         @click="
           workout.id
             ? $router.push({
@@ -83,7 +83,7 @@
             :useImperialUnits="useImperialUnits"
           />
         </div>
-        <div class="data elevation" v-if="workout && workout.with_gpx">
+        <div class="data elevation" v-if="hasElevation(workout)">
           <img
             class="mountains"
             src="/img/workouts/mountains.svg"
@@ -105,7 +105,7 @@
             />
           </div>
         </div>
-        <div class="data altitude" v-if="hasElevation(workout)">
+        <div class="data altitude" v-if="hasUphillValue(workout)">
           <i class="fa fa-location-arrow" aria-hidden="true" />
           <div class="data-values">
             +<Distance
@@ -163,7 +163,16 @@
   )
 
   function hasElevation(workout: IWorkout): boolean {
-    return workout && workout.ascent !== null && workout.descent !== null
+    return (
+      workout.with_gpx && workout.min_alt !== null && workout.max_alt !== null
+    )
+  }
+  function hasUphillValue(workout: IWorkout): boolean {
+    return (
+      hasElevation(workout) &&
+      workout.ascent !== null &&
+      workout.descent !== null
+    )
   }
 </script>
 
@@ -264,7 +273,7 @@
           }
         }
 
-        &.without-gpx {
+        &.without-elevation {
           .img,
           .data {
             justify-content: center;
