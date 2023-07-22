@@ -42,9 +42,14 @@ def get_gpx_data(
     gpx_data['elevation_max'] = ele.maximum
     gpx_data['elevation_min'] = ele.minimum
 
-    hill = parsed_gpx.get_uphill_downhill()
-    gpx_data['uphill'] = hill.uphill
-    gpx_data['downhill'] = hill.downhill
+    # gpx file contains elevation data (<ele> element)
+    if ele.maximum is not None:
+        hill = parsed_gpx.get_uphill_downhill()
+        gpx_data['uphill'] = hill.uphill
+        gpx_data['downhill'] = hill.downhill
+    else:
+        gpx_data['uphill'] = None
+        gpx_data['downhill'] = None
 
     moving_data = parsed_gpx.get_moving_data(
         stopped_speed_threshold=stopped_speed_threshold
@@ -237,29 +242,23 @@ def get_chart_data(
                 if segment.get_speed(point_idx) is not None
                 else 0
             )
-            chart_data.append(
-                {
-                    'distance': (
-                        round(distance / 1000, 2)
-                        if distance is not None
-                        else 0
-                    ),
-                    'duration': point.time_difference(first_point),
-                    'elevation': (
-                        round(point.elevation, 1)
-                        if point.elevation is not None
-                        else 0
-                    ),
-                    'latitude': point.latitude,
-                    'longitude': point.longitude,
-                    'speed': speed,
-                    # workaround
-                    # https://github.com/tkrajina/gpxpy/issues/209
-                    'time': point.time.replace(
-                        tzinfo=timezone(point.time.utcoffset())
-                    ),
-                }
-            )
+            data = {
+                'distance': (
+                    round(distance / 1000, 2) if distance is not None else 0
+                ),
+                'duration': point.time_difference(first_point),
+                'latitude': point.latitude,
+                'longitude': point.longitude,
+                'speed': speed,
+                # workaround
+                # https://github.com/tkrajina/gpxpy/issues/209
+                'time': point.time.replace(
+                    tzinfo=timezone(point.time.utcoffset())
+                ),
+            }
+            if point.elevation:
+                data['elevation'] = round(point.elevation, 1)
+            chart_data.append(data)
             previous_point = point
             previous_distance = distance
 

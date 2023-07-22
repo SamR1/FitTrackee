@@ -34,7 +34,7 @@
             {{ $t('workouts.NO_DATA_CLEANING') }}
           </div>
 
-          <div class="elevation-start">
+          <div class="elevation-start" v-if="hasElevation">
             <label>
               <input
                 type="checkbox"
@@ -81,6 +81,9 @@
   const beginElevationAtZero = ref(props.authUser.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
+  )
+  const hasElevation = computed(
+    () => datasets.value && datasets.value.datasets.elevation.data.length > 0
   )
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
@@ -141,6 +144,7 @@
       },
       yElevation: {
         beginAtZero: beginElevationAtZero.value,
+        display: hasElevation.value,
         grid: {
           drawOnChartArea: false,
         },
@@ -194,6 +198,7 @@
       },
       htmlLegend: {
         containerID: 'chart-legend',
+        displayElevation: hasElevation.value,
       },
     },
   }))

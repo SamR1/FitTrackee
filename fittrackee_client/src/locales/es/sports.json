@@ -43,5 +43,8 @@
     },
     "Paragliding": {
         "LABEL": "Parapente"
+    },
+    "Open Water Swimming": {
+        "LABEL": "Natación en aguas abiertas"
     }
 }
