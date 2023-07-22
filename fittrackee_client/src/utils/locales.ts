@@ -21,11 +21,11 @@ export const languageLabels: Record<string, string> = {
   en: 'English',
   es: 'Español',
   fr: 'Français',
-  gl: 'Galego (98%)',
-  it: 'Italiano (87%)',
-  nb: 'Norsk bokmål (36%)',
+  gl: 'Galego',
+  it: 'Italiano (85%)',
+  nb: 'Norsk bokmål (35%)',
   nl: 'Nederlands (97%)',
-  pl: 'Polski (43%)',
+  pl: 'Polski (56%)',
 }
 
 const { availableLocales } = createI18n.global
