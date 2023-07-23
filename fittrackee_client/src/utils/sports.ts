@@ -9,6 +9,7 @@ export const sportColors: Record<string, string> = {
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',
+  'Open Water Swimming': '#4058a4',
   Paragliding: '#c23c50',
   Rowing: '#fcce72',
   Running: '#835b83',

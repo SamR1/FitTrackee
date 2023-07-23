@@ -43,9 +43,11 @@ export const getDatasets = (
     datasets.speed.data.push(
       convertStatsDistance('km', data.speed, useImperialUnits)
     )
-    datasets.elevation.data.push(
-      convertStatsDistance('m', data.elevation, useImperialUnits)
-    )
+    if (data.elevation !== undefined) {
+      datasets.elevation.data.push(
+        convertStatsDistance('m', data.elevation, useImperialUnits)
+      )
+    }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
 

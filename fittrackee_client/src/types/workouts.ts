@@ -156,7 +156,7 @@ export type TWorkoutsPayload = TPaginationPayload & {
 export interface IWorkoutApiChartData {
   distance: number
   duration: number
-  elevation: number
+  elevation?: number
   latitude: number
   longitude: number
   speed: number

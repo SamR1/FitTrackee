@@ -135,5 +135,8 @@
     "USERNAME": "Identificador",
     "USERNAME_INFO": "Require entre 3 e 30 caracteres, só se permiten alfanuméricos e o trazo baixo \"_\".",
     "USER_PICTURE": "foto da usuaria",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}."
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}.",
+    "ACCOUNT_CONFIRMATION": "Confirmación da conta",
+    "EMAIL_UPDATE": "Actualizar correo",
+    "LOGOUT_CONFIRMATION": "Tes certeza de querer pechar a sesión?"
 }

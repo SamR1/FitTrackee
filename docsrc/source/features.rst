@@ -19,6 +19,7 @@ Workouts
      - Mountain Biking
      - Mountain Biking (Electric)  (*new in 0.5.0*)
      - Mountaineering  (*new in 0.7.9*)
+     - Open Water Swimming  (*new in 0.7.20*)
      - Paragliding  (*new in 0.7.19*)
      - Rowing  (*new in 0.5.0*)
      - Running
@@ -30,6 +31,7 @@ Workouts
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
      - Hiking
      - Mountaineering
+     - Open Water Swimming
      - Paragliding
      - Skiing (Cross Country)
      - Snowshoes

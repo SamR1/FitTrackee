@@ -101,5 +101,10 @@
     "WORKOUT_DATE": "data do adestramento",
     "WORKOUT_DELETION_CONFIRMATION": "Tes certeza de querer borrar este adestramento?",
     "ZIP_ARCHIVE": "ficheiro .zip",
-    "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros .gpx"
+    "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros .gpx",
+    "DELETE_WORKOUT": "Eliminar o adestramento",
+    "RESET_ZOOM": "Restablecer vista",
+    "VIEW_FULLSCREEN": "Ver en pantalla completa",
+    "DOWNLOAD_WORKOUT": "Descargar o adestramento",
+    "EXIT_FULLSCREEN": "Saír da pantalla completa"
 }

@@ -1,5 +1,44 @@
 # Change log
 
+## Version 0.7.20 (2023/07/22)
+
+### Features and enhancements
+
+* [#400](https://github.com/SamR1/FitTrackee/issues/400) - Add new sport: open water swimming
+
+
+### Bugs Fixed
+
+* [PR#398](https://github.com/SamR1/FitTrackee/pull/398) - Fix language dropdown label
+* [#402](https://github.com/SamR1/FitTrackee/issues/402) - handle gpx file without elevation
+
+
+### Translations
+
+* [PR#399](https://github.com/SamR1/FitTrackee/pull/399) - Translations update (Galician)
+* [PR#401](https://github.com/SamR1/FitTrackee/pull/401) - Translations update (Galician and Polish)
+* [PR#406](https://github.com/SamR1/FitTrackee/pull/406) - Translations update (Galician and Spanish)
+
+
+Translation status:
+- Dutch: 97%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 97%
+- Italian: 85%
+- Norwegian Bokmål: 35%
+- Polish: 56%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @gallegonovato
+- @xmgz
+- Mariusz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.7.19 (2023/07/15)
 
 ### Features and enhancements
