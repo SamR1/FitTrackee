@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-07-22 11:21+0200\n"
+"POT-Creation-Date: 2023-07-23 11:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -967,7 +967,7 @@ msgstr "retournant des records"
 msgid "no records"
 msgstr "pas de record"
 
-#: ../source/api/sports.rst:2 ../source/features.rst:192
+#: ../source/api/sports.rst:2 ../source/features.rst:196
 msgid "Sports"
 msgstr "Sports"
 
@@ -1019,7 +1019,7 @@ msgstr "état d'activation du sport"
 msgid "sport updated"
 msgstr "sport mis à jour"
 
-#: ../source/api/stats.rst:2 ../source/features.rst:238
+#: ../source/api/stats.rst:2 ../source/features.rst:242
 msgid "Statistics"
 msgstr "Statistiques"
 
@@ -1110,7 +1110,7 @@ msgstr ""
 msgid "Get all application statistics."
 msgstr "Obtenir toutes les statistiques de l'application."
 
-#: ../source/api/users.rst:2 ../source/cli.rst:67 ../source/features.rst:179
+#: ../source/api/users.rst:2 ../source/cli.rst:67 ../source/features.rst:183
 msgid "Users"
 msgstr "Utilisateurs"
 
@@ -1630,7 +1630,7 @@ msgstr ""
 #: ../source/changelog.md:428 ../source/changelog.md:453
 #: ../source/changelog.md:462 ../source/changelog.md:473
 #: ../source/changelog.md:492 ../source/changelog.md:578
-#: ../source/features.rst:197
+#: ../source/features.rst:201
 msgid "Translations"
 msgstr "Traductions"
 
@@ -3395,7 +3395,7 @@ msgid "Cycling (Transport)"
 msgstr "Vélo (Transport)"
 
 #: ../source/changelog.md:1148 ../source/features.rst:18
-#: ../source/features.rst:32
+#: ../source/features.rst:33
 msgid "Hiking"
 msgstr "Randonnée"
 
@@ -3408,7 +3408,7 @@ msgid "Running"
 msgstr "Course à pied"
 
 #: ../source/changelog.md:1151 ../source/features.rst:30
-#: ../source/features.rst:39
+#: ../source/features.rst:40
 msgid "Walking"
 msgstr "Marche"
 
@@ -3451,21 +3451,21 @@ msgstr "Statistiques du mois en cours"
 msgid "Records by sports:"
 msgstr "Records par sports :"
 
-#: ../source/changelog.md:1159 ../source/features.rst:68
-#: ../source/features.rst:84 ../source/features.rst:90
+#: ../source/changelog.md:1159 ../source/features.rst:72
+#: ../source/features.rst:88 ../source/features.rst:94
 msgid "average speed"
 msgstr "vitesse moyenne"
 
-#: ../source/changelog.md:1160 ../source/features.rst:69
+#: ../source/changelog.md:1160 ../source/features.rst:73
 msgid "farthest distance"
 msgstr "la plus grande distance"
 
-#: ../source/changelog.md:1161 ../source/features.rst:71
+#: ../source/changelog.md:1161 ../source/features.rst:75
 msgid "longest duration"
 msgstr "durée la plus longue"
 
-#: ../source/changelog.md:1162 ../source/features.rst:72
-#: ../source/features.rst:85
+#: ../source/changelog.md:1162 ../source/features.rst:76
+#: ../source/features.rst:89
 msgid "maximum speed"
 msgstr "vitesse maximale"
 
@@ -3774,7 +3774,7 @@ msgstr ""
 " la page de détail de la séance et pour la génération des images "
 "statiques des traces."
 
-#: ../source/features.rst:29
+#: ../source/features.rst:30
 msgid "14 sports are supported:"
 msgstr "14 sports sont pris en charge :"
 
@@ -3818,7 +3818,7 @@ msgstr "Raquettes (*nouveau dans la version 0.5.2*)"
 msgid "Trail (*new in 0.5.0*)"
 msgstr "Trail (*nouveau dans la version 0.5.0*)"
 
-#: ../source/features.rst:39
+#: ../source/features.rst:40
 msgid ""
 "(*new in 0.5.0*) Stopped speed threshold used by `gpxpy "
 "<https://github.com/tkrajina/gpxpy>`_ is not the default one for the "
@@ -3828,35 +3828,43 @@ msgstr ""
 "par `gpxpy <https://github.com/tkrajina/gpxpy>`_ n'est plus la valeur par"
 " défaut pour les sports suivants (0.1 km/h au lieu de 1 km/h) :"
 
-#: ../source/features.rst:33
+#: ../source/features.rst:34
 msgid "Mountaineering"
 msgstr "Alpinisme"
 
-#: ../source/features.rst:34
+#: ../source/features.rst:35
 msgid "Open Water Swimming"
 msgstr "Nage en eau libre"
 
-#: ../source/features.rst:35
+#: ../source/features.rst:36
 msgid "Paragliding"
 msgstr "Parapente"
 
-#: ../source/features.rst:36
+#: ../source/features.rst:37
 msgid "Skiing (Cross Country)"
 msgstr "Ski (Randonnée)"
 
-#: ../source/features.rst:37
+#: ../source/features.rst:38
 msgid "Snowshoes"
 msgstr "Raquettes"
 
-#: ../source/features.rst:38
+#: ../source/features.rst:39
 msgid "Trail"
 msgstr "Trail"
 
-#: ../source/features.rst:42
+#: ../source/features.rst:43
 msgid "It can be overridden in user preferences."
 msgstr "Elle peut être remplacée dans les préférences de l'utilisateur."
 
-#: ../source/features.rst:44
+#: ../source/features.rst:46
+msgid ""
+"Except the stopped speed threshold, all sports are analyzed in the same "
+"way (no specificity taken into account for the moment)."
+msgstr ""
+"A l'exception du seuil de vitesse arrêté, tous les sports sont analysés de "
+"la même manière (aucune spécificité prise en compte pour le moment)."
+
+#: ../source/features.rst:48
 msgid ""
 "Dashboard with month calendar displaying workouts and record. The week "
 "can start on Sunday or Monday (which can be changed in the user "
@@ -3867,7 +3875,7 @@ msgstr ""
 "être modifié dans les préférences de l'utilisateur). Le calendrier "
 "affiche jusqu'à 100 séances."
 
-#: ../source/features.rst:45
+#: ../source/features.rst:49
 msgid ""
 "Workout creation by uploading a gpx file (related data are stored in "
 "database in metric system)."
@@ -3906,10 +3914,12 @@ msgstr ""
 #: ../source/features.rst
 msgid ""
 "A workout with a gpx file can be displayed with map and charts (speed and"
-" elevation)."
+" elevation (if the gpx file contains elevation data, *updated in "
+"0.7.20*))."
 msgstr ""
 "Une séance avec un fichier gpx est affichée avec une carte et des "
-"graphiques (vitesse et élévation)."
+"graphiques (vitesse et altitude (si le fichier contient les données "
+"relatives à l'altitude (*mis à jour dans la version 0.7.20*))."
 
 #: ../source/features.rst
 msgid "Controls allow full screen view and position reset (*new in 0.5.5*)."
@@ -3936,59 +3946,59 @@ msgstr ""
 "(une infobulle peut être affichée avec la direction (provenance du vent))"
 " (*nouveau dans la version 0.5.5*)."
 
-#: ../source/features.rst:57
+#: ../source/features.rst:61
 msgid "Segments can be displayed."
 msgstr "Les segments peuvent être affichés."
 
-#: ../source/features.rst:58
+#: ../source/features.rst:62
 msgid "Workout gpx file can be downloaded (*new in 0.5.1*)"
 msgstr "Le fichier gpx peut être téléchargé (*nouveau dans la version 0.5.1*)"
 
-#: ../source/features.rst:59
+#: ../source/features.rst:63
 msgid "Workout edition and deletion. User can add a note."
 msgstr "Edition et suppression d'une séance. L'utilisateur peut ajouter une note."
 
-#: ../source/features.rst:65
+#: ../source/features.rst:69
 msgid "User statistics, by time period (week, month, year) and sport:"
 msgstr ""
 "Statistiques pour l'utilisateur, par période (semaine, mois, année) et "
 "par sport :"
 
-#: ../source/features.rst:61
+#: ../source/features.rst:65
 msgid "total distance"
 msgstr "distance totale"
 
-#: ../source/features.rst:62
+#: ../source/features.rst:66
 msgid "total duration"
 msgstr "durée totale"
 
-#: ../source/features.rst:63
+#: ../source/features.rst:67
 msgid "total workouts"
 msgstr "nombre total de séances"
 
-#: ../source/features.rst:64
+#: ../source/features.rst:68
 msgid "total ascent  (*new in 0.5.0*)"
 msgstr "dénivelé positif total  (*nouveau dans la version 0.5.0*)"
 
-#: ../source/features.rst:65
+#: ../source/features.rst:69
 msgid "total descent  (*new in 0.5.0*)"
 msgstr "dénivelé négatif total  (*nouveau dans la version 0.5.0*)"
 
-#: ../source/features.rst:66
+#: ../source/features.rst:70
 msgid "average speed  (*new in 0.5.1*)"
 msgstr "vitesse moyenne (*nouveau dans la version 0.5.1*)"
 
-#: ../source/features.rst:72
+#: ../source/features.rst:76
 msgid "User records by sports:"
 msgstr "Records de l'utilisateur par sports :"
 
-#: ../source/features.rst:70
+#: ../source/features.rst:74
 msgid "highest ascent (*new in 0.6.11*, can be hidden, see user preferences)"
 msgstr ""
 "dénivelé positif le plus élevé (*nouveau dans la version 0.6.11*, peut "
 "être masqué, cf. préférences utilisateur)"
 
-#: ../source/features.rst:75
+#: ../source/features.rst:79
 msgid ""
 "Records may differ from records displayed by the application that "
 "originally generated the gpx files."
@@ -3996,53 +4006,53 @@ msgstr ""
 "Les records peuvent différer des records affichés par l'application qui a"
 " généré les fichiers gpx à l'origine."
 
-#: ../source/features.rst:90
+#: ../source/features.rst:94
 msgid "Workouts list."
 msgstr "Liste des séances."
 
-#: ../source/features.rst:84
+#: ../source/features.rst:88
 msgid "The user can filter workouts on:"
 msgstr "L'utilisateur peut filtrer les séances selon :"
 
-#: ../source/features.rst:79 ../source/features.rst:87
+#: ../source/features.rst:83 ../source/features.rst:91
 msgid "date"
 msgstr "la date"
 
-#: ../source/features.rst:80
+#: ../source/features.rst:84
 msgid "sports (only sports with workouts are displayed in sport dropdown)"
 msgstr ""
 "le sport (seuls les sports comportant des séances sont affichées dans la "
 "liste déroulante)"
 
-#: ../source/features.rst:81
+#: ../source/features.rst:85
 msgid "title (*new in 0.7.15*)"
 msgstr "le titre (*nouveau dans la version 0.7.15*)"
 
-#: ../source/features.rst:82 ../source/features.rst:88
+#: ../source/features.rst:86 ../source/features.rst:92
 msgid "distance"
 msgstr "la distance"
 
-#: ../source/features.rst:83 ../source/features.rst:89
+#: ../source/features.rst:87 ../source/features.rst:93
 msgid "duration"
 msgstr "la durée"
 
-#: ../source/features.rst:90
+#: ../source/features.rst:94
 msgid "Workouts can be sorted by:"
 msgstr "Les séances peuvent être triées par :"
 
-#: ../source/features.rst:93
+#: ../source/features.rst:97
 msgid "For now, only the owner of the workout can see it."
 msgstr "Pour l'instant, seul le propriétaire de la séance peut la voir."
 
-#: ../source/features.rst:97
+#: ../source/features.rst:101
 msgid "Account & preferences"
 msgstr "Compte et préférences"
 
-#: ../source/features.rst:98
+#: ../source/features.rst:102
 msgid "A user can create, update and deleted his account."
 msgstr "Un utilisateur peut créer, modifier et supprimer son compte."
 
-#: ../source/features.rst:99
+#: ../source/features.rst:103
 msgid ""
 "The user must agree to the privacy policy to register. If a more recent "
 "policy is available, a message is displayed on the dashboard to review "
@@ -4053,7 +4063,7 @@ msgstr ""
 "s'affiche sur le tableau de bord pour consulter la nouvelle version "
 "(*nouveau dans la version 0.7.13*)."
 
-#: ../source/features.rst:100
+#: ../source/features.rst:104
 msgid ""
 "On registration, the user account is created with selected language in "
 "dropdown as user preference (*new in 0.6.9*)."
@@ -4062,7 +4072,7 @@ msgstr ""
 "enregistrée comme préférence de l'utilisateur (*nouveauté dans la version"
 " 0.6.9*)."
 
-#: ../source/features.rst:101
+#: ../source/features.rst:105
 msgid ""
 "After registration, the user account is inactive and an email with "
 "confirmation instructions is sent to activate it. A user with an inactive"
@@ -4073,7 +4083,7 @@ msgstr ""
 "l'activer. Un utilisateur dont le compte est inactif ne peut pas se "
 "connecter (*nouveauté dans la version 0.6.0*)."
 
-#: ../source/features.rst:105
+#: ../source/features.rst:109
 msgid ""
 "In case email sending is not configured, a `command line <cli.html#ftcli-"
 "users-update>`__ allows to activate users account."
@@ -4082,25 +4092,25 @@ msgstr ""
 "de ligne de commande <cli.html#ftcli-users-update>`__ permet d'activer le"
 " compte des utilisateurs."
 
-#: ../source/features.rst:107
+#: ../source/features.rst:111
 msgid "A user can set language, timezone and first day of week."
 msgstr ""
 "L'utilisateur peut définir la langue, le fuseau horaire et le premier "
 "jour de la semaine."
 
-#: ../source/features.rst:108
+#: ../source/features.rst:112
 msgid "A user can reset his password (*new in 0.3.0*)"
 msgstr ""
 "L'utilisateur peut réinitialiser son mot de passe (*nouveau dans la "
 "version in 0.3.0*)"
 
-#: ../source/features.rst:109
+#: ../source/features.rst:113
 msgid "A user can change his email address (*new in 0.6.0*)"
 msgstr ""
 "Un utilisateur peut modifier son adresse électronique (*nouveau dans la "
 "version 0.6.0*)"
 
-#: ../source/features.rst:110
+#: ../source/features.rst:114
 msgid ""
 "A user can choose between metric system and imperial system for distance,"
 " elevation and speed display (*new in 0.5.0*)"
@@ -4109,7 +4119,7 @@ msgstr ""
 "impérial pour la distance, l'affichage de l'altitude et de la vitesse "
 "(*nouveau dans la version 0.5.0*)"
 
-#: ../source/features.rst:111
+#: ../source/features.rst:115
 msgid ""
 "A user can choose to display or hide ascent records and total on "
 "Dashboard (*new in 0.6.11*)"
@@ -4118,13 +4128,13 @@ msgstr ""
 "de dénivelé positif sur le tableau de bord (*nouveau dans la version "
 "0.6.11*)"
 
-#: ../source/features.rst:112
+#: ../source/features.rst:116
 msgid "A user can choose format used to display dates (*new in 0.7.3*)"
 msgstr ""
 "L'utilisateur peut choisir le format d'affichage des dates (*nouveau dans"
 " la version 0.7.3*)"
 
-#: ../source/features.rst:113
+#: ../source/features.rst:117
 msgid ""
 "A user can choose elevation chart axis start: zero or minimum altitude "
 "(*new in 0.7.15*)"
@@ -4133,7 +4143,7 @@ msgstr ""
 "d'altitude : altitude zéro ou minimale. (*nouveau dans la version "
 "0.7.15*)"
 
-#: ../source/features.rst:114
+#: ../source/features.rst:118
 msgid ""
 "A user can choose to exclude extreme values (which may be GPS errors) "
 "when calculating the maximum speed (by default, extreme values are "
@@ -4143,31 +4153,31 @@ msgstr ""
 "être des erreurs GPS) lors du calcul de la vitesse maximale (par défaut, "
 "les valeurs extrêmes sont exclues) (*nouveau dans la version 0.7.16*)"
 
-#: ../source/features.rst:117
+#: ../source/features.rst:121
 msgid "Changing this preference will only affect next file uploads."
 msgstr ""
 "La modification de cette préférence n'affectera que les prochains "
 "fichiers ajoutés."
 
-#: ../source/features.rst:122
+#: ../source/features.rst:126
 msgid "A user can set sport preferences (*new in 0.5.0*):"
 msgstr ""
 "Un utilisateur peut définir des préférences en matière de sport (*nouveau"
 " dans la version 0.5.0*) :"
 
-#: ../source/features.rst:120
+#: ../source/features.rst:124
 msgid "change sport color (used for sport image and charts)"
 msgstr ""
 "changer la couleur du sport (utilisée pour l'image du sport et les "
 "graphiques)"
 
-#: ../source/features.rst:121
+#: ../source/features.rst:125
 msgid "can override stopped speed threshold (for next uploaded gpx files)"
 msgstr ""
 "modifier le seuil de vitesse d'arrêt (pour les prochains fichiers gpx "
 "ajoutés)"
 
-#: ../source/features.rst:122
+#: ../source/features.rst:126
 msgid "disable/enable a sport."
 msgstr "désactiver/activer un sport."
 
@@ -4198,7 +4208,7 @@ msgstr ""
 "Une séance avec un sport désactivé sera toujours affichée dans "
 "l'application."
 
-#: ../source/features.rst:129
+#: ../source/features.rst:133
 msgid ""
 "A user can create `clients <apps.html>`__ for third-party applications "
 "(*new in 0.7.0*)."
@@ -4221,7 +4231,7 @@ msgstr ""
 " de l'utilisateur et données des séances) et tous les fichiers gpx "
 "ajoutée."
 
-#: ../source/features.rst:134
+#: ../source/features.rst:138
 msgid ""
 "For now, it's not possible to import these files into another "
 "**FitTrackee** instance."
@@ -4229,33 +4239,33 @@ msgstr ""
 "Pour l'instant, il n'est pas possible d'importer ces fichiers sur une "
 "autre instance de **FitTrackee**."
 
-#: ../source/features.rst:138 ../source/features.rst:243
+#: ../source/features.rst:142 ../source/features.rst:247
 msgid "Administration"
 msgstr "Administration"
 
-#: ../source/features.rst:139
+#: ../source/features.rst:143
 msgid "(*new in 0.3.0*)"
 msgstr "(*nouveau dans la version 0.3.0*)"
 
-#: ../source/features.rst:142
+#: ../source/features.rst:146
 msgid "Application"
 msgstr "Application"
 
-#: ../source/features.rst:144
+#: ../source/features.rst:148
 msgid "**Configuration**"
 msgstr "**Configuration**"
 
-#: ../source/features.rst:146
+#: ../source/features.rst:150
 msgid "The following parameters can be set:"
 msgstr "Les paramètres suivants peuvent être définis :"
 
-#: ../source/features.rst:148
+#: ../source/features.rst:152
 msgid "active users limit. If 0, registration is enabled (no limit defined)."
 msgstr ""
 "limite des utilisateurs actifs. S'il est égal à 0, l'inscription est "
 "activée (aucune limite n'est définie)."
 
-#: ../source/features.rst:149
+#: ../source/features.rst:153
 msgid ""
 "maximum size of gpx file (individually uploaded or in a zip archive) "
 "(*changed in 0.7.4*)"
@@ -4263,23 +4273,23 @@ msgstr ""
 "taille maximale du fichier gpx (ajouté unitairement ou dans une archive "
 "zip) (*modifié dans la version 0.7.4*)"
 
-#: ../source/features.rst:150
+#: ../source/features.rst:154
 msgid "maximum size of zip archive"
 msgstr "taille maximale de l'archive zip"
 
-#: ../source/features.rst:151
+#: ../source/features.rst:155
 msgid "maximum number of files in the zip archive (*changed in 0.7.4*)"
 msgstr ""
 "nombre maximum de fichiers dans l'archive zip (*modifié dans la version "
 "0.7.4*)"
 
-#: ../source/features.rst:152
+#: ../source/features.rst:156
 msgid "administrator email for contact (*new in 0.6.0*)"
 msgstr ""
 "adresse électronique pour contacter l'administrateur (*nouveau dans la "
 "version 0.6.0*)"
 
-#: ../source/features.rst:155
+#: ../source/features.rst:159
 msgid ""
 "Updating server configuration may be necessary to handle large files "
 "(like `nginx "
@@ -4291,19 +4301,19 @@ msgstr ""
 "<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_"
 " par exemple)."
 
-#: ../source/features.rst:158
+#: ../source/features.rst:162
 msgid "If email sending is disabled, a warning is displayed."
 msgstr "Si l'envoi de courriels est désactivé, un avertissement s'affiche."
 
-#: ../source/features.rst:160
+#: ../source/features.rst:164
 msgid "**About**"
 msgstr "**A propos**"
 
-#: ../source/features.rst:162 ../source/features.rst:170
+#: ../source/features.rst:166 ../source/features.rst:174
 msgid "(*new in 0.7.13*)"
 msgstr "(*nouveau dans la version 0.7.13*)"
 
-#: ../source/features.rst:164
+#: ../source/features.rst:168
 msgid ""
 "It is possible displayed additional information that may be useful to "
 "users in **About** page."
@@ -4311,15 +4321,15 @@ msgstr ""
 "Il est possible d'afficher des informations supplémentaires qui peuvent "
 "être utiles aux utilisateurs dans la page **A propos**."
 
-#: ../source/features.rst:165
+#: ../source/features.rst:169
 msgid "Markdown syntax can be used."
 msgstr "La syntaxe Markdown peut être utilisée."
 
-#: ../source/features.rst:168
+#: ../source/features.rst:172
 msgid "**Privacy policy**"
 msgstr "**Politique de confidentialité**"
 
-#: ../source/features.rst:172
+#: ../source/features.rst:176
 msgid ""
 "A default privacy policy is available (originally adapted from the "
 "`Discourse <https://github.com/discourse/discourse>`__ privacy policy)."
@@ -4328,7 +4338,7 @@ msgstr ""
 " `Politique de confidentialité de Discourse "
 "<https://github.com/discourse/discourse>`__)."
 
-#: ../source/features.rst:173
+#: ../source/features.rst:177
 msgid ""
 "A custom privacy policy can set if needed (Markdown syntax can be used). "
 "A policy update will display a message on users dashboard to review it."
@@ -4338,7 +4348,7 @@ msgstr ""
 "la politique affichera un message sur le tableau de bord des utilisateurs"
 " pour qu'ils puissent en prendre connaissance."
 
-#: ../source/features.rst:176
+#: ../source/features.rst:180
 msgid ""
 "Only the default privacy policy is translated (if the translation is "
 "available)."
@@ -4346,29 +4356,29 @@ msgstr ""
 "Seule la politique de confidentialité par défaut est traduite (si la "
 "traduction est disponible)."
 
-#: ../source/features.rst:181
+#: ../source/features.rst:185
 msgid "display and filter users list"
 msgstr "afficher et filtrer la liste des utilisateurs"
 
-#: ../source/features.rst:182
+#: ../source/features.rst:186
 msgid "edit a user to:"
 msgstr "modifier le compte d'un utilisateur pour :"
 
-#: ../source/features.rst:184
+#: ../source/features.rst:188
 msgid "add/remove administration rights"
 msgstr "ajouter/supprimer des droits d'administration"
 
-#: ../source/features.rst:185
+#: ../source/features.rst:189
 msgid "activate his account (*new in 0.6.0*)"
 msgstr "activer son compte (*nouveau dans la version 0.6.0*)"
 
-#: ../source/features.rst:186
+#: ../source/features.rst:190
 msgid "update his email (in case his account is locked) (*new in 0.6.0*)"
 msgstr ""
 "mettre à jour son adresse électronique (au cas où son compte serait "
 "bloqué) (*nouveau dans la version 0.6.0*)"
 
-#: ../source/features.rst:187
+#: ../source/features.rst:191
 msgid ""
 "reset his password (in case his account is locked) (*new in 0.6.0*). If "
 "email sending is disabled, it is only possible via CLI."
@@ -4378,11 +4388,11 @@ msgstr ""
 "désactivé, cela n'est possible que via l'interface de ligne de commande "
 "(CLI)."
 
-#: ../source/features.rst:188
+#: ../source/features.rst:192
 msgid "delete a user"
 msgstr "supprimer le compte d'un utilisateur"
 
-#: ../source/features.rst:193
+#: ../source/features.rst:197
 msgid ""
 "enable or disable a sport (a sport can be disabled even if workout with "
 "this sport exists)"
@@ -4390,7 +4400,7 @@ msgstr ""
 "activer ou désactiver un sport (un sport peut être désactivé même si une "
 "séance avec ce sport existe)"
 
-#: ../source/features.rst:198
+#: ../source/features.rst:202
 msgid ""
 "FitTrackee is available in the following languages (which can be saved in"
 " the user preferences):"
@@ -4398,43 +4408,43 @@ msgstr ""
 "FitTrackee est disponible dans les langues suivantes (la langue peut être"
 " enregistrée dans les préférences de l'utilisateur) :"
 
-#: ../source/features.rst:200
+#: ../source/features.rst:204
 msgid "English"
 msgstr "Anglais"
 
-#: ../source/features.rst:201
+#: ../source/features.rst:205
 msgid "French (*new in 0.2.3*)"
 msgstr ""
 
-#: ../source/features.rst:202
+#: ../source/features.rst:206
 msgid "German (*new in 0.6.9*)"
 msgstr "Allemand (*nouveau dans la version 0.6.9*)"
 
-#: ../source/features.rst:203
+#: ../source/features.rst:207
 msgid "Dutch (*new in 0.7.8*)"
 msgstr "Néerlandais (*nouveau dans la version 0.7.8*)"
 
-#: ../source/features.rst:204
+#: ../source/features.rst:208
 msgid "Italian (*new in 0.7.10*)"
 msgstr "Italien (*nouveau dans la version 0.7.10*)"
 
-#: ../source/features.rst:205
+#: ../source/features.rst:209
 msgid "Galician (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:206
+#: ../source/features.rst:210
 msgid "Spanish (*new in 0.7.15*)"
 msgstr "Espagnol (*nouveau dans la version 0.7.15*)"
 
-#: ../source/features.rst:207
+#: ../source/features.rst:211
 msgid "Norwegian Bokmål (*new in 0.7.15*)"
 msgstr "Norvégien (Bokmål) (*nouveau dans la version 0.7.15*)"
 
-#: ../source/features.rst:208
+#: ../source/features.rst:212
 msgid "Polish (*new in 0.7.18*)"
 msgstr "Polonais (*nouveau dans la version 0.7.18*)"
 
-#: ../source/features.rst:210
+#: ../source/features.rst:214
 msgid ""
 "Application translations status on `Weblate "
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the "
@@ -4444,11 +4454,11 @@ msgstr ""
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (peut différer de la "
 "version publiée) :"
 
-#: ../source/features.rst:216
+#: ../source/features.rst:220
 msgid "Screenshots"
 msgstr ""
 
-#: ../source/features.rst:219
+#: ../source/features.rst:223
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -4456,7 +4466,7 @@ msgstr "Tableau de bord"
 msgid "FitTrackee Dashboard"
 msgstr "Séance sur FitTrackee"
 
-#: ../source/features.rst:226
+#: ../source/features.rst:230
 msgid "Workout detail"
 msgstr "Page de détail d'une séance"
 
@@ -4464,7 +4474,7 @@ msgstr "Page de détail d'une séance"
 msgid "FitTrackee Workout"
 msgstr "Séance sur FitTrackee"
 
-#: ../source/features.rst:232
+#: ../source/features.rst:236
 msgid "Workouts list"
 msgstr "Liste des séances"
 
