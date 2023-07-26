@@ -85,12 +85,12 @@ export interface IWorkout {
 
 export interface IWorkoutObject {
   ascent: number | null
-  aveSpeed: number
+  aveSpeed: number | null
   descent: number | null
   distance: number
   duration: string
   maxAlt: number | null
-  maxSpeed: number
+  maxSpeed: number | null
   minAlt: number | null
   moving: string
   nextUrl: string | null
