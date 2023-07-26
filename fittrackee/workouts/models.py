@@ -210,8 +210,12 @@ class Workout(BaseModel):
             if self.descent is not None
             else None,
             'ascent': float(self.ascent) if self.ascent is not None else None,
-            'max_speed': float(self.max_speed) if self.max_speed else None,
-            'ave_speed': float(self.ave_speed) if self.ave_speed else None,
+            'max_speed': (
+                float(self.max_speed) if self.max_speed is not None else None
+            ),
+            'ave_speed': (
+                float(self.ave_speed) if self.ave_speed is not None else None
+            ),
             'records': [record.serialize() for record in self.records],
             'segments': [segment.serialize() for segment in self.segments],
             'weather_start': self.weather_start,
