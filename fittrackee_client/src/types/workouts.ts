@@ -55,19 +55,19 @@ export interface IWeather {
 
 export interface IWorkout {
   ascent: number | null
-  ave_speed: number
+  ave_speed: number | null
   bounds: number[]
   creation_date: string
   descent: number | null
-  distance: number
-  duration: string
+  distance: number | null
+  duration: string | null
   id: string
   map: string | null
   max_alt: number | null
-  max_speed: number
+  max_speed: number | null
   min_alt: number | null
   modification_date: string | null
-  moving: string
+  moving: string | null
   next_workout: string | null
   notes: string
   pauses: string | null
@@ -87,12 +87,12 @@ export interface IWorkoutObject {
   ascent: number | null
   aveSpeed: number | null
   descent: number | null
-  distance: number
-  duration: string
+  distance: number | null
+  duration: string | null
   maxAlt: number | null
   maxSpeed: number | null
   minAlt: number | null
-  moving: string
+  moving: string | null
   nextUrl: string | null
   pauses: string | null
   previousUrl: string | null

@@ -12,7 +12,7 @@
         <span class="value">{{ workoutObject.duration }})</span>
       </div>
     </div>
-    <div class="workout-data">
+    <div class="workout-data" v-if="workoutObject.distance !== null">
       <i class="fa fa-road" aria-hidden="true" />
       <span class="label"> {{ $t('workouts.DISTANCE') }} </span>:
       <Distance
