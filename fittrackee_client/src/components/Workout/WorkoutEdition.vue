@@ -345,7 +345,7 @@
     workoutDescent: '',
   })
   const withGpx = ref(
-    props.workout.id ? props.workout.with_gpx : props.isCreation
+    workout.value.id ? workout.value.with_gpx : isCreation.value
   )
   let gpxFile: File | null = null
   const formErrors = ref(false)

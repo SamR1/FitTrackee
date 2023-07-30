@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.7.21 (2023/07/30)
+
+### Bugs Fixed
+
+* [#407](https://github.com/SamR1/FitTrackee/issues/407) - Workout display error when speeds are zero
+
+
+### Misc
+
+* [PR#409](https://github.com/SamR1/FitTrackee/pull/409) - CI - update actions version
+
+
 ## Version 0.7.20 (2023/07/22)
 
 ### Features and enhancements
