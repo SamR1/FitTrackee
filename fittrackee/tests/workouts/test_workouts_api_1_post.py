@@ -1334,6 +1334,39 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['ascent'] == input_ascent
         assert data['data']['workouts'][0]['descent'] == input_descent
 
+    def test_it_adds_workout_with_low_value_for_distance(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=1200,
+                    workout_date='2023-07-26 12:00',
+                    distance=0.001,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['ave_speed'] == 0
+        assert data['data']['workouts'][0]['distance'] == 0.001
+        assert data['data']['workouts'][0]['duration'] == '0:20:00'
+        assert data['data']['workouts'][0]['max_speed'] == 0
+
     @pytest.mark.parametrize(
         'description,input_data',
         [

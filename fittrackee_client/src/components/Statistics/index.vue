@@ -51,7 +51,7 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const selectedSportIds: Ref<number[]> = ref(getSports(props.sports))
+  const selectedSportIds: Ref<number[]> = ref(getSports(sports.value))
 
   function updateTimeFrame(timeFrame: string) {
     selectedTimeFrame.value = timeFrame

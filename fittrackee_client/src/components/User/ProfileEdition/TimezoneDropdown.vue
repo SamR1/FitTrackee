@@ -43,7 +43,7 @@
   const emit = defineEmits(['updateTimezone'])
 
   const { input, disabled } = toRefs(props)
-  const timezone: Ref<string> = ref(props.input)
+  const timezone: Ref<string> = ref(input.value)
   const isOpen: Ref<boolean> = ref(false)
   const tzList: Ref<HTMLInputElement | null> = ref(null)
   const focusItemIndex: Ref<number> = ref(0)

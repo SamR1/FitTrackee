@@ -28,6 +28,7 @@ Workouts
      - Snowshoes (*new in 0.5.2*)
      - Trail (*new in 0.5.0*)
      - Walking
+
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
      - Hiking
      - Mountaineering
@@ -41,6 +42,9 @@ Workouts
 .. note::
   It can be overridden in user preferences.
 
+.. note::
+  Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
+
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
 - Workout creation by uploading a gpx file (related data are stored in database in metric system).
 
@@ -50,7 +54,7 @@ Workouts
 
 - | A workout can even be created without gpx (the user must enter date, time, duration and distance).
   | Ascent and descent can also be provided (*new in 0.7.10*).
-- | A workout with a gpx file can be displayed with map and charts (speed and elevation).
+- | A workout with a gpx file can be displayed with map and charts (speed and elevation (if the gpx file contains elevation data, *updated in 0.7.20*)).
   | Controls allow full screen view and position reset (*new in 0.5.5*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).

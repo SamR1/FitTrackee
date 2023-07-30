@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { IDropdownOption, TDropdownOptions } from '@/types/forms'
@@ -36,6 +36,7 @@
     buttonLabel: string
   }
   const props = defineProps<Props>()
+  const { options } = toRefs(props)
 
   const emit = defineEmits({
     selected: (option: IDropdownOption) => option,
@@ -43,7 +44,7 @@
 
   const route = useRoute()
   const isOpen = ref(false)
-  const dropdownOptions = props.options.map((option) => option)
+  const dropdownOptions = options.value.map((option) => option)
 
   function toggleDropdown() {
     isOpen.value = !isOpen.value
