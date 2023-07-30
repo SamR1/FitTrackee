@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
   import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, computed, ref } from 'vue'
+  import { ComputedRef, computed, ref, toRefs } from 'vue'
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
@@ -77,10 +77,11 @@
 
   const { t } = useI18n()
 
+  const { authUser, workoutData } = toRefs(props)
   const displayDistance = ref(true)
-  const beginElevationAtZero = ref(props.authUser.start_elevation_at_zero)
+  const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-    getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
+    getDatasets(workoutData.value.chartData, t, authUser.value.imperial_units)
   )
   const hasElevation = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0

@@ -36,7 +36,7 @@
     start: startOfMonth(date),
     end: endOfMonth(date),
   }
-  const selectedSportIds = props.sports.map((sport) => sport.id)
+  const selectedSportIds = sports.value.map((sport) => sport.id)
 </script>
 
 <style lang="scss" scoped>
