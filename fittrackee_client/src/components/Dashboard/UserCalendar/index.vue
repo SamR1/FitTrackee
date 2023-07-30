@@ -52,7 +52,7 @@
   const { sports, user } = toRefs(props)
   const dateFormat = 'yyyy-MM-dd'
   const day = ref(new Date())
-  const calendarDates = ref(getCalendarStartAndEnd(day.value, props.user.weekm))
+  const calendarDates = ref(getCalendarStartAndEnd(day.value, user.value.weekm))
   const calendarWorkouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]
   )

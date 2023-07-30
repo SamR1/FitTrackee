@@ -98,6 +98,7 @@
                   {{ $t('workouts.DISTANCE') }}
                 </span>
                 <Distance
+                  v-if="workout.distance !== null"
                   :distance="workout.distance"
                   unitFrom="km"
                   :useImperialUnits="user.imperial_units"
@@ -114,6 +115,7 @@
                   {{ $t('workouts.AVE_SPEED') }}
                 </span>
                 <Distance
+                  v-if="workout.ave_speed !== null"
                   :distance="workout.ave_speed"
                   unitFrom="km"
                   :speed="true"
@@ -125,6 +127,7 @@
                   {{ $t('workouts.MAX_SPEED') }}
                 </span>
                 <Distance
+                  v-if="workout.max_speed !== null"
                   :distance="workout.max_speed"
                   unitFrom="km"
                   :speed="true"
