@@ -130,6 +130,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .application.app_config import config_blueprint  # noqa
     from .comments.comments import comments_blueprint  # noqa
     from .oauth2.routes import oauth2_blueprint  # noqa
+    from .reports.reports import reports_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.follow_requests import follow_requests_blueprint  # noqa
     from .users.notifications import notifications_blueprint  # noqa
@@ -152,6 +153,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(follow_requests_blueprint, url_prefix='/api')
     app.register_blueprint(timeline_blueprint, url_prefix='/api')
     app.register_blueprint(notifications_blueprint, url_prefix='/api')
+    app.register_blueprint(reports_blueprint, url_prefix='/api')
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
