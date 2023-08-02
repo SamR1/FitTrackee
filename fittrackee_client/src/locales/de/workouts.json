@@ -101,5 +101,10 @@
     "WORKOUT_DATE": "Trainingsdatum",
     "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
     "ZIP_ARCHIVE": ".zip Datei",
-    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
+    "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien",
+    "EXIT_FULLSCREEN": "Vollbild verlassen",
+    "DELETE_WORKOUT": "Workout löschen",
+    "DOWNLOAD_WORKOUT": "Workout herunterladen",
+    "RESET_ZOOM": "Zoom zurücksetzen",
+    "VIEW_FULLSCREEN": "Vollbild anzeigen"
 }
