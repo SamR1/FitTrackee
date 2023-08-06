@@ -161,7 +161,7 @@ class TestUserManagerServiceUserUpdate:
         user_manager_service = UserManagerService(username=user_1.username)
         with pytest.raises(
             InvalidEmailException,
-            match='new email must be different than curent email',
+            match='new email must be different than current email',
         ):
             user_manager_service.update(new_email=user_1.email)
 

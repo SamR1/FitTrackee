@@ -508,7 +508,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :statuscode 400:
         - ``invalid payload``
         - ``valid email must be provided``
-        - ``new email must be different than curent email``
+        - ``new email must be different than current email``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
