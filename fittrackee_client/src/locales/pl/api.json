@@ -22,7 +22,7 @@
         "gpx file is invalid": "Plik .gpx jest niepoprawny.",
         "invalid credentials": "Niepoprawne dane logowania.",
         "invalid payload": "Przekazane dane są niepoprawne.",
-        "new email must be different than curent email": "Nowy adres e-mail musi być inny niż aktualny",
+        "new email must be different than current email": "Nowy adres e-mail musi być inny niż aktualny",
         "no file part": "Nie dostarczono pliku.",
         "no selected file": "Nie wybrano pliku.",
         "no tracks in gpx file": "Brak trasy (<trk>) w pliku .gpx.",

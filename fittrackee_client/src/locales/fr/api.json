@@ -20,7 +20,7 @@
         "invalid payload": "Données fournies incorrectes.",
         "invalid token, please log in again": "Jeton de connexion invalide, merci de vous reconnecter.",
         "invalid token, please request a new token": "Jeton de connexion, merci de vous reconnecter.",
-        "new email must be different than curent email": "La nouvelle addresse électronique doit être differente de l'adresse actuelle",
+        "new email must be different than current email": "La nouvelle addresse électronique doit être differente de l'adresse actuelle",
         "no file part": "Pas de fichier fourni.",
         "no selected file": "Pas de fichier sélectionné.",
         "no tracks in gpx file": "Pas de trace (<trk>) dans le fichier .gpx.",
