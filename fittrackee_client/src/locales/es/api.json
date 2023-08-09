@@ -20,7 +20,7 @@
         "invalid payload": "Los datos proporcionados no son válidos.",
         "invalid token, please log in again": "Token no válido, por favor vuelve a iniciar sesión.",
         "invalid token, please request a new token": "Token no válido, inicia sesión de nuevo.",
-        "new email must be different than curent email": "El nuevo email tiene que ser diferente al email actual",
+        "new email must be different than current email": "El nuevo email tiene que ser diferente al email actual",
         "no file part": "Sin fichero.",
         "no selected file": "Sin fichero seleccionado.",
         "no tracks in gpx file": "No hay pista (<trk>) en el archivo .gpx.",

@@ -273,7 +273,7 @@ Emails sent by FitTrackee are:
 
 - account confirmation instructions
 - password reset request
-- email change (to old and new email adresses)
+- email change (to old and new email addresses)
 - password change
 - notification when a data export archive is ready to download (*new in 0.7.13*)
 
@@ -338,7 +338,7 @@ API rate limits
     $ flask limiter
     Usage: flask limiter [OPTIONS] COMMAND [ARGS]...
 
-      Flask-Limiter maintenance & utility commmands
+      Flask-Limiter maintenance & utility commands
 
     Options:
       --help  Show this message and exit.
