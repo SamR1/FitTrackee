@@ -151,3 +151,20 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             'total': reports_pagination.total,
         },
     }, 200
+
+
+@reports_blueprint.route("/reports/<int:report_id>", methods=["GET"])
+@require_auth(scopes=["reports:read"])
+def get_report(
+    auth_user: User, report_id: int
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    report = Report.query.filter_by(id=report_id).first()
+    if not report or (
+        not auth_user.admin and report.reported_by != auth_user.id
+    ):
+        return NotFoundErrorResponse(f"report not found (id: {report_id})")
+
+    return {
+        "status": "success",
+        "report": report.serialize(auth_user),
+    }, 200
