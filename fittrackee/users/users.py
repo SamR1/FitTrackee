@@ -61,6 +61,9 @@ def get_users_list(auth_user: User) -> Dict:
         per_page = 50
     user_column = getattr(User, params.get('order_by', 'username'))
     order = params.get('order', 'asc')
+    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
+    if user_column != 'username':
+        order_clauses.append(User.username.asc())
     with_inactive = params.get('with_inactive', 'false').lower()
     if not auth_user or not auth_user.admin:
         with_inactive = 'false'
@@ -77,7 +80,7 @@ def get_users_list(auth_user: User) -> Dict:
             if with_hidden_users == 'true'
             else User.hide_profile_in_users_directory == False,  # noqa
         )
-        .order_by(asc(user_column) if order == 'asc' else desc(user_column))
+        .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
     )
     users = users_pagination.items

@@ -875,8 +875,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -902,8 +902,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -930,8 +930,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
