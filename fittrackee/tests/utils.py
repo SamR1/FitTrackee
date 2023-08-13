@@ -98,6 +98,7 @@ OAUTH_SCOPES = {
     "notifications:write": False,
     "profile:read": False,
     "profile:write": False,
+    "reports:read": False,
     "reports:write": False,
     "users:read": False,
     "users:write": False,

@@ -16,6 +16,7 @@ VALID_SCOPES = [
     'notifications:write',
     'profile:read',
     'profile:write',
+    'reports:read',
     'reports:write',
     'users:read',
     'users:write',

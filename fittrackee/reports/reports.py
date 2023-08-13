@@ -1,7 +1,7 @@
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
-from sqlalchemy import func
+from sqlalchemy import asc, desc, func, nullslast
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
@@ -21,6 +21,8 @@ from fittrackee.workouts.utils.workouts import get_workout
 from .models import Report
 
 reports_blueprint = Blueprint('reports', __name__)
+
+REPORTS_PER_PAGE = 10
 
 
 @reports_blueprint.route("/reports", methods=["POST"])
@@ -86,3 +88,66 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             status="fail",
             db=db,
         )
+
+
+@reports_blueprint.route("/reports", methods=["GET"])
+@require_auth(scopes=["reports:read"])
+def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+    params = request.args.copy()
+    page = int(params.get("page", 1))
+    object_type = params.get("object_type")
+    resolved = params.get("resolved", "").lower()
+    column = params.get("order_by", "created_at")
+    report_column = getattr(Report, column)
+    order = params.get("order", "desc")
+    order_clauses = [
+        asc(report_column) if order == "asc" else desc(report_column)
+    ]
+    if column == "updated_at":
+        order_clauses = [nullslast(order_clauses[0])]
+    if column != "created_at":
+        order_clauses.append(Report.created_at.desc())
+    reporter_username = params.get("reporter")
+    reporter = (
+        User.query.filter(User.username == reporter_username).first()
+        if params.get("reporter", "")
+        else None
+    )
+
+    reports_pagination = (
+        Report.query.filter(
+            Report.reported_comment_id != None  # noqa
+            if object_type == "comment"
+            else True,
+            Report.reported_user_id != None  # noqa
+            if object_type == "user"
+            else True,
+            Report.reported_workout_id != None  # noqa
+            if object_type == "workout"
+            else True,
+            Report.resolved == True  # noqa
+            if resolved == "true"
+            else Report.resolved == False  # noqa
+            if resolved == "false"
+            else True,
+            Report.reported_by == auth_user.id
+            if auth_user.admin is False
+            else Report.reported_by == reporter.id
+            if reporter
+            else True,
+        )
+        .order_by(*order_clauses)
+        .paginate(page=page, per_page=REPORTS_PER_PAGE, error_out=False)
+    )
+    reports = reports_pagination.items
+    return {
+        "status": "success",
+        "reports": [report.serialize(auth_user) for report in reports],
+        "pagination": {
+            'has_next': reports_pagination.has_next,
+            'has_prev': reports_pagination.has_prev,
+            'page': reports_pagination.page,
+            'pages': reports_pagination.pages,
+            'total': reports_pagination.total,
+        },
+    }, 200

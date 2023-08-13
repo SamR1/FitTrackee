@@ -20,7 +20,7 @@ class TestReportModel(CommentMixin, RandomMixin):
     ) -> None:
         with pytest.raises(InvalidReportException):
             Report(
-                reported_by=user_1,
+                reported_by=user_1.id,
                 note=self.random_string(),
                 object_type=self.random_string(),
                 object_id=self.random_int(),
