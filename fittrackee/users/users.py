@@ -59,10 +59,11 @@ def get_users_list(auth_user: User) -> Dict:
     per_page = int(params.get('per_page', USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
-    user_column = getattr(User, params.get('order_by', 'username'))
+    column = params.get('order_by', 'username')
+    user_column = getattr(User, column)
     order = params.get('order', 'asc')
     order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
-    if user_column != 'username':
+    if column != 'username':
         order_clauses.append(User.username.asc())
     with_inactive = params.get('with_inactive', 'false').lower()
     if not auth_user or not auth_user.admin:
