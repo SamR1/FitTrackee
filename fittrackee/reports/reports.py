@@ -47,6 +47,10 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             return NotFoundErrorResponse(
                 f"comment not found (id: {object_id})"
             )
+        if target_object.user_id == auth_user.id:
+            return InvalidPayloadErrorResponse(
+                "users can not report their own comments"
+            )
 
     elif object_type == "workout":
         try:
@@ -54,6 +58,10 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         except WorkoutForbiddenException:
             return NotFoundErrorResponse(
                 f"workout not found (id: {object_id})"
+            )
+        if target_object.user_id == auth_user.id:
+            return InvalidPayloadErrorResponse(
+                "users can not report their own workouts"
             )
 
     else:  # object_type == "user"
@@ -63,6 +71,10 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         if not target_object or not target_object.is_active:
             return NotFoundErrorResponse(
                 f"user not found (username: {object_id})"
+            )
+        if target_object.id == auth_user.id:
+            return InvalidPayloadErrorResponse(
+                "users can not report their own profile"
             )
     try:
         new_report = Report(
