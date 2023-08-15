@@ -5,11 +5,12 @@ from unittest.mock import patch
 
 import pytest
 from flask import Flask
+from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.reports.models import Report
+from fittrackee.reports.models import Report, ReportComment
 from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
@@ -1333,3 +1334,143 @@ class TestGetReportOAuth2Scopes(GetReportTestCase):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestPatchReport(ReportTestCase):
+    route = "/api/reports/{report_id}"
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.patch(
+            self.route.format(report_id=self.random_int()),
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    comment=self.random_string(),
+                )
+            ),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_has_no_admin_rights(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    comment=self.random_string(),
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_404_when_no_report(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        report_id = self.random_int()
+
+        response = client.patch(
+            self.route.format(report_id=report_id),
+            content_type="application/json",
+            data=json.dumps(dict(comment=self.random_string())),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response, f"report not found (id: {report_id})"
+        )
+
+    def test_it_returns_400_when_comment_is_missing(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            data='{}',
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_adds_a_comment(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        comment = self.random_string()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(report_id=report.id),
+                content_type="application/json",
+                data=json.dumps(dict(comment=comment)),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["report"]["resolved"] is False
+        assert data["report"]["resolved_at"] is None
+        assert data["report"]["updated_at"] == self.get_date_string(date=now)
+        assert len(data["report"]["comments"]) == 1
+        assert data["report"]["comments"][0]["comment"] == comment
+
+    def test_it_resolves_a_report(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        report_comment = ReportComment(
+            comment=self.random_string(),
+            report_id=report.id,
+            user_id=user_1_admin.id,
+        )
+        db.session.add(report_comment)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        comment = self.random_string()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(report_id=report.id),
+                content_type="application/json",
+                data=json.dumps(dict(comment=comment, resolved=True)),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["report"]["resolved"] is True
+        date_string = self.get_date_string(date=now)
+        assert data["report"]["resolved_at"] == date_string
+        assert data["report"]["updated_at"] == date_string
+        assert len(data["report"]["comments"]) == 2
+        assert data["report"]["comments"][1]["comment"] == comment

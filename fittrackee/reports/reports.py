@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
@@ -7,7 +8,6 @@ from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.utils import get_comment
 from fittrackee.oauth2.server import require_auth
-from fittrackee.reports.models import REPORT_OBJECT_TYPES
 from fittrackee.responses import (
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -18,7 +18,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.utils.workouts import get_workout
 
-from .models import Report
+from .models import REPORT_OBJECT_TYPES, Report, ReportComment
 
 reports_blueprint = Blueprint('reports', __name__)
 
@@ -176,6 +176,36 @@ def get_report(
     ):
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
+    return {
+        "status": "success",
+        "report": report.serialize(auth_user),
+    }, 200
+
+
+@reports_blueprint.route("/reports/<int:report_id>", methods=["PATCH"])
+@require_auth(scopes=["reports:write"], as_admin=True)
+def update_report(
+    auth_user: User, report_id: int
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    data = request.get_json()
+    comment = data.get("comment")
+    if not data or not comment:
+        return InvalidPayloadErrorResponse()
+
+    report = Report.query.filter_by(id=report_id).first()
+    if not report:
+        return NotFoundErrorResponse(f"report not found (id: {report_id})")
+
+    new_report_comment = ReportComment(
+        comment=comment, report_id=report_id, user_id=auth_user.id
+    )
+    db.session.add(new_report_comment)
+    now = datetime.utcnow()
+    report.updated_at = now
+    if data.get("resolved") is True:
+        report.resolved = True
+        report.resolved_at = now
+    db.session.commit()
     return {
         "status": "success",
         "report": report.serialize(auth_user),

@@ -86,10 +86,13 @@ class RandomMixin:
 
     @staticmethod
     def get_date_string(
-        date_format: str,
+        *,
+        date_format: Optional[str] = None,
         date: Optional[datetime] = None,
     ) -> str:
-        return get_date_string(date_format, date)
+        return get_date_string(
+            date_format if date_format else '%a, %d %b %Y %H:%M:%S GMT', date
+        )
 
 
 class OAuth2Mixin(RandomMixin):
