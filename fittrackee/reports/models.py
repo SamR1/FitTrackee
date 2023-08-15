@@ -22,6 +22,7 @@ class Report(BaseModel):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=True)
+    resolved_at = db.Column(db.DateTime, nullable=True)
     reported_by = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -102,6 +103,8 @@ class Report(BaseModel):
         report = {
             "created_at": self.created_at,
             "note": self.note,
+            "resolved": self.resolved,
+            "resolved_at": self.resolved_at,
             "reported_by": self.reporter.serialize(current_user),
             "reported_comment": (
                 self.reported_comment.serialize(current_user)
@@ -118,13 +121,12 @@ class Report(BaseModel):
                 if self.reported_workout
                 else None
             ),
-            "resolved": self.resolved,
-            "updated_at": self.updated_at,
         }
         if current_user.admin:
             report["comments"] = [
                 comment.serialize(current_user) for comment in self.comments
             ]
+            report["updated_at"] = self.updated_at
         return report
 
 
