@@ -12,7 +12,8 @@
             "CONTENT": "Poprzez używanie tej strony, wyrażasz zgodę na naszą politykę prywatności."
         },
         "CHANGES_TO_OUR_PRIVACY_POLICY": {
-            "TITLE": "Zmiany w naszej polityce prywatności"
+            "TITLE": "Zmiany w naszej polityce prywatności",
+            "CONTENT": "Jeśli zdecydujemy się zmienić naszą politykę prywatności, umieścimy zmiany na tej stronie.\n\nTen dokument jest na licencji [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Oryginalnie zaczerpnięty z polityki prywatności [Discourse](https://github.com/discourse/discourse)."
         },
         "INFORMATION_DISCLOSURE": {
             "TITLE": "Czy udostępniamy jakieś informacje zewnętrznym instytucjom?"
