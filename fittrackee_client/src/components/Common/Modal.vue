@@ -1,5 +1,5 @@
 <template>
-  <div id="modal" role="dialog">
+  <div id="modal" role="dialog" @click.self="emit('cancelAction')">
     <div class="custom-modal">
       <Card>
         <template #title>
