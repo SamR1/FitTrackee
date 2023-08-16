@@ -1,7 +1,7 @@
 <template>
   <header id="nav">
     <Modal
-      v-show="displayModal"
+      v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
       :message="$t('user.LOGOUT_CONFIRMATION')"
       @confirmAction="logout"
@@ -138,12 +138,6 @@
   }
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
-    if (display) {
-      const button = document.getElementById('modal-cancel-button')
-      if (button) {
-        button.focus()
-      }
-    }
   }
 </script>
 
