@@ -1,1 +1,36 @@
-{ }
+{
+    "ADD_A_NEW_APP": "Dodaj nową aplikację OAuth2",
+    "APP": {
+        "CLIENT_ID": "Identyfikator",
+        "CLIENT_SECRET": "Sekret",
+        "DESCRIPTION": "Opis aplikacji",
+        "ISSUE_AT": "Wydana",
+        "NAME": "Nazwa aplikacji",
+        "REDIRECT_URL": "Adres URL przekierowania",
+        "SCOPE": {
+            "LABEL": "Zakres",
+            "application:write_DESCRIPTION": "nadaje dostęp do zapisu konfiguracji aplikacji.",
+            "profile:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>auth</code>.",
+            "users:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>users</code>.",
+            "workouts:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>workouts</code>.",
+            "profile:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>auth</code>.",
+            "users:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>users</code>.",
+            "workouts:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>workouts</code>."
+        },
+        "URL": "Adres URL aplikacji"
+    },
+    "APPS_LIST": "Aplikacje OAuth2",
+    "TOKENS_REVOKED": "Wszystkie istniejące powiązane tokeny zostały odwołane.",
+    "DELETE_APP": "Usuń aplikację",
+    "NO_APP": "Aplikacja nie znaleziona!",
+    "NEW_APP": "Dodaj aplikację",
+    "APP_DELETION_CONFIRMATION": "Czy na pewno chcesz usunąć tę aplikację?",
+    "COPY_TO_CLIPBOARD": "skopiuj do schowka",
+    "NO_APPS": "brak aplikacji",
+    "NO_DESCRIPTION": "bez opisu",
+    "AUTHORIZE_APP": "Zezwolić {0} by używała twojego konta?",
+    "APP_CREATED_SUCCESSFULLY": "Aplikacja pomyślnie utworzona. Upewnij się teraz, aby skopiować sekret. On już się więcej nie wyświetli.",
+    "APP_REQUESTING_ACCESS": "Aplikacja {0} wnioskuje o:",
+    "TOKENS_REVOCATION_CONFIRMATION": "Czy na pewno odwołać wszystkie tokeny?",
+    "REVOKE_ALL_TOKENS": "Odwołaj wszystkie tokeny"
+}
