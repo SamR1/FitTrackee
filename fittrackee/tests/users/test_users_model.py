@@ -471,7 +471,7 @@ class TestUserModelToken:
     ) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         now = datetime.utcnow()
-        with freeze_time(now + timedelta(seconds=11)):
+        with freeze_time(now + timedelta(seconds=61)):
             assert (
                 User.decode_auth_token(auth_token)
                 == 'signature expired, please log in again'
