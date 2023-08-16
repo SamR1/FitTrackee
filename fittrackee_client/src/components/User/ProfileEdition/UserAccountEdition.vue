@@ -2,7 +2,6 @@
   <div id="user-infos-edition">
     <Modal
       v-if="displayModal"
-      name="account"
       :title="$t('common.CONFIRMATION')"
       :message="$t('user.CONFIRM_ACCOUNT_DELETION')"
       @confirmAction="deleteAccount(user.username)"
@@ -215,12 +214,6 @@
   }
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
-    if (displayModal.value) {
-      const button = document.getElementById('account-cancel-button')
-      if (button) {
-        button.focus()
-      }
-    }
   }
   function deleteAccount(username: string) {
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })

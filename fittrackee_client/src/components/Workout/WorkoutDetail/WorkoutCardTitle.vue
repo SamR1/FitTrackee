@@ -45,13 +45,13 @@
           <button
             id="delete-workout-button"
             class="transparent icon-button"
-            @click="displayDeleteModal"
+            @click.prevent="displayDeleteModal"
             :aria-label="$t(`workouts.DELETE_WORKOUT`)"
           >
             <i class="fa fa-trash" aria-hidden="true" />
           </button>
         </div>
-        <div class="workout-title" v-else>
+        <div class="workout-title" v-else-if="workoutObject.segmentId">
           {{ workoutObject.title }}
           <span class="workout-segment">
             —
@@ -69,7 +69,7 @@
               v-if="workoutObject.type === 'SEGMENT'"
               :to="{
                 name: 'Workout',
-                params: { workoutId: workoutObject.workoutId }
+                params: { workoutId: workoutObject.workoutId },
               }"
             >
               > {{ $t('workouts.BACK_TO_WORKOUT') }}
@@ -129,8 +129,7 @@
         gpxLink.click()
       })
   }
-  function displayDeleteModal(event: Event & { target: HTMLInputElement }) {
-    event.target.blur()
+  function displayDeleteModal() {
     emit('displayModal', true)
   }
 </script>

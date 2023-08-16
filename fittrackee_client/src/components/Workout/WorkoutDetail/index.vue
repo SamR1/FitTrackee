@@ -2,7 +2,6 @@
   <div class="workout-detail">
     <Modal
       v-if="displayModal"
-      name="workout"
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUT_DELETION_CONFIRMATION')"
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
@@ -37,7 +36,6 @@
     ComputedRef,
     Ref,
     computed,
-    nextTick,
     ref,
     toRefs,
     watch,
@@ -164,21 +162,9 @@
   }
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
-    if (displayModal.value) {
-      nextTick(() => {
-        const button = document.getElementById('workout-cancel-button')
-        if (button) {
-          button.focus()
-        }
-      })
-    }
   }
   function cancelDelete() {
     updateDisplayModal(false)
-    const button = document.getElementById('delete-workout-button')
-    if (button) {
-      button.focus()
-    }
   }
   function deleteWorkout(workoutId: string) {
     updateDisplayModal(false)

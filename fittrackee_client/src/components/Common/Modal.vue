@@ -16,14 +16,15 @@
           <div class="modal-buttons">
             <button
               class="confirm"
+              id="confirm-button"
               v-if="!errorMessages"
               @click="emit('confirmAction')"
             >
               {{ $t('buttons.YES') }}
             </button>
             <button
-              :tabindex="0"
-              :id="`${name}-cancel-button`"
+              tabindex="0"
+              id="cancel-button"
               class="cancel"
               @click="emit('cancelAction')"
             >
@@ -37,7 +38,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs, withDefaults, onUnmounted } from 'vue'
+  import {
+    ComputedRef,
+    computed,
+    onUnmounted,
+    onMounted,
+    toRefs,
+    withDefaults,
+  } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
@@ -46,11 +54,9 @@
     title: string
     message: string
     strongMessage?: string | null
-    name?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => null,
-    name: 'modal',
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
@@ -61,7 +67,35 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
+  let confirmButton: HTMLElement | null = null
+  let cancelButton: HTMLElement | null = null
+  let previousFocusedElement: Element | null = null
+
+  function focusTrap(e: KeyboardEvent) {
+    if (e.key === 'Tab' || e.keyCode === 9) {
+      e.preventDefault()
+      if (document.activeElement?.id === 'cancel-button') {
+        confirmButton?.focus()
+      } else {
+        cancelButton?.focus()
+      }
+    }
+  }
+
+  onMounted(() => {
+    previousFocusedElement = document.activeElement
+    cancelButton = document.getElementById('cancel-button')
+    confirmButton = document.getElementById('confirm-button')
+    if (cancelButton) {
+      cancelButton.focus()
+    }
+    document.addEventListener('keydown', focusTrap)
+  })
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    document.removeEventListener('keydown', focusTrap)
+    previousFocusedElement?.focus()
+  })
 </script>
 
 <style lang="scss" scoped>
