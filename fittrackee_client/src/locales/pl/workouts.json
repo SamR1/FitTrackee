@@ -16,7 +16,25 @@
         },
         "HUMIDITY": "wilgotność",
         "TEMPERATURE": "temperatura",
-        "WIND": "wiatr"
+        "WIND": "wiatr",
+        "WIND_DIRECTIONS": {
+            "E": "Wsch.",
+            "ENE": "Wsch.-Płn.-Wsch.",
+            "NW": "Płn.-Zach.",
+            "S": "Płd.",
+            "SE": "Płd.-Wsch.",
+            "SSE": "Płd.-Płd.-Wsch.",
+            "ESE": "Wsch.-Płd.-Wsch.",
+            "N": "Płn.",
+            "NE": "Płn.-Wsch.",
+            "NNE": "Płn.-Płn.-Wsch.",
+            "NNW": "Płn.-Płn.-Zach.",
+            "SSW": "Płd.-Płd.-Zach.",
+            "SW": "Płd.-Zach.",
+            "W": "Zach.",
+            "WNW": "Zach.-Płn.-Zach.",
+            "WSW": "Zach.-Płd.-Zach."
+        }
     },
     "ADD_WORKOUT": "Dodaj trening",
     "ANALYSIS": "analiza",
