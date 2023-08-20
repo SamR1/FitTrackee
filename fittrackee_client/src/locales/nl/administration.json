@@ -59,7 +59,8 @@
         "TABLE": {
             "ADD_ADMIN_RIGHTS": "Admin rechten toevoegen",
             "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
-        }
+        },
+        "TITLE": "Administratie - Gebruikers"
     },
     "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt."
 }
