@@ -51,7 +51,7 @@
             <i class="fa fa-trash" aria-hidden="true" />
           </button>
         </div>
-        <div class="workout-title" v-else-if="workoutObject.segmentId">
+        <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
           {{ workoutObject.title }}
           <span class="workout-segment">
             —
