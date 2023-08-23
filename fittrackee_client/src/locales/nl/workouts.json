@@ -97,9 +97,14 @@
     },
     "WITHOUT_GPX": "zonder .gpx bestand",
     "WITH_GPX": "met .gpx bestand",
-    "WORKOUT": "training | trainingen",
-    "WORKOUT_DATE": "datum training",
-    "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze training wilt verwijderen?",
+    "WORKOUT": "workout | workouts",
+    "WORKOUT_DATE": "datum workout",
+    "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze workout wilt verwijderen?",
     "ZIP_ARCHIVE": ".zip bestand",
-    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden"
+    "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden",
+    "EXIT_FULLSCREEN": "Verlaat volledig scherm",
+    "DELETE_WORKOUT": "Verwijder de workout",
+    "RESET_ZOOM": "Reset zoomniveau",
+    "DOWNLOAD_WORKOUT": "Download de workout",
+    "VIEW_FULLSCREEN": "Volledig scherm"
 }

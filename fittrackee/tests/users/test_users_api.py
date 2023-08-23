@@ -1249,7 +1249,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         self.assert_400(
-            response, 'new email must be different than curent email'
+            response, 'new email must be different than current email'
         )
 
     def test_it_does_not_send_email_when_error_on_updating_email(

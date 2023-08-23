@@ -1,5 +1,38 @@
 # Change log
 
+## Version 0.7.22 (2023/08/23)
+
+
+### Bugs Fixed
+
+* [PR#411](https://github.com/SamR1/FitTrackee/pull/411) - Fix various typos
+* [PR#416](https://github.com/SamR1/FitTrackee/pull/416) - fix modal navigation and closing
+
+
+### Translations
+
+* [PR#410](https://github.com/SamR1/FitTrackee/pull/410) - Translations update (German)
+* [PR#415](https://github.com/SamR1/FitTrackee/pull/415) - Translations update (Polish)
+* [PR#417](https://github.com/SamR1/FitTrackee/pull/417) - Translations update (Polish)
+* [PR#418](https://github.com/SamR1/FitTrackee/pull/418) - Translations update (Dutch)
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 85%
+- Norwegian Bokmål: 35%
+- Polish: 100%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @bjornclauw
+- @qwerty287
+- Mariusz
+
+
 ## Version 0.7.21 (2023/07/30)
 
 ### Bugs Fixed

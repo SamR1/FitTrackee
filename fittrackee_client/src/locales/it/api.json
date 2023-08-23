@@ -16,7 +16,7 @@
         "invalid payload": "I dati inseriti non sono validi.",
         "invalid token, please log in again": "Token scaduto, per favore ripeti il log in.",
         "invalid token, please request a new token": "Token scaduto, per favore ripeti il log in.",
-        "new email must be different than curent email": "La nuova email dev'essere diversa dalla vecchia mail",
+        "new email must be different than current email": "La nuova email dev'essere diversa dalla vecchia mail",
         "no file part": "Nessun file scelto.",
         "no selected file": "Nessun file scelto.",
         "password: password and password confirmation do not match": "Password: la password inserita e la conferma non combaciano.",

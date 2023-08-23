@@ -135,5 +135,8 @@
     "USERNAME": "Gebruikersnaam",
     "USERNAME_INFO": "3 tot 30 karakters vereist, enkel alfanumerieke karakters en het underscore karakter \"_\" zijn toegestaan.",
     "USER_PICTURE": "gebruikersafbeelding",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard."
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard.",
+    "ACCOUNT_CONFIRMATION": "Account bevestigen",
+    "LOGOUT_CONFIRMATION": "Zeker dat u wilt uitloggen?",
+    "EMAIL_UPDATE": "Update email"
 }
