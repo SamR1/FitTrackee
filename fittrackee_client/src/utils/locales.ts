@@ -17,15 +17,15 @@ export const localeFromLanguage: Record<string, Locale> = {
 }
 
 export const languageLabels: Record<string, string> = {
-  de: 'Deutsch (97%)',
+  de: 'Deutsch',
   en: 'English',
   es: 'Español',
   fr: 'Français',
   gl: 'Galego',
   it: 'Italiano (85%)',
   nb: 'Norsk bokmål (35%)',
-  nl: 'Nederlands (97%)',
-  pl: 'Polski (56%)',
+  nl: 'Nederlands',
+  pl: 'Polski',
 }
 
 const { availableLocales } = createI18n.global

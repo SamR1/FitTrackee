@@ -1,13 +1,13 @@
 <!doctype html>
-<html class="no-js" lang="fr">
+<html class="no-js" lang="fr" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.1 and Furo 2023.07.26 -->
-        <title>Installation - Documentation FitTrackee 0.7.21</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b76e3c8a" />
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
+        <title>Installation - Documentation FitTrackee 0.7.22</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.21
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.22
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.21
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.22
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -559,7 +559,7 @@
 <p><span class="versionmodified added">Nouveau dans la version 0.4.9.</span></p>
 </div>
 <div class="line-block">
-<div class="line">Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le serveur de tuile par défaut est conservé pour générer les images statiques de cartes (serveur de tuiles Komoot.de).</div>
+<div class="line">Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le serveur de tuile par défaut de <strong>staticmap</strong> est conservé pour générer les images statiques de cartes (serveur de tuiles OSM depuis la version 0.5.6 de <strong>staticmap</strong> (celui de Komoot.de avant cette version)).</div>
 <div class="line">Sinon, le serveur de tuiles configuré dans <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a> sera utilisé.</div>
 </div>
 <div class="versionchanged">
@@ -701,7 +701,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>limiter
 Usage:<span class="w"> </span>flask<span class="w"> </span>limiter<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
-<span class="w">  </span>Flask-Limiter<span class="w"> </span>maintenance<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>utility<span class="w"> </span>commmands
+<span class="w">  </span>Flask-Limiter<span class="w"> </span>maintenance<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>utility<span class="w"> </span>commands
 
 Options:
 <span class="w">  </span>--help<span class="w">  </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
@@ -882,11 +882,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.21) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.22) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.21.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.21.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.21<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.22<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1008,11 +1008,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.21) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.22) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.21.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.21.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.21/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.22/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1368,7 +1368,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2deffdcf"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1a1777a5"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

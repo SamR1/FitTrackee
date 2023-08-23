@@ -216,7 +216,7 @@ deployment method.
 
     .. versionadded:: 0.4.9
 
-    | If ``True``, it keeps using default tile server to generate static maps (Komoot.de tile server).
+    | If ``True``, it keeps using **staticmap** default tile server to generate static maps (OSM tile server since **staticmap** 0.5.6 (Komoot.de tile server before this version)).
     | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
 
     .. versionchanged:: 0.6.10
@@ -505,13 +505,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.21):
+-  Download the last release (for now, it is the release v0.7.22):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.21.tar.gz
-   $ tar -xzf v0.7.21.tar.gz
-   $ mv FitTrackee-0.7.21 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
+   $ tar -xzf v0.7.22.tar.gz
+   $ mv FitTrackee-0.7.22 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -635,13 +635,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.21) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.22) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.21.tar.gz
-   $ tar -xzf v0.7.21.tar.gz
-   $ cp -R FitTrackee-0.7.21/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
+   $ tar -xzf v0.7.22.tar.gz
+   $ cp -R FitTrackee-0.7.22/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
