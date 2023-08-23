@@ -1757,7 +1757,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             assert len(data['data']['workouts']) == 3
             assert 'creation_date' in data['data']['workouts'][0]
             assert (
-                'Tue, 13 Mar 2018 12:44:45 GMT'
+                'Wed, 14 Mar 2018 12:44:45 GMT'
                 == data['data']['workouts'][0]['workout_date']
             )
             assert data['data']['workouts'][0]['user'] == jsonify_dict(

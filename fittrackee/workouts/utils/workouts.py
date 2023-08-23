@@ -13,11 +13,20 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
+from fittrackee.privacy_levels import (
+    PrivacyLevel,
+    can_view,
+    get_map_visibility,
+)
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.utils import decode_short_id
 
 from ..constants import WORKOUT_DATE_FORMAT
-from ..exceptions import InvalidGPXException, WorkoutException
+from ..exceptions import (
+    InvalidGPXException,
+    WorkoutException,
+    WorkoutForbiddenException,
+)
 from ..models import Sport, Workout, WorkoutSegment
 from .gpx import get_gpx_info
 from .maps import generate_map, get_map_hash
@@ -516,3 +525,16 @@ def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
     return sorted(
         workouts, key=lambda workout: workout.workout_date, reverse=True
     )[:limit]
+
+
+def get_workout(workout_short_id: str, auth_user: Optional[User]) -> Workout:
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter(
+        Workout.uuid == workout_uuid,
+        Workout.user_id.not_in(auth_user.get_blocked_by_user_ids())
+        if auth_user
+        else True,
+    ).first()
+    if not workout or not can_view(workout, 'workout_visibility', auth_user):
+        raise WorkoutForbiddenException()
+    return workout

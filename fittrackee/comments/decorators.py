@@ -1,11 +1,10 @@
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Optional
 
-from fittrackee.privacy_levels import can_view
 from fittrackee.responses import ForbiddenErrorResponse, NotFoundErrorResponse
-from fittrackee.utils import decode_short_id
 
-from .models import Comment
+from .exceptions import CommentForbiddenException
+from .utils import get_comment
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User
@@ -18,25 +17,14 @@ def check_workout_comment(check_owner: bool = True) -> Callable:
             *args: Any, **kwargs: Any
         ) -> Callable:
             auth_user: Optional['User'] = args[0]
-            comment_short_id = kwargs["comment_short_id"]
+            comment_short_id: str = kwargs["comment_short_id"]
 
-            workout_comment_uuid = decode_short_id(comment_short_id)
-            comment = Comment.query.filter(
-                Comment.uuid == workout_comment_uuid,
-                Comment.user_id.not_in(
-                    auth_user.get_blocked_user_ids()
-                    + auth_user.get_blocked_by_user_ids()
-                )
-                if auth_user
-                else True,
-            ).first()
-            if not comment or not can_view(
-                comment, "text_visibility", auth_user
-            ):
+            try:
+                comment = get_comment(comment_short_id, auth_user)
+            except CommentForbiddenException:
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )
-
             if check_owner and (
                 not auth_user or auth_user.id != comment.user.id
             ):

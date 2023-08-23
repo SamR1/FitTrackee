@@ -663,7 +663,7 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                     ),
                 )
 
-        workouts = Workout.query.all()
+        workouts = Workout.query.order_by(Workout.workout_date.desc()).all()
         for workout in workouts[:max_workouts_to_send]:
             assert workout.ap_id == (
                 f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'

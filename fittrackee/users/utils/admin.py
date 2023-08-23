@@ -50,7 +50,7 @@ class UserManagerService:
             raise InvalidEmailException('valid email must be provided')
         if user.email == new_email:
             raise InvalidEmailException(
-                'new email must be different than curent email'
+                'new email must be different than current email'
             )
         if with_confirmation:
             user.email_to_confirm = new_email

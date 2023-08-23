@@ -88,8 +88,12 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     per_page = int(params.get('per_page', USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
-    user_column = getattr(User, params.get('order_by', 'username'))
+    column = params.get('order_by', 'username')
+    user_column = getattr(User, column)
     order = params.get('order', 'asc')
+    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
+    if column != 'username':
+        order_clauses.append(User.username.asc())
     with_inactive = params.get('with_inactive', 'false').lower()
     if not auth_user or not auth_user.admin:
         with_inactive = 'false'
@@ -107,7 +111,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             if with_hidden_users == 'true' or remote
             else User.hide_profile_in_users_directory == False,  # noqa
         )
-        .order_by(asc(user_column) if order == 'asc' else desc(user_column))
+        .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
     )
     users = users_pagination.items
@@ -712,7 +716,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :statuscode 400:
         - ``invalid payload``
         - ``valid email must be provided``
-        - ``new email must be different than curent email``
+        - ``new email must be different than current email``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
