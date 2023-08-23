@@ -2,7 +2,6 @@
   <div id="user-infos" class="description-list">
     <Modal
       v-if="displayModal"
-      name="user"
       :title="$t('common.CONFIRMATION')"
       :message="
         displayModal === 'delete'
@@ -207,10 +206,6 @@
   function updateDisplayModal(value: string) {
     displayModal.value = value
     if (value !== '') {
-      const button = document.getElementById('user-cancel-button')
-      if (button) {
-        button.focus()
-      }
       store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.7.21",
+  "version": "0.7.22",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,7 +11,7 @@
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
   },
   "dependencies": {
-    "@tmcw/togeojson": "^5.7.0",
+    "@tmcw/togeojson": "^5.8.1",
     "@vue-leaflet/vue-leaflet": "0.9.0",
     "@zxcvbn-ts/core": "^3.0.1",
     "@zxcvbn-ts/language-common": "^3.0.3",
@@ -22,9 +22,9 @@
     "@zxcvbn-ts/language-it": "^3.0.1",
     "@zxcvbn-ts/language-pl": "^3.0.1",
     "axios": "^1.4.0",
-    "chart.js": "^4.3.2",
+    "chart.js": "^4.3.3",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "core-js": "^3.32.0",
+    "core-js": "^3.32.1",
     "date-fns": "2.29.3",
     "date-fns-tz": "^2.0.0",
     "leaflet": "^1.9.4",
@@ -61,13 +61,13 @@
     "@vue/test-utils": "^2.4.1",
     "chai": "^4.3.7",
     "eslint": "8.42.0",
-    "eslint-config-prettier": "^8.9.0",
-    "eslint-import-resolver-typescript": "^3.5.5",
-    "eslint-plugin-import": "^2.28.0",
+    "eslint-config-prettier": "^8.10.0",
+    "eslint-import-resolver-typescript": "^3.6.0",
+    "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.16.0",
+    "eslint-plugin-vue": "^9.17.0",
     "prettier": "^2.8.8",
-    "sass": "^1.64.1",
+    "sass": "^1.66.1",
     "sass-loader": "^13.3.2",
     "typescript": "5.0.4",
     "vue-cli-plugin-i18n": "~2.3.2"

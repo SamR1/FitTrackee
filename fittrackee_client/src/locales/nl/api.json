@@ -20,7 +20,7 @@
         "invalid payload": "Ingegeven data is ongeldig.",
         "invalid token, please log in again": "Ongeldige token, log opnieuw in.",
         "invalid token, please request a new token": "Ongeldige token, log opnieuw in.",
-        "new email must be different than curent email": "Het nieuwe email adres dient te verschillen van het oude",
+        "new email must be different than current email": "Het nieuwe email adres dient te verschillen van het oude",
         "no file part": "Geen bestand opgegeven.",
         "no selected file": "Geen bestand geselecteerd.",
         "no tracks in gpx file": "Geen route (<trk>) aanwezig in het .gpx bestand.",

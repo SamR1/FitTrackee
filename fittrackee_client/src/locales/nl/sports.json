@@ -40,5 +40,11 @@
     },
     "Walking": {
         "LABEL": "Wandelen"
+    },
+    "Open Water Swimming": {
+        "LABEL": "Zwemmen (open water)"
+    },
+    "Paragliding": {
+        "LABEL": "Paragliden"
     }
 }
