@@ -156,11 +156,11 @@ class TestGetOrderedWorkouts:
         self,
         app: Flask,
     ) -> None:
-        ordered_workouts = get_ordered_workouts([], limit=3)
+        ordered_workouts = get_ordered_workouts([])
 
         assert ordered_workouts == []
 
-    def test_it_returns_last_workouts_depending_on_limit(
+    def test_it_returns_workouts_ordered_by_workout_date_descending(
         self,
         app: Flask,
         user_1: User,
@@ -168,28 +168,14 @@ class TestGetOrderedWorkouts:
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
     ) -> None:
-        ordered_workouts = get_ordered_workouts(seven_workouts_user_1, limit=3)
+        ordered_workouts = get_ordered_workouts(seven_workouts_user_1)
 
         assert ordered_workouts == [
             seven_workouts_user_1[6],
             seven_workouts_user_1[5],
             seven_workouts_user_1[3],
-        ]
-
-    def test_it_returns_all_workouts_when_below_limit(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        ordered_workouts = get_ordered_workouts(
-            [workout_cycling_user_1, workout_running_user_1], limit=3
-        )
-
-        assert ordered_workouts == [
-            workout_running_user_1,
-            workout_cycling_user_1,
+            seven_workouts_user_1[4],
+            seven_workouts_user_1[2],
+            seven_workouts_user_1[1],
+            seven_workouts_user_1[0],
         ]

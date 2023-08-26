@@ -521,10 +521,10 @@ def get_average_speed(
     )
 
 
-def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
+def get_ordered_workouts(workouts: List[Workout]) -> List[Workout]:
     return sorted(
         workouts, key=lambda workout: workout.workout_date, reverse=True
-    )[:limit]
+    )
 
 
 def get_workout(workout_short_id: str, auth_user: Optional[User]) -> Workout:

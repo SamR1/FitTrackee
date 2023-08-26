@@ -1039,16 +1039,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     }
 
     try:
-        new_workouts = process_files(
-            auth_user, workout_data, workout_file, folders
+        new_workouts = get_ordered_workouts(
+            process_files(auth_user, workout_data, workout_file, folders)
         )
         if len(new_workouts) > 0:
             if sending_activities_allowed(
                 workout_data.get('workout_visibility')
             ):
-                workouts_to_send = get_ordered_workouts(
-                    new_workouts, limit=MAX_WORKOUTS_TO_SEND
-                )
+                workouts_to_send = new_workouts[:MAX_WORKOUTS_TO_SEND]
                 for new_workout in workouts_to_send:
                     handle_workout_activities(
                         new_workout, activity_type='Create'
