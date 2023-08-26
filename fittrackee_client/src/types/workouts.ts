@@ -162,7 +162,7 @@ export interface IWorkoutApiChartData {
 }
 
 export interface ICurrentCommentEdition {
-  type: string
+  type?: string
   comment?: IComment
 }
 
@@ -200,6 +200,7 @@ export interface IComment {
   id: string
   liked: boolean
   likes_count: number
+  mentions: IUserProfile[]
   modification_date: string | null
   replies: IComment[]
   text: string

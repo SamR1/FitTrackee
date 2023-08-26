@@ -212,8 +212,6 @@
         padding: 0 $default-padding * 0.3;
       }
       .icon-button {
-        cursor: pointer;
-        padding: 0;
         margin-left: 2px;
       }
     }

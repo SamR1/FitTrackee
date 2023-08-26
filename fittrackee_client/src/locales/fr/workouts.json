@@ -7,8 +7,11 @@
     "BACK_TO_WORKOUT": "revenir à la séance",
     "COMMENTS": {
         "ADD": "ajouter un commentaire",
+        "EDIT": "modifier le commentaire",
+        "DELETE": "supprimer le commentaire",
         "DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer ce commentaire ?",
         "LABEL": "commentaire | commentaires",
+        "LIKE": "liker le commentaire",
         "NO_COMMENTS": "Pas de commentaires"
     },
     "DATE": "date",

@@ -42,47 +42,61 @@
           :visibility="comment.text_visibility"
           :is-comment="true"
         />
-        <i
-          class="fa fa-edit comment-action"
+        <button
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
-          aria-hidden="true"
+          class="transparent icon-button"
           @click="() => displayCommentEdition('edit')"
-        />
-        <i
-          class="fa fa-trash comment-action"
+        >
+          <i class="fa fa-edit" aria-hidden="true" />
+          <span class="visually-hidden">
+            {{ $t('workouts.COMMENTS.EDIT') }}
+          </span>
+        </button>
+        <button
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
-          aria-hidden="true"
+          class="transparent icon-button"
           @click="deleteComment(comment)"
-        />
-        <span class="likes">
+        >
+          <i class="fa fa-trash" aria-hidden="true" />
+          <span class="visually-hidden">
+            {{ $t('workouts.COMMENTS.DELETE') }}
+          </span>
+        </button>
+        <button
+          class="transparent icon-button likes"
+          @click="forNotification ? null : updateLike(comment)"
+          :disabled="forNotification"
+        >
           <i
-            class="fa comment-action"
+            class="fa"
             :class="{
-              disabled: forNotification,
               'fa-heart': comment.liked,
               'fa-heart-o': !comment.liked,
             }"
-            @click="forNotification ? null : updateLike(comment)"
+            aria-hidden="true"
           />
+          <span class="visually-hidden">
+            {{ $t('workouts.COMMENTS.LIKE') }}
+          </span>
           <span class="likes-count" v-if="comment.likes_count > 0">
             {{ comment.likes_count }}
           </span>
-        </span>
-        <i
-          class="fa fa-comment-o comment-action"
+        </button>
+        <button
           v-if="displayCommentIcon()"
+          class="transparent icon-button"
           @click="() => displayCommentEdition('add')"
-        />
+        >
+          <i class="fa fa-comment-o" aria-hidden="true" />
+          <span class="visually-hidden">
+            {{ $t('workouts.COMMENTS.ADD') }}
+          </span>
+        </button>
       </div>
       <span
         v-if="!isCommentEdited()"
         class="comment-text"
-        :class="{
-          highlight:
-            comment.id === paramsCommentId ||
-            (currentCommentEdition.type === 'delete' &&
-              currentCommentEdition.comment.id === comment.id),
-        }"
+        :class="{ highlight: highlighted }"
         v-html="linkifyAndClean(comment.text_html)"
       />
       <WorkoutCommentEdition
@@ -137,15 +151,15 @@
 
   interface Props {
     comment: IComment
-    workout?: IWorkout
+    workout?: IWorkout | null
     authUser: IAuthUserProfile
     commentsLoading: string | null
-    currentCommentEdition?: ICurrentCommentEdition
+    currentCommentEdition?: ICurrentCommentEdition | null
     forNotification?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    currentCommentEdition: {},
+    currentCommentEdition: null,
     forNotification: false,
     workout: null,
   })
@@ -161,8 +175,14 @@
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
-  const paramsCommentId: ComputedRef<string | null> = computed(
+  const paramsCommentId: ComputedRef<string | string[] | null> = computed(
     () => route.params.commentId
+  )
+  const highlighted: ComputedRef<boolean> = computed(
+    () =>
+      comment.value.id === paramsCommentId.value ||
+      (currentCommentEdition.value?.type === 'delete' &&
+        currentCommentEdition.value?.comment?.id === comment.value.id)
   )
 
   function isCommentOwner(
@@ -173,14 +193,14 @@
   }
   function isCommentEdited() {
     return (
-      currentCommentEdition.value.type === 'edit' &&
-      currentCommentEdition.value.comment.id === comment.value.id
+      currentCommentEdition.value?.type === 'edit' &&
+      currentCommentEdition.value?.comment?.id === comment.value.id
     )
   }
   function isNewReply() {
     return (
-      currentCommentEdition.value.type === 'add' &&
-      currentCommentEdition.value.comment.id === comment.value.id
+      currentCommentEdition.value?.type === 'add' &&
+      currentCommentEdition.value?.comment?.id === comment.value.id
     )
   }
   function displayCommentIcon() {
@@ -190,10 +210,10 @@
       !forNotification.value
     )
   }
-  function deleteComment() {
+  function deleteComment(commentToDelete: IComment) {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
       type: 'delete',
-      comment: comment.value,
+      comment: commentToDelete,
     })
   }
   function displayCommentEdition(actionType: string) {
@@ -261,11 +281,11 @@
         .comment-date:hover {
           text-decoration: underline;
         }
-        .fa-trash,
-        .fa-comment-o,
-        .fa-heart,
-        .fa-heart-o {
-          padding-bottom: 3px;
+        .icon-button {
+          line-height: 15px;
+        }
+        .fa-edit {
+          margin-bottom: -3px;
         }
         .fa-heart,
         .fa-heart-o {
@@ -273,9 +293,6 @@
         }
         .fa-heart {
           color: #ee2222;
-        }
-        .fa-edit {
-          padding-bottom: 2px;
         }
         ::v-deep(.fa-users) {
           font-size: 0.8em;
@@ -297,12 +314,6 @@
         .likes-count {
           padding-left: $default-padding * 0.3;
           font-size: 0.8em;
-        }
-      }
-      .comment-action:hover {
-        cursor: pointer;
-        &.disabled {
-          cursor: default;
         }
       }
     }
