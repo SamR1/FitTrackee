@@ -12,6 +12,7 @@
         "DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer ce commentaire ?",
         "LABEL": "commentaire | commentaires",
         "LIKE": "liker le commentaire",
+        "LIKES": "like | likes",
         "NO_COMMENTS": "Pas de commentaires"
     },
     "DATE": "date",

@@ -42,56 +42,6 @@
           :visibility="comment.text_visibility"
           :is-comment="true"
         />
-        <button
-          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
-          class="transparent icon-button"
-          @click="() => displayCommentEdition('edit')"
-        >
-          <i class="fa fa-edit" aria-hidden="true" />
-          <span class="visually-hidden">
-            {{ $t('workouts.COMMENTS.EDIT') }}
-          </span>
-        </button>
-        <button
-          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
-          class="transparent icon-button"
-          @click="deleteComment(comment)"
-        >
-          <i class="fa fa-trash" aria-hidden="true" />
-          <span class="visually-hidden">
-            {{ $t('workouts.COMMENTS.DELETE') }}
-          </span>
-        </button>
-        <button
-          class="transparent icon-button likes"
-          @click="forNotification ? null : updateLike(comment)"
-          :disabled="forNotification"
-        >
-          <i
-            class="fa"
-            :class="{
-              'fa-heart': comment.liked,
-              'fa-heart-o': !comment.liked,
-            }"
-            aria-hidden="true"
-          />
-          <span class="visually-hidden">
-            {{ $t('workouts.COMMENTS.LIKE') }}
-          </span>
-          <span class="likes-count" v-if="comment.likes_count > 0">
-            {{ comment.likes_count }}
-          </span>
-        </button>
-        <button
-          v-if="displayCommentIcon()"
-          class="transparent icon-button"
-          @click="() => displayCommentEdition('add')"
-        >
-          <i class="fa fa-comment-o" aria-hidden="true" />
-          <span class="visually-hidden">
-            {{ $t('workouts.COMMENTS.ADD') }}
-          </span>
-        </button>
       </div>
       <span
         v-if="!isCommentEdited()"
@@ -107,6 +57,57 @@
         :name="`text-${comment.id}`"
         :authUser="authUser"
       />
+      <div class="comment-actions">
+        <button
+          class="transparent icon-button likes"
+          @click="forNotification ? null : updateLike(comment)"
+          :disabled="forNotification"
+          :title="`${$t('workouts.COMMENTS.LIKE')} (${comment.likes_count} ${$t(
+            'workouts.COMMENTS.LIKES',
+            comment.likes_count
+          )})`"
+        >
+          <i
+            class="fa"
+            :class="{
+              'fa-heart': comment.liked,
+              'fa-heart-o': !comment.liked,
+            }"
+            aria-hidden="true"
+          />
+          <span
+            class="likes-count"
+            v-if="comment.likes_count > 0"
+            aria-hidden="true"
+          >
+            {{ comment.likes_count }}
+          </span>
+        </button>
+        <button
+          v-if="displayCommentIcon()"
+          class="transparent icon-button"
+          @click="() => displayCommentEdition('add')"
+          :title="$t('workouts.COMMENTS.ADD')"
+        >
+          <i class="fa fa-comment-o" aria-hidden="true" />
+        </button>
+        <button
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
+          class="transparent icon-button"
+          @click="() => displayCommentEdition('edit')"
+          :title="$t('workouts.COMMENTS.EDIT')"
+        >
+          <i class="fa fa-edit" aria-hidden="true" />
+        </button>
+        <button
+          v-if="isCommentOwner(authUser, comment.user) && !forNotification"
+          class="transparent icon-button"
+          @click="deleteComment(comment)"
+          :title="$t('workouts.COMMENTS.DELETE')"
+        >
+          <i class="fa fa-trash" aria-hidden="true" />
+        </button>
+      </div>
       <template v-if="!forNotification">
         <WorkoutCommentEdition
           v-if="isNewReply()"
@@ -243,6 +244,8 @@
   .workout-comment {
     display: flex;
     background-color: var(--comment-background);
+    padding: 10px 0;
+
     ::v-deep(.user-picture) {
       min-width: min-content;
       align-items: flex-start;
@@ -259,12 +262,16 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      .comment-info {
+
+      .comment-info,
+      .comment-actions {
         display: flex;
         gap: $default-padding;
         flex-wrap: wrap;
         align-items: flex-end;
-        padding-right: $default-padding * 0.5;
+      }
+
+      .comment-info {
         .user-name {
           font-weight: bold;
           padding-left: $default-padding;
@@ -281,6 +288,13 @@
         .comment-date:hover {
           text-decoration: underline;
         }
+        ::v-deep(.fa-users) {
+          font-size: 0.8em;
+        }
+      }
+
+      .comment-actions {
+        justify-content: flex-end;
         .icon-button {
           line-height: 15px;
         }
@@ -294,12 +308,9 @@
         .fa-heart {
           color: #ee2222;
         }
-        ::v-deep(.fa-users) {
-          font-size: 0.8em;
-        }
       }
+
       .comment-text {
-        margin: $default-margin * 0.5 0;
         padding: $default-padding;
         white-space: pre-wrap;
         &.highlight {
