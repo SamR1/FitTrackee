@@ -9,6 +9,8 @@
     "HERE": "ici",
     "HIDDEN": "Masqué",
     "HOME": "Accueil",
+    "REPORT_PLACEHOLDER": "préciser la raison du signalement",
+    "REPORT_SUBMITTED": "Signalement envoyé.",
     "SELECTS": {
         "ORDER": {
             "ASC": "ascendant",

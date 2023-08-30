@@ -14,6 +14,11 @@ import {
   OAuth2Mutations,
 } from '@/store/modules/oauth2/enums'
 import {
+  ReportsActions,
+  ReportsGetters,
+  ReportsMutations,
+} from '@/store/modules/reports/enums'
+import {
   RootActions,
   RootGetters,
   RootMutations,
@@ -73,6 +78,12 @@ export const NOTIFICATIONS_STORE = {
   ACTIONS: NotificationsActions,
   GETTERS: NotificationsGetters,
   MUTATIONS: NotificationsMutations,
+}
+
+export const REPORTS_STORE = {
+  ACTIONS: ReportsActions,
+  GETTERS: ReportsGetters,
+  MUTATIONS: ReportsMutations,
 }
 
 export const USERS_STORE = {

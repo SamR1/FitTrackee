@@ -92,6 +92,14 @@
           <i class="fa fa-comment-o" aria-hidden="true" />
         </button>
         <button
+          v-if="!isCommentOwner(authUser, comment.user)"
+          class="transparent icon-button"
+          @click="reportComment(comment)"
+          :title="$t('workouts.COMMENTS.REPORT')"
+        >
+          <i class="fa fa-flag" aria-hidden="true" />
+        </button>
+        <button
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           class="transparent icon-button"
           @click="() => displayCommentEdition('edit')"
@@ -107,6 +115,22 @@
         >
           <i class="fa fa-trash" aria-hidden="true" />
         </button>
+      </div>
+      <ReportForm
+        v-if="isCommentReported()"
+        :object-id="comment.id"
+        object-type="comment"
+      />
+      <div
+        v-if="reportStatus === `comment-${comment.id}-created`"
+        class="report-submitted"
+      >
+        <div class="info-box">
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('common.REPORT_SUBMITTED') }}
+          </span>
+        </div>
       </div>
       <template v-if="!forNotification">
         <WorkoutCommentEdition
@@ -140,9 +164,10 @@
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import ReportForm from '@/components/Common/ReportForm.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import { IDisplayOptions } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { IComment, ICurrentCommentEdition, IWorkout } from '@/types/workouts'
@@ -176,13 +201,17 @@
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
+  )
   const paramsCommentId: ComputedRef<string | string[] | null> = computed(
     () => route.params.commentId
   )
   const highlighted: ComputedRef<boolean> = computed(
     () =>
       comment.value.id === paramsCommentId.value ||
-      (currentCommentEdition.value?.type === 'delete' &&
+      ((currentCommentEdition.value?.type === 'delete' ||
+        currentCommentEdition.value?.type === 'report') &&
         currentCommentEdition.value?.comment?.id === comment.value.id)
   )
 
@@ -195,6 +224,12 @@
   function isCommentEdited() {
     return (
       currentCommentEdition.value?.type === 'edit' &&
+      currentCommentEdition.value?.comment?.id === comment.value.id
+    )
+  }
+  function isCommentReported() {
+    return (
+      currentCommentEdition.value?.type === 'report' &&
       currentCommentEdition.value?.comment?.id === comment.value.id
     )
   }
@@ -216,6 +251,13 @@
       type: 'delete',
       comment: commentToDelete,
     })
+  }
+  function reportComment(commentToReport: IComment) {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
+      type: 'report',
+      comment: commentToReport,
+    })
+    store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
   }
   function displayCommentEdition(actionType: string) {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {
@@ -307,6 +349,12 @@
         }
         .fa-heart {
           color: #ee2222;
+        }
+      }
+      .report-submitted {
+        display: flex;
+        .info-box {
+          padding: $default-padding $default-padding * 2;
         }
       }
 

@@ -13,7 +13,8 @@
         "LABEL": "comment | comments",
         "LIKE": "like comment",
         "LIKES": "like | likes",
-        "NO_COMMENTS": "No comments"
+        "NO_COMMENTS": "No comments",
+        "REPORT": "report comment"
     },
     "DATE": "date",
     "DELETE_WORKOUT": "Delete the workout",

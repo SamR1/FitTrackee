@@ -9,6 +9,8 @@
     "HERE": "here",
     "HIDDEN": "Hidden",
     "HOME": "Home",
+    "REPORT_PLACEHOLDER": "indicate the reason for reporting",
+    "REPORT_SUBMITTED": "Report submitted.",
     "SELECTS": {
         "ORDER": {
             "ASC": "ascending",

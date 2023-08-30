@@ -13,7 +13,8 @@
         "LABEL": "commentaire | commentaires",
         "LIKE": "liker le commentaire",
         "LIKES": "like | likes",
-        "NO_COMMENTS": "Pas de commentaires"
+        "NO_COMMENTS": "Pas de commentaires",
+        "REPORT": "signaler le commentaire"
     },
     "DATE": "date",
     "DELETE_WORKOUT": "Supprimer la séance",
