@@ -160,7 +160,14 @@
 
 <script setup lang="ts">
   import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import {
+    ComputedRef,
+    computed,
+    toRefs,
+    onUnmounted,
+    withDefaults,
+    watch,
+  } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
@@ -279,6 +286,17 @@
       comment
     )
   }
+
+  onUnmounted(() =>
+    store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+  )
+
+  watch(
+    () => route.params.workoutId,
+    () => {
+      store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+    }
+  )
 </script>
 
 <style scoped lang="scss">
