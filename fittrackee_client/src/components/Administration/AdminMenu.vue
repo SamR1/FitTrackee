@@ -31,6 +31,14 @@
               </span>
             </dd>
             <dt>
+              <router-link id="adminLink" to="/admin/reports">
+                {{ $t('admin.APP_MODERATION.TITLE') }}
+              </router-link>
+            </dt>
+            <dd>
+              {{ $t('admin.APP_MODERATION.DESCRIPTION') }}
+            </dd>
+            <dt>
               <router-link to="/admin/sports">
                 {{ capitalize($t('workouts.SPORT', 0)) }}
               </router-link>

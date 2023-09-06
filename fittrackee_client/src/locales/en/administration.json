@@ -20,6 +20,23 @@
         "TITLE": "Application configuration",
         "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
     },
+    "APP_MODERATION": {
+        "TITLE": "Moderation",
+        "DESCRIPTION": "Reports management.",
+        "NO_REPORTS_FOUND": "No reports",
+        "REPORTED_BY": "Reported by",
+        "REPORTED_OBJECT": "Object",
+        "REPORTED_USER": "Reported user",
+        "RESOLVED": {
+            "TRUE": "Resolved",
+            "FALSE": "Unresolved"
+        },
+        "ORDER_BY": {
+            "CREATED_AT": "creation date",
+            "UPDATED_AT": "update date"
+        },
+        "STATUS": "status"
+    },
     "BACK_TO_ADMIN": "Back to admin",
     "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
     "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",

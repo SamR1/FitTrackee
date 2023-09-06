@@ -8,8 +8,14 @@ export interface IReport {
   reported_comment: IComment | null
   reported_user: IUserProfile | null
   reported_workout: IWorkout | null
+  resolved: boolean
   resolved_at: string
   updated_at: string
+}
+
+export interface IFullReport extends IReport {
+  reported_user: IUserProfile | null
+  objectType: string
 }
 
 export interface IReportComment {

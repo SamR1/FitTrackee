@@ -7,7 +7,7 @@ import {
 
 import { REPORTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
+import { IPagination, TPaginationPayload } from '@/types/api'
 import { IReportForAdmin, IReport, IReportPayload } from '@/types/reports'
 
 export interface IReportsState {
@@ -17,8 +17,12 @@ export interface IReportsState {
 }
 
 export interface IReportsActions {
-  [REPORTS_STORE.ACTIONS.GET_REPORTS](
+  [REPORTS_STORE.ACTIONS.EMPTY_REPORTS](
     context: ActionContext<IReportsState, IRootState>
+  ): void
+  [REPORTS_STORE.ACTIONS.GET_REPORTS](
+    context: ActionContext<IReportsState, IRootState>,
+    payload: TPaginationPayload
   ): void
   [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
     context: ActionContext<IReportsState, IRootState>,
@@ -28,11 +32,16 @@ export interface IReportsActions {
 
 export interface IReportsGetters {
   [REPORTS_STORE.GETTERS.REPORTS](state: IReportsState): IReport[]
+  [REPORTS_STORE.GETTERS.REPORTS_PAGINATION](state: IReportsState): IPagination
   [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
 }
 
 export type TReportsMutations<S = IReportsState> = {
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](state: S, reports: IReport[]): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION](
+    state: S,
+    pagination: IPagination
+  ): void
   [REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS](
     state: S,
     reportStatus: string | null

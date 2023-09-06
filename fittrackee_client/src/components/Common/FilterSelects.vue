@@ -1,5 +1,6 @@
 <template>
   <div class="table-selects">
+    <slot name="additionalFilters"></slot>
     <label>
       {{ $t('common.SELECTS.ORDER_BY.LABEL') }}:
       <select
@@ -64,30 +65,3 @@
     emit('updateSelect', event.target.id, event.target.value)
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
-
-  .table-selects {
-    display: flex;
-    justify-content: space-between;
-    margin: $default-margin 0;
-
-    label {
-      select {
-        margin-left: $default-margin;
-        padding: $default-padding * 0.5;
-      }
-    }
-
-    @media screen and (max-width: $small-limit) {
-      flex-wrap: wrap;
-      label {
-        margin-bottom: $default-margin;
-        select {
-          margin-left: 0;
-        }
-      }
-    }
-  }
-</style>

@@ -20,6 +20,23 @@
         "TITLE": "Configuration de l'application",
         "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
     },
+    "APP_MODERATION": {
+        "TITLE": "Modération",
+        "DESCRIPTION": "Gestion des signalements.",
+        "NO_REPORTS_FOUND": "Pas de signalements",
+        "REPORTED_BY": "Signalé par",
+        "REPORTED_OBJECT": "Objet",
+        "REPORTED_USER": "Utilisateur signalé",
+        "RESOLVED": {
+            "TRUE": "Résolu",
+            "FALSE": "Non résolu"
+        },
+        "ORDER_BY": {
+            "CREATED_AT": "date de création",
+            "UPDATED_AT": "date de mise à jour"
+        },
+        "STATUS": "état"
+    },
     "BACK_TO_ADMIN": "Revenir à l'admin",
     "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
     "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",

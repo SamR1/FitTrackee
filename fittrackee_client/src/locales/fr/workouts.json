@@ -7,6 +7,7 @@
     "BACK_TO_WORKOUT": "revenir à la séance",
     "COMMENTS": {
         "ADD": "ajouter un commentaire",
+        "COMMENTS": "commentaire | commentaires",
         "EDIT": "modifier le commentaire",
         "DELETE": "supprimer le commentaire",
         "DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer ce commentaire ?",

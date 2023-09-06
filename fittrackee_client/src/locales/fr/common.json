@@ -24,5 +24,6 @@
             "LABEL": "par page"
         }
     },
-    "TOTAL": "Total"
+    "TOTAL": "Total",
+    "TYPE": "type"
 }

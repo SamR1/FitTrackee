@@ -4,22 +4,35 @@ import authApi from '@/api/authApi'
 import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IReportsState, IReportsActions } from '@/store/modules/reports/types'
 import { IRootState } from '@/store/modules/root/types'
+import { TPaginationPayload } from '@/types/api'
 import { IReportPayload } from '@/types/reports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
   {
-    [REPORTS_STORE.ACTIONS.GET_REPORTS](
+    [REPORTS_STORE.ACTIONS.EMPTY_REPORTS](
       context: ActionContext<IReportsState, IRootState>
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS, [])
+      context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION, {})
+    },
+    [REPORTS_STORE.ACTIONS.GET_REPORTS](
+      context: ActionContext<IReportsState, IRootState>,
+      payload: TPaginationPayload
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
       authApi
-        .get('reports')
+        .get('reports', { params: payload })
         .then((res) => {
           if (res.data.status === 'success') {
             context.commit(
               REPORTS_STORE.MUTATIONS.SET_REPORTS,
-              res.data.data.reports
+              res.data.reports
+            )
+            context.commit(
+              REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION,
+              res.data.pagination
             )
           } else {
             handleError(context, null)
