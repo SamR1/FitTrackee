@@ -13,7 +13,7 @@ from fittrackee.reports.exceptions import (
 )
 from fittrackee.reports.models import Report, ReportComment
 from fittrackee.tests.comments.utils import CommentMixin
-from fittrackee.users.models import User
+from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin
@@ -203,11 +203,52 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
 
         assert serialized_report == {
             "created_at": report.created_at,
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,
             "reported_by": user_1.serialize(user_1),
             "reported_comment": comment.serialize(user_1),
+            "reported_user": None,
+            "reported_workout": None,
+        }
+
+    def test_it_returns_serialized_object_report_when_comment_is_not_visible(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        # in case visibility changed
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        report = Report(
+            reported_by=user_1.id,
+            note=report_note,
+            object_id=comment.id,
+            object_type='comment',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        comment.text_visibility = PrivacyLevel.FOLLOWERS
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report_note,
+            "resolved": False,
+            "resolved_at": None,
+            "reported_by": user_1.serialize(user_1),
+            "reported_comment": "_COMMENT_UNAVAILABLE_",
             "reported_user": None,
             "reported_workout": None,
         }
@@ -234,6 +275,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
 
         assert serialized_report == {
             "created_at": report.created_at,
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,
@@ -268,13 +310,53 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
 
         assert serialized_report == {
             "created_at": report.created_at,
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
             "reported_user": None,
-            "reported_workout": workout_cycling_user_2.serialize(user_1),
+            "reported_workout": workout_cycling_user_2.serialize(
+                user_1, for_report=True
+            ),
+        }
+
+    def test_it_returns_serialized_object_for_report_when_workout_is_not_visible(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        # in case visibility changed
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_1.id,
+            note=report_note,
+            object_id=workout_cycling_user_2.id,
+            object_type='workout',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report_note,
+            "resolved": False,
+            "resolved_at": None,
+            "reported_by": user_1.serialize(user_1),
+            "reported_comment": None,
+            "reported_user": None,
+            "reported_workout": '_WORKOUT_UNAVAILABLE_',
         }
 
     def test_it_returns_serialized_object_without_report_comments(
@@ -307,6 +389,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
 
         assert serialized_report == {
             "created_at": report.created_at,
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,
@@ -318,6 +401,95 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
 
 
 class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
+    def test_it_returns_serialized_comment_when_comment_is_not_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_2.id,
+            note=report_note,
+            object_id=comment.id,
+            object_type='comment',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "comments": [],
+            "id": report.id,
+            "note": report_note,
+            "resolved": False,
+            "resolved_at": None,
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": comment.serialize(
+                user_1_admin, for_report=True
+            ),
+            "reported_user": None,
+            "reported_workout": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_workout_when_workout_is_not_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_2.id,
+            note=report_note,
+            object_id=workout_cycling_user_2.id,
+            object_type='workout',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "comments": [],
+            "id": report.id,
+            "note": report_note,
+            "resolved": False,
+            "resolved_at": None,
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": None,
+            "reported_workout": workout_cycling_user_2.serialize(
+                user_1_admin, for_report=True
+            ),
+            "updated_at": None,
+        }
+
     def test_it_returns_serialized_object_when_no_report_comments(
         self,
         app: Flask,
@@ -342,6 +514,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "comments": [],
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,
@@ -383,6 +556,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "comments": [report_comment.serialize(user_1_admin)],
+            "id": report.id,
             "note": report_note,
             "resolved": False,
             "resolved_at": None,

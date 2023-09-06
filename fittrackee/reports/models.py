@@ -2,7 +2,9 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from fittrackee import BaseModel, db
+from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.users.models import User
+from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import (
     InvalidReportException,
@@ -100,27 +102,39 @@ class Report(BaseModel):
     def serialize(self, current_user: User) -> Dict:
         if not current_user.admin and self.reported_by != current_user.id:
             raise ReportForbiddenException()
+
+        try:
+            reported_comment = (
+                self.reported_comment.serialize(current_user, for_report=True)
+                if self.reported_comment_id
+                else None
+            )
+        except CommentForbiddenException:
+            reported_comment = '_COMMENT_UNAVAILABLE_'
+
+        try:
+            reported_workout = (
+                self.reported_workout.serialize(current_user, for_report=True)
+                if self.reported_workout
+                else None
+            )
+        except WorkoutForbiddenException:
+            reported_workout = '_WORKOUT_UNAVAILABLE_'
+
         report = {
             "created_at": self.created_at,
+            "id": self.id,
             "note": self.note,
             "resolved": self.resolved,
             "resolved_at": self.resolved_at,
             "reported_by": self.reporter.serialize(current_user),
-            "reported_comment": (
-                self.reported_comment.serialize(current_user)
-                if self.reported_comment_id
-                else None
-            ),
+            "reported_comment": reported_comment,
             "reported_user": (
                 self.reported_user.serialize(current_user)
                 if self.reported_user_id
                 else None
             ),
-            "reported_workout": (
-                self.reported_workout.serialize(current_user)
-                if self.reported_workout
-                else None
-            ),
+            "reported_workout": reported_workout,
         }
         if current_user.admin:
             report["comments"] = [
