@@ -73,7 +73,7 @@
               :disabled="!edition"
             />
           </label>
-          <label  class="about-label" for="about">
+          <label class="about-label" for="about">
             {{ $t('admin.ABOUT.TEXT') }}:
           </label>
           <span class="textarea-description">
@@ -88,7 +88,13 @@
           />
           <div
             v-else
-            v-html="snarkdown(linkifyAndClean(appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')))"
+            v-html="
+              snarkdown(
+                linkifyAndClean(
+                  appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
+                )
+              )
+            "
             class="textarea-content"
           />
           <label class="privacy-policy-label" for="privacy_policy">
@@ -106,7 +112,15 @@
           />
           <div
             v-else
-            v-html="snarkdown(linkifyAndClean(appData.privacy_policy ? appData.privacy_policy : $t('admin.NO_TEXT_ENTERED')))"
+            v-html="
+              snarkdown(
+                linkifyAndClean(
+                  appData.privacy_policy
+                    ? appData.privacy_policy
+                    : $t('admin.NO_TEXT_ENTERED')
+                )
+              )
+            "
             class="textarea-content"
           />
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -155,7 +169,6 @@
   import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
-    appConfig: TAppConfig
     edition?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
@@ -178,10 +191,12 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
   onBeforeMount(() => {
-    if (props.appConfig) {
-      updateForm(props.appConfig)
+    if (appConfig.value) {
+      updateForm(appConfig.value)
     }
   })
 
@@ -203,7 +218,7 @@
     })
   }
   function onCancel() {
-    updateForm(props.appConfig)
+    updateForm(appConfig.value)
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     router.push('/admin/application')
   }
@@ -232,7 +247,7 @@
       font-style: italic;
     }
 
-    textarea  {
+    textarea {
       margin-bottom: $default-padding;
     }
     .textarea-description {
@@ -242,7 +257,6 @@
       margin-bottom: $default-margin;
       padding: $default-padding;
     }
-
   }
 
   .no-contact {
