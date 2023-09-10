@@ -246,6 +246,7 @@ def upgrade():
         sa.Column('reported_user_id', sa.Integer(), nullable=True),
         sa.Column('reported_workout_id', sa.Integer(), nullable=True),
         sa.Column('resolved', sa.Boolean(), nullable=False),
+        sa.Column('object_type', sa.String(length=50), nullable=False),
         sa.Column('note', sa.String(), nullable=False),
         sa.ForeignKeyConstraint(['reported_by'], ['users.id'], ondelete='CASCADE'),
         sa.ForeignKeyConstraint(['reported_comment_id'], ['comments.id'], ondelete='CASCADE'),
@@ -258,6 +259,7 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_reports_reported_comment_id'), ['reported_comment_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_reports_reported_user_id'), ['reported_user_id'], unique=False)
         batch_op.create_index(batch_op.f('ix_reports_reported_workout_id'), ['reported_workout_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_reports_object_type'), ['object_type'], unique=False)
 
     op.create_table('report_comments',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -281,6 +283,7 @@ def downgrade():
 
     op.drop_table('report_comments')
     with op.batch_alter_table('reports', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_reports_object_type'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_workout_id'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_user_id'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_comment_id'))

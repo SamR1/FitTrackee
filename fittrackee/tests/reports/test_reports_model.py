@@ -56,12 +56,13 @@ class TestReportModel(CommentMixin, RandomMixin):
 
         assert report.created_at == report_created_at
         assert report.note == report_note
+        assert report.object_type == 'comment'
         assert report.reported_by == user_1.id
-        assert report.resolved is False
-        assert report.resolved_at is None
         assert report.reported_comment_id == comment.id
         assert report.reported_user_id is None
         assert report.reported_workout_id is None
+        assert report.resolved is False
+        assert report.resolved_at is None
         assert report.updated_at is None
 
     def test_it_creates_report_for_a_user(
@@ -83,12 +84,13 @@ class TestReportModel(CommentMixin, RandomMixin):
 
         assert report.created_at == report_created_at
         assert report.note == report_note
+        assert report.object_type == 'user'
         assert report.reported_by == user_1.id
-        assert report.resolved is False
-        assert report.resolved_at is None
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
         assert report.reported_workout_id is None
+        assert report.resolved is False
+        assert report.resolved_at is None
         assert report.updated_at is None
 
     def test_it_creates_report_for_a_workout(
@@ -113,12 +115,13 @@ class TestReportModel(CommentMixin, RandomMixin):
 
         assert report.created_at == report_created_at
         assert report.note == report_note
+        assert report.object_type == 'workout'
         assert report.reported_by == user_1.id
-        assert report.resolved is False
-        assert report.resolved_at is None
         assert report.reported_comment_id is None
         assert report.reported_user_id is None
         assert report.reported_workout_id == workout_cycling_user_2.id
+        assert report.resolved is False
+        assert report.resolved_at is None
         assert report.updated_at is None
 
     def test_it_creates_report_without_date(
@@ -137,12 +140,13 @@ class TestReportModel(CommentMixin, RandomMixin):
 
         assert report.created_at == now
         assert report.note == report_note
+        assert report.object_type == 'user'
         assert report.reported_by == user_1.id
-        assert report.resolved is False
-        assert report.resolved_at is None
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
         assert report.reported_workout_id is None
+        assert report.resolved is False
+        assert report.resolved_at is None
         assert report.updated_at is None
 
 
@@ -205,12 +209,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "comment",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": comment.serialize(user_1),
-            "reported_user": None,
+            "reported_user": user_2.serialize(),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
         }
 
     def test_it_returns_serialized_object_report_when_comment_is_not_visible(
@@ -245,12 +250,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "comment",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": "_COMMENT_UNAVAILABLE_",
             "reported_user": None,
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
         }
 
     def test_it_returns_serialized_object_for_user_report(
@@ -277,12 +283,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "user",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
             "reported_user": user_2.serialize(user_1),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
         }
 
     def test_it_returns_serialized_object_for_workout_report(
@@ -312,14 +319,15 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "workout",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
-            "reported_user": None,
+            "reported_user": user_2.serialize(),
             "reported_workout": workout_cycling_user_2.serialize(
                 user_1, for_report=True
             ),
+            "resolved": False,
+            "resolved_at": None,
         }
 
     def test_it_returns_serialized_object_for_report_when_workout_is_not_visible(  # noqa
@@ -351,12 +359,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "workout",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
             "reported_user": None,
             "reported_workout": '_WORKOUT_UNAVAILABLE_',
+            "resolved": False,
+            "resolved_at": None,
         }
 
     def test_it_returns_serialized_object_without_report_comments(
@@ -391,12 +400,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "user",
             "reported_by": user_2.serialize(user_2),
             "reported_comment": None,
             "reported_user": user_3.serialize(user_2),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
         }
 
 
@@ -437,14 +447,15 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "comments": [],
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "comment",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": comment.serialize(
                 user_1_admin, for_report=True
             ),
-            "reported_user": None,
+            "reported_user": user_3.serialize(),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
             "updated_at": None,
         }
 
@@ -463,7 +474,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         report_created_at = datetime.now()
         report_note = self.random_string()
         report = Report(
-            reported_by=user_2.id,
+            reported_by=user_3.id,
             note=report_note,
             object_id=workout_cycling_user_2.id,
             object_type='workout',
@@ -474,19 +485,21 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
 
         serialized_report = report.serialize(user_1_admin)
 
+        reported_object = workout_cycling_user_2.serialize(
+            user_1_admin, for_report=True
+        )
         assert serialized_report == {
             "created_at": report.created_at,
             "comments": [],
             "id": report.id,
             "note": report_note,
+            "object_type": "workout",
+            "reported_by": user_3.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": reported_object["user"],
+            "reported_workout": reported_object,
             "resolved": False,
             "resolved_at": None,
-            "reported_by": user_2.serialize(user_1_admin),
-            "reported_comment": None,
-            "reported_user": None,
-            "reported_workout": workout_cycling_user_2.serialize(
-                user_1_admin, for_report=True
-            ),
             "updated_at": None,
         }
 
@@ -516,12 +529,13 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "comments": [],
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
             "reported_user": user_3.serialize(user_1_admin),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
             "updated_at": None,
         }
 
@@ -558,12 +572,13 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "comments": [report_comment.serialize(user_1_admin)],
             "id": report.id,
             "note": report_note,
-            "resolved": False,
-            "resolved_at": None,
+            "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
             "reported_user": user_3.serialize(user_1_admin),
             "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
             "updated_at": None,
         }
 
