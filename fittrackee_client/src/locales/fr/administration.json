@@ -3,7 +3,7 @@
         "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée.",
         "TEXT": "Information détaillée de l'instance"
     },
-    "ACTION": "Action",
+    "ACTION": "Action | Actions",
     "ACTIVATE_USER_ACCOUNT": "Activer le compte",
     "ACTIVE": "Actif",
     "ADMIN": "Admin",
@@ -24,9 +24,13 @@
         "TITLE": "Modération",
         "DESCRIPTION": "Gestion des signalements.",
         "NO_REPORTS_FOUND": "Pas de signalements",
+        "REPORT": "signalement | signalements",
+        "REPORT_CONTENT": "Contenu du signalement",
+        "REPORT_NOTE": "Note par ",
         "REPORTED_BY": "Signalé par",
         "REPORTED_OBJECT": "Objet",
         "REPORTED_USER": "Utilisateur signalé",
+        "REPORTER": "rapporteur",
         "RESOLVED": {
             "TRUE": "Résolu",
             "FALSE": "Non résolu"
@@ -35,7 +39,14 @@
             "CREATED_AT": "date de création",
             "UPDATED_AT": "date de mise à jour"
         },
-        "STATUS": "état"
+        "STATUS": "état",
+        "ACTIONS": {
+            "ADD_COMMENT": "Ajouter un commentaire",
+            "DELETE_CONTENT": "Supprimer le contenu",
+            "DISABLE_ACCOUNT": "Désactiver le compte de l'utilisateur",
+            "MARK_AS_RESOLVED": "Marqué comme résolu",
+            "SEND_EMAIL": "Envoyer un courriel"
+        }
     },
     "BACK_TO_ADMIN": "Revenir à l'admin",
     "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",

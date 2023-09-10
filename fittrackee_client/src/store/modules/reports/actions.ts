@@ -17,6 +17,22 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
       context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS, [])
       context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION, {})
     },
+    [REPORTS_STORE.ACTIONS.GET_REPORT](
+      context: ActionContext<IReportsState, IRootState>,
+      reportId: number
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      authApi
+        .get(`reports/${reportId}`)
+        .then((res) => {
+          if (res.data.status === 'success') {
+            context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT, res.data.report)
+          } else {
+            handleError(context, null)
+          }
+        })
+        .catch((error) => handleError(context, error))
+    },
     [REPORTS_STORE.ACTIONS.GET_REPORTS](
       context: ActionContext<IReportsState, IRootState>,
       payload: TPaginationPayload

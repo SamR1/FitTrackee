@@ -101,7 +101,9 @@
                   <span class="cell-heading">
                     {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
                   </span>
+                  <router-link :to="`/admin/reports/${report.id}`">
                   {{ $t(getI18nString(report.object_type)) }}
+                  </router-link>
                 </td>
                 <td>
                   <span class="cell-heading">

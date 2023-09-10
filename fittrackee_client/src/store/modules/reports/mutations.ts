@@ -6,6 +6,12 @@ import { IPagination } from '@/types/api'
 import { IReportForAdmin } from '@/types/reports'
 
 export const mutations: MutationTree<IReportsState> & TReportsMutations = {
+  [REPORTS_STORE.MUTATIONS.SET_REPORT](
+    state: IReportsState,
+    report: IReportForAdmin
+  ) {
+    state.report = report
+  },
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](
     state: IReportsState,
     reports: IReportForAdmin[]

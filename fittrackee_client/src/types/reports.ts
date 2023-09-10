@@ -2,6 +2,7 @@ import { IUserProfile } from '@/types/user'
 import { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
+  id: number
   created_at: string
   note: string
   object_type: string

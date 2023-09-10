@@ -11,6 +11,7 @@ import { IPagination, TPaginationPayload } from '@/types/api'
 import { IReportForAdmin, IReport, IReportPayload } from '@/types/reports'
 
 export interface IReportsState {
+  report: IReportForAdmin
   reports: IReportForAdmin[]
   pagination: IPagination
   reportStatus: string | null
@@ -19,6 +20,10 @@ export interface IReportsState {
 export interface IReportsActions {
   [REPORTS_STORE.ACTIONS.EMPTY_REPORTS](
     context: ActionContext<IReportsState, IRootState>
+  ): void
+  [REPORTS_STORE.ACTIONS.GET_REPORT](
+    context: ActionContext<IReportsState, IRootState>,
+    reportId: number
   ): void
   [REPORTS_STORE.ACTIONS.GET_REPORTS](
     context: ActionContext<IReportsState, IRootState>,
@@ -31,6 +36,7 @@ export interface IReportsActions {
 }
 
 export interface IReportsGetters {
+  [REPORTS_STORE.GETTERS.REPORT](state: IReportsState): IReportForAdmin
   [REPORTS_STORE.GETTERS.REPORTS](state: IReportsState): IReport[]
   [REPORTS_STORE.GETTERS.REPORTS_PAGINATION](state: IReportsState): IPagination
   [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
