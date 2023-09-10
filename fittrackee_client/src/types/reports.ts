@@ -4,18 +4,14 @@ import { IComment, IWorkout } from '@/types/workouts'
 export interface IReport {
   created_at: string
   note: string
+  object_type: string
   reported_by: IUserProfile
   reported_comment: IComment | null
-  reported_user: IUserProfile | null
+  reported_user: IUserProfile
   reported_workout: IWorkout | null
   resolved: boolean
   resolved_at: string
   updated_at: string
-}
-
-export interface IFullReport extends IReport {
-  reported_user: IUserProfile | null
-  objectType: string
 }
 
 export interface IReportComment {

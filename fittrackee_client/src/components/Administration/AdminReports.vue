@@ -101,7 +101,7 @@
                   <span class="cell-heading">
                     {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
                   </span>
-                  {{ $t(report.objectType) }}
+                  {{ $t(getI18nString(report.object_type)) }}
                 </td>
                 <td>
                   <span class="cell-heading">
@@ -192,7 +192,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
   import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IFullReport, IReport } from '@/types/reports'
+  import { IReport } from '@/types/reports'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
@@ -215,8 +215,8 @@
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
-  const reports: ComputedRef<IFullReport[]> = computed(() =>
-    formatReports(store.getters[REPORTS_STORE.GETTERS.REPORTS])
+  const reports: ComputedRef<IReport[]> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORTS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORTS_PAGINATION]
@@ -229,26 +229,6 @@
 
   function loadReports(queryParams: TPaginationPayload) {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORTS, queryParams)
-  }
-
-  function formatReports(reportsList: IReport[]): IFullReport[] {
-    const formattedReports: IFullReport[] = []
-    reportsList.map((r) => {
-      const additionalFields = {
-        reported_user: r.reported_comment
-          ? r.reported_comment.user
-          : r.reported_workout
-          ? r.reported_workout.user
-          : r.reported_user,
-        objectType: r.reported_comment
-          ? 'workouts.COMMENTS.COMMENTS'
-          : r.reported_workout
-          ? 'workouts.WORKOUTS'
-          : 'user.USERS',
-      }
-      formattedReports.push(Object.assign({}, r, additionalFields))
-    })
-    return formattedReports
   }
   function reloadReportsOnTypeChange(
     event: Event & { target: HTMLInputElement }
@@ -276,6 +256,17 @@
       query.page = 1
     }
     router.push({ path: '/admin/reports', query })
+  }
+  function getI18nString(objectType: string): string {
+    switch (objectType) {
+      case 'comment':
+        return 'workouts.COMMENTS.COMMENTS'
+      case 'workout':
+        return 'workouts.WORKOUTS'
+      case 'user':
+      default:
+        return 'user.USERS'
+    }
   }
 
   onUnmounted(() => {
