@@ -4413,7 +4413,7 @@ msgid "Since **0.4.9**, it's also used to generate static maps (to keep default 
 msgstr ""
 
 #: ../source/installation.rst:193
-msgid "``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``"
+msgid "``https://tile.openstreetmap.org/{z}/{x}/{y}.png``"
 msgstr ""
 
 #: ../source/installation.rst:200
