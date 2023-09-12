@@ -190,7 +190,7 @@ deployment method.
     | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)
 
-    :default: ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
+    :default: ``https://tile.openstreetmap.org/{z}/{x}/{y}.png``
 
 
 .. envvar:: STATICMAP_SUBDOMAINS

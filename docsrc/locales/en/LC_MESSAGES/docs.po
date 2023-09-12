@@ -4582,7 +4582,7 @@ msgid ""
 msgstr ""
 
 #: ../source/installation.rst:193
-msgid "``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``"
+msgid "``https://tile.openstreetmap.org/{z}/{x}/{y}.png``"
 msgstr ""
 
 #: ../source/installation.rst:200
