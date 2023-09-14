@@ -9,11 +9,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, onBeforeMount } from 'vue'
+  import { computed, ComputedRef } from 'vue'
 
   import AdminReport from '@/components/Administration/AdminReport.vue'
   import NotFound from '@/components/Common/NotFound.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()

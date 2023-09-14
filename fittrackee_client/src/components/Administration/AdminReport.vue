@@ -3,13 +3,10 @@
   import { useRoute } from 'vue-router'
 
   import Comment from '@/components/Comment/Comment.vue'
-  import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
-  import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE } from '@/store/constants'
   import { IReportForAdmin } from '@/types/reports'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { formatDate } from '@/utils/dates'
 
   const store = useStore()
   const route = useRoute()
