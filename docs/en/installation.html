@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>Installation - FitTrackee 0.7.22 documentation</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
+        <title>Installation - FitTrackee 0.7.23 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.7.22
+      <a href="index.html"><div class="brand">FitTrackee 0.7.23
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.7.22
+  <span class="sidebar-brand-text">FitTrackee 0.7.23
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -521,6 +521,12 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="line">Tile server URL (with api key if needed), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
 <div class="line">Since <strong>0.4.9</strong>, it’s also used to generate static maps (to keep default server, see <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.23.</span></p>
+</div>
+<div class="line-block">
+<div class="line">The default URL is updated: <strong>OpenStreetMap</strong>’s tile server no longer requires subdomains.</div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">https://tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p>
@@ -681,6 +687,10 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
 </ul>
 <p>The subdomain will be chosen randomly.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.23.</span></p>
+</div>
+<p>The default URL is updated: <strong>OpenStreetMap</strong>’s tile server no longer requires subdomains.</p>
 </section>
 <section id="api-rate-limits">
 <h3>API rate limits<a class="headerlink" href="#api-rate-limits" title="Permalink to this heading">#</a></h3>
@@ -892,11 +902,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.22):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.23):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.22<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.23.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.23<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1020,11 +1030,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.22) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.23) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.22/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.23.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.23/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1382,7 +1392,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=929b9ba7"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=36e31fbe"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

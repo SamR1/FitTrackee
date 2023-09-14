@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-08-23 11:20+0200\n"
+"POT-Creation-Date: 2023-09-14 13:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -1571,242 +1571,258 @@ msgid "Change log"
 msgstr "Historique des modifications"
 
 #: ../source/changelog.md:3
-msgid "Version 0.7.22 (2023/08/23)"
-msgstr "Version 0.7.22 (23/08/2023)"
+msgid "Version 0.7.23 (2023/09/14)"
+msgstr "Version 0.7.23 (14/09/2023)"
 
-#: ../source/changelog.md:6 ../source/changelog.md:38 ../source/changelog.md:55
-#: ../source/changelog.md:96 ../source/changelog.md:207
-#: ../source/changelog.md:257 ../source/changelog.md:303
-#: ../source/changelog.md:329 ../source/changelog.md:427
-#: ../source/changelog.md:455 ../source/changelog.md:466
-#: ../source/changelog.md:493 ../source/changelog.md:514
-#: ../source/changelog.md:532 ../source/changelog.md:548
-#: ../source/changelog.md:569 ../source/changelog.md:591
-#: ../source/changelog.md:598 ../source/changelog.md:618
-#: ../source/changelog.md:640 ../source/changelog.md:658
-#: ../source/changelog.md:693 ../source/changelog.md:704
-#: ../source/changelog.md:715 ../source/changelog.md:727
-#: ../source/changelog.md:747 ../source/changelog.md:753
-#: ../source/changelog.md:805 ../source/changelog.md:829
+#: ../source/changelog.md:5 ../source/changelog.md:17 ../source/changelog.md:49
+#: ../source/changelog.md:66 ../source/changelog.md:107
+#: ../source/changelog.md:218 ../source/changelog.md:268
+#: ../source/changelog.md:314 ../source/changelog.md:340
+#: ../source/changelog.md:438 ../source/changelog.md:466
+#: ../source/changelog.md:477 ../source/changelog.md:504
+#: ../source/changelog.md:525 ../source/changelog.md:543
+#: ../source/changelog.md:559 ../source/changelog.md:580
+#: ../source/changelog.md:602 ../source/changelog.md:609
+#: ../source/changelog.md:629 ../source/changelog.md:651
+#: ../source/changelog.md:669 ../source/changelog.md:704
+#: ../source/changelog.md:715 ../source/changelog.md:726
+#: ../source/changelog.md:738 ../source/changelog.md:758
+#: ../source/changelog.md:764 ../source/changelog.md:816
 #: ../source/changelog.md:840 ../source/changelog.md:851
-#: ../source/changelog.md:896 ../source/changelog.md:929
-#: ../source/changelog.md:941 ../source/changelog.md:952
-#: ../source/changelog.md:968 ../source/changelog.md:981
-#: ../source/changelog.md:993 ../source/changelog.md:1014
-#: ../source/changelog.md:1092 ../source/changelog.md:1109
-#: ../source/changelog.md:1120 ../source/changelog.md:1140
-#: ../source/changelog.md:1175
+#: ../source/changelog.md:862 ../source/changelog.md:907
+#: ../source/changelog.md:940 ../source/changelog.md:952
+#: ../source/changelog.md:963 ../source/changelog.md:979
+#: ../source/changelog.md:992 ../source/changelog.md:1004
+#: ../source/changelog.md:1025 ../source/changelog.md:1103
+#: ../source/changelog.md:1120 ../source/changelog.md:1131
+#: ../source/changelog.md:1151 ../source/changelog.md:1186
 msgid "Bugs Fixed"
 msgstr "Bugs corrigés"
 
+#: ../source/changelog.md:7
+msgid "PR#421 - remove darksky from available weather providers in .env"
+msgstr ""
+
 #: ../source/changelog.md:8
-msgid "PR#411 - Fix various typos"
+msgid "PR#426 - Update default tile server (thanks to @astridx)"
 msgstr ""
 
-#: ../source/changelog.md:9
-msgid "PR#416 - fix modal navigation and closing"
-msgstr ""
-
-#: ../source/changelog.md:12 ../source/changelog.md:61
-#: ../source/changelog.md:102 ../source/changelog.md:146
-#: ../source/changelog.md:183 ../source/changelog.md:212
-#: ../source/changelog.md:262 ../source/changelog.md:307
-#: ../source/changelog.md:336 ../source/changelog.md:351
-#: ../source/changelog.md:368 ../source/changelog.md:388
-#: ../source/changelog.md:403 ../source/changelog.md:416
-#: ../source/changelog.md:431 ../source/changelog.md:444
-#: ../source/changelog.md:459 ../source/changelog.md:473
-#: ../source/changelog.md:498 ../source/changelog.md:507
-#: ../source/changelog.md:518 ../source/changelog.md:537
-#: ../source/changelog.md:623 ../source/features.rst:201
-msgid "Translations"
-msgstr "Traductions"
-
-#: ../source/changelog.md:14
-msgid "PR#410 - Translations update (German)"
-msgstr ""
-
-#: ../source/changelog.md:15
-msgid "PR#415 - Translations update (Polish)"
-msgstr ""
-
-#: ../source/changelog.md:16
-msgid "PR#417 - Translations update (Polish)"
-msgstr ""
-
-#: ../source/changelog.md:17
-msgid "PR#418 - Translations update (Dutch)"
-msgstr ""
-
-#: ../source/changelog.md:19 ../source/changelog.md:68
-#: ../source/changelog.md:120 ../source/changelog.md:167
-#: ../source/changelog.md:188 ../source/changelog.md:220
-#: ../source/changelog.md:272
-msgid "Translation status:"
-msgstr "Avancement de la traduction :"
-
-#: ../source/changelog.md:20 ../source/changelog.md:168
-msgid "Dutch: 100%"
-msgstr "Néerlandais : 100%"
-
-#: ../source/changelog.md:21 ../source/changelog.md:70
-#: ../source/changelog.md:122 ../source/changelog.md:169
-#: ../source/changelog.md:190 ../source/changelog.md:222
-#: ../source/changelog.md:274
-msgid "English: 100%"
-msgstr "Anglais : 100%"
-
-#: ../source/changelog.md:22 ../source/changelog.md:71
-#: ../source/changelog.md:123 ../source/changelog.md:170
-#: ../source/changelog.md:191 ../source/changelog.md:223
-#: ../source/changelog.md:275
-msgid "French: 100%"
-msgstr "Français : 100%"
-
-#: ../source/changelog.md:23 ../source/changelog.md:72
-#: ../source/changelog.md:171 ../source/changelog.md:192
-#: ../source/changelog.md:276
-msgid "Galician: 100%"
-msgstr "Galicien : 100%"
-
-#: ../source/changelog.md:24 ../source/changelog.md:172
-#: ../source/changelog.md:277
-msgid "German: 100%"
-msgstr "Allemand : 100%"
-
-#: ../source/changelog.md:25 ../source/changelog.md:74
-#: ../source/changelog.md:126
-msgid "Italian: 85%"
-msgstr "Italien : 85%"
-
-#: ../source/changelog.md:26 ../source/changelog.md:75
-#: ../source/changelog.md:127 ../source/changelog.md:279
-msgid "Norwegian Bokmål: 35%"
-msgstr "Norvégien Bokmål : 35%"
-
-#: ../source/changelog.md:27
-msgid "Polish: 100%"
-msgstr "Polonais : 100%"
-
-#: ../source/changelog.md:28 ../source/changelog.md:77
-#: ../source/changelog.md:129 ../source/changelog.md:176
-#: ../source/changelog.md:197 ../source/changelog.md:229
-#: ../source/changelog.md:280
-msgid "Spanish: 100%"
-msgstr "Espagnol : 100%"
-
-#: ../source/changelog.md:30 ../source/changelog.md:79
-#: ../source/changelog.md:131 ../source/changelog.md:233
-#: ../source/changelog.md:287 ../source/changelog.md:342
-#: ../source/changelog.md:374 ../source/changelog.md:631
-#: ../source/changelog.md:914
-msgid "Thanks to the contributors:"
-msgstr "Merci aux contributeurs :"
-
-#: ../source/changelog.md:31 ../source/changelog.md:234
-#: ../source/changelog.md:288 ../source/changelog.md:343
-#: ../source/changelog.md:375
-msgid "@bjornclauw"
-msgstr ""
-
-#: ../source/changelog.md:32 ../source/changelog.md:292
-#: ../source/changelog.md:344 ../source/changelog.md:377
-msgid "@qwerty287"
-msgstr ""
-
-#: ../source/changelog.md:33 ../source/changelog.md:82
-msgid "Mariusz"
-msgstr ""
-
-#: ../source/changelog.md:36
-msgid "Version 0.7.21 (2023/07/30)"
-msgstr "Version 0.7.21 (30/07/2023)"
-
-#: ../source/changelog.md:40
-msgid "#407 - Workout display error when speeds are zero"
-msgstr ""
-
-#: ../source/changelog.md:43 ../source/changelog.md:114
-#: ../source/changelog.md:161 ../source/changelog.md:282
-#: ../source/changelog.md:355 ../source/changelog.md:435
-#: ../source/changelog.md:448 ../source/changelog.md:554
-#: ../source/changelog.md:646 ../source/changelog.md:667
-#: ../source/changelog.md:775 ../source/changelog.md:791
-#: ../source/changelog.md:900 ../source/changelog.md:956
-#: ../source/changelog.md:997 ../source/changelog.md:1023
-#: ../source/changelog.md:1078 ../source/changelog.md:1144
-#: ../source/changelog.md:1159
+#: ../source/changelog.md:10 ../source/changelog.md:54
+#: ../source/changelog.md:125 ../source/changelog.md:172
+#: ../source/changelog.md:293 ../source/changelog.md:366
+#: ../source/changelog.md:446 ../source/changelog.md:459
+#: ../source/changelog.md:565 ../source/changelog.md:657
+#: ../source/changelog.md:678 ../source/changelog.md:786
+#: ../source/changelog.md:802 ../source/changelog.md:911
+#: ../source/changelog.md:967 ../source/changelog.md:1008
+#: ../source/changelog.md:1034 ../source/changelog.md:1089
+#: ../source/changelog.md:1155 ../source/changelog.md:1170
 msgid "Misc"
 msgstr "Divers"
 
-#: ../source/changelog.md:45
+#: ../source/changelog.md:12
+msgid "PR#422 - CI - fix e2e tests with packaged version"
+msgstr ""
+
+#: ../source/changelog.md:15
+msgid "Version 0.7.22 (2023/08/23)"
+msgstr "Version 0.7.22 (23/08/2023)"
+
+#: ../source/changelog.md:19
+msgid "PR#411 - Fix various typos"
+msgstr ""
+
+#: ../source/changelog.md:20
+msgid "PR#416 - fix modal navigation and closing"
+msgstr ""
+
+#: ../source/changelog.md:23 ../source/changelog.md:72
+#: ../source/changelog.md:113 ../source/changelog.md:157
+#: ../source/changelog.md:194 ../source/changelog.md:223
+#: ../source/changelog.md:273 ../source/changelog.md:318
+#: ../source/changelog.md:347 ../source/changelog.md:362
+#: ../source/changelog.md:379 ../source/changelog.md:399
+#: ../source/changelog.md:414 ../source/changelog.md:427
+#: ../source/changelog.md:442 ../source/changelog.md:455
+#: ../source/changelog.md:470 ../source/changelog.md:484
+#: ../source/changelog.md:509 ../source/changelog.md:518
+#: ../source/changelog.md:529 ../source/changelog.md:548
+#: ../source/changelog.md:634 ../source/features.rst:201
+msgid "Translations"
+msgstr "Traductions"
+
+#: ../source/changelog.md:25
+msgid "PR#410 - Translations update (German)"
+msgstr ""
+
+#: ../source/changelog.md:26
+msgid "PR#415 - Translations update (Polish)"
+msgstr ""
+
+#: ../source/changelog.md:27
+msgid "PR#417 - Translations update (Polish)"
+msgstr ""
+
+#: ../source/changelog.md:28
+msgid "PR#418 - Translations update (Dutch)"
+msgstr ""
+
+#: ../source/changelog.md:30 ../source/changelog.md:79
+#: ../source/changelog.md:131 ../source/changelog.md:178
+#: ../source/changelog.md:199 ../source/changelog.md:231
+#: ../source/changelog.md:283
+msgid "Translation status:"
+msgstr "Avancement de la traduction :"
+
+#: ../source/changelog.md:31 ../source/changelog.md:179
+msgid "Dutch: 100%"
+msgstr "Néerlandais : 100%"
+
+#: ../source/changelog.md:32 ../source/changelog.md:81
+#: ../source/changelog.md:133 ../source/changelog.md:180
+#: ../source/changelog.md:201 ../source/changelog.md:233
+#: ../source/changelog.md:285
+msgid "English: 100%"
+msgstr "Anglais : 100%"
+
+#: ../source/changelog.md:33 ../source/changelog.md:82
+#: ../source/changelog.md:134 ../source/changelog.md:181
+#: ../source/changelog.md:202 ../source/changelog.md:234
+#: ../source/changelog.md:286
+msgid "French: 100%"
+msgstr "Français : 100%"
+
+#: ../source/changelog.md:34 ../source/changelog.md:83
+#: ../source/changelog.md:182 ../source/changelog.md:203
+#: ../source/changelog.md:287
+msgid "Galician: 100%"
+msgstr "Galicien : 100%"
+
+#: ../source/changelog.md:35 ../source/changelog.md:183
+#: ../source/changelog.md:288
+msgid "German: 100%"
+msgstr "Allemand : 100%"
+
+#: ../source/changelog.md:36 ../source/changelog.md:85
+#: ../source/changelog.md:137
+msgid "Italian: 85%"
+msgstr "Italien : 85%"
+
+#: ../source/changelog.md:37 ../source/changelog.md:86
+#: ../source/changelog.md:138 ../source/changelog.md:290
+msgid "Norwegian Bokmål: 35%"
+msgstr "Norvégien Bokmål : 35%"
+
+#: ../source/changelog.md:38
+msgid "Polish: 100%"
+msgstr "Polonais : 100%"
+
+#: ../source/changelog.md:39 ../source/changelog.md:88
+#: ../source/changelog.md:140 ../source/changelog.md:187
+#: ../source/changelog.md:208 ../source/changelog.md:240
+#: ../source/changelog.md:291
+msgid "Spanish: 100%"
+msgstr "Espagnol : 100%"
+
+#: ../source/changelog.md:41 ../source/changelog.md:90
+#: ../source/changelog.md:142 ../source/changelog.md:244
+#: ../source/changelog.md:298 ../source/changelog.md:353
+#: ../source/changelog.md:385 ../source/changelog.md:642
+#: ../source/changelog.md:925
+msgid "Thanks to the contributors:"
+msgstr "Merci aux contributeurs :"
+
+#: ../source/changelog.md:42 ../source/changelog.md:245
+#: ../source/changelog.md:299 ../source/changelog.md:354
+#: ../source/changelog.md:386
+msgid "@bjornclauw"
+msgstr ""
+
+#: ../source/changelog.md:43 ../source/changelog.md:303
+#: ../source/changelog.md:355 ../source/changelog.md:388
+msgid "@qwerty287"
+msgstr ""
+
+#: ../source/changelog.md:44 ../source/changelog.md:93
+msgid "Mariusz"
+msgstr ""
+
+#: ../source/changelog.md:47
+msgid "Version 0.7.21 (2023/07/30)"
+msgstr "Version 0.7.21 (30/07/2023)"
+
+#: ../source/changelog.md:51
+msgid "#407 - Workout display error when speeds are zero"
+msgstr ""
+
+#: ../source/changelog.md:56
 msgid "PR#409 - CI - update actions version"
 msgstr ""
 
-#: ../source/changelog.md:48
+#: ../source/changelog.md:59
 msgid "Version 0.7.20 (2023/07/22)"
 msgstr "Version 0.7.20 (22/07/2023)"
 
-#: ../source/changelog.md:50 ../source/changelog.md:89
-#: ../source/changelog.md:202 ../source/changelog.md:250
-#: ../source/changelog.md:323 ../source/changelog.md:363
-#: ../source/changelog.md:384 ../source/changelog.md:399
-#: ../source/changelog.md:423 ../source/changelog.md:486
-#: ../source/changelog.md:526
+#: ../source/changelog.md:61 ../source/changelog.md:100
+#: ../source/changelog.md:213 ../source/changelog.md:261
+#: ../source/changelog.md:334 ../source/changelog.md:374
+#: ../source/changelog.md:395 ../source/changelog.md:410
+#: ../source/changelog.md:434 ../source/changelog.md:497
+#: ../source/changelog.md:537
 msgid "Features and enhancements"
 msgstr "Fonctionnalités et améliorations"
 
-#: ../source/changelog.md:52
+#: ../source/changelog.md:63
 msgid "#400 - Add new sport: open water swimming"
 msgstr ""
 
-#: ../source/changelog.md:57
+#: ../source/changelog.md:68
 msgid "PR#398 - Fix language dropdown label"
 msgstr ""
 
-#: ../source/changelog.md:58
+#: ../source/changelog.md:69
 msgid "#402 - handle gpx file without elevation"
 msgstr ""
 
-#: ../source/changelog.md:63
+#: ../source/changelog.md:74
 msgid "PR#399 - Translations update (Galician)"
 msgstr ""
 
-#: ../source/changelog.md:64
+#: ../source/changelog.md:75
 msgid "PR#401 - Translations update (Galician and Polish)"
 msgstr ""
 
-#: ../source/changelog.md:65
+#: ../source/changelog.md:76
 msgid "PR#406 - Translations update (Galician and Spanish)"
 msgstr ""
 
-#: ../source/changelog.md:69 ../source/changelog.md:121
+#: ../source/changelog.md:80 ../source/changelog.md:132
 msgid "Dutch: 97%"
 msgstr "Néerlandais : 97%"
 
-#: ../source/changelog.md:73 ../source/changelog.md:125
+#: ../source/changelog.md:84 ../source/changelog.md:136
 msgid "German: 97%"
 msgstr "Allemand : 97%"
 
-#: ../source/changelog.md:76
+#: ../source/changelog.md:87
 msgid "Polish: 56%"
 msgstr "Polonais : 56%"
 
-#: ../source/changelog.md:80 ../source/changelog.md:133
-#: ../source/changelog.md:235 ../source/changelog.md:291
+#: ../source/changelog.md:91 ../source/changelog.md:144
+#: ../source/changelog.md:246 ../source/changelog.md:302
 msgid "@gallegonovato"
 msgstr ""
 
-#: ../source/changelog.md:81 ../source/changelog.md:134
-#: ../source/changelog.md:238 ../source/changelog.md:293
+#: ../source/changelog.md:92 ../source/changelog.md:145
+#: ../source/changelog.md:249 ../source/changelog.md:304
 msgid "@xmgz"
 msgstr ""
 
-#: ../source/changelog.md:84 ../source/changelog.md:136
-#: ../source/changelog.md:240 ../source/changelog.md:298
-#: ../source/changelog.md:346 ../source/changelog.md:394
-#: ../source/changelog.md:408 ../source/changelog.md:502
-#: ../source/changelog.md:541
+#: ../source/changelog.md:95 ../source/changelog.md:147
+#: ../source/changelog.md:251 ../source/changelog.md:309
+#: ../source/changelog.md:357 ../source/changelog.md:405
+#: ../source/changelog.md:419 ../source/changelog.md:513
+#: ../source/changelog.md:552
 msgid ""
 "Note: This release contains database migration (see upgrade instructions "
 "in documentation)"
@@ -1814,76 +1830,76 @@ msgstr ""
 "Note : Cette version contient des migrations de base de données (voir les"
 " instructions dans la documentation)"
 
-#: ../source/changelog.md:87
+#: ../source/changelog.md:98
 msgid "Version 0.7.19 (2023/07/15)"
 msgstr "Version 0.7.19 (15/07/2023)"
 
-#: ../source/changelog.md:91
+#: ../source/changelog.md:102
 msgid "PR#380 - Update documentation link"
 msgstr ""
 
-#: ../source/changelog.md:92
+#: ../source/changelog.md:103
 msgid "#390 - Improve UI"
 msgstr ""
 
-#: ../source/changelog.md:93
+#: ../source/changelog.md:104
 msgid "#391 - Add new sport: paragliding"
 msgstr ""
 
-#: ../source/changelog.md:98
+#: ../source/changelog.md:109
 msgid "#384 - Inconsistent page with between workout with and without GPS data"
 msgstr ""
 
-#: ../source/changelog.md:99
+#: ../source/changelog.md:110
 msgid "#393 - PIL.Image module has no attribute ANTIALIAS"
 msgstr ""
 
-#: ../source/changelog.md:104
+#: ../source/changelog.md:115
 msgid "PR#394 - Translations update (Galician)"
 msgstr ""
 
-#: ../source/changelog.md:105
+#: ../source/changelog.md:116
 msgid "PR#397 - Translations update (Spanish)"
 msgstr ""
 
-#: ../source/changelog.md:108 ../source/changelog.md:155
-#: ../source/changelog.md:477
+#: ../source/changelog.md:119 ../source/changelog.md:166
+#: ../source/changelog.md:488
 msgid "Documentation"
 msgstr "Documentation"
 
-#: ../source/changelog.md:110
+#: ../source/changelog.md:121
 msgid "PR#386 - Minor fix in CONTRIBUTING.md"
 msgstr ""
 
-#: ../source/changelog.md:111
+#: ../source/changelog.md:122
 msgid "PR#388 - Minor typo in CONTRIBUTING.md"
 msgstr ""
 
-#: ../source/changelog.md:116
+#: ../source/changelog.md:127
 msgid "#395 - CI - test a packaged version of FitTrackee"
 msgstr ""
 
-#: ../source/changelog.md:117
+#: ../source/changelog.md:128
 msgid "cc3fe1c CI - update python and postgresql default versions"
 msgstr ""
 
-#: ../source/changelog.md:124
+#: ../source/changelog.md:135
 msgid "Galician: 98%"
 msgstr "Galicien : 98%"
 
-#: ../source/changelog.md:128
+#: ../source/changelog.md:139
 msgid "Polish: 42%"
 msgstr "Polonais : 42%"
 
-#: ../source/changelog.md:132
+#: ../source/changelog.md:143
 msgid "@dkm"
 msgstr ""
 
-#: ../source/changelog.md:139
+#: ../source/changelog.md:150
 msgid "Version 0.7.18 (2023/06/25)"
 msgstr "Version 0.7.18 (25/06/2023)"
 
-#: ../source/changelog.md:141
+#: ../source/changelog.md:152
 msgid ""
 "Polish is available in FitTrackee interface (partially translated).<br "
 "/>Documentation is now translated in French (note: documentation "
@@ -1894,7 +1910,7 @@ msgstr ""
 " (note: la traduction de la documentation n’est pas encore disponible sur"
 " Weblate)."
 
-#: ../source/changelog.md:144
+#: ../source/changelog.md:155
 msgid ""
 "Important: Python 3.7 is no longer supported, the minimum version is now "
 "Python 3.8.1."
@@ -1902,142 +1918,142 @@ msgstr ""
 "Important: la version 3.7 de Python n’est plus prise en charge, la "
 "version minimale est maintenant la version 3.8.1."
 
-#: ../source/changelog.md:148
+#: ../source/changelog.md:159
 msgid "#351 - [Translation Request] Polish"
 msgstr ""
 
-#: ../source/changelog.md:149
+#: ../source/changelog.md:160
 msgid "PR#370 - Translations update (Dutch, thanks to @bjornclauw)"
 msgstr ""
 
-#: ../source/changelog.md:150
+#: ../source/changelog.md:161
 msgid "PR#371 - Translations update (Polish, thanks to Mariusz on Weblate)"
 msgstr ""
 
-#: ../source/changelog.md:151
+#: ../source/changelog.md:162
 msgid "PR#375 - Translations update (French, thanks to @Thovi98)"
 msgstr ""
 
-#: ../source/changelog.md:152
+#: ../source/changelog.md:163
 msgid "PR#376 - Translations update (German, thanks to @qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:157
+#: ../source/changelog.md:168
 msgid "1375986 - Change documentation theme for Furo"
 msgstr ""
 
-#: ../source/changelog.md:158
+#: ../source/changelog.md:169
 msgid "#377 - Init documentation translation"
 msgstr ""
 
-#: ../source/changelog.md:163
+#: ../source/changelog.md:174
 msgid "#354 - Drop support for Python 3.7"
 msgstr ""
 
-#: ../source/changelog.md:164
+#: ../source/changelog.md:175
 msgid "PR#374 - Docker - install fittrackee in a virtualenv"
 msgstr ""
 
-#: ../source/changelog.md:173 ../source/changelog.md:194
-#: ../source/changelog.md:226 ../source/changelog.md:278
+#: ../source/changelog.md:184 ../source/changelog.md:205
+#: ../source/changelog.md:237 ../source/changelog.md:289
 msgid "Italian: 87%"
 msgstr "Italien : 87%"
 
-#: ../source/changelog.md:174 ../source/changelog.md:195
-#: ../source/changelog.md:227
+#: ../source/changelog.md:185 ../source/changelog.md:206
+#: ../source/changelog.md:238
 msgid "Norwegian Bokmål: 36%"
 msgstr "Norvégien (Bokmål) : 36%"
 
-#: ../source/changelog.md:175
+#: ../source/changelog.md:186
 msgid "Polish: 43%"
 msgstr "Polonais : 43%"
 
-#: ../source/changelog.md:178
+#: ../source/changelog.md:189
 msgid "Thanks to all contributors."
 msgstr "Merci à tous les contributeurs."
 
-#: ../source/changelog.md:181
+#: ../source/changelog.md:192
 msgid "Version 0.7.17 (2023/06/03)"
 msgstr "Version 0.7.17 (03/06/2023)"
 
-#: ../source/changelog.md:185
+#: ../source/changelog.md:196
 msgid ""
 "PR#366, PR#369 - Translations update from Hosted Weblate (Galician, "
 "thanks to @xmgz)"
 msgstr ""
 
-#: ../source/changelog.md:186
+#: ../source/changelog.md:197
 msgid "PR#367 - Translations update (Spanish, French)"
 msgstr ""
 
-#: ../source/changelog.md:189 ../source/changelog.md:221
+#: ../source/changelog.md:200 ../source/changelog.md:232
 msgid "Dutch: 99%"
 msgstr "Néerlandais : 99%"
 
-#: ../source/changelog.md:193 ../source/changelog.md:225
+#: ../source/changelog.md:204 ../source/changelog.md:236
 msgid "German: 99%"
 msgstr "Allemand : 99%"
 
-#: ../source/changelog.md:196 ../source/changelog.md:228
+#: ../source/changelog.md:207 ../source/changelog.md:239
 msgid "Polish: 3%"
 msgstr "Polonais : 3%"
 
-#: ../source/changelog.md:200
+#: ../source/changelog.md:211
 msgid "Version 0.7.16 (2023/05/29)"
 msgstr "Version 0.7.16 (29/05/2023)"
 
-#: ../source/changelog.md:204
+#: ../source/changelog.md:215
 msgid "PR#358 - Add user preference for filtering of GPX speed data"
 msgstr ""
 
-#: ../source/changelog.md:209
+#: ../source/changelog.md:220
 msgid "#359 - Footer overlaps content on user preferences page"
 msgstr ""
 
-#: ../source/changelog.md:214
+#: ../source/changelog.md:225
 msgid "PR#350 - Translations update from Hosted Weblate (Galician)"
 msgstr ""
 
-#: ../source/changelog.md:215
+#: ../source/changelog.md:226
 msgid "PR#352 - Translations update from Hosted Weblate (Dutch)"
 msgstr ""
 
-#: ../source/changelog.md:216
+#: ../source/changelog.md:227
 msgid "PR#356 - Init Polish translation files"
 msgstr ""
 
-#: ../source/changelog.md:217
+#: ../source/changelog.md:228
 msgid "PR#357 - Translations update from Hosted Weblate (Polish)"
 msgstr ""
 
-#: ../source/changelog.md:218
+#: ../source/changelog.md:229
 msgid "PR#365 - Translations update from Hosted Weblate (Spanish)"
 msgstr ""
 
-#: ../source/changelog.md:224
+#: ../source/changelog.md:235
 msgid "Galician: 99%"
 msgstr "Galicien : 99%"
 
-#: ../source/changelog.md:231
+#: ../source/changelog.md:242
 msgid "Note: Polish is not yet available in FitTrackee interface."
 msgstr ""
 "Note: le Polonais n’est pas encore disponible dans l’interface de "
 "FitTrackee."
 
-#: ../source/changelog.md:236
+#: ../source/changelog.md:247
 msgid "@gnu-ewm"
 msgstr ""
 
-#: ../source/changelog.md:237 ../source/changelog.md:290
-#: ../source/changelog.md:376
+#: ../source/changelog.md:248 ../source/changelog.md:301
+#: ../source/changelog.md:387
 msgid "@jat255"
 msgstr ""
 
-#: ../source/changelog.md:243
+#: ../source/changelog.md:254
 msgid "Version 0.7.15 (2023/04/12)"
 msgstr "Version 0.7.15 (12/04/2023)"
 
-#: ../source/changelog.md:245
+#: ../source/changelog.md:256
 msgid ""
 "Among enhancements and fixes, FitTrackee is now available in Galician, "
 "Spanish and partially in Norwegian Bokmål (see translation status below)."
@@ -2046,7 +2062,7 @@ msgstr ""
 "disponible en Galicien, Espagnol et partiellement en Norvégien Bokmål "
 "(voir l’avancement de la traduction ci-dessous)."
 
-#: ../source/changelog.md:247
+#: ../source/changelog.md:258
 msgid ""
 "Note: DarkSky API support is removed, since the service shut down on "
 "March 31, 2023."
@@ -2054,99 +2070,99 @@ msgstr ""
 "Note : le support de l’API de DarkSky est supprimé, le service s’étant "
 "arrêté le 31 Mars 2023."
 
-#: ../source/changelog.md:252
+#: ../source/changelog.md:263
 msgid "#319 - Add cli to create users"
 msgstr ""
 
-#: ../source/changelog.md:253
+#: ../source/changelog.md:264
 msgid "#329 - Make \"start elevation axis at zero\" sticky"
 msgstr ""
 
-#: ../source/changelog.md:254
+#: ../source/changelog.md:265
 msgid "#333 - Feature request: filter workouts by title"
 msgstr ""
 
-#: ../source/changelog.md:255
+#: ../source/changelog.md:266
 msgid "#338 - Display relevant error message when <time> is missing in GPX file"
 msgstr ""
 
-#: ../source/changelog.md:259
+#: ../source/changelog.md:270
 msgid ""
 "#328 - GPX speed and altitude track has incorrect units on x-axis when "
 "imperial"
 msgstr ""
 
-#: ../source/changelog.md:260
+#: ../source/changelog.md:271
 msgid "b29ed7a - fix privacy policy message display on dashboard"
 msgstr ""
 
-#: ../source/changelog.md:264
+#: ../source/changelog.md:275
 msgid "#250 - [Translation Request] Norwegian Bokmål"
 msgstr ""
 
-#: ../source/changelog.md:265
+#: ../source/changelog.md:276
 msgid "#320 - [Translation Request] Spanish"
 msgstr ""
 
-#: ../source/changelog.md:266
+#: ../source/changelog.md:277
 msgid "#323 - [Translation Request] Galician"
 msgstr ""
 
-#: ../source/changelog.md:267
+#: ../source/changelog.md:278
 msgid "06ba975, bcc568e, ea0ac99 - Translations update (German)"
 msgstr ""
 
-#: ../source/changelog.md:268
+#: ../source/changelog.md:279
 msgid "a458f5f - Translations update (Dutch)"
 msgstr ""
 
-#: ../source/changelog.md:269
+#: ../source/changelog.md:280
 msgid "075aeb9 - Translations update (French)"
 msgstr ""
 
-#: ../source/changelog.md:270
+#: ../source/changelog.md:281
 msgid "60e164d - Translations update (Italian)"
 msgstr ""
 
-#: ../source/changelog.md:273
+#: ../source/changelog.md:284
 msgid "Dutch: 98%"
 msgstr "Néerlandais : 98%"
 
-#: ../source/changelog.md:284
+#: ../source/changelog.md:295
 msgid "#318 - Remove DarkSky Weather provider"
 msgstr ""
 
-#: ../source/changelog.md:289
+#: ../source/changelog.md:300
 msgid "@comradekingu"
 msgstr ""
 
-#: ../source/changelog.md:294
+#: ../source/changelog.md:305
 msgid "J. Lavoie from Weblate"
 msgstr "J. Lavoie sur Weblate"
 
-#: ../source/changelog.md:295
+#: ../source/changelog.md:306
 msgid "mondstern from Weblate"
 msgstr "mondstern sur Weblate"
 
-#: ../source/changelog.md:301
+#: ../source/changelog.md:312
 msgid "Version 0.7.14 (2023/03/08)"
 msgstr "Version 0.7.14 (08/03/2023)"
 
-#: ../source/changelog.md:305
+#: ../source/changelog.md:316
 msgid "#314 - GPX file is not deleted when the process fails"
 msgstr ""
 
-#: ../source/changelog.md:309
+#: ../source/changelog.md:320
 msgid ""
 "PR#315 - Translations update from Hosted Weblate (Dutch, thanks to "
 "@bjornclauw)"
 msgstr ""
 
-#: ../source/changelog.md:312
+#: ../source/changelog.md:323
 msgid "Version 0.7.13 (2023/03/05)"
 msgstr "Version 0.7.13 (05/03/2023)"
 
-#: ../source/changelog.md:314
+#: ../source/changelog.md:325
 msgid ""
 "This version allows to display the instance privacy policy. A user must "
 "agree to the privacy policy to register.<br />A default policy is "
@@ -2162,7 +2178,7 @@ msgstr ""
 "message sera affiché à tous les utilisateurs afin qu’ils puissent prendre"
 " connaissance de la politique."
 
-#: ../source/changelog.md:318
+#: ../source/changelog.md:329
 msgid ""
 "A user can now request a data export (containing user info, workout data "
 "and uploaded gpx files)."
@@ -2171,7 +2187,7 @@ msgstr ""
 "les informations de l’utilisateur, les données des séances et les "
 "fichiers gpx téléversés)."
 
-#: ../source/changelog.md:320
+#: ../source/changelog.md:331
 msgid ""
 "Lastly, additional information that may be useful to users can be "
 "displayed in About page."
@@ -2179,164 +2195,164 @@ msgstr ""
 "Enfin, des informations complémentaires pouvant être utiles aux "
 "utilisateurs peuvent être affichées dans la page A propos."
 
-#: ../source/changelog.md:325
+#: ../source/changelog.md:336
 msgid "#301 - add privacy policy"
 msgstr ""
 
-#: ../source/changelog.md:326
+#: ../source/changelog.md:337
 msgid "#304 - add user data export"
 msgstr ""
 
-#: ../source/changelog.md:327
+#: ../source/changelog.md:338
 msgid "#305 - add additional information in About page"
 msgstr ""
 
-#: ../source/changelog.md:331
+#: ../source/changelog.md:342
 msgid "PR#307 - Minor fixes"
 msgstr ""
 
-#: ../source/changelog.md:332
+#: ../source/changelog.md:343
 msgid "update workout and map files name"
 msgstr "mise à jour du nom des fichiers des séances et des cartes"
 
-#: ../source/changelog.md:333
+#: ../source/changelog.md:344
 msgid "fix error message when api is not running"
 msgstr "corrige le message d’erreur quand l’API n’est pas démarrée"
 
-#: ../source/changelog.md:334
+#: ../source/changelog.md:345
 msgid "fix modal position"
 msgstr "corrige la position de la modale"
 
-#: ../source/changelog.md:338
+#: ../source/changelog.md:349
 msgid "PR#297 - Translations update from Hosted Weblate (Dutch)"
 msgstr ""
 
-#: ../source/changelog.md:339
+#: ../source/changelog.md:350
 msgid "PR#308 - Translations update from Hosted Weblate (Dutch)"
 msgstr ""
 
-#: ../source/changelog.md:340
+#: ../source/changelog.md:351
 msgid "PR#310 - Translations update from Hosted Weblate (Dutch and German)"
 msgstr ""
 
-#: ../source/changelog.md:349
+#: ../source/changelog.md:360
 msgid "Version 0.7.12 (2023/02/16)"
 msgstr "Version 0.7.12 (16/02/2023)"
 
-#: ../source/changelog.md:353
+#: ../source/changelog.md:364
 msgid ""
 "PR#290 - Translations update from Hosted Weblate (German, thanks to "
 "@qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:357
+#: ../source/changelog.md:368
 msgid "#294 - drop PostgreSQL10 support"
 msgstr ""
 
-#: ../source/changelog.md:358
+#: ../source/changelog.md:369
 msgid "dependencies update"
 msgstr "mise à jour des dépendances"
 
-#: ../source/changelog.md:361
+#: ../source/changelog.md:372
 msgid "Version 0.7.11 (2022/12/31)"
 msgstr "Version 0.7.11 (31/12/2022)"
 
-#: ../source/changelog.md:365
+#: ../source/changelog.md:376
 msgid ""
 "PR#265 - Implementing alternative weather API (VisualCrossing.com)<br "
 "/>Note: A new environment variable must be to set to configure the "
 "weather data provider: WEATHER_API_PROVIDER (see documentation)"
 msgstr ""
 
-#: ../source/changelog.md:370
+#: ../source/changelog.md:381
 msgid "PR#287 - Translations update from Hosted Weblate (Dutch)"
 msgstr ""
 
-#: ../source/changelog.md:371
+#: ../source/changelog.md:382
 msgid "PR#289 - Translations update from Hosted Weblate (German)"
 msgstr ""
 
-#: ../source/changelog.md:380
+#: ../source/changelog.md:391
 msgid "Version 0.7.10 (2022/12/21)"
 msgstr "Version 0.7.10 (21/12/2022)"
 
-#: ../source/changelog.md:382
+#: ../source/changelog.md:393
 msgid "FitTrackee is now available in Italian (thanks to @dperruso)."
 msgstr "FitTrackee est maintenant disponible en Italien (merci @dperruso)."
 
-#: ../source/changelog.md:386
+#: ../source/changelog.md:397
 msgid "#92 - Add ascent and descent parameters in workout import without GPX file"
 msgstr ""
 
-#: ../source/changelog.md:390
+#: ../source/changelog.md:401
 msgid "#279 - [Translation Request] - Italian (thanks to @dperruso)"
 msgstr ""
 
-#: ../source/changelog.md:391
+#: ../source/changelog.md:402
 msgid ""
 "c88a515 - Translations update from Hosted Weblate (Dutch, thanks to "
 "@bjornclauw)"
 msgstr ""
 
-#: ../source/changelog.md:392
+#: ../source/changelog.md:403
 msgid "f96dcef - Translations update (German)"
 msgstr ""
 
-#: ../source/changelog.md:397
+#: ../source/changelog.md:408
 msgid "Version 0.7.9 (2022/12/11)"
 msgstr "Version 0.7.9 (11/12/2022)"
 
-#: ../source/changelog.md:401
+#: ../source/changelog.md:412
 msgid "#280 - New sport: Mountaineering"
 msgstr ""
 
-#: ../source/changelog.md:405
+#: ../source/changelog.md:416
 msgid ""
 "PR#278 - Translations update from Hosted Weblate (German, thanks to "
 "@qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:406
+#: ../source/changelog.md:417
 msgid "PR#282 - Init italian translation files"
 msgstr ""
 
-#: ../source/changelog.md:411
+#: ../source/changelog.md:422
 msgid "Version 0.7.8 (2022/11/30)"
 msgstr "Version 0.7.8 (30/11/2022)"
 
-#: ../source/changelog.md:413
+#: ../source/changelog.md:424
 msgid "FitTrackee is now available in Dutch (thanks to @bjornclauw)."
 msgstr "FitTrackee est maintenant disponible en Néerlandais (merci @bjornclauw)."
 
-#: ../source/changelog.md:418
+#: ../source/changelog.md:429
 msgid "#270 - [translations request] Dutch (Nederlands)"
 msgstr ""
 
-#: ../source/changelog.md:421
+#: ../source/changelog.md:432
 msgid "Version 0.7.7 (2022/11/27)"
 msgstr "Version 0.7.7 (27/11/2022)"
 
-#: ../source/changelog.md:425
+#: ../source/changelog.md:436
 msgid "#258 - Request: parse links in notes area (thanks to @jat255)"
 msgstr ""
 
-#: ../source/changelog.md:429
+#: ../source/changelog.md:440
 msgid "PR#271 - Fix workouts creation"
 msgstr ""
 
-#: ../source/changelog.md:433
+#: ../source/changelog.md:444
 msgid "PR#273 - Init Dutch translations files"
 msgstr ""
 
-#: ../source/changelog.md:437
+#: ../source/changelog.md:448
 msgid "PR#274 - Tests parallelization"
 msgstr ""
 
-#: ../source/changelog.md:438
+#: ../source/changelog.md:449
 msgid "PR#275 - Disable worker entry point"
 msgstr ""
 
-#: ../source/changelog.md:440
+#: ../source/changelog.md:451
 msgid ""
 "Note: fittrackee_worker command is disabled, please use existing flask-"
 "dramatiq CLI (see documentation)"
@@ -2345,183 +2361,183 @@ msgstr ""
 "l’interface de ligne de commande existante flask-dramatiq (see "
 "documentation)"
 
-#: ../source/changelog.md:442
+#: ../source/changelog.md:453
 msgid "Version 0.7.6 (2022/11/09)"
 msgstr "Version 0.7.6 (09/11/2022)"
 
-#: ../source/changelog.md:446
+#: ../source/changelog.md:457
 msgid "3c8d9c2 - fix api locale file (remove trailing comma)"
 msgstr ""
 
-#: ../source/changelog.md:450
+#: ../source/changelog.md:461
 msgid "dev dependencies update"
 msgstr "mise à jour des dépendances de développement"
 
-#: ../source/changelog.md:453
+#: ../source/changelog.md:464
 msgid "Version 0.7.5 (2022/11/09)"
 msgstr "Version 0.7.5 (09/11/2022)"
 
-#: ../source/changelog.md:457
+#: ../source/changelog.md:468
 msgid "#264 - UI has white and gray background"
 msgstr ""
 
-#: ../source/changelog.md:461
+#: ../source/changelog.md:472
 msgid ""
 "#266 - Translations update from Hosted Weblate (German, thanks to "
 "@qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:464
+#: ../source/changelog.md:475
 msgid "Version 0.7.4 (2022/11/05)"
 msgstr "Version 0.7.4 (05/11/2022)"
 
-#: ../source/changelog.md:468
+#: ../source/changelog.md:479
 msgid "#260 - Files size is not checked in zip archive"
 msgstr ""
 
-#: ../source/changelog.md:469
+#: ../source/changelog.md:480
 msgid ""
 "#261 - The API should return an error when the number of files in an "
 "archive exceeds the limit"
 msgstr ""
 
-#: ../source/changelog.md:471
+#: ../source/changelog.md:482
 msgid "Note: archive import still needs some improvements (see #89)"
 msgstr "Note : l’import d’archives nécessite encore des améliorations (voir #89) "
 
-#: ../source/changelog.md:475
+#: ../source/changelog.md:486
 msgid "b1536fc - fix french translations in administration"
 msgstr ""
 
-#: ../source/changelog.md:479
+#: ../source/changelog.md:490
 msgid "#257 - Add client_max_body_size note to example nginx config"
 msgstr ""
 
-#: ../source/changelog.md:481 ../source/changelog.md:491
+#: ../source/changelog.md:492 ../source/changelog.md:502
 msgid "Thanks to @jat255"
 msgstr "Merci @jat255"
 
-#: ../source/changelog.md:484
+#: ../source/changelog.md:495
 msgid "Version 0.7.3 (2022/11/01)"
 msgstr "Version 0.7.3 (01/11/2022)"
 
-#: ../source/changelog.md:488
+#: ../source/changelog.md:499
 msgid "#112 - allow user to change date format"
 msgstr ""
 
-#: ../source/changelog.md:489
+#: ../source/changelog.md:500
 msgid "#244 - New sport type: \"Virtual Ride\""
 msgstr ""
 
-#: ../source/changelog.md:495
+#: ../source/changelog.md:506
 msgid "#246 - Add support to PostgreSQL 15"
 msgstr ""
 
-#: ../source/changelog.md:496
+#: ../source/changelog.md:507
 msgid "#247 - Segments duration is displayed with microseconds"
 msgstr ""
 
-#: ../source/changelog.md:500
+#: ../source/changelog.md:511
 msgid "PR#252 - init Norwegian Bokmål translations files"
 msgstr ""
 
-#: ../source/changelog.md:505
+#: ../source/changelog.md:516
 msgid "Version 0.7.2 (2022/09/21)"
 msgstr "Version 0.7.2 (21/09/2022)"
 
-#: ../source/changelog.md:509
+#: ../source/changelog.md:520
 msgid "PR#242 - Translations update from Weblate (German, thanks to @qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:512
+#: ../source/changelog.md:523
 msgid "Version 0.7.1 (2022/09/21)"
 msgstr "Version 0.7.1 (21/09/2022)"
 
-#: ../source/changelog.md:516
+#: ../source/changelog.md:527
 msgid "PR#241 - Add missing password strength estimation package (german)"
 msgstr ""
 
-#: ../source/changelog.md:520
+#: ../source/changelog.md:531
 msgid "PR#239 - Translations update from Weblate (German, thanks to @qwerty287)"
 msgstr ""
 
-#: ../source/changelog.md:521
+#: ../source/changelog.md:532
 msgid "cb9d02f - Update OAuth 2.0 translations (English & French)"
 msgstr ""
 
-#: ../source/changelog.md:524
+#: ../source/changelog.md:535
 msgid "Version 0.7.0 (2022/09/19)"
 msgstr "Version 0.7.0 (19/09/2022)"
 
-#: ../source/changelog.md:528
+#: ../source/changelog.md:539
 msgid "#88 - OAuth 2.0 access token for api access"
 msgstr ""
 
-#: ../source/changelog.md:529
+#: ../source/changelog.md:540
 msgid "#231 - Invalidate token on logout"
 msgstr ""
 
-#: ../source/changelog.md:530
+#: ../source/changelog.md:541
 msgid "PR#236 - Add API rate limits"
 msgstr ""
 
-#: ../source/changelog.md:534
+#: ../source/changelog.md:545
 msgid "#232 - Speed chart can not be hidden"
 msgstr ""
 
-#: ../source/changelog.md:535
+#: ../source/changelog.md:546
 msgid "#237 - Can not edit a workout when notes value is null"
 msgstr ""
 
-#: ../source/changelog.md:539
+#: ../source/changelog.md:550
 msgid "PR#212 - Translations update from Hosted Weblate (thanks to J. Lavoie)"
 msgstr ""
 
-#: ../source/changelog.md:544
+#: ../source/changelog.md:555
 msgid "Version 0.6.12 (2022/09/14)"
 msgstr "Version 0.6.12 (14/09/2022)"
 
-#: ../source/changelog.md:546 ../source/changelog.md:567
-#: ../source/changelog.md:589 ../source/changelog.md:612
-#: ../source/changelog.md:638 ../source/changelog.md:656
-#: ../source/changelog.md:680 ../source/changelog.md:691
-#: ../source/changelog.md:713 ../source/changelog.md:725
-#: ../source/changelog.md:740 ../source/changelog.md:773
-#: ../source/changelog.md:803 ../source/changelog.md:820
-#: ../source/changelog.md:838 ../source/changelog.md:849
-#: ../source/changelog.md:861 ../source/changelog.md:874
-#: ../source/changelog.md:887 ../source/changelog.md:921
-#: ../source/changelog.md:939 ../source/changelog.md:950
-#: ../source/changelog.md:966 ../source/changelog.md:979
-#: ../source/changelog.md:991 ../source/changelog.md:1007
-#: ../source/changelog.md:1031 ../source/changelog.md:1048
-#: ../source/changelog.md:1065 ../source/changelog.md:1090
-#: ../source/changelog.md:1102 ../source/changelog.md:1118
-#: ../source/changelog.md:1128 ../source/changelog.md:1153
-#: ../source/changelog.md:1168 ../source/changelog.md:1218
+#: ../source/changelog.md:557 ../source/changelog.md:578
+#: ../source/changelog.md:600 ../source/changelog.md:623
+#: ../source/changelog.md:649 ../source/changelog.md:667
+#: ../source/changelog.md:691 ../source/changelog.md:702
+#: ../source/changelog.md:724 ../source/changelog.md:736
+#: ../source/changelog.md:751 ../source/changelog.md:784
+#: ../source/changelog.md:814 ../source/changelog.md:831
+#: ../source/changelog.md:849 ../source/changelog.md:860
+#: ../source/changelog.md:872 ../source/changelog.md:885
+#: ../source/changelog.md:898 ../source/changelog.md:932
+#: ../source/changelog.md:950 ../source/changelog.md:961
+#: ../source/changelog.md:977 ../source/changelog.md:990
+#: ../source/changelog.md:1002 ../source/changelog.md:1018
+#: ../source/changelog.md:1042 ../source/changelog.md:1059
+#: ../source/changelog.md:1076 ../source/changelog.md:1101
+#: ../source/changelog.md:1113 ../source/changelog.md:1129
+#: ../source/changelog.md:1139 ../source/changelog.md:1164
+#: ../source/changelog.md:1179 ../source/changelog.md:1229
 msgid "Issues Closed"
 msgstr "Tickets Fermés"
 
-#: ../source/changelog.md:550
+#: ../source/changelog.md:561
 msgid "#230 - Database problem after upgrade to 0.6.11"
 msgstr ""
 
-#: ../source/changelog.md:552 ../source/changelog.md:573
-#: ../source/changelog.md:596 ../source/changelog.md:702
-#: ../source/changelog.md:751 ../source/changelog.md:779
-#: ../source/changelog.md:809 ../source/changelog.md:904
+#: ../source/changelog.md:563 ../source/changelog.md:584
+#: ../source/changelog.md:607 ../source/changelog.md:713
+#: ../source/changelog.md:762 ../source/changelog.md:790
+#: ../source/changelog.md:820 ../source/changelog.md:915
 msgid "Pull Requests"
 msgstr ""
 
-#: ../source/changelog.md:556
+#: ../source/changelog.md:567
 msgid "#225 - Fix grammar issue"
 msgstr ""
 
-#: ../source/changelog.md:558
+#: ../source/changelog.md:569
 msgid "Thanks to @Skylan0916"
 msgstr "Merci a @Skylan0916"
 
-#: ../source/changelog.md:560
+#: ../source/changelog.md:571
 msgid ""
 "In this release 1 issue was closed.<br />Note: This release contains a "
 "fix on the last database migration that will be executed only on versions"
@@ -2537,39 +2553,39 @@ msgstr ""
 " version 12)<br />(voir les instructions de mise à jour dans la "
 "documentation)."
 
-#: ../source/changelog.md:565
+#: ../source/changelog.md:576
 msgid "Version 0.6.11 (2022/07/27)"
 msgstr "Version 0.6.11 (27/02/2022)"
 
-#: ../source/changelog.md:571
+#: ../source/changelog.md:582
 msgid ""
 "#213 - Statistics - When using imperial measurements, ascent/descent "
 "should be in ft not mi"
 msgstr ""
 
-#: ../source/changelog.md:575 ../source/changelog.md:614
-#: ../source/changelog.md:682 ../source/changelog.md:742
+#: ../source/changelog.md:586 ../source/changelog.md:625
+#: ../source/changelog.md:693 ../source/changelog.md:753
 #: ../source/features.rst:2
 msgid "Features"
 msgstr "Fonctionnalités"
 
-#: ../source/changelog.md:577
+#: ../source/changelog.md:588
 msgid "#223 - Display ascent record icon"
 msgstr ""
 
-#: ../source/changelog.md:578
+#: ../source/changelog.md:589
 msgid "#167 - Added ascent record to Dashboard"
 msgstr ""
 
-#: ../source/changelog.md:579
+#: ../source/changelog.md:590
 msgid "#162 - Added total elevation to dashboard"
 msgstr ""
 
-#: ../source/changelog.md:581 ../source/changelog.md:758
+#: ../source/changelog.md:592 ../source/changelog.md:769
 msgid "Thanks to @Fmstrat"
 msgstr "Merci @Fmstrat"
 
-#: ../source/changelog.md:583 ../source/changelog.md:814
+#: ../source/changelog.md:594 ../source/changelog.md:825
 msgid ""
 "In this release 1 issue was closed.<br />Note: This release contains "
 "database migration (see upgrade instructions in documentation)"
@@ -2578,40 +2594,40 @@ msgstr ""
 "contient migration de base de données (voir les instructions de mise à "
 "jour dans la documentation)"
 
-#: ../source/changelog.md:587
+#: ../source/changelog.md:598
 msgid "Version 0.6.10 (2022/07/13)"
 msgstr "Version 0.6.10 (13/07/2022)"
 
-#: ../source/changelog.md:593
+#: ../source/changelog.md:604
 msgid ""
 "#210 - ERROR - could not download 6 tiles<br />Note: for tile server "
 "requiring subdomains, see the new environment variable "
 "STATICMAP_SUBDOMAINS"
 msgstr ""
 
-#: ../source/changelog.md:600
+#: ../source/changelog.md:611
 msgid "#209 - Incorrect duration with track containing multiple segments"
 msgstr ""
 
-#: ../source/changelog.md:602
+#: ../source/changelog.md:613
 msgid "Thanks to @gorgobacka"
 msgstr "Merci @gorgobacka"
 
-#: ../source/changelog.md:604 ../source/changelog.md:662
-#: ../source/changelog.md:686 ../source/changelog.md:697
-#: ../source/changelog.md:731 ../source/changelog.md:798
-#: ../source/changelog.md:844 ../source/changelog.md:945
-#: ../source/changelog.md:961 ../source/changelog.md:1002
-#: ../source/changelog.md:1037 ../source/changelog.md:1124
-#: ../source/changelog.md:1163
+#: ../source/changelog.md:615 ../source/changelog.md:673
+#: ../source/changelog.md:697 ../source/changelog.md:708
+#: ../source/changelog.md:742 ../source/changelog.md:809
+#: ../source/changelog.md:855 ../source/changelog.md:956
+#: ../source/changelog.md:972 ../source/changelog.md:1013
+#: ../source/changelog.md:1048 ../source/changelog.md:1135
+#: ../source/changelog.md:1174
 msgid "In this release 1 issue was closed."
 msgstr "Dans cette version 1 ticket a été fermé."
 
-#: ../source/changelog.md:607
+#: ../source/changelog.md:618
 msgid "Version 0.6.9 (2022/07/03)"
 msgstr "Version 0.6.9 (03/07/2022)"
 
-#: ../source/changelog.md:609
+#: ../source/changelog.md:620
 msgid ""
 "FitTrackee is now available in German (thanks to @gorgobacka).<br />And "
 "translations can be updated on Weblate."
@@ -2619,60 +2635,60 @@ msgstr ""
 "FitTrackee est maintenant disponible en Allemand (merci @gorgobacka).<br "
 "/>Et les traductions peuvent être mises à jour sur Weblate."
 
-#: ../source/changelog.md:616
+#: ../source/changelog.md:627
 msgid "#200 - Detect browser language to use matching translation if available"
 msgstr ""
 
-#: ../source/changelog.md:620
+#: ../source/changelog.md:631
 msgid "PR#208 - fix order on records cards"
 msgstr ""
 
-#: ../source/changelog.md:621
+#: ../source/changelog.md:632
 msgid "#201 - html lang attribute is not updated when changing language"
 msgstr ""
 
-#: ../source/changelog.md:625
+#: ../source/changelog.md:636
 msgid "PR#197 - Translations update from Weblate (French)"
 msgstr ""
 
-#: ../source/changelog.md:626
+#: ../source/changelog.md:637
 msgid "#196 - Use translation management tool"
 msgstr ""
 
-#: ../source/changelog.md:627
+#: ../source/changelog.md:638
 msgid "#190 - Add German translation"
 msgstr ""
 
-#: ../source/changelog.md:629 ../source/changelog.md:833
-#: ../source/changelog.md:934
+#: ../source/changelog.md:640 ../source/changelog.md:844
+#: ../source/changelog.md:945
 msgid "In this release 4 issues were closed."
 msgstr "Dans cette version 4 tickets ont été fermés."
 
-#: ../source/changelog.md:632
+#: ../source/changelog.md:643
 msgid "@gorgobacka"
 msgstr ""
 
-#: ../source/changelog.md:633
+#: ../source/changelog.md:644
 msgid "J. Lavoie (from Weblate)"
 msgstr "J. Lavoie (sur Weblate)"
 
-#: ../source/changelog.md:636
+#: ../source/changelog.md:647
 msgid "Version 0.6.8 (2022/06/22)"
 msgstr "Version 0.6.8 (22/06/2022)"
 
-#: ../source/changelog.md:642
+#: ../source/changelog.md:653
 msgid "#193 - Allow deleting a workout when files are missing"
 msgstr ""
 
-#: ../source/changelog.md:643
+#: ../source/changelog.md:654
 msgid "#192 - Returns 404 instead of 500 when map file not found"
 msgstr ""
 
-#: ../source/changelog.md:644
+#: ../source/changelog.md:655
 msgid "#191 - Layout issue on Workouts page"
 msgstr ""
 
-#: ../source/changelog.md:648
+#: ../source/changelog.md:659
 msgid ""
 "change gpx and map file naming (included in PR#195)<br />Note: it does "
 "not affect previously imported files"
@@ -2680,29 +2696,29 @@ msgstr ""
 "changement dans la nomenclature des fichiers (inclus la PR#195)<br />Note"
 " : ceci n’affecte pas les fichiers précédemment importés"
 
-#: ../source/changelog.md:650
+#: ../source/changelog.md:661
 msgid "cc4287e - Fix docker env file"
 msgstr ""
 
-#: ../source/changelog.md:652 ../source/changelog.md:882
-#: ../source/changelog.md:974 ../source/changelog.md:1073
-#: ../source/changelog.md:1113
+#: ../source/changelog.md:663 ../source/changelog.md:893
+#: ../source/changelog.md:985 ../source/changelog.md:1084
+#: ../source/changelog.md:1124
 msgid "In this release 3 issues were closed."
 msgstr "Dans cette version 3 tickets ont été fermés."
 
-#: ../source/changelog.md:654
+#: ../source/changelog.md:665
 msgid "Version 0.6.7 (2022/06/11)"
 msgstr "Version 0.6.7 (11/06/2022)"
 
-#: ../source/changelog.md:660
+#: ../source/changelog.md:671
 msgid "#156 - Process gpx file with offset"
 msgstr ""
 
-#: ../source/changelog.md:665
+#: ../source/changelog.md:676
 msgid "Version 0.6.6 (2022/05/29)"
 msgstr "Version 0.6.6 (29/05/2022)"
 
-#: ../source/changelog.md:669
+#: ../source/changelog.md:680
 msgid ""
 "No new features in this release, only dependencies update and code "
 "refacto before introducing new features."
@@ -2711,11 +2727,11 @@ msgstr ""
 "à jour de dépendances et de la refactorisation de code avant l’ajout de "
 "nouvelles fonctionnalités."
 
-#: ../source/changelog.md:672
+#: ../source/changelog.md:683
 msgid "Version 0.6.5 (2022/04/24)"
 msgstr "Version 0.6.5 (24/04/2022)"
 
-#: ../source/changelog.md:674
+#: ../source/changelog.md:685
 msgid ""
 "It is now possible to start FitTrackee without a configured SMTP provider"
 " (see documentation). It reduces pre-requisites for single-user "
@@ -2725,71 +2741,71 @@ msgstr ""
 "configuré (voir la documentation). Cela réduit les prérequis pour les "
 "instances mono-utilisateurs"
 
-#: ../source/changelog.md:677
+#: ../source/changelog.md:688
 msgid "To manage users, a new CLI is available."
 msgstr ""
 "Pour gérer les utilisations, une nouvelle interface de ligne de commandes"
 " (CLI) est disponible."
 
-#: ../source/changelog.md:684
+#: ../source/changelog.md:695
 msgid "#180 - allow using FitTrackee without SMTP server"
 msgstr ""
 
-#: ../source/changelog.md:689
+#: ../source/changelog.md:700
 msgid "Version 0.6.4 (2022/04/23)"
 msgstr "Version 0.6.4 (23/04/2022)"
 
-#: ../source/changelog.md:695
+#: ../source/changelog.md:706
 msgid "#178 - cannot send email with TLS"
 msgstr ""
 
-#: ../source/changelog.md:700
+#: ../source/changelog.md:711
 msgid "Version 0.6.3 (2022/04/09)"
 msgstr "Version 0.6.3 (09/04/2022)"
 
-#: ../source/changelog.md:706
+#: ../source/changelog.md:717
 msgid "#177 - Minor fixes"
 msgstr ""
 
-#: ../source/changelog.md:707
+#: ../source/changelog.md:718
 msgid "add missing translation"
 msgstr "ajout de traductions manquantes"
 
-#: ../source/changelog.md:708
+#: ../source/changelog.md:719
 msgid "fix 'Add Workout' card position on small screens"
 msgstr "corrige la position de la carte ’Ajouter une séance’ sur les petits écrans"
 
-#: ../source/changelog.md:711
+#: ../source/changelog.md:722
 msgid "Version 0.6.2 (2022/04/03)"
 msgstr "Version 0.6.2 (03/04/2022)"
 
-#: ../source/changelog.md:717
+#: ../source/changelog.md:728
 msgid "#175 - Distance card on dashboard is not refreshed"
 msgstr ""
 
-#: ../source/changelog.md:718
+#: ../source/changelog.md:729
 msgid "#173 - link to user profile in workout card is incorrect"
 msgstr ""
 
-#: ../source/changelog.md:720 ../source/changelog.md:856
-#: ../source/changelog.md:986 ../source/changelog.md:1018
-#: ../source/changelog.md:1055 ../source/changelog.md:1097
+#: ../source/changelog.md:731 ../source/changelog.md:867
+#: ../source/changelog.md:997 ../source/changelog.md:1029
+#: ../source/changelog.md:1066 ../source/changelog.md:1108
 msgid "In this release 2 issues were closed."
 msgstr "Dans cette version 2 tickets ont été fermés."
 
-#: ../source/changelog.md:723
+#: ../source/changelog.md:734
 msgid "Version 0.6.1 (2022/03/27)"
 msgstr "Version 0.6.1 (27/03/2022)"
 
-#: ../source/changelog.md:729
+#: ../source/changelog.md:740
 msgid "#171 - Stats chart is not updated correctly"
 msgstr ""
 
-#: ../source/changelog.md:734
+#: ../source/changelog.md:745
 msgid "Version 0.6.0 (2022/03/27)"
 msgstr "Version 0.6.0 (27/03/2022)"
 
-#: ../source/changelog.md:736
+#: ../source/changelog.md:747
 msgid ""
 "This version introduces some changes on user registration.<br />From now "
 "on, a user needs to confirm his account after registration (an email with"
@@ -2800,27 +2816,27 @@ msgstr ""
 " son compte après inscription (un courriel avec les instructions de "
 "confirmation est envoyé avec inscription)."
 
-#: ../source/changelog.md:744
+#: ../source/changelog.md:755
 msgid "#155 -  Improve user registration"
 msgstr ""
 
-#: ../source/changelog.md:745
+#: ../source/changelog.md:756
 msgid "#106 -  Allow user to update email"
 msgstr ""
 
-#: ../source/changelog.md:749
+#: ../source/changelog.md:760
 msgid "#169 -  user picture is not refreshed after update"
 msgstr ""
 
-#: ../source/changelog.md:755
+#: ../source/changelog.md:766
 msgid "#161 - Minor translation issue on 'Farthest'"
 msgstr ""
 
-#: ../source/changelog.md:756
+#: ../source/changelog.md:767
 msgid "#160 - Minor translation issue on APP_ERROR"
 msgstr ""
 
-#: ../source/changelog.md:760
+#: ../source/changelog.md:771
 msgid ""
 "In this release 3 issues were closed.<br />Note: This release contains "
 "database migration (see upgrade instructions in documentation)"
@@ -2829,11 +2845,11 @@ msgstr ""
 "contient des migrations de base de données (voir les instructions de mise"
 " à jour dans la documentation)"
 
-#: ../source/changelog.md:764
+#: ../source/changelog.md:775
 msgid "Version 0.5.7 (2022/02/13)"
 msgstr "Version 0.5.7 (13/02/2022"
 
-#: ../source/changelog.md:766
+#: ../source/changelog.md:777
 msgid ""
 "This release contains several fixes including security fixes.<br />Thanks"
 " to @DanielSiersleben for the report."
@@ -2841,7 +2857,7 @@ msgstr ""
 "Cette version contient plusieurs corrections de sécurité.<br /> Merci "
 "@DanielSiersleben pour le rapport."
 
-#: ../source/changelog.md:769
+#: ../source/changelog.md:780
 msgid ""
 "And from now on, admin account is not created on application "
 "initialization.<br />A new command is added to set administration rights "
@@ -2852,47 +2868,47 @@ msgstr ""
 "donner les droits d’administration au compte créé après inscription (voir"
 " la documentation)"
 
-#: ../source/changelog.md:777
+#: ../source/changelog.md:788
 msgid "#149 - improve database initialisation"
 msgstr ""
 
-#: ../source/changelog.md:781
+#: ../source/changelog.md:792
 msgid "Security"
 msgstr "Sécurité"
 
-#: ../source/changelog.md:783 ../source/changelog.md:793
+#: ../source/changelog.md:794 ../source/changelog.md:804
 msgid "#152 - Fixes and improvements:"
 msgstr ""
 
-#: ../source/changelog.md:784
+#: ../source/changelog.md:795
 msgid "set autoescape on jinja templates"
 msgstr "configure l’échappement (_autoespcape_) dans les modèles jinja"
 
-#: ../source/changelog.md:786
+#: ../source/changelog.md:797
 msgid "#151 - fix security issues:"
 msgstr ""
 
-#: ../source/changelog.md:787
+#: ../source/changelog.md:798
 msgid "sanitize input when serving images"
 msgstr "nettoie les entrées lorsque les images sont servies"
 
-#: ../source/changelog.md:788
+#: ../source/changelog.md:799
 msgid "sanitize inputs when serving map tiles"
 msgstr "nettoie les entrées lorsque les tuiles sont servies"
 
-#: ../source/changelog.md:789
+#: ../source/changelog.md:800
 msgid "allow only alphanumeric characters and '_' in username"
 msgstr ""
 "permet seulement les caractères alphanumériques et les '_' dans le nom de"
 " l’utilisateurs"
 
-#: ../source/changelog.md:794
+#: ../source/changelog.md:805
 msgid "fix dramatiq warning when launching workers w/ script entrypoint"
 msgstr ""
 "corrige les alertes de dramatiq quand les workers sont lancés à partir du"
 " point d’entrée du script."
 
-#: ../source/changelog.md:795
+#: ../source/changelog.md:806
 msgid ""
 "check app config before dropping database, to avoid deleting data on "
 "production"
@@ -2900,93 +2916,93 @@ msgstr ""
 "vérifie la configuration de l’application avant de supprimer la base de "
 "données afin d’éviter de supprimer des données en production"
 
-#: ../source/changelog.md:796
+#: ../source/changelog.md:807
 msgid "remove dotenv warning"
 msgstr "supprime l’alerte dotenv"
 
-#: ../source/changelog.md:801
+#: ../source/changelog.md:812
 msgid "Version 0.5.6 (2022/02/05)"
 msgstr "Version 0.5.6 (05/02/2022)"
 
-#: ../source/changelog.md:807
+#: ../source/changelog.md:818
 msgid "#146 - incorrect label on workouts filters"
 msgstr ""
 
-#: ../source/changelog.md:811
+#: ../source/changelog.md:822
 msgid "#145 - fix on database models"
 msgstr ""
 
-#: ../source/changelog.md:818
+#: ../source/changelog.md:829
 msgid "Version 0.5.5 (2022/01/19)"
 msgstr "Version 0.5.5 (19/01/2022)"
 
-#: ../source/changelog.md:822 ../source/changelog.md:863
-#: ../source/changelog.md:876 ../source/changelog.md:889
-#: ../source/changelog.md:923 ../source/changelog.md:1009
-#: ../source/changelog.md:1033 ../source/changelog.md:1050
-#: ../source/changelog.md:1067 ../source/changelog.md:1104
-#: ../source/changelog.md:1130 ../source/changelog.md:1155
-#: ../source/changelog.md:1170 ../source/changelog.md:1220
+#: ../source/changelog.md:833 ../source/changelog.md:874
+#: ../source/changelog.md:887 ../source/changelog.md:900
+#: ../source/changelog.md:934 ../source/changelog.md:1020
+#: ../source/changelog.md:1044 ../source/changelog.md:1061
+#: ../source/changelog.md:1078 ../source/changelog.md:1115
+#: ../source/changelog.md:1141 ../source/changelog.md:1166
+#: ../source/changelog.md:1181 ../source/changelog.md:1231
 msgid "New Features"
 msgstr "Nouvelles fonctionnalités"
 
-#: ../source/changelog.md:824
+#: ../source/changelog.md:835
 msgid "#140 - Add a fullscreen control to workout map"
 msgstr ""
 
-#: ../source/changelog.md:825
+#: ../source/changelog.md:836
 msgid "#138 - Add control to reset map to initial position"
 msgstr ""
 
-#: ../source/changelog.md:826
+#: ../source/changelog.md:837
 msgid "#135 - Start and finish markers"
 msgstr ""
 
-#: ../source/changelog.md:827
+#: ../source/changelog.md:838
 msgid "#134 - Wind direction"
 msgstr ""
 
-#: ../source/changelog.md:831
+#: ../source/changelog.md:842
 msgid ""
 "877fa0f - fix sport icon color (when changed) on calendar on small "
 "resolutions"
 msgstr ""
 
-#: ../source/changelog.md:836
+#: ../source/changelog.md:847
 msgid "Version 0.5.4 (2022/01/01)"
 msgstr "Version 0.5.4 (01/01/2022"
 
-#: ../source/changelog.md:842
+#: ../source/changelog.md:853
 msgid "#131 - No workouts displayed on calendar"
 msgstr ""
 
-#: ../source/changelog.md:847
+#: ../source/changelog.md:858
 msgid "Version 0.5.3 (2022/01/01)"
 msgstr "Version 0.5.3 (01/01/2022)"
 
-#: ../source/changelog.md:853
+#: ../source/changelog.md:864
 msgid "#129 - Display only active sports when editing a workout"
 msgstr ""
 
-#: ../source/changelog.md:854
+#: ../source/changelog.md:865
 msgid ""
 "#127 - parse_email_url() can't validate a legitimate EMAIL_URI such as "
 "\"smtp://localhost:25\""
 msgstr ""
 
-#: ../source/changelog.md:859
+#: ../source/changelog.md:870
 msgid "Version 0.5.2 (2021/12/19)"
 msgstr "Version 0.5.2 (19/12/2021)"
 
-#: ../source/changelog.md:865
+#: ../source/changelog.md:876
 msgid "#123 - Allow user to reset preferences for a sport"
 msgstr ""
 
-#: ../source/changelog.md:866
+#: ../source/changelog.md:877
 msgid "#121 - Add activity : snowshoes"
 msgstr ""
 
-#: ../source/changelog.md:868
+#: ../source/changelog.md:879
 msgid ""
 "In this release 2 issues were closed.<br />Note: This release contains "
 "database migration."
@@ -2994,69 +3010,69 @@ msgstr ""
 "Dans cette version 2 tickets ont été fermés<br />Note : cette version "
 "contains des migrations de base de données."
 
-#: ../source/changelog.md:872
+#: ../source/changelog.md:883
 msgid "Version 0.5.1 (2021/11/30)"
 msgstr "Version 0.5.1 (30/11/2021)"
 
-#: ../source/changelog.md:878
+#: ../source/changelog.md:889
 msgid ""
 "#116 - Better UI for Speed and Elevation buttons in the graph of the "
 "Workout screen"
 msgstr ""
 
-#: ../source/changelog.md:879
+#: ../source/changelog.md:890
 msgid "#115 - Add option to download the GPX file of a Workout"
 msgstr ""
 
-#: ../source/changelog.md:880
+#: ../source/changelog.md:891
 msgid "#5 - Display a chart with average speed"
 msgstr ""
 
-#: ../source/changelog.md:885
+#: ../source/changelog.md:896
 msgid "Version 0.5.0 (2021/11/14)"
 msgstr "Version 0.5.0 (14/11/2021)"
 
-#: ../source/changelog.md:891
+#: ../source/changelog.md:902
 msgid "#99 - Display workout with imperial units"
 msgstr ""
 
-#: ../source/changelog.md:892
+#: ../source/changelog.md:903
 msgid "#91 - Display elevation chart with min and max altitude of workout"
 msgstr ""
 
-#: ../source/changelog.md:893
+#: ../source/changelog.md:904
 msgid "#90 - Add user sports preferences"
 msgstr ""
 
-#: ../source/changelog.md:894
+#: ../source/changelog.md:905
 msgid "#18 - Better UI"
 msgstr ""
 
-#: ../source/changelog.md:898
+#: ../source/changelog.md:909
 msgid "#95 - Some workouts seem to be missing on statistics chart"
 msgstr ""
 
-#: ../source/changelog.md:902
+#: ../source/changelog.md:913
 msgid "#104 - Switch to AGPLv3 license"
 msgstr ""
 
-#: ../source/changelog.md:906
+#: ../source/changelog.md:917
 msgid "#101 - Docker updates for full files"
 msgstr ""
 
-#: ../source/changelog.md:907
+#: ../source/changelog.md:918
 msgid "#100 - Add client application in docker for development"
 msgstr ""
 
-#: ../source/changelog.md:908
+#: ../source/changelog.md:919
 msgid "#98/#109 - Added stopped_speed_threshold to support slow movement"
 msgstr ""
 
-#: ../source/changelog.md:909
+#: ../source/changelog.md:920
 msgid "#84/#93 - Add elevation data and new sports"
 msgstr ""
 
-#: ../source/changelog.md:911
+#: ../source/changelog.md:922
 msgid ""
 "In this release 6 issues were closed.<br />Note: This release contains "
 "database migrations."
@@ -3064,54 +3080,54 @@ msgstr ""
 "Dans cette version 6 tickets ont été fermés<br />Note : cette version "
 "contient des migrations de base de données."
 
-#: ../source/changelog.md:915
+#: ../source/changelog.md:926
 msgid "@Fmstrat"
 msgstr ""
 
-#: ../source/changelog.md:916
+#: ../source/changelog.md:927
 msgid "@paf38"
 msgstr ""
 
-#: ../source/changelog.md:919
+#: ../source/changelog.md:930
 msgid "Version 0.4.9 (2021/07/16)"
 msgstr "Version 0.4.9 (16/07/2021)"
 
-#: ../source/changelog.md:925
+#: ../source/changelog.md:936
 msgid ""
 "#83 - allow using configured tile server to generate static maps<br "
 "/>Note: to keep using the default tile server, set environment variable "
 "DEFAULT_STATICMAP to True"
 msgstr ""
 
-#: ../source/changelog.md:927
+#: ../source/changelog.md:938
 msgid "#81 - display remaining characters in textarea"
 msgstr ""
 
-#: ../source/changelog.md:931
+#: ../source/changelog.md:942
 msgid "#82 - a user can not modify his birth day"
 msgstr ""
 
-#: ../source/changelog.md:932
+#: ../source/changelog.md:943
 msgid "#80 - can not save notes with control characters"
 msgstr ""
 
-#: ../source/changelog.md:937
+#: ../source/changelog.md:948
 msgid "Version 0.4.8 (2021/07/03)"
 msgstr "Version 0.4.8 (03/07/2021)"
 
-#: ../source/changelog.md:943
+#: ../source/changelog.md:954
 msgid "#79 - Fails to start after make rebuild"
 msgstr ""
 
-#: ../source/changelog.md:948
+#: ../source/changelog.md:959
 msgid "Version 0.4.7 (2021/04/07)"
 msgstr "Version 0.4.7 (07/04/2021)"
 
-#: ../source/changelog.md:954
+#: ../source/changelog.md:965
 msgid "#75 - Workouts on the same day are not displayed in right order"
 msgstr ""
 
-#: ../source/changelog.md:958
+#: ../source/changelog.md:969
 msgid ""
 "Update Python and Javascript dependencies<br />IMPORTANT: Due to "
 "SQLAlchemy update (1.4+), engine URLs starting with postgres:// are no "
@@ -3122,71 +3138,71 @@ msgstr ""
 "postgres:// ne sont plus prise en charge. Merci de mettre à jour la "
 "variable DATABASE_URL avec postgresql://."
 
-#: ../source/changelog.md:964
+#: ../source/changelog.md:975
 msgid "Version 0.4.6 (2021/02/21)"
 msgstr "Version 0.4.6 (21/02/2021)"
 
-#: ../source/changelog.md:970
+#: ../source/changelog.md:981
 msgid "#72 - Error message when file exceeding size is incorrect"
 msgstr ""
 
-#: ../source/changelog.md:971
+#: ../source/changelog.md:982
 msgid "#71 - max size or max number of files must be greater than 0"
 msgstr ""
 
-#: ../source/changelog.md:972
+#: ../source/changelog.md:983
 msgid ""
 "#70 - max size for an archive must not be less than uploaded files max "
 "size"
 msgstr ""
 
-#: ../source/changelog.md:977
+#: ../source/changelog.md:988
 msgid "Version 0.4.5 (2021/02/17)"
 msgstr "Version 0.4.5 (17/02/2021)"
 
-#: ../source/changelog.md:983
+#: ../source/changelog.md:994
 msgid "#66 - invalid gpx limit used when importing zip archive"
 msgstr ""
 
-#: ../source/changelog.md:984
+#: ../source/changelog.md:995
 msgid "#64 - Only 50 workouts per month shown in calendar"
 msgstr ""
 
-#: ../source/changelog.md:989
+#: ../source/changelog.md:1000
 msgid "Version 0.4.4 (2021/01/31)"
 msgstr "Version 0.4.4 (31/01/2021)"
 
-#: ../source/changelog.md:995
+#: ../source/changelog.md:1006
 msgid "#62 - Error when sending reset password email"
 msgstr ""
 
-#: ../source/changelog.md:999
+#: ../source/changelog.md:1010
 msgid "Refactoring before introducing new features."
 msgstr "Refactorisation avant l’ajout de nouvelles fonctionnalités."
 
-#: ../source/changelog.md:1000
+#: ../source/changelog.md:1011
 msgid "Add docker files for evaluation purposes."
 msgstr "Ajout de fichiers Docker à des fins d’évaluation."
 
-#: ../source/changelog.md:1005
+#: ../source/changelog.md:1016
 msgid "Version 0.4.3 (2021/01/10)"
 msgstr "Version 0.4.3 (10/01/2021)"
 
-#: ../source/changelog.md:1011
+#: ../source/changelog.md:1022
 msgid ""
 "#58 - Standardize terms used for workouts<br />Note: Database model, "
 "upload directory for workouts and API endpoints are also updated."
 msgstr ""
 
-#: ../source/changelog.md:1016
+#: ../source/changelog.md:1027
 msgid "#59 - No message displayed on uploading image error"
 msgstr ""
 
-#: ../source/changelog.md:1021
+#: ../source/changelog.md:1032
 msgid "Version 0.4.2 (2021/01/03)"
 msgstr "Version 0.4.2 (03/01/2021)"
 
-#: ../source/changelog.md:1025
+#: ../source/changelog.md:1036
 msgid ""
 "No new features in this release, only some refactorings before "
 "introducing new features."
@@ -3194,23 +3210,23 @@ msgstr ""
 "Pas de nouvelles fonctionnalités dans cette version, seulement de la "
 "refactorisation avant l’ajout de nouvelles fonctionnalités."
 
-#: ../source/changelog.md:1029
+#: ../source/changelog.md:1040
 msgid "Version 0.4.1 (2020/12/31)"
 msgstr "Version 0.4.1 (31/12/2020)"
 
-#: ../source/changelog.md:1035
+#: ../source/changelog.md:1046
 msgid "#57 - Use uuid for activities"
 msgstr ""
 
-#: ../source/changelog.md:1040
+#: ../source/changelog.md:1051
 msgid "Version 0.4.0 - FitTrackee on PyPI (2020/09/19)"
 msgstr "Version 0.4.0 - FitTrackee sur PyPI (19/09/2020)"
 
-#: ../source/changelog.md:1042 ../source/changelog.md:1060
+#: ../source/changelog.md:1053 ../source/changelog.md:1071
 msgid "This version introduces some major changes:"
 msgstr "Cette version introduit des changement majeurs :"
 
-#: ../source/changelog.md:1043
+#: ../source/changelog.md:1054
 msgid ""
 "Installation becomes more easy. FitTrackee can be now be installed from "
 "PyPi.<br />⚠️ Warning: please read installation documentation, some "
@@ -3221,7 +3237,7 @@ msgstr ""
 "d’installation, certaines variables d’environnement et certains fichiers "
 "ont été renommés."
 
-#: ../source/changelog.md:1045
+#: ../source/changelog.md:1056
 msgid ""
 "It's now possible to change the tile provider for maps. The default tile "
 "server is now OpenStreetMap's standard tile layer (replacing "
@@ -3232,19 +3248,19 @@ msgstr ""
 "d’OpenStreetMap (remplaçant ThunderForest Outdoors), voir les Serveurs de"
 " tuiles dans la documentation."
 
-#: ../source/changelog.md:1052
+#: ../source/changelog.md:1063
 msgid "#54 - Tile server can be changed"
 msgstr ""
 
-#: ../source/changelog.md:1053
+#: ../source/changelog.md:1064
 msgid "#53 - Simplify FitTrackee installation"
 msgstr ""
 
-#: ../source/changelog.md:1058
+#: ../source/changelog.md:1069
 msgid "Version 0.3.0 - Administration (2020/07/15)"
 msgstr "Version 0.3.0 - Administration (15/07/2020)"
 
-#: ../source/changelog.md:1061
+#: ../source/changelog.md:1072
 msgid ""
 "FitTrackee administration is now available (see documentation)<br />⚠️ "
 "Warning: some application parameters move from environment variables to "
@@ -3255,219 +3271,219 @@ msgstr ""
 "ont été déplacés des variables d’environnement vers la base de données "
 "(voir l’installation dans la documentation)."
 
-#: ../source/changelog.md:1063
+#: ../source/changelog.md:1074
 msgid "in order to send emails, Redis is now a mandatory dependency"
 msgstr ""
 "afin d’envoyer des courriels, Redis est maintenant une dépendance "
 "obligatoire"
 
-#: ../source/changelog.md:1069
+#: ../source/changelog.md:1080
 msgid "#50 - A user can reset his password"
 msgstr ""
 
-#: ../source/changelog.md:1070
+#: ../source/changelog.md:1081
 msgid "#17 - A user can delete his account"
 msgstr ""
 
-#: ../source/changelog.md:1071
+#: ../source/changelog.md:1082
 msgid "#15 - Complete the administration"
 msgstr ""
 
-#: ../source/changelog.md:1076
+#: ../source/changelog.md:1087
 msgid "Version 0.2.5 - Fix and improvements (2020/01/31)"
 msgstr "Version 0.2.5 - Corrections et améliorations (31/01/2020)"
 
-#: ../source/changelog.md:1080
+#: ../source/changelog.md:1091
 msgid "This version contains minor fix and improvements on client side:"
 msgstr ""
 "Cette version contient des corrections mineures et des améliorations coé "
 "client :"
 
-#: ../source/changelog.md:1081
+#: ../source/changelog.md:1092
 msgid "4c3fc34 - empty user data on logout"
 msgstr ""
 
-#: ../source/changelog.md:1082
+#: ../source/changelog.md:1093
 msgid "34614d5 - add spinner on loading activities"
 msgstr ""
 
-#: ../source/changelog.md:1083
+#: ../source/changelog.md:1094
 msgid "b862a77, 2e1ee2c - add URL interceptors to simplify routes definition"
 msgstr ""
 
-#: ../source/changelog.md:1088
+#: ../source/changelog.md:1099
 msgid "Version 0.2.4 - Minor fix (2020/01/30)"
 msgstr "Version 0.2.4 - Corrections mineures (30/01/2020)"
 
-#: ../source/changelog.md:1094
+#: ../source/changelog.md:1105
 msgid "#47 - timezone drop-down is not displayed correctly"
 msgstr ""
 
-#: ../source/changelog.md:1095
+#: ../source/changelog.md:1106
 msgid "#46 - calendar cannot display more than 5 or 6 activities on the same day"
 msgstr ""
 
-#: ../source/changelog.md:1100
+#: ../source/changelog.md:1111
 msgid "Version 0.2.3 - FitTrackee available in French (2019/12/29)"
 msgstr "Version 0.2.3 - FitTrackee disponible en Français (29/12/2019)"
 
-#: ../source/changelog.md:1106
+#: ../source/changelog.md:1117
 msgid "#43 - Display weekend days with a different background color on calendar"
 msgstr ""
 
-#: ../source/changelog.md:1107
+#: ../source/changelog.md:1118
 msgid "#40 - Localize FitTrackee (i18n)"
 msgstr ""
 
-#: ../source/changelog.md:1111
+#: ../source/changelog.md:1122
 msgid "#44 - Cannot edit an activity that does not have a gpx file"
 msgstr ""
 
-#: ../source/changelog.md:1116
+#: ../source/changelog.md:1127
 msgid "Version 0.2.2 - Statistics fix (2019/09/23)"
 msgstr "Version 0.2.2 - Corrections des statistiques (23/09/2019)"
 
-#: ../source/changelog.md:1122
+#: ../source/changelog.md:1133
 msgid "#41 - User statistics are incorrect"
 msgstr ""
 
-#: ../source/changelog.md:1126
+#: ../source/changelog.md:1137
 msgid "Version 0.2.1 - Fix and improvements (2019/09/01)"
 msgstr "Version 0.2.1 - Correction et améliorations (01/09/2019)"
 
-#: ../source/changelog.md:1132
+#: ../source/changelog.md:1143
 msgid "#4 - Show points on the map when mouse over the chart"
 msgstr ""
 
-#: ../source/changelog.md:1133
+#: ../source/changelog.md:1144
 msgid "#14 - Display segments informations"
 msgstr ""
 
-#: ../source/changelog.md:1134
+#: ../source/changelog.md:1145
 msgid "#21 - Document the API"
 msgstr ""
 
-#: ../source/changelog.md:1135
+#: ../source/changelog.md:1146
 msgid "#23 - The user can choose the first day of the week"
 msgstr ""
 
-#: ../source/changelog.md:1136
+#: ../source/changelog.md:1147
 msgid "#36 - Disable user registration"
 msgstr ""
 
-#: ../source/changelog.md:1137
+#: ../source/changelog.md:1148
 msgid "#33 - Add file size limit on file upload"
 msgstr ""
 
-#: ../source/changelog.md:1138
+#: ../source/changelog.md:1149
 msgid "#37 - Display map on activities list"
 msgstr ""
 
-#: ../source/changelog.md:1142
+#: ../source/changelog.md:1153
 msgid "#34 - Weather is not displayed anymore"
 msgstr ""
 
-#: ../source/changelog.md:1146
+#: ../source/changelog.md:1157
 msgid "Poetry replaces pipenv for Python packages management"
 msgstr "Poetry remplace pipenv pour la gestion des paquets Python"
 
-#: ../source/changelog.md:1148
+#: ../source/changelog.md:1159
 msgid "In this release 8 issues were closed."
 msgstr "Dans cette version 8 tickets ont été fermés."
 
-#: ../source/changelog.md:1151
+#: ../source/changelog.md:1162
 msgid "Version 0.2.0 - Statistics (2019/07/07)"
 msgstr "Version 0.2.0 - Statistiques (07/07/2019)"
 
-#: ../source/changelog.md:1157
+#: ../source/changelog.md:1168
 msgid "#13 - Detailed statistics"
 msgstr ""
 
-#: ../source/changelog.md:1161
+#: ../source/changelog.md:1172
 msgid "Update dependencies"
 msgstr "Mise à jour des dépendances"
 
-#: ../source/changelog.md:1166
+#: ../source/changelog.md:1177
 msgid "Version 0.1.1 - Fix and improvements (2019/02/07)"
 msgstr "Version 0.1.1 - Corrections et améliorations (07/02/2019)"
 
-#: ../source/changelog.md:1172
+#: ../source/changelog.md:1183
 msgid "#25 - Display records on calendar"
 msgstr ""
 
-#: ../source/changelog.md:1173
+#: ../source/changelog.md:1184
 msgid "#22 - Add a total on current month statistics"
 msgstr ""
 
-#: ../source/changelog.md:1177
+#: ../source/changelog.md:1188
 msgid "#31 - Use moving duration for stats"
 msgstr ""
 
-#: ../source/changelog.md:1178
+#: ../source/changelog.md:1189
 msgid "#29 - Pause duration calculation with segments"
 msgstr ""
 
-#: ../source/changelog.md:1179
+#: ../source/changelog.md:1190
 msgid "#28 - Error on uploading gpx file"
 msgstr ""
 
-#: ../source/changelog.md:1180
+#: ../source/changelog.md:1191
 msgid "#26 - Total is incorrect in tooltip when duration is displayed"
 msgstr ""
 
-#: ../source/changelog.md:1181
+#: ../source/changelog.md:1192
 msgid ""
 "#24 - Some distances are not displayed correctly on current month "
 "statistics"
 msgstr ""
 
-#: ../source/changelog.md:1183
+#: ../source/changelog.md:1194
 msgid "In this release 7 issues were closed."
 msgstr "Dans cette version 7 tickets ont été fermés."
 
-#: ../source/changelog.md:1186
+#: ../source/changelog.md:1197
 msgid "Version 0.1.0 - First release 🎉 (2018-07-04)"
 msgstr "Version 0.1.0 - Première version 🎉 (04/07/2018)"
 
-#: ../source/changelog.md:1188
+#: ../source/changelog.md:1199
 msgid "Features:"
 msgstr "Fonctionnalités :"
 
-#: ../source/changelog.md:1189
+#: ../source/changelog.md:1200
 msgid "Account creation (only standard user, not admin)"
 msgstr "Création de compte (utilisateur standard, non administrateur)"
 
-#: ../source/changelog.md:1190
+#: ../source/changelog.md:1201
 msgid "6 sports supported:"
 msgstr "6 sports pris en charge :"
 
-#: ../source/changelog.md:1191 ../source/features.rst:15
+#: ../source/changelog.md:1202 ../source/features.rst:15
 msgid "Cycling (Sport)"
 msgstr "Vélo (Sport)"
 
-#: ../source/changelog.md:1192 ../source/features.rst:16
+#: ../source/changelog.md:1203 ../source/features.rst:16
 msgid "Cycling (Transport)"
 msgstr "Vélo (Transport)"
 
-#: ../source/changelog.md:1193 ../source/features.rst:18
+#: ../source/changelog.md:1204 ../source/features.rst:18
 #: ../source/features.rst:33
 msgid "Hiking"
 msgstr "Randonnée"
 
-#: ../source/changelog.md:1194 ../source/features.rst:19
+#: ../source/changelog.md:1205 ../source/features.rst:19
 msgid "Mountain Biking"
 msgstr "VTT"
 
-#: ../source/changelog.md:1195 ../source/features.rst:25
+#: ../source/changelog.md:1206 ../source/features.rst:25
 msgid "Running"
 msgstr "Course à pied"
 
-#: ../source/changelog.md:1196 ../source/features.rst:30
+#: ../source/changelog.md:1207 ../source/features.rst:30
 #: ../source/features.rst:40
 msgid "Walking"
 msgstr "Marche"
 
-#: ../source/changelog.md:1197
+#: ../source/changelog.md:1208
 msgid ""
 "Activity creation by uploading a gpx file. An activity can even be "
 "created without gpx (the user must enter date, time, duration and "
@@ -3477,11 +3493,11 @@ msgstr ""
 " être créée sans fichier gpx (l’utilisateur doit enter la date, l’heure, "
 "la durée et la distance)"
 
-#: ../source/changelog.md:1198
+#: ../source/changelog.md:1209
 msgid "Activity edition and deletion"
 msgstr "Modification et suppression d’activité"
 
-#: ../source/changelog.md:1199
+#: ../source/changelog.md:1210
 msgid ""
 "An activity can be displayed with map (if with gpx), weather (if the "
 "DarkSky API key is provided) and charts (speed and elevation)"
@@ -3490,85 +3506,85 @@ msgstr ""
 "existe), la météo (si une clé d’API DarkSky a été configurée) et des "
 "graphiques (vitesse et altitude)"
 
-#: ../source/changelog.md:1200
+#: ../source/changelog.md:1211
 msgid "A user can add a note"
 msgstr "Un utilisateur peut ajouter une note"
 
-#: ../source/changelog.md:1201
+#: ../source/changelog.md:1212
 msgid "Month calendar with activities"
 msgstr "Calendrier mensuel avec les activités"
 
-#: ../source/changelog.md:1202
+#: ../source/changelog.md:1213
 msgid "Current month statistics"
 msgstr "Statistiques du mois en cours"
 
-#: ../source/changelog.md:1203
+#: ../source/changelog.md:1214
 msgid "Records by sports:"
 msgstr "Records par sports :"
 
-#: ../source/changelog.md:1204 ../source/features.rst:72
+#: ../source/changelog.md:1215 ../source/features.rst:72
 #: ../source/features.rst:88 ../source/features.rst:94
 msgid "average speed"
 msgstr "vitesse moyenne"
 
-#: ../source/changelog.md:1205 ../source/features.rst:73
+#: ../source/changelog.md:1216 ../source/features.rst:73
 msgid "farthest distance"
 msgstr "la plus grande distance"
 
-#: ../source/changelog.md:1206 ../source/features.rst:75
+#: ../source/changelog.md:1217 ../source/features.rst:75
 msgid "longest duration"
 msgstr "durée la plus longue"
 
-#: ../source/changelog.md:1207 ../source/features.rst:76
+#: ../source/changelog.md:1218 ../source/features.rst:76
 #: ../source/features.rst:89
 msgid "maximum speed"
 msgstr "vitesse maximale"
 
-#: ../source/changelog.md:1208
+#: ../source/changelog.md:1219
 msgid "Activities list and search"
 msgstr "Liste des activités et recherche"
 
-#: ../source/changelog.md:1211
+#: ../source/changelog.md:1222
 msgid "Notes:"
 msgstr "Notes :"
 
-#: ../source/changelog.md:1212
+#: ../source/changelog.md:1223
 msgid "only activity owner can see his activity"
 msgstr "seul le propriétaire d’une activité peut la voir"
 
-#: ../source/changelog.md:1213
+#: ../source/changelog.md:1224
 msgid "no administration for now"
 msgstr "pas d’administration pour le moment"
 
-#: ../source/changelog.md:1215
+#: ../source/changelog.md:1226
 msgid "➡️ more informations: see documentation and current issues"
 msgstr "➡️ plus d’informations : voir la documentation et les tickets en cours"
 
-#: ../source/changelog.md:1222
+#: ../source/changelog.md:1233
 msgid "#11 - Timezone support"
 msgstr ""
 
-#: ../source/changelog.md:1223
+#: ../source/changelog.md:1234
 msgid "#10 - Add a note to an activity"
 msgstr ""
 
-#: ../source/changelog.md:1224
+#: ../source/changelog.md:1235
 msgid "#9 - User statistics on dashboard"
 msgstr ""
 
-#: ../source/changelog.md:1225
+#: ../source/changelog.md:1236
 msgid "#8 - Add weather to activities"
 msgstr ""
 
-#: ../source/changelog.md:1226
+#: ../source/changelog.md:1237
 msgid "#3 - Search filter for activities"
 msgstr ""
 
-#: ../source/changelog.md:1227
+#: ../source/changelog.md:1238
 msgid "#2 - Calendar to view activities"
 msgstr ""
 
-#: ../source/changelog.md:1229
+#: ../source/changelog.md:1240
 msgid "In this release 6 issues were closed."
 msgstr "Dans cette version 6 tickets ont été fermés."
 
@@ -4619,8 +4635,8 @@ msgstr ""
 msgid "Table of contents"
 msgstr "Table des matières"
 
-#: ../source/installation.rst:2 ../source/installation.rst:371
-#: ../source/installation.rst:804
+#: ../source/installation.rst:2 ../source/installation.rst:379
+#: ../source/installation.rst:812
 msgid "Installation"
 msgstr "Installation"
 
@@ -4958,7 +4974,7 @@ msgstr ""
 "URL du serveur d'envoi des courriels avec les informations de connexion, "
 "cf. `Courriels <installation.html#emails>`__."
 
-#: ../source/installation.rst:146 ../source/installation.rst:203
+#: ../source/installation.rst:146 ../source/installation.rst:207
 msgid "empty string"
 msgstr "chaine de caractère vide"
 
@@ -5016,11 +5032,19 @@ msgstr ""
 "images statiques des cartes (pour garder le serveur par défaut cf. "
 "`DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)"
 
-#: ../source/installation.rst:193
+#: ../source/installation.rst:195 ../source/installation.rst:321
+msgid ""
+"The default URL is updated: **OpenStreetMap**'s tile server no longer "
+"requires subdomains."
+msgstr ""
+"L'URL par défaut a été mise à jour : le serveur de tuiles "
+"**OpenStreetMap** ne nécessite plus de sous-domaines."
+
+#: ../source/installation.rst:197
 msgid "``https://tile.openstreetmap.org/{z}/{x}/{y}.png``"
 msgstr ""
 
-#: ../source/installation.rst:200
+#: ../source/installation.rst:204
 msgid ""
 "Some tile servers require a subdomain, see `Map tile server "
 "<installation.html#map-tile-server>`__."
@@ -5028,11 +5052,11 @@ msgstr ""
 "Certains serveurs de tuiles nécessitent un sous-domaine, df. `Serveur de "
 "tuiles <installation.html#map-tile-server>`__."
 
-#: ../source/installation.rst:201
+#: ../source/installation.rst:205
 msgid "For instance: \"a,b,c\" for OSM France."
 msgstr "Par exemple: \"a,b,c\" pour OSM France."
 
-#: ../source/installation.rst:210
+#: ../source/installation.rst:214
 msgid ""
 "Map attribution (if using another tile server), see `Map tile server "
 "<installation.html#map-tile-server>`__."
@@ -5040,24 +5064,25 @@ msgstr ""
 "Attribution de la carte (si une autre serveur de tuile est utilisé), cf. "
 "`Serveur de tuiles <installation.html#map-tile-server>`__."
 
-#: ../source/installation.rst:212
+#: ../source/installation.rst:216
 msgid ""
 "``&copy; <a href=\"http://www.openstreetmap.org/copyright\" "
 "target=\"_blank\" rel=\"noopener noreferrer\">OpenStreetMap</a> "
 "contributors``"
 msgstr ""
 
-#: ../source/installation.rst:219
+#: ../source/installation.rst:223
 msgid ""
 "If ``True``, it keeps using **staticmap** default tile server to generate"
 " static maps (OSM tile server since **staticmap** 0.5.6 (Komoot.de tile "
 "server before this version))."
 msgstr ""
-"Si ``True``, le serveur de tuile par défaut de **staticmap** est conservé "
-"pour générer les images statiques de cartes (serveur de tuiles OSM depuis la "
-"version 0.5.6 de **staticmap** (celui de Komoot.de avant cette version))."
+"Si ``True``, le serveur de tuile par défaut de **staticmap** est conservé"
+" pour générer les images statiques de cartes (serveur de tuiles OSM "
+"depuis la version 0.5.6 de **staticmap** (celui de Komoot.de avant cette "
+"version))."
 
-#: ../source/installation.rst:220
+#: ../source/installation.rst:224
 msgid ""
 "Otherwise, it uses the tile server set in `TILE_SERVER_URL "
 "<installation.html#envvar-TILE_SERVER_URL>`__."
@@ -5065,11 +5090,11 @@ msgstr ""
 "Sinon, le serveur de tuiles configuré dans `TILE_SERVER_URL "
 "<installation.html#envvar-TILE_SERVER_URL>`__ sera utilisé."
 
-#: ../source/installation.rst:224
+#: ../source/installation.rst:228
 msgid "This variable is now case-insensitive."
 msgstr "Cette variable est maintenant insensible à la casse."
 
-#: ../source/installation.rst:225
+#: ../source/installation.rst:229
 msgid ""
 "If ``False``, depending on tile server, `subdomains <installation.html"
 "#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory."
@@ -5078,21 +5103,21 @@ msgstr ""
 "<installation.html#envvar-STATICMAP_SUBDOMAINS>`__ peuvent être "
 "obligatoires."
 
-#: ../source/installation.rst:227
+#: ../source/installation.rst:231
 msgid "``False``"
 msgstr ""
 
-#: ../source/installation.rst:232
+#: ../source/installation.rst:236
 msgid "⚠️ replaces ``WEATHER_API``"
 msgstr "⚠️ remplace ``WEATHER_API``"
 
-#: ../source/installation.rst:234
+#: ../source/installation.rst:238
 msgid "Weather API key (not mandatory), see ``WEATHER_API_PROVIDER``."
 msgstr ""
 "Clé d'API du fournisseur de données météo (non obligatoire), cf. "
 "``WEATHER_API_PROVIDER``."
 
-#: ../source/installation.rst:241
+#: ../source/installation.rst:245
 msgid ""
 "Provider for weather data (not mandatory), see `Weather data "
 "<installation.html#weather-data>`__."
@@ -5100,23 +5125,23 @@ msgstr ""
 "Fournisseur de données météo (non obligatoire), cf `Données météo "
 "<installation.html#weather-data>`__."
 
-#: ../source/installation.rst:246
+#: ../source/installation.rst:250
 msgid "**FitTrackee** API URL, only needed in dev environment."
 msgstr ""
 "URL de l'API **FitTrackee**, uniquement pour les environnements de "
 "développement."
 
-#: ../source/installation.rst:251
+#: ../source/installation.rst:255
 msgid "Emails"
 msgstr "Courriels"
 
-#: ../source/installation.rst:254
+#: ../source/installation.rst:258
 msgid "To send emails, a valid ``EMAIL_URL`` must be provided:"
 msgstr ""
 "Pour l'envoi des courriels, une valeur valide pour la variable "
 "``EMAIL_URL`` doit être fourni :"
 
-#: ../source/installation.rst:256
+#: ../source/installation.rst:260
 msgid ""
 "with an unencrypted SMTP server: "
 "``smtp://username:password@smtp.example.com:25``"
@@ -5124,11 +5149,11 @@ msgstr ""
 "avec un SMTP server sans chiffrement : "
 "``smtp://username:password@smtp.example.com:25``"
 
-#: ../source/installation.rst:257
+#: ../source/installation.rst:261
 msgid "with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``"
 msgstr "avec SSL : ``smtp://username:password@smtp.example.com:465/?ssl=True``"
 
-#: ../source/installation.rst:258
+#: ../source/installation.rst:262
 msgid "with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``"
 msgstr ""
 "avec STARTTLS : "
@@ -5140,13 +5165,13 @@ msgstr ""
 "L'envoi de courriels avec Office365 peut ne pas fonctionner si "
 "l'authentification SMTP est désactivée."
 
-#: ../source/installation.rst:266
+#: ../source/installation.rst:270
 msgid "Credentials can be omitted: ``smtp://smtp.example.com:25``."
 msgstr ""
 "Les informations d'identification peuvent être omises : "
 "``smtp://smtp.example.com:25``."
 
-#: ../source/installation.rst:267
+#: ../source/installation.rst:271
 msgid "If ``:<port>`` is omitted, the port defaults to 25."
 msgstr "Si ``:<port>`` est omis, the port par défaut est 25."
 
@@ -5159,27 +5184,27 @@ msgstr ""
 "confirmés (un courriel contenant des instructions de confirmation est "
 "envoyé après l'inscription)."
 
-#: ../source/installation.rst:272
+#: ../source/installation.rst:276
 msgid "Emails sent by FitTrackee are:"
 msgstr "Les courriels envoyés par FitTrackee sont :"
 
-#: ../source/installation.rst:274
+#: ../source/installation.rst:278
 msgid "account confirmation instructions"
 msgstr "instructions pour la confirmation du compte"
 
-#: ../source/installation.rst:275
+#: ../source/installation.rst:279
 msgid "password reset request"
 msgstr "demande de réinitialisation du mot de passe"
 
-#: ../source/installation.rst:276
+#: ../source/installation.rst:280
 msgid "email change (to old and new email addresses)"
 msgstr "changement d'adresse électronique (vers l'ancienne et la nouvelle adresse)"
 
-#: ../source/installation.rst:277
+#: ../source/installation.rst:281
 msgid "password change"
 msgstr "changement de mot de passe"
 
-#: ../source/installation.rst:278
+#: ../source/installation.rst:282
 msgid ""
 "notification when a data export archive is ready to download (*new in "
 "0.7.13*)"
@@ -5187,7 +5212,7 @@ msgstr ""
 "notification lorsqu'une archive d'export de données est prête à être "
 "téléchargée (*ajouté dans la version 0.7.13*)"
 
-#: ../source/installation.rst:282
+#: ../source/installation.rst:286
 msgid ""
 "For single-user instance, it is possible to disable email sending with an"
 " empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers)."
@@ -5197,7 +5222,7 @@ msgstr ""
 "vide (dans ce cas il n'est pas nécessaire de lancer les *workers* de "
 "dramatiq)."
 
-#: ../source/installation.rst:284
+#: ../source/installation.rst:288
 msgid ""
 "A `CLI <cli.html#ftcli-users-update>`__ is available to activate account,"
 " modify email and password and handle data export requests."
@@ -5207,11 +5232,11 @@ msgstr ""
 "électronique et le mot de passe et gérer les demandes d'exports de "
 "données."
 
-#: ../source/installation.rst:288
+#: ../source/installation.rst:292
 msgid "Map tile server"
 msgstr "Serveur de tuiles"
 
-#: ../source/installation.rst:291
+#: ../source/installation.rst:295
 msgid ""
 "Default tile server is now **OpenStreetMap**'s standard tile layer (if "
 "environment variables are not initialized). The tile server can be "
@@ -5226,11 +5251,11 @@ msgstr ""
 " de tuiles "
 "<https://wiki.openstreetmap.org/wiki/Raster_tile_providers>`__)."
 
-#: ../source/installation.rst:294
+#: ../source/installation.rst:298
 msgid "To keep using **ThunderForest Outdoors**, the configuration is:"
 msgstr "Pour conserver **ThunderForest Outdoors**, la configuration est :"
 
-#: ../source/installation.rst:296
+#: ../source/installation.rst:300
 msgid ""
 "``TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX``"
 " where **XXXX** is **ThunderForest** API key"
@@ -5238,7 +5263,7 @@ msgstr ""
 "``TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX``"
 " où **XXXX** est la clé d'API de **ThunderForest**"
 
-#: ../source/installation.rst:297
+#: ../source/installation.rst:301
 msgid ""
 "``MAP_ATTRIBUTION=&copy; <a "
 "href=\"http://www.thunderforest.com/\">Thunderforest</a>, &copy; <a "
@@ -5252,7 +5277,7 @@ msgstr ""
 "Vérifier les conditions d'utilisation du fournisseur de tuiles pour "
 "l'attribution des cartes."
 
-#: ../source/installation.rst:305
+#: ../source/installation.rst:309
 msgid ""
 "Since the tile server can be used for static map generation, some servers"
 " require a subdomain."
@@ -5261,17 +5286,17 @@ msgstr ""
 "images statiques de cartes, certains serveurs nécessitent un sous-"
 "domaine."
 
-#: ../source/installation.rst:307
+#: ../source/installation.rst:311
 msgid "For instance, to set OSM France tile server, the expected values are:"
 msgstr ""
 "Par exemple, pour configurer le serveur d\\'OSM France, les valeurs "
 "attendues sont :"
 
-#: ../source/installation.rst:309
+#: ../source/installation.rst:313
 msgid "``TILE_SERVER_URL=https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png``"
 msgstr ""
 
-#: ../source/installation.rst:310
+#: ../source/installation.rst:314
 msgid ""
 "``MAP_ATTRIBUTION='fond de carte par <a "
 "href=\"http://www.openstreetmap.fr/mentions-legales/\" target=\"_blank\" "
@@ -5280,19 +5305,19 @@ msgid ""
 "target=\"_blank\" rel=\"nofollow noopener\">licence CC BY-SA</a>'``"
 msgstr ""
 
-#: ../source/installation.rst:311
+#: ../source/installation.rst:315
 msgid "``STATICMAP_SUBDOMAINS=a,b,c``"
 msgstr ""
 
-#: ../source/installation.rst:313
+#: ../source/installation.rst:317
 msgid "The subdomain will be chosen randomly."
 msgstr "Le sous-domaine sera choisi de manière aléatoire."
 
-#: ../source/installation.rst:317
+#: ../source/installation.rst:325
 msgid "API rate limits"
 msgstr "Limitation d'accès à l'API"
 
-#: ../source/installation.rst:320
+#: ../source/installation.rst:328
 msgid ""
 "API rate limits are managed by `Flask-Limiter <https://flask-"
 "limiter.readthedocs.io/en/stable>`_, based on IP with fixed window "
@@ -5302,7 +5327,7 @@ msgstr ""
 "://flask-limiter.readthedocs.io/en/stable>`_, et basé sur l'adresse IP "
 "avec une stratégie de période fixe."
 
-#: ../source/installation.rst:321
+#: ../source/installation.rst:329
 msgid "To enable rate limits, **Redis** must be available."
 msgstr "Pour activer la limitation d'accès, **Redis** doit être accessible."
 
@@ -5314,13 +5339,13 @@ msgstr ""
 "Si aucune instance Redis n'est disponible, FitTrackee pourra tout de même"
 " démarrer."
 
-#: ../source/installation.rst:326
+#: ../source/installation.rst:334
 msgid "All endpoints are subject to rate limits, except endpoints serving assets."
 msgstr ""
 "Tous les points d'accès sont soumis à des limitations d'accès sauf les "
 "points servant des *assets*."
 
-#: ../source/installation.rst:327
+#: ../source/installation.rst:335
 msgid ""
 "Limits can be modified by setting the environment variable "
 "``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https"
@@ -5332,11 +5357,11 @@ msgstr ""
 "<https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-"
 "limit-string-notation>`_)."
 
-#: ../source/installation.rst:328
+#: ../source/installation.rst:336
 msgid "Rate limits must be separated by a comma, for instance:"
 msgstr "Les limites doivent être séparées par des virgules, par exemple :"
 
-#: ../source/installation.rst:334
+#: ../source/installation.rst:342
 msgid ""
 "**Flask-Limiter** provides a `Command Line Interface <https://flask-"
 "limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and "
@@ -5346,17 +5371,17 @@ msgstr ""
 "://flask-limiter.readthedocs.io/en/stable/cli.html>`_ à des fins de "
 "maintenance et de diagnostic."
 
-#: ../source/installation.rst:353
+#: ../source/installation.rst:361
 msgid "Weather data"
 msgstr "Données météo"
 
-#: ../source/installation.rst:356
+#: ../source/installation.rst:364
 msgid "The following weather data providers are supported by **FitTrackee**:"
 msgstr ""
 "Les fournisseurs de données météo suivants sont pris en charge par "
 "**FitTrackee** :"
 
-#: ../source/installation.rst:358
+#: ../source/installation.rst:366
 msgid ""
 "`Visual Crossing <https://www.visualcrossing.com>`__ (**note**: "
 "historical data are provided on hourly period)"
@@ -5364,19 +5389,19 @@ msgstr ""
 "`Visual Crossing <https://www.visualcrossing.com>`__ (**note** : les "
 "données historiques sont fournies sur une période d'une heure)"
 
-#: ../source/installation.rst:360
+#: ../source/installation.rst:368
 msgid "To configure a weather provider, set the following environment variables:"
 msgstr ""
 "Pour configurer un fournisseur de données météo, initialiser les "
 "variables d'environnement suivantes :"
 
-#: ../source/installation.rst:362
+#: ../source/installation.rst:370
 msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
 msgstr ""
 "``WEATHER_API_KEY`` : clé d'API correspondant au fournisseur de données "
 "météo"
 
-#: ../source/installation.rst:367
+#: ../source/installation.rst:375
 msgid ""
 "**DarkSky** support is discontinued, since the service shut down on March"
 " 31, 2023."
@@ -5392,7 +5417,7 @@ msgstr ""
 "Remarque : FitTrackee est en cours de développement, certaines "
 "fonctionnalités peuvent être instables."
 
-#: ../source/installation.rst:377 ../source/installation.rst:567
+#: ../source/installation.rst:385 ../source/installation.rst:575
 msgid "From PyPI"
 msgstr "A partir de PyPI"
 
@@ -5400,19 +5425,19 @@ msgstr "A partir de PyPI"
 msgid "Recommended way on production."
 msgstr "Méthode recommandée en production."
 
-#: ../source/installation.rst:382
+#: ../source/installation.rst:390
 msgid "Create and activate a virtualenv"
 msgstr "Créer et activer l'environnement virtuel"
 
-#: ../source/installation.rst:384
+#: ../source/installation.rst:392
 msgid "Install **FitTrackee** with pip"
 msgstr "Installer **FitTrackee** à partir de pip"
 
-#: ../source/installation.rst:390
+#: ../source/installation.rst:398
 msgid "Create ``fittrackee`` database"
 msgstr "Créer la base de données ``fittrackee``"
 
-#: ../source/installation.rst:392
+#: ../source/installation.rst:400
 msgid "Example :"
 msgstr "Exemple :"
 
@@ -5424,7 +5449,7 @@ msgstr ""
 "cf. `documentation <https://www.postgresql.org/docs/15/ddl-"
 "schemas.html>`_ PostgreSQL pour les schémas et privilèges."
 
-#: ../source/installation.rst:403
+#: ../source/installation.rst:411
 msgid ""
 "Initialize environment variables, see `Environment variables "
 "<installation.html#environment-variables>`__"
@@ -5432,7 +5457,7 @@ msgstr ""
 "Initialiser les variables d'environnement, cf. `Variables d'environnement"
 " <installation.html#environment-variables>`__"
 
-#: ../source/installation.rst:405
+#: ../source/installation.rst:413
 msgid ""
 "For instance, copy and update ``.env`` file from ``.env.example`` and "
 "source the file."
@@ -5440,15 +5465,15 @@ msgstr ""
 "Par exemple, copier et coller le fichier ``.env`` à partir de "
 "``.env.example`` et activer le fichier."
 
-#: ../source/installation.rst:412
+#: ../source/installation.rst:420
 msgid "Initialize database schema"
 msgstr "Initialiser le schéma de la base de données"
 
-#: ../source/installation.rst:418
+#: ../source/installation.rst:426
 msgid "Start the application"
 msgstr "Démarrer l'application"
 
-#: ../source/installation.rst:424
+#: ../source/installation.rst:432
 msgid ""
 "Start task queue workers if email sending is enabled, with flask-dramatiq"
 " CLI:"
@@ -5465,12 +5490,12 @@ msgstr ""
 "Pour démarrer l'application et les *workers* avec le service **systemd**,"
 " cf. `Déploiement <installation.html#deployment>`__"
 
-#: ../source/installation.rst:433 ../source/installation.rst:542
+#: ../source/installation.rst:441 ../source/installation.rst:550
 msgid "Open http://localhost:5000 and register"
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire"
 
-#: ../source/installation.rst:435 ../source/installation.rst:493
-#: ../source/installation.rst:544 ../source/installation.rst:829
+#: ../source/installation.rst:443 ../source/installation.rst:501
+#: ../source/installation.rst:552 ../source/installation.rst:837
 msgid ""
 "To set admin rights to the newly created account, use the following "
 "command line:"
@@ -5478,12 +5503,12 @@ msgstr ""
 "Pour donner les droits d'administration au compte nouvellement créé "
 "utiliser la ligne de commande suivante :"
 
-#: ../source/installation.rst:442 ../source/installation.rst:500
-#: ../source/installation.rst:551 ../source/installation.rst:836
+#: ../source/installation.rst:450 ../source/installation.rst:508
+#: ../source/installation.rst:559 ../source/installation.rst:844
 msgid "If the user account is inactive, it activates it."
 msgstr "Si le compte de l'utilisateur est inactif, il sera alors activée."
 
-#: ../source/installation.rst:445 ../source/installation.rst:594
+#: ../source/installation.rst:453 ../source/installation.rst:602
 msgid "From sources"
 msgstr "A partir des sources"
 
@@ -5507,15 +5532,15 @@ msgstr ""
 "Pour conserver l'environnement virtuel dans le répertoire du projet, "
 "mettre à jour la configuration de Poetry."
 
-#: ../source/installation.rst:459 ../source/installation.rst:597
+#: ../source/installation.rst:467 ../source/installation.rst:605
 msgid "Dev environment"
 msgstr "Environnements de développement"
 
-#: ../source/installation.rst:461
+#: ../source/installation.rst:469
 msgid "Clone this repo:"
 msgstr "Cloner ce dépôt :"
 
-#: ../source/installation.rst:468 ../source/installation.rst:517
+#: ../source/installation.rst:476 ../source/installation.rst:525
 msgid ""
 "Create **.env** from example and update it (see `Environment variables "
 "<installation.html#environment-variables>`__)."
@@ -5523,7 +5548,7 @@ msgstr ""
 "Créer le fichier **.env** à partir de l'exemple et le mettre à jour (cf. "
 "`Variables d'environnement <installation.html#environment-variables>`__)."
 
-#: ../source/installation.rst:471
+#: ../source/installation.rst:479
 msgid ""
 "Install Python virtualenv, Vue and all related packages and initialize "
 "the database:"
@@ -5531,19 +5556,19 @@ msgstr ""
 "Installer l'environnement virtuel Python, Vue et tous les paquets "
 "nécessaires et initialiser la base de données :"
 
-#: ../source/installation.rst:479
+#: ../source/installation.rst:487
 msgid "Start the server and the client:"
 msgstr "Démarrer le serveur et le client :"
 
-#: ../source/installation.rst:485 ../source/installation.rst:625
+#: ../source/installation.rst:493 ../source/installation.rst:633
 msgid "Run dramatiq workers:"
 msgstr "Démarrer les *workers* dramatiq :"
 
-#: ../source/installation.rst:491
+#: ../source/installation.rst:499
 msgid "Open http://localhost:3000 and register"
 msgstr "Ouvrir l'URL http://localhost:3000 avec un navigateur et s'inscrire"
 
-#: ../source/installation.rst:503
+#: ../source/installation.rst:511
 msgid "Production environment"
 msgstr "Environnements de production"
 
@@ -5555,15 +5580,15 @@ msgstr ""
 "Note : FitTrackee est en cours de développement. Certaines "
 "fonctionnalités peuvent être instables."
 
-#: ../source/installation.rst:508
-msgid "Download the last release (for now, it is the release v0.7.22):"
-msgstr "Télécharger la dernière version (à ce jour, la version v0.7.22) :"
+#: ../source/installation.rst:516
+msgid "Download the last release (for now, it is the release v0.7.23):"
+msgstr "Télécharger la dernière version (à ce jour, la version v0.7.23) :"
 
-#: ../source/installation.rst:520
+#: ../source/installation.rst:528
 msgid "Install Python virtualenv and all related packages:"
 msgstr "Installer l'environnement virtuel Python et tous les paquets nécessaires :"
 
-#: ../source/installation.rst:526
+#: ../source/installation.rst:534
 msgid ""
 "Initialize the database (**after updating** ``db/create.sql`` **to change"
 " database credentials**):"
@@ -5572,15 +5597,15 @@ msgstr ""
 "``db/create.sql`` **pour changer les informations de connexion à la base "
 "de données**) :"
 
-#: ../source/installation.rst:533
+#: ../source/installation.rst:541
 msgid "Start the server and dramatiq workers:"
 msgstr "Démarrer le serveur et les *workers* dramatiq :"
 
-#: ../source/installation.rst:540 ../source/installation.rst:668
+#: ../source/installation.rst:548 ../source/installation.rst:676
 msgid "If email sending is disabled: ``$ make run-server``"
 msgstr "Si l'envoi des courriels est désactivé : ``$ make run-server``"
 
-#: ../source/installation.rst:554
+#: ../source/installation.rst:562
 msgid "Upgrade"
 msgstr "Mise à jour"
 
@@ -5606,7 +5631,7 @@ msgstr ""
 "- répertoire des fichiers téléversés (see `Variables d'environnement "
 "<installation.html#environment-variables>`__)"
 
-#: ../source/installation.rst:563
+#: ../source/installation.rst:571
 msgid ""
 "For now, releases do not follow `semantic versioning "
 "<https://semver.org>`__). Any version may contain backward-incompatible "
@@ -5616,28 +5641,28 @@ msgstr ""
 "<https://semver.org/lang/fr/>`__. Toute version peut contenir des "
 "changements non rétro-compatibles."
 
-#: ../source/installation.rst:569
+#: ../source/installation.rst:577
 msgid "Stop the application and activate the virtualenv"
 msgstr "Stopper l'application et activer l'environnement virtuel"
 
-#: ../source/installation.rst:571
+#: ../source/installation.rst:579
 msgid "Upgrade with pip"
 msgstr "Mettre à jour avec pip"
 
-#: ../source/installation.rst:577
+#: ../source/installation.rst:585
 msgid ""
 "Update environment variables if needed and source environment variables "
 "file"
 msgstr "Mettre à jour les variables d'environnements si nécessaire et les activer"
 
-#: ../source/installation.rst:584 ../source/installation.rst:613
-#: ../source/installation.rst:655
+#: ../source/installation.rst:592 ../source/installation.rst:621
+#: ../source/installation.rst:663
 msgid "Upgrade database if needed (see changelog for migrations):"
 msgstr ""
 "Mettre à jour la base de données si nécessaire (voir le journal des "
 "changements pour les migrations) :"
 
-#: ../source/installation.rst:590
+#: ../source/installation.rst:598
 msgid ""
 "Restart the application and task queue workers (if email sending is "
 "enabled)."
@@ -5645,11 +5670,11 @@ msgstr ""
 "Redémarrer l'application et les *workers* de la file d'attente des tâches"
 " (si l'envoi des courriels est activé)."
 
-#: ../source/installation.rst:599
+#: ../source/installation.rst:607
 msgid "Stop the application and pull the repository:"
 msgstr "Arrêter l'application et récupérer les derniers changements du dépôt :"
 
-#: ../source/installation.rst:605 ../source/installation.rst:647
+#: ../source/installation.rst:613 ../source/installation.rst:655
 msgid ""
 "Update **.env** if needed (see `Environment variables <installation.html"
 "#environment-variables>`__)."
@@ -5657,43 +5682,43 @@ msgstr ""
 "Mettre à jour le fichier **.env** si nécessaire (cf. `Variables "
 "d'environnement <installation.html#environment-variables>`__)."
 
-#: ../source/installation.rst:607 ../source/installation.rst:649
+#: ../source/installation.rst:615 ../source/installation.rst:657
 msgid "Upgrade packages:"
 msgstr "Mettre à jour les paquets :"
 
-#: ../source/installation.rst:619
+#: ../source/installation.rst:627
 msgid "Restart the server:"
 msgstr "Redémarrer le serveur :"
 
-#: ../source/installation.rst:632
+#: ../source/installation.rst:640
 msgid "Prod environment"
 msgstr "Environnement de production"
 
-#: ../source/installation.rst:634
+#: ../source/installation.rst:642
 msgid "Stop the application"
 msgstr "Arrêter l'application"
 
-#: ../source/installation.rst:636
+#: ../source/installation.rst:644
 msgid "Change to the directory where FitTrackee directory is located"
 msgstr "Changer pour le répertoire dans lequel FitTrackee est localisé"
 
-#: ../source/installation.rst:638
+#: ../source/installation.rst:646
 msgid ""
-"Download the last release (for now, it is the release v0.7.22) and "
+"Download the last release (for now, it is the release v0.7.23) and "
 "overwrite existing files:"
 msgstr ""
-"Télécharger la dernière version (à ce jour, la version v0.7.22) et "
+"Télécharger la dernière version (à ce jour, la version v0.7.23) et "
 "écraser les fichiers existants :"
 
-#: ../source/installation.rst:661
+#: ../source/installation.rst:669
 msgid "Restart the server and dramatiq workers:"
 msgstr "Redémarrer le serveur et les *workers* dramatiq :"
 
-#: ../source/installation.rst:671
+#: ../source/installation.rst:679
 msgid "Deployment"
 msgstr "Déploiement"
 
-#: ../source/installation.rst:673
+#: ../source/installation.rst:681
 msgid ""
 "There are several ways to start **FitTrackee** web application and task "
 "queue library. One way is to use a **systemd** services and **Nginx** to "
@@ -5704,7 +5729,7 @@ msgstr ""
 "tâches. Un des moyens est d'utiliser les services **systemd** et "
 "**Nginx** to proxy passer à **Gunicorn**."
 
-#: ../source/installation.rst:677
+#: ../source/installation.rst:685
 msgid ""
 "Examples (to adapt depending on your instance configuration and operating"
 " system):"
@@ -5712,11 +5737,11 @@ msgstr ""
 "Exemples (à adapter selon la configuration de votre instance et votre "
 "système d'exploitation) :"
 
-#: ../source/installation.rst:679
+#: ../source/installation.rst:687
 msgid "for application: ``fittrackee.service``"
 msgstr "pour l'application : ``fittrackee.service``"
 
-#: ../source/installation.rst:719
+#: ../source/installation.rst:727
 msgid ""
 "To handle large files, a higher value for `timeout "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be "
@@ -5727,7 +5752,7 @@ msgstr ""
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ peut être "
 "configurée."
 
-#: ../source/installation.rst:722
+#: ../source/installation.rst:730
 msgid ""
 "More information on deployment with Gunicorn in its `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
@@ -5735,15 +5760,15 @@ msgstr ""
 "Plus d'informations sur le déploiement avec Gunicorn dans sa "
 "`documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__."
 
-#: ../source/installation.rst:724
+#: ../source/installation.rst:732
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr "pour les *workers* de la file d'attente : ``fittrackee_workers.service``"
 
-#: ../source/installation.rst:759
+#: ../source/installation.rst:767
 msgid "**Nginx** configuration:"
 msgstr "Configuration **Nginx** :"
 
-#: ../source/installation.rst:797
+#: ../source/installation.rst:805
 msgid ""
 "If needed, update configuration to handle larger files (see "
 "`client_max_body_size "
@@ -5753,11 +5778,11 @@ msgstr ""
 "importante (cf. `client_max_body_size "
 "<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
 
-#: ../source/installation.rst:801
+#: ../source/installation.rst:809
 msgid "Docker"
 msgstr ""
 
-#: ../source/installation.rst:808
+#: ../source/installation.rst:816
 msgid ""
 "For evaluation purposes, docker files are available, installing "
 "**FitTrackee** from **sources**."
@@ -5765,19 +5790,19 @@ msgstr ""
 "A des fins d'évaluation, des fichiers Docker sont disponible, installant "
 "**FitTrackee** à partir des **sources**."
 
-#: ../source/installation.rst:810
+#: ../source/installation.rst:818
 msgid "To install **FitTrackee**:"
 msgstr "Pour installer **FitTrackee** :"
 
-#: ../source/installation.rst:819
+#: ../source/installation.rst:827
 msgid "To initialise database:"
 msgstr "Pour initialiser la base de données :"
 
-#: ../source/installation.rst:825
+#: ../source/installation.rst:833
 msgid "Open http://localhost:5000 and register."
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire."
 
-#: ../source/installation.rst:827
+#: ../source/installation.rst:835
 msgid ""
 "Open http://localhost:8025 to access `MailHog interface "
 "<https://github.com/mailhog/MailHog>`_ (email testing tool)"
@@ -5785,49 +5810,49 @@ msgstr ""
 "Ouvrir l'URL http://localhost:8025 pour accéder à l'interface de `MailHog"
 " <https://github.com/mailhog/MailHog>`_ (outil de test)"
 
-#: ../source/installation.rst:838
+#: ../source/installation.rst:846
 msgid "To stop **Fittrackee**:"
 msgstr "Pour arrêter **Fittrackee** :"
 
-#: ../source/installation.rst:844
+#: ../source/installation.rst:852
 msgid "To start **Fittrackee** (application and dramatiq workers):"
 msgstr "pour démarrer **Fittrackee** (application et *workers* dramatiq) :"
 
-#: ../source/installation.rst:851
+#: ../source/installation.rst:859
 msgid "To run shell inside **Fittrackee** container:"
 msgstr "Pour lancer le shell dans le container **Fittrackee** :"
 
-#: ../source/installation.rst:859
+#: ../source/installation.rst:867
 msgid "Development"
 msgstr "Développement"
 
-#: ../source/installation.rst:863
+#: ../source/installation.rst:871
 msgid "an additional step is needed to install ``fittrackee_client``"
 msgstr "une étape additionnelle est nécessaire pour installer `fittrackee_client`"
 
-#: ../source/installation.rst:869
+#: ../source/installation.rst:877
 msgid "to start **FitTrackee** with client dev tools:"
 msgstr "pour démarrer **FitTrackee** avec les outils de développement client :"
 
-#: ../source/installation.rst:875
+#: ../source/installation.rst:883
 msgid "Open http://localhost:3000"
 msgstr "Ouvrir http://localhost:3000"
 
-#: ../source/installation.rst:878
+#: ../source/installation.rst:886
 msgid "Some environment variables need to be updated like ``UI_URL``"
 msgstr ""
 "Certaines variables d'environnement doivent être mise à jour comme "
 "``UI_URL``"
 
-#: ../source/installation.rst:880
+#: ../source/installation.rst:888
 msgid "to run lint or tests:"
 msgstr "pour lancer le *lint* et les tests :"
 
-#: ../source/installation.rst:891
+#: ../source/installation.rst:899
 msgid "Yunohost"
 msgstr ""
 
-#: ../source/installation.rst:893
+#: ../source/installation.rst:901
 msgid ""
 "A package is available, see https://github.com/YunoHost-"
 "Apps/fittrackee_ynh."

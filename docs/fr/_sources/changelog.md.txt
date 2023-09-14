@@ -1,7 +1,18 @@
 # Change log
 
-## Version 0.7.22 (2023/08/23)
+## Version 0.7.23 (2023/09/14)
 
+### Bugs Fixed
+
+* [PR#421](https://github.com/SamR1/FitTrackee/pull/421) - remove darksky from available weather providers in .env
+* [PR#426](https://github.com/SamR1/FitTrackee/pull/426) - Update default tile server (thanks to @astridx)
+
+### Misc
+
+* [PR#422](https://github.com/SamR1/FitTrackee/pull/422) - CI - fix e2e tests with packaged version
+
+
+## Version 0.7.22 (2023/08/23)
 
 ### Bugs Fixed
 
