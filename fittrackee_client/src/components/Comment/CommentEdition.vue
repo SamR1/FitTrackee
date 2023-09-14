@@ -31,7 +31,10 @@
         </div>
       </div>
       <div class="form-select-buttons">
-        <div class="form-item text-visibility" v-if="!comment && workout">
+        <div
+          class="form-item text-visibility"
+          v-if="!comment && workout && workout.workout_visibility"
+        >
           <label> {{ $t('privacy.VISIBILITY') }}: </label>
           <select id="text_visibility" v-model="commentTextVisibility">
             <option
@@ -98,7 +101,7 @@
     comment?: IComment | null
     replyTo?: string | null
     name?: string | null
-    mentions?: string[]
+    mentions?: IUserProfile[]
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -120,10 +123,10 @@
   const store = useStore()
 
   const commentText: Ref<string> = ref(getText())
-  const commentTextVisibility: Ref<TPrivacyLevels> = ref(
+  const commentTextVisibility: Ref<TPrivacyLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
-      : workout.value.workout_visibility
+      : workout.value?.workout_visibility
   )
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
@@ -182,12 +185,11 @@
         suggestion.usernameQuery,
         user.username
       )
-      const textarea: HTMLTextAreaElement | null =
-        document.getElementById(textAreaId)
-      if (textarea) {
-        textarea.value = updatedText
-        textarea.focus()
-        textarea.selectionStart = updatedText.length
+      const element: HTMLElement | null = document.getElementById(textAreaId)
+      if (element && element instanceof HTMLTextAreaElement) {
+        element.value = updatedText
+        element.focus()
+        element.selectionStart = updatedText.length
         commentText.value = updatedText
       }
     }
@@ -198,24 +200,26 @@
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
   }
   function submitComment() {
-    if (comment?.value && comment.value.id) {
-      const payload: ICommentForm = {
-        id: comment.value.id,
-        text: commentText.value,
-        workout_id: workout.value.id,
+    if (workout.value) {
+      if (comment?.value && comment.value.id) {
+        const payload: ICommentForm = {
+          id: comment.value.id,
+          text: commentText.value,
+          workout_id: workout.value.id,
+        }
+        store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT, payload)
+      } else {
+        const payload: ICommentForm = {
+          text: commentText.value,
+          text_visibility: commentTextVisibility.value,
+          workout_id: workout.value.id,
+        }
+        if (replyTo?.value) {
+          payload.reply_to = replyTo.value
+        }
+        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
+        updateText({ value: '', selectionStart: 0 })
       }
-      store.dispatch(WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT, payload)
-    } else {
-      const payload: ICommentForm = {
-        text: commentText.value,
-        text_visibility: commentTextVisibility.value,
-        workout_id: workout.value.id,
-      }
-      if (replyTo?.value) {
-        payload.reply_to = replyTo.value
-      }
-      store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
-      updateText({ value: '', selectionStart: 0 })
     }
   }
 

@@ -635,6 +635,44 @@ class TestGetReportsAsAdmin(ReportTestCase):
             "total": 3,
         }
 
+    def test_it_returns_reports_when_not_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert len(data["reports"]) == 1
+        assert data["reports"][0] == jsonify_dict(
+            report.serialize(user_1_admin)
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
     @pytest.mark.parametrize(
         "input_object_type, input_index",
         [("comment", 2), ("user", 0), ("workout", 1)],
@@ -910,6 +948,32 @@ class TestGetReportsAsAdmin(ReportTestCase):
             "pages": 1,
             "total": 3,
         }
+
+    @pytest.mark.parametrize(
+        "input_order_by",
+        [
+            "id",
+            "reported_comment_id",
+            "reported_user_id",
+            "reported_workout_id",
+            "note",
+            "invalid",
+        ],
+    )
+    def test_it_returns_error_if_order_by_is_invalid(
+        self, app: Flask, user_1_admin: User, input_order_by: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f"{self.route}?order_by={input_order_by}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "invalid 'order_by'")
 
     def test_it_returns_reports_ordered_by_update_at_ascending(
         self,

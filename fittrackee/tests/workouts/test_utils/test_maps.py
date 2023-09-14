@@ -11,16 +11,7 @@ class TestGetStaticMapTileServerUrl:
         'input_tile_server_subdomains,'
         'expected_tile_server_url',
         [
-            (
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                '',
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            ),
-            (
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'a',
-                'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            ),
+            # tile server without subdomain
             (
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 '',
@@ -30,6 +21,21 @@ class TestGetStaticMapTileServerUrl:
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 'a',
                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            ),
+            # tile server with subdomain
+            (
+                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png',
+                'a',
+                'https://a.tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png',
+            ),
+            (
+                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png',
+                '',
+                'https://tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png',
             ),
         ],
     )
@@ -52,12 +58,15 @@ class TestGetStaticMapTileServerUrl:
     def test_it_returns_tile_server_url_with_random_subdomain(self) -> None:
         """in case multiple subdomains are provided"""
         tile_config = {
-            'URL': 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'URL': (
+                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png'
+            ),
             'STATICMAP_SUBDOMAINS': 'a,b,c',
         }
 
         with patch('random.choice', return_value='b'):
-            assert (
-                get_static_map_tile_server_url(tile_config)
-                == 'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            assert get_static_map_tile_server_url(tile_config) == (
+                'https://b.tile-cyclosm.openstreetmap.fr/cyclosm/'
+                '{z}/{x}/{y}.png'
             )

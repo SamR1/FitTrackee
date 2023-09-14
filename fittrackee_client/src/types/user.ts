@@ -160,7 +160,6 @@ export interface IExportRequest {
 }
 
 export type TUsersPayload = TPaginationPayload & {
-  q?: string
   username?: string
 }
 

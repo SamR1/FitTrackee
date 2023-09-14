@@ -38,11 +38,16 @@ def can_view(
     target_object: Union['Workout', 'Comment'],
     visibility: str,
     user: Optional['User'] = None,
+    for_report: bool = False,
 ) -> bool:
     if (
         target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC
         and (not user or not user.is_blocked_by(target_object.user))
     ) or user == target_object.user:
+        return True
+
+    # allow access only if user is an admin and for report:
+    if user and user != target_object.user and user.admin and for_report:
         return True
 
     if not user:

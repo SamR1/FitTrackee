@@ -44,7 +44,7 @@ class BaseConfig:
     TILE_SERVER = {
         'URL': os.environ.get(
             'TILE_SERVER_URL',
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
         'ATTRIBUTION': os.environ.get(
             'MAP_ATTRIBUTION',

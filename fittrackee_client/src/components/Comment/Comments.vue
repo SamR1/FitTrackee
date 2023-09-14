@@ -188,5 +188,11 @@
       margin-left: 50%;
       width: 20px;
     }
+
+    .card-content {
+      div:not(:nth-last-child(-n + 2)) {
+        border-bottom: 1px solid var(--comment-border-color);
+      }
+    }
   }
 </style>

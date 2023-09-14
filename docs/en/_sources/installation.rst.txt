@@ -190,7 +190,11 @@ deployment method.
     | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)
 
-    :default: ``https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png``
+    .. versionchanged:: 0.7.23
+
+    | The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
+
+    :default: ``https://tile.openstreetmap.org/{z}/{x}/{y}.png``
 
 
 .. envvar:: STATICMAP_SUBDOMAINS
@@ -311,6 +315,10 @@ For instance, to set OSM France tile server, the expected values are:
 - ``STATICMAP_SUBDOMAINS=a,b,c``
 
 The subdomain will be chosen randomly.
+
+.. versionadded:: 0.7.23
+
+The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
 
 
 API rate limits
@@ -505,13 +513,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.22):
+-  Download the last release (for now, it is the release v0.7.23):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-   $ tar -xzf v0.7.22.tar.gz
-   $ mv FitTrackee-0.7.22 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+   $ tar -xzf v0.7.23.tar.gz
+   $ mv FitTrackee-0.7.23 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -635,13 +643,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.22) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.23) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-   $ tar -xzf v0.7.22.tar.gz
-   $ cp -R FitTrackee-0.7.22/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+   $ tar -xzf v0.7.23.tar.gz
+   $ cp -R FitTrackee-0.7.23/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

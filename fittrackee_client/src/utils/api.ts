@@ -50,6 +50,12 @@ export const getQuery = (
   } else {
     delete query.q
   }
+  if (typeof locationQuery.object_type === 'string') {
+    query.object_type = locationQuery.object_type
+  }
+  if (typeof locationQuery.resolved === 'string') {
+    query.resolved = locationQuery.resolved
+  }
 
   return query
 }
@@ -66,7 +72,7 @@ export const workoutsPayloadKeys = [
   'duration_from',
   'duration_to',
   'sport_id',
-  'title'
+  'title',
 ]
 
 const getRange = (stop: number, start = 1): number[] => {

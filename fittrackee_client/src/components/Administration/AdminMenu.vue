@@ -40,6 +40,14 @@
               </span>
             </dd>
             <dt>
+              <router-link id="adminLink" to="/admin/reports">
+                {{ $t('admin.APP_MODERATION.TITLE') }}
+              </router-link>
+            </dt>
+            <dd>
+              {{ $t('admin.APP_MODERATION.DESCRIPTION') }}
+            </dd>
+            <dt>
               <router-link to="/admin/sports">
                 {{ capitalize($t('workouts.SPORT', 0)) }}
               </router-link>
@@ -63,21 +71,22 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, onMounted, toRefs } from 'vue'
+  import { ComputedRef, computed, capitalize, onMounted } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
+  import { ROOT_STORE } from '@/store/constants'
   import { IAppStatistics, TAppConfig } from '@/types/application'
+  import { useStore } from '@/use/useStore'
 
-  interface Props {
-    appConfig: TAppConfig
-    appStatistics?: IAppStatistics
-  }
-  const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({} as IAppStatistics),
-  })
-  const { appConfig, appStatistics } = toRefs(props)
+  const store = useStore()
 
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const appStatistics: ComputedRef<IAppStatistics> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
+  )
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')
     if (applicationLink) {

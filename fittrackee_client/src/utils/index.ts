@@ -5,6 +5,7 @@ import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
 import { INotificationsState } from '@/store/modules/notifications/types'
 import { IOAuth2State } from '@/store/modules/oauth2/types'
+import { IReportsState } from '@/store/modules/reports/types'
 import { IRootState } from '@/store/modules/root/types'
 import { ISportsState } from '@/store/modules/sports/types'
 import { IStatisticsState } from '@/store/modules/statistics/types'
@@ -23,6 +24,7 @@ export const handleError = (
     | ActionContext<IRootState, IRootState>
     | ActionContext<IAuthUserState, IRootState>
     | ActionContext<INotificationsState, IRootState>
+    | ActionContext<IReportsState, IRootState>
     | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>

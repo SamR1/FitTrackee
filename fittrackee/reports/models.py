@@ -2,7 +2,9 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from fittrackee import BaseModel, db
+from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.users.models import User
+from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import (
     InvalidReportException,
@@ -48,6 +50,7 @@ class Report(BaseModel):
         nullable=True,
     )
     resolved = db.Column(db.Boolean, default=False, nullable=False)
+    object_type = db.Column(db.String(50), nullable=False, index=True)
     note = db.Column(db.String(), nullable=False)
 
     reported_comment = db.relationship(
@@ -95,32 +98,51 @@ class Report(BaseModel):
         self.created_at = created_at if created_at else datetime.utcnow()
         self.note = note
         self.reported_by = reported_by
+        self.object_type = object_type
         self.resolved = False
 
     def serialize(self, current_user: User) -> Dict:
         if not current_user.admin and self.reported_by != current_user.id:
             raise ReportForbiddenException()
-        report = {
-            "created_at": self.created_at,
-            "note": self.note,
-            "resolved": self.resolved,
-            "resolved_at": self.resolved_at,
-            "reported_by": self.reporter.serialize(current_user),
-            "reported_comment": (
-                self.reported_comment.serialize(current_user)
+
+        reported_user = None
+
+        try:
+            reported_comment = (
+                self.reported_comment.serialize(current_user, for_report=True)
                 if self.reported_comment_id
                 else None
-            ),
-            "reported_user": (
-                self.reported_user.serialize(current_user)
-                if self.reported_user_id
-                else None
-            ),
-            "reported_workout": (
-                self.reported_workout.serialize(current_user)
+            )
+            if reported_comment:
+                reported_user = reported_comment.get('user')
+        except CommentForbiddenException:
+            reported_comment = '_COMMENT_UNAVAILABLE_'
+
+        try:
+            reported_workout = (
+                self.reported_workout.serialize(current_user, for_report=True)
                 if self.reported_workout
                 else None
-            ),
+            )
+            if reported_workout:
+                reported_user = reported_workout.get('user')
+        except WorkoutForbiddenException:
+            reported_workout = '_WORKOUT_UNAVAILABLE_'
+
+        if self.reported_user_id is not None:
+            reported_user = self.reported_user.serialize(current_user)
+
+        report = {
+            "created_at": self.created_at,
+            "id": self.id,
+            "note": self.note,
+            "object_type": self.object_type,
+            "reported_by": self.reporter.serialize(current_user),
+            "reported_comment": reported_comment,
+            "reported_user": reported_user,
+            "reported_workout": reported_workout,
+            "resolved": self.resolved,
+            "resolved_at": self.resolved_at,
         }
         if current_user.admin:
             report["comments"] = [

@@ -110,6 +110,8 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     object_type = params.get("object_type")
     resolved = params.get("resolved", "").lower()
     column = params.get("order_by", "created_at")
+    if column not in ["created_at", "updated_at"]:
+        return InvalidPayloadErrorResponse("invalid 'order_by'")
     report_column = getattr(Report, column)
     order = params.get("order", "desc")
     order_clauses = [

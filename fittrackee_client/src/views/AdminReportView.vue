@@ -1,0 +1,77 @@
+<template>
+  <div id="admin" class="view">
+    <div class="container" v-if="!userLoading">
+      <AdminReport v-if="isAuthUserAmin" />
+      <NotFound v-else />
+      <div id="bottom" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { computed, ComputedRef } from 'vue'
+
+  import AdminReport from '@/components/Administration/AdminReport.vue'
+  import NotFound from '@/components/Common/NotFound.vue'
+  import { AUTH_USER_STORE } from '@/store/constants'
+  import { useStore } from '@/use/useStore'
+
+  const store = useStore()
+
+  const isAuthUserAmin: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
+  )
+  const userLoading: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
+  )
+</script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+
+  #admin {
+    .admin-card {
+      width: 100%;
+
+      ::v-deep(.card) {
+        .admin-form {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: $default-margin 0;
+            flex-wrap: wrap;
+
+            input {
+              width: 50%;
+              font-size: 0.9em;
+              margin-right: $default-margin * 5;
+              @media screen and (max-width: $medium-limit) {
+                margin-right: 0;
+              }
+              @media screen and (max-width: $small-limit) {
+                width: 100%;
+              }
+
+              &:disabled {
+                -webkit-appearance: none;
+                -moz-appearance: textfield;
+                background-color: white;
+                border-color: white;
+                color: var(--app-color);
+              }
+            }
+          }
+          .form-buttons {
+            display: flex;
+            gap: $default-padding;
+            margin-bottom: $default-margin;
+          }
+        }
+      }
+    }
+  }
+</style>

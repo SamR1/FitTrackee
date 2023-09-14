@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.08.19 -->
-        <title>Installation - Documentation FitTrackee 0.7.22</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
+        <title>Installation - Documentation FitTrackee 0.7.23</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.22
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.23
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.22
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.23
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -514,9 +514,15 @@
 <div class="line">URl du serveur de tuiles (avec la clé de l’API si nécessaire), cf. <a class="reference external" href="installation.html#map-tile-server">Serveur de tuiles</a>.</div>
 <div class="line">Depuis la version <strong>0.4.9</strong>, il est également utiliser pour générer les images statiques des cartes (pour garder le serveur par défaut cf. <a class="reference external" href="installation.html#envvar-DEFAULT_STATICMAP">DEFAULT_STATICMAP</a>)</div>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.23.</span></p>
+</div>
+<div class="line-block">
+<div class="line">L’URL par défaut a été mise à jour : le serveur de tuiles <strong>OpenStreetMap</strong> ne nécessite plus de sous-domaines.</div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">https://tile.openstreetmap.org/{z}/{x}/{y}.png</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -673,6 +679,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
 </ul>
 <p>Le sous-domaine sera choisi de manière aléatoire.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Nouveau dans la version 0.7.23.</span></p>
+</div>
+<p>L’URL par défaut a été mise à jour : le serveur de tuiles <strong>OpenStreetMap</strong> ne nécessite plus de sous-domaines.</p>
 </section>
 <section id="api-rate-limits">
 <h3>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien permanent vers cette rubrique">#</a></h3>
@@ -882,11 +892,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.22) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.23) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.22<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.23.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.23<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1008,11 +1018,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.22) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.23) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.22.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.22.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.22/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.23.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.23/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1368,7 +1378,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1a1777a5"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=be6ff3bc"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

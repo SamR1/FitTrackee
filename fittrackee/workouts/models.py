@@ -239,11 +239,17 @@ class Workout(BaseModel):
         return user in self.likes.all()
 
     def get_workout_data(
-        self, user: Optional['User'], can_see_map_data: Optional[bool] = None
+        self,
+        user: Optional['User'],
+        can_see_map_data: Optional[bool] = None,
+        for_report: bool = False,
     ) -> Dict:
         if can_see_map_data is None:
             can_see_map_data = can_view(
-                self, "calculated_map_visibility", user=user
+                self,
+                "calculated_map_visibility",
+                user=user,
+                for_report=for_report,
             )
         return {
             'id': self.short_id,  # WARNING: client use uuid as id
@@ -268,7 +274,11 @@ class Workout(BaseModel):
             'ave_speed': (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
-            'records': [record.serialize() for record in self.records],
+            'records': (
+                []
+                if for_report
+                else [record.serialize() for record in self.records]
+            ),
             'segments': (
                 [segment.serialize() for segment in self.segments]
                 if can_see_map_data
@@ -284,12 +294,17 @@ class Workout(BaseModel):
         }
 
     def serialize(
-        self, user: Optional['User'] = None, params: Optional[Dict] = None
+        self,
+        user: Optional['User'] = None,
+        params: Optional[Dict] = None,
+        for_report: bool = False,
     ) -> Dict:
-        if not can_view(self, "workout_visibility", user=user):
+        if not can_view(
+            self, "workout_visibility", user=user, for_report=for_report
+        ):
             raise WorkoutForbiddenException()
         can_see_map_data = can_view(
-            self, "calculated_map_visibility", user=user
+            self, "calculated_map_visibility", user=user, for_report=for_report
         )
         is_owner = user and user.id == self.user_id
         if is_owner:
@@ -386,7 +401,7 @@ class Workout(BaseModel):
             next_workout = None
             previous_workout = None
 
-        workout = self.get_workout_data(user, can_see_map_data)
+        workout = self.get_workout_data(user, can_see_map_data, for_report)
         workout["next_workout"] = (
             next_workout.short_id if next_workout else None
         )

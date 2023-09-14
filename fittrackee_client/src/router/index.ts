@@ -3,6 +3,8 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
+import AdminReport from '@/components/Administration/AdminReport.vue'
+import AdminReports from '@/components/Administration/AdminReports.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
@@ -488,6 +490,22 @@ const routes: Array<RouteRecordRaw> = [
         component: AdminSports,
         meta: {
           title: 'admin.SPORTS.TITLE',
+        },
+      },
+      {
+        path: 'reports',
+        name: 'ReportsAdministration',
+        component: AdminReports,
+        meta: {
+          title: 'admin.APP_MODERATION.TITLE',
+        },
+      },
+      {
+        path: 'reports/:reportId',
+        name: 'ReportAdministration',
+        component: AdminReport,
+        meta: {
+          title: 'admin.APP_MODERATION.REPORT',
         },
       },
       {

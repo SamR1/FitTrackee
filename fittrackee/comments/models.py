@@ -243,8 +243,9 @@ class Comment(BaseModel):
         user: Optional['User'] = None,
         with_replies: bool = True,
         get_parent_comment: bool = False,
+        for_report: bool = False,
     ) -> Dict:
-        if not can_view(self, 'text_visibility', user):
+        if not can_view(self, 'text_visibility', user, for_report):
             raise CommentForbiddenException
 
         try:
@@ -286,7 +287,7 @@ class Comment(BaseModel):
                         reply_to=self.id,
                     )
                 ]
-                if with_replies
+                if with_replies and not for_report
                 else []
             ),
             'likes_count': self.likes.count(),

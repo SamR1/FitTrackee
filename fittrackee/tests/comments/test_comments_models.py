@@ -489,6 +489,69 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         }
 
 
+class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_raises_error_when_comment_is_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_1_admin)
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_serializes_comment_when_report_flag_is_true(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+        )
+
+        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_3.serialize(),
+            'workout_id': workout_cycling_user_2.short_id,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
@@ -938,6 +1001,88 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             visible_reply.serialize(user_1)
             for visible_reply in visible_replies
         ]
+
+
+class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_raises_error_when_comments_are_not_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            parent_comment=parent_comment,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            parent_comment.serialize(user_1_admin)
+
+    @pytest.mark.parametrize(
+        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_serializes_comment_with_reply(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        # for report only parent comment is returned
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+        )
+        self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+            parent_comment=parent_comment,
+        )
+
+        serialized_comment = parent_comment.serialize(
+            user_1_admin, for_report=True
+        )
+
+        assert serialized_comment == {
+            'id': parent_comment.short_id,
+            'user': user_2.serialize(),
+            'workout_id': workout_cycling_user_2.short_id,
+            'text': parent_comment.text,
+            'text_html': parent_comment.text,  # no mention
+            'text_visibility': parent_comment.text_visibility,
+            'created_at': parent_comment.created_at,
+            'mentions': [],
+            'modification_date': parent_comment.modification_date,
+            'reply_to': None,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
 
 
 class TestWorkoutCommentModelWithMentions(CommentMixin):
