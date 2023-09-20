@@ -38,7 +38,7 @@
       <template #content>
         <Card class="report-detail-card">
           <template #title>
-            {{ $t('admin.APP_MODERATION.REPORT_CONTENT') }}
+            {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
           </template>
           <template #content>
             <Comment
