@@ -204,9 +204,10 @@ def update_report(
     db.session.add(new_report_comment)
     now = datetime.utcnow()
     report.updated_at = now
-    if data.get("resolved") is True:
-        report.resolved = True
-        report.resolved_at = now
+    if "resolved" in data:
+        resolved = data.get("resolved") is True
+        report.resolved = resolved
+        report.resolved_at = now if resolved else None
     db.session.commit()
     return {
         "status": "success",
