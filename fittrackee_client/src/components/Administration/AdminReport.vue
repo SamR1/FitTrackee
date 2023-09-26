@@ -5,10 +5,10 @@
   import { useRoute, useRouter } from 'vue-router'
 
   import Comment from '@/components/Comment/Comment.vue'
+  import NotFound from '@/components/Common/NotFound.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
-  import { IDisplayOptions } from '@/types/application'
   import { ICustomTextareaData } from '@/types/forms'
   import { IReportForAdmin } from '@/types/reports'
   import { IAuthUserProfile } from '@/types/user'
@@ -21,9 +21,6 @@
 
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
-  const displayOptions: ComputedRef<IDisplayOptions> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -73,6 +70,13 @@
     router.push('/admin/reports')
     store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
   }
+  function getDate(dateToFormat: string) {
+    return formatDate(
+      dateToFormat,
+      authUser.value.timezone,
+      authUser.value.date_format
+    )
+  }
 
   onBeforeMount(async () => loadReport())
 
@@ -99,36 +103,78 @@
         </span>
       </template>
       <template #content>
-        <Card class="report-detail-card">
-          <template #title>
-            {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
-          </template>
-          <template #content>
-            <Comment
-              v-if="report.reported_comment"
-              :auth-user="authUser"
-              :comment="report.reported_comment"
-              :comments-loading="null"
-              :for-admin="true"
-            />
-          </template>
-        </Card>
-        <Card class="report-detail-card">
-          <template #title>
-            {{ $t('admin.APP_MODERATION.REPORT_NOTE') }}
-            <router-link
-              v-if="report.reported_by"
-              class="link-with-image"
-              :to="`/admin/users/${report.reported_by.username}`"
-            >
-              {{ report.reported_by.username }}
-            </router-link>
-            ({{ $t('admin.APP_MODERATION.REPORTER') }})
-          </template>
-          <template #content>
-            {{ report.note }}
-          </template>
-        </Card>
+        <div class="report-data">
+          <div class="report-detail">
+            <Card class="report-detail-card">
+              <template #title>
+                {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
+              </template>
+              <template #content>
+                <Comment
+                  v-if="report.reported_comment"
+                  :auth-user="authUser"
+                  :comment="report.reported_comment"
+                  :comments-loading="null"
+                  :for-admin="true"
+                />
+              </template>
+            </Card>
+            <Card class="report-detail-card">
+              <template #title>
+                {{ $t('admin.APP_MODERATION.REPORT_NOTE') }}
+                <router-link
+                  v-if="report.reported_by"
+                  class="link-with-image"
+                  :to="`/admin/users/${report.reported_by.username}`"
+                >
+                  {{ report.reported_by.username }}
+                </router-link>
+                ({{ $t('admin.APP_MODERATION.REPORTER') }})
+              </template>
+              <template #content>
+                {{ report.note }}
+              </template>
+            </Card>
+          </div>
+          <dl class="report-info">
+            <dt>{{ $t('admin.APP_MODERATION.ORDER_BY.CREATED_AT') }}:</dt>
+            <dd>{{ getDate(report.created_at) }}</dd>
+            <dt>{{ $t('admin.APP_MODERATION.REPORTED_BY') }}:</dt>
+            <dd>
+              <div class="report-comment-user">
+                <UserPicture :user="report.reported_by" />
+                <Username :user="report.reported_by" />
+              </div>
+            </dd>
+            <dt>{{ $t('admin.APP_MODERATION.STATUS') }}:</dt>
+            <dd>
+              {{
+                $t(
+                  `admin.APP_MODERATION.RESOLVED.${
+                    report.resolved ? 'TRUE' : 'FALSE'
+                  }`
+                )
+              }}
+            </dd>
+            <dt v-if="report.resolved_at">
+              {{ $t('admin.APP_MODERATION.RESOLVED_AT') }}:
+            </dt>
+            <dd v-if="report.resolved_at">
+              <time>
+                {{ getDate(report.resolved_at) }}
+              </time>
+            </dd>
+            <dt v-if="report.updated_at">
+              {{ $t('common.LAST_UPDATED_ON') }}:
+            </dt>
+            <dd v-if="report.updated_at">
+              <time>
+                {{ getDate(report.updated_at) }}
+              </time>
+            </dd>
+          </dl>
+        </div>
+
         <Card class="report-comments">
           <template #title>
             {{ $t('admin.APP_MODERATION.NOTES_AND_ACTIONS') }}
@@ -146,13 +192,7 @@
                 </div>
                 <div
                   class="report-comment-date"
-                  :title="
-                    formatDate(
-                      comment.created_at,
-                      displayOptions.timezone,
-                      displayOptions.dateFormat
-                    )
-                  "
+                  :title="getDate(comment.created_at)"
                 >
                   {{
                     formatDistance(new Date(comment.created_at), new Date(), {
@@ -163,6 +203,9 @@
                 </div>
               </div>
               <div class="report-comment-comment">{{ comment.comment }}</div>
+            </div>
+            <div v-if="report.comments.length === 0" class="no-notes">
+              {{ $t('common.NO_NOTES') }}
             </div>
           </template>
         </Card>
@@ -230,15 +273,54 @@
       </template>
     </Card>
   </div>
+  <div class="container" v-else>
+    <NotFound target="REPORT" />
+  </div>
 </template>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
 
   #admin-report {
+    .report-comment-user {
+      display: flex;
+      gap: $default-padding * 0.5;
+      ::v-deep(.user-picture) {
+        min-width: min-content;
+        align-items: flex-start;
+        img {
+          height: 25px;
+          width: 25px;
+        }
+        .no-picture {
+          font-size: 1.5em;
+        }
+      }
+    }
+
     .report-detail-card,
     .report-comments {
       margin: $default-margin 0 $default-margin * 2;
+    }
+
+    .report-data {
+      display: flex;
+      .report-detail {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 3;
+      }
+      .report-info {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        padding: 0 $default-padding;
+
+        dt {
+          font-weight: bold;
+          text-transform: lowercase;
+        }
+      }
     }
 
     .report-status {
@@ -255,21 +337,6 @@
           display: flex;
           justify-content: space-between;
 
-          .report-comment-user {
-            display: flex;
-            gap: $default-padding * 0.5;
-            ::v-deep(.user-picture) {
-              min-width: min-content;
-              align-items: flex-start;
-              img {
-                height: 25px;
-                width: 25px;
-              }
-              .no-picture {
-                font-size: 1.5em;
-              }
-            }
-          }
           .report-comment-date {
             font-size: 0.85em;
             font-style: italic;
@@ -280,6 +347,10 @@
         .report-comment-comment {
           padding: $default-padding 0;
         }
+      }
+
+      .no-notes {
+        font-style: italic;
       }
     }
 

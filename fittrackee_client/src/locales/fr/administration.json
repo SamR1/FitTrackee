@@ -37,6 +37,7 @@
             "TRUE": "Résolu",
             "FALSE": "Non résolu"
         },
+        "RESOLVED_AT": "Résolu le",
         "ORDER_BY": {
             "CREATED_AT": "date de création",
             "UPDATED_AT": "date de mise à jour"

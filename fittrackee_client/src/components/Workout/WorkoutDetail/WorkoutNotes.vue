@@ -7,7 +7,7 @@
           v-html="
             notes && notes !== ''
               ? linkifyAndClean(notes)
-              : $t('workouts.NO_NOTES')
+              : $t('common.NO_NOTES')
           "
         />
       </template>

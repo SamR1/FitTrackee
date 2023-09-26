@@ -37,6 +37,7 @@
             "TRUE": "Resolved",
             "FALSE": "Unresolved"
         },
+        "RESOLVED_AT": "Resolved at",
         "ORDER_BY": {
             "CREATED_AT": "creation date",
             "UPDATED_AT": "update date"

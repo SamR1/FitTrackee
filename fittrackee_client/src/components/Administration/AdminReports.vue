@@ -76,9 +76,7 @@
                   {{ $t('admin.APP_MODERATION.RESOLVED.TRUE') }}
                 </th>
                 <th class="left-text">
-                  {{
-                    capitalize($t('admin.APP_MODERATION.ORDER_BY.UPDATED_AT'))
-                  }}
+                  {{ capitalize($t('common.LAST_UPDATED_ON')) }}
                 </th>
               </tr>
             </thead>
@@ -102,7 +100,7 @@
                     {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
                   </span>
                   <router-link :to="`/admin/reports/${report.id}`">
-                  {{ $t(getI18nString(report.object_type)) }}
+                    {{ $t(getI18nString(report.object_type)) }}
                   </router-link>
                 </td>
                 <td>
@@ -124,13 +122,7 @@
                     }}
                   </span>
                   <time>
-                    {{
-                      formatDate(
-                        report.created_at,
-                        authUser.timezone,
-                        authUser.date_format
-                      )
-                    }}
+                    {{ getDate(report.created_at) }}
                   </time>
                 </td>
                 <td>
@@ -144,18 +136,10 @@
                 </td>
                 <td>
                   <span class="cell-heading">
-                    {{
-                      capitalize($t('admin.APP_MODERATION.ORDER_BY.UPDATED_AT'))
-                    }}
+                    {{ capitalize($t('common.LAST_UPDATED_ON')) }}
                   </span>
                   <time v-if="report.updated_at">
-                    {{
-                      formatDate(
-                        report.updated_at,
-                        authUser.timezone,
-                        authUser.date_format
-                      )
-                    }}
+                    {{ getDate(report.updated_at) }}
                   </time>
                 </td>
               </tr>
@@ -269,6 +253,13 @@
       default:
         return 'user.USERS'
     }
+  }
+  function getDate(dateToFormat: string) {
+    return formatDate(
+      dateToFormat,
+      authUser.value.timezone,
+      authUser.value.date_format
+    )
   }
 
   onUnmounted(() => {
