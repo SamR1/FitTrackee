@@ -23,8 +23,10 @@
     "APP_MODERATION": {
         "TITLE": "Modération",
         "DESCRIPTION": "Gestion des signalements.",
+        "NOTES_AND_ACTIONS": "Notes et actions",
         "NO_REPORTS_FOUND": "Pas de signalements",
         "REPORT": "signalement | signalements",
+        "REPORT_COMMENT_PLACEHOLDER": "Ajouter un commentaire, une action entreprise ou toute autre information utile",
         "REPORT_NOTE": "Note par ",
         "REPORTED_BY": "Signalé par",
         "REPORTED_CONTENT": "Contenu signalé",

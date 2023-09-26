@@ -5,7 +5,7 @@ import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
 import { IReportsState, IReportsActions } from '@/store/modules/reports/types'
 import { IRootState } from '@/store/modules/root/types'
 import { TPaginationPayload } from '@/types/api'
-import { IReportPayload } from '@/types/reports'
+import { IReportCommentPayload, IReportPayload } from '@/types/reports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
@@ -76,6 +76,26 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
                 {}
               )
             }
+          } else {
+            context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+            handleError(context, null)
+          }
+        })
+        .catch((error) => {
+          handleError(context, error)
+          context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+        })
+    },
+    [REPORTS_STORE.ACTIONS.SUBMIT_REPORT_COMMENT](
+      context: ActionContext<IReportsState, IRootState>,
+      payload: IReportCommentPayload
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      authApi
+        .patch(`reports/${payload.reportId}`, { comment: payload.comment })
+        .then((res) => {
+          if (res.data.status === 'success') {
+            context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT, res.data.report)
           } else {
             context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
             handleError(context, null)

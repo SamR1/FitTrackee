@@ -3,6 +3,7 @@ export enum ReportsActions {
   GET_REPORT = 'GET_REPORT',
   GET_REPORTS = 'GET_REPORTS',
   SUBMIT_REPORT = 'SUBMIT_REPORT',
+  SUBMIT_REPORT_COMMENT = 'SUBMIT_REPORT_COMMENT',
 }
 
 export enum ReportsGetters {

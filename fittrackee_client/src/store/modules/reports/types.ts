@@ -8,7 +8,12 @@ import {
 import { REPORTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination, TPaginationPayload } from '@/types/api'
-import { IReportForAdmin, IReport, IReportPayload } from '@/types/reports'
+import {
+  IReportForAdmin,
+  IReport,
+  IReportPayload,
+  IReportCommentPayload,
+} from '@/types/reports'
 
 export interface IReportsState {
   report: IReportForAdmin
@@ -32,6 +37,10 @@ export interface IReportsActions {
   [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
     context: ActionContext<IReportsState, IRootState>,
     payload: IReportPayload
+  ): void
+  [REPORTS_STORE.ACTIONS.SUBMIT_REPORT_COMMENT](
+    context: ActionContext<IReportsState, IRootState>,
+    payload: IReportCommentPayload
   ): void
 }
 

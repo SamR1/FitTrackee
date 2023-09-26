@@ -18,6 +18,7 @@ export interface IReport {
 export interface IReportComment {
   created_at: string
   comment: string
+  id: number
   report_id: number
   user: IUserProfile
 }
@@ -30,5 +31,10 @@ export interface IReportPayload {
   note: string
   object_id: string
   object_type: string
-  from: string
+  from?: string
+}
+
+export interface IReportCommentPayload {
+  reportId: number
+  comment: string
 }

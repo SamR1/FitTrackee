@@ -23,8 +23,10 @@
     "APP_MODERATION": {
         "TITLE": "Moderation",
         "DESCRIPTION": "Reports management.",
+        "NOTES_AND_ACTIONS": "Notes and actions",
         "NO_REPORTS_FOUND": "No reports",
         "REPORT": "report | reports",
+        "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
         "REPORT_NOTE": "Note by",
         "REPORTED_BY": "Reported by",
         "REPORTED_CONTENT": "Reported content",
