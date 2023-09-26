@@ -46,6 +46,7 @@
               :auth-user="authUser"
               :comment="report.reported_comment"
               :comments-loading="null"
+              :for-admin="true"
             />
           </template>
         </Card>
