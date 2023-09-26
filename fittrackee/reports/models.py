@@ -193,6 +193,7 @@ class ReportComment(BaseModel):
         return {
             "created_at": self.created_at,
             "comment": self.comment,
+            "id": self.id,
             "report_id": self.report_id,
             "user": self.user.serialize(current_user),
         }

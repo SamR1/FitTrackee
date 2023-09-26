@@ -671,6 +671,7 @@ class TestReportCommentSerializer(ReportCommentTestCase):
 
         assert serialized_comment['created_at'] == report_comment.created_at
         assert serialized_comment['comment'] == report_comment.comment
+        assert serialized_comment['id'] == report_comment.id
         assert serialized_comment['report_id'] == report.id
         assert serialized_comment['user'] == user_1_admin.serialize(
             user_1_admin
