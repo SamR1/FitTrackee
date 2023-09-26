@@ -3,7 +3,7 @@ export enum ReportsActions {
   GET_REPORT = 'GET_REPORT',
   GET_REPORTS = 'GET_REPORTS',
   SUBMIT_REPORT = 'SUBMIT_REPORT',
-  SUBMIT_REPORT_COMMENT = 'SUBMIT_REPORT_COMMENT',
+  UPDATE_REPORT = 'UPDATE_REPORT',
 }
 
 export enum ReportsGetters {
@@ -14,6 +14,7 @@ export enum ReportsGetters {
 }
 
 export enum ReportsMutations {
+  EMPTY_REPORT = 'EMPTY_REPORT',
   SET_REPORTS = 'SET_REPORTS',
   SET_REPORT = 'SET_REPORT',
   SET_REPORT_STATUS = 'SET_REPORT_STATUS',

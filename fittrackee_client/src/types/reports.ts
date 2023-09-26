@@ -37,4 +37,5 @@ export interface IReportPayload {
 export interface IReportCommentPayload {
   reportId: number
   comment: string
+  resolved?: boolean
 }

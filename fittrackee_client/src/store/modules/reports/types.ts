@@ -38,7 +38,7 @@ export interface IReportsActions {
     context: ActionContext<IReportsState, IRootState>,
     payload: IReportPayload
   ): void
-  [REPORTS_STORE.ACTIONS.SUBMIT_REPORT_COMMENT](
+  [REPORTS_STORE.ACTIONS.UPDATE_REPORT](
     context: ActionContext<IReportsState, IRootState>,
     payload: IReportCommentPayload
   ): void
@@ -52,6 +52,8 @@ export interface IReportsGetters {
 }
 
 export type TReportsMutations<S = IReportsState> = {
+  [REPORTS_STORE.MUTATIONS.EMPTY_REPORT](state: S): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORT](state: S, report: IReport): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](state: S, reports: IReport[]): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION](
     state: S,

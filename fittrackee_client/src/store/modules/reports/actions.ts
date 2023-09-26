@@ -14,6 +14,7 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
       context: ActionContext<IReportsState, IRootState>
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      context.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
       context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS, [])
       context.commit(REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION, {})
     },
@@ -86,13 +87,14 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
           context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
         })
     },
-    [REPORTS_STORE.ACTIONS.SUBMIT_REPORT_COMMENT](
+    [REPORTS_STORE.ACTIONS.UPDATE_REPORT](
       context: ActionContext<IReportsState, IRootState>,
       payload: IReportCommentPayload
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      const { reportId, ...data } = payload
       authApi
-        .patch(`reports/${payload.reportId}`, { comment: payload.comment })
+        .patch(`reports/${reportId}`, data)
         .then((res) => {
           if (res.data.status === 'success') {
             context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT, res.data.report)

@@ -47,6 +47,7 @@
             "DELETE_CONTENT": "Delete content",
             "DISABLE_ACCOUNT": "Disable user account",
             "MARK_AS_RESOLVED": "Mark as resolved",
+            "MARK_AS_UNRESOLVED": "Mark as unresolved",
             "SEND_EMAIL": "Send an email"
         }
     },

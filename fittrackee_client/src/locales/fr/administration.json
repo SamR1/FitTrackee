@@ -47,6 +47,7 @@
             "DELETE_CONTENT": "Supprimer le contenu",
             "DISABLE_ACCOUNT": "Désactiver le compte de l'utilisateur",
             "MARK_AS_RESOLVED": "Marqué comme résolu",
+            "MARK_AS_UNRESOLVED": "Marqué comme non résolu",
             "SEND_EMAIL": "Envoyer un courriel"
         }
     },

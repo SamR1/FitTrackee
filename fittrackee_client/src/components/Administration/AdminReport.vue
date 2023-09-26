@@ -2,7 +2,7 @@
   import { Locale, formatDistance } from 'date-fns'
   import { computed, onBeforeMount, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
 
   import Comment from '@/components/Comment/Comment.vue'
   import Username from '@/components/User/Username.vue'
@@ -17,6 +17,7 @@
 
   const store = useStore()
   const route = useRoute()
+  const router = useRouter()
 
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
@@ -35,11 +36,13 @@
   )
   const reportCommentText: Ref<string> = ref('')
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
+  const currentAction: Ref<string> = ref('')
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
   }
-  function displayTextArea() {
+  function displayTextArea(action = '') {
+    currentAction.value = action
     displayReportCommentTextarea.value = true
   }
   function updateCommentText(textareaData: ICustomTextareaData) {
@@ -48,13 +51,27 @@
   function onCancel() {
     displayReportCommentTextarea.value = false
     reportCommentText.value = ''
+    currentAction.value = ''
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   }
-  function submitReportComment() {
-    store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_REPORT_COMMENT, {
+  function updateReport() {
+    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, {
       reportId: report.value.id,
       comment: reportCommentText.value,
+      resolved: currentAction.value === 'MARK_AS_RESOLVED',
     })
+  }
+  function getButtonLabel() {
+    switch (currentAction.value) {
+      case 'MARK_AS_RESOLVED':
+        return `admin.APP_MODERATION.ACTIONS.${currentAction.value}`
+      default:
+        return 'buttons.SUBMIT'
+    }
+  }
+  function goBack() {
+    router.push('/admin/reports')
+    store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
   }
 
   onBeforeMount(async () => loadReport())
@@ -77,6 +94,9 @@
     <Card>
       <template #title>
         {{ $t('admin.APP_MODERATION.REPORT') }} #{{ report.id }}
+        <span v-if="report.resolved" class="report-status">
+          ({{ $t('admin.APP_MODERATION.RESOLVED.TRUE') }})
+        </span>
       </template>
       <template #content>
         <Card class="report-detail-card">
@@ -144,8 +164,15 @@
               </div>
               <div class="report-comment-comment">{{ comment.comment }}</div>
             </div>
+          </template>
+        </Card>
+        <Card class="report-detail-card">
+          <template #title>
+            {{ $t('admin.ACTION', 0) }}
+          </template>
+          <template #content>
             <div class="comment-textarea" v-if="displayReportCommentTextarea">
-              <form @submit.prevent="submitReportComment">
+              <form @submit.prevent="updateReport">
                 <CustomTextArea
                   class="report-comment-textarea"
                   name="report-comment"
@@ -157,7 +184,7 @@
                 />
                 <div class="comment-buttons">
                   <button class="confirm" type="submit">
-                    {{ $t('buttons.SUBMIT') }}
+                    {{ $t(getButtonLabel()) }}
                   </button>
                   <button class="cancel" @click.prevent="onCancel">
                     {{ $t('buttons.CANCEL') }}
@@ -166,14 +193,7 @@
                 <ErrorMessage :message="errorMessages" v-if="errorMessages" />
               </form>
             </div>
-          </template>
-        </Card>
-        <Card class="report-detail-card">
-          <template #title>
-            {{ $t('admin.ACTION', 0) }}
-          </template>
-          <template #content>
-            <div class="actions-buttons">
+            <div v-else class="actions-buttons">
               <button @click="displayTextArea">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
@@ -186,13 +206,25 @@
               <button class="danger">
                 {{ $t('admin.APP_MODERATION.ACTIONS.DISABLE_ACCOUNT') }}
               </button>
-              <button>
-                {{ $t('admin.APP_MODERATION.ACTIONS.MARK_AS_RESOLVED') }}
+              <button
+                @click="
+                  displayTextArea(
+                    `MARK_AS_${report.resolved ? 'UN' : ''}RESOLVED`
+                  )
+                "
+              >
+                {{
+                  $t(
+                    `admin.APP_MODERATION.ACTIONS.MARK_AS_${
+                      report.resolved ? 'UN' : ''
+                    }RESOLVED`
+                  )
+                }}
               </button>
             </div>
           </template>
         </Card>
-        <button @click.prevent="$router.push('/admin/reports')">
+        <button @click.prevent="goBack">
           {{ $t('buttons.BACK') }}
         </button>
       </template>
@@ -207,6 +239,10 @@
     .report-detail-card,
     .report-comments {
       margin: $default-margin 0 $default-margin * 2;
+    }
+
+    .report-status {
+      text-transform: lowercase;
     }
 
     .report-comments {
@@ -245,12 +281,14 @@
           padding: $default-padding 0;
         }
       }
-      .comment-textarea {
-        .comment-buttons {
-          display: flex;
-          gap: $default-padding;
-          padding-top: $default-padding;
-        }
+    }
+
+    .comment-textarea {
+      padding: $default-padding * 0.5 0 $default-padding;
+      .comment-buttons {
+        display: flex;
+        gap: $default-padding;
+        padding-top: $default-padding;
       }
     }
     .actions-buttons {
