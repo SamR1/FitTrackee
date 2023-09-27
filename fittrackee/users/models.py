@@ -41,6 +41,7 @@ NOTIFICATION_TYPES = [
     'follow',
     'follow_request',
     'mention',
+    'report',
     'workout_comment',
     'workout_like',
 ]
@@ -853,6 +854,14 @@ class Notification(BaseModel):
             comment = Comment.query.filter_by(id=self.event_object_id).first()
             serialized_notification["comment"] = comment.serialize(
                 user=to_user
+            )
+
+        if self.event_type == "report":
+            from fittrackee.reports.models import Report
+
+            report = Report.query.filter_by(id=self.event_object_id).first()
+            serialized_notification["report"] = report.serialize(
+                current_user=to_user
             )
 
         return serialized_notification
