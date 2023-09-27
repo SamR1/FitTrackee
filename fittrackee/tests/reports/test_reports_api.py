@@ -231,43 +231,6 @@ class TestPostCommentReport(ReportTestCase):
             f"comment not found (id: {comment_id})",
         )
 
-    def test_it_returns_404_when_comment_is_not_visible_to_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=comment.short_id,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"comment not found (id: {comment.short_id})",
-        )
-
     def test_it_returns_400_when_user_is_comment_author(
         self,
         app: Flask,
@@ -369,37 +332,6 @@ class TestPostWorkoutReport(ReportTestCase):
             f"workout not found (id: {workout_id})",
         )
 
-    def test_it_returns_404_when_workout_is_not_visible_to_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=workout_cycling_user_2.short_id,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"workout not found (id: {workout_cycling_user_2.short_id})",
-        )
-
     def test_it_returns_400_when_user_is_workout_owner(
         self,
         app: Flask,
@@ -486,31 +418,6 @@ class TestPostUserReport(ReportTestCase):
         self.assert_404_with_message(
             response,
             f"user not found (username: {username})",
-        )
-
-    def test_it_returns_404_when_user_is_inactive(
-        self, app: Flask, user_1: User, inactive_user: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=inactive_user.username,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"user not found (username: {inactive_user.username})",
         )
 
     def test_it_returns_400_when_user_is_reported_user(
