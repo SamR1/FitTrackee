@@ -9,7 +9,7 @@
       </button>
       <NotificationDetail
         v-for="notification in notifications"
-        :key="notification"
+        :key="notification.id"
         :auth-user="authUser"
         :notification="notification"
         @reload="reload"
@@ -39,6 +39,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import NotificationDetail from '@/components/Notifications/NotificationDetail.vue'
   import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
+  import { IPagination } from '@/types/api'
   import { INotification, INotificationsPayload } from '@/types/notifications'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -52,7 +53,7 @@
   const notifications: ComputedRef<INotification[]> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.NOTIFICATIONS]
   )
-  const pagination: ComputedRef<INotification[]> = computed(
+  const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.PAGINATION]
   )
   let query: INotificationsPayload = reactive(

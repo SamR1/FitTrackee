@@ -71,6 +71,7 @@
     'comment_like',
     'comment_reply',
     'mention',
+    'report',
     'workout_comment',
     'workout_like',
   ]

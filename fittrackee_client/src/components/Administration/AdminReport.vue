@@ -67,7 +67,7 @@
     }
   }
   function goBack() {
-    router.push('/admin/reports')
+    router.go(-1)
     store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
   }
   function getDate(dateToFormat: string) {
