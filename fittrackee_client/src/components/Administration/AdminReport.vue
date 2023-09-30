@@ -305,6 +305,8 @@
 
     .report-data {
       display: flex;
+      flex-wrap: wrap;
+
       .report-detail {
         display: flex;
         flex-direction: column;
@@ -319,6 +321,14 @@
         dt {
           font-weight: bold;
           text-transform: lowercase;
+        }
+      }
+
+      @media screen and (max-width: $small-limit) {
+        flex-direction: column-reverse;
+
+        .report-info {
+          padding: 0 !important;
         }
       }
     }
