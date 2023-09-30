@@ -212,7 +212,7 @@
 
     .notifications-icons {
       font-size: 1em;
-      padding-top: 5px;
+      padding-top: 7px;
     }
 
     .nav-icon-open {
