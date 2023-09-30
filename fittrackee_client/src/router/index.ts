@@ -376,7 +376,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
     meta: {
-      title: 'administration.USER',
+      title: 'user.USER',
       withoutChecks: true,
     },
     children: [
