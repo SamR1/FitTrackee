@@ -23,6 +23,29 @@ class TestUserModel:
     ) -> None:
         assert '<User \'test\'>' == str(user_1)
 
+    def test_it_returns_workout_count_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        assert user_1.workouts_count == 0
+
+    def test_it_returns_workout_count_when_user_has_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        assert user_1.workouts_count == 2
+
 
 class UserModelAssertMixin:
     @staticmethod
