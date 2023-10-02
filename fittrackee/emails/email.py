@@ -4,6 +4,7 @@ import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Dict, List, Optional, Type, Union
+from urllib.parse import unquote
 
 from babel.support import Translations
 from flask import Flask
@@ -131,7 +132,7 @@ class EmailService:
         parsed_url = parse_url(email_url)
         if parsed_url.scheme != 'smtp':
             raise InvalidEmailUrlScheme()
-        credentials = (
+        username, password = (
             parsed_url.auth.split(':')
             if parsed_url.auth
             else [None, None]  # type: ignore
@@ -139,10 +140,12 @@ class EmailService:
         return {
             'host': parsed_url.host,
             'port': 25 if parsed_url.port is None else parsed_url.port,
-            'use_tls': True if parsed_url.query == 'tls=True' else False,
-            'use_ssl': True if parsed_url.query == 'ssl=True' else False,
-            'username': credentials[0],
-            'password': credentials[1],
+            'use_tls': parsed_url.query == 'tls=True',
+            'use_ssl': parsed_url.query == 'ssl=True',
+            'username': username,
+            'password': (
+                unquote(password) if isinstance(password, str) else password
+            ),
         }
 
     @property
