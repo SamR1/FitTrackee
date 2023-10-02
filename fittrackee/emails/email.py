@@ -4,6 +4,7 @@ import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Dict, List, Optional, Type, Union
+from urllib.parse import unquote
 
 from babel.support import Translations
 from flask import Flask
@@ -142,7 +143,9 @@ class EmailService:
             'use_tls': True if parsed_url.query == 'tls=True' else False,
             'use_ssl': True if parsed_url.query == 'ssl=True' else False,
             'username': credentials[0],
-            'password': credentials[1],
+            'password': (
+                None if credentials[1] is None else unquote(credentials[1])
+            ),
         }
 
     @property
