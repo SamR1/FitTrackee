@@ -26,9 +26,8 @@ exclude = ["fittrackee/tests"]
 python = "^3.8.1"
 authlib = "=1.2.1"
 babel = "^2.11.0"
-click = "=8.1.3"
 dramatiq = {version = "^1.14", extras = ["redis"]}
-flask = "^2.3"
+flask = "^3.0"
 flask-bcrypt = "^1.0"
 flask-dramatiq = "^0.6"
 flask-limiter = {version = "^3.5", extras = ["redis"]}
