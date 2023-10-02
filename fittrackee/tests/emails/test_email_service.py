@@ -1,4 +1,5 @@
 from unittest.mock import Mock, patch
+from urllib.parse import quote
 
 import pytest
 from flask import Flask
@@ -43,6 +44,7 @@ class TestEmailServiceUrlParser(BaseTestMixin):
     @staticmethod
     def assert_parsed_email(url: str) -> None:
         parsed_email = email_service.parse_email_url(url)
+
         assert parsed_email['username'] is None
         assert parsed_email['password'] is None
         assert parsed_email['host'] == 'localhost'
@@ -60,7 +62,9 @@ class TestEmailServiceUrlParser(BaseTestMixin):
 
     def test_it_parses_email_url(self) -> None:
         url = 'smtp://test@example.com:12345678@localhost:25'
+
         parsed_email = email_service.parse_email_url(url)
+
         assert parsed_email['username'] == 'test@example.com'
         assert parsed_email['password'] == '12345678'
         assert parsed_email['host'] == 'localhost'
@@ -70,7 +74,9 @@ class TestEmailServiceUrlParser(BaseTestMixin):
 
     def test_it_parses_email_url_with_tls(self) -> None:
         url = 'smtp://test@example.com:12345678@localhost:587?tls=True'
+
         parsed_email = email_service.parse_email_url(url)
+
         assert parsed_email['username'] == 'test@example.com'
         assert parsed_email['password'] == '12345678'
         assert parsed_email['host'] == 'localhost'
@@ -80,9 +86,26 @@ class TestEmailServiceUrlParser(BaseTestMixin):
 
     def test_it_parses_email_url_with_ssl(self) -> None:
         url = 'smtp://test@example.com:12345678@localhost:465?ssl=True'
+
         parsed_email = email_service.parse_email_url(url)
+
         assert parsed_email['username'] == 'test@example.com'
         assert parsed_email['password'] == '12345678'
+        assert parsed_email['host'] == 'localhost'
+        assert parsed_email['port'] == 465
+        assert parsed_email['use_tls'] is False
+        assert parsed_email['use_ssl'] is True
+
+    def test_it_parses_email_url_with_encoded_password(self) -> None:
+        username = "user_name@example.com"
+        password = "passwordWith@And&And?"
+        encoded_password = quote(password)
+        url = f"smtp://{username}:{encoded_password}@localhost:465?ssl=True"
+
+        parsed_email = email_service.parse_email_url(url)
+
+        assert parsed_email['username'] == username
+        assert parsed_email['password'] == password
         assert parsed_email['host'] == 'localhost'
         assert parsed_email['port'] == 465
         assert parsed_email['use_tls'] is False

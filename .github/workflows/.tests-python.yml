@@ -75,7 +75,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        psql-version:  [ "11", "12", "13", "14" ]
+        psql-version:  [ "11", "12", "13", "14", "16" ]
     steps:
       - uses: actions/checkout@v3
       - name: Install Poetry and Dependencies
