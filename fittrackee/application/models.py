@@ -5,29 +5,30 @@ from flask import current_app
 from sqlalchemy import exc
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import text
 
 from fittrackee import VERSION, db
 from fittrackee.users.models import User
 
-BaseModel: DeclarativeMeta = db.Model
 
-
-class AppConfig(BaseModel):
+class AppConfig(db.Model):  # type: ignore
     __tablename__ = 'app_config'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    max_users = db.Column(db.Integer, default=0, nullable=False)
-    gpx_limit_import = db.Column(db.Integer, default=10, nullable=False)
-    max_single_file_size = db.Column(
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    max_users = mapped_column(db.Integer, default=0, nullable=False)
+    gpx_limit_import = mapped_column(db.Integer, default=10, nullable=False)
+    max_single_file_size = mapped_column(
         db.Integer, default=1048576, nullable=False
     )
-    max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
-    admin_contact = db.Column(db.String(255), nullable=True)
-    privacy_policy_date = db.Column(db.DateTime, nullable=True)
-    privacy_policy = db.Column(db.Text, nullable=True)
-    about = db.Column(db.Text, nullable=True)
+    max_zip_file_size = mapped_column(
+        db.Integer, default=10485760, nullable=False
+    )
+    admin_contact = mapped_column(db.String(255), nullable=True)
+    privacy_policy_date = mapped_column(db.DateTime, nullable=True)
+    privacy_policy = mapped_column(db.Text, nullable=True)
+    about = mapped_column(db.Text, nullable=True)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -36,8 +37,9 @@ class AppConfig(BaseModel):
         except exc.ProgrammingError as e:
             # workaround for user model related migrations
             if 'psycopg2.errors.UndefinedColumn' in str(e):
-                result = db.engine.execute("SELECT COUNT(*) FROM users;")
-                nb_users = result.fetchone()[0]
+                query = db.session.execute(text("SELECT COUNT(*) FROM users;"))
+                result = query.fetchone()
+                nb_users = result[0] if result else 0
             else:
                 raise e
         return self.max_users == 0 or nb_users < self.max_users

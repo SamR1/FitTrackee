@@ -7,8 +7,8 @@ from flask import current_app
 from sqlalchemy import func
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql.expression import select
@@ -21,48 +21,48 @@ from .exceptions import UserNotFoundException
 from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
-BaseModel: DeclarativeMeta = db.Model
 
-
-class User(BaseModel):
+class User(db.Model):  # type: ignore
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
-    admin = db.Column(db.Boolean, default=False, nullable=False)
-    first_name = db.Column(db.String(80), nullable=True)
-    last_name = db.Column(db.String(80), nullable=True)
-    birth_date = db.Column(db.DateTime, nullable=True)
-    location = db.Column(db.String(80), nullable=True)
-    bio = db.Column(db.String(200), nullable=True)
-    picture = db.Column(db.String(255), nullable=True)
-    timezone = db.Column(db.String(50), nullable=True)
-    date_format = db.Column(db.String(50), nullable=True)
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    username = mapped_column(db.String(255), unique=True, nullable=False)
+    email = mapped_column(db.String(255), unique=True, nullable=False)
+    password = mapped_column(db.String(255), nullable=False)
+    created_at = mapped_column(db.DateTime, nullable=False)
+    admin = mapped_column(db.Boolean, default=False, nullable=False)
+    first_name = mapped_column(db.String(80), nullable=True)
+    last_name = mapped_column(db.String(80), nullable=True)
+    birth_date = mapped_column(db.DateTime, nullable=True)
+    location = mapped_column(db.String(80), nullable=True)
+    bio = mapped_column(db.String(200), nullable=True)
+    picture = mapped_column(db.String(255), nullable=True)
+    timezone = mapped_column(db.String(50), nullable=True)
+    date_format = mapped_column(db.String(50), nullable=True)
     # does the week start Monday?
-    weekm = db.Column(db.Boolean, default=False, nullable=False)
-    workouts = db.relationship(
+    weekm = mapped_column(db.Boolean, default=False, nullable=False)
+    workouts = relationship(
         'Workout',
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
-    records = db.relationship(
+    records = relationship(
         'Record',
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
-    language = db.Column(db.String(50), nullable=True)
-    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
-    is_active = db.Column(db.Boolean, default=False, nullable=False)
-    email_to_confirm = db.Column(db.String(255), nullable=True)
-    confirmation_token = db.Column(db.String(255), nullable=True)
-    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
-    accepted_policy_date = db.Column(db.DateTime, nullable=True)
-    start_elevation_at_zero = db.Column(
+    language = mapped_column(db.String(50), nullable=True)
+    imperial_units = mapped_column(db.Boolean, default=False, nullable=False)
+    is_active = mapped_column(db.Boolean, default=False, nullable=False)
+    email_to_confirm = mapped_column(db.String(255), nullable=True)
+    confirmation_token = mapped_column(db.String(255), nullable=True)
+    display_ascent = mapped_column(db.Boolean, default=True, nullable=False)
+    accepted_policy_date = mapped_column(db.DateTime, nullable=True)
+    start_elevation_at_zero = mapped_column(
         db.Boolean, default=True, nullable=False
     )
-    use_raw_gpx_speed = db.Column(db.Boolean, default=False, nullable=False)
+    use_raw_gpx_speed = mapped_column(
+        db.Boolean, default=False, nullable=False
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -138,7 +138,7 @@ class User(BaseModel):
     @workouts_count.expression  # type: ignore
     def workouts_count(self) -> int:
         return (
-            select([func.count(Workout.id)])
+            select(func.count(Workout.id))
             .where(Workout.user_id == self.id)
             .label('workouts_count')
         )
@@ -225,22 +225,24 @@ class User(BaseModel):
         return serialized_user
 
 
-class UserSportPreference(BaseModel):
+class UserSportPreference(db.Model):  # type: ignore
     __tablename__ = 'users_sports_preferences'
 
-    user_id = db.Column(
+    user_id = mapped_column(
         db.Integer,
         db.ForeignKey('users.id'),
         primary_key=True,
     )
-    sport_id = db.Column(
+    sport_id = mapped_column(
         db.Integer,
         db.ForeignKey('sports.id'),
         primary_key=True,
     )
-    color = db.Column(db.String(50), nullable=True)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+    color = mapped_column(db.String(50), nullable=True)
+    is_active = mapped_column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = mapped_column(
+        db.Float, default=1.0, nullable=False
+    )
 
     def __init__(
         self,
@@ -263,13 +265,13 @@ class UserSportPreference(BaseModel):
         }
 
 
-class BlacklistedToken(BaseModel):
+class BlacklistedToken(db.Model):  # type: ignore
     __tablename__ = 'blacklisted_tokens'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    token = db.Column(db.String(500), unique=True, nullable=False)
-    expired_at = db.Column(db.Integer, nullable=False)
-    blacklisted_on = db.Column(db.DateTime, nullable=False)
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    token = mapped_column(db.String(500), unique=True, nullable=False)
+    expired_at = mapped_column(db.Integer, nullable=False)
+    blacklisted_on = mapped_column(db.DateTime, nullable=False)
 
     def __init__(
         self, token: str, blacklisted_on: Optional[datetime] = None
@@ -290,25 +292,25 @@ class BlacklistedToken(BaseModel):
         return cls.query.filter_by(token=str(auth_token)).first() is not None
 
 
-class UserDataExport(BaseModel):
+class UserDataExport(db.Model):  # type: ignore
     __tablename__ = 'users_data_export'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = mapped_column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
         unique=True,
     )
-    created_at = db.Column(
+    created_at = mapped_column(
         db.DateTime, nullable=False, default=datetime.utcnow
     )
-    updated_at = db.Column(
+    updated_at = mapped_column(
         db.DateTime, nullable=True, onupdate=datetime.utcnow
     )
-    completed = db.Column(db.Boolean, nullable=False, default=False)
-    file_name = db.Column(db.String(100), nullable=True)
-    file_size = db.Column(db.Integer, nullable=True)
+    completed = mapped_column(db.Boolean, nullable=False, default=False)
+    file_name = mapped_column(db.String(100), nullable=True)
+    file_size = mapped_column(db.Integer, nullable=True)
 
     def __init__(
         self,

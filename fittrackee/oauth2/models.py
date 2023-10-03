@@ -8,23 +8,22 @@ from authlib.integrations.sqla_oauth2 import (
 )
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.orm import mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import text
 
 from fittrackee import db
 
-BaseModel: DeclarativeMeta = db.Model
 
-
-class OAuth2Client(BaseModel, OAuth2ClientMixin):
+class OAuth2Client(OAuth2ClientMixin, db.Model):  # type: ignore
     __tablename__ = 'oauth2_client'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(
+    id = mapped_column(db.Integer, primary_key=True)
+    user_id = mapped_column(
         db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
     )
-    user = db.relationship('User')
+    user = relationship('User')
 
     def serialize(self, with_secret: bool = False) -> Dict:
         client = {
@@ -63,7 +62,9 @@ def on_old_oauth2_delete(
         ).delete(synchronize_session=False)
 
 
-class OAuth2AuthorizationCode(BaseModel, OAuth2AuthorizationCodeMixin):
+class OAuth2AuthorizationCode(
+    OAuth2AuthorizationCodeMixin, db.Model  # type: ignore
+):
     __tablename__ = 'oauth2_code'
     __table_args__ = (
         db.Index(
@@ -72,21 +73,21 @@ class OAuth2AuthorizationCode(BaseModel, OAuth2AuthorizationCodeMixin):
         ),
     )
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(
+    id = mapped_column(db.Integer, primary_key=True)
+    user_id = mapped_column(
         db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
     )
-    user = db.relationship('User')
+    user = relationship('User')
 
 
-class OAuth2Token(BaseModel, OAuth2TokenMixin):
+class OAuth2Token(OAuth2TokenMixin, db.Model):  # type: ignore
     __tablename__ = 'oauth2_token'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(
+    id = mapped_column(db.Integer, primary_key=True)
+    user_id = mapped_column(
         db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
     )
-    user = db.relationship('User')
+    user = relationship('User')
 
     def is_refresh_token_active(self) -> bool:
         if self.is_revoked():
@@ -98,10 +99,10 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
     def revoke_client_tokens(cls, client_id: str) -> None:
         sql = """
             UPDATE oauth2_token
-            SET access_token_revoked_at = %(revoked_at)s
-            WHERE client_id = %(client_id)s;
+            SET access_token_revoked_at = :revoked_at
+            WHERE client_id = :client_id;
         """
-        db.engine.execute(
-            sql, {'client_id': client_id, 'revoked_at': int(time.time())}
+        db.session.execute(
+            text(sql), {'client_id': client_id, 'revoked_at': int(time.time())}
         )
         db.session.commit()

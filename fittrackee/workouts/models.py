@@ -1,13 +1,13 @@
-import datetime
 import os
+from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
@@ -18,7 +18,6 @@ from fittrackee.files import get_absolute_file_path
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
 
-BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
@@ -67,18 +66,20 @@ def update_records(
             )
 
 
-class Sport(BaseModel):
+class Sport(db.Model):  # type: ignore
     __tablename__ = 'sports'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    label = db.Column(db.String(50), unique=True, nullable=False)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
-    workouts = db.relationship(
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    label = mapped_column(db.String(50), unique=True, nullable=False)
+    is_active = mapped_column(db.Boolean, default=True, nullable=False)
+    stopped_speed_threshold = mapped_column(
+        db.Float, default=1.0, nullable=False
+    )
+    workouts = relationship(
         'Workout',
         lazy=True,
         backref=db.backref('sport', lazy='joined', single_parent=True),
     )
-    records = db.relationship(
+    records = relationship(
         'Record',
         lazy=True,
         backref=db.backref('sport', lazy='joined', single_parent=True),
@@ -120,51 +121,49 @@ class Sport(BaseModel):
         return serialized_sport
 
 
-class Workout(BaseModel):
+class Workout(db.Model):  # type: ignore
     __tablename__ = 'workouts'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
+    user_id = mapped_column(
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
     )
-    sport_id = db.Column(
+    sport_id = mapped_column(
         db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
     )
-    title = db.Column(db.String(255), nullable=True)
-    gpx = db.Column(db.String(255), nullable=True)
-    creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    modification_date = db.Column(
-        db.DateTime, onupdate=datetime.datetime.utcnow
-    )
-    workout_date = db.Column(db.DateTime, index=True, nullable=False)
-    duration = db.Column(db.Interval, nullable=False)
-    pauses = db.Column(db.Interval, nullable=True)
-    moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
-    map = db.Column(db.String(255), nullable=True)
-    map_id = db.Column(db.String(50), index=True, nullable=True)
-    weather_start = db.Column(JSON, nullable=True)
-    weather_end = db.Column(JSON, nullable=True)
-    notes = db.Column(db.String(500), nullable=True)
-    segments = db.relationship(
+    title = mapped_column(db.String(255), nullable=True)
+    gpx = mapped_column(db.String(255), nullable=True)
+    creation_date = mapped_column(db.DateTime, default=datetime.utcnow)
+    modification_date = mapped_column(db.DateTime, onupdate=datetime.utcnow)
+    workout_date = mapped_column(db.DateTime, index=True, nullable=False)
+    duration = mapped_column(db.Interval, nullable=False)
+    pauses = mapped_column(db.Interval, nullable=True)
+    moving = mapped_column(db.Interval, nullable=True)
+    distance = mapped_column(db.Numeric(6, 3), nullable=True)  # kilometers
+    min_alt = mapped_column(db.Numeric(6, 2), nullable=True)  # meters
+    max_alt = mapped_column(db.Numeric(6, 2), nullable=True)  # meters
+    descent = mapped_column(db.Numeric(8, 3), nullable=True)  # meters
+    ascent = mapped_column(db.Numeric(8, 3), nullable=True)  # meters
+    max_speed = mapped_column(db.Numeric(6, 2), nullable=True)  # km/h
+    ave_speed = mapped_column(db.Numeric(6, 2), nullable=True)  # km/h
+    bounds = mapped_column(postgresql.ARRAY(db.Float), nullable=True)
+    map = mapped_column(db.String(255), nullable=True)
+    map_id = mapped_column(db.String(50), index=True, nullable=True)
+    weather_start = mapped_column(JSON, nullable=True)
+    weather_end = mapped_column(JSON, nullable=True)
+    notes = mapped_column(db.String(500), nullable=True)
+    segments = relationship(
         'WorkoutSegment',
         lazy=True,
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
-    records = db.relationship(
+    records = relationship(
         'Record',
         lazy=True,
         cascade='all, delete',
@@ -178,9 +177,9 @@ class Workout(BaseModel):
         self,
         user_id: int,
         sport_id: int,
-        workout_date: datetime.datetime,
+        workout_date: datetime,
         distance: float,
-        duration: datetime.timedelta,
+        duration: timedelta,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
@@ -242,11 +241,10 @@ class Workout(BaseModel):
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.workout_date <= self.workout_date,
                 Workout.workout_date
-                >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                >= datetime.strptime(date_from, '%Y-%m-%d')
                 if date_from
                 else True,
-                Workout.workout_date
-                <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                Workout.workout_date <= datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
                 Workout.distance >= float(distance_from)
@@ -284,11 +282,10 @@ class Workout(BaseModel):
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.workout_date >= self.workout_date,
                 Workout.workout_date
-                >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                >= datetime.strptime(date_from, '%Y-%m-%d')
                 if date_from
                 else True,
-                Workout.workout_date
-                <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                Workout.workout_date <= datetime.strptime(date_to, '%Y-%m-%d')
                 if date_to
                 else True,
                 Workout.distance >= float(distance_from)
@@ -380,9 +377,10 @@ def on_workout_insert(
 def on_workout_update(
     mapper: Mapper, connection: Connection, workout: Workout
 ) -> None:
-    if object_session(workout).is_modified(
+    workout_session = object_session(workout)
+    if workout_session is not None and workout_session.is_modified(
         workout, include_collections=True
-    ):  # noqa
+    ):
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:
@@ -413,23 +411,23 @@ def on_workout_delete(
                 appLog.error('gpx file not found when deleting workout')
 
 
-class WorkoutSegment(BaseModel):
+class WorkoutSegment(db.Model):  # type: ignore
     __tablename__ = 'workout_segments'
-    workout_id = db.Column(
+    workout_id = mapped_column(
         db.Integer, db.ForeignKey('workouts.id'), primary_key=True
     )
-    workout_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
-    segment_id = db.Column(db.Integer, primary_key=True)
-    duration = db.Column(db.Interval, nullable=False)
-    pauses = db.Column(db.Interval, nullable=True)
-    moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
+    workout_uuid = mapped_column(postgresql.UUID(as_uuid=True), nullable=False)
+    segment_id = mapped_column(db.Integer, primary_key=True)
+    duration = mapped_column(db.Interval, nullable=False)
+    pauses = mapped_column(db.Interval, nullable=True)
+    moving = mapped_column(db.Interval, nullable=True)
+    distance = mapped_column(db.Numeric(6, 3), nullable=True)  # kilometers
+    min_alt = mapped_column(db.Numeric(6, 2), nullable=True)  # meters
+    max_alt = mapped_column(db.Numeric(6, 2), nullable=True)  # meters
+    descent = mapped_column(db.Numeric(8, 3), nullable=True)  # meters
+    ascent = mapped_column(db.Numeric(8, 3), nullable=True)  # meters
+    max_speed = mapped_column(db.Numeric(6, 2), nullable=True)  # km/h
+    ave_speed = mapped_column(db.Numeric(6, 2), nullable=True)  # km/h
 
     def __str__(self) -> str:
         return (
@@ -461,25 +459,27 @@ class WorkoutSegment(BaseModel):
         }
 
 
-class Record(BaseModel):
+class Record(db.Model):  # type: ignore
     __tablename__ = "records"
     __table_args__ = (
         db.UniqueConstraint(
             'user_id', 'sport_id', 'record_type', name='user_sports_records'
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    sport_id = db.Column(
+    id = mapped_column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = mapped_column(
+        db.Integer, db.ForeignKey('users.id'), nullable=False
+    )
+    sport_id = mapped_column(
         db.Integer, db.ForeignKey('sports.id'), nullable=False
     )
-    workout_id = db.Column(
+    workout_id = mapped_column(
         db.Integer, db.ForeignKey('workouts.id'), nullable=False
     )
-    workout_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
-    record_type = db.Column(Enum(*record_types, name="record_types"))
-    workout_date = db.Column(db.DateTime, nullable=False)
-    _value = db.Column("value", db.Integer, nullable=True)
+    workout_uuid = mapped_column(postgresql.UUID(as_uuid=True), nullable=False)
+    record_type = mapped_column(Enum(*record_types, name="record_types"))
+    workout_date = mapped_column(db.DateTime, nullable=False)
+    _value = mapped_column("value", db.Integer, nullable=True)
 
     def __str__(self) -> str:
         return (
@@ -497,11 +497,11 @@ class Record(BaseModel):
         self.workout_date = workout.workout_date
 
     @hybrid_property
-    def value(self) -> Optional[Union[datetime.timedelta, float]]:
+    def value(self) -> Optional[Union[timedelta, float]]:
         if self._value is None:
             return None
         if self.record_type == 'LD':
-            return datetime.timedelta(seconds=self._value)
+            return timedelta(seconds=self._value)
         elif self.record_type in ['AS', 'MS']:
             return float(self._value / 100)
         else:  # 'FD' or 'HA'
