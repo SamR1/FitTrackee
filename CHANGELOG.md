@@ -1,5 +1,39 @@
 # Change log
 
+## Version 0.7.24 (2023/10/04)
+
+### Bugs Fixed
+
+* [PR#433](https://github.com/SamR1/FitTrackee/pull/433) - Handle encoded password in EMAIL_URL
+
+### Translations
+
+* [PR#427](https://github.com/SamR1/FitTrackee/pull/427) - fix typos and translations + refacto
+* [PR#431](https://github.com/SamR1/FitTrackee/pull/431) - Translations update (Galician)
+
+### Misc
+
+* [PR#428](https://github.com/SamR1/FitTrackee/pull/428) - CI - Add PostgreSQL 16
+* [2bcff2e](https://github.com/SamR1/FitTrackee/commit/2bcff2edc7308f8ec4a59b30dd482025bf7396e7) - API - update Flask to 3.0+ 
+* [PR#436](https://github.com/SamR1/FitTrackee/pull/436) - CI - Add Python 3.12
+* [PR#438](https://github.com/SamR1/FitTrackee/pull/438) - CI - update workflows
+
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 85%
+- Norwegian Bokmål: 35%
+- Polish: 100%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @xmgz
+
+
 ## Version 0.7.23 (2023/09/14)
 
 ### Bugs Fixed
