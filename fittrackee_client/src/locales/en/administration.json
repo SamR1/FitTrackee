@@ -24,11 +24,13 @@
     "APP_MODERATION": {
         "TITLE": "Moderation",
         "DESCRIPTION": "Reports management.",
+        "NOTES_AND_ACTIONS": "Notes and actions",
         "NO_REPORTS_FOUND": "No reports",
         "REPORT": "report | reports",
-        "REPORT_CONTENT": "Report content",
+        "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
         "REPORT_NOTE": "Note by",
         "REPORTED_BY": "Reported by",
+        "REPORTED_CONTENT": "Reported content",
         "REPORTED_OBJECT": "Object",
         "REPORTED_USER": "Reported user",
         "REPORTER": "reporter",
@@ -36,6 +38,7 @@
             "TRUE": "Resolved",
             "FALSE": "Unresolved"
         },
+        "RESOLVED_AT": "Resolved at",
         "ORDER_BY": {
             "CREATED_AT": "creation date",
             "UPDATED_AT": "update date"
@@ -46,6 +49,7 @@
             "DELETE_CONTENT": "Delete content",
             "DISABLE_ACCOUNT": "Disable user account",
             "MARK_AS_RESOLVED": "Mark as resolved",
+            "MARK_AS_UNRESOLVED": "Mark as unresolved",
             "SEND_EMAIL": "Send an email"
         }
     },

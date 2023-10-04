@@ -33,8 +33,8 @@
       store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
     }
   }
-  async function submitReport() {
-    await store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_REPORT, {
+  function submitReport() {
+    store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_REPORT, {
       object_id: objectId.value,
       object_type: objectType.value,
       note: reportText.value,

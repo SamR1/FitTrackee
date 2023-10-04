@@ -60,7 +60,7 @@
         :name="`text-${comment.id}`"
         :authUser="authUser"
       />
-      <div class="comment-actions">
+      <div class="comment-actions" v-if="!forAdmin">
         <button
           class="transparent icon-button likes"
           @click="forNotification ? null : updateLike(comment)"
@@ -193,15 +193,23 @@
     commentsLoading: string | null
     currentCommentEdition?: ICurrentCommentEdition | null
     forNotification?: boolean
+    forAdmin?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
     currentCommentEdition: null,
+    forAdmin: false,
     forNotification: false,
     workout: null,
   })
-  const { authUser, comment, currentCommentEdition, forNotification, workout } =
-    toRefs(props)
+  const {
+    authUser,
+    comment,
+    currentCommentEdition,
+    forAdmin,
+    forNotification,
+    workout,
+  } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()

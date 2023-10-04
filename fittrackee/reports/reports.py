@@ -1,12 +1,10 @@
-from datetime import datetime
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
-from sqlalchemy import asc, desc, func, nullslast
+from sqlalchemy import asc, desc, nullslast
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.utils import get_comment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -14,15 +12,18 @@ from fittrackee.responses import (
     NotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.utils.workouts import get_workout
 
-from .models import REPORT_OBJECT_TYPES, Report, ReportComment
+from .exceptions import InvalidReporterException, ReportNotFoundException
+from .models import REPORT_OBJECT_TYPES, Report
+from .service import ReportService
 
 reports_blueprint = Blueprint('reports', __name__)
 
 REPORTS_PER_PAGE = 10
+report_service = ReportService()
 
 
 @reports_blueprint.route("/reports", methods=["POST"])
@@ -40,58 +41,34 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     ):
         return InvalidPayloadErrorResponse()
 
-    if object_type == "comment":
-        try:
-            target_object = get_comment(object_id, auth_user)
-        except CommentForbiddenException:
-            return NotFoundErrorResponse(
-                f"comment not found (id: {object_id})"
-            )
-        if target_object.user_id == auth_user.id:
-            return InvalidPayloadErrorResponse(
-                "users can not report their own comments"
-            )
-
-    elif object_type == "workout":
-        try:
-            target_object = get_workout(object_id, auth_user)
-        except WorkoutForbiddenException:
-            return NotFoundErrorResponse(
-                f"workout not found (id: {object_id})"
-            )
-        if target_object.user_id == auth_user.id:
-            return InvalidPayloadErrorResponse(
-                "users can not report their own workouts"
-            )
-
-    else:  # object_type == "user"
-        target_object = User.query.filter(
-            func.lower(User.username) == func.lower(object_id),
-        ).first()
-        if not target_object or not target_object.is_active:
-            return NotFoundErrorResponse(
-                f"user not found (username: {object_id})"
-            )
-        if target_object.id == auth_user.id:
-            return InvalidPayloadErrorResponse(
-                "users can not report their own profile"
-            )
     try:
-        new_report = Report(
-            reported_by=auth_user.id,
+        new_report = report_service.create_report(
+            reporter=auth_user,
             note=note,
-            object_id=target_object.id,
+            object_id=object_id,
             object_type=object_type,
         )
-        db.session.add(new_report)
-        db.session.commit()
-
         return (
             {
                 "status": "created",
                 "report": new_report.serialize(auth_user),
             },
             201,
+        )
+    except (
+        CommentForbiddenException,
+        UserNotFoundException,
+        WorkoutForbiddenException,
+    ):
+        return NotFoundErrorResponse(
+            f"{object_type} not found "
+            f"({'username' if object_type == 'user' else 'id'}: {object_id})"
+        )
+    except InvalidReporterException:
+        return InvalidPayloadErrorResponse(
+            "users can not report their own profile"
+            if object_type == "user"
+            else f"users can not report their own {object_type}s"
         )
     except Exception as e:
         return handle_error_and_return_response(
@@ -194,20 +171,16 @@ def update_report(
     if not data or not comment:
         return InvalidPayloadErrorResponse()
 
-    report = Report.query.filter_by(id=report_id).first()
-    if not report:
+    try:
+        report = report_service.update_report(
+            report_id=report_id,
+            admin_user=auth_user,
+            report_comment=comment,
+            resolved=data.get("resolved") is True,
+        )
+    except ReportNotFoundException:
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
-    new_report_comment = ReportComment(
-        comment=comment, report_id=report_id, user_id=auth_user.id
-    )
-    db.session.add(new_report_comment)
-    now = datetime.utcnow()
-    report.updated_at = now
-    if data.get("resolved") is True:
-        report.resolved = True
-        report.resolved_at = now
-    db.session.commit()
     return {
         "status": "success",
         "report": report.serialize(auth_user),

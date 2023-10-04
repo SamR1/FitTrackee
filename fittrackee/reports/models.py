@@ -1,6 +1,11 @@
 from datetime import datetime
 from typing import Dict, Optional
 
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
+
 from fittrackee import BaseModel, db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.users.models import User
@@ -152,6 +157,29 @@ class Report(BaseModel):
         return report
 
 
+@listens_for(Report, 'after_insert')
+def on_report_insert(
+    mapper: Mapper, connection: Connection, new_report: Report
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification, User
+
+        for admin in User.query.filter(
+            User.admin == True,  # noqa
+            User.id != new_report.reported_by,
+            User.is_active == True,  # noqa
+        ).all():
+            notification = Notification(
+                from_user_id=new_report.reported_by,
+                to_user_id=admin.id,
+                created_at=new_report.created_at,
+                event_type='report',
+                event_object_id=new_report.id,
+            )
+            session.add(notification)
+
+
 class ReportComment(BaseModel):
     __tablename__ = 'report_comments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -193,6 +221,7 @@ class ReportComment(BaseModel):
         return {
             "created_at": self.created_at,
             "comment": self.comment,
+            "id": self.id,
             "report_id": self.report_id,
             "user": self.user.serialize(current_user),
         }

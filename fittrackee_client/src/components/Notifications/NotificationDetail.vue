@@ -7,7 +7,7 @@
     <template #title>
       <div>
         <i
-          :class="`fa-${notification.type === 'mention' ? 'at' : 'comment'}`"
+          :class="`fa-${icon}`"
           class="fa notification-icon"
           aria-hidden="true"
         />
@@ -50,23 +50,27 @@
     </template>
     <template #content>
       <Comment
-        v-if="displayCommentCard(notification.type)"
+        v-if="displayCommentCard(notification.type) && notification.comment"
         :comment="notification.comment"
         :authUser="authUser"
         comments-loading="null"
         :for-notification="true"
       />
       <RelationshipDetail
-        v-else-if="displayRelationshipCard"
+        v-else-if="displayRelationshipCard(notification.type)"
         :notification="notification"
         :authUser="authUser"
         @updatedUserRelationship="emitReload"
       />
+      <ReportNotification
+        v-else-if="notification.type === 'report' && notification.report"
+        :report="notification.report"
+      />
       <WorkoutCard
-        v-else
+        v-else-if="notification.workout && sport"
         :workout="notification.workout"
         :sport="sport"
-        :user="notification.workout.user"
+        :user="notification.workout?.user"
         :useImperialUnits="authUser.imperial_units"
         :dateFormat="dateFormat"
         :timezone="authUser.timezone"
@@ -75,10 +79,12 @@
   </Card>
 </template>
 <script lang="ts" setup>
-  import { ComputedRef, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import Comment from '@/components/Comment/Comment.vue'
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
+  import ReportNotification from '@/components/Notifications/ReportNotification.vue'
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import { INotification, TNotificationType } from '@/types/notifications'
@@ -103,22 +109,25 @@
   const appLanguage: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
-  const sport: ComputedRef<ISport> = computed(
-    () =>
-      sports.value.filter(
-        (s) => s.id === notification.value.workout.sport_id
-      )[0]
-  )
+  const sport: ComputedRef<ISport | null> = computed(() => getSport())
   const dateFormat = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)
   )
+  const icon = computed(() => getIcon(notification.value.type))
   const emit = defineEmits(['reload', 'updateReadStatus'])
 
   function emitReload() {
     emit('reload')
   }
-  function updateReadStatus(notificationId, markedAsRead) {
+  function updateReadStatus(notificationId: number, markedAsRead: boolean) {
     emit('updateReadStatus', { notificationId, markedAsRead })
+  }
+  function getSport(): ISport | null {
+    return notification.value.workout
+      ? sports.value.filter(
+          (s) => s.id === notification.value.workout?.sport_id
+        )[0]
+      : null
   }
   function displayCommentCard(notificationType: TNotificationType) {
     return [
@@ -131,7 +140,6 @@
   function displayRelationshipCard(notificationType: TNotificationType) {
     return ['follow', 'follow_request'].includes(notificationType)
   }
-
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {
       case 'comment_like':
@@ -148,6 +156,22 @@
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':
         return 'notifications.LIKED_YOUR_WORKOUT'
+      case 'report':
+        return `notifications.REPORTED_USER_${
+          notification.value.report?.object_type
+            ? notification.value.report.object_type.toUpperCase()
+            : ''
+        }`
+    }
+  }
+  function getIcon(notificationType: TNotificationType): string {
+    switch (notificationType) {
+      case 'mention':
+        return 'at'
+      case 'report':
+        return 'flag'
+      default:
+        return 'comment'
     }
   }
 </script>

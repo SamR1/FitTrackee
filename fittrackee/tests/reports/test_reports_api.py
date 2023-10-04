@@ -231,43 +231,6 @@ class TestPostCommentReport(ReportTestCase):
             f"comment not found (id: {comment_id})",
         )
 
-    def test_it_returns_404_when_comment_is_not_visible_to_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=comment.short_id,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"comment not found (id: {comment.short_id})",
-        )
-
     def test_it_returns_400_when_user_is_comment_author(
         self,
         app: Flask,
@@ -369,37 +332,6 @@ class TestPostWorkoutReport(ReportTestCase):
             f"workout not found (id: {workout_id})",
         )
 
-    def test_it_returns_404_when_workout_is_not_visible_to_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=workout_cycling_user_2.short_id,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"workout not found (id: {workout_cycling_user_2.short_id})",
-        )
-
     def test_it_returns_400_when_user_is_workout_owner(
         self,
         app: Flask,
@@ -486,31 +418,6 @@ class TestPostUserReport(ReportTestCase):
         self.assert_404_with_message(
             response,
             f"user not found (username: {username})",
-        )
-
-    def test_it_returns_404_when_user_is_inactive(
-        self, app: Flask, user_1: User, inactive_user: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=inactive_user.username,
-                    object_type=self.object_type,
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_404_with_message(
-            response,
-            f"user not found (username: {inactive_user.username})",
         )
 
     def test_it_returns_400_when_user_is_reported_user(
@@ -1404,7 +1311,7 @@ class TestPatchReport(ReportTestCase):
     route = "/api/reports/{report_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, user_1: User
+        self, app: Flask
     ) -> None:
         client = app.test_client()
 
@@ -1538,3 +1445,33 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["updated_at"] == date_string
         assert len(data["report"]["comments"]) == 2
         assert data["report"]["comments"][1]["comment"] == comment
+
+    def test_it_marks_a_report_as_unresolved(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        report.resolved = True
+        report.resolved_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        comment = self.random_string()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(report_id=report.id),
+                content_type="application/json",
+                data=json.dumps(dict(comment=comment, resolved=False)),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["report"]["resolved"] is False
+        assert data["report"]["resolved_at"] is None
+        assert data["report"]["updated_at"] == self.get_date_string(date=now)
+        assert len(data["report"]["comments"]) == 1
+        assert data["report"]["comments"][0]["comment"] == comment

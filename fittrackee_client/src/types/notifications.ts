@@ -1,3 +1,4 @@
+import { IReportForAdmin } from '@/types/reports'
 import { IUserProfile } from '@/types/user'
 import { IComment, IWorkout } from '@/types/workouts'
 
@@ -7,14 +8,17 @@ export type TNotificationType =
   | 'comment_like'
   | 'comment_reply'
   | 'mention'
+  | 'report'
   | 'workout_comment'
   | 'workout_like'
 
 export interface INotification {
   comment?: IComment
   created_at: string
+  id: number
   from: IUserProfile
   marked_as_read: boolean
+  report?: IReportForAdmin
   type: TNotificationType
   workout?: IWorkout
 }

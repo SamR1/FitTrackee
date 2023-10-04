@@ -7,6 +7,7 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -952,3 +953,143 @@ class TestMultipleNotificationsForComment(NotificationTestCase):
             ).first()
             is not None
         )
+
+
+class TestNotificationForReport(NotificationTestCase):
+    def test_it_does_not_create_notifications_when_no_admin(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        report = Report(
+            reported_by=user_1.id,
+            note=random_string(),
+            object_id=user_2.id,
+            object_type='user',
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            event_type='report', event_object_id=report.id
+        ).first()
+
+        assert notification is None
+
+    def test_it_does_not_create_notification_when_admin_is_reporter(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = Report(
+            reported_by=user_1_admin.id,
+            note=random_string(),
+            object_id=user_2.id,
+            object_type='user',
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            event_type='report', event_object_id=report.id
+        ).first()
+
+        assert notification is None
+
+    def test_it_does_not_create_notification_when_admin_is_inactive(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = Report(
+            reported_by=user_3.id,
+            note=random_string(),
+            object_id=user_2.id,
+            object_type='user',
+        )
+        db.session.add(report)
+        user_1_admin.is_active = False
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            event_type='report', event_object_id=report.id
+        ).first()
+        assert notification is None
+
+    def test_it_creates_notification_on_report_creation(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = Report(
+            reported_by=user_3.id,
+            note=random_string(),
+            object_id=user_2.id,
+            object_type='user',
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_3.id,
+            to_user_id=user_1_admin.id,
+        ).first()
+        assert notification.created_at == report.created_at
+        assert notification.marked_as_read is False
+        assert notification.event_type == 'report'
+        assert notification.event_object_id == report.id
+
+    def test_it_creates_notifications_for_all_admin(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        report = Report(
+            reported_by=user_3.id,
+            note=random_string(),
+            object_id=user_4.id,
+            object_type='user',
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        notifications = Notification.query.filter_by(
+            from_user_id=user_3.id,
+        ).all()
+        assert len(notifications) == 2
+        assert {notifications[0].to_user_id, notifications[1].to_user_id} == {
+            user_1_admin.id,
+            user_2_admin.id,
+        }
+
+    def test_it_serializes_report_notification(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.comment_workout(user_3, workout_cycling_user_2)
+        report = Report(
+            reported_by=user_2.id,
+            note=random_string(),
+            object_id=comment.id,
+            object_type='comment',
+        )
+        db.session.add(report)
+        db.session.commit()
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_2.serialize(
+            user_1_admin
+        )
+        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["report"] == report.serialize(
+            user_1_admin
+        )
+        assert serialized_notification["type"] == "report"

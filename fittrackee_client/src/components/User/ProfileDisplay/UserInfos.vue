@@ -62,18 +62,18 @@
         <dd>
           <time>{{ registrationDate }}</time>
         </dd>
-        <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
-        <dd>{{ user.first_name }}</dd>
-        <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
-        <dd>{{ user.last_name }}</dd>
-        <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-        <dd>
-          <time v-if="birthDate">{{ birthDate }}</time>
+        <dt v-if="user.first_name">{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
+        <dd v-if="user.first_name">{{ user.first_name }}</dd>
+        <dt v-if="user.last_name">{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
+        <dd v-if="user.last_name">{{ user.last_name }}</dd>
+        <dt v-if="birthDate">{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
+        <dd v-if="birthDate">
+          <time>{{ birthDate }}</time>
         </dd>
-        <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
-        <dd>{{ user.location }}</dd>
-        <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
-        <dd class="user-bio">
+        <dt v-if="user.location">{{ $t('user.PROFILE.LOCATION') }}:</dt>
+        <dd v-if="user.location">{{ user.location }}</dd>
+        <dt v-if="user.bio">{{ $t('user.PROFILE.BIO') }}:</dt>
+        <dd v-if="user.bio" class="user-bio">
           {{ user.bio }}
         </dd>
       </dl>
@@ -174,17 +174,14 @@
           props.user.created_at,
           displayOptions.value.timezone,
           displayOptions.value.dateFormat
-      )
+        )
       : ''
   )
   const birthDate = computed(() =>
     props.user.birth_date
       ? format(
           new Date(props.user.birth_date),
-          `${getDateFormat(
-            displayOptions.value.dateFormat,
-            language.value
-          )}`,
+          `${getDateFormat(displayOptions.value.dateFormat, language.value)}`,
           { locale: localeFromLanguage[language.value] }
         )
       : ''

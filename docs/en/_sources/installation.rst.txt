@@ -287,6 +287,11 @@ For single-user instance, it is possible to disable email sending with an empty 
 
 A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
 
+.. versionchanged:: 0.7.24
+
+Password can be encoded if it contains special characters.
+For instance with password ``passwordwith@and&and?``, the encoded password will be: ``passwordwith%40and%26and%3F``.
+
 
 Map tile server
 ^^^^^^^^^^^^^^^
@@ -513,13 +518,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.23):
+-  Download the last release (for now, it is the release v0.7.24):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
-   $ tar -xzf v0.7.23.tar.gz
-   $ mv FitTrackee-0.7.23 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.24.tar.gz
+   $ tar -xzf v0.7.24.tar.gz
+   $ mv FitTrackee-0.7.24 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -643,13 +648,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.23) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.24) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.23.tar.gz
-   $ tar -xzf v0.7.23.tar.gz
-   $ cp -R FitTrackee-0.7.23/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.24.tar.gz
+   $ tar -xzf v0.7.24.tar.gz
+   $ cp -R FitTrackee-0.7.24/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

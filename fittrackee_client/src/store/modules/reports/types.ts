@@ -8,7 +8,12 @@ import {
 import { REPORTS_STORE } from '@/store/constants'
 import { IRootState } from '@/store/modules/root/types'
 import { IPagination, TPaginationPayload } from '@/types/api'
-import { IReportForAdmin, IReport, IReportPayload } from '@/types/reports'
+import {
+  IReportForAdmin,
+  IReport,
+  IReportPayload,
+  IReportCommentPayload,
+} from '@/types/reports'
 
 export interface IReportsState {
   report: IReportForAdmin
@@ -33,6 +38,10 @@ export interface IReportsActions {
     context: ActionContext<IReportsState, IRootState>,
     payload: IReportPayload
   ): void
+  [REPORTS_STORE.ACTIONS.UPDATE_REPORT](
+    context: ActionContext<IReportsState, IRootState>,
+    payload: IReportCommentPayload
+  ): void
 }
 
 export interface IReportsGetters {
@@ -43,6 +52,8 @@ export interface IReportsGetters {
 }
 
 export type TReportsMutations<S = IReportsState> = {
+  [REPORTS_STORE.MUTATIONS.EMPTY_REPORT](state: S): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORT](state: S, report: IReport): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](state: S, reports: IReport[]): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION](
     state: S,
