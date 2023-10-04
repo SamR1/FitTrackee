@@ -3,7 +3,6 @@ import shutil
 
 import click
 from flask_migrate import upgrade
-from sqlalchemy.sql import text
 
 from fittrackee import db
 from fittrackee.cli.app import app
@@ -37,7 +36,7 @@ def drop_db() -> None:
                 err=True,
             )
             return
-        db.session.execute(text("DROP TABLE IF EXISTS alembic_version;"))
+        db.engine.execute("DROP TABLE IF EXISTS alembic_version;")
         db.drop_all()
         db.session.commit()
         click.echo('Database dropped.')

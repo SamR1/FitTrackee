@@ -20,7 +20,6 @@ from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.emails.email import EmailService
@@ -39,12 +38,7 @@ logging.basicConfig(
 )
 appLog = logging.getLogger('fittrackee')
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-db = SQLAlchemy(model_class=Base)
+db = SQLAlchemy()
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()

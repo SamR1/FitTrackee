@@ -33,7 +33,6 @@ flask = "^3.0"
 flask-bcrypt = "^1.0"
 flask-dramatiq = "^0.6"
 flask-limiter = {version = "^3.5", extras = ["redis"]}
-flask-sqlalchemy = "^3.1"
 flask-migrate = "^4.0"
 gpxpy = "=1.5.0"
 gunicorn = "^21.0"
@@ -44,7 +43,7 @@ pyopenssl = "^23.2"
 pytz = "^2023.3"
 shortuuid = "^1.0.11"
 staticmap = "^0.5.7"
-sqlalchemy = "=2.0.21"
+sqlalchemy = "=1.4.49"
 ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
