@@ -3,7 +3,6 @@ from datetime import timedelta
 from typing import Optional
 
 import humanize
-from sqlalchemy.sql import text
 
 from fittrackee import db
 
@@ -27,6 +26,5 @@ def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:
 
 def clean(sql: str, days: int) -> int:
     limit = int(time.time()) - (days * 86400)
-    result = db.session.execute(text(sql), {'limit': limit})
-    # DELETE statement returns CursorResult with the rowcount attribute
-    return result.rowcount  # type: ignore
+    result = db.engine.execute(sql, {'limit': limit})
+    return result.rowcount
