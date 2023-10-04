@@ -53,6 +53,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'login' },
     meta: {
       title: 'user.LOGIN',
+      withoutAuth: true,
     },
   },
   {
@@ -62,6 +63,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'register' },
     meta: {
       title: 'user.REGISTER',
+      withoutAuth: true,
     },
   },
   {
@@ -73,6 +75,7 @@ const routes: Array<RouteRecordRaw> = [
       ),
     meta: {
       title: 'user.ACCOUNT_CONFIRMATION',
+      withoutAuth: true,
     },
   },
   {
@@ -85,6 +88,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'account-confirmation-resend' },
     meta: {
       title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
+      withoutAuth: true,
     },
   },
   {
@@ -97,6 +101,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'email-sent' },
     meta: {
       title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
+      withoutAuth: true,
     },
   },
   {
@@ -109,6 +114,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'request-sent' },
     meta: {
       title: 'user.PASSWORD_RESET',
+      withoutAuth: true,
     },
   },
   {
@@ -121,6 +127,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'reset-request' },
     meta: {
       title: 'user.PASSWORD_RESET',
+      withoutAuth: true,
     },
   },
   {
@@ -133,6 +140,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'password-updated' },
     meta: {
       title: 'user.PASSWORD_RESET',
+      withoutAuth: true,
     },
   },
   {
@@ -145,6 +153,7 @@ const routes: Array<RouteRecordRaw> = [
     props: { action: 'reset' },
     meta: {
       title: 'user.PASSWORD_RESET',
+      withoutAuth: true,
     },
   },
   {
@@ -156,6 +165,7 @@ const routes: Array<RouteRecordRaw> = [
       ),
     meta: {
       title: 'user.EMAIL_UPDATE',
+      withoutChecks: true,
     },
   },
   {
@@ -447,6 +457,7 @@ const routes: Array<RouteRecordRaw> = [
     component: AboutView,
     meta: {
       title: 'common.ABOUT',
+      withoutChecks: true,
     },
   },
   {
@@ -455,6 +466,7 @@ const routes: Array<RouteRecordRaw> = [
     component: PrivacyPolicyView,
     meta: {
       title: 'privacy_policy.TITLE',
+      withoutChecks: true,
     },
   },
   {
@@ -472,20 +484,6 @@ const router = createRouter({
   routes,
 })
 
-const pathsWithoutAuthentication = [
-  '/login',
-  '/password-reset',
-  '/password-reset/password-updated',
-  '/password-reset/request',
-  '/password-reset/sent',
-  '/register',
-  '/account-confirmation',
-  '/account-confirmation/resend',
-  '/account-confirmation/email-sent',
-]
-
-const pathsWithoutChecks = ['/email-update', '/about', '/privacy-policy']
-
 router.beforeEach((to, from, next) => {
   if ('title' in to.meta) {
     const title = typeof to.meta.title === 'string' ? to.meta.title : ''
@@ -501,18 +499,18 @@ router.beforeEach((to, from, next) => {
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
-      if (pathsWithoutChecks.includes(to.path)) {
+      if (to.meta.withoutChecks) {
         return next()
       }
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        pathsWithoutAuthentication.includes(to.path)
+        to.meta.withoutAuth
       ) {
         return next('/')
       }
       if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
-        !pathsWithoutAuthentication.includes(to.path)
+        !to.meta.withoutAuth
       ) {
         const path =
           to.path === '/'
