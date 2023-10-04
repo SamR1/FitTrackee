@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.7.22",
+  "version": "0.7.24",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -5,12 +5,14 @@ on:
     paths: ['fittrackee_client/**']
   pull_request:
     paths: ['fittrackee_client/**']
+    types: [opened, synchronize, reopened]
 
 env:
   working-directory: fittrackee_client
 
 jobs:
   javascript:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
