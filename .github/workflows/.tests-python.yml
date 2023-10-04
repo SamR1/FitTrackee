@@ -2,9 +2,10 @@ name: Python CI
 
 on:
   push:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
   pull_request:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
+    types: [opened, synchronize, reopened]
 
 env:
   APP_SETTINGS: fittrackee.config.TestingConfig
@@ -15,6 +16,7 @@ env:
 
 jobs:
   python:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: python ${{ matrix.python-version }} (postgresql 15)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
@@ -54,9 +56,10 @@ jobs:
         if: matrix.python-version == '3.11'
         run: mypy fittrackee
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
+        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   postgresql:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: postgresql ${{ matrix.psql-version }} (python 3.11)
     runs-on: ubuntu-latest
     container: python:3.11
@@ -84,9 +87,10 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
+        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   end2end:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests
     runs-on: ubuntu-latest
     needs: ["python"]
@@ -129,9 +133,10 @@ jobs:
           export TEST_APP_URL=http://$(hostname --ip-address):5000
           sleep 5
           nohup flask worker --processes=1 >> nohup.out 2>&1 &
-          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
 
   end2end_package:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests with package
     runs-on: ubuntu-latest
     needs: ["python"]
@@ -182,9 +187,10 @@ jobs:
           export TEST_APP_URL=http://$(hostname --ip-address):5000
           sleep 5
           nohup flask worker --processes=1 >> nohup.out 2>&1 &
-          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
 
   end2end_package_update:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests after update
     runs-on: ubuntu-latest
     needs: ["python"]
@@ -239,4 +245,4 @@ jobs:
           export TEST_APP_URL=http://$(hostname --ip-address):5000
           sleep 5
           nohup flask worker --processes=1 >> nohup.out 2>&1 &
-          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
