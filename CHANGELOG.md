@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.7.25 (2023/10/08)
+
+### Bugs Fixed
+
+* [#441](https://github.com/SamR1/FitTrackee/issues/441) - Errors after upgrade to 0.7.24
+
+
 ## Version 0.7.24 (2023/10/04)
 
 ### Bugs Fixed
