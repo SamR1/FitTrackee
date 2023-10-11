@@ -169,12 +169,7 @@
 
   import ReportForm from '@/components/Common/ReportForm.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
-  import {
-    REPORTS_STORE,
-    ROOT_STORE,
-    USERS_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
+  import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import { IDisplayOptions, TAppConfig } from '@/types/application'
   import { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
