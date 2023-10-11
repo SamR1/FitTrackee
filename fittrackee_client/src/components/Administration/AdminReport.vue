@@ -15,6 +15,7 @@
     REPORTS_STORE,
     ROOT_STORE,
     SPORTS_STORE,
+    USERS_STORE,
   } from '@/store/constants'
   import { ICustomTextareaData } from '@/types/forms'
   import { IReportForAdmin } from '@/types/reports'
@@ -45,12 +46,16 @@
   const appLanguage: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
   const dateFormat: ComputedRef<string> = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)
   )
   const reportCommentText: Ref<string> = ref('')
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
   const currentAction: Ref<string> = ref('')
+  const displayModal: Ref<string> = ref('')
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
@@ -83,6 +88,19 @@
         return 'buttons.SUBMIT'
     }
   }
+  function updateUserActiveStatus() {
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username: report.value.reported_user.username,
+      activate: !report.value.reported_user.is_active,
+      from_report: report.value.id,
+    })
+  }
+  function updateDisplayModal(value: string) {
+    displayModal.value = value
+    if (value !== '') {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    }
+  }
   function goBack() {
     router.go(-1)
     store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
@@ -104,6 +122,14 @@
       reportCommentText.value = ''
     }
   )
+  watch(
+    () => isSuccess.value,
+    (newIsSuccess) => {
+      if (newIsSuccess) {
+        updateDisplayModal('')
+      }
+    }
+  )
 </script>
 
 <template>
@@ -112,6 +138,15 @@
     class="admin-card"
     v-if="report && report.reported_user"
   >
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      message="admin.CONFIRM_USER_ACCOUNT_DEACTIVATION"
+      :strongMessage="report.reported_user.username"
+      @confirmAction="updateUserActiveStatus(report.reported_user.username)"
+      @cancelAction="updateDisplayModal('')"
+      @keydown.esc="updateDisplayModal('')"
+    />
     <Card>
       <template #title>
         {{ $t('admin.APP_MODERATION.REPORT') }} #{{ report.id }}
@@ -280,11 +315,24 @@
               <button>
                 {{ $t('admin.APP_MODERATION.ACTIONS.SEND_EMAIL') }}
               </button>
-              <button class="danger">
+              <button class="danger" v-if="report.object_type !== 'user'">
                 {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
               </button>
-              <button class="danger">
-                {{ $t('admin.APP_MODERATION.ACTIONS.DISABLE_ACCOUNT') }}
+              <button
+                :class="{ danger: report.reported_user.is_active }"
+                @click="
+                  report.reported_user.is_active
+                    ? updateDisplayModal('deactivation')
+                    : updateUserActiveStatus()
+                "
+              >
+                {{
+                  $t(
+                    `admin.APP_MODERATION.ACTIONS.${
+                      report.reported_user.is_active ? 'DISABLE' : 'REACTIVATE'
+                    }_ACCOUNT`
+                  )
+                }}
               </button>
               <button
                 @click="

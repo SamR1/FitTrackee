@@ -2,7 +2,12 @@ import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  REPORTS_STORE,
+  ROOT_STORE,
+  USERS_STORE,
+} from '@/store/constants'
 import { IAuthUserState } from '@/store/modules/authUser/types'
 import { IRootState } from '@/store/modules/root/types'
 import { IUsersActions, IUsersState } from '@/store/modules/users/types'
@@ -141,7 +146,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     if (payload.resetPassword) {
       data.reset_password = payload.resetPassword
     }
-    if (payload.activate) {
+    if ('activate' in payload && payload.activate !== undefined) {
       data.activate = payload.activate
     }
     if (payload.new_email !== undefined) {
@@ -151,10 +156,18 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
       .patch(`users/${payload.username}`, data)
       .then((res) => {
         if (res.data.status === 'success') {
-          context.commit(
-            USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
-            res.data.data.users[0]
-          )
+          if (payload.from_report) {
+            context.dispatch(
+              REPORTS_STORE.ACTIONS.GET_REPORT,
+              payload.from_report
+            )
+            context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+          } else {
+            context.commit(
+              USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+              res.data.data.users[0]
+            )
+          }
           if (payload.resetPassword || payload.new_email) {
             context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           }

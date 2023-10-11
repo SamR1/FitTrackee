@@ -83,6 +83,7 @@ export interface IAdminUserPayload {
   resetPassword?: boolean
   activate?: boolean
   new_email?: string
+  from_report?: number
 }
 
 export interface IUserRelationshipActionPayload {
