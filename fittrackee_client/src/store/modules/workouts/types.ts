@@ -90,13 +90,13 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     comment: IComment
   ): void
-  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
-    context: ActionContext<IWorkoutsState, IRootState>,
-    comment: IComment
-  ): void
   [WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
   ): void
   [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -163,6 +163,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION](
     state: S,
     currentCommentEdition: ICurrentCommentEdition
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING](
+    state: S,
+    currentReporting: boolean
   ): void
 }
 

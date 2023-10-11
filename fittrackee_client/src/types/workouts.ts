@@ -174,6 +174,7 @@ export interface IWorkoutData {
   comments: IComment[]
   commentsLoading: string | null
   currentCommentEdition: ICurrentCommentEdition
+  currentReporting: boolean
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'

@@ -8,12 +8,19 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
+  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
+  import {
+    AUTH_USER_STORE,
+    REPORTS_STORE,
+    ROOT_STORE,
+    SPORTS_STORE,
+  } from '@/store/constants'
   import { ICustomTextareaData } from '@/types/forms'
   import { IReportForAdmin } from '@/types/reports'
+  import { ISport } from '@/types/sports'
   import { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { formatDate } from '@/utils/dates'
+  import { formatDate, getDateFormat } from '@/utils/dates'
 
   const store = useStore()
   const route = useRoute()
@@ -30,6 +37,15 @@
   )
   const report: ComputedRef<IReportForAdmin> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const appLanguage: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const dateFormat: ComputedRef<string> = computed(() =>
+    getDateFormat(authUser.value.date_format, appLanguage.value)
   )
   const reportCommentText: Ref<string> = ref('')
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
@@ -116,6 +132,20 @@
                   :comment="report.reported_comment"
                   :comments-loading="null"
                   :for-admin="true"
+                />
+                <WorkoutCard
+                  v-if="report.reported_workout"
+                  :workout="report.reported_workout"
+                  :sport="
+                    sports.filter(
+                      (s) => s.id === report.reported_workout?.sport_id
+                    )[0]
+                  "
+                  :user="report.reported_workout.user"
+                  :useImperialUnits="authUser.imperial_units"
+                  :dateFormat="dateFormat"
+                  :timezone="authUser.timezone"
+                  :key="report.reported_workout.id"
                 />
               </template>
             </Card>

@@ -85,6 +85,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       comments: [],
       commentsLoading: null,
       currentCommentEdition: <ICurrentCommentEdition>{},
+      currentReporting: false,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -110,5 +111,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     currentCommentEdition: ICurrentCommentEdition
   ) {
     state.workoutData.currentCommentEdition = currentCommentEdition
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING](
+    state: IWorkoutsState,
+    currentReporting: boolean
+  ) {
+    state.workoutData.currentReporting = currentReporting
   },
 }

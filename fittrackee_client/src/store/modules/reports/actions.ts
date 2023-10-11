@@ -77,6 +77,12 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
                 {}
               )
             }
+            if (payload.object_type === 'workout') {
+              context.commit(
+                WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING,
+                false
+              )
+            }
           } else {
             context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
             handleError(context, null)

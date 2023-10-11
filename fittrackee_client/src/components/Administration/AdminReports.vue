@@ -100,7 +100,7 @@
                     {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
                   </span>
                   <router-link :to="`/admin/reports/${report.id}`">
-                    {{ $t(getI18nString(report.object_type)) }}
+                    {{ $t(objectTypes[report.object_type]) }}
                   </router-link>
                 </td>
                 <td>
@@ -242,17 +242,6 @@
       query.page = 1
     }
     router.push({ path: '/admin/reports', query })
-  }
-  function getI18nString(objectType: string): string {
-    switch (objectType) {
-      case 'comment':
-        return 'workouts.COMMENTS.COMMENTS'
-      case 'workout':
-        return 'workouts.WORKOUTS'
-      case 'user':
-      default:
-        return 'user.USERS'
-    }
   }
   function getDate(dateToFormat: string) {
     return formatDate(
