@@ -55,16 +55,24 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { computed, ref, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { LocationQuery, useRoute, useRouter } from 'vue-router'
 
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { TNotificationType } from '@/types/notifications'
+  import { IAuthUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
   const { t } = useI18n()
 
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
   const notificationTypes: TNotificationType[] = [
     'follow',
     'follow_request',
@@ -77,10 +85,10 @@
   ]
   let params: LocationQuery = Object.assign({}, route.query)
   const notificationsStatus = ref(getStatusFromQuery(route.query))
-  function getStatusFromQuery(query) {
+  function getStatusFromQuery(query: LocationQuery) {
     return 'status' in query ? query.status : null
   }
-  function filterOnStatus(value) {
+  function filterOnStatus(value: string) {
     notificationsStatus.value = value
     params['status'] = value
     filterNotifications()
@@ -106,13 +114,15 @@
     return a.label > b.label ? 1 : a.label < b.label ? -1 : 0
   }
   function getNotificationsOptions() {
-    const options = []
-    notificationTypes.map((type) => {
-      options.push({
-        label: t(`notifications.TYPES.${type}`),
-        value: type,
+    const options: Record<string, string>[] = []
+    notificationTypes
+      .filter((type) => type !== 'report' || authUser.value.admin)
+      .map((type) => {
+        options.push({
+          label: t(`notifications.TYPES.${type}`),
+          value: type,
+        })
       })
-    })
     return options.sort(sortOptions)
   }
 
