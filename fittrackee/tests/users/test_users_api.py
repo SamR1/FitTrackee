@@ -1473,6 +1473,22 @@ class TestGetUserPicture(ApiTestCaseMixin):
 
 
 class TestUpdateUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_auth_user_has_no_admin_rights(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -1510,22 +1526,6 @@ class TestUpdateUser(ApiTestCaseMixin):
             'error, please try again or contact the administrator'
             in data['message']
         )
-
-    def test_it_returns_error_if_user_can_not_change_admin_rights(
-        self, app: Flask, user_1: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(admin=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_403(response)
 
     def test_it_adds_admin_rights_to_a_user(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1904,7 +1904,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert user['is_active'] is True
         assert inactive_user.confirmation_token is None
 
-    def test_it_can_only_activate_user_account(
+    def test_it_deactivates_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1924,8 +1924,23 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
         assert user['email'] == user_2.email
-        assert user['is_active'] is True
-        assert user_2.confirmation_token is None
+        assert user['is_active'] is False
+
+    def test_a_user_can_not_deactivate_his_own_user_account(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(activate=False)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

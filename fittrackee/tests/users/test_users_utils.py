@@ -111,6 +111,15 @@ class TestUserManagerServiceUserUpdate:
 
         assert inactive_user.is_active is True
 
+    def test_it_deactivates_given_user_account(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_manager_service = UserManagerService(username=user_1.username)
+
+        user_manager_service.update(activate=False)
+
+        assert user_1.is_active is False
+
     def test_it_empties_confirmation_token(
         self, app: Flask, inactive_user: User
     ) -> None:

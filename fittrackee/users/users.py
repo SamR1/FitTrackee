@@ -482,6 +482,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
       if sending enabled)
     - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
+    - deactivate account after report.
 
     Only user with admin rights can modify another user.
 
@@ -583,7 +584,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :param string user_name: user name
 
-    :<json boolean activate: activate user account
+    :<json boolean activate: (de-)activate user account
     :<json boolean admin: does the user have administrator rights
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
@@ -607,13 +608,17 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
+    activate = user_data.get('activate')
+    if activate is False and user_name == auth_user.username:
+        return ForbiddenErrorResponse()
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
         user_manager_service = UserManagerService(username=user_name)
         user, _, _ = user_manager_service.update(
             is_admin=user_data.get('admin'),
-            activate=user_data.get('activate', False),
+            activate=user_data.get('activate'),
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
