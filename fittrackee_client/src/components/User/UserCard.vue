@@ -66,7 +66,7 @@
   @import '~@/scss/vars.scss';
 
   .box {
-    padding: $default-padding $default-padding * 2;
+    padding: $default-padding $default-padding * 1.2;
     .user-card {
       display: flex;
       min-height: 140px;
