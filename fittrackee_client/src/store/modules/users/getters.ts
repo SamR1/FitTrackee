@@ -8,6 +8,9 @@ export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USER]: (state: IUsersState) => {
     return state.user
   },
+  [USERS_STORE.GETTERS.USER_CURRENT_REPORTING]: (state: IUsersState) => {
+    return state.currentReporting
+  },
   [USERS_STORE.GETTERS.USER_RELATIONSHIPS]: (state: IUsersState) => {
     return state.user_relationships
   },

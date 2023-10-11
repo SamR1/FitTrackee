@@ -161,6 +161,7 @@
         "UNBLOCK": "unblock",
         "UNFOLLOW": "unfollow"
     },
+    "REPORT": "Report",
     "RESENT_ACCOUNT_CONFIRMATION": "Resend account confirmation email",
     "RESET_PASSWORD": "Reset your password",
     "REVIEW": "review",

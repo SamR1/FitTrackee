@@ -1,7 +1,12 @@
 import { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
-import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+import {
+  REPORTS_STORE,
+  ROOT_STORE,
+  USERS_STORE,
+  WORKOUTS_STORE,
+} from '@/store/constants'
 import { IReportsState, IReportsActions } from '@/store/modules/reports/types'
 import { IRootState } from '@/store/modules/root/types'
 import { TPaginationPayload } from '@/types/api'
@@ -80,6 +85,12 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
             if (payload.object_type === 'workout') {
               context.commit(
                 WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING,
+                false
+              )
+            }
+            if (payload.object_type === 'user') {
+              context.commit(
+                USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING,
                 false
               )
             }

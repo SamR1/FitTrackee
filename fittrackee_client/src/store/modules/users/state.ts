@@ -9,4 +9,5 @@ export const usersState: IUsersState = {
   loading: false,
   isSuccess: false,
   pagination: <IPagination>{},
+  currentReporting: false,
 }

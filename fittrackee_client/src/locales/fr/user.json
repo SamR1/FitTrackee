@@ -161,6 +161,7 @@
         "UNBLOCK": "débloquer",
         "UNFOLLOW": "se désabonner"
     },
+    "REPORT": "Signaler",
     "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",
     "RESET_PASSWORD": "Réinitialiser votre mot de passe",
     "REVIEW": "accepter",

@@ -61,4 +61,10 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
   ) {
     state.isSuccess = isSuccess
   },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING](
+    state: IUsersState,
+    currentReporting: boolean
+  ) {
+    state.currentReporting = currentReporting
+  },
 }

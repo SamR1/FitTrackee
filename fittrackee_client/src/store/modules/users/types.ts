@@ -24,6 +24,7 @@ export interface IUsersState {
   loading: boolean
   isSuccess: boolean
   pagination: IPagination
+  currentReporting: boolean
 }
 
 export interface IUsersActions {
@@ -68,6 +69,7 @@ export interface IUsersActions {
 
 export interface IUsersGetters {
   [USERS_STORE.GETTERS.USER](state: IUsersState): IUserProfile
+  [USERS_STORE.GETTERS.USER_CURRENT_REPORTING](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USER_RELATIONSHIPS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS_IS_SUCCESS](state: IUsersState): boolean
@@ -96,6 +98,10 @@ export type TUsersMutations<S = IUsersState> = {
     pagination: IPagination
   ): void
   [USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS](state: S, isSuccess: boolean): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING](
+    state: S,
+    currentReporting: boolean
+  ): void
 }
 
 export type TUsersStoreModule<S = IUsersState> = Omit<

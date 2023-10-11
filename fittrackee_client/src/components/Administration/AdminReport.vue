@@ -6,6 +6,7 @@
 
   import Comment from '@/components/Comment/Comment.vue'
   import NotFound from '@/components/Common/NotFound.vue'
+  import UserCard from '@/components/User/UserCard.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
@@ -146,6 +147,12 @@
                   :dateFormat="dateFormat"
                   :timezone="authUser.timezone"
                   :key="report.reported_workout.id"
+                />
+                <UserCard
+                  v-if="report.object_type === 'user'"
+                  :authUser="authUser"
+                  :user="report.reported_user"
+                  :hideRelationship="true"
                 />
               </template>
             </Card>

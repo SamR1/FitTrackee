@@ -1,7 +1,12 @@
 <script setup lang="ts">
   import { computed, ComputedRef, Ref, ref, toRefs } from 'vue'
 
-  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import {
+    REPORTS_STORE,
+    ROOT_STORE,
+    USERS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import { ICustomTextareaData } from '@/types/forms'
   import { useStore } from '@/use/useStore'
 
@@ -16,6 +21,7 @@
 
   const labels: Record<string, string> = {
     comment: 'workouts.COMMENTS.REPORT',
+    user: 'user.REPORT',
     workout: 'workouts.REPORT_WORKOUT',
   }
   const reportText: Ref<string> = ref('')
@@ -38,6 +44,8 @@
       store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION, {})
     } else if (objectType.value === 'workout') {
       store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING, false)
+    } else {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING, false)
     }
   }
   function submitReport() {

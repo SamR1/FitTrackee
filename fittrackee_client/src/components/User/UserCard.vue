@@ -14,6 +14,7 @@
       <UserStats :user="user" />
     </div>
     <UserRelationshipActions
+      v-if="hideRelationship !== true"
       :authUser="authUser"
       :user="user"
       :from="from ? from : 'userCard'"
@@ -42,6 +43,7 @@
     user: IUserProfile
     updatedUser?: string
     from?: string
+    hideRelationship?: boolean
   }
   const props = defineProps<Props>()
 
@@ -49,7 +51,7 @@
 
   const { from } = toRefs(props)
 
-  const { authUser, updatedUser, user } = toRefs(props)
+  const { authUser, updatedUser, user, hideRelationship } = toRefs(props)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
