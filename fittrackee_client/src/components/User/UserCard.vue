@@ -21,9 +21,16 @@
       :displayFollowsYou="true"
       @updatedUser="emitUser"
     />
+    <AlertMessage
+      message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
+      v-if="!user.is_active"
+    />
     <ErrorMessage
       :message="errorMessages"
-      v-if="errorMessages && updatedUser === user.username"
+      v-if="
+        errorMessages &&
+        ((updatedUser && updatedUser === user.username) || !updatedUser)
+      "
     />
   </div>
 </template>
