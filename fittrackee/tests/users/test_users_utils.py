@@ -119,6 +119,7 @@ class TestUserManagerServiceUserUpdate:
         user_manager_service.update(activate=False)
 
         assert user_1.is_active is False
+        assert user_1.confirmation_token is None
 
     def test_it_empties_confirmation_token(
         self, app: Flask, inactive_user: User
