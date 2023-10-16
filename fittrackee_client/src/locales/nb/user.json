@@ -29,7 +29,18 @@
         "GOOD": "bra",
         "LABEL": "passordstyrke",
         "STRONG": "sterkt",
-        "WEAK": "svakt"
+        "WEAK": "svakt",
+        "SUGGESTIONS": {
+            "l33t": "Unngå forutsigbare bytter, som «@» for «a».",
+            "reverseWords": "Unngå omvendte stavelser av vanlige ord.",
+            "anotherWord": "Legg til flere sjeldnere ord",
+            "sequences": "Unngå vanlige tegnsekvenser.",
+            "capitalization": "Bruk stor bokstav i mer enn første bokstav.",
+            "recentYears": "Unngå nylige årstall.",
+            "associatedYears": "Unngå årstall du har tilknytning til.",
+            "useWords": "Bruk flere ord, men unngå vanlige sekvenser.",
+            "repeated": "Unngå gjentatte ord og tegn."
+        }
     },
     "PROFILE": {
         "ACCOUNT_EDITION": "Kontoredigering",
@@ -45,19 +56,59 @@
         "PICTURE_REMOVE": "Fjern bilde",
         "PICTURE_UPDATE": "Oppdater bilde",
         "TABS": {
-            "PROFILE": "profil"
+            "PROFILE": "profil",
+            "SPORTS": "sport",
+            "PREFERENCES": "innstillinger",
+            "PRIVACY-POLICY": "personvernspraksis",
+            "APPS": "programmer",
+            "PICTURE": "bilde",
+            "ACCOUNT": "konto"
         },
         "TIMEZONE": "Tidssone",
         "USE_RAW_GPX_SPEED": {
             "FILTERED_SPEED": "Filtrert",
             "LABEL": "Maks hastighet strategi",
             "RAW_SPEED": "Rå"
-        }
+        },
+        "BIO": "Biografi",
+        "SPORT": {
+            "IS_ACTIVE": "aktiv",
+            "LABEL": "etikett",
+            "DISABLED_BY_ADMIN": "avskrudd av administrator",
+            "ACTION": "handling",
+            "COLOR": "farge"
+        },
+        "PRIVACY-POLICY_EDITION": "Personvernspraksis",
+        "EDIT_SPORTS_PREFERENCES": "Rediger sportsinnstillinger",
+        "REGISTRATION_DATE": "Registreringsdato",
+        "SUCCESSFUL_REGISTRATION": "Konto opprettet.",
+        "UNITS": {
+            "LABEL": "Lengdeenhet"
+        },
+        "SUNDAY": "Søndag",
+        "FIRST_DAY_OF_WEEK": "Ukestart",
+        "ELEVATION_CHART_START": {
+            "MIN_ALT": "Minste høyde",
+            "ZERO": "Null"
+        },
+        "DATE_FORMAT": "Datovisningsformat"
     },
     "RESET_PASSWORD": "Tilbakestill passordet ditt",
     "SHOW_PASSWORD": "vis passord",
     "THIS_USER_ACCOUNT_IS_INACTIVE": "Denne brukerkontoen er inaktiv.",
     "USERNAME": "Brukernavn",
     "USER_PICTURE": "brukerbilde",
-    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du har samtykket til {0}."
+    "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du har samtykket til {0}.",
+    "LOGOUT_CONFIRMATION": "Vil du logge ut?",
+    "RESENT_ACCOUNT_CONFIRMATION": "Send kontobekreftelse per e-post igjen",
+    "INVALID_TOKEN": "Ugyldig symbol. Forespør ny tilbakestilling av passord.",
+    "USERNAME_INFO": "3 til 30 tegn kreves. Kun alfanumeriske tegn og understrek «_» tillates.",
+    "LOGOUT": "Logg ut",
+    "REGISTER_DISABLED": "Registrering er avskrudd.",
+    "ACCOUNT_CONFIRMATION": "Kontobekreftelse",
+    "PASSWORD_INFO": "Minst åtte tegn.",
+    "READ_AND_ACCEPT_PRIVACY_POLICY": "Jeg har lest og samtykker til {0}.",
+    "REGISTER": "Registrering",
+    "PASSWORD_UPDATED": "Passord oppdatert. Klikk {0} for å logge inn.",
+    "PASSWORD_RESET": "Passordtilbakestilling"
 }
