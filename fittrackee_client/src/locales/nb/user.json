@@ -31,7 +31,7 @@
         "STRONG": "sterkt",
         "WEAK": "svakt",
         "SUGGESTIONS": {
-            "l33t": "Unngå forutsigbare bytter, som «@» for «a».",
+            "l33t": "Unngå forutsigbare bytter, som «{'@'}» for «a».",
             "reverseWords": "Unngå omvendte stavelser av vanlige ord.",
             "anotherWord": "Legg til flere sjeldnere ord",
             "sequences": "Unngå vanlige tegnsekvenser.",
