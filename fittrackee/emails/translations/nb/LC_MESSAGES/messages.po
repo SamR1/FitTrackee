@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2023-03-04 10:33+0100\n"
-"PO-Revision-Date: 2023-03-13 06:42+0000\n"
+"PO-Revision-Date: 2023-10-18 04:01+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "fittrackee/fittrackee-api-emails/nb_NO/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 5.1\n"
 "Generated-By: Babel 2.11.0\n"
 
 #: fittrackee/emails/templates/layout.html:215
@@ -37,6 +37,8 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
+"Av sikkerhetshensyn kan det nevnes at denne forespørselen ble mottatt fra en "
+"%(operating_system)s-enhet som bruker %(browser_name)s."
 
 #: fittrackee/emails/templates/layout.html:221
 #: fittrackee/emails/templates/layout.txt:5
@@ -46,7 +48,7 @@ msgstr "Takk,"
 #: fittrackee/emails/templates/layout.html:222
 #: fittrackee/emails/templates/layout.txt:6
 msgid "The FitTrackee Team"
-msgstr ""
+msgstr "FitTrackee-laget"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:2
 #: fittrackee/emails/templates/account_confirmation/subject.txt:1
@@ -60,11 +62,12 @@ msgstr "Bruk denne lenken for å bekrefte kontoen din."
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1
 msgid "You have created an account on FitTrackee."
-msgstr ""
+msgstr "Du har opprettet en FitTrackee-konto."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
+#, fuzzy
 msgid "Use the button below to confirm your address email."
-msgstr ""
+msgstr "Bruk knappen nedenfor for å bekrefte din e-postadresse."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:11
 #: fittrackee/emails/templates/account_confirmation/body.txt:4
@@ -149,8 +152,9 @@ msgstr ""
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
+#, fuzzy
 msgid "Confirm email change"
-msgstr ""
+msgstr "Bekreft e-postbytte"
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:3
 msgid "Use this link to confirm email change."
@@ -164,8 +168,9 @@ msgid ""
 msgstr ""
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+#, fuzzy
 msgid "Use the button below to confirm this address."
-msgstr ""
+msgstr "Bekreft denne adressen med knappen nedenfor."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
@@ -174,7 +179,7 @@ msgstr ""
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
-msgstr ""
+msgstr "Bruk lenken nedenfor for å bekrefte denne adressen."
 
 #: fittrackee/emails/templates/password_change/body.html:2
 #: fittrackee/emails/templates/password_change/subject.txt:1
@@ -182,8 +187,9 @@ msgid "Password changed"
 msgstr "Passord endret"
 
 #: fittrackee/emails/templates/password_change/body.html:3
+#, fuzzy
 msgid "Your password has been changed."
-msgstr ""
+msgstr "Passord endret."
 
 #: fittrackee/emails/templates/password_change/body.html:4
 #: fittrackee/emails/templates/password_change/body.txt:1

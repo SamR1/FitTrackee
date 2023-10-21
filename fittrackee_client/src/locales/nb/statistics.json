@@ -2,6 +2,7 @@
     "STATISTICS": "Statistikk",
     "TIME_FRAMES": {
         "month": "måned",
-        "week": "uke"
+        "week": "uke",
+        "year": "år"
     }
 }
