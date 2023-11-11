@@ -24,6 +24,8 @@ describe('formatRecord', () => {
       expected: {
         id: 9,
         record_type: 'AS',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km/h',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -47,6 +49,8 @@ describe('formatRecord', () => {
       expected: {
         id: 10,
         record_type: 'FD',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km',
         workout_date: '2019/07/08',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -70,6 +74,8 @@ describe('formatRecord', () => {
       expected: {
         id: 11,
         record_type: 'LD',
+        sport_id: 1,
+        user: 'admin',
         value: '1:01:00',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -93,6 +99,8 @@ describe('formatRecord', () => {
       expected: {
         id: 12,
         record_type: 'MS',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km/h',
         workout_date: '08/07/2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -116,6 +124,8 @@ describe('formatRecord', () => {
       expected: {
         id: 13,
         record_type: 'HA',
+        sport_id: 1,
+        user: 'admin',
         value: '100 m',
         workout_date: 'Jul. 7th, 2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -156,6 +166,8 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 9,
         record_type: 'AS',
+        sport_id: 1,
+        user: 'admin',
         value: '11.18 mi/h',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -179,6 +191,8 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 10,
         record_type: 'FD',
+        sport_id: 1,
+        user: 'admin',
         value: '11.185 mi',
         workout_date: '2019/08/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -202,6 +216,8 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 11,
         record_type: 'LD',
+        sport_id: 1,
+        user: 'admin',
         value: '1:01:00',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -225,6 +241,8 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 12,
         record_type: 'MS',
+        sport_id: 1,
+        user: 'admin',
         value: '11.18 mi/h',
         workout_date: '2019/08/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -248,6 +266,8 @@ describe('formatRecord after conversion', () => {
       expected: {
         id: 13,
         record_type: 'HA',
+        sport_id: 1,
+        user: 'admin',
         value: '328.08 ft',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -327,6 +347,8 @@ describe('getRecordsBySports', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -378,6 +400,8 @@ describe('getRecordsBySports', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -385,6 +409,8 @@ describe('getRecordsBySports', () => {
             {
               id: 12,
               record_type: 'MS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -398,6 +424,8 @@ describe('getRecordsBySports', () => {
             {
               id: 10,
               record_type: 'FD',
+              sport_id: 2,
+              user: 'admin',
               value: '18 km',
               workout_date: '2019/08/07',
               workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
@@ -459,6 +487,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -510,6 +540,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -517,6 +549,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 12,
               record_type: 'MS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -530,6 +564,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 10,
               record_type: 'FD',
+              sport_id: 2,
+              user: 'admin',
               value: '11.185 mi',
               workout_date: '2019/08/07',
               workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
@@ -600,6 +636,8 @@ describe('getRecordsBySports with HA record', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',

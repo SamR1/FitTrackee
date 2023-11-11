@@ -163,12 +163,9 @@
           params: apiParams,
         })
       }
-      function updateDisplayData(
-        event: Event & {
-          target: HTMLInputElement & { name: TStatisticsDatasetKeys }
-        }
-      ) {
-        displayedData.value = event.target.name
+      function updateDisplayData(event: Event) {
+        displayedData.value = (event.target as HTMLInputElement)
+          .name as TStatisticsDatasetKeys
       }
       function getApiParams(
         chartParams: IStatisticsDateParams,

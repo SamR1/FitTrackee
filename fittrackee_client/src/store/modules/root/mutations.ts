@@ -3,6 +3,7 @@ import type { MutationTree } from 'vuex'
 import { ROOT_STORE } from '@/store/constants'
 import type { IRootState, TRootMutations } from '@/store/modules/root/types'
 import type { TAppConfig, IAppStatistics } from '@/types/application'
+import type { TLanguage } from '@/types/locales'
 import { localeFromLanguage } from '@/utils/locales'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {
@@ -40,7 +41,7 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
   ) {
     state.application.statistics = statistics
   },
-  [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: IRootState, language: string) {
+  [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: IRootState, language: TLanguage) {
     state.language = language
     state.locale = localeFromLanguage[language]
   },

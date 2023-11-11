@@ -21,11 +21,11 @@
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import type { ISport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 

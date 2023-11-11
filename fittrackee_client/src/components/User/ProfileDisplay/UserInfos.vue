@@ -125,6 +125,7 @@
 
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
@@ -141,7 +142,7 @@
   const store = useStore()
 
   const { user, fromAdmin } = toRefs(props)
-  const language: ComputedRef<string> = computed(
+  const language: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const authUser: ComputedRef<IAuthUserProfile> = computed(

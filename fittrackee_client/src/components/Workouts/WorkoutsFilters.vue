@@ -192,7 +192,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
-  import type { ISport } from '@/types/sports'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { units } from '@/utils/units'
@@ -214,7 +214,7 @@
   const toUnit = authUser.value.imperial_units
     ? units['km'].defaultTarget
     : 'km'
-  const translatedSports: ComputedRef<ISport[]> = computed(() =>
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
   let params: LocationQuery = Object.assign({}, route.query)
@@ -226,11 +226,13 @@
     }
   })
 
-  function handleFilterChange(event: Event & { target: HTMLInputElement }) {
-    if (event.target.value === '') {
-      delete params[event.target.name]
+  function handleFilterChange(event: Event) {
+    const name = (event.target as HTMLInputElement).name
+    const value = (event.target as HTMLInputElement).value
+    if (value === '') {
+      delete params[name]
     } else {
-      params[event.target.name] = event.target.value
+      params[name] = value
     }
   }
   function onFilter() {

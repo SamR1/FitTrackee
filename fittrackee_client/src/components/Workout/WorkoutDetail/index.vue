@@ -11,6 +11,7 @@
     <Card>
       <template #title>
         <WorkoutCardTitle
+          v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
           @displayModal="updateDisplayModal(true)"
@@ -84,7 +85,7 @@
       ? props.sports.find(
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
-      : {}
+      : ({} as ISport)
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)

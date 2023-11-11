@@ -185,10 +185,12 @@
   const userForm: IUserPreferencesPayload = reactive({
     display_ascent: true,
     imperial_units: false,
-    language: '',
+    language: 'en',
     timezone: 'Europe/Paris',
     date_format: 'dd/MM/yyyy',
     weekm: false,
+    start_elevation_at_zero: false,
+    use_raw_gpx_speed: false,
   })
   const weekStart = [
     {

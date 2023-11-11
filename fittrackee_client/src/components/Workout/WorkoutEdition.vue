@@ -281,12 +281,12 @@
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
-  import type { ISport } from '@/types/sports'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
-  import { getReadableFileSize } from '@/utils/files'
+  import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
 
@@ -308,7 +308,7 @@
   const router = useRouter()
 
   const { authUser, workout, isCreation, loading } = toRefs(props)
-  const translatedSports: ComputedRef<ISport[]> = computed(() =>
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(
       props.sports,
       t,
@@ -320,11 +320,11 @@
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
   const fileSizeLimit = appConfig.value.max_single_file_size
-    ? getReadableFileSize(appConfig.value.max_single_file_size)
+    ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
     : ''
   const gpx_limit_import = appConfig.value.gpx_limit_import
   const zipSizeLimit = appConfig.value.max_zip_file_size
-    ? getReadableFileSize(appConfig.value.max_zip_file_size)
+    ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
     : ''
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -369,9 +369,9 @@
     withGpx.value = !withGpx.value
     formErrors.value = false
   }
-  function updateFile(event: Event & { target: HTMLInputElement }) {
-    if (event.target.files) {
-      gpxFile = event.target.files[0]
+  function updateFile(event: Event) {
+    if ((event.target as HTMLInputElement).files) {
+      gpxFile = ((event.target as HTMLInputElement).files as FileList)[0]
     }
   }
   function formatWorkoutForm(workout: IWorkout) {

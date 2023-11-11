@@ -5,7 +5,7 @@
         <span class="total-label">
           {{ $t('common.TOTAL').toLowerCase() }}:
         </span>
-        <span v-if="pagination.total !== null">
+        <span v-if="pagination.total">
           {{ pagination.total }}
           {{ $t('workouts.WORKOUT', pagination.total) }}
         </span>
@@ -47,7 +47,7 @@
                 <SportImage
                   v-if="sports.length > 0"
                   :title="
-                    sports.find((s) => s.id === workout.sport_id)
+                    sports.filter((s) => s.id === workout.sport_id)[0]
                       .translatedLabel
                   "
                   :sport-label="getSportLabel(workout, sports)"

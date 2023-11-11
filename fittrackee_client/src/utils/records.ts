@@ -12,7 +12,7 @@ export const formatRecord = (
   tz: string,
   useImperialUnits: boolean,
   date_format: string
-): Record<string, string | number> => {
+): IRecord => {
   const distanceUnitFrom: TUnit = 'km'
   const distanceUnitTo: TUnit = useImperialUnits
     ? units[distanceUnitFrom].defaultTarget
@@ -57,11 +57,13 @@ export const formatRecord = (
       )
   }
   return {
-    workout_date: formatDate(record.workout_date, tz, date_format, false),
-    workout_id: record.workout_id,
     id: record.id,
     record_type: record.record_type,
+    sport_id: record.sport_id,
     value: value,
+    user: record.user,
+    workout_date: formatDate(record.workout_date, tz, date_format, false),
+    workout_id: record.workout_id,
   }
 }
 

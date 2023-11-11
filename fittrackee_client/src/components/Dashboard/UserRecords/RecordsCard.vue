@@ -35,11 +35,11 @@
   import { toRefs } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import type { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
+  import type { ICardRecord, IRecord, IRecordsBySport } from '@/types/workouts'
   import { sortRecords } from '@/utils/records'
 
   interface Props {
-    records: IRecordsBySports
+    records: IRecordsBySport
     sportTranslatedLabel: string
   }
   const props = defineProps<Props>()

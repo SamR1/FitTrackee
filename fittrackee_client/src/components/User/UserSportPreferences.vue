@@ -186,7 +186,7 @@
 
   const { isEdition, user } = toRefs(props)
   const defaultColor = '#838383'
-  const sportColors: Record<string, string> | undefined = inject('sportColors')
+  const sportColors = inject('sportColors') as Record<string, string>
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
@@ -223,14 +223,16 @@
   function isSportInEdition(sportId: number) {
     return sportPayload.sport_id === sportId
   }
-  function updateColor(event: Event & { target: HTMLInputElement }) {
-    sportPayload.color = event.target.value
+  function updateColor(event: Event) {
+    sportPayload.color = (event.target as HTMLInputElement).value
   }
-  function updateThreshold(event: Event & { target: HTMLInputElement }) {
-    sportPayload.stopped_speed_threshold = parseFloat(event.target.value)
+  function updateThreshold(event: Event) {
+    sportPayload.stopped_speed_threshold = parseFloat(
+      (event.target as HTMLInputElement).value
+    )
   }
-  function updateIsActive(event: Event & { target: HTMLInputElement }) {
-    sportPayload.is_active = event.target.checked
+  function updateIsActive(event: Event) {
+    sportPayload.is_active = (event.target as HTMLInputElement).checked
   }
   function resetSportPayload() {
     sportPayload.sport_id = 0

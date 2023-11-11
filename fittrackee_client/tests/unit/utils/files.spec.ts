@@ -1,8 +1,12 @@
 import { describe, it, expect } from 'vitest'
 
-import { getFileSizeInMB, getReadableFileSize } from '@/utils/files'
+import {
+  getFileSizeInMB,
+  getReadableFileSize,
+  getReadableFileSizeAsText,
+} from '@/utils/files'
 
-describe('getReadableFileSize (as text)', () => {
+describe('getReadableFileSizeAsText', () => {
   const testsParams = [
     {
       description: 'returns 0 bytes if provided file size is 0',
@@ -23,7 +27,7 @@ describe('getReadableFileSize (as text)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      expect(getReadableFileSize(testParams.inputFileSize, true)).toStrictEqual(
+      expect(getReadableFileSizeAsText(testParams.inputFileSize)).toStrictEqual(
         testParams.expectedReadableFileSize
       )
     })
@@ -51,9 +55,9 @@ describe('getReadableFileSize (as object)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      expect(
-        getReadableFileSize(testParams.inputFileSize, false)
-      ).toStrictEqual(testParams.expectedReadableFileSize)
+      expect(getReadableFileSize(testParams.inputFileSize)).toStrictEqual(
+        testParams.expectedReadableFileSize
+      )
     })
   })
 })

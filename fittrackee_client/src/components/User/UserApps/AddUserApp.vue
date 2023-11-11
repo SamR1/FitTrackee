@@ -104,6 +104,7 @@
     client_name: '',
     client_uri: '',
     client_description: '',
+    description: '',
     redirect_uri: '',
   })
   const scopes: string[] = reactive([])

@@ -73,7 +73,7 @@
       >
         <div class="img">
           <SportImage
-            v-if="sport.label"
+            v-if="sport?.label"
             :sport-label="sport.label"
             :color="sport.color"
           />
@@ -147,16 +147,16 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     useImperialUnits: boolean
     workout?: IWorkout
-    sport?: ISport
+    sport?: ISport | null
   }
   const props = withDefaults(defineProps<Props>(), {
     workout: () => ({}) as IWorkout,

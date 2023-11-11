@@ -62,8 +62,8 @@
   function togglePassword() {
     showPassword.value = !showPassword.value
   }
-  function updatePassword(event: Event & { target: HTMLInputElement }) {
-    emit('updatePassword', event.target.value)
+  function updatePassword(event: Event) {
+    emit('updatePassword', (event.target as HTMLInputElement).value)
   }
   function invalidPassword() {
     emit('passwordError')

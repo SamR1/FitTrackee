@@ -37,3 +37,8 @@ export type TAppConfigForm = {
   max_zip_file_size: number
   privacy_policy: string
 }
+
+export interface IFileSize {
+  size: string
+  suffix: string
+}

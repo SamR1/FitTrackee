@@ -40,14 +40,14 @@
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
     sports: ISport[]
-    user: IUserProfile
+    user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 

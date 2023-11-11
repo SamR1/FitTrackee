@@ -6,6 +6,7 @@ import router from '@/router'
 import { ROOT_STORE } from '@/store/constants'
 import type { IRootActions, IRootState } from '@/store/modules/root/types'
 import type { TAppConfigForm } from '@/types/application'
+import type { TLanguage } from '@/types/locales'
 import { handleError } from '@/utils'
 
 const { locale } = createI18n.global
@@ -91,7 +92,7 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
   },
   [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE](
     context: ActionContext<IRootState, IRootState>,
-    language: string
+    language: TLanguage
   ): void {
     document.querySelector('html')?.setAttribute('lang', language)
     context.commit(ROOT_STORE.MUTATIONS.UPDATE_LANG, language)

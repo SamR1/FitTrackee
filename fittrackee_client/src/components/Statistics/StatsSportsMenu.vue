@@ -39,7 +39,7 @@
 
   const { t } = useI18n()
 
-  const sportColors: Record<string, string> | undefined = inject('sportColors')
+  const sportColors = inject('sportColors') as Record<string, string>
   const { selectedSportIds } = toRefs(props)
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.userSports, t)

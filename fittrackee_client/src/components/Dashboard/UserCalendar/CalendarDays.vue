@@ -16,7 +16,7 @@
   }
   const props = defineProps<Props>()
 
-  const days = []
+  const days: Date[] = []
   for (let i = 0; i < 7; i++) {
     days.push(addDays(props.startDate, i))
   }

@@ -20,6 +20,7 @@
           :sports="sports"
           :datasets="chartDatasets"
           :colors="colors"
+          :displayHARecord="displayHARecord"
         />
       </div>
     </div>
@@ -30,6 +31,7 @@
           :sports="sports"
           :datasets="chartDatasets"
           :colors="colors"
+          :displayHARecord="displayHARecord"
         />
       </div>
     </div>

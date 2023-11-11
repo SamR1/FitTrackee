@@ -87,7 +87,7 @@
           >
             <i class="fa fa-download" aria-hidden="true" />
             {{ $t('user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE') }}
-            ({{ getReadableFileSize(exportRequest.file_size) }})
+            ({{ getReadableFileSizeAsText(exportRequest.file_size) }})
           </span>
           <span v-else>
             {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`) }}
@@ -126,7 +126,7 @@
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
-  import { getReadableFileSize } from '@/utils/files'
+  import { getReadableFileSizeAsText } from '@/utils/files'
 
   interface Props {
     user: IAuthUserProfile

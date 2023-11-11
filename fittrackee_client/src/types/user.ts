@@ -1,5 +1,6 @@
 import type { LocationQueryValue } from 'vue-router'
 
+import type { TLanguage } from '@/types/locales'
 import type { IRecord } from '@/types/workouts'
 
 export interface IUserProfile {
@@ -30,7 +31,7 @@ export interface IAuthUserProfile extends IUserProfile {
   imperial_units: boolean
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
-  language: string | null
+  language: TLanguage | null
   timezone: string
   date_format: string
   weekm: boolean
@@ -68,7 +69,7 @@ export interface IUserPreferencesPayload {
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
   imperial_units: boolean
-  language: string
+  language: TLanguage
   timezone: string
   date_format: string
   weekm: boolean

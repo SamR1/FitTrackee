@@ -24,7 +24,7 @@
     notes?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
-    notes: () => null,
+    notes: () => '',
   })
 
   const { notes } = toRefs(props)

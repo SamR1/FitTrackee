@@ -14,6 +14,7 @@
         <CalendarWorkout
           v-for="(workout, index) in workouts"
           :key="index"
+          :displayHARecord="displayHARecord"
           :workout="workout"
           :sportLabel="getSportLabel(workout, sports)"
           :sportColor="getSportColor(workout, sports)"
@@ -37,13 +38,14 @@
     datasets: Record<number, Record<string, number>>
     sports: ISport[]
     workouts: IWorkout[]
+    displayHARecord: boolean
   }
   const props = defineProps<Props>()
 
   const { colors, datasets, sports, workouts } = toRefs(props)
   const isHidden = ref(true)
 
-  function togglePane(event: Event & { target: HTMLElement }) {
+  function togglePane(event: Event) {
     event.stopPropagation()
     isHidden.value = !isHidden.value
   }

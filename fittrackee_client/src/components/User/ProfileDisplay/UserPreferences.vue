@@ -60,6 +60,7 @@
   import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
+  import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
@@ -72,7 +73,7 @@
 
   const store = useStore()
 
-  const appLanguage: ComputedRef<string> = computed(
+  const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const userLanguage = computed(() =>
