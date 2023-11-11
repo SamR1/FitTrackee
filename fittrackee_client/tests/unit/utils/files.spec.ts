@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { getFileSizeInMB, getReadableFileSize } from '@/utils/files'
 
@@ -23,8 +23,7 @@ describe('getReadableFileSize (as text)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
-        getReadableFileSize(testParams.inputFileSize, true),
+      expect(getReadableFileSize(testParams.inputFileSize, true)).toStrictEqual(
         testParams.expectedReadableFileSize
       )
     })
@@ -52,10 +51,9 @@ describe('getReadableFileSize (as object)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
-        getReadableFileSize(testParams.inputFileSize, false),
-        testParams.expectedReadableFileSize
-      )
+      expect(
+        getReadableFileSize(testParams.inputFileSize, false)
+      ).toStrictEqual(testParams.expectedReadableFileSize)
     })
   })
 })
@@ -81,8 +79,7 @@ describe('getFileSizeInMB', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
-        getFileSizeInMB(testParams.inputFileSize),
+      expect(getFileSizeInMB(testParams.inputFileSize)).toStrictEqual(
         testParams.expectedFileSize
       )
     })
