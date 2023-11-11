@@ -16,13 +16,12 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { createApp } from 'vue'
 import VueFullscreen from 'vue-fullscreen'
 
-import App from './App.vue'
-import i18n from './i18n'
-import router from './router'
-import store from './store'
-
+import App from '@/App.vue'
 import { customComponents } from '@/custom-components'
 import { clickOutsideDirective } from '@/directives'
+import i18n from '@/i18n'
+import router from '@/router'
+import store from '@/store'
 import { sportColors } from '@/utils/sports'
 
 Chart.register(
