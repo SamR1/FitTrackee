@@ -81,28 +81,20 @@
 
 <script lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    PropType,
-    Ref,
-    computed,
-    defineComponent,
-    ref,
-    watch,
-    onBeforeMount,
-  } from 'vue'
+  import { computed, defineComponent, ref, watch, onBeforeMount } from 'vue'
+  import type { ComputedRef, PropType, Ref } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
   import { STATS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import {
+  import type { ISport } from '@/types/sports'
+  import type {
     IStatisticsChartData,
     TStatisticsDatasetKeys,
     IStatisticsDateParams,
     TStatisticsFromApi,
     IStatisticsParams,
   } from '@/types/statistics'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatStats } from '@/utils/statistics'
 

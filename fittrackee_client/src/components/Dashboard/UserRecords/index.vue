@@ -24,8 +24,8 @@
   import { useI18n } from 'vue-i18n'
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { getRecordsBySports } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
 

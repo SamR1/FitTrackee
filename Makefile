@@ -194,7 +194,7 @@ lint-client:
 	cd fittrackee_client && $(NPM) lint
 
 lint-client-fix:
-	cd fittrackee_client && $(NPM) lint-fix
+	cd fittrackee_client && $(NPM) format
 
 lint-python:
 	$(PYTEST) --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations
@@ -233,7 +233,7 @@ serve-dev:
 
 serve-client:
     # for dev environments
-	cd fittrackee_client && PORT=3000 $(NPM) serve
+	cd fittrackee_client && PORT=3000 $(NPM) dev
 
 serve-python:
     # for dev environments
@@ -268,6 +268,9 @@ test-client:
 type-check:
 	echo 'Running mypy...'
 	$(MYPY) fittrackee
+
+type-check-client:
+	cd fittrackee_client && $(NPM) type-check
 
 upgrade-db:
 	$(FTCLI) db upgrade

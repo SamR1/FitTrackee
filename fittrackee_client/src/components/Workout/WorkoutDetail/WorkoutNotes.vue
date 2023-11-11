@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
   import { linkifyAndClean } from '@/utils/inputs'
 

@@ -34,11 +34,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {

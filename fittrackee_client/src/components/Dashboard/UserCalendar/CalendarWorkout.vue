@@ -30,7 +30,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IWorkout } from '@/types/workouts'
+  import type { IWorkout } from '@/types/workouts'
   interface Props {
     displayHARecord: boolean
     workout: IWorkout

@@ -19,7 +19,7 @@
   import { toRefs } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { IWeather } from '@/types/workouts'
+  import type { IWeather } from '@/types/workouts'
   import { getWindSpeed } from '@/utils/units'
   import { convertDegreeToDirection } from '@/utils/weather'
 

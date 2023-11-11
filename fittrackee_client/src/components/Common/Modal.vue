@@ -38,14 +38,8 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    onUnmounted,
-    onMounted,
-    toRefs,
-    withDefaults,
-  } from 'vue'
+  import { computed, onUnmounted, onMounted, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'

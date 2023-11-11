@@ -20,8 +20,8 @@
   import { toRefs } from 'vue'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
-  import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IUserProfile } from '@/types/user'
 
   interface Props {
     sports: ISport[]

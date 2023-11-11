@@ -267,8 +267,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     ref,
@@ -276,16 +274,16 @@
     watch,
     onMounted,
     onUnmounted,
-    withDefaults,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, IWorkoutForm } from '@/types/workouts'
+  import type { TAppConfig } from '@/types/application'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
   import { getReadableFileSize } from '@/utils/files'
@@ -302,7 +300,7 @@
   const props = withDefaults(defineProps<Props>(), {
     isCreation: false,
     loading: false,
-    workout: () => ({} as IWorkout),
+    workout: () => ({}) as IWorkout,
   })
 
   const { t } = useI18n()

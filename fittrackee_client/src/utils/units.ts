@@ -1,4 +1,4 @@
-import { IUnit, TFactor, TUnit } from '@/types/units'
+import type { IUnit, TFactor, TUnit } from '@/types/units'
 
 export const units: Record<string, IUnit> = {
   ft: {

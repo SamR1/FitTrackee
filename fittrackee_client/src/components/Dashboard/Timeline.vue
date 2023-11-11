@@ -33,14 +33,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, onBeforeMount, toRefs } from 'vue'
+  import { computed, ref, onBeforeMount, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { defaultOrder } from '@/utils/workouts'
 

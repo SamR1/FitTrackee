@@ -1,11 +1,11 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
 import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-import { IOAuth2Actions, IOAuth2State } from '@/store/modules/oauth2/types'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IOAuth2Actions, IOAuth2State } from '@/store/modules/oauth2/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   IOauth2ClientsPayload,
   IOAuth2ClientPayload,
   IOAuth2ClientAuthorizePayload,

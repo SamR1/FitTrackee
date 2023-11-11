@@ -105,8 +105,6 @@
 <script setup lang="ts">
   import { isBefore, subDays } from 'date-fns'
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     ref,
@@ -115,12 +113,13 @@
     watch,
     onUnmounted,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import authApi from '@/api/authApi'
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import {
+  import type { TAppConfig } from '@/types/application'
+  import type {
     IAuthUserProfile,
     IUserAccountPayload,
     IExportRequest,

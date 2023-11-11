@@ -138,15 +138,17 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
@@ -157,8 +159,8 @@
     sport?: ISport
   }
   const props = withDefaults(defineProps<Props>(), {
-    workout: () => ({} as IWorkout),
-    sport: () => ({} as ISport),
+    workout: () => ({}) as IWorkout,
+    sport: () => ({}) as ISport,
   })
 
   const store = useStore()

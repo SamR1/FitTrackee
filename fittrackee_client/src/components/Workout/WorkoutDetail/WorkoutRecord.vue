@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { IWorkoutObject } from '@/types/workouts'
 
   interface Props {
     recordType: string

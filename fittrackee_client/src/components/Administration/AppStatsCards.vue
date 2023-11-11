@@ -27,7 +27,7 @@
   import { computed, toRefs } from 'vue'
 
   import StatCard from '@/components/Common/StatCard.vue'
-  import { IAppStatistics } from '@/types/application'
+  import type { IAppStatistics } from '@/types/application'
   import { getReadableFileSize } from '@/utils/files'
 
   interface Props {

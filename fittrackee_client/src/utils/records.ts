@@ -1,7 +1,7 @@
 import createI18n from '@/i18n'
-import { ITranslatedSport } from '@/types/sports'
-import { TUnit } from '@/types/units'
-import { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
+import type { ITranslatedSport } from '@/types/sports'
+import type { TUnit } from '@/types/units'
+import type { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
 import { formatDate, getDateFormat } from '@/utils/dates'
 import { convertDistance, units } from '@/utils/units'
 

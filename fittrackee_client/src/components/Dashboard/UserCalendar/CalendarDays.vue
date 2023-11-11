@@ -7,7 +7,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, format, addDays } from 'date-fns'
+  import { format, addDays } from 'date-fns'
+  import type { Locale } from 'date-fns'
 
   interface Props {
     startDate: Date

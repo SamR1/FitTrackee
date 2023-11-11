@@ -1,8 +1,8 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootState, TRootMutations } from '@/store/modules/root/types'
-import { TAppConfig, IAppStatistics } from '@/types/application'
+import type { IRootState, TRootMutations } from '@/store/modules/root/types'
+import type { TAppConfig, IAppStatistics } from '@/types/application'
 import { localeFromLanguage } from '@/utils/locales'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {

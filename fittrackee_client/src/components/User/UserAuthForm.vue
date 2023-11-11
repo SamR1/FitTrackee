@@ -163,22 +163,14 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    onUnmounted,
-    reactive,
-    ref,
-    toRefs,
-    watch,
-    withDefaults,
-  } from 'vue'
+  import { computed, onUnmounted, reactive, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { ILoginRegisterFormData } from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -197,7 +189,7 @@
     username: '',
     email: '',
     password: '',
-    accepted_policy: false
+    accepted_policy: false,
   })
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
@@ -336,7 +328,7 @@
       .accepted_policy {
         display: flex;
         align-items: center;
-        font-size: .85em;
+        font-size: 0.85em;
         font-weight: normal;
       }
     }

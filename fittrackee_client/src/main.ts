@@ -16,7 +16,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { createApp } from 'vue'
 import VueFullscreen from 'vue-fullscreen'
 
-import './registerServiceWorker'
 import App from './App.vue'
 import i18n from './i18n'
 import router from './router'

@@ -168,27 +168,20 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    capitalize,
-    onBeforeMount,
-  } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import { computed, ref, toRefs, watch, capitalize, onBeforeMount } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
-  import { ITranslatedSport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
+  import type { IPagination } from '@/types/api'
+  import type { ITranslatedSport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'

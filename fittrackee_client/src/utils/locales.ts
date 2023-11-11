@@ -1,5 +1,4 @@
-/* eslint-disable import/no-duplicates */
-import { Locale } from 'date-fns'
+import type { Locale } from 'date-fns'
 import { de, enUS, es, fr, gl, it, nb, nl, pl } from 'date-fns/locale'
 
 import createI18n from '@/i18n'

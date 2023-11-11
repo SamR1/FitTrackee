@@ -110,17 +110,15 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     capitalize,
     computed,
     onBeforeMount,
     toRefs,
     ref,
     onUnmounted,
-    withDefaults,
     watch,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'

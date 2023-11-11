@@ -28,8 +28,8 @@
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import DonutChart from '@/components/Dashboard/UserCalendar/DonutChart.vue'
-  import { ISport } from '@/types/sports'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkout } from '@/types/workouts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
 
   interface Props {
@@ -88,7 +88,8 @@
       .more-workouts {
         background: whitesmoke;
         border-radius: 4px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        box-shadow:
+          0 4px 8px 0 rgba(0, 0, 0, 0.2),
           0 6px 20px 0 rgba(0, 0, 0, 0.19);
         position: absolute;
         top: 52px;

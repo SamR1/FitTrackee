@@ -165,12 +165,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, inject, reactive, toRefs, watch } from 'vue'
+  import { computed, inject, reactive, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 

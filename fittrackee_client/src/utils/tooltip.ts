@@ -1,4 +1,4 @@
-import { TStatisticsDatasetKeys } from '@/types/statistics'
+import type { TStatisticsDatasetKeys } from '@/types/statistics'
 import { formatDuration } from '@/utils/duration'
 import { units } from '@/utils/units'
 

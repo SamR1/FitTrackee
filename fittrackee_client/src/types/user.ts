@@ -1,6 +1,6 @@
-import { LocationQueryValue } from 'vue-router'
+import type { LocationQueryValue } from 'vue-router'
 
-import { IRecord } from '@/types/workouts'
+import type { IRecord } from '@/types/workouts'
 
 export interface IUserProfile {
   admin: boolean

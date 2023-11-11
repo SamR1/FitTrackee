@@ -39,16 +39,8 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    onBeforeMount,
-    onUnmounted,
-  } from 'vue'
+  import { computed, ref, toRefs, watch, onBeforeMount, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import NotFound from '@/components/Common/NotFound.vue'
@@ -61,9 +53,13 @@
     SPORTS_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
+    IWorkoutData,
+    IWorkoutPayload,
+    TCoordinates,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   interface Props {

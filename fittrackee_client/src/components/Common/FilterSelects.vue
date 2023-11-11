@@ -45,7 +45,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { TPaginationPayload } from '@/types/api'
+  import type { TPaginationPayload } from '@/types/api'
 
   interface Props {
     order_by: string[]

@@ -5,13 +5,14 @@
 </template>
 
 <script lang="ts">
-  import { ChartOptions, LayoutItem } from 'chart.js'
-  import { PropType, computed, defineComponent } from 'vue'
+  import type { ChartOptions, LayoutItem } from 'chart.js'
+  import { computed, defineComponent } from 'vue'
+  import type { PropType } from 'vue'
   import { BarChart, useBarChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
-  import { IChartDataset } from '@/types/chart'
-  import { TStatisticsDatasetKeys } from '@/types/statistics'
+  import type { IChartDataset } from '@/types/chart'
+  import type { TStatisticsDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
 
   export default defineComponent({

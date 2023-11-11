@@ -73,7 +73,7 @@
               :disabled="!edition"
             />
           </label>
-          <label  class="about-label" for="about">
+          <label class="about-label" for="about">
             {{ $t('admin.ABOUT.TEXT') }}:
           </label>
           <span class="textarea-description">
@@ -88,7 +88,13 @@
           />
           <div
             v-else
-            v-html="snarkdown(linkifyAndClean(appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')))"
+            v-html="
+              snarkdown(
+                linkifyAndClean(
+                  appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
+                )
+              )
+            "
             class="textarea-content"
           />
           <label class="privacy-policy-label" for="privacy_policy">
@@ -106,7 +112,15 @@
           />
           <div
             v-else
-            v-html="snarkdown(linkifyAndClean(appData.privacy_policy ? appData.privacy_policy : $t('admin.NO_TEXT_ENTERED')))"
+            v-html="
+              snarkdown(
+                linkifyAndClean(
+                  appData.privacy_policy
+                    ? appData.privacy_policy
+                    : $t('admin.NO_TEXT_ENTERED')
+                )
+              )
+            "
             class="textarea-content"
           />
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -137,19 +151,12 @@
 
 <script setup lang="ts">
   import snarkdown from 'snarkdown'
-  import {
-    ComputedRef,
-    capitalize,
-    computed,
-    reactive,
-    withDefaults,
-    onBeforeMount,
-    toRefs,
-  } from 'vue'
+  import { capitalize, computed, reactive, onBeforeMount, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRouter } from 'vue-router'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig, TAppConfigForm } from '@/types/application'
+  import type { TAppConfig, TAppConfigForm } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -187,19 +194,17 @@
 
   function updateForm(appConfig: TAppConfig) {
     Object.keys(appData).map((key) => {
-      ['max_single_file_size', 'max_zip_file_size'].includes(key)
-      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        (appData[key] = getFileSizeInMB(appConfig[key]))
-      : ['about', 'privacy_policy'].includes(key)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ? appData[key] = appConfig[key]!== null
-            ? appConfig[key]
-            : ''
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        : (appData[key] = appConfig[key])
+      ;['max_single_file_size', 'max_zip_file_size'].includes(key)
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = getFileSizeInMB(appConfig[key]))
+        : ['about', 'privacy_policy'].includes(key)
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = appConfig[key] !== null ? appConfig[key] : '')
+        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = appConfig[key])
     })
   }
   function onCancel() {
@@ -232,7 +237,7 @@
       font-style: italic;
     }
 
-    textarea  {
+    textarea {
       margin-bottom: $default-padding;
     }
     .textarea-description {
@@ -242,6 +247,5 @@
       margin-bottom: $default-margin;
       padding: $default-padding;
     }
-
   }
 </style>

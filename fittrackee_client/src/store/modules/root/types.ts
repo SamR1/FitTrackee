@@ -1,5 +1,5 @@
-import { Locale } from 'date-fns'
-import {
+import type { Locale } from 'date-fns'
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -7,7 +7,7 @@ import {
 } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import {
+import type {
   TAppConfig,
   IApplication,
   IAppStatistics,
@@ -100,7 +100,7 @@ export type TRootStoreModule<S = IRootState> = Omit<
 } & {
   commit<
     K extends keyof TRootMutations,
-    P extends Parameters<TRootMutations[K]>[1]
+    P extends Parameters<TRootMutations[K]>[1],
   >(
     key: K,
     payload?: P,

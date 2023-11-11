@@ -51,15 +51,16 @@
 </template>
 
 <script setup lang="ts">
-  import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, computed, ref, toRefs } from 'vue'
+  import type { ChartData, ChartOptions } from 'chart.js'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { LineChart, useLineChart } from 'vue-chart-3'
   import { useI18n } from 'vue-i18n'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
-  import { TUnit } from '@/types/units'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { TUnit } from '@/types/units'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkoutChartData,
     IWorkoutData,
     TCoordinates,

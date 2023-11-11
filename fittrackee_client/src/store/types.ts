@@ -1,10 +1,10 @@
-import { TAuthUserStoreModule } from '@/store/modules/authUser/types'
-import { TOAuth2StoreModule } from '@/store/modules/oauth2/types'
-import { TRootStoreModule } from '@/store/modules/root/types'
-import { TSportsStoreModule } from '@/store/modules/sports/types'
-import { TStatisticsStoreModule } from '@/store/modules/statistics/types'
-import { TUsersStoreModule } from '@/store/modules/users/types'
-import { TWorkoutsStoreModule } from '@/store/modules/workouts/types'
+import type { TAuthUserStoreModule } from '@/store/modules/authUser/types'
+import type { TOAuth2StoreModule } from '@/store/modules/oauth2/types'
+import type { TRootStoreModule } from '@/store/modules/root/types'
+import type { TSportsStoreModule } from '@/store/modules/sports/types'
+import type { TStatisticsStoreModule } from '@/store/modules/statistics/types'
+import type { TUsersStoreModule } from '@/store/modules/users/types'
+import type { TWorkoutsStoreModule } from '@/store/modules/workouts/types'
 
 type StoreModules = {
   authUserModule: TAuthUserStoreModule

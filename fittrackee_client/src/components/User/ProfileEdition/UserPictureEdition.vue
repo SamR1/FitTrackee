@@ -33,12 +33,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, toRefs, onUnmounted } from 'vue'
+  import { computed, ref, toRefs, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { IUserProfile } from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getReadableFileSize } from '@/utils/files'
 

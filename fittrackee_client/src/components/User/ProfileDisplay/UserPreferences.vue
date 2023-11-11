@@ -56,10 +56,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'

@@ -8,7 +8,7 @@
     >
       <input
         type="checkbox"
-        :id="sport.id"
+        :id="`${sport.id}`"
         :name="sport.label"
         :checked="selectedSportIds.includes(sport.id)"
         @input="updateSelectedSportIds(sport.id)"
@@ -20,10 +20,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, inject, withDefaults, toRefs } from 'vue'
+  import { computed, inject, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { ISport, ITranslatedSport } from '@/types/sports'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
@@ -38,7 +39,7 @@
 
   const { t } = useI18n()
 
-  const sportColors = inject('sportColors')
+  const sportColors: Record<string, string> | undefined = inject('sportColors')
   const { selectedSportIds } = toRefs(props)
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.userSports, t)

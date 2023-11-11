@@ -1,5 +1,5 @@
-import { TPaginationPayload } from '@/types/api'
-import { IChartDataset } from '@/types/chart'
+import type { TPaginationPayload } from '@/types/api'
+import type { IChartDataset } from '@/types/chart'
 
 export interface IWorkoutSegment {
   ascent: number

@@ -29,13 +29,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, onBeforeMount, onMounted } from 'vue'
+  import { computed, ref, onBeforeMount, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import type { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { localeFromLanguage } from '@/utils/locales'
 

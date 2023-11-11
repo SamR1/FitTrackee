@@ -28,7 +28,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
   import { timeZones } from '@/utils/timezone'
 

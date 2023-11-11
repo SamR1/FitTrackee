@@ -186,12 +186,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs, watch, onMounted } from 'vue'
+  import { computed, toRefs, watch, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { units } from '@/utils/units'
 

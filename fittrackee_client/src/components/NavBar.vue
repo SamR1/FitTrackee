@@ -93,12 +93,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, capitalize } from 'vue'
+  import { computed, ref, capitalize } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IDropdownOption } from '@/types/forms'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IDropdownOption } from '@/types/forms'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
 

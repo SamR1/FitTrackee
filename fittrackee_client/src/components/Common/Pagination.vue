@@ -51,9 +51,9 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IOauth2ClientsPayload } from '@/types/oauth'
-  import { TWorkoutsPayload } from '@/types/workouts'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IOauth2ClientsPayload } from '@/types/oauth'
+  import type { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
   interface Props {

@@ -100,8 +100,8 @@
   import { toRefs } from 'vue'
 
   import authApi from '@/api/authApi'
-  import { ISport } from '@/types/sports'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkoutObject } from '@/types/workouts'
 
   interface Props {
     sport: ISport

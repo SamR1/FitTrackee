@@ -1,11 +1,11 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import createI18n from '@/i18n'
 import router from '@/router'
 import { ROOT_STORE } from '@/store/constants'
-import { IRootActions, IRootState } from '@/store/modules/root/types'
-import { TAppConfigForm } from '@/types/application'
+import type { IRootActions, IRootState } from '@/store/modules/root/types'
+import type { TAppConfigForm } from '@/types/application'
 import { handleError } from '@/utils'
 
 const { locale } = createI18n.global

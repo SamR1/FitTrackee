@@ -27,14 +27,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref } from 'vue'
+  import { computed, ref } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
   import WorkoutsList from '@/components/Workouts/WorkoutsList.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 

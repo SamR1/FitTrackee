@@ -1,12 +1,12 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import {
+import type {
   IWorkoutsState,
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
-import { IPagination } from '@/types/api'
-import { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
+import type { IPagination } from '@/types/api'
+import type { IWorkout, IWorkoutApiChartData } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   [WORKOUTS_STORE.MUTATIONS.ADD_TIMELINE_WORKOUTS](

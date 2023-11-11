@@ -8,19 +8,14 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    onBeforeMount,
-    onBeforeUnmount,
-    toRefs,
-  } from 'vue'
+  import { computed, onBeforeMount, onBeforeUnmount, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
   import { USERS_STORE } from '@/store/constants'
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
