@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 MAINTAINER SamR1@users.noreply.github.com
 
