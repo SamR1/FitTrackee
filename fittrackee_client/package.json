@@ -35,7 +35,7 @@
     "sanitize-html": "^2.11.0",
     "snarkdown": "^2.0.0",
     "vue": "^3.3.8",
-    "vue-chart-3": "^3.1.8",
+    "vue-chartjs": "^5.2.0",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.6.5",
     "vue-router": "^4.2.5",

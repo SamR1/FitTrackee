@@ -24,9 +24,11 @@
           </label>
         </div>
         <div id="chart-legend" />
-        <LineChart
-          v-bind="lineChartProps"
+        <Line
           class="line-chart"
+          :data="chartData"
+          :options="options"
+          :plugins="plugins"
           @mouseleave="emitEmptyCoordinates"
         />
         <div class="chart-info">
@@ -54,7 +56,7 @@
   import type { ChartData, ChartOptions } from 'chart.js'
   import { computed, ref, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
-  import { LineChart, useLineChart } from 'vue-chart-3'
+  import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
@@ -204,11 +206,7 @@
       },
     },
   }))
-  const { lineChartProps } = useLineChart({
-    chartData,
-    options,
-    plugins: [htmlLegendPlugin],
-  })
+  const plugins = [htmlLegendPlugin]
 
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value

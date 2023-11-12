@@ -79,10 +79,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
   import { format } from 'date-fns'
-  import { computed, defineComponent, ref, watch, onBeforeMount } from 'vue'
-  import type { ComputedRef, PropType, Ref } from 'vue'
+  import { computed, ref, toRefs, watch, onBeforeMount } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
   import { STATS_STORE } from '@/store/constants'
@@ -98,107 +98,89 @@
   import { useStore } from '@/use/useStore'
   import { formatStats } from '@/utils/statistics'
 
-  export default defineComponent({
-    name: 'UserMonthStats',
-    components: {
-      Chart,
-    },
-    props: {
-      sports: {
-        type: Object as PropType<ISport[]>,
-        required: true,
-      },
-      user: {
-        type: Object as PropType<IAuthUserProfile>,
-        required: true,
-      },
-      chartParams: {
-        type: Object as PropType<IStatisticsDateParams>,
-        required: true,
-      },
-      displayedSportIds: {
-        type: Array as PropType<number[]>,
-        default: () => [],
-      },
-      fullStats: {
-        type: Boolean,
-        default: false,
-      },
-      hideChartIfNoData: {
-        type: Boolean,
-        default: false,
-      },
-      isDisabled: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    setup(props) {
-      const store = useStore()
-
-      const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
-      const statistics: ComputedRef<TStatisticsFromApi> = computed(
-        () => store.getters[STATS_STORE.GETTERS.USER_STATS]
-      )
-      const formattedStats: ComputedRef<IStatisticsChartData> = computed(() =>
-        formatStats(
-          props.chartParams,
-          props.user.weekm,
-          props.sports,
-          props.displayedSportIds,
-          statistics.value,
-          props.user.imperial_units,
-          props.user.date_format
-        )
-      )
-
-      onBeforeMount(() =>
-        getStatistics(getApiParams(props.chartParams, props.user))
-      )
-
-      function getStatistics(apiParams: IStatisticsParams) {
-        store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-          username: props.user.username,
-          filterType: 'by_time',
-          params: apiParams,
-        })
-      }
-      function updateDisplayData(event: Event) {
-        displayedData.value = (event.target as HTMLInputElement)
-          .name as TStatisticsDatasetKeys
-      }
-      function getApiParams(
-        chartParams: IStatisticsDateParams,
-        user: IAuthUserProfile
-      ): IStatisticsParams {
-        return {
-          from: format(chartParams.start, 'yyyy-MM-dd'),
-          to: format(chartParams.end, 'yyyy-MM-dd'),
-          time:
-            chartParams.duration === 'week'
-              ? `week${user.weekm ? 'm' : ''}`
-              : chartParams.duration,
-        }
-      }
-
-      watch(
-        () => props.chartParams,
-        async (newParams) => {
-          getStatistics(getApiParams(newParams, props.user))
-        }
-      )
-
-      return {
-        datasets: computed(
-          () => formattedStats.value.datasets[displayedData.value]
-        ),
-        labels: computed(() => formattedStats.value.labels),
-        emptyStats: computed(() => Object.keys(statistics.value).length === 0),
-        displayedData,
-        updateDisplayData,
-      }
-    },
+  interface Props {
+    sports: ISport[]
+    user: IAuthUserProfile
+    chartParams: IStatisticsDateParams
+    displayedSportIds?: number[]
+    fullStats?: boolean
+    hideChartIfNoData?: boolean
+    isDisabled?: boolean
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    displayedSportIds: () => [],
+    fullStats: false,
+    hideChartIfNoData: false,
+    isDisabled: false,
   })
+  const {
+    sports,
+    user,
+    chartParams,
+    displayedSportIds,
+    fullStats,
+    hideChartIfNoData,
+    isDisabled,
+  } = toRefs(props)
+
+  const store = useStore()
+
+  const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
+  const statistics: ComputedRef<TStatisticsFromApi> = computed(
+    () => store.getters[STATS_STORE.GETTERS.USER_STATS]
+  )
+  const formattedStats: ComputedRef<IStatisticsChartData> = computed(() =>
+    formatStats(
+      chartParams.value,
+      user.value.weekm,
+      sports.value,
+      displayedSportIds.value,
+      statistics.value,
+      user.value.imperial_units,
+      user.value.date_format
+    )
+  )
+  const datasets = computed(
+    () => formattedStats.value.datasets[displayedData.value]
+  )
+  const labels = computed(() => formattedStats.value.labels)
+  const emptyStats = computed(() => Object.keys(statistics.value).length === 0)
+
+  onBeforeMount(() =>
+    getStatistics(getApiParams(chartParams.value, user.value))
+  )
+
+  function getStatistics(apiParams: IStatisticsParams) {
+    store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+      username: user.value.username,
+      filterType: 'by_time',
+      params: apiParams,
+    })
+  }
+  function updateDisplayData(event: Event) {
+    displayedData.value = (event.target as HTMLInputElement)
+      .name as TStatisticsDatasetKeys
+  }
+  function getApiParams(
+    chartParams: IStatisticsDateParams,
+    user: IAuthUserProfile
+  ): IStatisticsParams {
+    return {
+      from: format(chartParams.start, 'yyyy-MM-dd'),
+      to: format(chartParams.end, 'yyyy-MM-dd'),
+      time:
+        chartParams.duration === 'week'
+          ? `week${user.weekm ? 'm' : ''}`
+          : chartParams.duration,
+    }
+  }
+
+  watch(
+    () => chartParams.value,
+    async (newParams) => {
+      getStatistics(getApiParams(newParams, user.value))
+    }
+  )
 </script>
 
 <style lang="scss" scoped>
