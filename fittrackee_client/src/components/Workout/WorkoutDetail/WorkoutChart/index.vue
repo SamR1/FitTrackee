@@ -24,13 +24,14 @@
           </label>
         </div>
         <div id="chart-legend" />
-        <Line
-          class="line-chart"
-          :data="chartData"
-          :options="options"
-          :plugins="plugins"
-          @mouseleave="emitEmptyCoordinates"
-        />
+        <div class="line-chart">
+          <Line
+            :data="chartData"
+            :options="options"
+            :plugins="plugins"
+            @mouseleave="emitEmptyCoordinates"
+          />
+        </div>
         <div class="chart-info">
           <div class="no-data-cleaning">
             {{ $t('workouts.NO_DATA_CLEANING') }}
@@ -107,7 +108,7 @@
   )
   const options = computed<ChartOptions<'line'>>(() => ({
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     animation: false,
     layout: {
       padding: {
@@ -278,6 +279,9 @@
             }
           }
         }
+        .line-chart {
+          min-height: 400px;
+        }
       }
 
       @media screen and (max-width: $small-limit) {
@@ -292,6 +296,9 @@
             .no-data-cleaning {
               padding: 0 $default-padding * 2;
             }
+          }
+          .line-chart {
+            min-height: 338px;
           }
         }
       }

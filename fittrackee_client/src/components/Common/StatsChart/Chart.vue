@@ -1,6 +1,6 @@
 <template>
-  <div class="chart">
-    <Bar :data="chartData" :options="options" class="bar-chart" />
+  <div class="bar-chart" :class="{ minimal: !fullStats }">
+    <Bar :data="chartData" :options="options" />
   </div>
 </template>
 
@@ -41,7 +41,7 @@
   }))
   const options = computed<ChartOptions<'bar'>>(() => ({
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     animation: false,
     layout: {
       padding: {
@@ -198,3 +198,20 @@
       : 'km'
   }
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+
+  .bar-chart {
+    min-height: 400px;
+    &.minimal {
+      min-height: 300px;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      &.minimal {
+        min-height: 290px;
+      }
+    }
+  }
+</style>
