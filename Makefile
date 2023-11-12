@@ -24,9 +24,9 @@ bandit:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: bandit lint-all type-check test-all
+check-all: bandit lint-all type-check-all test-all
 
-check-client: lint-client test-client
+check-client: lint-client type-check-client test-client
 
 check-python: bandit lint-python type-check test-python
 
@@ -263,11 +263,16 @@ test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit $(MOCHA_ARGS)
+	cd fittrackee_client && $(NPM) test:unit run
+
+test-client-watch:
+	cd fittrackee_client && $(NPM) test:unit watch
 
 type-check:
 	echo 'Running mypy...'
 	$(MYPY) fittrackee
+
+type-check-all: type-check-client type-check
 
 type-check-client:
 	cd fittrackee_client && $(NPM) type-check
