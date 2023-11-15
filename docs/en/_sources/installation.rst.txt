@@ -29,7 +29,7 @@ Prerequisites
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
-    - `Node <https://nodejs.org>`__ 16+ and `Yarn <https://yarnpkg.com>`__ (for development only)
+    - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
@@ -245,7 +245,9 @@ deployment method.
     Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
 
 
-.. envvar:: VUE_APP_API_URL
+.. envvar:: VITE_APP_API_URL
+
+    .. versionchanged:: 0.x.x ⚠️ replaces ``VUE_APP_API_URL``
 
     **FitTrackee** API URL, only needed in dev environment.
 
@@ -818,7 +820,7 @@ Installation
 
 .. versionadded:: 0.4.4
 
-For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
+For **evaluation** purposes, docker files are available, installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee**:
 
