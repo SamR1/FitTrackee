@@ -815,12 +815,13 @@ test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre
 
 [[package]]
 name = "gpxpy"
-version = "1.5.0"
+version = "1.6.1"
 description = "GPX file parser and GPS track manipulation library"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "gpxpy-1.5.0.tar.gz", hash = "sha256:e6993a8945eae07a833cd304b88bbc6c3c132d63b2bf4a9b0a5d9097616b8708"},
+    {file = "gpxpy-1.6.1-py3-none-any.whl", hash = "sha256:57ea3e1249c1fea9f69ed5a07d226f05b5b07fc350a75c0d9b21d1de2e6440d0"},
+    {file = "gpxpy-1.6.1.tar.gz", hash = "sha256:473ff2fa17af6913a9879599cb6fe9c7a30fa1698898feff21a825447ee52fba"},
 ]
 
 [[package]]
@@ -2702,4 +2703,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "6e608c0be3db3ae23d3fa4a17e44154d5b1b049ed56df69520018c4638a22be3"
+content-hash = "9ae954bac6f8acc859bdb1781eb197bdb3ceed259f3ab650b1e4c862909e397e"
