@@ -49,14 +49,16 @@ img {
   max-width: 100%;
 }
 
-input, textarea, select {
-  background-color:  var(--input-bg-color);
+input,
+textarea,
+select {
+  background-color: var(--input-bg-color);
   border-radius: $border-radius;
   border: solid 1px var(--input-border-color);
   padding: $default-padding;
 
   &:disabled {
-    background-color:  var(--disabled-background-color);
+    background-color: var(--disabled-background-color);
     border-color: var(--disabled-color);
   }
 }
@@ -85,7 +87,8 @@ button {
     border-color: transparent;
     box-shadow: none;
 
-    &:hover, &:disabled {
+    &:hover,
+    &:disabled {
       background: transparent;
     }
 
@@ -97,7 +100,8 @@ button {
       box-shadow: none;
     }
 
-    &:disabled, &.confirm:disabled {
+    &:disabled,
+    &.confirm:disabled {
       border-color: transparent;
       color: var(--disabled-color);
     }
@@ -113,7 +117,8 @@ button {
     transform: translateY(2px);
   }
 
-  &:disabled, &.confirm:disabled {
+  &:disabled,
+  &.confirm:disabled {
     background: var(--disabled-background-color);
     border-color: var(--disabled-color);
     color: var(--disabled-color);
@@ -178,16 +183,15 @@ button {
 
 .form-box {
   .form-items {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-      input {
-        margin: $default-margin;
-        padding: $default-padding * .5;
-      }
+    input {
+      margin: $default-margin;
+      padding: $default-padding * 0.5;
     }
+  }
 }
-
 
 .form-info {
   color: var(--alert-color);
@@ -206,13 +210,13 @@ button {
   text-transform: uppercase;
 }
 
-.view  {
+.view {
   padding-bottom: 35px;
   background-color: var(--app-background-color);
 }
 
 .fa-trophy {
-  color: var(--workout-trophy-color)
+  color: var(--workout-trophy-color);
 }
 
 .mountains {
@@ -252,7 +256,7 @@ button {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: $default-padding * .5;
+      gap: $default-padding * 0.5;
     }
 
     .custom-checkbox {

@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { formatDuration } from '@/utils/duration'
 
@@ -43,8 +43,7 @@ describe('formatDuration (without days)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
-        formatDuration(testParams.inputDuration),
+      expect(formatDuration(testParams.inputDuration)).toStrictEqual(
         testParams.expectedDuration
       )
     })
@@ -92,8 +91,7 @@ describe('formatDuration (with days)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
-        formatDuration(testParams.inputDuration, true),
+      expect(formatDuration(testParams.inputDuration, true)).toStrictEqual(
         testParams.expectedDuration
       )
     })

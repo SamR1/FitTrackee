@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { computed } from 'vue'
 
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
   interface Props {

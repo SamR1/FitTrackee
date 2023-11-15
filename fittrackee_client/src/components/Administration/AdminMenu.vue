@@ -54,18 +54,18 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, onMounted, toRefs, withDefaults } from 'vue'
+  import { capitalize, onMounted, toRefs } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
-  import { IAppStatistics, TAppConfig } from '@/types/application'
+  import type { IAppStatistics, TAppConfig } from '@/types/application'
 
   interface Props {
     appConfig: TAppConfig
     appStatistics?: IAppStatistics
   }
   const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({} as IAppStatistics),
+    appStatistics: () => ({}) as IAppStatistics,
   })
 
   const { appConfig, appStatistics } = toRefs(props)

@@ -29,15 +29,8 @@
 
 <script setup lang="ts">
   import { zxcvbn } from '@zxcvbn-ts/core'
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    onBeforeMount,
-    toRefs,
-    watch,
-  } from 'vue'
+  import { computed, ref, onBeforeMount, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'

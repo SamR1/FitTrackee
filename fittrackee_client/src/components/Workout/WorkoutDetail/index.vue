@@ -11,6 +11,7 @@
     <Card>
       <template #title>
         <WorkoutCardTitle
+          v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
           @displayModal="updateDisplayModal(true)"
@@ -32,24 +33,17 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    withDefaults,
-  } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkout,
     IWorkoutData,
     IWorkoutObject,
@@ -67,7 +61,7 @@
     markerCoordinates?: TCoordinates
   }
   const props = withDefaults(defineProps<Props>(), {
-    markerCoordinates: () => ({} as TCoordinates),
+    markerCoordinates: () => ({}) as TCoordinates,
   })
 
   const route = useRoute()
@@ -91,7 +85,7 @@
       ? props.sports.find(
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
-      : {}
+      : ({} as ISport)
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)

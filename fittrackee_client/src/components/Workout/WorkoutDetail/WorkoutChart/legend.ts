@@ -1,4 +1,5 @@
-import { Chart, LegendItem } from 'chart.js'
+import { Chart } from 'chart.js'
+import type { LegendItem } from 'chart.js'
 
 const getOrCreateLegendList = (id: string): HTMLUListElement => {
   const legendContainer = document.getElementById(id)

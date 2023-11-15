@@ -24,11 +24,14 @@
           </label>
         </div>
         <div id="chart-legend" />
-        <LineChart
-          v-bind="lineChartProps"
-          class="line-chart"
-          @mouseleave="emitEmptyCoordinates"
-        />
+        <div class="line-chart">
+          <Line
+            :data="chartData"
+            :options="options"
+            :plugins="plugins"
+            @mouseleave="emitEmptyCoordinates"
+          />
+        </div>
         <div class="chart-info">
           <div class="no-data-cleaning">
             {{ $t('workouts.NO_DATA_CLEANING') }}
@@ -51,15 +54,16 @@
 </template>
 
 <script setup lang="ts">
-  import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, computed, ref, toRefs } from 'vue'
-  import { LineChart, useLineChart } from 'vue-chart-3'
+  import type { ChartData, ChartOptions } from 'chart.js'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
-  import { TUnit } from '@/types/units'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { TUnit } from '@/types/units'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkoutChartData,
     IWorkoutData,
     TCoordinates,
@@ -104,7 +108,7 @@
   )
   const options = computed<ChartOptions<'line'>>(() => ({
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     animation: false,
     layout: {
       padding: {
@@ -203,11 +207,7 @@
       },
     },
   }))
-  const { lineChartProps } = useLineChart({
-    chartData,
-    options,
-    plugins: [htmlLegendPlugin],
-  })
+  const plugins = [htmlLegendPlugin]
 
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value
@@ -279,6 +279,9 @@
             }
           }
         }
+        .line-chart {
+          min-height: 400px;
+        }
       }
 
       @media screen and (max-width: $small-limit) {
@@ -293,6 +296,9 @@
             .no-data-cleaning {
               padding: 0 $default-padding * 2;
             }
+          }
+          .line-chart {
+            min-height: 338px;
           }
         }
       }

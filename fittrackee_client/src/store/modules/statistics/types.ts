@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,8 +6,11 @@ import {
 } from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IUserStatisticsPayload, TStatisticsFromApi } from '@/types/statistics'
+import type { IRootState } from '@/store/modules/root/types'
+import type {
+  IUserStatisticsPayload,
+  TStatisticsFromApi,
+} from '@/types/statistics'
 
 export interface IStatisticsState {
   statistics: TStatisticsFromApi
@@ -48,7 +51,7 @@ export type TStatisticsStoreModule<S = IStatisticsState> = Omit<
 } & {
   commit<
     K extends keyof TStatisticsMutations,
-    P extends Parameters<TStatisticsMutations[K]>[1]
+    P extends Parameters<TStatisticsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

@@ -1,4 +1,4 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
@@ -11,13 +11,13 @@ import {
   USERS_STORE,
   WORKOUTS_STORE,
 } from '@/store/constants'
-import {
+import type {
   IAuthUserActions,
   IAuthUserState,
 } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
+import type { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
-import {
+import type {
   ILoginOrRegisterData,
   IUserAccountPayload,
   IUserDeletionPayload,

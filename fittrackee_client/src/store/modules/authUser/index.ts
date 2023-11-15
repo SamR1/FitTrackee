@@ -1,11 +1,11 @@
-import { Module } from 'vuex'
+import type { Module } from 'vuex'
 
 import { actions } from '@/store/modules/authUser/actions'
 import { getters } from '@/store/modules/authUser/getters'
 import { mutations } from '@/store/modules/authUser/mutations'
 import { authUserState } from '@/store/modules/authUser/state'
-import { IAuthUserState } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
+import type { IAuthUserState } from '@/store/modules/authUser/types'
+import type { IRootState } from '@/store/modules/root/types'
 
 const authUser: Module<IAuthUserState, IRootState> = {
   state: authUserState,

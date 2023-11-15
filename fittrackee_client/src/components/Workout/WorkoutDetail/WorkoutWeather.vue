@@ -121,7 +121,7 @@
   import { toRefs } from 'vue'
 
   import WeatherWind from '@/components/Workout/WorkoutDetail/WeatherWind.vue'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { IWorkoutObject } from '@/types/workouts'
   import { getTemperature } from '@/utils/units'
 
   interface Props {

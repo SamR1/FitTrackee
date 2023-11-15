@@ -14,6 +14,7 @@
         <CalendarWorkout
           v-for="(workout, index) in workouts"
           :key="index"
+          :displayHARecord="displayHARecord"
           :workout="workout"
           :sportLabel="getSportLabel(workout, sports)"
           :sportColor="getSportColor(workout, sports)"
@@ -28,8 +29,8 @@
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import DonutChart from '@/components/Dashboard/UserCalendar/DonutChart.vue'
-  import { ISport } from '@/types/sports'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkout } from '@/types/workouts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
 
   interface Props {
@@ -37,13 +38,14 @@
     datasets: Record<number, Record<string, number>>
     sports: ISport[]
     workouts: IWorkout[]
+    displayHARecord: boolean
   }
   const props = defineProps<Props>()
 
   const { colors, datasets, sports, workouts } = toRefs(props)
   const isHidden = ref(true)
 
-  function togglePane(event: Event & { target: HTMLElement }) {
+  function togglePane(event: Event) {
     event.stopPropagation()
     isHidden.value = !isHidden.value
   }
@@ -88,7 +90,8 @@
       .more-workouts {
         background: whitesmoke;
         border-radius: 4px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        box-shadow:
+          0 4px 8px 0 rgba(0, 0, 0, 0.2),
           0 6px 20px 0 rgba(0, 0, 0, 0.19);
         position: absolute;
         top: 52px;

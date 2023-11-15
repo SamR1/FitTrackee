@@ -1,8 +1,8 @@
 {
-    "ABOUT_THIS_INSTANCE": "A propos de cette instance",
-    "CONTACT_ADMIN": "Contacter l'administrateur",
-    "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> est un <em>tracker</em> d'activités sportives (en extérieur).",
-    "FITTRACKEE_LICENSE": "sous licence {0} (en) ",
-    "SOURCE_CODE": "Code source (en)",
-    "WEATHER_DATA_FROM": "Source des données météo :"
+  "ABOUT_THIS_INSTANCE": "A propos de cette instance",
+  "CONTACT_ADMIN": "Contacter l'administrateur",
+  "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> est un <em>tracker</em> d'activités sportives (en extérieur).",
+  "FITTRACKEE_LICENSE": "sous licence {0} (en) ",
+  "SOURCE_CODE": "Code source (en)",
+  "WEATHER_DATA_FROM": "Source des données météo :"
 }

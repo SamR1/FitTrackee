@@ -1,27 +1,27 @@
 {
-    "APP": {
-        "CLIENT_ID": "ID",
-        "CLIENT_SECRET": "Hemmelinghet",
-        "DESCRIPTION": "Programbeskrivelse",
-        "NAME": "Programnavn",
-        "URL": "Programnettadresse",
-        "SCOPE": {
-            "workouts:read_DESCRIPTION": "innvilger lesetilgang til <code>workouts</code>-endepunkter.",
-            "profile:write_DESCRIPTION": "innvilger skrivetilgang til <code>auth</code>-endepunkter.",
-            "LABEL": "Omfang"
-        },
-        "REDIRECT_URL": "Nettadresse-videresendelse"
+  "APP": {
+    "CLIENT_ID": "ID",
+    "CLIENT_SECRET": "Hemmelinghet",
+    "DESCRIPTION": "Programbeskrivelse",
+    "NAME": "Programnavn",
+    "URL": "Programnettadresse",
+    "SCOPE": {
+      "workouts:read_DESCRIPTION": "innvilger lesetilgang til <code>workouts</code>-endepunkter.",
+      "profile:write_DESCRIPTION": "innvilger skrivetilgang til <code>auth</code>-endepunkter.",
+      "LABEL": "Omfang"
     },
-    "COPY_TO_CLIPBOARD": "kopier til utklippstavlen",
-    "NO_APPS": "ingen programmer",
-    "NO_DESCRIPTION": "ingen beskrivelse",
-    "TOKENS_REVOKED": "Alle eksisterende tilknyttede symbol tilbakekalt.",
-    "NEW_APP": "Legg til et program",
-    "TOKENS_REVOCATION_CONFIRMATION": "Tilbakekall alle symboler?",
-    "NO_APP": "Fant ikke program.",
-    "DELETE_APP": "Slett program",
-    "ADD_A_NEW_APP": "Legg til et nytt OAuth 2.0-program",
-    "REVOKE_ALL_TOKENS": "Tilbakekall alle symboler",
-    "APP_DELETION_CONFIRMATION": "Slett programmet?",
-    "APP_REQUESTING_ACCESS": "{0}-programmet kjører:"
+    "REDIRECT_URL": "Nettadresse-videresendelse"
+  },
+  "COPY_TO_CLIPBOARD": "kopier til utklippstavlen",
+  "NO_APPS": "ingen programmer",
+  "NO_DESCRIPTION": "ingen beskrivelse",
+  "TOKENS_REVOKED": "Alle eksisterende tilknyttede symbol tilbakekalt.",
+  "NEW_APP": "Legg til et program",
+  "TOKENS_REVOCATION_CONFIRMATION": "Tilbakekall alle symboler?",
+  "NO_APP": "Fant ikke program.",
+  "DELETE_APP": "Slett program",
+  "ADD_A_NEW_APP": "Legg til et nytt OAuth 2.0-program",
+  "REVOKE_ALL_TOKENS": "Tilbakekall alle symboler",
+  "APP_DELETION_CONFIRMATION": "Slett programmet?",
+  "APP_REQUESTING_ACCESS": "{0}-programmet kjører:"
 }

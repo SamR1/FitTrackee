@@ -1,66 +1,66 @@
 {
-    "ABOUT": {
-        "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée.",
-        "TEXT": "Information détaillée de l'instance"
+  "ABOUT": {
+    "DESCRIPTION": "Toute information supplémentaire qui peut être utile à vos utilisateurs. La syntaxe Markdown peut être utilisée.",
+    "TEXT": "Information détaillée de l'instance"
+  },
+  "ACTION": "Action",
+  "ACTIVATE_USER_ACCOUNT": "Activer le compte",
+  "ACTIVE": "Actif",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'administration, supprimer des comptes utilisateurs.",
+  "APPLICATION": "Application",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
+    "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
+    "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
+    "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
+    "NO_CONTACT_EMAIL": "non renseigné",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
+    "TITLE": "Configuration de l'application",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
+  },
+  "BACK_TO_ADMIN": "Revenir à l'admin",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
+  "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
+  "CURRENT_EMAIL": "Adresse email actuelle",
+  "DELETE_USER": "Supprimer l'utilisateur",
+  "EMAIL_SENDING_DISABLED": "L'envoi d'emails est désactivé.",
+  "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "NEW_EMAIL": "Nouvelle adresse email",
+  "NO_TEXT_ENTERED": "pas de texte saisi",
+  "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",
+  "PRIVACY_POLICY_DESCRIPTION": "Ajouter votre propre politique de confidentialité ou laisser vider pour utiliser la politique par défaut. La syntaxe Markdown peut être utilisée.",
+  "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
+  "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
+  "RESET_USER_PASSWORD": "Réinit. le mot de passe",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Actif",
+      "HAS_WORKOUTS": "des séances existent",
+      "IMAGE": "Image",
+      "LABEL": "Label"
     },
-    "ACTION": "Action",
-    "ACTIVATE_USER_ACCOUNT": "Activer le compte",
-    "ACTIVE": "Actif",
-    "ADMIN": "Admin",
-    "ADMINISTRATION": "Administration",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'administration, supprimer des comptes utilisateurs.",
-    "APPLICATION": "Application",
-    "APP_CONFIG": {
-        "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
-        "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
-        "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
-        "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
-        "NO_CONTACT_EMAIL": "non renseigné",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
-        "TITLE": "Configuration de l'application",
-        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
+    "TITLE": "Administration - Sports"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application.",
+  "UPDATE_USER_EMAIL": "Changer l'email",
+  "USER": "utilisateur | utilisateurs",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "status administrateur",
+        "CREATED_AT": "date d'inscription",
+        "IS_ACTIVE": "statut du compte",
+        "USERNAME": "nom d'utilisateur",
+        "WORKOUTS_COUNT": "nombre de séances"
+      }
     },
-    "BACK_TO_ADMIN": "Revenir à l'admin",
-    "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
-    "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
-    "CURRENT_EMAIL": "Adresse email actuelle",
-    "DELETE_USER": "Supprimer l'utilisateur",
-    "EMAIL_SENDING_DISABLED": "L'envoi d'emails est désactivé.",
-    "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
-    "NEW_EMAIL": "Nouvelle adresse email",
-    "NO_TEXT_ENTERED": "pas de texte saisi",
-    "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",
-    "PRIVACY_POLICY_DESCRIPTION": "Ajouter votre propre politique de confidentialité ou laisser vider pour utiliser la politique par défaut. La syntaxe Markdown peut être utilisée.",
-    "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
-    "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
-    "RESET_USER_PASSWORD": "Réinit. le mot de passe",
-    "SPORTS": {
-        "TABLE": {
-            "ACTIVE": "Actif",
-            "HAS_WORKOUTS": "des séances existent",
-            "IMAGE": "Image",
-            "LABEL": "Label"
-        },
-        "TITLE": "Administration - Sports"
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Ajouter les droits d'admin",
+      "REMOVE_ADMIN_RIGHTS": "Retirer les droits d'admin"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application.",
-    "UPDATE_USER_EMAIL": "Changer l'email",
-    "USER": "utilisateur | utilisateurs",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "status administrateur",
-                "CREATED_AT": "date d'inscription",
-                "IS_ACTIVE": "statut du compte",
-                "USERNAME": "nom d'utilisateur",
-                "WORKOUTS_COUNT": "nombre de séances"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Ajouter les droits d'admin",
-            "REMOVE_ADMIN_RIGHTS": "Retirer les droits d'admin"
-        },
-        "TITLE": "Administration - Utilisateurs"
-    },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "L'adresse email a été mise à jour."
+    "TITLE": "Administration - Utilisateurs"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "L'adresse email a été mise à jour."
 }

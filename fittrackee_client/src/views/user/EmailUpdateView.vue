@@ -17,13 +17,16 @@
     </p>
   </div>
 </template>
+
 <script setup lang="ts">
-  import { computed, ComputedRef, onBeforeMount, onUnmounted, watch } from 'vue'
-  import { useRoute, LocationQueryValue, useRouter } from 'vue-router'
+  import { computed, onBeforeMount, onUnmounted, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQueryValue } from 'vue-router'
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()

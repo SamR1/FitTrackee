@@ -1,56 +1,56 @@
 {
-    "ABOUT": {
-        "TEXT": "Detaljert info om instansen",
-        "DESCRIPTION": "All ytterligere info som kan være nyttig for brukerne dine. Markdown-syntaks kan brukes."
+  "ABOUT": {
+    "TEXT": "Detaljert info om instansen",
+    "DESCRIPTION": "All ytterligere info som kan være nyttig for brukerne dine. Markdown-syntaks kan brukes."
+  },
+  "ACTION": "Handling",
+  "ACTIVE": "Aktiv",
+  "ADMINISTRATION": "Administrasjon",
+  "APPLICATION": "Program",
+  "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
+  "CURRENT_EMAIL": "Nåværende e-postadresse",
+  "DELETE_USER": "Slett bruker",
+  "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
+  "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
+  "RESET_USER_PASSWORD": "Tilbakestill passord",
+  "SPORTS": {
+    "TABLE": {
+      "IMAGE": "Bilde",
+      "LABEL": "Etikett",
+      "ACTIVE": "Aktiv",
+      "HAS_WORKOUTS": ""
     },
-    "ACTION": "Handling",
-    "ACTIVE": "Aktiv",
-    "ADMINISTRATION": "Administrasjon",
-    "APPLICATION": "Program",
-    "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
-    "CURRENT_EMAIL": "Nåværende e-postadresse",
-    "DELETE_USER": "Slett bruker",
-    "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
-    "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
-    "RESET_USER_PASSWORD": "Tilbakestill passord",
-    "SPORTS": {
-        "TABLE": {
-            "IMAGE": "Bilde",
-            "LABEL": "Etikett",
-            "ACTIVE": "Aktiv",
-            "HAS_WORKOUTS": ""
-        },
-        "TITLE": "Sportsadministrasjon"
+    "TITLE": "Sportsadministrasjon"
+  },
+  "USER": "bruker | brukere",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "administratorstatus",
+        "CREATED_AT": "registreringsdato",
+        "IS_ACTIVE": "kontostatus",
+        "USERNAME": "brukernavn",
+        "WORKOUTS_COUNT": "arbeidsøktantall"
+      }
     },
-    "USER": "bruker | brukere",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "administratorstatus",
-                "CREATED_AT": "registreringsdato",
-                "IS_ACTIVE": "kontostatus",
-                "USERNAME": "brukernavn",
-                "WORKOUTS_COUNT": "arbeidsøktantall"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Legg til administratorrettigheter",
-            "REMOVE_ADMIN_RIGHTS": "Fjern administratorrettigheter"
-        },
-        "TITLE": "Administrasjon — brukere"
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Legg til administratorrettigheter",
+      "REMOVE_ADMIN_RIGHTS": "Fjern administratorrettigheter"
     },
-    "NEW_EMAIL": "Ny e-post",
-    "ADMIN": "Administrator",
-    "APP_CONFIG": {
-        "MAX_USERS_LABEL": "Maks. antall aktive brukere",
-        "MAX_FILES_IN_ZIP_LABEL": "Maks. filer i ZIP-arkiv",
-        "ADMIN_CONTACT": "E-post til administrator i kontaktøyemed"
-    },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "E-postadresse oppdatert.",
-    "ACTIVATE_USER_ACCOUNT": "Aktiver konto",
-    "UPDATE_APPLICATION_DESCRIPTION": "Oppdater programoppsett.",
-    "UPDATE_USER_EMAIL": "Oppdater e-post",
-    "BACK_TO_ADMIN": "Tilbake til administrasjon",
-    "REGISTRATION_DISABLED": "Registrering er avskrudd.",
-    "REGISTRATION_ENABLED": "Registrering er påslått."
+    "TITLE": "Administrasjon — brukere"
+  },
+  "NEW_EMAIL": "Ny e-post",
+  "ADMIN": "Administrator",
+  "APP_CONFIG": {
+    "MAX_USERS_LABEL": "Maks. antall aktive brukere",
+    "MAX_FILES_IN_ZIP_LABEL": "Maks. filer i ZIP-arkiv",
+    "ADMIN_CONTACT": "E-post til administrator i kontaktøyemed"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "E-postadresse oppdatert.",
+  "ACTIVATE_USER_ACCOUNT": "Aktiver konto",
+  "UPDATE_APPLICATION_DESCRIPTION": "Oppdater programoppsett.",
+  "UPDATE_USER_EMAIL": "Oppdater e-post",
+  "BACK_TO_ADMIN": "Tilbake til administrasjon",
+  "REGISTRATION_DISABLED": "Registrering er avskrudd.",
+  "REGISTRATION_ENABLED": "Registrering er påslått."
 }

@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { sports } from './fixtures'
 
@@ -451,15 +451,14 @@ describe('translateSports', () => {
   testsParams.map((testParams) => {
     it(testParams.description, () => {
       locale.value = testParams.inputParams.locale
-      assert.deepEqual(
+      expect(
         translateSports(
           testParams.inputParams.sports,
           t,
           testParams.inputParams.activeStatus,
           testParams.inputParams.sportsToInclude
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })

@@ -20,6 +20,7 @@
           :sports="sports"
           :datasets="chartDatasets"
           :colors="colors"
+          :displayHARecord="displayHARecord"
         />
       </div>
     </div>
@@ -30,6 +31,7 @@
           :sports="sports"
           :datasets="chartDatasets"
           :colors="colors"
+          :displayHARecord="displayHARecord"
         />
       </div>
     </div>
@@ -41,8 +43,8 @@
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
-  import { ISport } from '@/types/sports'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkout } from '@/types/workouts'
   import { getSportColor, getSportLabel, sportIdColors } from '@/utils/sports'
   import { getDonutDatasets } from '@/utils/workouts'
 

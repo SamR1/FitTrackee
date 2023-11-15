@@ -165,11 +165,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
+  import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
@@ -184,10 +185,12 @@
   const userForm: IUserPreferencesPayload = reactive({
     display_ascent: true,
     imperial_units: false,
-    language: '',
+    language: 'en',
     timezone: 'Europe/Paris',
     date_format: 'dd/MM/yyyy',
     weekm: false,
+    start_elevation_at_zero: false,
+    use_raw_gpx_speed: false,
   })
   const weekStart = [
     {
