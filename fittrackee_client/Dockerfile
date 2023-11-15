@@ -11,14 +11,14 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # add environment variables
 ARG NODE_ENV
-ARG VUE_APP_API_URL
+ARG VITE_APP_API_URL
 ENV NODE_ENV $NODE_ENV
-ENV VUE_APP_API_URL $VUE_APP_API_URL
+ENV VITE_APP_API_URL $VITE_APP_API_URL
 
 # install dependencies
 COPY package.json /usr/src/app/package.json
+COPY yarn.lock /usr/src/app/yarn.lock
 RUN yarn install --silent
-RUN yarn global add @vue/cli
 
 # copy source
 COPY . /usr/src/app/
