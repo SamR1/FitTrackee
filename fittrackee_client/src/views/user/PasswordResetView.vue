@@ -27,7 +27,7 @@
   const router = useRouter()
 
   const { action } = toRefs(props)
-  const token = computed(() => route.query.token)
+  const token = computed(() => route.query.token as string)
 
   onBeforeMount(() => {
     if (props.action === 'reset' && !token.value) {

@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
-  import { IWorkout } from '@/types/workouts'
+  import type { IWorkout } from '@/types/workouts'
   import { getApiUrl } from '@/utils'
 
   interface Props {

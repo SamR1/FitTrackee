@@ -14,7 +14,7 @@
   import { LIcon, LMarker } from '@vue-leaflet/vue-leaflet'
   import { toRefs } from 'vue'
 
-  import { TCoordinates } from '@/types/workouts'
+  import type { TCoordinates } from '@/types/workouts'
 
   interface Props {
     markerCoordinates: TCoordinates

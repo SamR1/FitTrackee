@@ -1,5 +1,5 @@
-import { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
-import { IWorkout } from '@/types/workouts'
+import type { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
+import type { IWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
   'Cycling (Sport)': '#4c9792',

@@ -21,10 +21,27 @@
             "in_progress": "in progres..."
         }
     },
-    "FILTER_ON_USERNAME": "Filter on username",
-    "HIDE_PASSWORD": "hide password",
-    "INVALID_TOKEN": "Invalid token, please request a new password reset.",
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
+    "WEAK": "weak"
+  },
+  "PASSWORD_UPDATED": "Your password have been updated. Click {0} to log in.",
+  "PROFILE": {
+    "ACCOUNT_EDITION": "Account edition",
+    "ASCENT_DATA": "Ascent-related data (records, total)",
+    "BACK_TO_PROFILE": "Back to profile",
+    "BIO": "Bio",
+    "BIRTH_DATE": "Birth date",
+    "DATE_FORMAT": "Date display format",
+    "EDIT": "Edit profile",
+    "EDIT_PREFERENCES": "Edit preferences",
+    "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
+    "ELEVATION_CHART_START": {
+      "LABEL": "Elevation chart starts at",
+      "MIN_ALT": "Minimum altitude",
+      "ZERO": "Zero"
+    },
+    "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
+    "FIRST_DAY_OF_WEEK": "First day of week",
+    "FIRST_NAME": "First name",
     "LANGUAGE": "Language",
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
     "LOGIN": "Login",

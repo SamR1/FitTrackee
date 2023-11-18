@@ -1,5 +1,5 @@
-import { Locale } from 'date-fns'
-import {
+import type { Locale } from 'date-fns'
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -7,18 +7,19 @@ import {
 } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import {
+import type {
   TAppConfig,
   IApplication,
   IAppStatistics,
   TAppConfigForm,
   IDisplayOptions,
 } from '@/types/application'
-import { IAuthUserProfile } from '@/types/user'
+import type { TLanguage } from '@/types/locales'
+import type { IAuthUserProfile } from '@/types/user'
 
 export interface IRootState {
   root: boolean
-  language: string
+  language: TLanguage
   locale: Locale
   errorMessages: string | string[] | null
   application: IApplication
@@ -41,7 +42,7 @@ export interface IRootActions {
   ): void
   [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE](
     context: ActionContext<IRootState, IRootState>,
-    langauge: string
+    language: TLanguage
   ): void
 }
 
@@ -56,7 +57,7 @@ export interface IRootGetters {
     state: IRootState
   ): string | string[] | null
 
-  [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): string
+  [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): TLanguage
 
   [ROOT_STORE.GETTERS.LOCALE](state: IRootState): Locale
   [ROOT_STORE.GETTERS.DISPLAY_OPTIONS](state: IRootState): IDisplayOptions
@@ -84,7 +85,7 @@ export type TRootMutations<S = IRootState> = {
     state: S,
     statistics: IAppStatistics
   ): void
-  [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: S, language: string): void
+  [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: S, language: TLanguage): void
   [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
     state: S,
     authUser: IAuthUserProfile
@@ -107,7 +108,7 @@ export type TRootStoreModule<S = IRootState> = Omit<
 } & {
   commit<
     K extends keyof TRootMutations,
-    P extends Parameters<TRootMutations[K]>[1]
+    P extends Parameters<TRootMutations[K]>[1],
   >(
     key: K,
     payload?: P,

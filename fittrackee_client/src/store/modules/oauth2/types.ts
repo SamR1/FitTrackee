@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { OAUTH2_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination } from '@/types/api'
+import type {
   IOAuth2Client,
   IOAuth2ClientAuthorizePayload,
   IOAuth2ClientPayload,
@@ -90,7 +90,7 @@ export type TOAuth2StoreModule<S = IOAuth2State> = Omit<
 } & {
   commit<
     K extends keyof TOAuth2Mutations,
-    P extends Parameters<TOAuth2Mutations[K]>[1]
+    P extends Parameters<TOAuth2Mutations[K]>[1],
   >(
     key: K,
     payload?: P,

@@ -115,7 +115,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, capitalize, computed, ref } from 'vue'
+  import { computed, ref, capitalize } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import {
@@ -123,8 +124,9 @@
     NOTIFICATIONS_STORE,
     ROOT_STORE,
   } from '@/store/constants'
-  import { IDropdownOption } from '@/types/forms'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IDropdownOption } from '@/types/forms'
+  import type { TLanguage } from '@/types/locales'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableLanguages } from '@/utils/locales'
 
@@ -158,7 +160,7 @@
   function updateLanguage(option: IDropdownOption) {
     store.dispatch(
       ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
-      option.value.toString()
+      option.value as TLanguage
     )
   }
   function logout() {

@@ -1,15 +1,15 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
 import { ROOT_STORE, AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
+import type { IRootState } from '@/store/modules/root/types'
 import { WorkoutsMutations } from '@/store/modules/workouts/enums'
-import {
+import type {
   IWorkoutsActions,
   IWorkoutsState,
 } from '@/store/modules/workouts/types'
-import {
+import type {
   ICommentForm,
   IWorkout,
   IWorkoutForm,

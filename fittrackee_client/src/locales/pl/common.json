@@ -1,25 +1,25 @@
 {
-    "CONFIRMATION": "Potwierdzenie",
-    "CONTACT": "kontakt",
-    "DAY": "dzień | dni",
-    "DISPLAYED": "Wyświetlony",
-    "DOCUMENTATION": "dokumentacja",
-    "HERE": "tutaj",
-    "HIDDEN": "Ukryty",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "rosnąco",
-            "DESC": "malejąco",
-            "LABEL": "sortuj"
-        },
-        "ORDER_BY": {
-            "LABEL": "uporządkuj według"
-        },
-        "PER_PAGE": {
-            "LABEL": "na stronę"
-        }
+  "CONFIRMATION": "Potwierdzenie",
+  "CONTACT": "kontakt",
+  "DAY": "dzień | dni",
+  "DISPLAYED": "Wyświetlony",
+  "DOCUMENTATION": "dokumentacja",
+  "HERE": "tutaj",
+  "HIDDEN": "Ukryty",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "rosnąco",
+      "DESC": "malejąco",
+      "LABEL": "sortuj"
     },
-    "TOTAL": "Łącznie",
-    "ABOUT": "o",
-    "HOME": "Dom"
+    "ORDER_BY": {
+      "LABEL": "uporządkuj według"
+    },
+    "PER_PAGE": {
+      "LABEL": "na stronę"
+    }
+  },
+  "TOTAL": "Łącznie",
+  "ABOUT": "o",
+  "HOME": "Dom"
 }

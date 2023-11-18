@@ -21,10 +21,27 @@
             "in_progress": "en cours..."
         }
     },
-    "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
-    "HIDE_PASSWORD": "masquer le mot de passe",
-    "INVALID_TOKEN": "Jeton invalide, veuillez demander une nouvelle réinitialisation de mot de passe.",
-    "I_WANT_TO_DELETE_MY_ACCOUNT": "Je souhaite supprimer mon compte",
+    "WEAK": "faible"
+  },
+  "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
+  "PROFILE": {
+    "ACCOUNT_EDITION": "Mise à jour du compte",
+    "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",
+    "BACK_TO_PROFILE": "Revenir au profil",
+    "BIO": "Bio",
+    "BIRTH_DATE": "Date de naissance",
+    "DATE_FORMAT": "Format d'affichage de la date",
+    "EDIT": "Modifier le profil",
+    "EDIT_PREFERENCES": "Modifier les préférences",
+    "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
+    "ELEVATION_CHART_START": {
+      "LABEL": "Début de l'axe pour le graphe affichant l'altitude",
+      "MIN_ALT": "Altitude minimale",
+      "ZERO": "0"
+    },
+    "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
+    "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
+    "FIRST_NAME": "Prénom",
     "LANGUAGE": "Langue",
     "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
     "LOGIN": "Se connecter",

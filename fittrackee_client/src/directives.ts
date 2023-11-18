@@ -1,4 +1,4 @@
-import { Directive, DirectiveBinding } from 'vue'
+import type { Directive, DirectiveBinding } from 'vue'
 
 interface ClickOutsideHTMLElement extends HTMLElement {
   clickOutsideEvent?: (event: MouseEvent | TouchEvent) => void

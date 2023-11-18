@@ -11,6 +11,7 @@
     <Card>
       <template #title>
         <WorkoutCardTitle
+          v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
@@ -57,15 +58,8 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    withDefaults,
-  } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import ReportForm from '@/components/Common/ReportForm.vue'
@@ -73,11 +67,11 @@
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
-  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IDisplayOptions } from '@/types/application'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IDisplayOptions } from '@/types/application'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkout,
     IWorkoutData,
     IWorkoutObject,
@@ -96,7 +90,7 @@
     isWorkoutOwner: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
-    markerCoordinates: () => ({} as TCoordinates),
+    markerCoordinates: () => ({}) as TCoordinates,
   })
 
   const route = useRoute()
@@ -120,7 +114,7 @@
       ? props.sports.find(
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
-      : {}
+      : ({} as ISport)
   )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]

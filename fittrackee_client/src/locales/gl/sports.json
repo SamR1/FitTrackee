@@ -1,50 +1,50 @@
 {
-    "Cycling (Sport)": {
-        "LABEL": "Ciclismo (Deportivo)"
-    },
-    "Cycling (Transport)": {
-        "LABEL": "Ciclismo (Transporte)"
-    },
-    "Cycling (Virtual)": {
-        "LABEL": "Ciclismo (Virtual)"
-    },
-    "Hiking": {
-        "LABEL": "Sendeirismo"
-    },
-    "Mountain Biking": {
-        "LABEL": "Ciclismo por Montaña"
-    },
-    "Mountain Biking (Electric)": {
-        "LABEL": "Ciclismo por Montaña (Eléctrica)"
-    },
-    "Mountaineering": {
-        "LABEL": "Montañismo"
-    },
-    "Rowing": {
-        "LABEL": "Remo"
-    },
-    "Running": {
-        "LABEL": "Correr"
-    },
-    "Skiing (Alpine)": {
-        "LABEL": "Esquí (Alpino)"
-    },
-    "Skiing (Cross Country)": {
-        "LABEL": "Esquí (de travesía)"
-    },
-    "Snowshoes": {
-        "LABEL": "Raquetas de neve"
-    },
-    "Trail": {
-        "LABEL": "Trail"
-    },
-    "Walking": {
-        "LABEL": "Camiñar"
-    },
-    "Paragliding": {
-        "LABEL": "Paracaidismo"
-    },
-    "Open Water Swimming": {
-        "LABEL": "Natación Auga Aberta"
-    }
+  "Cycling (Sport)": {
+    "LABEL": "Ciclismo (Deportivo)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Ciclismo (Transporte)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Ciclismo (Virtual)"
+  },
+  "Hiking": {
+    "LABEL": "Sendeirismo"
+  },
+  "Mountain Biking": {
+    "LABEL": "Ciclismo por Montaña"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Ciclismo por Montaña (Eléctrica)"
+  },
+  "Mountaineering": {
+    "LABEL": "Montañismo"
+  },
+  "Rowing": {
+    "LABEL": "Remo"
+  },
+  "Running": {
+    "LABEL": "Correr"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Esquí (Alpino)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Esquí (de travesía)"
+  },
+  "Snowshoes": {
+    "LABEL": "Raquetas de neve"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Camiñar"
+  },
+  "Paragliding": {
+    "LABEL": "Paracaidismo"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Natación Auga Aberta"
+  }
 }

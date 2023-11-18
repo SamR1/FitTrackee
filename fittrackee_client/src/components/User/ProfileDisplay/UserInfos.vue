@@ -156,22 +156,15 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    withDefaults,
-    watch,
-    onUnmounted,
-  } from 'vue'
+  import { computed, ref, toRefs, watch, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import ReportForm from '@/components/Common/ReportForm.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { IDisplayOptions, TAppConfig } from '@/types/application'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IDisplayOptions, TAppConfig } from '@/types/application'
+  import type { TLanguage } from '@/types/locales'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
   import { localeFromLanguage } from '@/utils/locales'
@@ -188,7 +181,7 @@
   const store = useStore()
 
   const { authUser, user, fromAdmin } = toRefs(props)
-  const language: ComputedRef<string> = computed(
+  const language: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(

@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import {
   getUsernameQuery,
@@ -20,15 +20,14 @@ describe('linkifyAndClean (clean input remains unchanged)', () => {
 
   testInputs.map((testInput) => {
     it(`it returns unmodified input: '${testInput}'`, () => {
-      assert.equal(linkifyAndClean(testInput), testInput)
+      expect(linkifyAndClean(testInput)).toBe(testInput)
     })
   })
 })
 
 describe('linkifyAndClean (URL is linkified)', () => {
   it('it returns URL as link with target blank', () => {
-    assert.equal(
-      linkifyAndClean('link: http://www.example.com'),
+    expect(linkifyAndClean('link: http://www.example.com')).toBe(
       'link: <a href="http://www.example.com" target="_blank">http://www.example.com</a>'
     )
   })
@@ -110,8 +109,7 @@ describe('linkifyAndClean with markdown', () => {
   testsParams.map((testParams) => {
     console.log(linkifyAndClean(testParams.inputString))
     it(testParams.description, () => {
-      assert.equal(
-        linkifyAndClean(testParams.inputString),
+      expect(linkifyAndClean(testParams.inputString)).toBe(
         testParams.expectedString
       )
     })

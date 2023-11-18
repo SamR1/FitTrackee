@@ -123,8 +123,8 @@
 
   import authApi from '@/api/authApi'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   interface Props {

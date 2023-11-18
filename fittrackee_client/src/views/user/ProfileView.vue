@@ -6,10 +6,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()

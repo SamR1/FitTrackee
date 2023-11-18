@@ -1,6 +1,6 @@
-import { LocationQuery } from 'vue-router'
+import type { LocationQuery } from 'vue-router'
 
-import { IQueryOptions, TPaginationPayload } from '@/types/api'
+import type { IQueryOptions, TPaginationPayload } from '@/types/api'
 
 export const sortList: string[] = ['asc', 'desc']
 export const defaultPage = 1

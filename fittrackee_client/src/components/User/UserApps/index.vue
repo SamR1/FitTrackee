@@ -8,7 +8,7 @@
   import { onUnmounted, toRefs } from 'vue'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {

@@ -94,11 +94,33 @@
             "WSW": "WSW"
         }
     },
-    "WITHOUT_GPX": "senza file .gpx",
-    "WITH_GPX": "con file .gpx",
-    "WORKOUT": "allenamento | allenamenti",
-    "WORKOUT_DATE": "data workout",
-    "WORKOUT_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare questo workout?",
-    "ZIP_ARCHIVE": "file .zip",
-    "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files .gpx"
+    "HUMIDITY": "umidità",
+    "TEMPERATURE": "temperatura",
+    "WIND": "vento",
+    "WIND_DIRECTIONS": {
+      "E": "E",
+      "ENE": "ENE",
+      "ESE": "ESE",
+      "N": "N",
+      "NE": "NE",
+      "NNE": "NNE",
+      "NNW": "NNW",
+      "NW": "NW",
+      "S": "S",
+      "SE": "SE",
+      "SSE": "SSE",
+      "SSW": "SSW",
+      "SW": "SW",
+      "W": "W",
+      "WNW": "WNW",
+      "WSW": "WSW"
+    }
+  },
+  "WITHOUT_GPX": "senza file .gpx",
+  "WITH_GPX": "con file .gpx",
+  "WORKOUT": "allenamento | allenamenti",
+  "WORKOUT_DATE": "data workout",
+  "WORKOUT_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare questo workout?",
+  "ZIP_ARCHIVE": "file .zip",
+  "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files .gpx"
 }

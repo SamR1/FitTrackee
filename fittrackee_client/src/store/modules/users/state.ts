@@ -1,6 +1,6 @@
-import { IUsersState } from '@/store/modules/users/types'
-import { IPagination } from '@/types/api'
-import { IUserProfile } from '@/types/user'
+import type { IUsersState } from '@/store/modules/users/types'
+import type { IPagination } from '@/types/api'
+import type { IUserProfile } from '@/types/user'
 
 export const usersState: IUsersState = {
   user: <IUserProfile>{},

@@ -151,19 +151,12 @@
 
 <script setup lang="ts">
   import snarkdown from 'snarkdown'
-  import {
-    ComputedRef,
-    capitalize,
-    computed,
-    reactive,
-    withDefaults,
-    onBeforeMount,
-    toRefs,
-  } from 'vue'
+  import { capitalize, computed, reactive, onBeforeMount, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRouter } from 'vue-router'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig, TAppConfigForm } from '@/types/application'
+  import type { TAppConfig, TAppConfigForm } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -202,19 +195,17 @@
 
   function updateForm(appConfig: TAppConfig) {
     Object.keys(appData).map((key) => {
-      ['max_single_file_size', 'max_zip_file_size'].includes(key)
-      ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        (appData[key] = getFileSizeInMB(appConfig[key]))
-      : ['about', 'privacy_policy'].includes(key)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ? appData[key] = appConfig[key]!== null
-            ? appConfig[key]
-            : ''
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        : (appData[key] = appConfig[key])
+      ;['max_single_file_size', 'max_zip_file_size'].includes(key)
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = getFileSizeInMB(appConfig[key]))
+        : ['about', 'privacy_policy'].includes(key)
+        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = appConfig[key] !== null ? appConfig[key] : '')
+        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (appData[key] = appConfig[key])
     })
   }
   function onCancel() {

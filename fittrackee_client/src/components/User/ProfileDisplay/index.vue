@@ -18,7 +18,7 @@
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
 
   interface Props {
     user: IUserProfile

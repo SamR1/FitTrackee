@@ -115,11 +115,33 @@
             "WSW": "OSO"
         }
     },
-    "WITHOUT_GPX": "sans fichier .gpx",
-    "WITH_GPX": "avec un fichier .gpx",
-    "WORKOUT": "séance | séances",
-    "WORKOUT_DATE": "date de la séance",
-    "WORKOUT_DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer cette séance ?",
-    "ZIP_ARCHIVE": "archive .zip",
-    "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
+    "HUMIDITY": "humidité",
+    "TEMPERATURE": "température",
+    "WIND": "vent",
+    "WIND_DIRECTIONS": {
+      "E": "E",
+      "ENE": "ENE",
+      "ESE": "ESE",
+      "N": "N",
+      "NE": "NE",
+      "NNE": "NNE",
+      "NNW": "NNO",
+      "NW": "NO",
+      "S": "S",
+      "SE": "SE",
+      "SSE": "SSE",
+      "SSW": "SSO",
+      "SW": "SO",
+      "W": "O",
+      "WNW": "ONO",
+      "WSW": "OSO"
+    }
+  },
+  "WITHOUT_GPX": "sans fichier .gpx",
+  "WITH_GPX": "avec un fichier .gpx",
+  "WORKOUT": "séance | séances",
+  "WORKOUT_DATE": "date de la séance",
+  "WORKOUT_DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer cette séance ?",
+  "ZIP_ARCHIVE": "archive .zip",
+  "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
 }

@@ -1,100 +1,100 @@
 {
-    "ABOUT": {
-        "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
-        "TEXT": "Detailed instance information"
+  "ABOUT": {
+    "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
+    "TEXT": "Detailed instance information"
+  },
+  "ACTION": "Action",
+  "ACTIVATE_USER_ACCOUNT": "Activate account",
+  "ACTIVE": "Active",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
+  "APPLICATION": "Application",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Administrator email for contact",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "MAX_USERS_HELP": "If 0, no limitation on registration.",
+    "MAX_USERS_LABEL": "Max. number of active users",
+    "NO_CONTACT_EMAIL": "no contact email",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
+    "TITLE": "Application configuration",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Add a comment",
+      "DELETE_CONTENT": "Delete content",
+      "DISABLE_ACCOUNT": "Disable user account",
+      "MARK_AS_RESOLVED": "Mark as resolved",
+      "MARK_AS_UNRESOLVED": "Mark as unresolved",
+      "REACTIVATE_ACCOUNT": "Reactivate user account",
+      "SEND_EMAIL": "Send an email"
     },
-    "ACTION": "Action | Actions",
-    "ACTIVATE_USER_ACCOUNT": "Activate account",
-    "ACTIVE": "Active",
-    "ADMIN": "Admin",
-    "ADMINISTRATION": "Administration",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
-    "APPLICATION": "Application",
-    "APP_CONFIG": {
-        "ADMIN_CONTACT": "Administrator email for contact",
-        "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
-        "MAX_USERS_HELP": "If 0, no limitation on registration.",
-        "MAX_USERS_LABEL": "Max. number of active users",
-        "NO_CONTACT_EMAIL": "no contact email",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
-        "TITLE": "Application configuration",
-        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+    "DESCRIPTION": "Reports management.",
+    "NOTES_AND_ACTIONS": "Notes and actions",
+    "NO_REPORTS_FOUND": "No reports",
+    "ORDER_BY": {
+      "CREATED_AT": "creation date",
+      "UPDATED_AT": "update date"
     },
-    "APP_MODERATION": {
-        "TITLE": "Moderation",
-        "DESCRIPTION": "Reports management.",
-        "NOTES_AND_ACTIONS": "Notes and actions",
-        "NO_REPORTS_FOUND": "No reports",
-        "REPORT": "report | reports",
-        "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
-        "REPORT_NOTE": "Note by",
-        "REPORTED_BY": "Reported by",
-        "REPORTED_CONTENT": "Reported content",
-        "REPORTED_OBJECT": "Object",
-        "REPORTED_USER": "Reported user",
-        "REPORTER": "reporter",
-        "RESOLVED": {
-            "TRUE": "Resolved",
-            "FALSE": "Unresolved"
-        },
-        "RESOLVED_AT": "Resolved at",
-        "ORDER_BY": {
-            "CREATED_AT": "creation date",
-            "UPDATED_AT": "update date"
-        },
-        "STATUS": "status",
-        "ACTIONS": {
-            "ADD_COMMENT": "Add a comment",
-            "DELETE_CONTENT": "Delete content",
-            "DISABLE_ACCOUNT": "Disable user account",
-            "REACTIVATE_ACCOUNT": "Reactivate user account",
-            "MARK_AS_RESOLVED": "Mark as resolved",
-            "MARK_AS_UNRESOLVED": "Mark as unresolved",
-            "SEND_EMAIL": "Send an email"
-        }
+    "REPORT": "report | reports",
+    "REPORTED_BY": "Reported by",
+    "REPORTED_CONTENT": "Reported content",
+    "REPORTED_OBJECT": "Object",
+    "REPORTED_USER": "Reported user",
+    "REPORTER": "reporter",
+    "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
+    "REPORT_NOTE": "Note by",
+    "RESOLVED": {
+      "FALSE": "Unresolved",
+      "TRUE": "Resolved"
     },
-    "BACK_TO_ADMIN": "Back to admin",
-    "CONFIRM_USER_ACCOUNT_DEACTIVATION": "Are you sure you want to deactivate {0} account?",
-    "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
-    "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
-    "CURRENT_EMAIL": "Current email",
-    "DELETE_USER": "Delete user",
-    "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
-    "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
-    "NEW_EMAIL": "New email",
-    "NO_TEXT_ENTERED": "No text entered",
-    "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
-    "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
-    "REGISTRATION_DISABLED": "Registration is currently disabled.",
-    "REGISTRATION_ENABLED": "Registration is currently enabled.",
-    "RESET_USER_PASSWORD": "Reset password",
-    "SPORTS": {
-        "TABLE": {
-            "ACTIVE": "Active",
-            "HAS_WORKOUTS": "workouts exist",
-            "IMAGE": "Image",
-            "LABEL": "Label"
-        },
-        "TITLE": "Sports administration"
+    "RESOLVED_AT": "Resolved at",
+    "STATUS": "status",
+    "TITLE": "Moderation"
+  },
+  "BACK_TO_ADMIN": "Back to admin",
+  "CONFIRM_USER_ACCOUNT_DEACTIVATION": "Are you sure you want to deactivate {0} account?",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
+  "CURRENT_EMAIL": "Current email",
+  "DELETE_USER": "Delete user",
+  "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
+  "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "NEW_EMAIL": "New email",
+  "NO_TEXT_ENTERED": "No text entered",
+  "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
+  "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
+  "REGISTRATION_DISABLED": "Registration is currently disabled.",
+  "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "RESET_USER_PASSWORD": "Reset password",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Active",
+      "HAS_WORKOUTS": "workouts exist",
+      "IMAGE": "Image",
+      "LABEL": "Label"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
-    "UPDATE_USER_EMAIL": "Update email",
-    "USER": "user | users",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "admin status",
-                "CREATED_AT": "registration date",
-                "IS_ACTIVE": "account status",
-                "USERNAME": "username",
-                "WORKOUTS_COUNT": "workout count"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Add admin rights",
-            "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
-        },
-        "TITLE": "Administration - Users"
+    "TITLE": "Sports administration"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
+  "UPDATE_USER_EMAIL": "Update email",
+  "USER": "user | users",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "admin status",
+        "CREATED_AT": "registration date",
+        "IS_ACTIVE": "account status",
+        "USERNAME": "username",
+        "WORKOUTS_COUNT": "workout count"
+      }
     },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated."
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Add admin rights",
+      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
+    },
+    "TITLE": "Administration - Users"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated."
 }

@@ -24,9 +24,9 @@ bandit:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: bandit lint-all type-check test-all
+check-all: bandit lint-all type-check-all test-all
 
-check-client: lint-client test-client
+check-client: lint-client type-check-client test-client
 
 check-python: bandit lint-python type-check test-python
 
@@ -98,7 +98,7 @@ docker-run-workers:
 
 docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn serve
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn dev
 
 docker-set-admin:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
@@ -194,7 +194,7 @@ lint-client:
 	cd fittrackee_client && $(NPM) lint
 
 lint-client-fix:
-	cd fittrackee_client && $(NPM) lint-fix
+	cd fittrackee_client && $(NPM) format
 
 lint-python:
 	$(PYTEST) --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations
@@ -233,7 +233,7 @@ serve-dev:
 
 serve-client:
     # for dev environments
-	cd fittrackee_client && PORT=3000 $(NPM) serve
+	cd fittrackee_client && PORT=3000 $(NPM) dev
 
 serve-python:
     # for dev environments
@@ -263,11 +263,19 @@ test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit $(MOCHA_ARGS)
+	cd fittrackee_client && $(NPM) test:unit run
+
+test-client-watch:
+	cd fittrackee_client && $(NPM) test:unit watch
 
 type-check:
 	echo 'Running mypy...'
 	$(MYPY) fittrackee
+
+type-check-all: type-check-client type-check
+
+type-check-client:
+	cd fittrackee_client && $(NPM) type-check
 
 upgrade-db:
 	$(FTCLI) db upgrade

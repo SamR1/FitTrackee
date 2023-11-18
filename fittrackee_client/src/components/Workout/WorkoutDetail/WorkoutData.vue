@@ -114,7 +114,7 @@
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { IWorkoutObject } from '@/types/workouts'
 
   interface Props {
     workoutObject: IWorkoutObject

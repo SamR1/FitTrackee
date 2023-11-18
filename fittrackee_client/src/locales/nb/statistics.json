@@ -1,7 +1,8 @@
 {
-    "STATISTICS": "Statistikk",
-    "TIME_FRAMES": {
-        "month": "måned",
-        "week": "uke"
-    }
+  "STATISTICS": "Statistikk",
+  "TIME_FRAMES": {
+    "month": "måned",
+    "week": "uke",
+    "year": "år"
+  }
 }

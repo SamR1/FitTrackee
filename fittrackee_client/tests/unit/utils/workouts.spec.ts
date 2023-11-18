@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import createI18n from '@/i18n'
 import { getDatasets, getDonutDatasets } from '@/utils/workouts'
@@ -172,14 +172,13 @@ describe('getDatasets', () => {
   testparams.map((testParams) => {
     it(testParams.description, () => {
       locale.value = testParams.inputParams.locale
-      assert.deepEqual(
+      expect(
         getDatasets(
           testParams.inputParams.charData,
           t,
           testParams.inputParams.useImperialUnits
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -329,9 +328,9 @@ describe('getDonutDatasets', () => {
   ]
   testparams.map((testParams) => {
     it(testParams.description, () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      assert.deepEqual(getDonutDatasets(testParams.input), testParams.expected)
+      expect(getDonutDatasets(testParams.input)).toStrictEqual(
+        testParams.expected
+      )
     })
   })
 })

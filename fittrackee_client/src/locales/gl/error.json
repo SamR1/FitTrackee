@@ -1,9 +1,9 @@
 {
-    "APP_ERROR": "A aplicación atopou algún problema.<br />Inténtao máis tarde ou contacta coa administración.",
-    "NOT_FOUND": {
-        "PAGE": "Non se atopa a páxina",
-        "WORKOUT": "Non se atopa o adestramento"
-    },
-    "SOMETHING_WRONG": "Algo fallou",
-    "UNKNOWN": "Erro. Inténtao outra vez ou contacta coa administración."
+  "APP_ERROR": "A aplicación atopou algún problema.<br />Inténtao máis tarde ou contacta coa administración.",
+  "NOT_FOUND": {
+    "PAGE": "Non se atopa a páxina",
+    "WORKOUT": "Non se atopa o adestramento"
+  },
+  "SOMETHING_WRONG": "Algo fallou",
+  "UNKNOWN": "Erro. Inténtao outra vez ou contacta coa administración."
 }

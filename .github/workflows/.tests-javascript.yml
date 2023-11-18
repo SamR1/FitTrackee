@@ -28,6 +28,9 @@ jobs:
       - name: Lint
         working-directory: ${{env.working-directory}}
         run: yarn lint
+      - name: Type check
+        working-directory: ${{env.working-directory}}
+        run: yarn type-check
       - name: Tests
         working-directory: ${{env.working-directory}}
         run: yarn test:unit

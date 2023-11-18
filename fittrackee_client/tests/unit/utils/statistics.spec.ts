@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { sports } from './fixtures'
 
@@ -87,7 +87,7 @@ describe('getDateKeys (week starting Sunday)', () => {
       const expected: Date[] = testParams.expected.map(
         (date_string: string) => new Date(date_string)
       )
-      assert.deepEqual(getDateKeys(testParams.inputParams, false), expected)
+      expect(getDateKeys(testParams.inputParams, false)).toStrictEqual(expected)
     })
   )
 })
@@ -162,7 +162,7 @@ describe('getDateKeys (week starting Monday)', () => {
       const expected: Date[] = testParams.expected.map(
         (date_string: string) => new Date(date_string)
       )
-      assert.deepEqual(getDateKeys(testParams.inputParams, true), expected)
+      expect(getDateKeys(testParams.inputParams, true)).toStrictEqual(expected)
     })
   )
 })
@@ -282,8 +282,9 @@ describe('getDatasets', () => {
         },
       ],
     }
-    assert.deepEqual(getDatasets(sports), expected)
+    expect(getDatasets(sports)).toStrictEqual(expected)
   })
+
   it('returns chart datasets with only displayed sports', () => {
     const expected: TStatisticsDatasets = {
       average_speed: [
@@ -332,7 +333,7 @@ describe('getDatasets', () => {
         },
       ],
     }
-    assert.deepEqual(getDatasets([sports[1]]), expected)
+    expect(getDatasets([sports[1]])).toStrictEqual(expected)
   })
 })
 
@@ -355,7 +356,7 @@ describe('formatStats', () => {
         total_descent: [],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -364,9 +365,8 @@ describe('formatStats', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it('returns empty datasets if no data and displayed sport provided', () => {
@@ -426,7 +426,7 @@ describe('formatStats', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -435,9 +435,8 @@ describe('formatStats', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it('returns empty datasets if data provided but no displayed sport', () => {
@@ -497,7 +496,7 @@ describe('formatStats', () => {
         total_descent: [],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -506,9 +505,8 @@ describe('formatStats', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it('returns datasets when data and displayed sport provided', () => {
@@ -607,7 +605,7 @@ describe('formatStats', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -616,9 +614,8 @@ describe('formatStats', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 })
 
@@ -719,7 +716,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -728,9 +725,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
   it("returns datasets when duration is 'month'", () => {
     const inputStats: TStatisticsFromApi = {
@@ -828,7 +824,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -837,9 +833,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it("returns datasets when duration is 'week' and week starts on Sunday", () => {
@@ -938,7 +933,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -947,9 +942,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it("returns datasets when duration is 'week' and week starts on Monday", () => {
@@ -1048,7 +1042,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         true,
@@ -1057,9 +1051,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it("returns datasets when duration is 'week' and date format 'dd/MM/yyyy'", () => {
@@ -1158,7 +1151,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -1167,9 +1160,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'dd/MM/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it("returns datasets when duration is 'week' and date format  is 'date_string'", () => {
@@ -1269,7 +1261,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -1278,9 +1270,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         false,
         'date_string'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 
   it('returns datasets after conversion to imperial units', () => {
@@ -1379,7 +1370,7 @@ describe('formatStats (duration)', () => {
         ],
       },
     }
-    assert.deepEqual(
+    expect(
       formatStats(
         inputParams,
         false,
@@ -1388,9 +1379,8 @@ describe('formatStats (duration)', () => {
         inputStats,
         true,
         'MM/dd/yyyy'
-      ),
-      expected
-    )
+      )
+    ).toStrictEqual(expected)
   })
 })
 
@@ -1425,14 +1415,9 @@ describe("getStatsDateParams when time frame is 'month')", () => {
 
     testsParams.map((testParams) => {
       it(testParams.description, () => {
-        assert.deepEqual(
-          getStatsDateParams(
-            testParams.input.date,
-            'month',
-            weekStartingMonday
-          ),
-          testParams.expected
-        )
+        expect(
+          getStatsDateParams(testParams.input.date, 'month', weekStartingMonday)
+        ).toStrictEqual(testParams.expected)
       })
     })
   })
@@ -1469,10 +1454,9 @@ describe("getStatsDateParams when time frame is 'year')", () => {
 
     testsParams.map((testParams) => {
       it(testParams.description, () => {
-        assert.deepEqual(
-          getStatsDateParams(testParams.input.date, 'year', weekStartingMonday),
-          testParams.expected
-        )
+        expect(
+          getStatsDateParams(testParams.input.date, 'year', weekStartingMonday)
+        ).toStrictEqual(testParams.expected)
       })
     })
   })
@@ -1537,14 +1521,13 @@ describe("getStatsDateParams when time frame is 'week')", () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         getStatsDateParams(
           testParams.input.date,
           'week',
           testParams.input.weekStartingMonday
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -1626,14 +1609,13 @@ describe("updateChartParams when time frame is 'month')", () => {
 
     testsParams.map((testParams) => {
       it(testParams.description, () => {
-        assert.deepEqual(
+        expect(
           updateChartParams(
             testParams.input.chartParams,
             testParams.input.backward,
             weekStartingMonday
-          ),
-          testParams.expected
-        )
+          )
+        ).toStrictEqual(testParams.expected)
       })
     })
   })
@@ -1712,14 +1694,13 @@ describe("updateChartParams when time frame is 'year')", () => {
 
     testsParams.map((testParams) => {
       it(testParams.description, () => {
-        assert.deepEqual(
+        expect(
           updateChartParams(
             testParams.input.chartParams,
             testParams.input.backward,
             weekStartingMonday
-          ),
-          testParams.expected
-        )
+          )
+        ).toStrictEqual(testParams.expected)
       })
     })
   })
@@ -1803,14 +1784,13 @@ describe("updateChartParams when time frame is 'week')", () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         updateChartParams(
           testParams.input.chartParams,
           testParams.input.backward,
           testParams.input.weekStartingMonday
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })

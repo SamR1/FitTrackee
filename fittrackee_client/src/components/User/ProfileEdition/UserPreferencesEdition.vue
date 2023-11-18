@@ -253,11 +253,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
+  import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
@@ -279,7 +280,7 @@
     display_ascent: true,
     hide_profile_in_users_directory: true,
     imperial_units: false,
-    language: '',
+    language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
     start_elevation_at_zero: false,

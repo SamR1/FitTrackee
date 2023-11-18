@@ -15,9 +15,9 @@ import {
 } from 'date-fns'
 
 import createI18n from '@/i18n'
-import { IChartDataset } from '@/types/chart'
-import { ISport } from '@/types/sports'
-import {
+import type { IChartDataset } from '@/types/chart'
+import type { ISport } from '@/types/sports'
+import type {
   IStatisticsChartData,
   IStatisticsDateParams,
   TStatisticsDatasetKeys,

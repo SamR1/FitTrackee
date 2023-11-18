@@ -1,219 +1,217 @@
 <template>
-  <div class="chart">
-    <BarChart v-bind="barChartProps" class="bar-chart" />
+  <div class="bar-chart" :class="{ minimal: !fullStats }">
+    <Bar :data="chartData" :options="options" />
   </div>
 </template>
 
-<script lang="ts">
-  import { ChartOptions, LayoutItem } from 'chart.js'
-  import { PropType, computed, defineComponent } from 'vue'
-  import { BarChart, useBarChart } from 'vue-chart-3'
+<script setup lang="ts">
+  import type { ChartOptions, LayoutItem } from 'chart.js'
+  import { computed, toRefs } from 'vue'
+  import { Bar } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
-  import { IChartDataset } from '@/types/chart'
-  import { TStatisticsDatasetKeys } from '@/types/statistics'
+  import type { IChartDataset } from '@/types/chart'
+  import type { TStatisticsDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
 
-  export default defineComponent({
-    name: 'Chart',
-    components: {
-      BarChart,
+  interface Props {
+    datasets: IChartDataset[]
+    labels: unknown[]
+    displayedData: TStatisticsDatasetKeys
+    displayedSportIds: number[]
+    fullStats: boolean
+    useImperialUnits: boolean
+  }
+  const props = defineProps<Props>()
+  const {
+    datasets,
+    labels,
+    displayedData,
+    displayedSportIds,
+    fullStats,
+    useImperialUnits,
+  } = toRefs(props)
+
+  const { t } = useI18n()
+
+  const chartData = computed(() => ({
+    labels: labels.value,
+    // workaround to avoid dataset modification
+    datasets: JSON.parse(JSON.stringify(datasets.value)),
+  }))
+  const options = computed<ChartOptions<'bar'>>(() => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    layout: {
+      padding: {
+        top: fullStats.value ? 40 : 22,
+      },
     },
-    props: {
-      datasets: {
-        type: Object as PropType<IChartDataset[]>,
-        required: true,
+    scales: {
+      x: {
+        stacked: true,
+        grid: {
+          drawOnChartArea: false,
+        },
       },
-      labels: {
-        type: Object as PropType<unknown[]>,
-        required: true,
-      },
-      displayedData: {
-        type: String as PropType<TStatisticsDatasetKeys>,
-        required: true,
-      },
-      displayedSportIds: {
-        type: Array as PropType<number[]>,
-        required: true,
-      },
-      fullStats: {
-        type: Boolean,
-        required: true,
-      },
-      useImperialUnits: {
-        type: Boolean,
-        required: true,
-      },
-    },
-    setup(props) {
-      const { t } = useI18n()
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function getNumber(value: any): number {
-        return isNaN(value) ? 0 : +value
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      function getSum(total: any, value: any): number {
-        return getNumber(total) + getNumber(value)
-      }
-      function getUnit(displayedData: string) {
-        return ['total_ascent', 'total_descent'].includes(displayedData)
-          ? 'm'
-          : 'km'
-      }
-      const chartData = computed(() => ({
-        labels: props.labels,
-        // workaround to avoid dataset modification
-        datasets: JSON.parse(JSON.stringify(props.datasets)),
-      }))
-      const options = computed<ChartOptions<'bar'>>(() => ({
-        responsive: true,
-        maintainAspectRatio: true,
-        animation: false,
-        layout: {
-          padding: {
-            top: props.fullStats ? 40 : 22,
+      y: {
+        stacked: displayedData.value !== 'average_speed',
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          maxTicksLimit: 6,
+          callback: function (value) {
+            return formatTooltipValue(
+              displayedData.value,
+              +value,
+              useImperialUnits.value,
+              false,
+              getUnit(displayedData.value)
+            )
           },
         },
-        scales: {
-          x: {
-            stacked: true,
-            grid: {
-              drawOnChartArea: false,
-            },
-          },
-          y: {
-            stacked: props.displayedData !== 'average_speed',
-            grid: {
-              drawOnChartArea: false,
-            },
-            ticks: {
-              maxTicksLimit: 6,
-              callback: function (value) {
-                return formatTooltipValue(
-                  props.displayedData,
-                  +value,
-                  props.useImperialUnits,
+        afterFit: function (scale: LayoutItem) {
+          scale.width = fullStats.value ? 90 : 60
+        },
+      },
+    },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        color: function (context) {
+          return displayedData.value === 'average_speed' &&
+            context.dataset.backgroundColor
+            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              context.dataset.backgroundColor[0]
+            : '#666666'
+        },
+        rotation: function (context) {
+          return fullStats.value && context.chart.chartArea.width < 580
+            ? 310
+            : 0
+        },
+        display: function (context) {
+          return fullStats.value && context.chart.chartArea.width < 300
+            ? false
+            : displayedData.value === 'average_speed'
+            ? displayedSportIds.value.length == 1
+              ? 'auto'
+              : false
+            : true
+        },
+        formatter: function (value, context) {
+          if (displayedData.value === 'average_speed') {
+            return formatTooltipValue(
+              displayedData.value,
+              value,
+              useImperialUnits.value,
+              false
+            )
+          } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const total: number = context.chart.data.datasets
+              .map((d) => d.data[context.dataIndex])
+              .reduce((total, value) => getSum(total, value), 0)
+            return context.datasetIndex ===
+              displayedSportIds.value.length - 1 && total > 0
+              ? formatTooltipValue(
+                  displayedData.value,
+                  total,
+                  useImperialUnits.value,
                   false,
-                  getUnit(props.displayedData)
+                  getUnit(displayedData.value)
                 )
-              },
-            },
-            afterFit: function (scale: LayoutItem) {
-              scale.width = props.fullStats ? 90 : 60
-            },
+              : null
+          }
+        },
+      },
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        interaction: {
+          intersect: true,
+          mode: 'index',
+          position:
+            displayedData.value === 'average_speed' ? 'nearest' : 'average',
+        },
+        filter: function (tooltipItem) {
+          return tooltipItem.formattedValue !== '0'
+        },
+        callbacks: {
+          label: function (context) {
+            let label = t(`sports.${context.dataset.label}.LABEL`) || ''
+            if (label) {
+              label += ': '
+            }
+            if (context.parsed.y !== null) {
+              label += formatTooltipValue(
+                displayedData.value,
+                context.parsed.y,
+                useImperialUnits.value,
+                true,
+                getUnit(displayedData.value)
+              )
+            }
+            return label
+          },
+          footer: function (tooltipItems) {
+            if (displayedData.value === 'average_speed') {
+              return ''
+            }
+            let sum = 0
+            tooltipItems.map((tooltipItem) => {
+              sum += tooltipItem.parsed.y
+            })
+            return (
+              `${t('common.TOTAL')}: ` +
+              formatTooltipValue(
+                displayedData.value,
+                sum,
+                useImperialUnits.value,
+                true,
+                getUnit(displayedData.value)
+              )
+            )
           },
         },
-        plugins: {
-          datalabels: {
-            anchor: 'end',
-            align: 'end',
-            color: function (context) {
-              return props.displayedData === 'average_speed' &&
-                context.dataset.backgroundColor
-                ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  context.dataset.backgroundColor[0]
-                : '#666666'
-            },
-            rotation: function (context) {
-              return props.fullStats && context.chart.chartArea.width < 580
-                ? 310
-                : 0
-            },
-            display: function (context) {
-              return props.fullStats && context.chart.chartArea.width < 300
-                ? false
-                : props.displayedData === 'average_speed'
-                ? props.displayedSportIds.length == 1
-                  ? 'auto'
-                  : false
-                : true
-            },
-            formatter: function (value, context) {
-              if (props.displayedData === 'average_speed') {
-                return formatTooltipValue(
-                  props.displayedData,
-                  value,
-                  props.useImperialUnits,
-                  false
-                )
-              } else {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                const total: number = context.chart.data.datasets
-                  .map((d) => d.data[context.dataIndex])
-                  .reduce((total, value) => getSum(total, value), 0)
-                return context.datasetIndex ===
-                  props.displayedSportIds.length - 1 && total > 0
-                  ? formatTooltipValue(
-                      props.displayedData,
-                      total,
-                      props.useImperialUnits,
-                      false,
-                      getUnit(props.displayedData)
-                    )
-                  : null
-              }
-            },
-          },
-          legend: {
-            display: false,
-          },
-          tooltip: {
-            interaction: {
-              intersect: true,
-              mode: 'index',
-              position:
-                props.displayedData === 'average_speed' ? 'nearest' : 'average',
-            },
-            filter: function (tooltipItem) {
-              return tooltipItem.formattedValue !== '0'
-            },
-            callbacks: {
-              label: function (context) {
-                let label = t(`sports.${context.dataset.label}.LABEL`) || ''
-                if (label) {
-                  label += ': '
-                }
-                if (context.parsed.y !== null) {
-                  label += formatTooltipValue(
-                    props.displayedData,
-                    context.parsed.y,
-                    props.useImperialUnits,
-                    true,
-                    getUnit(props.displayedData)
-                  )
-                }
-                return label
-              },
-              footer: function (tooltipItems) {
-                if (props.displayedData === 'average_speed') {
-                  return ''
-                }
-                let sum = 0
-                tooltipItems.map((tooltipItem) => {
-                  sum += tooltipItem.parsed.y
-                })
-                return (
-                  `${t('common.TOTAL')}: ` +
-                  formatTooltipValue(
-                    props.displayedData,
-                    sum,
-                    props.useImperialUnits,
-                    true,
-                    getUnit(props.displayedData)
-                  )
-                )
-              },
-            },
-          },
-        },
-      }))
-      const { barChartProps } = useBarChart({
-        chartData,
-        options,
-      })
-      return { barChartProps }
+      },
     },
-  })
+  }))
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function getNumber(value: any): number {
+    return isNaN(value) ? 0 : +value
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function getSum(total: any, value: any): number {
+    return getNumber(total) + getNumber(value)
+  }
+  function getUnit(displayedData: string) {
+    return ['total_ascent', 'total_descent'].includes(displayedData)
+      ? 'm'
+      : 'km'
+  }
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+
+  .bar-chart {
+    min-height: 400px;
+    &.minimal {
+      min-height: 300px;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      &.minimal {
+        min-height: 290px;
+      }
+    }
+  }
+</style>

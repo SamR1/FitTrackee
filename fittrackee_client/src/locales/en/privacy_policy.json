@@ -1,38 +1,38 @@
 {
-    "CONTENT": {
-        "ACCOUNT_DELETION": {
-            "CONTENT": "You can request the deletion of your account at any time by going to this address (after logging in) and clicking on \"Delete My Account\" button in your account edition.",
-            "TITLE": "Account deletion"
-        },
-        "CHANGES_TO_OUR_PRIVACY_POLICY": {
-            "CONTENT": "If we decide to change our privacy policy, we will post those changes on this page.\n\nThis document is under [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) license. Originally adapted from the [Discourse](https://github.com/discourse/discourse) privacy policy.",
-            "TITLE": "Changes to our Privacy Policy"
-        },
-        "DATA_COLLECTED": {
-            "CONTENT": "The following information are collected:\n- Account information (username, e-mail address and password). You may also enter additional profile information such as a first name, last name, birth date, location, biography and upload a profile picture.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) files. These files contain data related to your activities (geographic coordinates, date, distance, duration, max and average speeds, elevation, heart rate…). If you don't want to expose some data, clean them before upload or add workouts without GPX files.\n- Workout data (sport, title, date, duration, distance, ascent, descent, notes).\n- Technical information (browser name and operating system).",
-            "TITLE": "What information do we collect?"
-        },
-        "INFORMATION_DISCLOSURE": {
-            "CONTENT": "We do not sell, trade or otherwise transfer to outside parties your personally identifiable information.\n\nThis does not include trusted third parties who assist us in operating our site and servicing you, so long as those parties agree to keep this information confidential. \n\nWe may also release your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect ours or others rights, property, or safety.\n\nWhen you authorize a third-party application to use your account, depending on the scope of permissions you approve, it may access your profile information or your workouts. Applications can never access your password.",
-            "TITLE": "Do we disclose any information to outside parties?"
-        },
-        "INFORMATION_PROTECTION": {
-            "CONTENT": "We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information.",
-            "TITLE": "How do we protect your information?"
-        },
-        "INFORMATION_USAGE": {
-            "CONTENT": "Any of the information we collect from you may be used to provide the core functionality of **FitTrackee**:\n- GPX files are used to create workouts, display tracks on map (with [OpenStreetMap](https://www.openstreetmap.org)  and the configured tile server) and charts, generate map thumbnails, calculate records and get weather data (if a weather provider is set).\n- Profile information and workouts are not displayed publicly. A registered user can only display his own workouts.\n- The email address you provide may be used to send you information or confirm your account modifications.",
-            "TITLE": "What do we use your information for?"
-        },
-        "SITE_USAGE_BY_CHILDREN": {
-            "CONTENT": "If this server is in the EU or the EEA: Our site and services are all directed to people who are at least 16 years old. If you are under the age of 16, per the requirements of the [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation) do not use this site.\n\nIf this server is in the USA: Our site, products and services are all directed to people who are at least 13 years old. If you are under the age of 13, per the requirements of [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) do not use this site.\n\nLaw requirements can be different if this server is in another jurisdiction.",
-            "TITLE": "Site usage by children"
-        },
-        "YOUR_CONSENT": {
-            "CONTENT": "By using our site, you consent to our web site privacy policy.",
-            "TITLE": "Your Consent"
-        }
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "You can request the deletion of your account at any time by going to this address (after logging in) and clicking on \"Delete My Account\" button in your account edition.",
+      "TITLE": "Account deletion"
     },
-    "LAST_UPDATE": "Last update",
-    "TITLE": "privacy policy"
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "If we decide to change our privacy policy, we will post those changes on this page.\n\nThis document is under [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) license. Originally adapted from the [Discourse](https://github.com/discourse/discourse) privacy policy.",
+      "TITLE": "Changes to our Privacy Policy"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "The following information are collected:\n- Account information (username, e-mail address and password). You may also enter additional profile information such as a first name, last name, birth date, location, biography and upload a profile picture.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) files. These files contain data related to your activities (geographic coordinates, date, distance, duration, max and average speeds, elevation, heart rate…). If you don't want to expose some data, clean them before upload or add workouts without GPX files.\n- Workout data (sport, title, date, duration, distance, ascent, descent, notes).\n- Technical information (browser name and operating system).",
+      "TITLE": "What information do we collect?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "We do not sell, trade or otherwise transfer to outside parties your personally identifiable information.\n\nThis does not include trusted third parties who assist us in operating our site and servicing you, so long as those parties agree to keep this information confidential. \n\nWe may also release your information when we believe release is appropriate to comply with the law, enforce our site policies, or protect ours or others rights, property, or safety.\n\nWhen you authorize a third-party application to use your account, depending on the scope of permissions you approve, it may access your profile information or your workouts. Applications can never access your password.",
+      "TITLE": "Do we disclose any information to outside parties?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "We implement a variety of security measures to maintain the safety of your personal information when you enter, submit, or access your personal information.",
+      "TITLE": "How do we protect your information?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Any of the information we collect from you may be used to provide the core functionality of **FitTrackee**:\n- GPX files are used to create workouts, display tracks on map (with [OpenStreetMap](https://www.openstreetmap.org)  and the configured tile server) and charts, generate map thumbnails, calculate records and get weather data (if a weather provider is set).\n- Profile information and workouts are not displayed publicly. A registered user can only display his own workouts.\n- The email address you provide may be used to send you information or confirm your account modifications.",
+      "TITLE": "What do we use your information for?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "If this server is in the EU or the EEA: Our site and services are all directed to people who are at least 16 years old. If you are under the age of 16, per the requirements of the [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation) do not use this site.\n\nIf this server is in the USA: Our site, products and services are all directed to people who are at least 13 years old. If you are under the age of 13, per the requirements of [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) do not use this site.\n\nLaw requirements can be different if this server is in another jurisdiction.",
+      "TITLE": "Site usage by children"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "By using our site, you consent to our web site privacy policy.",
+      "TITLE": "Your Consent"
+    }
+  },
+  "LAST_UPDATE": "Last update",
+  "TITLE": "privacy policy"
 }

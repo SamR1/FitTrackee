@@ -1,17 +1,18 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import {
+import type {
   AUTH_USER_STORE,
   REPORTS_STORE,
   ROOT_STORE,
   USERS_STORE,
 } from '@/store/constants'
-import { IAuthUserState } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
-import { IUsersActions, IUsersState } from '@/store/modules/users/types'
-import {
+import type { IAuthUserState } from '@/store/modules/authUser/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { IUsersActions, IUsersState } from '@/store/modules/users/types'
+import type { TPaginationPayload } from '@/types/api'
+import type {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserRelationshipActionPayload,

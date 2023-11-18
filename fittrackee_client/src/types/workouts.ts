@@ -1,6 +1,6 @@
-import { TPaginationPayload } from '@/types/api'
-import { IChartDataset } from '@/types/chart'
-import { IUserProfile, TPrivacyLevels } from '@/types/user'
+import type { TPaginationPayload } from '@/types/api'
+import type { IChartDataset } from '@/types/chart'
+import type { IUserProfile, TPrivacyLevels } from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -35,10 +35,10 @@ export interface IRecord {
 }
 
 export interface IRecordsBySport {
-  [key: string]: string | Record<string, string | number>[] | null
+  [key: string]: string | IRecord[] | null
   label: string
   color: string | null
-  records: Record<string, string | number>[]
+  records: IRecord[]
 }
 
 export interface IRecordsBySports {
@@ -60,8 +60,8 @@ export interface IWorkout {
   bounds: number[]
   creation_date: string
   descent: number | null
-  distance: number | null
-  duration: string | null
+  distance: number
+  duration: string
   id: string
   liked: boolean
   likes_count: number

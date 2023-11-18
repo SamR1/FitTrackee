@@ -1,7 +1,8 @@
-import { LocationQueryValue } from 'vue-router'
+import type { LocationQueryValue } from 'vue-router'
 
-import { IPagePayload, TPaginationPayload } from '@/types/api'
-import { IRecord } from '@/types/workouts'
+import type { TLanguage } from '@/types/locales'
+import type { IPagePayload, TPaginationPayload } from '@/types/api'
+import type { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow'
@@ -44,7 +45,7 @@ export interface IAuthUserProfile extends IUserProfile {
   imperial_units: boolean
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
-  language: string | null
+  language: TLanguage | null
   manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   nb_sports: number
@@ -98,7 +99,7 @@ export interface IUserPreferencesPayload {
   display_ascent: boolean
   hide_profile_in_users_directory: boolean
   imperial_units: boolean
-  language: string
+  language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   start_elevation_at_zero: boolean

@@ -1,0 +1,10 @@
+export type TLanguage =
+  | 'en'
+  | 'de'
+  | 'es'
+  | 'fr'
+  | 'gl'
+  | 'it'
+  | 'nb'
+  | 'nl'
+  | 'pl'

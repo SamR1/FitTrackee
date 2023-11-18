@@ -8,7 +8,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, onMounted, ref, toRefs, withDefaults, onUnmounted } from 'vue'
+  import { onMounted, ref, toRefs, onUnmounted } from 'vue'
+  import type { Ref } from 'vue'
 
   import Error from '@/components/Common/Error.vue'
   interface Props {

@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { USERS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination, TPaginationPayload } from '@/types/api'
+import type {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserProfile,
@@ -120,7 +120,7 @@ export type TUsersStoreModule<S = IUsersState> = Omit<
 } & {
   commit<
     K extends keyof TUsersMutations,
-    P extends Parameters<TUsersMutations[K]>[1]
+    P extends Parameters<TUsersMutations[K]>[1],
   >(
     key: K,
     payload?: P,

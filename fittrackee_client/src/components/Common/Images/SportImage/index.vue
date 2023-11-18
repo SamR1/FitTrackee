@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { inject, toRefs, withDefaults } from 'vue'
+  import { inject, toRefs } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
@@ -55,5 +55,5 @@
   })
 
   const { color, sportLabel, title } = toRefs(props)
-  const sportColors = inject('sportColors')
+  const sportColors = inject('sportColors') as Record<string, string>
 </script>

@@ -41,14 +41,8 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    onUnmounted,
-    onMounted,
-    toRefs,
-    withDefaults,
-  } from 'vue'
+  import { computed, onUnmounted, onMounted, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
@@ -60,8 +54,7 @@
     loading?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
-    strongMessage: () => null,
-    loading: false,
+    strongMessage: () => '',
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
@@ -74,7 +67,7 @@
   )
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
-  let previousFocusedElement: Element | null = null
+  let previousFocusedElement: HTMLInputElement | null = null
 
   function focusTrap(e: KeyboardEvent) {
     if (e.key === 'Tab' || e.keyCode === 9) {
@@ -88,7 +81,7 @@
   }
 
   onMounted(() => {
-    previousFocusedElement = document.activeElement
+    previousFocusedElement = document.activeElement as HTMLInputElement | null
     cancelButton = document.getElementById('cancel-button')
     confirmButton = document.getElementById('confirm-button')
     if (cancelButton) {

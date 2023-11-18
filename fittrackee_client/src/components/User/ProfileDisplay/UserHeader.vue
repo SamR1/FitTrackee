@@ -16,7 +16,7 @@
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
 
   interface Props {
     user: IUserProfile

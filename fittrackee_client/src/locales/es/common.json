@@ -22,5 +22,12 @@
             "LABEL": "por página"
         }
     },
-    "TOTAL": "Total"
+    "ORDER_BY": {
+      "LABEL": "ordenar por"
+    },
+    "PER_PAGE": {
+      "LABEL": "por página"
+    }
+  },
+  "TOTAL": "Total"
 }

@@ -1,50 +1,50 @@
 {
-    "Cycling (Sport)": {
-        "LABEL": "Cycling (Sport)"
-    },
-    "Cycling (Transport)": {
-        "LABEL": "Cycling (Transport)"
-    },
-    "Cycling (Virtual)": {
-        "LABEL": "Cycling (Virtual)"
-    },
-    "Hiking": {
-        "LABEL": "Hiking"
-    },
-    "Mountain Biking": {
-        "LABEL": "Mountain Biking"
-    },
-    "Mountain Biking (Electric)": {
-        "LABEL": "Mountain Biking (Electric)"
-    },
-    "Mountaineering": {
-        "LABEL": "Mountaineering"
-    },
-    "Open Water Swimming": {
-        "LABEL": "Open Water Swimming"
-    },
-    "Paragliding": {
-        "LABEL": "Paragliding"
-    },
-    "Rowing": {
-        "LABEL": "Rowing"
-    },
-    "Running": {
-        "LABEL": "Running"
-    },
-    "Skiing (Alpine)": {
-        "LABEL": "Skiing (Alpine)"
-    },
-    "Skiing (Cross Country)": {
-        "LABEL": "Skiing (Cross Country)"
-    },
-    "Snowshoes": {
-        "LABEL": "Snowshoes"
-    },
-    "Trail": {
-        "LABEL": "Trail"
-    },
-    "Walking": {
-        "LABEL": "Walking"
-    }
+  "Cycling (Sport)": {
+    "LABEL": "Cycling (Sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Cycling (Transport)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Cycling (Virtual)"
+  },
+  "Hiking": {
+    "LABEL": "Hiking"
+  },
+  "Mountain Biking": {
+    "LABEL": "Mountain Biking"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Mountain Biking (Electric)"
+  },
+  "Mountaineering": {
+    "LABEL": "Mountaineering"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Open Water Swimming"
+  },
+  "Paragliding": {
+    "LABEL": "Paragliding"
+  },
+  "Rowing": {
+    "LABEL": "Rowing"
+  },
+  "Running": {
+    "LABEL": "Running"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Skiing (Alpine)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Skiing (Cross Country)"
+  },
+  "Snowshoes": {
+    "LABEL": "Snowshoes"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Walking"
+  }
 }
