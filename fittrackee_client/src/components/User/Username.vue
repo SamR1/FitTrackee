@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IUserProfile } from "@/types/user"
+  import type { IUserProfile } from '@/types/user'
 
   interface Props {
     user: IUserProfile

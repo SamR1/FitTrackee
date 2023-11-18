@@ -413,7 +413,8 @@ button {
   gap: $default-padding;
 }
 
-.follows-you, .blocked {
+.follows-you,
+.blocked {
   font-size: 0.7em;
   font-style: italic;
   text-transform: uppercase;

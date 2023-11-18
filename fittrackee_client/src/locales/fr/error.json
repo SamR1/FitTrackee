@@ -1,11 +1,11 @@
 {
-    "APP_ERROR": "L'application semble rencontrer quelques problèmes.<br />Veuillez réessayer plus tard ou contacter l'administrateur.",
-    "NOT_FOUND": {
-        "COMMENT": "Commentaire introuvable",
-        "PAGE": "Page introuvable",
-        "REPORT": "Signalement introuvable",
-        "WORKOUT": "Séance introuvable"
-    },
-    "SOMETHING_WRONG": "Une erreur s'est produite",
-    "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur."
+  "APP_ERROR": "L'application semble rencontrer quelques problèmes.<br />Veuillez réessayer plus tard ou contacter l'administrateur.",
+  "NOT_FOUND": {
+    "COMMENT": "Commentaire introuvable",
+    "PAGE": "Page introuvable",
+    "REPORT": "Signalement introuvable",
+    "WORKOUT": "Séance introuvable"
+  },
+  "SOMETHING_WRONG": "Une erreur s'est produite",
+  "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur."
 }

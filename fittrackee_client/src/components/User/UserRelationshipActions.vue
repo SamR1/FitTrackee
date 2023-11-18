@@ -52,10 +52,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {

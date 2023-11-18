@@ -97,7 +97,7 @@
         <div class="profile-buttons" v-if="fromAdmin">
           <button
             class="danger"
-            v-if="authUser.username !== user.username"
+            v-if="authUser?.username !== user.username"
             @click.prevent="updateDisplayModal('delete')"
           >
             {{ $t('admin.DELETE_USER') }}
@@ -109,14 +109,14 @@
             {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
           </button>
           <button
-            v-if="authUser.username !== user.username"
+            v-if="authUser?.username !== user.username"
             @click.prevent="displayEmailForm"
           >
             {{ $t('admin.UPDATE_USER_EMAIL') }}
           </button>
           <button
             v-if="
-              authUser.username !== user.username &&
+              authUser?.username !== user.username &&
               appConfig.is_email_sending_enabled
             "
             @click.prevent="updateDisplayModal('reset')"
@@ -134,14 +134,16 @@
         <div class="profile-buttons" v-else>
           <button
             v-if="
-              $route.path === '/profile' || user.username === authUser.username
+              $route.path === '/profile' || user.username === authUser?.username
             "
             @click="$router.push('/profile/edit')"
           >
             {{ $t('user.PROFILE.EDIT') }}
           </button>
           <button
-            v-if="$route.name === 'User' && user.username !== authUser.username"
+            v-if="
+              $route.name === 'User' && user.username !== authUser?.username
+            "
             @click="displayReportForm"
           >
             {{ $t('user.REPORT') }}
@@ -172,7 +174,7 @@
   interface Props {
     user: IUserProfile
     authUser?: IAuthUserProfile
-    fromAdmin?: false
+    fromAdmin?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     fromAdmin: false,

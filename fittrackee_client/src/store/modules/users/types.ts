@@ -7,7 +7,7 @@ import type {
 
 import { USERS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
-import type { IPagination, TPaginationPayload } from '@/types/api'
+import type { IPagination } from '@/types/api'
 import type {
   IAdminUserPayload,
   IUserDeletionPayload,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { computed, ComputedRef, Ref, ref, toRefs } from 'vue'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import {
     REPORTS_STORE,
@@ -7,7 +8,7 @@
     USERS_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import { ICustomTextareaData } from '@/types/forms'
+  import type { ICustomTextareaData } from '@/types/forms'
   import { useStore } from '@/use/useStore'
 
   interface Props {

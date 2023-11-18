@@ -25,8 +25,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     computed,
     onBeforeMount,
     onUnmounted,
@@ -35,14 +33,20 @@
     toRefs,
     watch,
   } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
   import UsersFilters from '@/components/Users/UsersFilters.vue'
   import { USERS_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type {
+    IAuthUserProfile,
+    IUserProfile,
+    TUsersPayload,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery } from '@/utils/api'
 

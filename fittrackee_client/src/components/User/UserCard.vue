@@ -36,19 +36,20 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     authUser: IAuthUserProfile
     user: IUserProfile
-    updatedUser?: string
+    updatedUser?: string | null
     from?: string
     hideRelationship?: boolean
   }

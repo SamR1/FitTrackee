@@ -1,13 +1,13 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import { NOTIFICATIONS_STORE, ROOT_STORE } from '@/store/constants'
-import {
+import type {
   INotificationsActions,
   INotificationsState,
 } from '@/store/modules/notifications/types'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   INotificationPayload,
   INotificationsPayload,
 } from '@/types/notifications'

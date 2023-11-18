@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { REPORTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination, TPaginationPayload } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination, TPaginationPayload } from '@/types/api'
+import type {
   IReportForAdmin,
   IReport,
   IReportPayload,
@@ -81,7 +81,7 @@ export type TReportsStoreModule<S = IReportsState> = Omit<
 } & {
   commit<
     K extends keyof TReportsMutations,
-    P extends Parameters<TReportsMutations[K]>[1]
+    P extends Parameters<TReportsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

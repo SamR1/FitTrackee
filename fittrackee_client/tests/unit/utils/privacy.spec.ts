@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { TPrivacyLevels } from '@/types/user'
 import {
@@ -23,10 +23,9 @@ describe('getUpdatedMapVisibility', () => {
 
   testsParams.map((testParams) => {
     it(`get map visibility (input value: '${testParams[0]}') when workout visibility is '${testParams[1]}'`, () => {
-      assert.equal(
-        getUpdatedMapVisibility(testParams[0], testParams[1]),
-        testParams[2]
-      )
+      expect(
+        getUpdatedMapVisibility(testParams[0], testParams[1])
+      ).toStrictEqual(testParams[2])
     })
   })
 })
@@ -40,7 +39,7 @@ describe('getMapVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (input value: '${testParams[0]}')`, () => {
-      assert.deepEqual(getMapVisibilityLevels(testParams[0]), testParams[1])
+      expect(getMapVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
     })
   })
 })
@@ -54,7 +53,9 @@ describe('getCommentVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility',input value: '${testParams[1]}')`, () => {
-      assert.deepEqual(getCommentVisibilityLevels(testParams[0]), testParams[1])
+      expect(getCommentVisibilityLevels(testParams[0])).toStrictEqual(
+        testParams[1]
+      )
     })
   })
 })

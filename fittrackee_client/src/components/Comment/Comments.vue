@@ -48,7 +48,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
     capitalize,
     computed,
     nextTick,
@@ -57,14 +56,14 @@
     ref,
     toRefs,
     watch,
-    withDefaults,
   } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IComment, IWorkoutData } from '@/types/workouts'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IComment, IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -94,8 +93,8 @@
   const isDeleting: ComputedRef<boolean> = computed(
     () => workoutData.value.commentsLoading === 'delete'
   )
-  const commentId: ComputedRef<string | null> = computed(
-    () => route.params.commentId
+  const commentId: ComputedRef<string> = computed(
+    () => route.params.commentId as string
   )
   const timer = ref<number | undefined>()
 
@@ -109,11 +108,13 @@
 
   function getComments(): IComment[] {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
-    let allComments = []
+    let allComments: IComment[] = []
     if (!withParent.value || !workoutData.value.comments[0].reply_to) {
       allComments = workoutData.value.comments
     } else {
-      const replyToComment = Object.assign(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const replyToComment: IComment = Object.assign(
         {},
         workoutData.value.comments[0].reply_to
       )
@@ -125,7 +126,7 @@
   }
 
   function deleteComment() {
-    const commentToDelete: IComment | null =
+    const commentToDelete: IComment | undefined =
       workoutData.value.currentCommentEdition.comment
     if (commentToDelete) {
       store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT, {
@@ -149,7 +150,7 @@
       }
     }, 100)
   }
-  function scrollToComment(commentId) {
+  function scrollToComment(commentId: string) {
     timer.value = setTimeout(() => {
       const comment = document.getElementById(commentId)
       if (comment) {

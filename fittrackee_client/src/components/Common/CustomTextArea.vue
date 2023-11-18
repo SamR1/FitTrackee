@@ -23,7 +23,7 @@
     name: string
     charLimit?: number
     disabled?: boolean
-    input?: string | null
+    input?: string
     required?: boolean
     placeholder?: string
   }
@@ -43,9 +43,7 @@
   function updateText(event: Event) {
     const target = event.target as HTMLInputElement
     emit('updateValue', {
-      value: event.target.value,
       value: target.value,
-      selectionStart: event.target.selectionStart,
       selectionStart: target.selectionStart,
     })
   }

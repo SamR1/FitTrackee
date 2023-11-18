@@ -2,7 +2,7 @@ import linkifyHtml from 'linkify-html'
 import { marked } from 'marked'
 import sanitizeHtml from 'sanitize-html'
 
-import { ICustomTextareaData, IUsernameSuggestion } from '@/types/forms'
+import type { ICustomTextareaData, IUsernameSuggestion } from '@/types/forms'
 
 export const linkifyAndClean = (input: string): string => {
   return sanitizeHtml(

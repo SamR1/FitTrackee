@@ -3,7 +3,7 @@
     "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
     "TEXT": "Detailed instance information"
   },
-  "ACTION": "Action",
+  "ACTION": "Action | Actions",
   "ACTIVATE_USER_ACCOUNT": "Activate account",
   "ACTIVE": "Active",
   "ADMIN": "Admin",

@@ -1,6 +1,6 @@
-import { IReportsState } from '@/store/modules/reports/types'
-import { IPagination } from '@/types/api'
-import { IReportForAdmin } from '@/types/reports'
+import type { IReportsState } from '@/store/modules/reports/types'
+import type { IPagination } from '@/types/api'
+import type { IReportForAdmin } from '@/types/reports'
 
 export const reportsState: IReportsState = {
   report: <IReportForAdmin>{},

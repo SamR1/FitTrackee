@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import { Locale, formatDistance } from 'date-fns'
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
   import { computed, onBeforeMount, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
@@ -17,10 +18,10 @@
     SPORTS_STORE,
     USERS_STORE,
   } from '@/store/constants'
-  import { ICustomTextareaData } from '@/types/forms'
-  import { IReportForAdmin } from '@/types/reports'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ICustomTextareaData } from '@/types/forms'
+  import type { IReportForAdmin } from '@/types/reports'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
 
@@ -143,7 +144,7 @@
       :title="$t('common.CONFIRMATION')"
       message="admin.CONFIRM_USER_ACCOUNT_DEACTIVATION"
       :strongMessage="report.reported_user.username"
-      @confirmAction="updateUserActiveStatus(report.reported_user.username)"
+      @confirmAction="updateUserActiveStatus"
       @cancelAction="updateDisplayModal('')"
       @keydown.esc="updateDisplayModal('')"
     />
@@ -309,7 +310,7 @@
               </form>
             </div>
             <div v-else class="actions-buttons">
-              <button @click="displayTextArea">
+              <button @click="displayTextArea()">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
               <button>

@@ -171,7 +171,10 @@
 
   import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import type {
+    IAuthUserProfile,
+    IUserSportPreferencesPayload,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 

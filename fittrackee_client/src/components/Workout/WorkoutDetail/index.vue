@@ -67,7 +67,7 @@
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
-  import type { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'

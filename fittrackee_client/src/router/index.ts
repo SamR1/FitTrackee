@@ -38,10 +38,13 @@ import AccountConfirmationResendView from '@/views/user/AccountConfirmationResen
 import AccountConfirmationView from '@/views/user/AccountConfirmationView.vue'
 import EmailUpdateView from '@/views/user/EmailUpdateView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
+import NotificationsView from '@/views/user/NotificationsView.vue'
 import PasswordResetView from '@/views/user/PasswordResetView.vue'
 import ProfileView from '@/views/user/ProfileView.vue'
 import UserView from '@/views/user/UserView.vue'
+import UsersView from '@/views/UsersView.vue'
 import AddWorkout from '@/views/workouts/AddWorkout.vue'
+import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
 import Workout from '@/views/workouts/Workout.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
@@ -337,10 +340,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/notifications',
     name: 'Notifications',
-    component: () =>
-      import(
-        /* webpackChunkName: 'notifications' */ '@/views/user/NotificationsView.vue'
-      ),
+    component: NotificationsView,
   },
   {
     path: '/statistics',
@@ -353,8 +353,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/users',
     name: 'Users',
-    component: () =>
-      import(/* webpackChunkName: 'users' */ '@/views/UsersView.vue'),
+    component: UsersView,
   },
   {
     path: '/users/:username',
@@ -420,17 +419,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/workouts/:workoutId/comments/:commentId',
     name: 'WorkoutComment',
-    component: () =>
-      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    component: Workout,
     props: { displaySegment: false },
   },
   {
     path: '/comments/:commentId',
     name: 'Comment',
-    component: () =>
-      import(
-        /* webpackChunkName: 'workouts' */ '@/views/workouts/CommentView.vue'
-      ),
+    component: CommentView,
   },
   {
     path: '/workouts/add',

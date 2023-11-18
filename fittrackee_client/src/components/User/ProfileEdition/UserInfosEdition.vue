@@ -68,6 +68,10 @@
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
+    IUserProfile,
+    IUserPayload,
+    IAuthUserProfile,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 

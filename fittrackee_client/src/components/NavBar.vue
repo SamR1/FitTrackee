@@ -145,7 +145,7 @@
   )
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
-  const hasUnreadNotifications: ComputedRef<string> = computed(
+  const hasUnreadNotifications: ComputedRef<boolean> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
   )
 

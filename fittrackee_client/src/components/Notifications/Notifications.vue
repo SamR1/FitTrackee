@@ -26,22 +26,22 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    reactive,
-    onBeforeMount,
-    onUnmounted,
-    watch,
-  } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { computed, reactive, onBeforeMount, onUnmounted, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import NotificationDetail from '@/components/Notifications/NotificationDetail.vue'
   import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
-  import { INotification, INotificationsPayload } from '@/types/notifications'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IPagination } from '@/types/api'
+  import type {
+    INotification,
+    INotificationsPayload,
+    TNotificationType,
+    INotificationPayload,
+  } from '@/types/notifications'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -66,11 +66,11 @@
     newQuery: LocationQuery
   ): INotificationsPayload {
     const payload: INotificationsPayload = {}
-    if ('page' in newQuery) {
+    if ('page' in newQuery && newQuery.page) {
       payload.page = +newQuery.page
     }
-    if ('type' in newQuery) {
-      payload.type = newQuery.type
+    if ('type' in newQuery && newQuery.type) {
+      payload.type = newQuery.type as TNotificationType
     }
     if ('status' in newQuery && newQuery.status === 'unread') {
       payload.read_status = false
@@ -86,7 +86,7 @@
   function loadNotifications(queryParams: INotificationsPayload) {
     store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS, queryParams)
   }
-  function updateNotificationReadStatus(payload) {
+  function updateNotificationReadStatus(payload: INotificationPayload) {
     store.dispatch(NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS, {
       ...payload,
       currentQuery: query,

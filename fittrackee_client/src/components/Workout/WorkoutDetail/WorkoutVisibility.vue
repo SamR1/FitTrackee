@@ -11,11 +11,7 @@
         :title="$t(`privacy.LEVELS.${workoutObject.workoutVisibility}`)"
       />
       <span class="visibility-label">
-        ({{
-          $t(
-            `privacy.LEVELS.${workoutObject.workoutVisibility}`
-          )
-        }})
+        ({{ $t(`privacy.LEVELS.${workoutObject.workoutVisibility}`) }})
       </span>
       <span v-if="workoutObject.with_gpx">-</span>
     </div>
@@ -27,11 +23,7 @@
         :title="$t(`privacy.LEVELS.${workoutObject.mapVisibility}`)"
       />
       <span class="visibility-label">
-        ({{
-          $t(
-            `privacy.LEVELS.${workoutObject.mapVisibility}`
-          )
-        }})
+        ({{ $t(`privacy.LEVELS.${workoutObject.mapVisibility}`) }})
       </span>
     </div>
   </div>
@@ -40,15 +32,17 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { TPrivacyLevels } from '@/types/user'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { TPrivacyLevels } from '@/types/user'
+  import type { IWorkoutObject } from '@/types/workouts'
   interface Props {
     workoutObject: IWorkoutObject
   }
   const props = defineProps<Props>()
   const { workoutObject } = toRefs(props)
 
-  function getPrivacyIcon(privacyLevel: TPrivacyLevels): string {
+  function getPrivacyIcon(
+    privacyLevel: TPrivacyLevels | null | undefined
+  ): string {
     switch (privacyLevel) {
       case 'public':
         return 'globe'

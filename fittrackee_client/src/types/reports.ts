@@ -1,5 +1,5 @@
-import { IUserProfile } from '@/types/user'
-import { IComment, IWorkout } from '@/types/workouts'
+import type { IUserProfile } from '@/types/user'
+import type { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
   id: number

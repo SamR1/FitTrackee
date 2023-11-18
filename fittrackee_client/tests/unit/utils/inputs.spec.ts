@@ -33,7 +33,7 @@ describe('linkifyAndClean (URL is linkified)', () => {
   })
 
   it('it does not return user fullname as mailto link', () => {
-    assert.equal(linkifyAndClean('@foo@example.com'), '@foo@example.com')
+    expect(linkifyAndClean('@foo@example.com')).toBe('@foo@example.com')
   })
 })
 
@@ -73,8 +73,7 @@ describe('linkifyAndClean (input sanitization)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
-        linkifyAndClean(testParams.inputString),
+      expect(linkifyAndClean(testParams.inputString)).toBe(
         testParams.expectedString
       )
     })
@@ -107,7 +106,6 @@ describe('linkifyAndClean with markdown', () => {
   ]
 
   testsParams.map((testParams) => {
-    console.log(linkifyAndClean(testParams.inputString))
     it(testParams.description, () => {
       expect(linkifyAndClean(testParams.inputString)).toBe(
         testParams.expectedString
@@ -181,8 +179,7 @@ describe('getUsernameQuery', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
-        getUsernameQuery(testParams.inputString),
+      expect(getUsernameQuery(testParams.inputString)).toStrictEqual(
         testParams.expectedValues
       )
     })
@@ -213,15 +210,14 @@ describe('replaceUsername', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         replaceUsername(
           testParams.inputText,
           testParams.inputPosition,
           testParams.inputUsernameQuery,
           testParams.inputUsername
-        ),
-        testParams.expectedString
-      )
+        )
+      ).toBe(testParams.expectedString)
     })
   })
 })

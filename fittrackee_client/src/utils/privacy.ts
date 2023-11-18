@@ -1,4 +1,4 @@
-import { TPrivacyLevels } from '@/types/user'
+import type { TPrivacyLevels } from '@/types/user'
 
 export const getPrivacyLevels = (): TPrivacyLevels[] => {
   return ['private', 'followers_only', 'public']

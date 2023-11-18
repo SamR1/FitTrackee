@@ -50,21 +50,20 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    computed,
-    ComputedRef,
-    onBeforeMount,
-    onUnmounted,
-    toRefs,
-    watch,
-  } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { computed, onBeforeMount, onUnmounted, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
-  import { IPagePayload, IPagination } from '@/types/api'
-  import { IUserProfile, TFollowRequestAction } from '@/types/user'
+  import type { IPagePayload, IPagination } from '@/types/api'
+  import type {
+    IUserProfile,
+    TFollowRequestAction,
+    IUserRelationshipActionPayload,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -113,12 +112,13 @@
     })
   }
   function updateBlock(username: string, block: boolean) {
-    store.dispatch(USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP, {
+    const payload: IUserRelationshipActionPayload = {
       username,
       action: `${block ? '' : 'un'}block`,
       from: itemType.value,
       payload: getQuery(route.query),
-    })
+    }
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_RELATIONSHIP, payload)
   }
   function getQuery(query: LocationQuery): IPagePayload {
     payload.page = query.page ? +query.page : 1

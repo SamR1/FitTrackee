@@ -1,12 +1,12 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { NOTIFICATIONS_STORE } from '@/store/constants'
-import {
+import type {
   INotificationsState,
   TNotificationsMutations,
 } from '@/store/modules/notifications/types'
-import { IPagination } from '@/types/api'
-import { INotification } from '@/types/notifications'
+import type { IPagination } from '@/types/api'
+import type { INotification } from '@/types/notifications'
 
 export const mutations: MutationTree<INotificationsState> &
   TNotificationsMutations = {

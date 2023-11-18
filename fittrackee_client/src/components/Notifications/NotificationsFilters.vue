@@ -58,11 +58,12 @@
   import { computed, ref, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { TNotificationType } from '@/types/notifications'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { TNotificationType } from '@/types/notifications'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
@@ -93,11 +94,12 @@
     params['status'] = value
     filterNotifications()
   }
-  function filterOnType(event: Event & { target: HTMLInputElement }) {
-    if (event.target.value === '') {
-      delete params[event.target.name]
+  function filterOnType(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.value === '') {
+      delete params[target.name]
     } else {
-      params[event.target.name] = event.target.value
+      params[target.name] = target.value
     }
     filterNotifications()
   }

@@ -1,4 +1,4 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import {
@@ -7,10 +7,13 @@ import {
   USERS_STORE,
   WORKOUTS_STORE,
 } from '@/store/constants'
-import { IReportsState, IReportsActions } from '@/store/modules/reports/types'
-import { IRootState } from '@/store/modules/root/types'
-import { TPaginationPayload } from '@/types/api'
-import { IReportCommentPayload, IReportPayload } from '@/types/reports'
+import type {
+  IReportsState,
+  IReportsActions,
+} from '@/store/modules/reports/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { TPaginationPayload } from '@/types/api'
+import type { IReportCommentPayload, IReportPayload } from '@/types/reports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =

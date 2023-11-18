@@ -1,9 +1,12 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { REPORTS_STORE } from '@/store/constants'
-import { IReportsState, TReportsMutations } from '@/store/modules/reports/types'
-import { IPagination } from '@/types/api'
-import { IReportForAdmin } from '@/types/reports'
+import type {
+  IReportsState,
+  TReportsMutations,
+} from '@/store/modules/reports/types'
+import type { IPagination } from '@/types/api'
+import type { IReportForAdmin } from '@/types/reports'
 
 export const mutations: MutationTree<IReportsState> & TReportsMutations = {
   [REPORTS_STORE.MUTATIONS.EMPTY_REPORT](state: IReportsState) {

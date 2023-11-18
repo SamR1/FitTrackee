@@ -413,6 +413,8 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
   }
   function updateValue(key: string, value: string | boolean) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     userForm[key] = value
   }
   function updateMapVisibility() {

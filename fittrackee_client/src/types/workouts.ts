@@ -204,6 +204,7 @@ export interface IComment {
   mentions: IUserProfile[]
   modification_date: string | null
   replies: IComment[]
+  reply_to: string | null
   text: string
   text_html: string
   text_visibility: TPrivacyLevels

@@ -1,11 +1,11 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { NOTIFICATIONS_STORE } from '@/store/constants'
-import {
+import type {
   INotificationsGetters,
   INotificationsState,
 } from '@/store/modules/notifications/types'
-import { IRootState } from '@/store/modules/root/types'
+import type { IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<INotificationsState, IRootState> &
   INotificationsGetters = {

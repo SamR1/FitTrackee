@@ -114,8 +114,8 @@
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const userLanguage = computed(() =>
-    props.user.language
-      ? languageLabels[props.user.language]
+    user.value.language
+      ? languageLabels[user.value.language]
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))

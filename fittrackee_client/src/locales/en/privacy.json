@@ -1,18 +1,18 @@
 {
-    "COMMENT_LEVELS": {
-        "followers_only": "Followers only",
-        "local_followers_only": "Local followers only",
-        "private": "Private (only mentioned users)",
-        "public": "Public (everyone)"
-    },
-    "LEVELS": {
-        "followers_only": "Followers only",
-        "local_followers_only": "Local followers only",
-        "private": "Private (only me)",
-        "public": "Public (everyone)"
-    },
-    "MAP_VISIBILITY": "Map and analysis visibility",
-    "VISIBILITY": "visibility",
-    "WORKOUTS_VISIBILITY": "Workouts related data visibility",
-    "WORKOUT_VISIBILITY": "Workout visibility"
+  "COMMENT_LEVELS": {
+    "followers_only": "Followers only",
+    "local_followers_only": "Local followers only",
+    "private": "Private (only mentioned users)",
+    "public": "Public (everyone)"
+  },
+  "LEVELS": {
+    "followers_only": "Followers only",
+    "local_followers_only": "Local followers only",
+    "private": "Private (only me)",
+    "public": "Public (everyone)"
+  },
+  "MAP_VISIBILITY": "Map and analysis visibility",
+  "VISIBILITY": "visibility",
+  "WORKOUTS_VISIBILITY": "Workouts related data visibility",
+  "WORKOUT_VISIBILITY": "Workout visibility"
 }

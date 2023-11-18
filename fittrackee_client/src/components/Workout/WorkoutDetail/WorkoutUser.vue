@@ -2,10 +2,7 @@
   <div class="box workout-user">
     <div class="user-img-name">
       <UserPicture :user="user" />
-      <router-link
-        class="user-name"
-        :to="`/users/${user.username}?from=users`"
-      >
+      <router-link class="user-name" :to="`/users/${user.username}?from=users`">
         {{ user.username }}
       </router-link>
     </div>
@@ -18,7 +15,7 @@
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
 
   interface Props {
     user: IUserProfile

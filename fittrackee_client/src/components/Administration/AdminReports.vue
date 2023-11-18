@@ -165,7 +165,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
     capitalize,
     computed,
     reactive,
@@ -173,15 +172,17 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import type { ComputedRef } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IReport } from '@/types/reports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IReport } from '@/types/reports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -219,21 +220,19 @@
   function loadReports(queryParams: TPaginationPayload) {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORTS, queryParams)
   }
-  function reloadReportsOnTypeChange(
-    event: Event & { target: HTMLInputElement }
-  ) {
-    if (event.target.value) {
-      query.object_type = event.target.value
+  function reloadReportsOnTypeChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.value) {
+      query.object_type = target.value
     } else {
       delete query.object_type
     }
     router.push({ path: '/admin/reports', query })
   }
-  function reloadReportsOnResolvedChange(
-    event: Event & { target: HTMLInputElement }
-  ) {
-    if (event.target.value) {
-      query.resolved = event.target.value
+  function reloadReportsOnResolvedChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.value) {
+      query.resolved = target.value
     } else {
       delete query.resolved
     }

@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { NOTIFICATIONS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination } from '@/types/api'
+import type {
   INotification,
   INotificationPayload,
   INotificationsPayload,
@@ -82,7 +82,7 @@ export type TNotificationsStoreModule<S = INotificationsState> = Omit<
 } & {
   commit<
     K extends keyof TNotificationsMutations,
-    P extends Parameters<TNotificationsMutations[K]>[1]
+    P extends Parameters<TNotificationsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

@@ -1,31 +1,31 @@
 {
-    "ABOUT": "à propos",
-    "CONFIRMATION": "Confirmation",
-    "CONTACT": "contact",
-    "DAY": "jour | jours",
-    "DISPLAYED": "Affiché",
-    "DOCUMENTATION": "documentation",
-    "EDITED": "édité",
-    "HERE": "ici",
-    "HIDDEN": "Masqué",
-    "HOME": "Accueil",
-    "LAST_UPDATED_ON": "Dernière mise à jour le",
-    "NO_NOTES": "Pas de notes",
-    "REPORT_PLACEHOLDER": "préciser la raison du signalement",
-    "REPORT_SUBMITTED": "Signalement envoyé.",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "ascendant",
-            "DESC": "descendant",
-            "LABEL": "tri"
-        },
-        "ORDER_BY": {
-            "LABEL": "trier par "
-        },
-        "PER_PAGE": {
-            "LABEL": "par page"
-        }
+  "ABOUT": "à propos",
+  "CONFIRMATION": "Confirmation",
+  "CONTACT": "contact",
+  "DAY": "jour | jours",
+  "DISPLAYED": "Affiché",
+  "DOCUMENTATION": "documentation",
+  "EDITED": "édité",
+  "HERE": "ici",
+  "HIDDEN": "Masqué",
+  "HOME": "Accueil",
+  "LAST_UPDATED_ON": "Dernière mise à jour le",
+  "NO_NOTES": "Pas de notes",
+  "REPORT_PLACEHOLDER": "préciser la raison du signalement",
+  "REPORT_SUBMITTED": "Signalement envoyé.",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascendant",
+      "DESC": "descendant",
+      "LABEL": "tri"
     },
-    "TOTAL": "Total",
-    "TYPE": "type"
+    "ORDER_BY": {
+      "LABEL": "trier par "
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  },
+  "TOTAL": "Total",
+  "TYPE": "type"
 }

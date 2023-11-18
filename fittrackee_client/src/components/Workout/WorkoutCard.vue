@@ -139,13 +139,13 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IAuthUserProfile
+    user: IUserProfile
     useImperialUnits: boolean
     dateFormat: string
     timezone: string

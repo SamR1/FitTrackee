@@ -424,7 +424,11 @@
     workoutForm.title = workout.title
     workoutForm.notes = workout.notes
     workoutForm.workoutVisibility = workout.workout_visibility
+      ? workout.workout_visibility
+      : 'private'
     workoutForm.mapVisibility = workout.map_visibility
+      ? workout.map_visibility
+      : 'private'
     if (!workout.with_gpx) {
       const workoutDateTime = formatWorkoutDate(
         getDateWithTZ(workout.workout_date, props.authUser.timezone),

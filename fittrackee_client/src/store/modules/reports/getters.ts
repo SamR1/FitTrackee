@@ -1,8 +1,11 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { REPORTS_STORE } from '@/store/constants'
-import { IReportsGetters, IReportsState } from '@/store/modules/reports/types'
-import { IRootState } from '@/store/modules/root/types'
+import type {
+  IReportsGetters,
+  IReportsState,
+} from '@/store/modules/reports/types'
+import type { IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IReportsState, IRootState> & IReportsGetters =
   {

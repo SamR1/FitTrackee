@@ -15,10 +15,13 @@
         :useImperialUnits="authUser ? authUser.imperial_units : false"
       />
       <span class="stat-label">
-        {{ user.imperial_units ? 'miles' : 'km' }}
+        {{ authUser.imperial_units ? 'miles' : 'km' }}
       </span>
     </div>
-    <div class="user-stat" v-if="'nb_sports' in user">
+    <div
+      class="user-stat"
+      v-if="'nb_sports' in user && user.nb_sports !== undefined"
+    >
       <span class="stat-number">{{ user.nb_sports }}</span>
       <span class="stat-label">
         {{ $t('workouts.SPORT', user.nb_sports) }}
@@ -50,10 +53,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {

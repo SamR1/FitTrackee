@@ -50,10 +50,11 @@
   interface Props {
     title: string
     message: string
-    strongMessage?: string | null
+    strongMessage?: string
     loading?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
+    loading: false,
     strongMessage: () => '',
   })
 

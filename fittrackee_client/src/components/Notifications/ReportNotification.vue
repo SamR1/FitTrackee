@@ -2,7 +2,7 @@
   import { toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { IReportForAdmin } from '@/types/reports'
+  import type { IReportForAdmin } from '@/types/reports'
 
   interface Props {
     report: IReportForAdmin

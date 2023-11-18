@@ -1,11 +1,11 @@
 import type { LocationQueryValue } from 'vue-router'
 
-import type { TLanguage } from '@/types/locales'
 import type { IPagePayload, TPaginationPayload } from '@/types/api'
+import type { TLanguage } from '@/types/locales'
 import type { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
-export type TRelationshipAction = 'follow' | 'unfollow'
+export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 

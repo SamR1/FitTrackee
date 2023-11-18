@@ -1,5 +1,5 @@
-import { INotificationsState } from '@/store/modules/notifications/types'
-import { IPagination } from '@/types/api'
+import type { INotificationsState } from '@/store/modules/notifications/types'
+import type { IPagination } from '@/types/api'
 
 export const notificationsState: INotificationsState = {
   notifications: [],
