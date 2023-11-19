@@ -1,5 +1,40 @@
 # Change log
 
+## Version 0.7.26 (2023/11/19)
+
+### Bugs Fixed
+
+* [#224](https://github.com/SamR1/FitTrackee/issues/224) - Missing elevation results in incorrect ascent/descent total
+
+
+### Translations
+
+* [PR#444](https://github.com/SamR1/FitTrackee/pull/444) - Translations update (Norwegian Bokmål)
+
+
+### Misc
+
+In addition to dependencies update:
+
+* [PR#449](https://github.com/SamR1/FitTrackee/pull/449) - Update vue, tooling and chart library
+* [PR#450](https://github.com/SamR1/FitTrackee/pull/450) - Update gpxpy to 1.6.1
+
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 85%
+- Norwegian Bokmål: 61%
+- Polish: 100%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @comradekingu
+
+
 ## Version 0.7.25 (2023/10/08)
 
 ### Bugs Fixed
