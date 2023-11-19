@@ -62,10 +62,15 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserProfile, IUserPayload, IAuthUserProfile } from '@/types/user'
+  import type {
+    IUserProfile,
+    IUserPayload,
+    IAuthUserProfile,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 

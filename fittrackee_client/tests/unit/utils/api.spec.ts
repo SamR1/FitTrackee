@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import {
   defaultPerPage,
@@ -50,13 +50,9 @@ describe('getNumberQueryValue', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
-        getNumberQueryValue(
-          testParams.inputValue,
-          testParams.inputDefaultValue
-        ),
-        testParams.expectedValue
-      )
+      expect(
+        getNumberQueryValue(testParams.inputValue, testParams.inputDefaultValue)
+      ).toBe(testParams.expectedValue)
     })
   })
 })
@@ -85,14 +81,13 @@ describe('getStringQueryValue', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         getStringQueryValue(
           testParams.inputValue,
           sortList,
           testParams.inputDefaultValue
-        ),
-        testParams.expectedValue
-      )
+        )
+      ).toBe(testParams.expectedValue)
     })
   })
 })
@@ -169,19 +164,18 @@ describe('getQuery', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         getQuery(testParams.inputLocationQuery, orderByList, defaultOrderBy, {
           defaultSort,
-        }),
-        testParams.expectedQuery
-      )
+        })
+      ).toStrictEqual(testParams.expectedQuery)
     })
   })
 })
 
 describe('getQuery w/ default values', () => {
   it('returns default query if location query is an empty object', () => {
-    assert.deepEqual(getQuery({}, orderByList, defaultOrderBy), {
+    expect(getQuery({}, orderByList, defaultOrderBy)).toStrictEqual({
       page: 1,
       per_page: 10,
       order: 'asc',
@@ -199,46 +193,48 @@ describe('getQuery w/ default values and input pagination payload', () => {
   }
 
   it('returns query updated with default values', () => {
-    assert.deepEqual(
-      getQuery({}, orderByList, defaultOrderBy, { query: inputQuery }),
-      {
-        page: 1,
-        per_page: 10,
-        order: 'asc',
-        order_by: defaultOrderBy,
-      }
-    )
+    expect(
+      getQuery({}, orderByList, defaultOrderBy, { query: inputQuery })
+    ).toStrictEqual({
+      page: 1,
+      per_page: 10,
+      order: 'asc',
+      order_by: defaultOrderBy,
+    })
   })
 
   it('returns query updated with input values', () => {
-    assert.deepEqual(
+    expect(
       getQuery({}, orderByList, defaultOrderBy, {
         defaultSort: 'desc',
         query: inputQuery,
-      }),
-      {
-        page: 1,
-        per_page: 10,
-        order: 'desc',
-        order_by: defaultOrderBy,
-      }
-    )
+      })
+    ).toStrictEqual({
+      page: 1,
+      per_page: 10,
+      order: 'desc',
+      order_by: defaultOrderBy,
+    })
   })
 
   it('returns query updated', () => {
-    assert.deepEqual(
+    expect(
       getQuery(
         { page: '3', per_page: '10', order: 'asc', order_by: 'workouts_count' },
         orderByList,
         defaultOrderBy,
         { query: inputQuery }
-      ),
-      { page: 3, per_page: 10, order: 'asc', order_by: 'workouts_count' }
-    )
+      )
+    ).toStrictEqual({
+      page: 3,
+      per_page: 10,
+      order: 'asc',
+      order_by: 'workouts_count',
+    })
   })
 
   it('returns query with only pagination keys', () => {
-    assert.deepEqual(
+    expect(
       getQuery(
         {
           page: '3',
@@ -250,9 +246,13 @@ describe('getQuery w/ default values and input pagination payload', () => {
         orderByList,
         defaultOrderBy,
         { query: inputQuery }
-      ),
-      { page: 3, per_page: 10, order: 'asc', order_by: 'workouts_count' }
-    )
+      )
+    ).toStrictEqual({
+      page: 3,
+      per_page: 10,
+      order: 'asc',
+      order_by: 'workouts_count',
+    })
   })
 })
 
@@ -385,10 +385,9 @@ describe('rangePagination', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
-        rangePagination(testParams.input.pages, testParams.input.currentPage),
-        testParams.expectedPagination
-      )
+      expect(
+        rangePagination(testParams.input.pages, testParams.input.currentPage)
+      ).toStrictEqual(testParams.expectedPagination)
     })
   })
 })

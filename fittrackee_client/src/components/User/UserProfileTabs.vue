@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, toRefs, withDefaults } from 'vue'
+  import { onMounted, toRefs } from 'vue'
 
   interface Props {
     tabs: string[]

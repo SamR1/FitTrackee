@@ -1,11 +1,11 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { AUTH_USER_STORE } from '@/store/constants'
-import {
+import type {
   IAuthUserGetters,
   IAuthUserState,
 } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
+import type { IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IAuthUserState, IRootState> &
   IAuthUserGetters = {

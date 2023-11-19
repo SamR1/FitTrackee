@@ -1,10 +1,10 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { ISportsActions, ISportsState } from '@/store/modules/sports/types'
-import { ISportPayload } from '@/types/sports'
+import type { IRootState } from '@/store/modules/root/types'
+import type { ISportsActions, ISportsState } from '@/store/modules/sports/types'
+import type { ISportPayload } from '@/types/sports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<ISportsState, IRootState> & ISportsActions = {

@@ -39,11 +39,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, onBeforeMount } from 'vue'
+  import { computed, onBeforeMount } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-  import { IOAuth2Client } from '@/types/oauth'
+  import type { IOAuth2Client } from '@/types/oauth'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()

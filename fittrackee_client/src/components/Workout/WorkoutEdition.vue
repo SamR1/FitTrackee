@@ -267,8 +267,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     ref,
@@ -276,19 +274,19 @@
     watch,
     onMounted,
     onUnmounted,
-    withDefaults,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, IWorkoutForm } from '@/types/workouts'
+  import type { TAppConfig } from '@/types/application'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
-  import { getReadableFileSize } from '@/utils/files'
+  import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
 
@@ -302,7 +300,7 @@
   const props = withDefaults(defineProps<Props>(), {
     isCreation: false,
     loading: false,
-    workout: () => ({} as IWorkout),
+    workout: () => ({}) as IWorkout,
   })
 
   const { t } = useI18n()
@@ -310,7 +308,7 @@
   const router = useRouter()
 
   const { authUser, workout, isCreation, loading } = toRefs(props)
-  const translatedSports: ComputedRef<ISport[]> = computed(() =>
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(
       props.sports,
       t,
@@ -322,11 +320,11 @@
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
   const fileSizeLimit = appConfig.value.max_single_file_size
-    ? getReadableFileSize(appConfig.value.max_single_file_size)
+    ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
     : ''
   const gpx_limit_import = appConfig.value.gpx_limit_import
   const zipSizeLimit = appConfig.value.max_zip_file_size
-    ? getReadableFileSize(appConfig.value.max_zip_file_size)
+    ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
     : ''
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
@@ -371,9 +369,9 @@
     withGpx.value = !withGpx.value
     formErrors.value = false
   }
-  function updateFile(event: Event & { target: HTMLInputElement }) {
-    if (event.target.files) {
-      gpxFile = event.target.files[0]
+  function updateFile(event: Event) {
+    if ((event.target as HTMLInputElement).files) {
+      gpxFile = ((event.target as HTMLInputElement).files as FileList)[0]
     }
   }
   function formatWorkoutForm(workout: IWorkout) {
@@ -446,14 +444,14 @@
       workoutForm.workoutAscent === ''
         ? null
         : authUser.value.imperial_units
-        ? convertDistance(+workoutForm.workoutAscent, 'ft', 'm', 3)
-        : +workoutForm.workoutAscent
+          ? convertDistance(+workoutForm.workoutAscent, 'ft', 'm', 3)
+          : +workoutForm.workoutAscent
     payload.descent =
       workoutForm.workoutDescent === ''
         ? null
         : authUser.value.imperial_units
-        ? convertDistance(+workoutForm.workoutDescent, 'ft', 'm', 3)
-        : +workoutForm.workoutDescent
+          ? convertDistance(+workoutForm.workoutDescent, 'ft', 'm', 3)
+          : +workoutForm.workoutDescent
     if (
       (payload.ascent !== null && payload.descent === null) ||
       (payload.ascent === null && payload.descent !== null)

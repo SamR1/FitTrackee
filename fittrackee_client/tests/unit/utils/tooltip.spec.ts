@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { datasetKeys } from '@/utils/statistics'
 import { formatTooltipValue } from '@/utils/tooltip'
@@ -45,14 +45,13 @@ describe('formatTooltipValue', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         formatTooltipValue(
           testParams.inputDisplayedData,
           testParams.inputValue,
           false
-        ),
-        testParams.expectedResult
-      )
+        )
+      ).toStrictEqual(testParams.expectedResult)
     })
   })
 })
@@ -99,14 +98,13 @@ describe('formatTooltipValue after conversion to imperial units', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         formatTooltipValue(
           testParams.inputDisplayedData,
           testParams.inputValue,
           true
-        ),
-        testParams.expectedResult
-      )
+        )
+      ).toStrictEqual(testParams.expectedResult)
     })
   })
 })
@@ -145,16 +143,15 @@ describe('formatTooltipValue with unitFrom', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         formatTooltipValue(
           testParams.inputDisplayedData,
           testParams.inputValue,
           testParams.useImperialUnits,
           true,
           'm'
-        ),
-        testParams.expectedResult
-      )
+        )
+      ).toStrictEqual(testParams.expectedResult)
     })
   })
 })
@@ -201,15 +198,14 @@ describe('formatTooltipValue (formatWithUnits = false)', () => {
 
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.equal(
+      expect(
         formatTooltipValue(
           testParams.inputDisplayedData,
           testParams.inputValue,
           false,
           false
-        ),
-        testParams.expectedResult
-      )
+        )
+      ).toStrictEqual(testParams.expectedResult)
     })
   })
 })

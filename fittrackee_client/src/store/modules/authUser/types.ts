@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,8 +6,8 @@ import {
 } from 'vuex'
 
 import { AUTH_USER_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   IAuthUserProfile,
   ILoginOrRegisterData,
   IUserDeletionPayload,
@@ -195,7 +195,7 @@ export type TAuthUserStoreModule<S = IAuthUserState> = Omit<
 } & {
   commit<
     K extends keyof TAuthUserMutations,
-    P extends Parameters<TAuthUserMutations[K]>[1]
+    P extends Parameters<TAuthUserMutations[K]>[1],
   >(
     key: K,
     payload?: P,

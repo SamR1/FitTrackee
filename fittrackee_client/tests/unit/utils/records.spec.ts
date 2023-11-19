@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { translatedSports } from './fixtures'
 
@@ -19,11 +19,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 9,
         record_type: 'AS',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km/h',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -42,11 +44,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/MM/dd'
+        date_format: 'yyyy/MM/dd',
       },
       expected: {
         id: 10,
         record_type: 'FD',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km',
         workout_date: '2019/07/08',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -65,11 +69,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/MM/dd'
+        date_format: 'yyyy/MM/dd',
       },
       expected: {
         id: 11,
         record_type: 'LD',
+        sport_id: 1,
+        user: 'admin',
         value: '1:01:00',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -88,11 +94,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'dd/MM/yyyy'
+        date_format: 'dd/MM/yyyy',
       },
       expected: {
         id: 12,
         record_type: 'MS',
+        sport_id: 1,
+        user: 'admin',
         value: '18 km/h',
         workout_date: '08/07/2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -111,11 +119,13 @@ describe('formatRecord', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'MMM. do, yyyy'
+        date_format: 'MMM. do, yyyy',
       },
       expected: {
         id: 13,
         record_type: 'HA',
+        sport_id: 1,
+        user: 'admin',
         value: '100 m',
         workout_date: 'Jul. 7th, 2019',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -124,15 +134,14 @@ describe('formatRecord', () => {
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         formatRecord(
           testParams.inputParams.record,
           testParams.inputParams.timezone,
           false,
           testParams.inputParams.date_format
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -152,11 +161,13 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 9,
         record_type: 'AS',
+        sport_id: 1,
+        user: 'admin',
         value: '11.18 mi/h',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -175,11 +186,13 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 10,
         record_type: 'FD',
+        sport_id: 1,
+        user: 'admin',
         value: '11.185 mi',
         workout_date: '2019/08/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -198,11 +211,13 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 11,
         record_type: 'LD',
+        sport_id: 1,
+        user: 'admin',
         value: '1:01:00',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -221,11 +236,13 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 12,
         record_type: 'MS',
+        sport_id: 1,
+        user: 'admin',
         value: '11.18 mi/h',
         workout_date: '2019/08/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -244,11 +261,13 @@ describe('formatRecord after conversion', () => {
           workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
         },
         timezone: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         id: 13,
         record_type: 'HA',
+        sport_id: 1,
+        user: 'admin',
         value: '328.08 ft',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -257,15 +276,14 @@ describe('formatRecord after conversion', () => {
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         formatRecord(
           testParams.inputParams.record,
           testParams.inputParams.timezone,
           true,
           testParams.inputParams.date_format
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -300,7 +318,7 @@ describe('getRecordsBySports', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {},
     },
@@ -319,7 +337,7 @@ describe('getRecordsBySports', () => {
           },
         ],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         'Cycling (Sport)': {
@@ -329,6 +347,8 @@ describe('getRecordsBySports', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -370,7 +390,7 @@ describe('getRecordsBySports', () => {
           },
         ],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         'Cycling (Sport)': {
@@ -380,6 +400,8 @@ describe('getRecordsBySports', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -387,6 +409,8 @@ describe('getRecordsBySports', () => {
             {
               id: 12,
               record_type: 'MS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -400,6 +424,8 @@ describe('getRecordsBySports', () => {
             {
               id: 10,
               record_type: 'FD',
+              sport_id: 2,
+              user: 'admin',
               value: '18 km',
               workout_date: '2019/08/07',
               workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
@@ -411,7 +437,7 @@ describe('getRecordsBySports', () => {
   ]
   testsParams.map((testParams) =>
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         getRecordsBySports(
           testParams.input.records,
           translatedSports,
@@ -419,11 +445,8 @@ describe('getRecordsBySports', () => {
           false,
           true,
           testParams.input.date_format
-        ),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   )
 })
@@ -435,7 +458,7 @@ describe('getRecordsBySports after conversion', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {},
     },
@@ -454,7 +477,7 @@ describe('getRecordsBySports after conversion', () => {
           },
         ],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         'Cycling (Sport)': {
@@ -464,6 +487,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -505,7 +530,7 @@ describe('getRecordsBySports after conversion', () => {
           },
         ],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         'Cycling (Sport)': {
@@ -515,6 +540,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -522,6 +549,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 12,
               record_type: 'MS',
+              sport_id: 1,
+              user: 'admin',
               value: '11.18 mi/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -535,6 +564,8 @@ describe('getRecordsBySports after conversion', () => {
             {
               id: 10,
               record_type: 'FD',
+              sport_id: 2,
+              user: 'admin',
               value: '11.185 mi',
               workout_date: '2019/08/07',
               workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
@@ -546,7 +577,7 @@ describe('getRecordsBySports after conversion', () => {
   ]
   testsParams.map((testParams) =>
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         getRecordsBySports(
           testParams.input.records,
           translatedSports,
@@ -554,11 +585,8 @@ describe('getRecordsBySports after conversion', () => {
           true,
           true,
           testParams.input.date_format
-        ),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   )
 })
@@ -570,7 +598,7 @@ describe('getRecordsBySports with HA record', () => {
       input: {
         records: [],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {},
     },
@@ -598,7 +626,7 @@ describe('getRecordsBySports with HA record', () => {
           },
         ],
         tz: 'Europe/Paris',
-        date_format: 'yyyy/dd/MM'
+        date_format: 'yyyy/dd/MM',
       },
       expected: {
         'Cycling (Sport)': {
@@ -608,6 +636,8 @@ describe('getRecordsBySports with HA record', () => {
             {
               id: 9,
               record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
               value: '18 km/h',
               workout_date: '2019/07/07',
               workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
@@ -619,7 +649,7 @@ describe('getRecordsBySports with HA record', () => {
   ]
   testsParams.map((testParams) =>
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         getRecordsBySports(
           testParams.input.records,
           translatedSports,
@@ -627,11 +657,8 @@ describe('getRecordsBySports with HA record', () => {
           false,
           false,
           testParams.input.date_format
-        ),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   )
 })

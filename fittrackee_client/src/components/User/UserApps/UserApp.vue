@@ -110,22 +110,20 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     capitalize,
     computed,
     onBeforeMount,
     toRefs,
     ref,
     onUnmounted,
-    withDefaults,
     watch,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-  import { IOAuth2Client } from '@/types/oauth'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IOAuth2Client } from '@/types/oauth'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
@@ -147,7 +145,7 @@
     () => store.getters[OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]
   )
   const displayModal: Ref<boolean> = ref(false)
-  const messageToDisplay: Ref<string | null> = ref(null)
+  const messageToDisplay: Ref<string> = ref('')
   const idCopied: Ref<boolean> = ref(false)
   const secretCopied: Ref<boolean> = ref(false)
   const clipboardSupport: Ref<boolean> = ref(false)
@@ -178,7 +176,7 @@
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
     if (!value) {
-      messageToDisplay.value = null
+      messageToDisplay.value = ''
     }
   }
   function confirmAction(clientId: number) {

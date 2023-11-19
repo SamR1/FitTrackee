@@ -29,7 +29,7 @@
   import { ref, toRefs, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import { IDropdownOption, TDropdownOptions } from '@/types/forms'
+  import type { IDropdownOption, TDropdownOptions } from '@/types/forms'
   interface Props {
     options: TDropdownOptions
     selected: string

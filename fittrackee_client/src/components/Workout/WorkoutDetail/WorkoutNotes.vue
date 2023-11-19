@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
   import { linkifyAndClean } from '@/utils/inputs'
 
@@ -24,7 +24,7 @@
     notes?: string | null
   }
   const props = withDefaults(defineProps<Props>(), {
-    notes: () => null,
+    notes: () => '',
   })
 
   const { notes } = toRefs(props)

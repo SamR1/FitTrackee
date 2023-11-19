@@ -22,7 +22,7 @@
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -34,7 +34,14 @@
   const store = useStore()
 
   const { user, tab } = toRefs(props)
-  const tabs = ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'SPORTS', 'PRIVACY-POLICY']
+  const tabs = [
+    'PROFILE',
+    'ACCOUNT',
+    'PICTURE',
+    'PREFERENCES',
+    'SPORTS',
+    'PRIVACY-POLICY',
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )

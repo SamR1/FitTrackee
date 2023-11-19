@@ -89,8 +89,8 @@
   import { computed, reactive } from 'vue'
 
   import { OAUTH2_STORE } from '@/store/constants'
-  import { IOAuth2ClientPayload } from '@/types/oauth'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IOAuth2ClientPayload } from '@/types/oauth'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { admin_oauth2_scopes, oauth2_scopes } from '@/utils/oauth'
 
@@ -104,6 +104,7 @@
     client_name: '',
     client_uri: '',
     client_description: '',
+    description: '',
     redirect_uri: '',
   })
   const scopes: string[] = reactive([])

@@ -26,11 +26,12 @@
 
 <script setup lang="ts">
   import { addDays, format, isSameDay, isSameMonth, isToday } from 'date-fns'
-  import { Ref, ref, toRefs, watch, onMounted } from 'vue'
+  import { ref, toRefs, watch, onMounted } from 'vue'
+  import type { Ref } from 'vue'
 
   import CalendarWorkouts from '@/components/Dashboard/UserCalendar/CalendarWorkouts.vue'
-  import { ISport } from '@/types/sports'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkout } from '@/types/workouts'
   import { getDateWithTZ } from '@/utils/dates'
 
   interface Props {

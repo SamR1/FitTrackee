@@ -18,13 +18,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import Statistics from '@/components/Statistics/index.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()

@@ -1,4 +1,4 @@
-import { IChartDataset } from '@/types/chart'
+import type { IChartDataset } from '@/types/chart'
 
 export interface IStatisticsParams {
   from: string

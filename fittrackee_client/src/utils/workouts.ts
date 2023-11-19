@@ -1,4 +1,4 @@
-import {
+import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,

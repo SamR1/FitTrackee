@@ -1,6 +1,7 @@
 {
-    "NOT_FOUND": {
-        "PAGE": "Fant ikke siden",
-        "WORKOUT": "Fant ikke arbeidsøkten"
-    }
+  "NOT_FOUND": {
+    "PAGE": "Fant ikke siden",
+    "WORKOUT": "Fant ikke arbeidsøkten"
+  },
+  "SOMETHING_WRONG": "Noe gikk galt"
 }

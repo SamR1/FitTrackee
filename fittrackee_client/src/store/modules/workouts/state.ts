@@ -1,6 +1,6 @@
-import { IWorkoutsState } from '@/store/modules/workouts/types'
-import { IPagination } from '@/types/api'
-import { IWorkout } from '@/types/workouts'
+import type { IWorkoutsState } from '@/store/modules/workouts/types'
+import type { IPagination } from '@/types/api'
+import type { IWorkout } from '@/types/workouts'
 
 export const workoutsState: IWorkoutsState = {
   calendar_workouts: [],

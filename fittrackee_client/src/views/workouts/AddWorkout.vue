@@ -12,7 +12,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
   import {
@@ -20,9 +21,9 @@
     SPORTS_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()

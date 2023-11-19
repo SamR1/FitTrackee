@@ -1,9 +1,9 @@
 {
-    "APP_ERROR": "Parece que hay algún problema con la aplicación.<br />Por favor inténtalo de nuevo más tarde o contacta con la administración.",
-    "NOT_FOUND": {
-        "PAGE": "No se encuentra la página",
-        "WORKOUT": "No se encuentra el entrenamiento"
-    },
-    "SOMETHING_WRONG": "Ha habido un error",
-    "UNKNOWN": "Error. Inténtalo de nuevo o contacta con la administración."
+  "APP_ERROR": "Parece que hay algún problema con la aplicación.<br />Por favor inténtalo de nuevo más tarde o contacta con la administración.",
+  "NOT_FOUND": {
+    "PAGE": "No se encuentra la página",
+    "WORKOUT": "No se encuentra el entrenamiento"
+  },
+  "SOMETHING_WRONG": "Ha habido un error",
+  "UNKNOWN": "Error. Inténtalo de nuevo o contacta con la administración."
 }

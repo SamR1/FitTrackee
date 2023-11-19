@@ -29,15 +29,17 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, onBeforeMount, onMounted } from 'vue'
+  import { computed, ref, onBeforeMount, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import type { TAppConfig } from '@/types/application'
+  import type { TLanguage } from '@/types/locales'
   import { useStore } from '@/use/useStore'
-  import { localeFromLanguage } from '@/utils/locales'
+  import { isLanguageSupported } from '@/utils/locales'
 
   const store = useStore()
 
@@ -81,10 +83,10 @@
     }, 300)
   }
   function initLanguage() {
-    let language = 'en'
+    let language: TLanguage = 'en'
     try {
       const navigatorLanguage = navigator.language.split('-')[0]
-      if (navigatorLanguage in localeFromLanguage) {
+      if (isLanguageSupported(navigatorLanguage)) {
         language = navigatorLanguage
       }
     } catch (e) {

@@ -1,59 +1,59 @@
 {
-    "ACTION": "Azione",
-    "ACTIVATE_USER_ACCOUNT": "Attiva account",
-    "ACTIVE": "Attivo",
-    "ADMIN": "Admin",
-    "ADMINISTRATION": "Amministrazione",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Aggiungi/rimuovi permessi, elimina account utente.",
-    "APPLICATION": "Applicazione",
-    "APP_CONFIG": {
-        "ADMIN_CONTACT": "Email di contatto dell'amministratore",
-        "MAX_FILES_IN_ZIP_LABEL": "Numero massimo di files zip",
-        "MAX_USERS_HELP": "Se settato a 0, non ci sono limiti per le registrazioni.",
-        "MAX_USERS_LABEL": "Numero massimo di utenti attivi",
-        "NO_CONTACT_EMAIL": "nessuna mail di contatto",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dei file caricabili (in Mb)",
-        "TITLE": "Configurazione applicazione",
-        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dell'archivio zip (in Mb)"
+  "ACTION": "Azione",
+  "ACTIVATE_USER_ACCOUNT": "Attiva account",
+  "ACTIVE": "Attivo",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Amministrazione",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Aggiungi/rimuovi permessi, elimina account utente.",
+  "APPLICATION": "Applicazione",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Email di contatto dell'amministratore",
+    "MAX_FILES_IN_ZIP_LABEL": "Numero massimo di files zip",
+    "MAX_USERS_HELP": "Se settato a 0, non ci sono limiti per le registrazioni.",
+    "MAX_USERS_LABEL": "Numero massimo di utenti attivi",
+    "NO_CONTACT_EMAIL": "nessuna mail di contatto",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dei file caricabili (in Mb)",
+    "TITLE": "Configurazione applicazione",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dell'archivio zip (in Mb)"
+  },
+  "BACK_TO_ADMIN": "Ritorna ad amministrazione",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",
+  "CONFIRM_USER_PASSWORD_RESET": "Sei sicuro di voler resettare {0} password?",
+  "CURRENT_EMAIL": "Email corrente",
+  "DELETE_USER": "Elimina utente",
+  "EMAIL_SENDING_DISABLED": "L'invio di email è disabilitato.",
+  "ENABLE_DISABLE_SPORTS": "Attiva/Disattiva sports.",
+  "NEW_EMAIL": "Nuova email",
+  "PASSWORD_RESET_SUCCESSFUL": "La password è stata reimpostata.",
+  "REGISTRATION_DISABLED": "La registrazione è al momento disabilitata.",
+  "REGISTRATION_ENABLED": "La registrazione è al momento abilitata.",
+  "RESET_USER_PASSWORD": "Reset password",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Attivo",
+      "HAS_WORKOUTS": "workout esistono",
+      "IMAGE": "Immagine",
+      "LABEL": "Etichetta"
     },
-    "BACK_TO_ADMIN": "Ritorna ad amministrazione",
-    "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",
-    "CONFIRM_USER_PASSWORD_RESET": "Sei sicuro di voler resettare {0} password?",
-    "CURRENT_EMAIL": "Email corrente",
-    "DELETE_USER": "Elimina utente",
-    "EMAIL_SENDING_DISABLED": "L'invio di email è disabilitato.",
-    "ENABLE_DISABLE_SPORTS": "Attiva/Disattiva sports.",
-    "NEW_EMAIL": "Nuova email",
-    "PASSWORD_RESET_SUCCESSFUL": "La password è stata reimpostata.",
-    "REGISTRATION_DISABLED": "La registrazione è al momento disabilitata.",
-    "REGISTRATION_ENABLED": "La registrazione è al momento abilitata.",
-    "RESET_USER_PASSWORD": "Reset password",
-    "SPORTS": {
-        "TABLE": {
-            "ACTIVE": "Attivo",
-            "HAS_WORKOUTS": "workout esistono",
-            "IMAGE": "Immagine",
-            "LABEL": "Etichetta"
-        },
-        "TITLE": "Amministrazione sport"
+    "TITLE": "Amministrazione sport"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Aggiorna configurazione applicazione.",
+  "UPDATE_USER_EMAIL": "Aggiorna email",
+  "USER": "utente | utenti",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "stato admin",
+        "CREATED_AT": "data di registrazione",
+        "IS_ACTIVE": "stato account",
+        "USERNAME": "nome utente",
+        "WORKOUTS_COUNT": "numero di workout"
+      }
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Aggiorna configurazione applicazione.",
-    "UPDATE_USER_EMAIL": "Aggiorna email",
-    "USER": "utente | utenti",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "stato admin",
-                "CREATED_AT": "data di registrazione",
-                "IS_ACTIVE": "stato account",
-                "USERNAME": "nome utente",
-                "WORKOUTS_COUNT": "numero di workout"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Aggiungi permessi di amministratore",
-            "REMOVE_ADMIN_RIGHTS": "Rimuovi permessi di amministratore"
-        }
-    },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "L'indirizzo email è stato aggiornato."
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Aggiungi permessi di amministratore",
+      "REMOVE_ADMIN_RIGHTS": "Rimuovi permessi di amministratore"
+    }
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "L'indirizzo email è stato aggiornato."
 }

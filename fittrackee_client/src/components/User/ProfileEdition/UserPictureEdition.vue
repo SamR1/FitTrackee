@@ -33,14 +33,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, toRefs, onUnmounted } from 'vue'
+  import { computed, ref, toRefs, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { IUserProfile } from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getReadableFileSize } from '@/utils/files'
+  import { getReadableFileSizeAsText } from '@/utils/files'
 
   interface Props {
     user: IUserProfile
@@ -57,16 +58,18 @@
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
   const fileSizeLimit = appConfig.value.max_single_file_size
-    ? getReadableFileSize(appConfig.value.max_single_file_size)
+    ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
     : ''
   const pictureFile: Ref<File | null> = ref(null)
 
   function deleteUserPicture() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_PICTURE)
   }
-  function updatePictureFile(event: Event & { target: HTMLInputElement }) {
-    if (event.target.files) {
-      pictureFile.value = event.target.files[0]
+  function updatePictureFile(event: Event) {
+    if ((event.target as HTMLInputElement).files !== null) {
+      pictureFile.value = (
+        (event.target as HTMLInputElement).files as FileList
+      )[0]
     }
   }
   function updateUserPicture() {

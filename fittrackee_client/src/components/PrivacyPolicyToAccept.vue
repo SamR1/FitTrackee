@@ -10,16 +10,13 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-</script>
-
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
+
   .privacy-policy-message {
     background: var(--alert-background-color);
     color: var(--alert-color);
     border-radius: $border-radius;
-    padding: $default-padding $default-padding*2;
+    padding: $default-padding $default-padding * 2;
   }
 </style>
