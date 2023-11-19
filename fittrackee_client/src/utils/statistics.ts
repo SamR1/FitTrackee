@@ -84,6 +84,8 @@ const getStatisticsChartDataset = (
     dataset.type = 'line'
     dataset.borderColor = [color]
     dataset.spanGaps = true
+  } else {
+    dataset.type = 'bar'
   }
   return dataset
 }
