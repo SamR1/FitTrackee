@@ -135,14 +135,14 @@
       displaySegment && segmentId && segmentId !== 1
         ? `/workouts/${workout.id}/segment/${segmentId - 1}`
         : !displaySegment && workout.previous_workout
-        ? `/workouts/${workout.previous_workout}`
-        : null
+          ? `/workouts/${workout.previous_workout}`
+          : null
     const nextUrl =
       displaySegment && segmentId && segmentId < workout.segments.length
         ? `/workouts/${workout.id}/segment/${segmentId + 1}`
         : !displaySegment && workout.next_workout
-        ? `/workouts/${workout.next_workout}`
-        : null
+          ? `/workouts/${workout.next_workout}`
+          : null
     return {
       previousUrl,
       nextUrl,

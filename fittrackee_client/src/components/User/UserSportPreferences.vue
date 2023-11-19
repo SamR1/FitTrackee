@@ -215,8 +215,8 @@
       sportPayload.color = sport.color
         ? sport.color
         : sportColors
-        ? sportColors[sport.label]
-        : defaultColor
+          ? sportColors[sport.label]
+          : defaultColor
       sportPayload.is_active = sport.is_active_for_user
       sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
     } else {

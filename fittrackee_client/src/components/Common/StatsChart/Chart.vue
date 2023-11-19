@@ -98,10 +98,10 @@
           return fullStats.value && context.chart.chartArea.width < 300
             ? false
             : displayedData.value === 'average_speed'
-            ? displayedSportIds.value.length == 1
-              ? 'auto'
-              : false
-            : true
+              ? displayedSportIds.value.length == 1
+                ? 'auto'
+                : false
+              : true
         },
         formatter: function (value, context) {
           if (displayedData.value === 'average_speed') {
@@ -203,15 +203,22 @@
   @import '~@/scss/vars.scss';
 
   .bar-chart {
+    position: relative;
     min-height: 400px;
+    width: 100%;
     &.minimal {
       min-height: 300px;
     }
 
     @media screen and (max-width: $small-limit) {
+      min-height: 268px;
       &.minimal {
         min-height: 290px;
       }
+    }
+
+    @media screen and (max-width: 420px) {
+      width: calc(100vw - 95px);
     }
   }
 </style>

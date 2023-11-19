@@ -1,5 +1,5 @@
 <template>
-  <div class="start-chart">
+  <div class="stats-chart">
     <div v-if="hideChartIfNoData && emptyStats">
       {{ $t('workouts.NO_WORKOUTS') }}
     </div>
@@ -185,7 +185,8 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars';
-  .start-chart {
+  .stats-chart {
+    width: 100%;
     .chart-radio {
       display: flex;
       justify-content: space-between;

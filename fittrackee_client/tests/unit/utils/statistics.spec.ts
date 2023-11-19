@@ -201,16 +201,19 @@ describe('getDatasets', () => {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Hiking',
           backgroundColor: ['#bb757c'],
           data: [],
+          type: 'bar',
         },
       ],
       total_distance: [
@@ -218,16 +221,19 @@ describe('getDatasets', () => {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Hiking',
           backgroundColor: ['#bb757c'],
           data: [],
+          type: 'bar',
         },
       ],
       total_duration: [
@@ -235,16 +241,19 @@ describe('getDatasets', () => {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Hiking',
           backgroundColor: ['#bb757c'],
           data: [],
+          type: 'bar',
         },
       ],
       total_ascent: [
@@ -252,16 +261,19 @@ describe('getDatasets', () => {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Hiking',
           backgroundColor: ['#bb757c'],
           data: [],
+          type: 'bar',
         },
       ],
       total_descent: [
@@ -269,16 +281,19 @@ describe('getDatasets', () => {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
         {
           label: 'Hiking',
           backgroundColor: ['#bb757c'],
           data: [],
+          type: 'bar',
         },
       ],
     }
@@ -302,6 +317,7 @@ describe('getDatasets', () => {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
       ],
       total_distance: [
@@ -309,6 +325,7 @@ describe('getDatasets', () => {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
       ],
       total_duration: [
@@ -316,6 +333,7 @@ describe('getDatasets', () => {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
       ],
       total_ascent: [
@@ -323,6 +341,7 @@ describe('getDatasets', () => {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
       ],
       total_descent: [
@@ -330,6 +349,7 @@ describe('getDatasets', () => {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
           data: [],
+          type: 'bar',
         },
       ],
     }
@@ -394,6 +414,7 @@ describe('formatStats', () => {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
             data: [0, 0, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -401,6 +422,7 @@ describe('formatStats', () => {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
             data: [0, 0, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -408,6 +430,7 @@ describe('formatStats', () => {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
             data: [0, 0, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -415,6 +438,7 @@ describe('formatStats', () => {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
             data: [0, 0, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -422,6 +446,7 @@ describe('formatStats', () => {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
             data: [0, 0, 0],
+            type: 'bar',
           },
         ],
       },
@@ -573,6 +598,7 @@ describe('formatStats', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -580,6 +606,7 @@ describe('formatStats', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -587,6 +614,7 @@ describe('formatStats', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -594,6 +622,7 @@ describe('formatStats', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -601,6 +630,7 @@ describe('formatStats', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -684,6 +714,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -691,6 +722,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -698,6 +730,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -705,6 +738,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -712,6 +746,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150],
+            type: 'bar',
           },
         ],
       },
@@ -792,6 +827,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -799,6 +835,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -806,6 +843,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -813,6 +851,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -820,6 +859,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -901,6 +941,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -908,6 +949,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -915,6 +957,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -922,6 +965,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -929,6 +973,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -1010,6 +1055,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -1017,6 +1063,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -1024,6 +1071,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -1031,6 +1079,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -1038,6 +1087,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -1119,6 +1169,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -1126,6 +1177,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -1133,6 +1185,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -1140,6 +1193,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -1147,6 +1201,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -1229,6 +1284,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -1236,6 +1292,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [10, 15, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -1243,6 +1300,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -1250,6 +1308,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [150, 250, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -1257,6 +1316,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [100, 150, 0],
+            type: 'bar',
           },
         ],
       },
@@ -1338,6 +1398,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [1, 1, 0],
+            type: 'bar',
           },
         ],
         total_distance: [
@@ -1345,6 +1406,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [6.21, 9.32, 0],
+            type: 'bar',
           },
         ],
         total_duration: [
@@ -1352,6 +1414,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [3000, 3500, 0],
+            type: 'bar',
           },
         ],
         total_ascent: [
@@ -1359,6 +1422,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [492.13, 820.21, 0],
+            type: 'bar',
           },
         ],
         total_descent: [
@@ -1366,6 +1430,7 @@ describe('formatStats (duration)', () => {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
             data: [328.08, 492.13, 0],
+            type: 'bar',
           },
         ],
       },

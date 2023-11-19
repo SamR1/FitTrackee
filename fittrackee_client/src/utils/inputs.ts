@@ -36,11 +36,11 @@ export const getUsernameQuery = (
     usernameStartPosition < 0
       ? ''
       : usernameEndPosition < 0
-      ? value.slice(usernameStartPosition + 1)
-      : value.slice(
-          usernameStartPosition + 1,
-          usernameEndPosition + selectionStart
-        )
+        ? value.slice(usernameStartPosition + 1)
+        : value.slice(
+            usernameStartPosition + 1,
+            usernameEndPosition + selectionStart
+          )
   return usernameQuery.trim().length > 1
     ? {
         position: usernameStartPosition,

@@ -64,8 +64,8 @@
     return authUser.value.timezone
       ? authUser.value.timezone
       : Intl.DateTimeFormat().resolvedOptions().timeZone
-      ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      : 'Europe/Paris'
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : 'Europe/Paris'
   }
   function getDateFormat() {
     return dateStringFormats[language.value]
