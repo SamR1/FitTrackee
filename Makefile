@@ -67,7 +67,8 @@ docker-lint-all: docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn lint
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) lint
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) type-check
 
 docker-lint-python: docker-run
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/lint-python.sh
@@ -98,7 +99,7 @@ docker-run-workers:
 
 docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn dev
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
 
 docker-set-admin:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
@@ -111,7 +112,11 @@ docker-stop:
 
 docker-test-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn test:unit
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit run
+
+docker-test-client-watch:
+	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit watch
 
 # needs a running application
 docker-test-e2e: docker-run
