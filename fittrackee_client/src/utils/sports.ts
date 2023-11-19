@@ -35,8 +35,8 @@ const sortSports = (a: ITranslatedSport, b: ITranslatedSport): number => {
   return sportATranslatedLabel > sportBTranslatedLabel
     ? 1
     : sportATranslatedLabel < sportBTranslatedLabel
-    ? -1
-    : 0
+      ? -1
+      : 0
 }
 
 export const translateSports = (

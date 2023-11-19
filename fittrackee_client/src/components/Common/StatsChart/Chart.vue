@@ -98,10 +98,10 @@
           return fullStats.value && context.chart.chartArea.width < 300
             ? false
             : displayedData.value === 'average_speed'
-            ? displayedSportIds.value.length == 1
-              ? 'auto'
-              : false
-            : true
+              ? displayedSportIds.value.length == 1
+                ? 'auto'
+                : false
+              : true
         },
         formatter: function (value, context) {
           if (displayedData.value === 'average_speed') {

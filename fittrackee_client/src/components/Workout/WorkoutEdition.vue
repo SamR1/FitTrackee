@@ -444,14 +444,14 @@
       workoutForm.workoutAscent === ''
         ? null
         : authUser.value.imperial_units
-        ? convertDistance(+workoutForm.workoutAscent, 'ft', 'm', 3)
-        : +workoutForm.workoutAscent
+          ? convertDistance(+workoutForm.workoutAscent, 'ft', 'm', 3)
+          : +workoutForm.workoutAscent
     payload.descent =
       workoutForm.workoutDescent === ''
         ? null
         : authUser.value.imperial_units
-        ? convertDistance(+workoutForm.workoutDescent, 'ft', 'm', 3)
-        : +workoutForm.workoutDescent
+          ? convertDistance(+workoutForm.workoutDescent, 'ft', 'm', 3)
+          : +workoutForm.workoutDescent
     if (
       (payload.ascent !== null && payload.descent === null) ||
       (payload.ascent === null && payload.descent !== null)

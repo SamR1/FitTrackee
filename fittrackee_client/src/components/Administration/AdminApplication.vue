@@ -199,12 +199,12 @@
           // @ts-ignore
           (appData[key] = getFileSizeInMB(appConfig[key]))
         : ['about', 'privacy_policy'].includes(key)
-        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (appData[key] = appConfig[key] !== null ? appConfig[key] : '')
-        : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (appData[key] = appConfig[key])
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            (appData[key] = appConfig[key] !== null ? appConfig[key] : '')
+          : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            (appData[key] = appConfig[key])
     })
   }
   function onCancel() {

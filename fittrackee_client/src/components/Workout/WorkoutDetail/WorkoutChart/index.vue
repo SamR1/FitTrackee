@@ -189,12 +189,12 @@
             return tooltipItems.length === 0
               ? ''
               : displayDistance.value
-              ? `${t('workouts.DISTANCE')}: ${
-                  tooltipItems[0].label
-                } ${fromKmUnit}`
-              : `${t('workouts.DURATION')}: ${formatDuration(
-                  tooltipItems[0].label.replace(',', '')
-                )}`
+                ? `${t('workouts.DISTANCE')}: ${
+                    tooltipItems[0].label
+                  } ${fromKmUnit}`
+                : `${t('workouts.DURATION')}: ${formatDuration(
+                    tooltipItems[0].label.replace(',', '')
+                  )}`
           },
         },
       },

@@ -47,14 +47,14 @@ export const handleError = (
   const errorMessages = !error
     ? msg
     : error.response
-    ? error.response.status === 413
-      ? 'file size is greater than the allowed size'
-      : errorInfo?.message
-      ? errorInfo.message
-      : msg
-    : error.message
-    ? error.message
-    : msg
+      ? error.response.status === 413
+        ? 'file size is greater than the allowed size'
+        : errorInfo?.message
+          ? errorInfo.message
+          : msg
+      : error.message
+        ? error.message
+        : msg
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
     errorMessages.includes('\n')
