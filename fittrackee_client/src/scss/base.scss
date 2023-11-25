@@ -234,7 +234,13 @@ button {
   font-weight: bold;
   padding-top: $default-padding * 1.5;
   padding-left: $default-padding;
-  text-transform: capitalize;
+  .title {
+    padding-left: $default-padding * 0.5;
+    text-transform: capitalize;
+  }
+}
+.section-title::first-letter {
+  text-transform: uppercase;
 }
 
 .no-map {
