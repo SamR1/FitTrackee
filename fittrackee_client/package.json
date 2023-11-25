@@ -32,7 +32,7 @@
     "leaflet": "^1.9.4",
     "linkify-html": "^4.1.2",
     "linkifyjs": "^4.1.2",
-    "marked": "^5.0.3",
+    "marked": "^10.0.0",
     "sanitize-html": "^2.11.0",
     "snarkdown": "^2.0.0",
     "vue": "^3.3.8",

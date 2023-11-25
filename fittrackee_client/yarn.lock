@@ -2477,10 +2477,10 @@ magic-string@^0.30.1, magic-string@^0.30.5:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.15"
 
-marked@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-5.0.3.tgz#a8d0d457d7bce3606db3e32bb0797490cec2fa19"
-  integrity sha512-KUONa43Uk74uUNWMxh6lfaNYmSAsRMiDAaX8QBCCRVXzEufR0zX6T33vrGbvTnQLL02ungDM3KSzZtO+chJaHg==
+marked@^10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-10.0.0.tgz#7fe1805bb908433d760e2de0fcc8841a2b2d745c"
+  integrity sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==
 
 memorystream@^0.3.1:
   version "0.3.1"
