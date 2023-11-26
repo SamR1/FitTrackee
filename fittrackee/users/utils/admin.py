@@ -25,11 +25,6 @@ class UserManagerService:
             raise UserNotFoundException()
         return user
 
-    def _update_admin_rights(self, user: User, is_admin: bool) -> None:
-        user.admin = is_admin
-        if is_admin:
-            self._update_active_status(user, active_status=True)
-
     @staticmethod
     def _update_active_status(user: User, active_status: bool) -> None:
         user.is_active = active_status
@@ -71,7 +66,9 @@ class UserManagerService:
         user = self._get_user()
 
         if is_admin is not None:
-            self._update_admin_rights(user, is_admin)
+            user.admin = is_admin
+            if is_admin:
+                activate = True
             user_updated = True
 
         if activate is not None:
