@@ -32,6 +32,7 @@
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -97,11 +98,22 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
+                    {{ $t('user.SUSPENDED') }}
+                  </span>
+                  <i
+                    :class="`fa fa${
+                      user.suspended_at !== null ? '-check' : ''
+                    }-square-o`"
+                    aria-hidden="true"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
                   <button
                     :class="{ danger: user.admin }"
-                    :disabled="user.username === authUser.username"
+                    :disabled="isAdminButtonDisabled(user)"
                     @click="updateUser(user.username, !user.admin)"
                   >
                     {{
@@ -209,6 +221,11 @@
       query.page = 1
     }
     router.push({ path: '/admin/users', query })
+  }
+  function isAdminButtonDisabled(user: IUserProfile) {
+    return (
+      user.username === authUser.value.username || user.suspended_at !== null
+    )
   }
 
   onUnmounted(() => {

@@ -32,6 +32,12 @@
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
       v-if="!user.is_active"
     />
+    <AlertMessage
+      v-if="user.suspended_at !== null"
+      :class="{ suspended: $route.path === '/profile' }"
+      message="user.ACCOUNT_SUSPENDED_AT"
+      :param="suspensionDate"
+    />
     <ErrorMessage :message="errorMessages" v-if="errorMessages" />
     <div class="email-form form-box" v-if="displayUserEmailForm">
       <form
@@ -140,9 +146,17 @@
           >
             {{ $t('user.PROFILE.EDIT') }}
           </button>
+          <UserRelationshipActions
+            v-if="authUser?.username"
+            :authUser="authUser"
+            :user="user"
+            from="userInfos"
+          />
           <button
             v-if="
-              $route.name === 'User' && user.username !== authUser?.username
+              $route.name === 'User' &&
+              user.username !== authUser?.username &&
+              suspensionDate === null
             "
             @click="displayReportForm"
           >
@@ -196,18 +210,18 @@
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
   const registrationDate = computed(() =>
-    props.user.created_at
+    user.value.created_at
       ? formatDate(
-          props.user.created_at,
+          user.value.created_at,
           displayOptions.value.timezone,
           displayOptions.value.dateFormat
         )
       : ''
   )
   const birthDate = computed(() =>
-    props.user.birth_date
+    user.value.birth_date
       ? format(
-          new Date(props.user.birth_date),
+          new Date(user.value.birth_date),
           `${getDateFormat(displayOptions.value.dateFormat, language.value)}`,
           { locale: localeFromLanguage[language.value] }
         )
@@ -227,6 +241,15 @@
   const displayUserEmailForm: Ref<boolean> = ref(false)
   const newUserEmail: Ref<string> = ref('')
   const currentAction: Ref<string> = ref('')
+  const suspensionDate: ComputedRef<string | null> = computed(() =>
+    user.value.suspended_at
+      ? formatDate(
+          user.value.suspended_at,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat
+        )
+      : ''
+  )
 
   function updateDisplayModal(value: string) {
     displayModal.value = value
@@ -307,6 +330,9 @@
     .profile-buttons {
       display: flex;
       flex-wrap: wrap;
+      ::v-deep(.actions-buttons) {
+        gap: $default-padding;
+      }
     }
 
     .email-form {
@@ -325,6 +351,9 @@
       .info-box {
         margin-bottom: $default-margin;
       }
+    }
+    .suspended {
+      margin-top: $default-margin;
     }
   }
 </style>

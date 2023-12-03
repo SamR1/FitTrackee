@@ -167,6 +167,7 @@
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "REVIEW": "accepter",
   "SHOW_PASSWORD": "afficher le mot de passe",
+  "SUSPENDED": "Suspendu",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
   "USER": "utilisateur | utilisateurs",
   "USERNAME": "Nom d'utilisateur",
