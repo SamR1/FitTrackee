@@ -161,6 +161,9 @@ def upgrade():
                 nullable=True,
             )
         )
+        batch_op.add_column(
+            sa.Column('suspended_at', sa.DateTime(), nullable=True)
+        )
     user_helper = sa.Table(
         'users', sa.MetaData(), sa.Column('id', sa.Integer(), nullable=False)
     )
@@ -307,6 +310,7 @@ def downgrade():
         batch_op.drop_column('workout_visibility')
 
     with op.batch_alter_table('users', schema=None) as batch_op:
+        batch_op.drop_column('suspended_at')
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workouts_visibility')
         batch_op.drop_column('hide_profile_in_users_directory')

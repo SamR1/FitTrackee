@@ -37,6 +37,7 @@ class UserModelAssertMixin:
         assert serialized_user['admin'] == user.admin
         assert serialized_user['is_active'] == user.is_active
         assert serialized_user['username'] == user.username
+        assert serialized_user['suspended_at'] is None
 
     @staticmethod
     def assert_user_profile(serialized_user: Dict, user: User) -> None:

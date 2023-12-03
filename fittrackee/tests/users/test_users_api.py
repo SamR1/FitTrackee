@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
+from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.users.models import (
@@ -398,15 +399,17 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
 
 
 class TestGetUsersAsAdmin(ApiTestCaseMixin):
-    def test_it_gets_users_list_without_inactive_and_hidden_users(
+    def test_it_gets_users_list_without_inactive_hidden_and_suspended_users(
         self,
         app: Flask,
         user_1_admin: User,
         inactive_user: User,
         user_2: User,
         user_3: User,
+        user_4: User,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
+        user_4.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -502,6 +505,40 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
+    def test_it_gets_users_list_regardless_suspended_status(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
     def test_it_gets_all_users(
         self,
         app: Flask,
@@ -511,12 +548,14 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
+        user_3.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
 
         response = client.get(
-            '/api/users?with_inactive=true&with_hidden=true',
+            '/api/users?with_inactive=true'
+            '&with_hidden=true&with_suspended=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1108,6 +1147,116 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             'total': 2,
         }
 
+    def test_it_gets_users_list_ordered_by_suspension_date_with_default_order(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        # default order is ascending
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_2.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_3.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_suspension_date_ascending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&order=asc&'
+            'with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_2.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_3.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_suspension_date_descending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&order=desc&with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_3.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_2.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
     def test_it_gets_users_list_ordered_by_workouts_count_descending(
         self,
         app: Flask,
@@ -1353,20 +1502,26 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
             ("without params", ""),
             ("with inactive users", "?with_inactive=true"),
             ("with hidden users", "?with_hidden=true"),
-            ("all params", "?with_hidden=true&with_inactive=true"),
+            ("with suspended users", "?with_suspended=true"),
+            (
+                "all params",
+                "?with_hidden=true&with_inactive=true&with_suspended=true",
+            ),
         ],
     )
-    def test_it_gets_users_list_without_inactive_and_hidden_users(
+    def test_it_gets_users_list_without_inactive_hidden_or_suspended_users(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         inactive_user: User,
         user_3: User,
+        user_4: User,
         input_description: str,
         input_params: str,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
+        user_4.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1970,6 +2125,134 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
+
+    def test_admin_can_suspend_another_user_account(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(suspend=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['is_active'] is True
+        assert user['suspended_at'] == self.get_date_string(date=now)
+        assert user_2.is_active is True
+        assert user_2.suspended_at == now
+
+    def test_admin_can_suspend_another_admin_account_and_remove_admin_rights(
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2_admin.username}',
+                content_type='application/json',
+                data=json.dumps(dict(suspend=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['admin'] is False
+        assert user['is_active'] is True
+        assert user['suspended_at'] == self.get_date_string(date=now)
+        assert user_2_admin.admin is False
+        assert user_2_admin.is_active is True
+        assert user_2_admin.suspended_at == now
+
+    def test_admin_can_not_suspend_his_own_account(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_does_not_enable_registration_on_user_suspension(
+        self,
+        app_with_3_users_max: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_3_users_max, user_1_admin.email
+        )
+
+        client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    password_conf=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_403(response, 'error, registration is disabled')
+
+    def test_admin_can_unsuspend_another_user_account(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = datetime.utcnow()
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(unsuspend=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['is_active'] is True
+        assert user['suspended_at'] is None
+        assert user_2.is_active is True
+        assert user_2.suspended_at is None
 
 
 class TestDeleteUser(ApiTestCaseMixin):

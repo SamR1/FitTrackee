@@ -233,6 +233,7 @@ class User(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    suspended_at = db.Column(db.DateTime, nullable=True)
 
     workouts = db.relationship(
         'Workout',
@@ -566,6 +567,7 @@ class User(BaseModel):
             'location': self.location,
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
+            'suspended_at': self.suspended_at,
             'username': self.username,
         }
 
