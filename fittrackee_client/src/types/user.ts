@@ -31,6 +31,7 @@ export interface IUserProfile {
   profile_link?: string
   records: IRecord[]
   sports_list: number[]
+  suspended_at: string | null
   total_ascent: number
   total_distance: number
   total_duration: string
@@ -79,12 +80,14 @@ export interface IUserAccountUpdatePayload {
 }
 
 export interface IAdminUserPayload {
-  username: string
-  admin?: boolean
-  resetPassword?: boolean
   activate?: boolean
-  new_email?: string
+  admin?: boolean
   from_report?: number
+  new_email?: string
+  resetPassword?: boolean
+  suspend?: boolean
+  unsuspend?: boolean
+  username: string
 }
 
 export interface IUserRelationshipActionPayload {

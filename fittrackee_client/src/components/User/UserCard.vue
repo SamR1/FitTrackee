@@ -25,6 +25,11 @@
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
       v-if="!user.is_active"
     />
+    <AlertMessage
+      message="user.ACCOUNT_SUSPENDED_AT"
+      :param="suspensionDate"
+      v-if="user.suspended_at !== null"
+    />
     <ErrorMessage
       :message="errorMessages"
       v-if="
@@ -45,6 +50,7 @@
   import { ROOT_STORE } from '@/store/constants'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -63,6 +69,16 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const suspensionDate: ComputedRef<string | null> = computed(() =>
+    user.value.suspended_at
+      ? formatDate(
+          user.value.suspended_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
+      : null
+  )
+
   const emit = defineEmits(['updatedUserRelationship'])
 
   function emitUser(username: string) {

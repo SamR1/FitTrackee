@@ -57,6 +57,7 @@ const getUsers = (
   if (forAdmin) {
     payload.with_inactive = 'true'
     payload.with_hidden = 'true'
+    payload.with_suspended = 'true'
   }
   authApi
     .get('users', { params: payload })
@@ -151,6 +152,12 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     }
     if (payload.new_email !== undefined) {
       data.new_email = payload.new_email
+    }
+    if (payload.suspend) {
+      data.suspend = payload.suspend
+    }
+    if (payload.unsuspend) {
+      data.unsuspend = payload.unsuspend
     }
     authApi
       .patch(`users/${payload.username}`, data)

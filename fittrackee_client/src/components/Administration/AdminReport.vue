@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
   import type { Locale } from 'date-fns'
-  import { computed, onBeforeMount, ref, watch } from 'vue'
+  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
@@ -89,10 +89,12 @@
         return 'buttons.SUBMIT'
     }
   }
-  function updateUserActiveStatus() {
+  function updateUserSuspendedAt() {
+    const suspension_action =
+      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username: report.value.reported_user.username,
-      activate: !report.value.reported_user.is_active,
+      [suspension_action]: true,
       from_report: report.value.id,
     })
   }
@@ -131,6 +133,10 @@
       }
     }
   )
+
+  onUnmounted(() =>
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+  )
 </script>
 
 <template>
@@ -142,9 +148,9 @@
     <Modal
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
-      message="admin.CONFIRM_USER_ACCOUNT_DEACTIVATION"
+      message="admin.CONFIRM_USER_ACCOUNT_SUSPENSION"
       :strongMessage="report.reported_user.username"
-      @confirmAction="updateUserActiveStatus"
+      @confirmAction="updateUserSuspendedAt"
       @cancelAction="updateDisplayModal('')"
       @keydown.esc="updateDisplayModal('')"
     />
@@ -320,18 +326,18 @@
                 {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
               </button>
               <button
-                :class="{ danger: report.reported_user.is_active }"
+                :class="{ danger: report.reported_user.suspended_at === null }"
                 @click="
-                  report.reported_user.is_active
-                    ? updateDisplayModal('deactivation')
-                    : updateUserActiveStatus()
+                  report.reported_user.suspended_at === null
+                    ? updateDisplayModal('suspension')
+                    : updateUserSuspendedAt()
                 "
               >
                 {{
                   $t(
                     `admin.APP_MODERATION.ACTIONS.${
-                      report.reported_user.is_active ? 'DISABLE' : 'REACTIVATE'
-                    }_ACCOUNT`
+                      report.reported_user.suspended_at ? 'UN' : ''
+                    }SUSPEND_ACCOUNT`
                   )
                 }}
               </button>

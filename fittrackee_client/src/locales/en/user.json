@@ -2,6 +2,7 @@
   "ACCOUNT_CONFIRMATION": "Account confirmation",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Didn't received instructions?",
   "ACCOUNT_CONFIRMATION_SENT": "Check your email. A new confirmation email has been sent to the address provided.",
+  "ACCOUNT_SUSPENDED_AT": "Account suspended at {0}",
   "ACTIVE_USER": "active user | active users",
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",

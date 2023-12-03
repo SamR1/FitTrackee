@@ -24,11 +24,11 @@
     "ACTIONS": {
       "ADD_COMMENT": "Ajouter un commentaire",
       "DELETE_CONTENT": "Supprimer le contenu",
-      "DISABLE_ACCOUNT": "Désactiver le compte de l'utilisateur",
       "MARK_AS_RESOLVED": "Marqué comme résolu",
       "MARK_AS_UNRESOLVED": "Marqué comme non résolu",
-      "REACTIVATE_ACCOUNT": "Réactiver le compte de l'utilisateur",
-      "SEND_EMAIL": "Envoyer un courriel"
+      "SEND_EMAIL": "Envoyer un courriel",
+      "SUSPEND_ACCOUNT": "Suspendre le compte de l'utilisateur",
+      "UNSUSPEND_ACCOUNT": "Réactiver le compte de l'utilisateur"
     },
     "DESCRIPTION": "Gestion des signalements.",
     "NOTES_AND_ACTIONS": "Notes et actions",
@@ -54,8 +54,8 @@
     "TITLE": "Modération"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
-  "CONFIRM_USER_ACCOUNT_DEACTIVATION": "Êtes-vous sûr de vouloir de désactiver le compte de l'utilisateur {0} ?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
+  "CONFIRM_USER_ACCOUNT_SUSPENSION": "Êtes-vous sûr de vouloir suspendre le compte de l'utilisateur {0} ?",
   "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
   "CURRENT_EMAIL": "Adresse email actuelle",
   "DELETE_USER": "Supprimer l'utilisateur",

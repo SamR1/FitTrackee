@@ -24,11 +24,11 @@
     "ACTIONS": {
       "ADD_COMMENT": "Add a comment",
       "DELETE_CONTENT": "Delete content",
-      "DISABLE_ACCOUNT": "Disable user account",
       "MARK_AS_RESOLVED": "Mark as resolved",
       "MARK_AS_UNRESOLVED": "Mark as unresolved",
-      "REACTIVATE_ACCOUNT": "Reactivate user account",
-      "SEND_EMAIL": "Send an email"
+      "SEND_EMAIL": "Send an email",
+      "SUSPEND_ACCOUNT": "Suspend user account",
+      "UNSUSPEND_ACCOUNT": "Unsuspend user account"
     },
     "DESCRIPTION": "Reports management.",
     "NOTES_AND_ACTIONS": "Notes and actions",
@@ -54,8 +54,8 @@
     "TITLE": "Moderation"
   },
   "BACK_TO_ADMIN": "Back to admin",
-  "CONFIRM_USER_ACCOUNT_DEACTIVATION": "Are you sure you want to deactivate {0} account?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_USER_ACCOUNT_SUSPENSION": "Are you sure you want to suspend {0} account?",
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "CURRENT_EMAIL": "Current email",
   "DELETE_USER": "Delete user",
