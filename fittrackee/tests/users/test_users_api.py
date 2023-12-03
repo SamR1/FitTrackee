@@ -1152,7 +1152,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=toto',
+            f'/api/users?q={user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1160,7 +1160,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -1177,7 +1177,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=oto',
+            f'/api/users?q={user_2.username[1:]}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1185,7 +1185,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
 
     def test_it_filtering_on_username_is_case_insensitive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -1195,7 +1195,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=TOTO',
+            f'/api/users?q={user_2.username.upper()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1203,7 +1203,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
 
     def test_it_does_not_return_inactive_user_by_default(
         self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
@@ -1213,7 +1213,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=inactive',
+            f'/api/users?q={inactive_user.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1238,7 +1238,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=inactive&with_inactive=true',
+            f'/api/users?q={inactive_user.username}&with_inactive=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1292,7 +1292,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             'total': 0,
         }
 
-    def test_it_users_list_with_complex_query(
+    def test_it_returns_users_list_with_complex_query(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1546,7 +1546,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
+        assert user['email'] == user_2.email
         assert user['admin'] is True
 
     def test_it_removes_admin_rights_to_a_user(
@@ -1569,7 +1569,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
 
         user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
+        assert user['email'] == user_2.email
         assert user['admin'] is False
 
     def test_it_does_not_send_email_when_only_admin_rights_update(
@@ -1981,7 +1981,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2006,7 +2006,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2024,7 +2024,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2046,7 +2046,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2055,7 +2055,7 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_with_export_request_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        db.session.add(UserDataExport(user_1.id))
+        db.session.add(UserDataExport(user_id=user_1.id))
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2070,7 +2070,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2084,7 +2084,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2112,7 +2112,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2126,7 +2126,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/admin',
+            f'/api/users/{user_1_admin.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2140,7 +2140,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/admin',
+            f'/api/users/{user_1_admin.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2160,7 +2160,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             app_with_3_users_max, user_1_admin.email
         )
         client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2192,7 +2192,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.post(
