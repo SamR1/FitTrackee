@@ -32,12 +32,6 @@
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
       v-if="!user.is_active"
     />
-    <AlertMessage
-      v-if="user.suspended_at !== null"
-      :class="{ suspended: $route.path === '/profile' }"
-      message="user.ACCOUNT_SUSPENDED_AT"
-      :param="suspensionDate"
-    />
     <ErrorMessage :message="errorMessages" v-if="errorMessages" />
     <div class="email-form form-box" v-if="displayUserEmailForm">
       <form
@@ -156,7 +150,7 @@
             v-if="
               $route.name === 'User' &&
               user.username !== authUser?.username &&
-              suspensionDate === null
+              user.suspended_at === null
             "
             @click="displayReportForm"
           >
@@ -241,15 +235,6 @@
   const displayUserEmailForm: Ref<boolean> = ref(false)
   const newUserEmail: Ref<string> = ref('')
   const currentAction: Ref<string> = ref('')
-  const suspensionDate: ComputedRef<string | null> = computed(() =>
-    user.value.suspended_at
-      ? formatDate(
-          user.value.suspended_at,
-          displayOptions.value.timezone,
-          displayOptions.value.dateFormat
-        )
-      : ''
-  )
 
   function updateDisplayModal(value: string) {
     displayModal.value = value
