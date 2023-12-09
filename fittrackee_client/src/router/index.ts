@@ -64,6 +64,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     meta: {
       title: 'dashboard.DASHBOARD',
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -341,6 +342,9 @@ const routes: Array<RouteRecordRaw> = [
     path: '/notifications',
     name: 'Notifications',
     component: NotificationsView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/statistics',
@@ -348,12 +352,16 @@ const routes: Array<RouteRecordRaw> = [
     component: StatisticsView,
     meta: {
       title: 'statistics.STATISTICS',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/users',
     name: 'Users',
     component: UsersView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/users/:username',
@@ -363,6 +371,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'user.USER',
       withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
     children: [
       {
@@ -386,6 +395,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'workouts.WORKOUT',
       count: 0,
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -396,6 +406,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'workouts.WORKOUT',
       withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -404,6 +415,7 @@ const routes: Array<RouteRecordRaw> = [
     component: EditWorkout,
     meta: {
       title: 'workouts.EDIT_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -414,6 +426,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'workouts.SEGMENT',
       count: 0,
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -421,11 +434,17 @@ const routes: Array<RouteRecordRaw> = [
     name: 'WorkoutComment',
     component: Workout,
     props: { displaySegment: false },
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/comments/:commentId',
     name: 'Comment',
     component: CommentView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/workouts/add',
@@ -433,12 +452,16 @@ const routes: Array<RouteRecordRaw> = [
     component: AddWorkout,
     meta: {
       title: 'workouts.ADD_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/admin',
     name: 'Administration',
     component: AdminView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
     children: [
       {
         path: '',
@@ -561,7 +584,20 @@ router.beforeEach((to, from, next) => {
         return next()
       }
 
-      if (store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED] &&
+        !to.path.startsWith('/profile') &&
+        !to.meta.allowedToSuspendedUser
+      ) {
+        return next('/profile')
+      }
+
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        !store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+      ) {
         store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
       }
 

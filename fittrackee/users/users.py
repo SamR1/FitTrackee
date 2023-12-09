@@ -718,7 +718,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['users:write'], allow_suspended_user=True)
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

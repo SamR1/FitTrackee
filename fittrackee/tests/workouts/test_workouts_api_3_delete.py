@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
@@ -137,6 +140,27 @@ class TestDeleteWorkoutWithGpx(CommentMixin, ApiTestCaseMixin):
         )
 
         assert response.status_code == 401
+
+    def test_it_returns_403_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        auth_token, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=PrivacyLevel.PRIVATE
+        )
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.delete(
+            f'/api/workouts/{workout_short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -391,3 +415,23 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, ApiTestCaseMixin):
         )
 
         assert response.status_code == 401
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)

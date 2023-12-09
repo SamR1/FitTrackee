@@ -22,6 +22,20 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            f'/api/stats/{suspended_user.username}/by_time',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
@@ -904,6 +918,20 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            f'/api/stats/{suspended_user.username}/by_sport',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -1074,6 +1102,20 @@ class TestGetAllStats(ApiTestCaseMixin):
         response = client.get('/api/stats/all')
 
         self.assert_401(response)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/stats/all',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_all_stats_when_users_have_no_workouts(
         self, app: Flask, user_1_admin: User, user_2: User

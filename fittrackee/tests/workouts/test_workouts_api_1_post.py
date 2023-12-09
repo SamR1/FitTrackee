@@ -260,6 +260,31 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_403(response)
+
     def test_it_adds_a_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -1247,6 +1272,29 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert_workout_data_wo_gpx(data, user_1)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     @pytest.mark.parametrize(
         'input_ascent, input_descent',

@@ -59,6 +59,9 @@
   let query: INotificationsPayload = reactive(
     getNotificationsQuery(route.query)
   )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() => loadNotifications(query))
 
@@ -84,7 +87,9 @@
     }, 500)
   }
   function loadNotifications(queryParams: INotificationsPayload) {
-    store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS, queryParams)
+    if (!isSuspended.value) {
+      store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS, queryParams)
+    }
   }
   function updateNotificationReadStatus(payload: INotificationPayload) {
     store.dispatch(NOTIFICATIONS_STORE.ACTIONS.UPDATE_STATUS, {

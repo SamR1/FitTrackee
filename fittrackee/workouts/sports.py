@@ -19,7 +19,11 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(
+    scopes=['workouts:read'],
+    optional_auth_user=True,
+    allow_suspended_user=True,
+)
 def get_sports(auth_user: User) -> Dict:
     """
     Get all sports

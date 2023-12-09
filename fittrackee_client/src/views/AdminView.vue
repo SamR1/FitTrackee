@@ -1,7 +1,7 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!userLoading">
-      <router-view v-if="isAuthUserAmin" />
+      <router-view v-if="isAuthUserAdmin" />
       <NotFound v-else />
       <div id="bottom" />
     </div>
@@ -18,14 +18,17 @@
 
   const store = useStore()
 
-  const isAuthUserAmin: ComputedRef<boolean> = computed(
+  const isAuthUserAdmin: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
   )
   const userLoading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-
-  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
+  onBeforeMount(() => {
+    if (isAuthUserAdmin.value) {
+      store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -38,6 +38,12 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS]: (state: IAuthUserState) => {
     return state.isSuccess
   },
+  [AUTH_USER_STORE.GETTERS.IS_SUSPENDED]: (state: IAuthUserState) => {
+    return state.authUserProfile && state.authUserProfile.suspended_at !== null
+  },
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED]: (state: IAuthUserState) => {
+    return state.authUserProfile?.username !== undefined
+  },
   [AUTH_USER_STORE.GETTERS.USER_LOADING]: (state: IAuthUserState) => {
     return state.loading
   },

@@ -267,7 +267,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -392,7 +392,7 @@ def get_authenticated_user_profile(
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
@@ -562,7 +562,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user email and password.
@@ -791,7 +791,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
@@ -1169,7 +1169,7 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
@@ -1258,7 +1258,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
@@ -1636,7 +1636,7 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/logout', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     User logout.
@@ -1702,7 +1702,7 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     The authenticated user accepts the privacy policy.
@@ -1753,7 +1753,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export/request', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Request a data export for authenticated user.
@@ -1826,7 +1826,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get a data export info for authenticated user if a request exists.
@@ -1895,7 +1895,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route(
     '/auth/account/export/<string:file_name>', methods=['GET']
 )
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def download_data_export(
     auth_user: User, file_name: str
 ) -> Union[Response, HttpResponse]:

@@ -40,7 +40,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
   import UsersFilters from '@/components/Users/UsersFilters.vue'
-  import { USERS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
   import type {
     IAuthUserProfile,
@@ -70,12 +70,17 @@
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
   const updatedUser: Ref<string | null> = ref(null)
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() => loadUsers(query))
 
   function loadUsers(queryParams: TUsersPayload) {
-    queryParams.per_page = 9
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+    if (!isSuspended.value) {
+      queryParams.per_page = 9
+      store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+    }
   }
   function storeUser(username: string) {
     updatedUser.value = username

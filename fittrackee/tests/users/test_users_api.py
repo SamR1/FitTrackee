@@ -310,6 +310,23 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert user == jsonify_dict(user_2.serialize(user_1))
 
 
+class TestGetUserAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+
 class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -1593,6 +1610,23 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         }
 
 
+class TestGetUsersAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/users',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+
 class TestGetUsersAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User, user_2: User
@@ -2270,6 +2304,20 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
+    def test_suspended_user_can_delete_its_own_account(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.delete(
+            f'/api/users/{suspended_user.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+
     def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -2553,6 +2601,20 @@ class TestBlockUser(ApiTestCaseMixin):
 
         self.assert_404_with_entity(response, 'user')
 
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_blocks_user(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -2662,6 +2724,20 @@ class TestUnBlockUser(ApiTestCaseMixin):
         )
 
         self.assert_404_with_entity(response, 'user')
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_unblocks_user(
         self, app: Flask, user_1: User, user_2: User

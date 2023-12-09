@@ -622,6 +622,25 @@ class TestUserProfile(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['data'] == jsonify_dict(user_1.serialize(user_1))
 
+    def test_it_returns_suspended_user(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/auth/profile',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['data'] == jsonify_dict(
+            suspended_user.serialize(suspended_user)
+        )
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'profile:read': True}.items(),
@@ -710,6 +729,41 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
         assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+
+    def test_it_updates_suspended_user_profile(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        first_name = self.random_string()
+        last_name = self.random_string()
+        location = self.random_string()
+        bio = self.random_string()
+        birth_date = '1980-01-01'
+
+        response = client.post(
+            '/api/auth/profile/edit',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    first_name=first_name,
+                    last_name=last_name,
+                    location=location,
+                    bio=bio,
+                    birth_date=birth_date,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user profile updated'
+        assert data['data'] == jsonify_dict(
+            suspended_user.serialize(suspended_user)
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -1182,6 +1236,38 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert data['message'] == 'user account updated'
         assert current_hashed_password != user_1.password
 
+    def test_it_updates_password_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        email_updated_to_current_address_mock: MagicMock,
+        email_updated_to_new_address_mock: MagicMock,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        current_hashed_password = suspended_user.password
+
+        response = client.patch(
+            '/api/auth/profile/edit/account',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    email=suspended_user.email,
+                    password='12345678',
+                    new_password=self.random_string(),
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user account updated'
+        assert current_hashed_password != suspended_user.password
+
     def test_new_password_is_hashed(
         self,
         app: Flask,
@@ -1536,6 +1622,42 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             == input_workout_visibility.value
         )
 
+    def test_it_updates_user_preferences_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/preferences',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    timezone='America/New_York',
+                    weekm=True,
+                    language='fr',
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format='MM/dd/yyyy',
+                    map_visibility=PrivacyLevel.PUBLIC.value,
+                    start_elevation_at_zero=False,
+                    use_raw_gpx_speed=False,
+                    workouts_visibility=PrivacyLevel.PUBLIC.value,
+                    manually_approves_followers=True,
+                    hide_profile_in_users_directory=True,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['map_visibility'] == PrivacyLevel.PUBLIC.value
+        assert data['data']['workouts_visibility'] == PrivacyLevel.PUBLIC.value
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'profile:write': True}.items(),
@@ -1650,6 +1772,30 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         )
 
         self.assert_400(response, 'invalid hexadecimal color')
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        sport_2_running: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    color='#000000',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     @pytest.mark.parametrize(
         'input_color',
@@ -1814,6 +1960,23 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
             ).first()
             is None
         )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.delete(
+            f'/api/auth/profile/reset/sports/{sport_1_cycling.id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_does_not_raise_error_if_sport_preferences_do_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -1988,6 +2151,44 @@ class TestUserPicture(ApiTestCaseMixin):
         assert 'avatar.png' not in user_1.picture
         assert 'avatar2.png' in user_1.picture
 
+    def test_suspended_user_can_update_picture(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user picture updated'
+        assert response.status_code == 200
+        assert 'avatar.png' in suspended_user.picture
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar2'), 'avatar2.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user picture updated'
+        assert response.status_code == 200
+        assert 'avatar.png' not in suspended_user.picture
+        assert 'avatar2.png' in suspended_user.picture
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'profile:write': True}.items(),
@@ -2015,6 +2216,66 @@ class TestUserPicture(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestUserDeletePicture(ApiTestCaseMixin):
+    def test_user_can_delete_picture(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user picture updated'
+        assert response.status_code == 200
+        assert 'avatar.png' in user_1.picture
+
+        response = client.delete(
+            '/api/auth/picture',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert user_1.picture is None
+
+    def test_suspended_user_can_delete_picture(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user picture updated'
+        assert response.status_code == 200
+        assert 'avatar.png' in suspended_user.picture
+
+        response = client.delete(
+            '/api/auth/picture',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert suspended_user.picture is None
 
 
 class TestRegistrationConfiguration(ApiTestCaseMixin):
@@ -2157,6 +2418,22 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         response = client.post(
             '/api/auth/password/reset-request',
             data=json.dumps(dict(email='test@test.com')),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'password reset request processed'
+
+    def test_it_requests_password_reset_when_user_is_suspended(
+        self, app: Flask, suspended_user: User, user_reset_password_email: Mock
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/reset-request',
+            data=json.dumps(dict(email=suspended_user.email)),
             content_type='application/json',
         )
 
@@ -2356,6 +2633,31 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         password_change_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
+        client = app.test_client()
+
+        response = client.post(
+            '/api/auth/password/update',
+            data=json.dumps(
+                dict(
+                    token=token,
+                    password=self.random_string(),
+                )
+            ),
+            content_type='application/json',
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'password updated'
+
+    def test_it_updates_password_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        password_change_email_mock: MagicMock,
+    ) -> None:
+        token = get_user_token(suspended_user.id, password_reset=True)
         client = app.test_client()
 
         response = client.post(
@@ -2729,6 +3031,23 @@ class TestUserLogout(ApiTestCaseMixin):
         assert data['message'] == 'successfully logged out'
         assert response.status_code == 200
 
+    def test_suspended_user_can_logout(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/logout',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'successfully logged out'
+        assert response.status_code == 200
+
     def test_token_is_blacklisted_on_logout(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2812,6 +3131,28 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         assert user_1.accepted_policy_date == accepted_policy_date
+
+    def test_it_suspended_user_can_accept_policy(
+        self,
+        app: Flask,
+        suspended_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        accepted_policy_date = datetime.utcnow()
+
+        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
+            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+            response = client.post(
+                '/api/auth/account/privacy-policy',
+                content_type='application/json',
+                data=json.dumps(dict(accepted_policy=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert suspended_user.accepted_policy_date == accepted_policy_date
 
     @pytest.mark.parametrize('input_accepted_policy', [False, '', None, 'foo'])
     def test_it_return_error_if_user_has_not_accepted_policy(
@@ -3017,6 +3358,30 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
             export_request_id=data_export_request.id
         )
 
+    def test_suspended_user_can_request_data_export(
+        self,
+        export_data_mock: Mock,
+        app: Flask,
+        suspended_user: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/auth/account/export/request',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        data_export_request = UserDataExport.query.filter_by(
+            user_id=suspended_user.id
+        ).first()
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(data_export_request.serialize())
+
 
 class TestGetUserDataExportRequest(ApiTestCaseMixin):
     def test_it_returns_none_if_no_request(
@@ -3082,6 +3447,35 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            '/api/auth/account/export',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["request"] == jsonify_dict(
+            completed_export_request.serialize()
+        )
+
+    def test_suspended_user_can_get_data_export_info(
+        self,
+        app: Flask,
+        suspended_user: User,
+    ) -> None:
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        completed_export_request = UserDataExport(
+            user_id=suspended_user.id,
+            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+        )
+        db.session.add(completed_export_request)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
         )
 
         response = client.get(
@@ -3179,6 +3573,35 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
             as_attachment=True,
         )
 
+    def test_suspended_user_can_download_data_export(
+        self,
+        app: Flask,
+        suspended_user: User,
+    ) -> None:
+        archive_file_name = self.random_string()
+        export_request = UserDataExport(user_id=suspended_user.id)
+        db.session.add(export_request)
+        export_request.completed = True
+        export_request.file_name = archive_file_name
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        with patch('fittrackee.users.auth.send_from_directory') as mock:
+            mock.return_value = 'file'
+
+            client.get(
+                f'/api/auth/account/export/{archive_file_name}',
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        mock.assert_called_once_with(
+            f"{app.config['UPLOAD_FOLDER']}/exports/{suspended_user.id}",
+            archive_file_name,
+            mimetype='application/zip',
+            as_attachment=True,
+        )
+
 
 class TestGetBlockedUsers(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -3192,6 +3615,21 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            "/api/auth/blocked-users",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_empty_list_when_no_blocked_users(
         self,

@@ -151,6 +151,13 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             res.data.data
           )
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          if (
+            res.data.data.suspended_at !== null &&
+            !router.currentRoute.value.path.startsWith('/profile') &&
+            !router.currentRoute.value.meta.allowedToSuspendedUser
+          ) {
+            router.push('/profile')
+          }
         } else {
           handleError(context, null)
           removeAuthUserData(context)

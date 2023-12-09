@@ -1,10 +1,12 @@
 import json
+from datetime import datetime
 from typing import List
 from unittest.mock import mock_open, patch
 
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
@@ -40,6 +42,26 @@ class GetWorkoutTestCase(ApiTestCaseMixin):
 
 
 class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_gets_owner_workout(
         self,
         app: Flask,
@@ -132,6 +154,30 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_level
         )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutAsUser(GetWorkoutTestCase):
@@ -237,6 +283,28 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
             == PrivacyLevel.PUBLIC.value
         )
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
 
 class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
     def test_it_returns_404_if_workout_does_not_exist(
@@ -337,6 +405,32 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
             'no gpx file for this workout (id: '
             f'{workout_cycling_user_1.short_id})'
         ) in data['message']
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        gpx_content = self.random_string()
+        workout_cycling_user_1.gpx = 'file.gpx'
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            'builtins.open', new_callable=mock_open, read_data=gpx_content
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
 
     def test_it_returns_owner_workout_gpx(
         self,
@@ -441,6 +535,36 @@ class TestGetWorkoutGpxAsFollower(
         assert 'success' in data['status']
         assert data['data']['gpx'] == gpx_content
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        self.init_test_data(
+            workout_cycling_user_2, PrivacyLevel.FOLLOWERS, user_1, user_2
+        )
+        gpx_content = self.random_string()
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            'builtins.open', new_callable=mock_open, read_data=gpx_content
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
+
 
 class TestGetWorkoutGpxAsUser(
     GetWorkoutGpxTestCase, GetWorkoutGpxPublicVisibilityMixin
@@ -529,6 +653,33 @@ class TestGetWorkoutGpxAsUser(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['gpx'] == gpx_content
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        self.init_test_data(workout_cycling_user_2, PrivacyLevel.PUBLIC)
+        gpx_content = self.random_string()
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            'builtins.open', new_callable=mock_open, read_data=gpx_content
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutGpxAsUnauthenticatedUser(
@@ -685,6 +836,26 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetGetWorkoutChartDataTestCase):
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.gpx = 'file.gpx'
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
 
 class TestGetWorkoutChartDataAsFollower(
     GetGetWorkoutChartDataTestCase, GetWorkoutGpxAsFollowerMixin
@@ -756,6 +927,31 @@ class TestGetWorkoutChartDataAsFollower(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        workout_cycling_user_2.gpx = 'file.gpx'
+        self.init_test_data(
+            workout_cycling_user_2, PrivacyLevel.FOLLOWERS, user_1, user_2
+        )
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutChartDataAsUser(
@@ -840,6 +1036,29 @@ class TestGetWorkoutChartDataAsUser(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        self.init_test_data(workout_cycling_user_2, PrivacyLevel.PUBLIC)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_2.gpx = 'file.gpx'
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutChartDataAsUnauthenticatedUser(
@@ -1000,6 +1219,31 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
         assert 'success' in data['status']
         assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
 
+    def test_it_returns_403_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+        gpx_file_with_segments: str,
+    ) -> None:
+        workout_cycling_user_1.gpx = 'file.gpx'
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
 
 class TestGetWorkoutSegmentGpxAsFollower(
     GetWorkoutSegmentGpxTestCase, GetWorkoutGpxAsFollowerMixin
@@ -1081,6 +1325,40 @@ class TestGetWorkoutSegmentGpxAsFollower(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        gpx_file_with_segments: str,
+    ) -> None:
+        self.init_test_data(
+            workout_cycling_user_1, PrivacyLevel.FOLLOWERS, user_2, user_1
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        with patch(
+            'builtins.open',
+            new_callable=mock_open,
+            read_data=gpx_file_with_segments,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutSegmentGpxAsUser(
@@ -1174,6 +1452,32 @@ class TestGetWorkoutSegmentGpxAsUser(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+        gpx_file_with_segments: str,
+    ) -> None:
+        self.init_test_data(workout_cycling_user_1, PrivacyLevel.PUBLIC)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
@@ -1337,6 +1641,29 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
 
 class TestGetWorkoutSegmentChartDataAsFollower(
     GetWorkoutSegmentChartDataTestCase, GetWorkoutGpxAsFollowerMixin
@@ -1412,6 +1739,40 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        workout_cycling_user_1.gpx = 'file.gpx'
+        self.init_test_data(
+            workout_cycling_user_1, PrivacyLevel.FOLLOWERS, user_2, user_1
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        chart_data: List = []
+
+        with patch('builtins.open', new_callable=mock_open), patch(
+            'fittrackee.workouts.workouts.get_chart_data',
+            return_value=chart_data,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutSegmentChartDataAsUser(
@@ -1500,6 +1861,36 @@ class TestGetWorkoutSegmentChartDataAsUser(
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['chart_data'] == chart_data
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        chart_data: List = []
+        self.init_test_data(workout_cycling_user_1, PrivacyLevel.PUBLIC)
+        workout_cycling_user_1.gpx = 'file.gpx'
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        with patch('builtins.open', new_callable=mock_open), patch(
+            'fittrackee.workouts.workouts.get_chart_data',
+            return_value=chart_data,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_403(response)
 
 
 class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
@@ -1730,6 +2121,27 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
             mimetype='application/gpx+xml',
             as_attachment=True,
         )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.gpx = 'file.gpx'
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

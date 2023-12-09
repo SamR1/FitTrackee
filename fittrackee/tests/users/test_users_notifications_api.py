@@ -27,6 +27,21 @@ class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_empty_list_when_no_notifications(
         self, app: Flask, user_1: User
     ) -> None:
@@ -783,6 +798,23 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        notification_id = self.random_int()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.patch(
+            self.route.format(notification_id=notification_id),
+            content_type="application/json",
+            data=json.dumps(dict(read_status=True)),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_404_if_notification_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
@@ -926,6 +958,21 @@ class TestUserNotificationsStatus(CommentMixin, ApiTestCaseMixin):
         response = client.get(self.route, content_type="application/json")
 
         self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_unread_as_false_when_no_notifications(
         self, app: Flask, user_1: User
@@ -1115,6 +1162,20 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         response = client.post(self.route, content_type="application/json")
 
         self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+        self.assert_403(response)
 
     def test_it_does_not_return_error_when_no_notifications(
         self, app: Flask, user_1: User

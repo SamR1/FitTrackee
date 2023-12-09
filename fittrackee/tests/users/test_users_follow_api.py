@@ -11,6 +11,32 @@ from ..utils import OAUTH_SCOPES, random_string
 
 
 class TestFollow(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f'/api/users/{user_1.username}/follow',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_1.username}/follow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        self.assert_403(response)
+
     def test_it_returns_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
@@ -152,6 +178,32 @@ class TestFollow(ApiTestCaseMixin):
 
 
 class TestUnfollow(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f'/api/users/{user_1.username}/unfollow',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            f'/api/users/{user_1.username}/unfollow',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        self.assert_403(response)
+
     def test_it_returns_error_if_target_user_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:

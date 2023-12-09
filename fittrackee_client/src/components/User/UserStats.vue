@@ -29,22 +29,26 @@
     </div>
     <div class="user-stat">
       <router-link
+        v-if="displayLinks"
         :to="`/${getURL(user, authUser, $route.path)}/following`"
         class="stat-number"
       >
         {{ user.following }}
       </router-link>
+      <span v-else class="stat-number">{{ user.following }}</span>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWING', user.following) }}
       </span>
     </div>
     <div class="user-stat">
       <router-link
+        v-if="displayLinks"
         :to="`/${getURL(user, authUser, $route.path)}/followers`"
         class="stat-number"
       >
         {{ user.followers }}
       </router-link>
+      <span v-else class="stat-number">{{ user.followers }}</span>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWER', user.followers) }}
       </span>
@@ -69,6 +73,11 @@
   const store = useStore()
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const displayLinks = computed(() =>
+    user.value.username === authUser?.value.username
+      ? !authUser?.value.suspended_at
+      : true
   )
   function getURL(
     user: IUserProfile,

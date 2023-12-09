@@ -28,7 +28,7 @@
           </button>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
-          <div class="nav-items-group" v-if="isAuthenticated">
+          <div class="nav-items-group" v-if="isAuthenticated && !isSuspended">
             <router-link class="nav-item" to="/">
               {{ $t('dashboard.DASHBOARD') }}
             </router-link>
@@ -66,6 +66,7 @@
               <span class="user-name">{{ authUser.username }}</span>
             </router-link>
             <router-link
+              v-if="!isSuspended"
               class="nav-item nav-profile-img notifications"
               to="/notifications?status=unread"
               @click="closeMenu"
@@ -147,6 +148,9 @@
   const displayModal: Ref<boolean> = ref(false)
   const hasUnreadNotifications: ComputedRef<boolean> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
+  )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
 
   function openMenu() {

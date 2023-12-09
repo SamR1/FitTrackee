@@ -174,6 +174,10 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_SUSPENDED](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED](state: IAuthUserState): boolean
+
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
 }
 
