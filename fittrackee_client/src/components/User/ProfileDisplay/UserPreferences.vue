@@ -1,5 +1,6 @@
 <template>
   <div id="user-preferences" class="description-list">
+    <div class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</div>
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
@@ -9,6 +10,9 @@
       <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
+    <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -92,3 +96,17 @@
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences {
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+    }
+    .raw-speed-help {
+      margin-top: -$default-margin * 0.5;
+    }
+  }
+</style>
