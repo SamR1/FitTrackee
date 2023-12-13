@@ -74,5 +74,6 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: $default-margin * 0.5;
+    margin-bottom: $default-margin;
   }
 </style>
