@@ -3,6 +3,9 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
+        <div class="preferences-section">
+          {{ $t('user.PROFILE.INTERFACE') }}
+        </div>
         <label class="form-items">
           {{ $t('user.PROFILE.LANGUAGE') }}
           <select id="language" v-model="userForm.language" :disabled="loading">
@@ -59,6 +62,7 @@
             </label>
           </div>
         </div>
+        <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.UNITS.LABEL') }}
@@ -325,6 +329,13 @@
           font-weight: normal;
         }
       }
+    }
+
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+      margin-bottom: $default-padding * 0.5;
     }
 
     #language,
