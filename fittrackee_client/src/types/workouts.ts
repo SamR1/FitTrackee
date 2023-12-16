@@ -1,5 +1,5 @@
-import { TPaginationPayload } from '@/types/api'
-import { IChartDataset } from '@/types/chart'
+import type { TPaginationPayload } from '@/types/api'
+import type { IChartDataset } from '@/types/chart'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -34,10 +34,10 @@ export interface IRecord {
 }
 
 export interface IRecordsBySport {
-  [key: string]: string | Record<string, string | number>[] | null
+  [key: string]: string | IRecord[] | null
   label: string
   color: string | null
-  records: Record<string, string | number>[]
+  records: IRecord[]
 }
 
 export interface IRecordsBySports {
@@ -55,7 +55,7 @@ export interface IWeather {
 
 export interface IWorkout {
   ascent: number | null
-  ave_speed: number
+  ave_speed: number | null
   bounds: number[]
   creation_date: string
   descent: number | null
@@ -64,10 +64,10 @@ export interface IWorkout {
   id: string
   map: string | null
   max_alt: number | null
-  max_speed: number
+  max_speed: number | null
   min_alt: number | null
   modification_date: string | null
-  moving: string
+  moving: string | null
   next_workout: string | null
   notes: string
   pauses: string | null
@@ -85,14 +85,14 @@ export interface IWorkout {
 
 export interface IWorkoutObject {
   ascent: number | null
-  aveSpeed: number
+  aveSpeed: number | null
   descent: number | null
-  distance: number
-  duration: string
+  distance: number | null
+  duration: string | null
   maxAlt: number | null
-  maxSpeed: number
+  maxSpeed: number | null
   minAlt: number | null
-  moving: string
+  moving: string | null
   nextUrl: string | null
   pauses: string | null
   previousUrl: string | null
@@ -143,7 +143,7 @@ export type TWorkoutsPayload = TPaginationPayload & {
 export interface IWorkoutApiChartData {
   distance: number
   duration: number
-  elevation: number
+  elevation?: number
   latitude: number
   longitude: number
   speed: number

@@ -67,13 +67,13 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
     **Example requests**:
 
-    - without parameters
+    - without parameters:
 
     .. sourcecode:: http
 
       GET /api/workouts/ HTTP/1.1
 
-    - with some query parameters
+    - with some query parameters:
 
     .. sourcecode:: http
 
@@ -81,7 +81,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
     **Example responses**:
 
-    - returning at least one workout
+    - returning at least one workout:
 
     .. sourcecode:: http
 
@@ -189,6 +189,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query integer per_page: number of workouts per page
                              (default: 5, max: 100)
     :query integer sport_id: sport id
+    :query string title: any part (or all) of the workout title;
+                         title matching is case-insensitive
     :query string from: start date (format: ``%Y-%m-%d``)
     :query string to: end date (format: ``%Y-%m-%d``)
     :query float distance_from: minimal distance
@@ -206,12 +208,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:
@@ -232,6 +234,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         )
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
+        title = params.get('title')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
@@ -239,6 +242,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             Workout.query.filter(
                 Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
+                Workout.title.ilike(f"%{title}%") if title else True,
                 Workout.workout_date >= date_from if date_from else True,
                 Workout.workout_date < date_to + timedelta(seconds=1)
                 if date_to
@@ -313,7 +317,7 @@ def get_workout(
 
     **Example responses**:
 
-    - success
+    - success:
 
     .. sourcecode:: http
 
@@ -375,13 +379,13 @@ def get_workout(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
-    :statuscode 404: workout not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``workout not found``
 
     """
     workout_uuid = decode_short_id(workout_short_id)
@@ -497,15 +501,15 @@ def get_workout_gpx(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - workout not found
-        - no gpx file for this workout
-    :statuscode 500:
+        - ``workout not found``
+        - ``no gpx file for this workout``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     return get_workout_data(auth_user, workout_short_id, 'gpx')
@@ -568,15 +572,15 @@ def get_workout_chart_data(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - workout not found
-        - no gpx file for this workout
-    :statuscode 500:
+        - ``workout not found``
+        - ``no gpx file for this workout``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     return get_workout_data(auth_user, workout_short_id, 'chart_data')
@@ -622,14 +626,14 @@ def get_segment_gpx(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
-    :statuscode 400: no gpx file for this workout
+    :statuscode 200: ``success``
+    :statuscode 400: ``no gpx file for this workout``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: workout not found
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     return get_workout_data(auth_user, workout_short_id, 'gpx', segment_id)
@@ -645,7 +649,7 @@ def get_segment_chart_data(
     auth_user: User, workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from a workout gpx file, to display it with Recharts
+    Get chart data from a workout gpx file, to display it with Chart.js.
 
     **Scope**: ``workouts:read``
 
@@ -695,14 +699,14 @@ def get_segment_chart_data(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
-    :statuscode 400: no gpx file for this workout
+    :statuscode 200: ``success``
+    :statuscode 400: ``no gpx file for this workout``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: workout not found
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     return get_workout_data(
@@ -737,14 +741,14 @@ def download_workout_gpx(
 
     :param string workout_short_id: workout short id
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - workout not found
-        - no gpx file for workout
+        - ``workout not found``
+        - ``no gpx file for workout``
     """
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(
@@ -792,13 +796,13 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
 
     :param string map_id: workout map id
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: map does not exist
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``map does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:
@@ -851,7 +855,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
         y=secure_filename(y),
     )
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, timeout=30)
     return (
         Response(
             response.content,
@@ -965,16 +969,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 201: workout created
     :statuscode 400:
-        - invalid payload
-        - no file part
-        - no selected file
-        - file extension not allowed
+        - ``invalid payload``
+        - ``no file part``
+        - ``no selected file``
+        - ``file extension not allowed``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 413: error during picture update: file size exceeds 1.0MB
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 413: ``error during picture update: file size exceeds 1.0MB``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:
@@ -1149,12 +1153,12 @@ def post_workout_no_gpx(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: workout created
-    :statuscode 400: invalid payload
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     workout_data = request.get_json()
@@ -1328,13 +1332,13 @@ def update_workout(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: workout updated
-    :statuscode 400: invalid payload
+    :statuscode 400: ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: workout not found
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     workout_data = request.get_json()
@@ -1447,11 +1451,11 @@ def delete_workout(
 
     :statuscode 204: workout deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: workout not found
-    :statuscode 500: error, please try again or contact the administrator
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
 

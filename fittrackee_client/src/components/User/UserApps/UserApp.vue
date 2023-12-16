@@ -6,6 +6,7 @@
       :message="$t(messageToDisplay)"
       @confirmAction="confirmAction(client.id)"
       @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
     />
     <div v-if="client && client.client_id">
       <div
@@ -49,13 +50,15 @@
         </dd>
         <dt>{{ capitalize($t('oauth2.APP.ISSUE_AT')) }}:</dt>
         <dd>
-          {{
-            formatDate(
-              client.issued_at,
-              authUser.timezone,
-              authUser.date_format
-            )
-          }}
+          <time>
+            {{
+              formatDate(
+                client.issued_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            }}
+          </time>
         </dd>
         <dt>{{ $t('oauth2.APP.NAME') }}:</dt>
         <dd>{{ client.name }}</dd>
@@ -107,22 +110,20 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     capitalize,
     computed,
     onBeforeMount,
     toRefs,
     ref,
     onUnmounted,
-    withDefaults,
     watch,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-  import { IOAuth2Client } from '@/types/oauth'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IOAuth2Client } from '@/types/oauth'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
@@ -144,7 +145,7 @@
     () => store.getters[OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]
   )
   const displayModal: Ref<boolean> = ref(false)
-  const messageToDisplay: Ref<string | null> = ref(null)
+  const messageToDisplay: Ref<string> = ref('')
   const idCopied: Ref<boolean> = ref(false)
   const secretCopied: Ref<boolean> = ref(false)
   const clipboardSupport: Ref<boolean> = ref(false)
@@ -175,7 +176,7 @@
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
     if (!value) {
-      messageToDisplay.value = null
+      messageToDisplay.value = ''
     }
   }
   function confirmAction(clientId: number) {

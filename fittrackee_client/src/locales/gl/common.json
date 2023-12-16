@@ -1,2 +1,25 @@
 {
+  "ABOUT": "acerca de",
+  "CONFIRMATION": "Confirmación",
+  "CONTACT": "contacto",
+  "DAY": "día | días",
+  "DISPLAYED": "Mostrado",
+  "DOCUMENTATION": "documentación",
+  "HERE": "aquí",
+  "HIDDEN": "Agochado",
+  "HOME": "Inicio",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascenso",
+      "DESC": "descenso",
+      "LABEL": "orde"
+    },
+    "ORDER_BY": {
+      "LABEL": "ordenar por"
+    },
+    "PER_PAGE": {
+      "LABEL": "por páxina"
+    }
+  },
+  "TOTAL": "Total"
 }

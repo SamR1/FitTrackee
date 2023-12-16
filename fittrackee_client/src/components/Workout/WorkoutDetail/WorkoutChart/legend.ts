@@ -1,4 +1,5 @@
-import { Chart, LegendItem } from 'chart.js'
+import { Chart } from 'chart.js'
+import type { LegendItem } from 'chart.js'
 
 const getOrCreateLegendList = (id: string): HTMLUListElement => {
   const legendContainer = document.getElementById(id)
@@ -30,6 +31,12 @@ export const htmlLegendPlugin = {
       : []
 
     legendItems.forEach((item: LegendItem) => {
+      if (
+        !chart.config.options?.scales?.yElevation?.display &&
+        item.datasetIndex === 1 // elevation
+      ) {
+        return
+      }
       const li = document.createElement('li')
       li.onclick = () => {
         if (item.datasetIndex !== undefined) {

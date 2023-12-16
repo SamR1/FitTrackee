@@ -1,0 +1,416 @@
+<!doctype html>
+<html class="no-js" lang="fr" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Fonctionnalités" href="features.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
+        <title>OAuth 2.0 - Documentation FitTrackee 0.7.26</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css?v=876feb3b" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=9f1a53bb" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.26
+</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.26
+</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="features.html">Fonctionnalités</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">OAuth 2.0</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Historique des modifications</a></li>
+</ul>
+
+</div>
+</div><div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    <a href="../en/oauth.html" hreflang=en lang=en>
+      English
+    </a>
+    <a href="../fr/oauth.html" hreflang=fr lang=fr>
+      Français
+    </a>
+  </div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="oauth-2-0">
+<h1>OAuth 2.0<a class="headerlink" href="#oauth-2-0" title="Lien permanent vers cette rubrique">#</a></h1>
+<p>(<em>nouveau dans la version in 0.7.0</em>)</p>
+<p>FitTrackee fournit une API REST (voir <a class="reference external" href="api/index.html">documentation</a>) dont la plupart des points d’accès nécessitent une authentification/autorisation.</p>
+<p>Pour permettre à une application tierce d’interagir avec les points d’accès de l’API, un client <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth2</a> peut être créé dans les paramètres de l’utilisateur (onglet “apps”).</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Les points d’entrée OAuth2 nécessitant une authentification ne sont pas accessibles par des applications tierces (<a class="reference external" href="api/oauth2.html">documentation</a>), seulement par l’application web de FitTrackee).</p>
+</div>
+<p>Seul le flux avec <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1">Code d’Autorisation</a> (avec <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>) est pris en charge. Il permet d’échanger un code d’autorisation contre un jeton d’accès. L’identifiant et le secret du client doivent être envoyés dans le corps du message (méthode « POST »). Il est recommandé d’utiliser PKCE pour assurer une meilleure sécurité.</p>
+<section id="scopes">
+<h2>Scopes<a class="headerlink" href="#scopes" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>Les scopes suivants sont disponibles :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">application:write</span></code> : permet d’accéder en écriture à la configuration de l’application (uniquement pour les utilisateurs ayant des droits d’administration),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile:read</span></code> : accorde un accès en lecture aux points d’entrée d’authentification/profil utilisateur,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">profile:write</span></code> : accorde l’accès en écriture aux points d’entrée d’authentification/profil utilisateur,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">users:read</span></code> : accorde un accès en lecture aux points d’entrée des utilisateurs,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">users:write</span></code> : accorde un accès en écriture aux points d’entrée des utilisateurs,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code> : accorde un accès en lecture aux points d’entrée associés aux séances,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code> : accorde un accès en écriture aux points d’entrée associés aux séances.</p></li>
+</ul>
+</section>
+<section id="flow">
+<h2>Flux<a class="headerlink" href="#flow" title="Lien permanent vers cette rubrique">#</a></h2>
+<ul>
+<li><p>L’utilisateur crée une application (client) sur FitTrackee pour une application tierce.</p>
+<figure class="align-default">
+<img alt="Création d'un client OAuth2 sur FitTrackee" src="_images/fittrackee_screenshot-07.png" />
+</figure>
+<div class="line-block">
+<div class="line">Après l’enregistrement, l’identifiant et le secret du client sont affichés.</div>
+<div class="line">Ils doivent être stockés dans l’application tierce par l’utilisateur.</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">L’application tierce doit rediriger vers FitTrackee, afin que l’utilisateur puisse autoriser l’application tierce à accéder aux données de l’utilisateur sur FitTrackee.</div>
+</div>
+<figure class="align-default">
+<img alt="Autorisation de l'application sur FitTrackee" src="_images/fittrackee_screenshot-08.png" />
+</figure>
+<div class="line-block">
+<div class="line">L’URL pour l’autorisation est <code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize</span></code>.</div>
+<div class="line">Les paramètres requis sont les suivants :</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">client_id</span></code> : l’identifiant du client affiché après l’enregistrement</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">response_type</span></code> : <code class="docutils literal notranslate"><span class="pre">code</span></code>, FitTrackee ne supportant que le flux avec code d’autorisation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scope</span></code> : scopes séparés par des espaces.</p></li>
+</ul>
+<div class="line-block">
+<div class="line">et des paramètres facultatifs :</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code> : valeur unique pour empêcher la falsification des requêtes entre les sites (<em>cross-site request forgery</em> (CSRF))</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Pour PKCE, les paramètres suivants sont obligatoires :</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">code_challenge</span></code> : chaîne de caractères générée par un vérificateur de code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">code_challenge_method</span></code> : méthode utilisée pour créer le challenge, par exemple « S256 »</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Exemple pour PKCE :</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize?response_type=code&amp;client_id=&lt;CLIENT_ID&gt;&amp;scope=profile%3Aread+workouts%3Awrite&amp;state=&lt;STATE&gt;&amp;code_challenge=&lt;CODE_CHALLENGE&gt;&amp;code_challenge_method=S256</span></code></div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">Après autorisation, FitTrackee redirige vers l’application tierce, de sorte que l’application tierce puisse obtenir le code d’autorisation à partir de l’URL de redirection et récupère ensuite un jeton d’accès avec l’identifiant et le secret du client (point d’accès <a class="reference external" href="https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
+<div class="line">Exemple d’URL de redirection :</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">https://example.com/callback?code=&lt;AUTHORIZATION_CODE&gt;&amp;state=&lt;STATE&gt;</span></code></div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>La prise en charge d’OAuth2 est mise en œuvre avec la bibliothèque <a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> bibliothèque.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Si FitTrackee fonctionne derrière un <em>proxy</em>, l’en-tête <code class="docutils literal notranslate"><span class="pre">X-Forwarded-Proto</span></code> doit être défini.</div>
+<div class="line">Par exemple pour <code class="docutils literal notranslate"><span class="pre">nginx</span></code> :</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>proxy_set_header  X-Forwarded-Proto $scheme;
+</pre></div>
+</div>
+</div>
+</section>
+<section id="resources">
+<h2>Ressources<a class="headerlink" href="#resources" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>Quelques ressources sur OAuth 2.0 :</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.oauth.com">OAuth 2.0 Simplified</a> par <a class="reference external" href="https://aaronparecki.com">Aaron Parecki</a> (exemple pour le flux avec le <a class="reference external" href="https://www.oauth.com/oauth2-servers/server-side-apps/example-flow/">code d’autorisation et PKCE</a>)</p></li>
+<li><p><a class="reference external" href="https://requests-oauthlib.readthedocs.io/en/latest/examples/real_world_example.html">Web App Example of OAuth 2 web application flow</a> avec Requests-OAuthlib (python)</p></li>
+<li><p><a class="reference external" href="https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session">OAuth 2 Session</a> avec Authlib (python)</p></li>
+<li><p><a class="reference external" href="https://codeberg.org/SamR1/ft-oauth-client">Exemple d’une application minimale interagissant avec FitTrackee</a> (python)</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="installation.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Installation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="features.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Fonctionnalités</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2018 - 2023, SamR1
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link fa fa-github fa-lg" href="https://github.com/SamR1/FitTrackee" aria-label="GitHub"></a>
+              <a class="muted-link fa fa-mastodon fa-lg" rel="me" href="https://fosstodon.org/@FitTrackee" aria-label="Mastodon"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">OAuth 2.0</a><ul>
+<li><a class="reference internal" href="#scopes">Scopes</a></li>
+<li><a class="reference internal" href="#flow">Flux</a></li>
+<li><a class="reference internal" href="#resources">Ressources</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e6666d02"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/translations.js?v=d99ca74e"></script>
+    </body>
+</html>

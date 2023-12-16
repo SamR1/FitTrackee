@@ -3,6 +3,7 @@
     <StatsMenu
       @timeFrameUpdate="updateTimeFrame"
       @arrowClick="handleOnClickArrows"
+      :isDisabled="isDisabled"
     />
     <StatChart
       :sports="sports"
@@ -10,6 +11,7 @@
       :chartParams="chartParams"
       :displayed-sport-ids="selectedSportIds"
       :fullStats="true"
+      :isDisabled="isDisabled"
     />
     <SportsMenu
       :selected-sport-ids="selectedSportIds"
@@ -20,21 +22,23 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, ref, toRefs, watch } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import StatsMenu from '@/components/Statistics/StatsMenu.vue'
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
-  import { ISport, ITranslatedSport } from '@/types/sports'
-  import { IStatisticsDateParams } from '@/types/statistics'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type { IStatisticsDateParams } from '@/types/statistics'
+  import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
 
   interface Props {
     sports: ISport[]
     user: IAuthUserProfile
+    isDisabled: boolean
   }
   const props = defineProps<Props>()
 
@@ -48,7 +52,7 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const selectedSportIds: Ref<number[]> = ref(getSports(props.sports))
+  const selectedSportIds: Ref<number[]> = ref(getSports(sports.value))
 
   function updateTimeFrame(timeFrame: string) {
     selectedTimeFrame.value = timeFrame

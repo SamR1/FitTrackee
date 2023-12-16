@@ -1,2 +1,8 @@
 {
+  "STATISTICS": "Statistikk",
+  "TIME_FRAMES": {
+    "month": "måned",
+    "week": "uke",
+    "year": "år"
+  }
 }

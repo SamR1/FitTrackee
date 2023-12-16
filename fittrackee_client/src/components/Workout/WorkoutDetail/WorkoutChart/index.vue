@@ -24,17 +24,20 @@
           </label>
         </div>
         <div id="chart-legend" />
-        <LineChart
-          v-bind="lineChartProps"
-          class="line-chart"
-          @mouseleave="emitEmptyCoordinates"
-        />
+        <div class="line-chart">
+          <Line
+            :data="chartData"
+            :options="options"
+            :plugins="plugins"
+            @mouseleave="emitEmptyCoordinates"
+          />
+        </div>
         <div class="chart-info">
           <div class="no-data-cleaning">
             {{ $t('workouts.NO_DATA_CLEANING') }}
           </div>
 
-          <div class="elevation-start">
+          <div class="elevation-start" v-if="hasElevation">
             <label>
               <input
                 type="checkbox"
@@ -51,15 +54,16 @@
 </template>
 
 <script setup lang="ts">
-  import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, computed, ref } from 'vue'
-  import { LineChart, useLineChart } from 'vue-chart-3'
+  import type { ChartData, ChartOptions } from 'chart.js'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
-  import { TUnit } from '@/types/units'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { TUnit } from '@/types/units'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkoutChartData,
     IWorkoutData,
     TCoordinates,
@@ -77,10 +81,14 @@
 
   const { t } = useI18n()
 
+  const { authUser, workoutData } = toRefs(props)
   const displayDistance = ref(true)
-  const beginElevationAtZero = ref(true)
+  const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-    getDatasets(props.workoutData.chartData, t, props.authUser.imperial_units)
+    getDatasets(workoutData.value.chartData, t, authUser.value.imperial_units)
+  )
+  const hasElevation = computed(
+    () => datasets.value && datasets.value.datasets.elevation.data.length > 0
   )
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
@@ -100,7 +108,7 @@
   )
   const options = computed<ChartOptions<'line'>>(() => ({
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     animation: false,
     layout: {
       padding: {
@@ -141,6 +149,7 @@
       },
       yElevation: {
         beginAtZero: beginElevationAtZero.value,
+        display: hasElevation.value,
         grid: {
           drawOnChartArea: false,
         },
@@ -180,12 +189,12 @@
             return tooltipItems.length === 0
               ? ''
               : displayDistance.value
-              ? `${t('workouts.DISTANCE')}: ${
-                  tooltipItems[0].label
-                } ${fromKmUnit}`
-              : `${t('workouts.DURATION')}: ${formatDuration(
-                  tooltipItems[0].label.replace(',', '')
-                )}`
+                ? `${t('workouts.DISTANCE')}: ${
+                    tooltipItems[0].label
+                  } ${fromKmUnit}`
+                : `${t('workouts.DURATION')}: ${formatDuration(
+                    tooltipItems[0].label.replace(',', '')
+                  )}`
           },
         },
       },
@@ -194,14 +203,11 @@
       },
       htmlLegend: {
         containerID: 'chart-legend',
+        displayElevation: hasElevation.value,
       },
     },
   }))
-  const { lineChartProps } = useLineChart({
-    chartData,
-    options,
-    plugins: [htmlLegendPlugin],
-  })
+  const plugins = [htmlLegendPlugin]
 
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value
@@ -273,6 +279,9 @@
             }
           }
         }
+        .line-chart {
+          min-height: 400px;
+        }
       }
 
       @media screen and (max-width: $small-limit) {
@@ -287,6 +296,9 @@
             .no-data-cleaning {
               padding: 0 $default-padding * 2;
             }
+          }
+          .line-chart {
+            min-height: 338px;
           }
         }
       }

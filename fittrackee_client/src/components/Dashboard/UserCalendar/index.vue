@@ -26,16 +26,18 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, addMonths, format, subMonths } from 'date-fns'
-  import { ComputedRef, computed, ref, toRefs, onBeforeMount } from 'vue'
+  import { addMonths, format, subMonths } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, ref, toRefs, onBeforeMount } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import CalendarCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
   import CalendarDays from '@/components/Dashboard/UserCalendar/CalendarDays.vue'
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getCalendarStartAndEnd } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
@@ -51,7 +53,7 @@
   const { sports, user } = toRefs(props)
   const dateFormat = 'yyyy-MM-dd'
   const day = ref(new Date())
-  const calendarDates = ref(getCalendarStartAndEnd(day.value, props.user.weekm))
+  const calendarDates = ref(getCalendarStartAndEnd(day.value, user.value.weekm))
   const calendarWorkouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]
   )

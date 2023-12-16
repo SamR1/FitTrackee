@@ -45,7 +45,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { TPaginationPayload } from '@/types/api'
+  import type { TPaginationPayload } from '@/types/api'
 
   interface Props {
     order_by: string[]
@@ -60,8 +60,12 @@
   const { order_by, query, sort, message } = toRefs(props)
   const perPage = [10, 25, 50, 100]
 
-  function onSelectUpdate(event: Event & { target: HTMLInputElement }) {
-    emit('updateSelect', event.target.id, event.target.value)
+  function onSelectUpdate(event: Event) {
+    emit(
+      'updateSelect',
+      (event.target as HTMLInputElement).id,
+      (event.target as HTMLInputElement).value
+    )
   }
 </script>
 

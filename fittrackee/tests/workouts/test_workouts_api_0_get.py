@@ -12,7 +12,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 from .utils import get_random_short_id
 
 
@@ -106,15 +106,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -950,6 +942,52 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'total': 1,
         }
 
+    def test_it_gets_one_workout_with_title_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts?title=3 of 7',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        workouts = data['data']['workouts']
+        assert len(workouts) == 1
+        assert 'Workout 3 of 7' == workouts[0]['title']
+        assert 'Mon, 01 Jan 2018 00:00:00 GMT' == workouts[0]['workout_date']
+
+    def test_it_gets_no_workouts_with_title_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts?title=no_such_title',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        workouts = data['data']['workouts']
+        assert len(workouts) == 0
+
 
 class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
@@ -1020,6 +1058,38 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'has_next': False,
             'has_prev': True,
             'page': 2,
+            'pages': 2,
+            'total': 7,
+        }
+
+    def test_it_gets_all_workouts_with_title_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts?title=of 7',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 5
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
+        )
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
             'pages': 2,
             'total': 7,
         }
@@ -1238,15 +1308,7 @@ class TestGetWorkout(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     @pytest.mark.parametrize(
         'endpoint',
@@ -1372,15 +1434,7 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', True),
-            ('workouts:write', False),
-        ],
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,

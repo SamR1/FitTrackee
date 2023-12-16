@@ -28,7 +28,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
   import { timeZones } from '@/utils/timezone'
 
@@ -43,7 +44,7 @@
   const emit = defineEmits(['updateTimezone'])
 
   const { input, disabled } = toRefs(props)
-  const timezone: Ref<string> = ref(props.input)
+  const timezone: Ref<string> = ref(input.value)
   const isOpen: Ref<boolean> = ref(false)
   const tzList: Ref<HTMLInputElement | null> = ref(null)
   const focusItemIndex: Ref<number> = ref(0)
@@ -59,16 +60,16 @@
     isOpen.value = false
     emit('updateTimezone', value)
   }
-  function onEnter(event: Event & { target: HTMLInputElement }) {
+  function onEnter(event: Event) {
     event.preventDefault()
     if (tzList.value?.firstElementChild?.innerHTML) {
       onUpdateTimezone(tzList.value?.firstElementChild?.innerHTML)
     }
   }
-  function openDropdown(event: Event & { target: HTMLInputElement }) {
+  function openDropdown(event: Event) {
     event.preventDefault()
     isOpen.value = true
-    timezone.value = event.target.value.trim()
+    timezone.value = (event.target as HTMLInputElement).value.trim()
   }
 
   watch(

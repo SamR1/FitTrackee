@@ -79,7 +79,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, onBeforeMount, ref } from 'vue'
+  import { computed, onBeforeMount, ref } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
@@ -88,8 +89,8 @@
   import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
   import PrivacyPolicyToAccept from '@/components/PrivacyPolicyToAccept.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -136,7 +137,6 @@
     .privacy-policy-message {
       display: flex;
       justify-content: center;
-      margin: 0 $default-margin*.5;
     }
 
     @media screen and (max-width: $medium-limit) {
@@ -186,6 +186,12 @@
       }
       .is-hidden {
         display: none;
+      }
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .privacy-policy-message {
+        margin: 0 $default-margin * 0.5;
       }
     }
   }

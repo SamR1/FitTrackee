@@ -5,7 +5,7 @@
         <span class="total-label">
           {{ $t('common.TOTAL').toLowerCase() }}:
         </span>
-        <span v-if="pagination.total !== null">
+        <span v-if="pagination.total">
           {{ pagination.total }}
           {{ $t('workouts.WORKOUT', pagination.total) }}
         </span>
@@ -47,7 +47,7 @@
                 <SportImage
                   v-if="sports.length > 0"
                   :title="
-                    sports.find((s) => s.id === workout.sport_id)
+                    sports.filter((s) => s.id === workout.sport_id)[0]
                       .translatedLabel
                   "
                   :sport-label="getSportLabel(workout, sports)"
@@ -83,19 +83,22 @@
                 <span class="cell-heading">
                   {{ $t('workouts.DATE') }}
                 </span>
-                {{
-                  formatDate(
-                    workout.workout_date,
-                    user.timezone,
-                    user.date_format
-                  )
-                }}
+                <time>
+                  {{
+                    formatDate(
+                      workout.workout_date,
+                      user.timezone,
+                      user.date_format
+                    )
+                  }}
+                </time>
               </td>
               <td class="text-right">
                 <span class="cell-heading">
                   {{ $t('workouts.DISTANCE') }}
                 </span>
                 <Distance
+                  v-if="workout.distance !== null"
                   :distance="workout.distance"
                   unitFrom="km"
                   :useImperialUnits="user.imperial_units"
@@ -112,6 +115,7 @@
                   {{ $t('workouts.AVE_SPEED') }}
                 </span>
                 <Distance
+                  v-if="workout.ave_speed !== null"
                   :distance="workout.ave_speed"
                   unitFrom="km"
                   :speed="true"
@@ -123,6 +127,7 @@
                   {{ $t('workouts.MAX_SPEED') }}
                 </span>
                 <Distance
+                  v-if="workout.max_speed !== null"
                   :distance="workout.max_speed"
                   unitFrom="km"
                   :speed="true"
@@ -163,27 +168,20 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    capitalize,
-    onBeforeMount,
-  } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import { computed, ref, toRefs, watch, capitalize, onBeforeMount } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
-  import { ITranslatedSport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
+  import type { IPagination } from '@/types/api'
+  import type { ITranslatedSport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'

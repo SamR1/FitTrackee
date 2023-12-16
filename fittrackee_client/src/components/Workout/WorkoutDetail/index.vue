@@ -5,11 +5,13 @@
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUT_DELETION_CONFIRMATION')"
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
-      @cancelAction="updateDisplayModal(false)"
+      @cancelAction="cancelDelete"
+      @keydown.esc="cancelDelete"
     />
     <Card>
       <template #title>
         <WorkoutCardTitle
+          v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
           @displayModal="updateDisplayModal(true)"
@@ -31,24 +33,17 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    withDefaults,
-  } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkout,
     IWorkoutData,
     IWorkoutObject,
@@ -66,7 +61,7 @@
     markerCoordinates?: TCoordinates
   }
   const props = withDefaults(defineProps<Props>(), {
-    markerCoordinates: () => ({} as TCoordinates),
+    markerCoordinates: () => ({}) as TCoordinates,
   })
 
   const route = useRoute()
@@ -90,7 +85,7 @@
       ? props.sports.find(
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
-      : {}
+      : ({} as ISport)
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
@@ -105,14 +100,14 @@
       displaySegment && segmentId && segmentId !== 1
         ? `/workouts/${workout.id}/segment/${segmentId - 1}`
         : !displaySegment && workout.previous_workout
-        ? `/workouts/${workout.previous_workout}`
-        : null
+          ? `/workouts/${workout.previous_workout}`
+          : null
     const nextUrl =
       displaySegment && segmentId && segmentId < workout.segments.length
         ? `/workouts/${workout.id}/segment/${segmentId + 1}`
         : !displaySegment && workout.next_workout
-        ? `/workouts/${workout.next_workout}`
-        : null
+          ? `/workouts/${workout.next_workout}`
+          : null
     return {
       previousUrl,
       nextUrl,
@@ -162,9 +157,19 @@
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
   }
+  function cancelDelete() {
+    updateDisplayModal(false)
+  }
   function deleteWorkout(workoutId: string) {
+    updateDisplayModal(false)
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
       workoutId: workoutId,
+    })
+  }
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
     })
   }
 
@@ -173,6 +178,16 @@
     async (newSegmentId) => {
       if (newSegmentId) {
         segmentId.value = +newSegmentId
+        scrollToTop()
+      }
+    }
+  )
+  watch(
+    () => route.params.workoutId,
+    async (workoutId) => {
+      if (workoutId) {
+        displayModal.value = false
+        scrollToTop()
       }
     }
   )
@@ -184,6 +199,9 @@
     display: flex;
     ::v-deep(.card) {
       width: 100%;
+      .card-title {
+        padding: $default-padding $default-padding * 1.5;
+      }
       .card-content {
         display: flex;
         flex-direction: row;

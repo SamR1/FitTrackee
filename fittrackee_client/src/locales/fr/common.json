@@ -1,25 +1,25 @@
 {
-    "ABOUT": "à propos",
-    "CONFIRMATION": "Confirmation",
-    "CONTACT": "contact",
-    "DAY": "jour | jours",
-    "DISPLAYED": "Affiché",
-    "DOCUMENTATION": "documentation (en)",
-    "HERE": "ici",
-    "HIDDEN": "Masqué",
-    "HOME": "Accueil",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "ascendant",
-            "DESC": "descendant",
-            "LABEL": "tri"
-        },
-        "ORDER_BY": {
-            "LABEL": "trier par "
-        },
-        "PER_PAGE": {
-            "LABEL": "par page"
-        }
+  "ABOUT": "à propos",
+  "CONFIRMATION": "Confirmation",
+  "CONTACT": "contact",
+  "DAY": "jour | jours",
+  "DISPLAYED": "Affiché",
+  "DOCUMENTATION": "documentation",
+  "HERE": "ici",
+  "HIDDEN": "Masqué",
+  "HOME": "Accueil",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascendant",
+      "DESC": "descendant",
+      "LABEL": "tri"
     },
-    "TOTAL": "Total"
+    "ORDER_BY": {
+      "LABEL": "trier par "
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  },
+  "TOTAL": "Total"
 }

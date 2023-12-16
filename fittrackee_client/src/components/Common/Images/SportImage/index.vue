@@ -13,6 +13,8 @@
       v-if="sportLabel === 'Mountain Biking (Electric)'"
     />
     <Mountaineering v-if="sportLabel === 'Mountaineering'" />
+    <Paragliding v-if="sportLabel === 'Paragliding'" />
+    <OpenWaterSwimming v-if="sportLabel === 'Open Water Swimming'" />
     <Rowing v-if="sportLabel === 'Rowing'" />
     <Running v-if="sportLabel === 'Running'" />
     <SkiingAlpine v-if="sportLabel === 'Skiing (Alpine)'" />
@@ -24,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { inject, toRefs, withDefaults } from 'vue'
+  import { inject, toRefs } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
@@ -33,6 +35,8 @@
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'
   import Mountaineering from '@/components/Common/Images/SportImage/Mountaineering.vue'
+  import OpenWaterSwimming from '@/components/Common/Images/SportImage/OpenWaterSwimming.vue'
+  import Paragliding from '@/components/Common/Images/SportImage/Paragliding.vue'
   import Rowing from '@/components/Common/Images/SportImage/Rowing.vue'
   import Running from '@/components/Common/Images/SportImage/Running.vue'
   import SkiingAlpine from '@/components/Common/Images/SportImage/SkiingAlpine.vue'
@@ -51,5 +55,5 @@
   })
 
   const { color, sportLabel, title } = toRefs(props)
-  const sportColors = inject('sportColors')
+  const sportColors = inject('sportColors') as Record<string, string>
 </script>

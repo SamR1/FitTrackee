@@ -61,13 +61,15 @@
                   <span class="cell-heading">
                     {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                   </span>
-                  {{
-                    formatDate(
-                      user.created_at,
-                      authUser.timezone,
-                      authUser.date_format
-                    )
-                  }}
+                  <time>
+                    {{
+                      formatDate(
+                        user.created_at,
+                        authUser.timezone,
+                        authUser.date_format
+                      )
+                    }}
+                  </time>
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
@@ -132,8 +134,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     watch,
@@ -141,15 +141,17 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'

@@ -1,29 +1,47 @@
-/* eslint-disable import/no-duplicates */
-import { Locale } from 'date-fns'
-import { de, enUS, fr, it, nl } from 'date-fns/locale'
+import type { Locale } from 'date-fns'
+import { de, enUS, es, fr, gl, it, nb, nl, pl } from 'date-fns/locale'
 
 import createI18n from '@/i18n'
+import type { TLanguage } from '@/types/locales'
 
-export const localeFromLanguage: Record<string, Locale> = {
-  de: de,
-  en: enUS,
-  // es: es, // disabled for now
-  fr: fr,
-  // gl: gl, // disabled for now
-  it: it,
-  // nb: nb, // disabled for now
-  nl: nl,
+export const isLanguageSupported = (
+  language: string
+): language is TLanguage => {
+  return (
+    language === 'de' ||
+    language === 'en' ||
+    language === 'es' ||
+    language === 'fr' ||
+    language === 'gl' ||
+    language === 'it' ||
+    language === 'nb' ||
+    language === 'nl' ||
+    language === 'pl'
+  )
 }
 
-export const languageLabels: Record<string, string> = {
+export const localeFromLanguage: Record<TLanguage, Locale> = {
+  de: de,
+  en: enUS,
+  es: es,
+  fr: fr,
+  gl: gl,
+  it: it,
+  nb: nb,
+  nl: nl,
+  pl: pl,
+}
+
+export const languageLabels: Record<TLanguage, string> = {
   de: 'Deutsch',
   en: 'English',
-  // es: 'Español', // disabled for now
+  es: 'Español',
   fr: 'Français',
-  // gl: 'Galego', // disabled for now
-  it: 'Italiano',
-  // nb: 'Norsk bokmål', // disabled for now
+  gl: 'Galego',
+  it: 'Italiano (85%)',
+  nb: 'Norsk bokmål (61%)',
   nl: 'Nederlands',
+  pl: 'Polski',
 }
 
 const { availableLocales } = createI18n.global

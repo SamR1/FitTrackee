@@ -1,6 +1,6 @@
-import { LocationQuery } from 'vue-router'
+import type { LocationQuery } from 'vue-router'
 
-import { IQueryOptions, TPaginationPayload } from '@/types/api'
+import type { IQueryOptions, TPaginationPayload } from '@/types/api'
 
 export const sortList: string[] = ['asc', 'desc']
 export const defaultPage = 1
@@ -66,6 +66,7 @@ export const workoutsPayloadKeys = [
   'duration_from',
   'duration_to',
   'sport_id',
+  'title',
 ]
 
 const getRange = (stop: number, start = 1): number[] => {
@@ -101,8 +102,8 @@ export const rangePagination = (
   } else {
     if (
       pagination[pagination.length - 1] !== '...' &&
-      pagination[pagination.length - 1] >= pages - 2 &&
-      pagination[pagination.length - 1] < pages
+      +pagination[pagination.length - 1] >= pages - 2 &&
+      +pagination[pagination.length - 1] < pages
     ) {
       pagination = pagination.concat(
         getRange(pages, +pagination[pagination.length - 1] + 1)

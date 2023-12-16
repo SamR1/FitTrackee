@@ -5,9 +5,10 @@
         <template #title>{{ $t('statistics.STATISTICS') }}</template>
         <template #content>
           <Statistics
-            :class="{ 'stats-disabled': authUser.nb_workouts === 0 }"
+            :class="{ 'stats-disabled': isDisabled }"
             :user="authUser"
             :sports="sports"
+            :isDisabled="isDisabled"
           />
         </template>
       </Card>
@@ -17,13 +18,14 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import Statistics from '@/components/Statistics/index.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -35,6 +37,9 @@
     store.getters[SPORTS_STORE.GETTERS.SPORTS].filter((sport) =>
       authUser.value.sports_list.includes(sport.id)
     )
+  )
+  const isDisabled: ComputedRef<boolean> = computed(
+    () => authUser.value.nb_workouts === 0
   )
 </script>
 

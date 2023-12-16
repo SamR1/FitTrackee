@@ -6,10 +6,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -24,7 +25,7 @@
   #profile {
     display: flex;
     flex-direction: column;
-    padding: 0 $default-padding;
+    padding: 0 $default-padding 40px;
 
     ::v-deep(.profile-form) {
       display: flex;

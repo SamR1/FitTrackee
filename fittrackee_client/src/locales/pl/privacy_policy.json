@@ -1,0 +1,38 @@
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "TITLE": "Usuwanie konta",
+      "CONTENT": "Możesz złożyć wniosek usunięcia konta w każdej chwili poprzez wejście na ten adres (po zalogowaniu) i kliknięcie \"Usuń moje konto\" na ekranie edycji konta."
+    },
+    "DATA_COLLECTED": {
+      "TITLE": "Jakie informacje zbieramy?",
+      "CONTENT": "Następujące dane są zbierane:\n- Informacje o koncie (nazwa użytkownika, adres e-mail, hasło). Dobrowolnie podane dane konta jak imię, nazwisko, data urodzenia, lokalizacja, informacje o sobie, czy zdjęcie profilowe.\n- Pliki [GPX](https://pl.wikipedia.org/wiki/GPX). Te pliki zawierają dane związane z Twoimi aktywnościami (koordynaty geograficzne, daty, pokonane dystanse, ich czasy trwania, prędkości, wysokości miejsc, tętno...). Jeśli nie chcesz przekazywać części z tych danych, usuń je z plików GPX przed ich wysłaniem, albo dodawaj treningi bez plików GPX.\n- Dane o treningach (jaki sport, nazwy, daty, czasy trwania, pokonane dystanse, wzniesienia, spadki, dodane notatki).\n- Informacje techniczne (użyta przeglądarka internetowa i system operacyjny)."
+    },
+    "YOUR_CONSENT": {
+      "TITLE": "Twoja zgoda",
+      "CONTENT": "Poprzez używanie tej strony, wyrażasz zgodę na naszą politykę prywatności."
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "TITLE": "Zmiany w naszej polityce prywatności",
+      "CONTENT": "Jeśli zdecydujemy się zmienić naszą politykę prywatności, umieścimy zmiany na tej stronie.\n\nTen dokument jest na licencji [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Oryginalnie zaczerpnięty z polityki prywatności [Discourse](https://github.com/discourse/discourse)."
+    },
+    "INFORMATION_DISCLOSURE": {
+      "TITLE": "Czy udostępniamy jakieś informacje zewnętrznym instytucjom?",
+      "CONTENT": "Nie sprzedajemy, nie handlujemy, ani w żaden sposób nie przekazujemy na zewnątrz twoich prywatnych danych, które by pozwoliły na twoją identyfikację.\n\nTo nie dotyczy zaufanych partnerów, którzy pomagają nam utrzymywać ten serwis i oferować ci usługi, o ile zgodzili się oni utrzymywać te informacje w tajemnicy.\n\nMożemy też udostępnić twoje dane kiedy uznamy, że jest to stosowne, aby być zgodnym z prawem. Możemy to też zrobić w celu wymuszenia polityki naszej strony lub by chronić nasze/czyjeś prawa, własność lub bezpieczeństwo.\n\nJeśli zezwolisz zewnętrznej aplikacji, aby używała twojego konta, to zależnie od zakresu uprawnień, na jaki zezwolisz, może ona uzyskać dostęp do informacji z twojego profilu lub do twoich treningów. Aplikacje nigdy nie mają dostępu do twojego hasła."
+    },
+    "INFORMATION_PROTECTION": {
+      "TITLE": "Jak chronimy twoje dane?",
+      "CONTENT": "Stosujemy zestaw środków bezpieczeństwa aby zachować bezpieczeństwo twoich prywatnych danych, kiedy je podajesz, wysyłasz lub pobierasz."
+    },
+    "INFORMATION_USAGE": {
+      "TITLE": "Do czego używamy twoich danych?",
+      "CONTENT": "Dane, które zbieramy od ciebie mogą zostać użyte by dostarczyć ci kluczowych funkcjonalności **FitTrackee**:\n- Pliki GPX są używane by tworzyć treningi, wyświetlać trasy na mapie (za pomocą [OpenStreetMap](https://www.openstreetmap.org) i skonfigurowanego serwera kafelków z graficzną reprezentacją mapy), wyświetlać wykresy, generować miniatury map, obliczać rekordy i pobierać dane pogodowe (jeśli skonfigurowano dostawcę danych pogodowych).\n- Informacje z profilu oraz treningi nie są wyświetlane publicznie. Zarejestrowany użytkownik może wyświetlać tylko swoje własne treningi.\n- Adres e-mail, który podajesz, może być użyty do wysyłania ci informacji lub potwierdzenia zmian na koncie."
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "TITLE": "Używanie strony przez dzieci",
+      "CONTENT": "Jeśli ten serwer znajduje się w Unii Europejskiej lub Europejskim Obszarze Gospodarczym: Nasza strona i usługi są przeznaczone dla ludzi w wieku co najmniej 16 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [GDPR](https://pl.wikipedia.org/wiki/Og%C3%B3lne_rozporz%C4%85dzenie_o_ochronie_danych) (Ogólne rozporządzenie o ochronie danych) nie używaj tej strony.\n\nJeśli ten serwer znajduje się w USA: Nasza strona, produkty i usługi są skierowane do ludzi w wieku co najmniej 13 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [COPPA](https://pl.wikipedia.org/wiki/Children%E2%80%99s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) nie używaj tej strony.\n\nWymagania prawne mogę być inne, jeśli ten serwer znajduje się w innej jurysdykcji."
+    }
+  },
+  "TITLE": "polityka prywatności",
+  "LAST_UPDATE": "Ostatnia aktualizacja"
+}

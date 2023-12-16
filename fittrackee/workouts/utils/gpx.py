@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
 
-from ..exceptions import WorkoutGPXException
+from ..exceptions import InvalidGPXException, WorkoutGPXException
 from .weather import WeatherService
 
 weather_service = WeatherService()
@@ -42,9 +42,14 @@ def get_gpx_data(
     gpx_data['elevation_max'] = ele.maximum
     gpx_data['elevation_min'] = ele.minimum
 
-    hill = parsed_gpx.get_uphill_downhill()
-    gpx_data['uphill'] = hill.uphill
-    gpx_data['downhill'] = hill.downhill
+    # gpx file contains elevation data (<ele> element)
+    if ele.maximum is not None:
+        hill = parsed_gpx.get_uphill_downhill()
+        gpx_data['uphill'] = hill.uphill
+        gpx_data['downhill'] = hill.downhill
+    else:
+        gpx_data['uphill'] = None
+        gpx_data['downhill'] = None
 
     moving_data = parsed_gpx.get_moving_data(
         stopped_speed_threshold=stopped_speed_threshold
@@ -73,13 +78,17 @@ def get_gpx_info(
     stopped_speed_threshold: float,
     update_map_data: Optional[bool] = True,
     update_weather_data: Optional[bool] = True,
+    use_raw_gpx_speed: bool = False,
 ) -> Tuple:
     """
     Parse and return gpx, map and weather data from gpx file
     """
-    gpx = open_gpx_file(gpx_file)
+    try:
+        gpx = open_gpx_file(gpx_file)
+    except Exception:
+        raise InvalidGPXException('error', 'gpx file is invalid')
     if gpx is None:
-        raise WorkoutGPXException('not found', 'No gpx file')
+        raise InvalidGPXException('error', 'no tracks in gpx file')
 
     gpx_data: Dict = {'name': gpx.tracks[0].name, 'segments': []}
     max_speed = 0.0
@@ -95,6 +104,10 @@ def get_gpx_info(
         segment_start: Optional[datetime] = None
         segment_points_nb = len(segment.points)
         for point_idx, point in enumerate(segment.points):
+            if point.time is None:
+                raise InvalidGPXException(
+                    'error', '<time> is missing in gpx file'
+                )
             if point_idx == 0:
                 segment_start = point.time
                 # first gpx point => get weather
@@ -121,7 +134,8 @@ def get_gpx_info(
             if update_map_data:
                 map_data.append([point.longitude, point.latitude])
         moving_data = segment.get_moving_data(
-            stopped_speed_threshold=stopped_speed_threshold
+            stopped_speed_threshold=stopped_speed_threshold,
+            raw=use_raw_gpx_speed,
         )
         if moving_data:
             calculated_max_speed = moving_data.max_speed
@@ -228,29 +242,23 @@ def get_chart_data(
                 if segment.get_speed(point_idx) is not None
                 else 0
             )
-            chart_data.append(
-                {
-                    'distance': (
-                        round(distance / 1000, 2)
-                        if distance is not None
-                        else 0
-                    ),
-                    'duration': point.time_difference(first_point),
-                    'elevation': (
-                        round(point.elevation, 1)
-                        if point.elevation is not None
-                        else 0
-                    ),
-                    'latitude': point.latitude,
-                    'longitude': point.longitude,
-                    'speed': speed,
-                    # workaround
-                    # https://github.com/tkrajina/gpxpy/issues/209
-                    'time': point.time.replace(
-                        tzinfo=timezone(point.time.utcoffset())
-                    ),
-                }
-            )
+            data = {
+                'distance': (
+                    round(distance / 1000, 2) if distance is not None else 0
+                ),
+                'duration': point.time_difference(first_point),
+                'latitude': point.latitude,
+                'longitude': point.longitude,
+                'speed': speed,
+                # workaround
+                # https://github.com/tkrajina/gpxpy/issues/209
+                'time': point.time.replace(
+                    tzinfo=timezone(point.time.utcoffset())
+                ),
+            }
+            if point.elevation:
+                data['elevation'] = round(point.elevation, 1)
+            chart_data.append(data)
             previous_point = point
             previous_distance = distance
 

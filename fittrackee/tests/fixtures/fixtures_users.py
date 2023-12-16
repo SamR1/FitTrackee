@@ -61,6 +61,24 @@ def user_1_full() -> User:
 
 
 @pytest.fixture()
+def user_1_raw_speed() -> User:
+    user = User(username='test', email='test@test.com', password='12345678')
+    user.first_name = 'John'
+    user.last_name = 'Doe'
+    user.bio = 'just a random guy'
+    user.location = 'somewhere'
+    user.language = 'en'
+    user.timezone = 'America/New_York'
+    user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
+    user.is_active = True
+    user.use_raw_gpx_speed = True
+    user.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_1_paris() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.timezone = 'Europe/Paris'

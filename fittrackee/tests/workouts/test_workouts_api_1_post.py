@@ -13,6 +13,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
+from ..utils import OAUTH_SCOPES
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -278,6 +279,37 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'just a workout' == data['data']['workouts'][0]['title']
         assert_workout_data_with_gpx(data)
 
+    def test_it_adds_a_workout_with_gpx_file_raw_speed(
+        self,
+        app: Flask,
+        user_1_raw_speed: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_raw_speed.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        # max speed should be slightly higher than that tested in
+        # assert_workout_data_with_gpx
+        assert data['data']['workouts'][0]['max_speed'] == pytest.approx(5.25)
+
     def test_it_returns_ha_record_when_a_workout_without_gpx_exists(
         self,
         app: Flask,
@@ -466,6 +498,45 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert_workout_data_with_gpx(data)
+
+    def test_it_adds_a_workout_without_elevation(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_without_elevation: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_without_elevation)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        workout = data['data']['workouts'][0]
+        assert workout['duration'] == '0:04:10'
+        assert workout['ascent'] is None
+        assert workout['ave_speed'] == 4.57
+        assert workout['descent'] is None
+        assert workout['distance'] == 0.317
+        assert workout['max_alt'] is None
+        assert workout['max_speed'] == 5.1
+        assert workout['min_alt'] is None
+        assert workout['with_gpx'] is True
 
     def test_it_returns_400_when_quotes_are_not_escaped_in_notes(
         self,
@@ -674,7 +745,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'error during gpx processing')
+        data = self.assert_500(response, 'no tracks in gpx file')
         assert 'data' not in data
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
@@ -703,7 +774,36 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = self.assert_500(response, 'error during gpx file parsing')
+        data = self.assert_500(response, 'gpx file is invalid')
+        assert 'data' not in data
+
+    def test_it_returns_500_if_gpx_has_no_time(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_without_time: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_without_time)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = self.assert_500(response, '<time> is missing in gpx file')
         assert 'data' not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
@@ -910,15 +1010,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1039,6 +1131,39 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['ascent'] == input_ascent
         assert data['data']['workouts'][0]['descent'] == input_descent
+
+    def test_it_adds_workout_with_low_value_for_distance(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=1200,
+                    workout_date='2023-07-26 12:00',
+                    distance=0.001,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['ave_speed'] == 0
+        assert data['data']['workouts'][0]['distance'] == 0.001
+        assert data['data']['workouts'][0]['duration'] == '0:20:00'
+        assert data['data']['workouts'][0]['max_speed'] == 0
 
     @pytest.mark.parametrize(
         'description,input_data',
@@ -1251,15 +1376,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
-        [
-            ('application:write', False),
-            ('profile:read', False),
-            ('profile:write', False),
-            ('users:read', False),
-            ('users:write', False),
-            ('workouts:read', False),
-            ('workouts:write', True),
-        ],
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1405,7 +1522,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_500(response, 'error during gpx processing')
+            data = self.assert_500(response, 'no tracks in gpx file')
             assert 'data' not in data
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(
@@ -1637,7 +1754,65 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert data['message'] == ''
-        assert data['data']['chart_data'] != ''
+        assert len(data['data']['chart_data']) == gpx_file.count("</trkpt>")
+        assert data['data']['chart_data'][0] == {
+            'distance': 0.0,
+            'duration': 0,
+            'elevation': 998.0,
+            'latitude': 44.68095,
+            'longitude': 6.07367,
+            'speed': 3.21,
+            'time': 'Tue, 13 Mar 2018 12:44:45 GMT',
+        }
+
+    def test_it_gets_chart_data_for_a_workout_created_with_gpx_without_elevation(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_without_elevation: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_without_elevation)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+        workout_short_id = data['data']['workouts'][0]['id']
+        response = client.get(
+            f'/api/workouts/{workout_short_id}/chart_data',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['message'] == ''
+        assert len(
+            data['data']['chart_data']
+        ) == gpx_file_without_elevation.count("</trkpt>")
+        # no 'elevation' key in data
+        assert data['data']['chart_data'][0] == {
+            'distance': 0.0,
+            'duration': 0,
+            'latitude': 44.68095,
+            'longitude': 6.07367,
+            'speed': 3.21,
+            'time': 'Tue, 13 Mar 2018 12:44:45 GMT',
+        }
 
     def test_it_gets_segment_chart_data_for_a_workout_created_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1669,6 +1844,16 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['message'] == ''
         assert data['data']['chart_data'] != ''
+        assert len(data['data']['chart_data']) == gpx_file.count("</trkpt>")
+        assert data['data']['chart_data'][0] == {
+            'distance': 0.0,
+            'duration': 0,
+            'elevation': 998.0,
+            'latitude': 44.68095,
+            'longitude': 6.07367,
+            'speed': 3.21,
+            'time': 'Tue, 13 Mar 2018 12:44:45 GMT',
+        }
 
     def test_it_returns_403_on_getting_chart_data_if_workout_belongs_to_another_user(  # noqa
         self,

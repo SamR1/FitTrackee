@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,8 +6,8 @@ import {
 } from 'vuex'
 
 import { SPORTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { ISport, ISportPayload } from '@/types/sports'
+import type { IRootState } from '@/store/modules/root/types'
+import type { ISport, ISportPayload } from '@/types/sports'
 
 export interface ISportsState {
   sports: ISport[]
@@ -47,7 +47,7 @@ export type TSportsStoreModule<S = ISportsState> = Omit<
 } & {
   commit<
     K extends keyof TSportsMutations,
-    P extends Parameters<TSportsMutations[K]>[1]
+    P extends Parameters<TSportsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

@@ -1,8 +1,8 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   IStatisticsGetters,
   IStatisticsState,
 } from '@/store/modules/statistics/types'

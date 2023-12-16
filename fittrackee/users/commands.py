@@ -4,6 +4,7 @@ from typing import Optional
 import click
 from humanize import naturalsize
 
+from fittrackee import db
 from fittrackee.cli.app import app
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
@@ -23,6 +24,32 @@ logger.addHandler(handler)
 def users_cli() -> None:
     """Manage users."""
     pass
+
+
+@users_cli.command('create')
+@click.argument('username')
+@click.option('--email', type=str, required=True, help='User email.')
+@click.option(
+    '--password',
+    type=str,
+    help='User password. If not provided, a random password is generated.',
+)
+def create_user(username: str, email: str, password: Optional[str]) -> None:
+    """Create an active user account."""
+    with app.app_context():
+        try:
+            user_manager_service = UserManagerService(username)
+            user, user_password = user_manager_service.create_user(
+                email=email, password=password
+            )
+            db.session.add(user)
+            db.session.commit()
+            user_manager_service.update(activate=True)
+            click.echo(f"User '{username}' created.")
+            if not password:
+                click.echo(f"The user password is: {user_password}")
+        except Exception as e:
+            click.echo(f'Error(s) occurred:\n{e}', err=True)
 
 
 @users_cli.command('update')

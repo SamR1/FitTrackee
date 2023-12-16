@@ -11,13 +11,15 @@
       @input="updatePassword"
       @invalid="invalidPassword"
     />
-    <div class="show-password" @click="togglePassword">
-      {{ $t(`user.${showPassword ? 'HIDE' : 'SHOW'}_PASSWORD`) }}
-      <i
-        class="fa"
-        :class="`fa-eye${showPassword ? '-slash' : ''}`"
-        aria-hidden="true"
-      />
+    <div class="show-password">
+      <button class="transparent" @click.prevent="togglePassword" type="button">
+        {{ $t(`user.${showPassword ? 'HIDE' : 'SHOW'}_PASSWORD`) }}
+        <i
+          class="fa"
+          :class="`fa-eye${showPassword ? '-slash' : ''}`"
+          aria-hidden="true"
+        />
+      </button>
     </div>
     <div v-if="checkStrength" class="form-info">
       <i class="fa fa-info-circle" aria-hidden="true" />
@@ -28,7 +30,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
   import PasswordStrength from '@/components/Common/PasswordStength.vue'
 
@@ -59,8 +62,8 @@
   function togglePassword() {
     showPassword.value = !showPassword.value
   }
-  function updatePassword(event: Event & { target: HTMLInputElement }) {
-    emit('updatePassword', event.target.value)
+  function updatePassword(event: Event) {
+    emit('updatePassword', (event.target as HTMLInputElement).value)
   }
   function invalidPassword() {
     emit('passwordError')
@@ -71,6 +74,7 @@
     (newPassword) => {
       if (newPassword === '') {
         passwordValue.value = ''
+        showPassword.value = false
       }
     }
   )
@@ -84,12 +88,15 @@
     flex-direction: column;
 
     .show-password {
-      font-style: italic;
-      font-size: 0.85em;
-      text-align: right;
-      margin-top: -0.75 * $default-margin;
-      padding-right: $default-padding;
-      cursor: pointer;
+      margin-top: -0.5 * $default-margin;
+      display: flex;
+      justify-content: right;
+      button {
+        font-style: italic;
+        font-size: 0.85em;
+        padding: $default-padding * 0.5 $default-padding;
+        cursor: pointer;
+      }
     }
   }
 </style>

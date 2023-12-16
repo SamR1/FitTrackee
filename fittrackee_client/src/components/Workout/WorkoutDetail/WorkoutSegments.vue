@@ -31,7 +31,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IWorkoutSegment } from '@/types/workouts'
+  import type { IWorkoutSegment } from '@/types/workouts'
 
   interface Props {
     segments: IWorkoutSegment[]

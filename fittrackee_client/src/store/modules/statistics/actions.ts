@@ -1,13 +1,13 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import { STATS_STORE, ROOT_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   IStatisticsActions,
   IStatisticsState,
 } from '@/store/modules/statistics/types'
-import { IUserStatisticsPayload } from '@/types/statistics'
+import type { IUserStatisticsPayload } from '@/types/statistics'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IStatisticsState, IRootState> &

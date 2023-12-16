@@ -1,65 +1,66 @@
 {
-    "ABOUT": {
-        "DESCRIPTION": "Extra informatie die nuttig kan zijn voor uw gebruikers. Markdown opmaak kan gebruikt worden.",
-        "TEXT": "Gedetailleerde informatie over deze instantie"
+  "ABOUT": {
+    "DESCRIPTION": "Extra informatie die nuttig kan zijn voor uw gebruikers. Markdown opmaak kan gebruikt worden.",
+    "TEXT": "Gedetailleerde informatie over deze instantie"
+  },
+  "ACTION": "Actie",
+  "ACTIVATE_USER_ACCOUNT": "Activeer account",
+  "ACTIVE": "Ingeschakeld",
+  "ADMIN": "Beheer",
+  "ADMINISTRATION": "Instellingen",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Toevoegen/verwijderen van administrator rechten, verwijder gebruikersaccount.",
+  "APPLICATION": "Applicatie",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Administrator email voor contact",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
+    "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
+    "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",
+    "NO_CONTACT_EMAIL": "geen contact email",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van bestanden voor upload (in Mb)",
+    "TITLE": "Applicatie configureren",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van zip archief (in Mb)"
+  },
+  "BACK_TO_ADMIN": "Terug naar beheer",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Weet u zeker dat u de account {0} wilt wissen? Alle gegevens worden verwijderd, dit kan niet ongedaan gemaakt worden.",
+  "CONFIRM_USER_PASSWORD_RESET": "Weet u zeker dat u het wachtwoord voor {0} wilt resetten?",
+  "CURRENT_EMAIL": "Huidige email",
+  "DELETE_USER": "Verwijder gebruiker",
+  "EMAIL_SENDING_DISABLED": "Emails verzenden is uitgeschakeld.",
+  "ENABLE_DISABLE_SPORTS": "Aan- of uitzetten van sporten.",
+  "NEW_EMAIL": "Nieuwe email",
+  "NO_TEXT_ENTERED": "Geen tekst ingegeven",
+  "PASSWORD_RESET_SUCCESSFUL": "Het wachtwoord werd gereset.",
+  "PRIVACY_POLICY_DESCRIPTION": "Voeg uw eigen privacybeleid toe, of laat leeg om het standaard beleid te gebruiken. Markdown opmaak kan gebruikt worden.",
+  "REGISTRATION_DISABLED": "Registratie is momenteel uitgeschakeld.",
+  "REGISTRATION_ENABLED": "Registratie is momenteel ingeschakeld.",
+  "RESET_USER_PASSWORD": "Reset wachtwoord",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Ingeschakeld",
+      "HAS_WORKOUTS": "Trainingen aanwezig",
+      "IMAGE": "Afbeelding",
+      "LABEL": "Label"
     },
-    "ACTION": "Actie",
-    "ACTIVATE_USER_ACCOUNT": "Activeer account",
-    "ACTIVE": "Ingeschakeld",
-    "ADMIN": "Beheer",
-    "ADMINISTRATION": "Instellingen",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Toevoegen/verwijderen van administrator rechten, verwijder gebruikersaccount.",
-    "APPLICATION": "Applicatie",
-    "APP_CONFIG": {
-        "ADMIN_CONTACT": "Administrator email voor contact",
-        "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
-        "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
-        "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",
-        "NO_CONTACT_EMAIL": "geen contact email",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van bestanden voor upload (in Mb)",
-        "TITLE": "Applicatie configureren",
-        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van zip archief (in Mb)"
+    "TITLE": "Beheer sporten"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren.",
+  "UPDATE_USER_EMAIL": "Update email",
+  "USER": "gebruiker | gebruikers",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "admin status",
+        "CREATED_AT": "Registratie datum",
+        "IS_ACTIVE": "Account status",
+        "USERNAME": "gebruikersnaam",
+        "WORKOUTS_COUNT": "aantal trainingen"
+      }
     },
-    "BACK_TO_ADMIN": "Terug naar beheer",
-    "CONFIRM_USER_ACCOUNT_DELETION": "Weet u zeker dat u de account {0} wilt wissen? Alle gegevens worden verwijderd, dit kan niet ongedaan gemaakt worden.",
-    "CONFIRM_USER_PASSWORD_RESET": "Weet u zeker dat u het wachtwoord voor {0} wilt resetten?",
-    "CURRENT_EMAIL": "Huidige email",
-    "DELETE_USER": "Verwijder gebruiker",
-    "EMAIL_SENDING_DISABLED": "Emails verzenden is uitgeschakeld.",
-    "ENABLE_DISABLE_SPORTS": "Aan- of uitzetten van sporten.",
-    "NEW_EMAIL": "Nieuwe email",
-    "NO_TEXT_ENTERED": "Geen tekst ingegeven",
-    "PASSWORD_RESET_SUCCESSFUL": "Het wachtwoord werd gereset.",
-    "PRIVACY_POLICY_DESCRIPTION": "Voeg uw eigen privacybeleid toe, of laat leeg om het standaard beleid te gebruiken. Markdown opmaak kan gebruikt worden.",
-    "REGISTRATION_DISABLED": "Registratie is momenteel uitgeschakeld.",
-    "REGISTRATION_ENABLED": "Registratie is momenteel ingeschakeld.",
-    "RESET_USER_PASSWORD": "Reset wachtwoord",
-    "SPORTS": {
-        "TABLE": {
-            "ACTIVE": "Ingeschakeld",
-            "HAS_WORKOUTS": "Trainingen aanwezig",
-            "IMAGE": "Afbeelding",
-            "LABEL": "Label"
-        },
-        "TITLE": "Beheer sporten"
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Admin rechten toevoegen",
+      "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "De applicatie configureren.",
-    "UPDATE_USER_EMAIL": "Update email",
-    "USER": "gebruiker | gebruikers",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "admin status",
-                "CREATED_AT": "Registratie datum",
-                "IS_ACTIVE": "Account status",
-                "USERNAME": "gebruikersnaam",
-                "WORKOUTS_COUNT": "aantal trainingen"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Admin rechten toevoegen",
-            "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
-        }
-    },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt."
+    "TITLE": "Administratie - Gebruikers"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt."
 }

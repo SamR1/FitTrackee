@@ -8,13 +8,15 @@
         </router-link>
         <span class="app-issued-at">
           {{ $t('oauth2.APP.ISSUE_AT') }}
-          {{
-            formatDate(
-              client.issued_at,
-              authUser.timezone,
-              authUser.date_format
-            )
-          }}
+          <time>
+            {{
+              formatDate(
+                client.issued_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            }}
+          </time>
         </span>
       </li>
     </ul>
@@ -35,14 +37,16 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, onBeforeMount, toRefs, watch } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { computed, onBeforeMount, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import { OAUTH2_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
-  import { IOAuth2Client, IOauth2ClientsPayload } from '@/types/oauth'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IPagination } from '@/types/api'
+  import type { IOAuth2Client, IOauth2ClientsPayload } from '@/types/oauth'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { defaultPage, getNumberQueryValue } from '@/utils/api'
   import { formatDate } from '@/utils/dates'

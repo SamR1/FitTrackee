@@ -2,9 +2,10 @@ name: Python CI
 
 on:
   push:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
   pull_request:
-    paths-ignore: ['docs/**', 'docsrc/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
+    types: [opened, synchronize, reopened]
 
 env:
   APP_SETTINGS: fittrackee.config.TestingConfig
@@ -15,12 +16,13 @@ env:
 
 jobs:
   python:
-    name: python ${{ matrix.python-version }} (postgresql 14)
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: python ${{ matrix.python-version }} (postgresql 15)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -32,9 +34,9 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        python-version:  [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
+        python-version:  [ "3.8", "3.9", "3.10", "3.11", "3.12" ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Poetry and Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -42,21 +44,25 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
       - name: Bandit
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: bandit -r fittrackee -c pyproject.toml
-      - name: Lint
-        if: matrix.python-version == '3.10'
-        run: pytest --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
+      - name: Lint (isort & black)
+        if: matrix.python-version == '3.11'
+        run: pytest --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
+      - name: Lint (flake8)
+        if: matrix.python-version == '3.11'
+        run: flake8 fittrackee e2e
       - name: Mypy
-        if: matrix.python-version == '3.10'
+        if: matrix.python-version == '3.11'
         run: mypy fittrackee
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
+        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   postgresql:
-    name: postgresql ${{ matrix.psql-version }} (python 3.10)
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: postgresql ${{ matrix.psql-version }} (python 3.11)
     runs-on: ubuntu-latest
-    container: python:3.10
+    container: python:3.11
     services:
       postgres:
         image: postgres:${{ matrix.psql-version }}
@@ -71,9 +77,9 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        psql-version:  [ "11", "12", "13", "15" ]
+        psql-version:  [ "12", "13", "14", "16" ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Poetry and Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -81,15 +87,17 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing
+        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   end2end:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests
     runs-on: ubuntu-latest
     needs: ["python"]
-    container: python:3.10
+    container: python:3.11
     services:
       postgres:
-        image: postgres:14
+        image: postgres:15
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -110,7 +118,7 @@ jobs:
       EMAIL_URL: "smtp://mailhog:1025"
       REDIS_URL: "redis://redis:6379"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Poetry and Dependencies
         run: |
           python -m pip install --upgrade pip
@@ -125,4 +133,116 @@ jobs:
           export TEST_APP_URL=http://$(hostname --ip-address):5000
           sleep 5
           nohup flask worker --processes=1 >> nohup.out 2>&1 &
-          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
+
+  end2end_package:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests with package
+    runs-on: ubuntu-latest
+    needs: ["python"]
+    container: python:3.11
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: fittrackee_test
+          POSTGRES_USER: fittrackee
+          POSTGRES_PASSWORD: fittrackee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      selenium:
+        image: selenium/standalone-firefox
+      mailhog:
+        image: mailhog/mailhog:latest
+      redis:
+        image: redis:latest
+    env:
+      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
+      EMAIL_URL: "smtp://mailhog:1025"
+      REDIS_URL: "redis://redis:6379"
+      HOST: "0.0.0.0"
+      PORT: 5000
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update pip and install build
+        run: python3 -m pip install --upgrade pip build
+      - name: Create and source virtual environment
+        run: | 
+          python3 -m venv .venv 
+          . .venv/bin/activate
+      - name: Build fittrackee package
+        run: python3 -m build
+      - name: Install fittrackee package
+        run: python3 -m pip install dist/fittrackee-$(cat VERSION).tar.gz
+      - name: Run migrations
+        run: ftcli db upgrade
+      - name: Install pytest and selenium
+        run: python3 -m pip install pytest==7.4.0 pytest-selenium==4.0.1 selenium==4.9.0 pytest-html==3.2.0
+      - name: Start application and run tests with Selenium
+        run: |
+          setsid nohup fittrackee >> nohup.out 2>&1 &
+          export TEST_APP_URL=http://$(hostname --ip-address):5000
+          sleep 5
+          nohup flask worker --processes=1 >> nohup.out 2>&1 &
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
+
+  end2end_package_update:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests after update
+    runs-on: ubuntu-latest
+    needs: ["python"]
+    container: python:3.11
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: fittrackee_test
+          POSTGRES_USER: fittrackee
+          POSTGRES_PASSWORD: fittrackee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      selenium:
+        image: selenium/standalone-firefox
+      mailhog:
+        image: mailhog/mailhog:latest
+      redis:
+        image: redis:latest
+    env:
+      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
+      EMAIL_URL: "smtp://mailhog:1025"
+      REDIS_URL: "redis://redis:6379"
+      HOST: "0.0.0.0"
+      PORT: 5000
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update pip and install build
+        run: python3 -m pip install --upgrade pip build
+      - name: Create and source virtual environment
+        run: | 
+          python3 -m venv .venv 
+          . .venv/bin/activate
+      - name: Install previous version of fittrackee from PyPI
+        run: python3 -m pip install fittrackee
+      - name: Run migrations
+        run: ftcli db upgrade
+      - name: Build fittrackee package
+        run: python3 -m build
+      - name: Install fittrackee package to update instance
+        run: python3 -m pip install dist/fittrackee-$(cat VERSION).tar.gz
+      - name: Run migrations to update database
+        run: ftcli db upgrade
+      - name: Install pytest and selenium
+        run: python3 -m pip install pytest==7.4.0 pytest-selenium==4.0.1 selenium==4.9.0 pytest-html==3.2.0
+      - name: Start application and run tests with Selenium
+        run: |
+          setsid nohup fittrackee >> nohup.out 2>&1 &
+          export TEST_APP_URL=http://$(hostname --ip-address):5000
+          sleep 5
+          nohup flask worker --processes=1 >> nohup.out 2>&1 &
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1

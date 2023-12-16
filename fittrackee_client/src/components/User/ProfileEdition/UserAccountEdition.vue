@@ -6,6 +6,7 @@
       :message="$t('user.CONFIRM_ACCOUNT_DELETION')"
       @confirmAction="deleteAccount(user.username)"
       @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
     />
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -62,7 +63,11 @@
           <button class="danger" @click.prevent="updateDisplayModal(true)">
             {{ $t('buttons.DELETE_MY_ACCOUNT') }}
           </button>
-          <button class="confirm" v-if="canRequestExport()" @click.prevent="requestExport">
+          <button
+            class="confirm"
+            v-if="canRequestExport()"
+            @click.prevent="requestExport"
+          >
             {{ $t('buttons.REQUEST_DATA_EXPORT') }}
           </button>
         </div>
@@ -73,22 +78,22 @@
           {{ $t('user.EXPORT_REQUEST.ONLY_ONE_EXPORT_PER_DAY') }}
         </span>
         <div v-if="exportRequest" class="data-export-archive">
-          {{$t('user.EXPORT_REQUEST.DATA_EXPORT')}}
+          {{ $t('user.EXPORT_REQUEST.DATA_EXPORT') }}
           ({{ exportRequestDate }}):
           <span
-            v-if="exportRequest.status=== 'successful'"
+            v-if="exportRequest.status === 'successful'"
             class="archive-link"
             @click.prevent="downloadArchive(exportRequest.file_name)"
           >
             <i class="fa fa-download" aria-hidden="true" />
-            {{ $t("user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE") }}
-            ({{ getReadableFileSize(exportRequest.file_size) }})
+            {{ $t('user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE') }}
+            ({{ getReadableFileSizeAsText(exportRequest.file_size) }})
           </span>
           <span v-else>
-            {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`)}}
+            {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`) }}
           </span>
           <span v-if="generatingLink">
-            {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`)}}
+            {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`) }}
             <i class="fa fa-spinner fa-pulse" aria-hidden="true" />
           </span>
         </div>
@@ -100,8 +105,6 @@
 <script setup lang="ts">
   import { isBefore, subDays } from 'date-fns'
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     ref,
@@ -110,15 +113,20 @@
     watch,
     onUnmounted,
   } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
-  import authApi from "@/api/authApi";
+  import authApi from '@/api/authApi'
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import {IAuthUserProfile, IUserAccountPayload, IExportRequest} from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type {
+    IAuthUserProfile,
+    IUserAccountPayload,
+    IExportRequest,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
-  import { getReadableFileSize } from '@/utils/files'
+  import { getReadableFileSizeAsText } from '@/utils/files'
 
   interface Props {
     user: IAuthUserProfile
@@ -150,8 +158,8 @@
   const exportRequest: ComputedRef<IExportRequest | null> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.EXPORT_REQUEST]
   )
-  const exportRequestDate: ComputedRef<string | null> = computed(
-    () => getExportRequestDate()
+  const exportRequestDate: ComputedRef<string | null> = computed(() =>
+    getExportRequestDate()
   )
   const generatingLink: Ref<boolean> = ref(false)
 
@@ -175,19 +183,22 @@
     userForm.new_password = new_password
   }
   function getExportRequestDate() {
-    return exportRequest.value ? formatDate(
-      exportRequest.value.created_at,
-      user.value.timezone,
-      user.value.date_format,
-      true,
-        null, true
-    ) : null
+    return exportRequest.value
+      ? formatDate(
+          exportRequest.value.created_at,
+          user.value.timezone,
+          user.value.date_format,
+          true,
+          null,
+          true
+        )
+      : null
   }
 
   function canRequestExport() {
     return exportRequestDate.value
-        ? isBefore(new Date(exportRequestDate.value), subDays(new Date(), 1))
-        : true
+      ? isBefore(new Date(exportRequestDate.value), subDays(new Date(), 1))
+      : true
   }
   function updateProfile() {
     const payload: IUserAccountPayload = {
@@ -225,7 +236,7 @@
         document.body.appendChild(archive_link)
         archive_link.click()
       })
-      .finally(() => generatingLink.value = false)
+      .finally(() => (generatingLink.value = false))
   }
 
   onUnmounted(() => {
@@ -284,8 +295,8 @@
   .data-export {
     padding: $default-padding 0;
     .data-export-archive {
-      padding-top: $default-padding*2;
-      font-size: .9em;
+      padding-top: $default-padding * 2;
+      font-size: 0.9em;
 
       .archive-link {
         color: var(--app-a-color);

@@ -61,7 +61,7 @@
       </div>
       <div
         class="workout-data"
-        :class="{ 'without-gpx': workout && !workout.with_gpx }"
+        :class="{ 'without-elevation': !hasElevation(workout) }"
         @click="
           workout.id
             ? $router.push({
@@ -73,7 +73,7 @@
       >
         <div class="img">
           <SportImage
-            v-if="sport.label"
+            v-if="sport?.label"
             :sport-label="sport.label"
             :color="sport.color"
           />
@@ -92,7 +92,7 @@
             :useImperialUnits="useImperialUnits"
           />
         </div>
-        <div class="data elevation" v-if="workout && workout.with_gpx">
+        <div class="data elevation" v-if="hasElevation(workout)">
           <img
             class="mountains"
             src="/img/workouts/mountains.svg"
@@ -114,7 +114,7 @@
             />
           </div>
         </div>
-        <div class="data altitude" v-if="hasElevation(workout)">
+        <div class="data altitude" v-if="hasUphillValue(workout)">
           <i class="fa fa-location-arrow" aria-hidden="true" />
           <div class="data-values">
             +<Distance
@@ -138,27 +138,29 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IUserProfile
+    user: IAuthUserProfile
     useImperialUnits: boolean
     workout?: IWorkout
-    sport?: ISport
+    sport?: ISport | null
   }
   const props = withDefaults(defineProps<Props>(), {
-    workout: () => ({} as IWorkout),
-    sport: () => ({} as ISport),
+    workout: () => ({}) as IWorkout,
+    sport: () => ({}) as ISport,
   })
 
   const store = useStore()
@@ -169,7 +171,16 @@
   )
 
   function hasElevation(workout: IWorkout): boolean {
-    return workout && workout.ascent !== null && workout.descent !== null
+    return (
+      workout.with_gpx && workout.min_alt !== null && workout.max_alt !== null
+    )
+  }
+  function hasUphillValue(workout: IWorkout): boolean {
+    return (
+      hasElevation(workout) &&
+      workout.ascent !== null &&
+      workout.descent !== null
+    )
   }
 </script>
 
@@ -273,7 +284,7 @@
           }
         }
 
-        &.without-gpx {
+        &.without-elevation {
           .img,
           .data {
             justify-content: center;

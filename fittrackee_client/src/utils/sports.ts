@@ -1,5 +1,5 @@
-import { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
-import { IWorkout } from '@/types/workouts'
+import type { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
+import type { IWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
   'Cycling (Sport)': '#4c9792',
@@ -9,6 +9,8 @@ export const sportColors: Record<string, string> = {
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',
+  'Open Water Swimming': '#4058a4',
+  Paragliding: '#c23c50',
   Rowing: '#fcce72',
   Running: '#835b83',
   'Skiing (Alpine)': '#67a4bd',
@@ -33,8 +35,8 @@ const sortSports = (a: ITranslatedSport, b: ITranslatedSport): number => {
   return sportATranslatedLabel > sportBTranslatedLabel
     ? 1
     : sportATranslatedLabel < sportBTranslatedLabel
-    ? -1
-    : 0
+      ? -1
+      : 0
 }
 
 export const translateSports = (

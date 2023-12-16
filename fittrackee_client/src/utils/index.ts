@@ -1,20 +1,20 @@
 import { AxiosError } from 'axios'
-import { ActionContext } from 'vuex'
+import type { ActionContext } from 'vuex'
 
 import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-import { IAuthUserState } from '@/store/modules/authUser/types'
-import { IOAuth2State } from '@/store/modules/oauth2/types'
-import { IRootState } from '@/store/modules/root/types'
-import { ISportsState } from '@/store/modules/sports/types'
-import { IStatisticsState } from '@/store/modules/statistics/types'
-import { IUsersState } from '@/store/modules/users/types'
-import { IWorkoutsState } from '@/store/modules/workouts/types'
-import { IApiErrorMessage } from '@/types/api'
+import type { IAuthUserState } from '@/store/modules/authUser/types'
+import type { IOAuth2State } from '@/store/modules/oauth2/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { ISportsState } from '@/store/modules/sports/types'
+import type { IStatisticsState } from '@/store/modules/statistics/types'
+import type { IUsersState } from '@/store/modules/users/types'
+import type { IWorkoutsState } from '@/store/modules/workouts/types'
+import type { IApiErrorMessage } from '@/types/api'
 
 export const getApiUrl = (): string => {
-  return process.env.NODE_ENV === 'production'
+  return import.meta.env.PROD
     ? '/api/'
-    : `${process.env.VUE_APP_API_URL}/api/`
+    : `${import.meta.env.VITE_APP_API_URL}/api/`
 }
 
 export const handleError = (
@@ -47,14 +47,14 @@ export const handleError = (
   const errorMessages = !error
     ? msg
     : error.response
-    ? error.response.status === 413
-      ? 'file size is greater than the allowed size'
-      : errorInfo?.message
-      ? errorInfo.message
-      : msg
-    : error.message
-    ? error.message
-    : msg
+      ? error.response.status === 413
+        ? 'file size is greater than the allowed size'
+        : errorInfo?.message
+          ? errorInfo.message
+          : msg
+      : error.message
+        ? error.message
+        : msg
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
     errorMessages.includes('\n')

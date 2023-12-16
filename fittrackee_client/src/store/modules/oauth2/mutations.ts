@@ -1,9 +1,12 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { OAUTH2_STORE } from '@/store/constants'
-import { IOAuth2State, TOAuth2Mutations } from '@/store/modules/oauth2/types'
-import { IPagination } from '@/types/api'
-import { IOAuth2Client } from '@/types/oauth'
+import type {
+  IOAuth2State,
+  TOAuth2Mutations,
+} from '@/store/modules/oauth2/types'
+import type { IPagination } from '@/types/api'
+import type { IOAuth2Client } from '@/types/oauth'
 
 export const mutations: MutationTree<IOAuth2State> & TOAuth2Mutations = {
   [OAUTH2_STORE.MUTATIONS.SET_CLIENT](

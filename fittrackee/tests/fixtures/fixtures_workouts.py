@@ -116,6 +116,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
+    workout_1.title = "Workout 1 of 7"
     update_workout(workout_1)
     workout_1.ascent = 120
     workout_1.descent = 200
@@ -130,6 +131,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
+    workout_2.title = "Workout 2 of 7"
     update_workout(workout_2)
     workout_2.ascent = 100
     workout_2.descent = 80
@@ -144,6 +146,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=1024),
     )
+    workout_3.title = "Workout 3 of 7"
     update_workout(workout_3)
     workout_3.ascent = 80
     workout_3.descent = 100
@@ -160,6 +163,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=1,
         duration=datetime.timedelta(seconds=600),
     )
+    workout_4.title = "Workout 4 of 7"
     update_workout(workout_4)
     workout_4.ascent = 120
     workout_4.descent = 180
@@ -174,6 +178,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=1000),
     )
+    workout_5.title = "Workout 5 of 7"
     update_workout(workout_5)
     workout_5.ascent = 100
     workout_5.descent = 200
@@ -188,6 +193,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=8,
         duration=datetime.timedelta(seconds=6000),
     )
+    workout_6.title = "Workout 6 of 7"
     update_workout(workout_6)
     workout_6.ascent = 40
     workout_6.descent = 20
@@ -202,6 +208,7 @@ def seven_workouts_user_1() -> List[Workout]:
         distance=10,
         duration=datetime.timedelta(seconds=3000),
     )
+    workout_7.title = "Workout 7 of 7"
     update_workout(workout_7)
     db.session.add(workout_7)
     db.session.commit()
@@ -569,6 +576,96 @@ def gpx_file_with_offset() -> str:
 
 
 @pytest.fixture()
+def gpx_file_without_elevation() -> str:
+    return (
+        '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '  <metadata/>'
+        '  <trk>'
+        '    <name>just a workout</name>'
+        '    <trkseg>'
+        '      <trkpt lat="44.68095" lon="6.07367">'
+        '        <time>2018-03-13T12:44:45Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68091" lon="6.07367">'
+        '        <time>2018-03-13T12:44:50Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.6808" lon="6.07364">'
+        '        <time>2018-03-13T12:45:00Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68075" lon="6.07364">'
+        '        <time>2018-03-13T12:45:05Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68071" lon="6.07364">'
+        '        <time>2018-03-13T12:45:10Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68049" lon="6.07361">'
+        '        <time>2018-03-13T12:45:30Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68019" lon="6.07356">'
+        '        <time>2018-03-13T12:45:55Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68014" lon="6.07355">'
+        '        <time>2018-03-13T12:46:00Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67995" lon="6.07358">'
+        '        <time>2018-03-13T12:46:15Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67977" lon="6.07364">'
+        '        <time>2018-03-13T12:46:30Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67972" lon="6.07367">'
+        '        <time>2018-03-13T12:46:35Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67966" lon="6.07368">'
+        '        <time>2018-03-13T12:46:40Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67961" lon="6.0737">'
+        '        <time>2018-03-13T12:46:45Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67938" lon="6.07377">'
+        '        <time>2018-03-13T12:47:05Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67933" lon="6.07381">'
+        '        <time>2018-03-13T12:47:10Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67922" lon="6.07385">'
+        '        <time>2018-03-13T12:47:20Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67911" lon="6.0739">'
+        '        <time>2018-03-13T12:47:30Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.679" lon="6.07399">'
+        '        <time>2018-03-13T12:47:40Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67896" lon="6.07402">'
+        '        <time>2018-03-13T12:47:45Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67884" lon="6.07408">'
+        '        <time>2018-03-13T12:47:55Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67863" lon="6.07423">'
+        '        <time>2018-03-13T12:48:15Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67858" lon="6.07425">'
+        '        <time>2018-03-13T12:48:20Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67842" lon="6.07434">'
+        '        <time>2018-03-13T12:48:35Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67837" lon="6.07435">'
+        '        <time>2018-03-13T12:48:40Z</time>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67822" lon="6.07442">'
+        '        <time>2018-03-13T12:48:55Z</time>'
+        '      </trkpt>'
+        '    </trkseg>'
+        '  </trk>'
+        '</gpx>'
+    )
+
+
+@pytest.fixture()
 def gpx_file_wo_track() -> str:
     return (
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
@@ -584,6 +681,56 @@ def gpx_file_invalid_xml() -> str:
         '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
         '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
         '  <metadata/>'
+        '  <trk>'
+        '    <name>just a workout</name>'
+    )
+
+
+@pytest.fixture()
+def gpx_file_without_time() -> str:
+    return (
+        '<?xml version=\'1.0\' encoding=\'UTF-8\'?>'
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '  <metadata/>'
+        '  <trk>'
+        '    <name>just a workout</name>'
+        '    <trkseg>'
+        '      <trkpt lat="44.68095" lon="6.07367">'
+        '        <ele>998</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68091" lon="6.07367">'
+        '        <ele>998</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.6808" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68075" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68071" lon="6.07364">'
+        '        <ele>994</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68049" lon="6.07361">'
+        '        <ele>993</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68019" lon="6.07356">'
+        '        <ele>992</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.68014" lon="6.07355">'
+        '        <ele>992</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67995" lon="6.07358">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67977" lon="6.07364">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '      <trkpt lat="44.67972" lon="6.07367">'
+        '        <ele>987</ele>'
+        '      </trkpt>'
+        '    </trkseg>'
+        '  </trk>'
+        '</gpx>'
     )
 
 

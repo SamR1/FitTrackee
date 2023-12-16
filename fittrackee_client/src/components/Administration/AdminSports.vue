@@ -84,11 +84,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import { ITranslatedSport } from '@/types/sports'
+  import type { ITranslatedSport } from '@/types/sports'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
 

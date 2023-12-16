@@ -7,9 +7,10 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
-  import { TUnit } from '@/types/units'
+  import type { TUnit } from '@/types/units'
   import { units, convertDistance } from '@/utils/units'
 
   interface Props {

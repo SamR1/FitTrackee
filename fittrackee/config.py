@@ -41,7 +41,7 @@ class BaseConfig:
     TILE_SERVER = {
         'URL': os.environ.get(
             'TILE_SERVER_URL',
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         ),
         'ATTRIBUTION': os.environ.get(
             'MAP_ATTRIBUTION',
@@ -62,13 +62,15 @@ class BaseConfig:
         'fr',
         'de',
         'it',
-        # 'nb',  # disabled for now
+        'nb',
         'nl',
-        # 'es',  # disabled for now
-        # 'gl',  # disabled for now
+        'es',
+        'gl',
+        'pl',
     ]
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days
+        'refresh_token': 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
@@ -95,12 +97,13 @@ class TestingConfig(BaseConfig):
     SECRET_KEY = 'test key'  # nosec
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
-    TOKEN_EXPIRATION_SECONDS = 3
-    PASSWORD_TOKEN_EXPIRATION_SECONDS = 3
+    TOKEN_EXPIRATION_SECONDS = 60
+    PASSWORD_TOKEN_EXPIRATION_SECONDS = 60
     UI_URL = 'http://0.0.0.0:5000'
     SENDER_EMAIL = 'fittrackee@example.com'
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 60,
+        'refresh_token': 60,
     }
 
 

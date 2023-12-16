@@ -1,9 +1,9 @@
 {
-    "APP_ERROR": "The application seems to have encountered some issues.<br />Please try again later or contact the administrator.",
-    "NOT_FOUND": {
-        "PAGE": "Page not found",
-        "WORKOUT": "Workout not found"
-    },
-    "SOMETHING_WRONG": "Something went wrong",
-    "UNKNOWN": "Error. Please try again or contact the administrator."
+  "APP_ERROR": "The application seems to have encountered some issues.<br />Please try again later or contact the administrator.",
+  "NOT_FOUND": {
+    "PAGE": "Page not found",
+    "WORKOUT": "Workout not found"
+  },
+  "SOMETHING_WRONG": "Something went wrong",
+  "UNKNOWN": "Error. Please try again or contact the administrator."
 }

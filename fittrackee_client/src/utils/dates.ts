@@ -12,6 +12,7 @@ import {
 import { utcToZonedTime } from 'date-fns-tz'
 
 import createI18n from '@/i18n'
+import type { TLanguage } from '@/types/locales'
 import { localeFromLanguage } from '@/utils/locales'
 
 const { locale } = createI18n.global
@@ -96,11 +97,12 @@ const availableDateFormats = [
 export const dateStringFormats: Record<string, string> = {
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
-  // es: 'd MMM yyyy',
+  es: 'd MMM yyyy',
   fr: 'd MMM yyyy',
-  // gl: 'd MMM yyyy',
+  gl: 'd MMM yyyy',
   it: 'd MMM yyyy',
-  // nb: 'do MMM yyyy',
+  pl: 'd MMM yyyy',
+  nb: 'do MMM yyyy',
   nl: 'd MMM yyyy',
 }
 
@@ -113,7 +115,7 @@ export const formatDate = (
   timezone: string,
   dateFormat: string,
   withTime = true,
-  language: string | null = null,
+  language: TLanguage | null = null,
   withSeconds = false
 ): string => {
   if (!language) {
@@ -130,9 +132,9 @@ export const formatDate = (
 export const availableDateFormatOptions = (
   inputDate: string,
   timezone: string,
-  language: string | null = null
+  language: TLanguage | null = null
 ) => {
-  const l: string = language ? language : locale.value
+  const l: TLanguage = language ? language : locale.value
   const options: Record<string, string>[] = []
   availableDateFormats.map((df) => {
     const dateFormat = getDateFormat(df, l)

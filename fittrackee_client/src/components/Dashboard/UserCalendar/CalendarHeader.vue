@@ -21,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, format } from 'date-fns'
+  import { format } from 'date-fns'
+  import type { Locale } from 'date-fns'
   import { toRefs } from 'vue'
 
   interface Props {

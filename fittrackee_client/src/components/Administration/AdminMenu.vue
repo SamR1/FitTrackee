@@ -7,7 +7,7 @@
         <div class="admin-menu description-list">
           <dl>
             <dt>
-              <router-link to="/admin/application">
+              <router-link id="adminLink" to="/admin/application">
                 {{ $t('admin.APPLICATION') }}
               </router-link>
             </dt>
@@ -54,21 +54,28 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, toRefs, withDefaults } from 'vue'
+  import { capitalize, onMounted, toRefs } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
-  import { IAppStatistics, TAppConfig } from '@/types/application'
+  import type { IAppStatistics, TAppConfig } from '@/types/application'
 
   interface Props {
     appConfig: TAppConfig
     appStatistics?: IAppStatistics
   }
   const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({} as IAppStatistics),
+    appStatistics: () => ({}) as IAppStatistics,
   })
 
   const { appConfig, appStatistics } = toRefs(props)
+
+  onMounted(() => {
+    const applicationLink = document.getElementById('adminLink')
+    if (applicationLink) {
+      applicationLink.focus()
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

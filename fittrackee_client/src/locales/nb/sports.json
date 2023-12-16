@@ -1,2 +1,29 @@
 {
+  "Cycling (Sport)": {
+    "LABEL": "Sykling (sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Sykling (transport)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Sykling (virtuell)"
+  },
+  "Mountain Biking": {
+    "LABEL": "Fjellsykling"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Fjellsykling (elektrisk)"
+  },
+  "Rowing": {
+    "LABEL": "Roing"
+  },
+  "Running": {
+    "LABEL": "Løping"
+  },
+  "Snowshoes": {
+    "LABEL": "Truger"
+  },
+  "Paragliding": {
+    "LABEL": "Paragliding"
+  }
 }

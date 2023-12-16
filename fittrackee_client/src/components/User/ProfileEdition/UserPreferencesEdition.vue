@@ -3,6 +3,9 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
+        <div class="preferences-section">
+          {{ $t('user.PROFILE.INTERFACE') }}
+        </div>
         <label class="form-items">
           {{ $t('user.PROFILE.LANGUAGE') }}
           <select id="language" v-model="userForm.language" :disabled="loading">
@@ -59,6 +62,7 @@
             </label>
           </div>
         </div>
+        <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.UNITS.LABEL') }}
@@ -99,6 +103,55 @@
             </label>
           </div>
         </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label
+              v-for="status in startElevationAtZeroData"
+              :key="status.label"
+            >
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.start_elevation_at_zero"
+                :disabled="loading"
+                @input="updateStartElevationAtZero(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.ELEVATION_CHART_START.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in useRawGpxSpeed" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.use_raw_gpx_speed"
+                :disabled="loading"
+                @input="updateUseRawGpxSpeed(status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.USE_RAW_GPX_SPEED.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+            </span>
+          </div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -116,11 +169,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, reactive, onMounted, onUnmounted } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
+  import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
@@ -135,10 +189,12 @@
   const userForm: IUserPreferencesPayload = reactive({
     display_ascent: true,
     imperial_units: false,
-    language: '',
+    language: 'en',
     timezone: 'Europe/Paris',
     date_format: 'dd/MM/yyyy',
     weekm: false,
+    start_elevation_at_zero: false,
+    use_raw_gpx_speed: false,
   })
   const weekStart = [
     {
@@ -170,6 +226,26 @@
       value: false,
     },
   ]
+  const startElevationAtZeroData = [
+    {
+      label: 'ZERO',
+      value: true,
+    },
+    {
+      label: 'MIN_ALT',
+      value: false,
+    },
+  ]
+  const useRawGpxSpeed = [
+    {
+      label: 'FILTERED_SPEED',
+      value: false,
+    },
+    {
+      label: 'RAW_SPEED',
+      value: true,
+    },
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -192,6 +268,12 @@
 
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
+    userForm.start_elevation_at_zero = user.start_elevation_at_zero
+      ? user.start_elevation_at_zero
+      : false
+    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed
+      ? user.use_raw_gpx_speed
+      : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
     userForm.language = user.language ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
@@ -203,6 +285,12 @@
   }
   function updateTZ(value: string) {
     userForm.timezone = value
+  }
+  function updateStartElevationAtZero(value: boolean) {
+    userForm.start_elevation_at_zero = value
+  }
+  function updateUseRawGpxSpeed(value: boolean) {
+    userForm.use_raw_gpx_speed = value
   }
   function updateAscentDisplay(value: boolean) {
     userForm.display_ascent = value
@@ -241,6 +329,13 @@
           font-weight: normal;
         }
       }
+    }
+
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+      margin-bottom: $default-padding * 0.5;
     }
 
     #language,

@@ -13,6 +13,7 @@ from flask import Flask
 from fittrackee import bcrypt, db
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    UserCreationException,
     UserNotFoundException,
 )
 from fittrackee.users.models import BlacklistedToken, User
@@ -32,7 +33,7 @@ from fittrackee.users.utils.token import (
 from ..utils import random_email, random_int, random_string
 
 
-class TestUserManagerService:
+class TestUserManagerServiceUserUpdate:
     def test_it_raises_exception_if_user_does_not_exist(
         self, app: Flask
     ) -> None:
@@ -160,7 +161,7 @@ class TestUserManagerService:
         user_manager_service = UserManagerService(username=user_1.username)
         with pytest.raises(
             InvalidEmailException,
-            match='new email must be different than curent email',
+            match='new email must be different than current email',
         ):
             user_manager_service.update(new_email=user_1.email)
 
@@ -188,6 +189,155 @@ class TestUserManagerService:
         assert user_1.email == new_email
         assert user_1.email_to_confirm is None
         assert user_1.confirmation_token is None
+
+
+class TestUserManagerServiceUserCreation:
+    def test_it_raises_exception_if_provided_username_is_invalid(
+        self, app: Flask
+    ) -> None:
+        user_manager_service = UserManagerService(username='.admin')
+        with pytest.raises(
+            UserCreationException,
+            match=(
+                'username: only alphanumeric characters and '
+                'the underscore character "_" allowed\n'
+            ),
+        ):
+            user_manager_service.create(email=random_email())
+
+    def test_it_raises_exception_if_a_user_exists_with_same_username(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_manager_service = UserManagerService(username=user_1.username)
+        with pytest.raises(
+            UserCreationException,
+            match='sorry, that username is already taken',
+        ):
+            user_manager_service.create(email=random_email())
+
+    def test_it_raises_exception_if_provided_email_is_invalid(
+        self, app: Flask
+    ) -> None:
+        user_manager_service = UserManagerService(username=random_string())
+        with pytest.raises(
+            UserCreationException, match='valid email must be provided'
+        ):
+            user_manager_service.create(email=random_string())
+
+    def test_it_raises_exception_if_a_user_exists_with_same_email(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_manager_service = UserManagerService(username=random_string())
+        with pytest.raises(
+            UserCreationException,
+            match='This user already exists. No action done.',
+        ):
+            user_manager_service.create(email=user_1.email)
+
+    def test_it_creates_user_with_provided_password(self, app: Flask) -> None:
+        username = random_string()
+        email = random_email()
+        password = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, user_password = user_manager_service.create(email, password)
+
+        assert new_user
+        assert new_user.username == username
+        assert new_user.email == email
+        assert bcrypt.check_password_hash(new_user.password, password)
+        assert user_password == password
+
+    def test_it_creates_user_when_password_is_not_provided(
+        self, app: Flask
+    ) -> None:
+        username = random_string()
+        email = random_email()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, user_password = user_manager_service.create(email)
+
+        assert new_user
+        assert new_user.username == username
+        assert new_user.email == email
+        assert bcrypt.check_password_hash(new_user.password, user_password)
+
+    def test_it_creates_when_registration_is_not_enabled(
+        self,
+        app_with_3_users_max: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        username = random_string()
+        email = random_email()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, user_password = user_manager_service.create(email)
+
+        assert new_user
+        assert new_user.username == username
+        assert new_user.email == email
+        assert bcrypt.check_password_hash(new_user.password, user_password)
+
+    def test_created_user_is_inactive(self, app: Flask) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.is_active is False
+        assert new_user.confirmation_token is not None
+
+    def test_created_user_has_no_admin_rights(self, app: Flask) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.admin is False
+
+    def test_created_user_does_not_accept_privacy_policy(
+        self, app: Flask
+    ) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.accepted_policy_date is None
+
+    def test_created_user_timezone_is_europe_paris(self, app: Flask) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.timezone == 'Europe/Paris'
+
+    def test_created_user_date_format_is_MM_dd_yyyy(  # noqa
+        self, app: Flask
+    ) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.date_format == 'MM/dd/yyyy'
+
+    def test_created_user_language_is_en(self, app: Flask) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.language == 'en'
 
 
 class TestIsValidEmail:

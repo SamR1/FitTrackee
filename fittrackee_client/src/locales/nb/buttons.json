@@ -1,2 +1,17 @@
 {
+  "BACK": "Tilbake",
+  "CANCEL": "Avbryt",
+  "CLEAR_FILTER": "Tøm filtre",
+  "DELETE_MY_ACCOUNT": "Slett kontoen min",
+  "DISABLE": "Skru av",
+  "EDIT": "Rediger",
+  "FILTER": "Filter",
+  "LOGIN": "Logg inn",
+  "NO": "Nei",
+  "REGISTER": "Registrer",
+  "RESET": "Tilbakestill",
+  "ACCOUNT-CONFIRMATION-RESEND": "Send bekreftelse per e-post igjen",
+  "YES": "Ja",
+  "SUBMIT": "Send inn",
+  "REQUEST_DATA_EXPORT": "Forespør dataeksport"
 }

@@ -48,14 +48,14 @@ def get_users(auth_user: User) -> Dict:
 
     **Example request**:
 
-    - without parameters
+    - without parameters:
 
     .. sourcecode:: http
 
       GET /api/users HTTP/1.1
       Content-Type: application/json
 
-    - with some query parameters
+    - with some query parameters:
 
     .. sourcecode:: http
 
@@ -181,11 +181,11 @@ def get_users(auth_user: User) -> Dict:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
 
     """
     params = request.args.copy()
@@ -326,13 +326,13 @@ def get_single_user(
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 404:
-        - user does not exist
+        - ``user does not exist``
     """
     if user_name != auth_user.username and not auth_user.admin:
         return ForbiddenErrorResponse()
@@ -370,10 +370,10 @@ def get_picture(user_name: str) -> Any:
 
     :param integer user_name: user name
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 404:
-        - user does not exist
-        - No picture.
+        - ``user does not exist``
+        - ``No picture.``
 
     """
     try:
@@ -505,19 +505,18 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
-    :statuscode 200: success
+    :statuscode 200: ``success``
     :statuscode 400:
-        - invalid payload
-        - valid email must be provided
-        - new email must be different than curent email
+        - ``invalid payload``
+        - ``valid email must be provided``
+        - ``new email must be different than current email``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
-    :statuscode 404:
-        - user does not exist
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
     """
     user_data = request.get_json()
     if not user_data:
@@ -633,15 +632,14 @@ def delete_user(
 
     :statuscode 204: user account deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
-        - you can not delete your account, no other user has admin rights
-    :statuscode 404:
-        - user does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``you do not have permissions``
+        - ``you can not delete your account, no other user has admin rights``
+    :statuscode 404: ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:

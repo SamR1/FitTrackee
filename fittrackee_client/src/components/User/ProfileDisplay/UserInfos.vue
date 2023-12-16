@@ -15,6 +15,7 @@
           : resetUserPassword(user.username)
       "
       @cancelAction="updateDisplayModal('')"
+      @keydown.esc="updateDisplayModal('')"
     />
     <div class="info-box success-message" v-if="isSuccess">
       {{
@@ -58,13 +59,17 @@
     <div v-else>
       <dl>
         <dt>{{ $t('user.PROFILE.REGISTRATION_DATE') }}:</dt>
-        <dd>{{ registrationDate }}</dd>
+        <dd>
+          <time>{{ registrationDate }}</time>
+        </dd>
         <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
         <dd>{{ user.first_name }}</dd>
         <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
         <dd>{{ user.last_name }}</dd>
         <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-        <dd>{{ birthDate }}</dd>
+        <dd>
+          <time v-if="birthDate">{{ birthDate }}</time>
+        </dd>
         <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
         <dd>{{ user.location }}</dd>
         <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
@@ -115,20 +120,13 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    withDefaults,
-    watch,
-    onUnmounted,
-  } from 'vue'
+  import { computed, ref, toRefs, watch, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type { TLanguage } from '@/types/locales'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
   import { localeFromLanguage } from '@/utils/locales'
@@ -144,7 +142,7 @@
   const store = useStore()
 
   const { user, fromAdmin } = toRefs(props)
-  const language: ComputedRef<string> = computed(
+  const language: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const authUser: ComputedRef<IAuthUserProfile> = computed(

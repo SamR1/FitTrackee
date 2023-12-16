@@ -1,5 +1,6 @@
 <template>
   <div id="user-preferences" class="description-list">
+    <div class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</div>
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
@@ -9,6 +10,9 @@
       <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
+    <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -19,6 +23,32 @@
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.ELEVATION_CHART_START.${
+              user.start_elevation_at_zero ? 'ZERO' : 'MIN_ALT'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.USE_RAW_GPX_SPEED.${
+              user.use_raw_gpx_speed ? 'RAW_SPEED' : 'FILTERED_SPEED'
+            }`
+          )
+        }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+        </span>
+      </div>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -30,10 +60,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { TLanguage } from '@/types/locales'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
@@ -45,7 +77,7 @@
 
   const store = useStore()
 
-  const appLanguage: ComputedRef<string> = computed(
+  const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const userLanguage = computed(() =>
@@ -64,3 +96,17 @@
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences {
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+    }
+    .raw-speed-help {
+      margin-top: -$default-margin * 0.5;
+    }
+  }
+</style>

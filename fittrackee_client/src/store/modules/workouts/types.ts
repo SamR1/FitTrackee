@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination } from '@/types/api'
+import type {
   IWorkout,
   IWorkoutApiChartData,
   TWorkoutsPayload,
@@ -126,7 +126,7 @@ export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<
 } & {
   commit<
     K extends keyof TWorkoutsMutations,
-    P extends Parameters<TWorkoutsMutations[K]>[1]
+    P extends Parameters<TWorkoutsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

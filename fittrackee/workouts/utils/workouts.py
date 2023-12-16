@@ -16,7 +16,7 @@ from fittrackee.equipment.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 
-from ..exceptions import WorkoutException
+from ..exceptions import InvalidGPXException, WorkoutException
 from ..models import Sport, Workout, WorkoutSegment
 from .gpx import get_gpx_info
 from .maps import generate_map, get_map_hash
@@ -302,10 +302,12 @@ def process_one_gpx_file(
     absolute_gpx_filepath = None
     absolute_map_filepath = None
     try:
-        gpx_data, map_data, weather_data = get_gpx_info(
-            params['file_path'], stopped_speed_threshold
-        )
         auth_user = params['auth_user']
+        gpx_data, map_data, weather_data = get_gpx_info(
+            gpx_file=params['file_path'],
+            stopped_speed_threshold=stopped_speed_threshold,
+            use_raw_gpx_speed=auth_user.use_raw_gpx_speed,
+        )
         workout_date, _ = get_workout_datetime(
             workout_date=gpx_data['start'],
             date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
@@ -332,6 +334,9 @@ def process_one_gpx_file(
     except (gpxpy.gpx.GPXXMLSyntaxException, TypeError) as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx file parsing', e)
+    except InvalidGPXException as e:
+        delete_files(absolute_gpx_filepath, absolute_map_filepath)
+        raise WorkoutException('error', str(e))
     except Exception as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException('error', 'error during gpx processing', e)

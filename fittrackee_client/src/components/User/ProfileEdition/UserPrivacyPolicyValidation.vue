@@ -17,10 +17,7 @@
       <div class="policy-content">
         <PrivacyPolicy />
       </div>
-      <label
-        for="accepted_policy"
-        class="accepted_policy"
-      >
+      <label for="accepted_policy" class="accepted_policy">
         <input
           type="checkbox"
           id="accepted_policy"
@@ -49,11 +46,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, onUnmounted, toRefs } from 'vue'
+  import { computed, ref, onUnmounted, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
-  import {AUTH_USER_STORE, ROOT_STORE} from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -67,11 +65,12 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
-  const acceptedPolicy= ref(false)
+  const acceptedPolicy = ref(false)
 
   function onSubmit() {
     store.dispatch(
-        AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY, acceptedPolicy.value
+      AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY,
+      acceptedPolicy.value
     )
   }
 
@@ -93,14 +92,14 @@
 
       .policy-content {
         height: 500px;
-        border:1px solid #ccc;
+        border: 1px solid #ccc;
         overflow: auto;
         margin: $default-margin;
         border-radius: $border-radius;
 
         @media screen and (max-width: $small-limit) {
           margin: $default-margin 0;
-          font-size:  .9em;
+          font-size: 0.9em;
         }
 
         .privacy-policy-text {

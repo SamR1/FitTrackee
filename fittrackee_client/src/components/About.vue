@@ -5,7 +5,8 @@
       <p>
         <i class="fa fa-book fa-padding" aria-hidden="true"></i>
         <a
-          href="https://samr1.github.io/FitTrackee/"
+          class="documentation-link"
+          :href="documentationLink"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -48,9 +49,7 @@
       </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
-        <div
-          v-html="snarkdown(linkifyAndClean(appConfig.about))"
-        />
+        <div v-html="snarkdown(linkifyAndClean(appConfig.about))" />
       </template>
     </div>
   </div>
@@ -58,10 +57,11 @@
 
 <script lang="ts" setup>
   import snarkdown from 'snarkdown'
-  import { ComputedRef, computed, capitalize } from 'vue'
+  import { computed, capitalize } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import type { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { linkifyAndClean } from '@/utils/inputs'
 
@@ -72,18 +72,28 @@
   const weather_provider: ComputedRef<Record<string, string>> = computed(() =>
     get_weather_provider()
   )
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const documentationLink: ComputedRef<string> = computed(() =>
+    get_documentation_link()
+  )
 
   function get_weather_provider() {
     const weather_provider: Record<string, string> = {}
-    if (appConfig.value.weather_provider === 'darksky') {
-      weather_provider['name'] = 'Dark Sky'
-      weather_provider['url'] = 'https://darksky.net'
-    }
     if (appConfig.value.weather_provider === 'visualcrossing') {
       weather_provider['name'] = 'Visual Crossing'
       weather_provider['url'] = 'https://www.visualcrossing.com'
     }
     return weather_provider
+  }
+
+  function get_documentation_link() {
+    let link = 'https://samr1.github.io/FitTrackee/'
+    if (language.value === 'fr') {
+      link += 'fr/'
+    }
+    return link
   }
 </script>
 
@@ -102,7 +112,7 @@
     }
     .about-instance {
       font-weight: bold;
-      margin-top: $default-margin*3;
+      margin-top: $default-margin * 3;
     }
   }
 </style>

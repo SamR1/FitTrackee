@@ -34,7 +34,7 @@ def register(selenium, user):
     password.send_keys(user.get('password'))
     accepted_policy = selenium.find_element(By.ID, 'accepted_policy')
     accepted_policy.click()
-    submit_button = selenium.find_element(By.TAG_NAME, 'button')
+    submit_button = selenium.find_elements(By.TAG_NAME, 'button')[-1]
     submit_button.click()
 
 
@@ -45,7 +45,7 @@ def login(selenium, user):
     email.send_keys(user.get('email'))
     password = selenium.find_element(By.ID, 'password')
     password.send_keys(user.get('password'))
-    submit_button = selenium.find_element(By.TAG_NAME, 'button')
+    submit_button = selenium.find_elements(By.TAG_NAME, 'button')[-1]
     submit_button.click()
 
 
@@ -65,8 +65,12 @@ def register_valid_user(selenium):
 def register_valid_user_and_logout(selenium):
     user = register_valid_user(selenium)
     user_menu = selenium.find_element(By.CLASS_NAME, 'nav-items-user-menu')
-    logout_link = user_menu.find_elements(By.CLASS_NAME, 'nav-item')[2]
-    logout_link.click()
+    logout_button = user_menu.find_elements(By.CLASS_NAME, 'logout-button')[0]
+    logout_button.click()
+    modal = selenium.find_element(By.ID, 'modal')
+    confirm_button = modal.find_elements(By.CLASS_NAME, 'confirm')[0]
+    confirm_button.click()
+    selenium.implicitly_wait(1)
     return user
 
 

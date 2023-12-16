@@ -1,11 +1,11 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { STATS_STORE } from '@/store/constants'
-import {
+import type {
   IStatisticsState,
   TStatisticsMutations,
 } from '@/store/modules/statistics/types'
-import { TStatisticsFromApi } from '@/types/statistics'
+import type { TStatisticsFromApi } from '@/types/statistics'
 
 export const mutations: MutationTree<IStatisticsState> & TStatisticsMutations =
   {

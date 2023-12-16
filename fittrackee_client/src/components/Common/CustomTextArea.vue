@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, withDefaults } from 'vue'
+  import { ref, watch } from 'vue'
 
   interface Props {
     name: string
@@ -33,8 +33,8 @@
 
   const text = ref('')
 
-  function updateText(event: Event & { target: HTMLInputElement }) {
-    emit('updateValue', event.target.value)
+  function updateText(event: Event) {
+    emit('updateValue', (event.target as HTMLInputElement).value)
   }
 
   watch(

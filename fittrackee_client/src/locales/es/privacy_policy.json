@@ -1,1 +1,38 @@
-{}
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Puedes solicitar en cualquier momento la eliminación de tu cuenta yendo a esta dirección (tras iniciar sesión) y pulsando en el botón \"Eliminar mi Cuenta\" en los ajustes de la cuenta.",
+      "TITLE": "Eliminación de la cuenta"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Si decidimos cambiar nuestra política de privacidad, anunciaremos los cambios en esta página.\n\nEste documento está bajo licencia [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado de la política de privacidad original de [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Cambios en la Política de Privacidad"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Recogemos la siguiente información:\n- Información de la cuenta (nombre de usuario, dirección de correo electrónico y contraseña). También información opcional de tu perfil como podría ser el nombre, apellido, fecha de nacimiento, localización, biografía y la imagen de perfil subida. \n- Ficheros [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Estos ficheros contienen datos relacionados con tus actividades (coordenadas geográficas, fecha, distancia, duración, velocidades máxima y media, altitud, ritmo cardíaco...). Si non quieres exponer estos datos, bórralos antes de subirlos o bien añade los entrenamientos sin fichero GPX. \n- Datos de entrenamiento (deporte, título, fecha, duranción, distancia, ascenso, descenso, notas). \n- Información técnica (navegador y sistema operativo).",
+      "TITLE": "¿Qué información recopilamos?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "No vendemos, negociamos o transferimos de otro modo a terceras partes los datos que te identifican personalmente.\n\nEsto no incluye a terceras partes que nos ayudan a gestionar nuestra web y darte servicio, siempre que esas terceras partes mantengan el compromiso de confidencialidad.\n\nPodríamos también liberar esta información si al hacerlo creemos que estamos cumpliendo con la ley, reforzando las políticas de nuestra web o protegiendo nuestros y vuestros derechos, propiedad o seguridad.\n\nCuando autorizas a una aplicación de terceros a usar tu cuenta, dependiendo del ámbito de los permisos concedidos, ésta podría acceder a la información de tu perfil o entrenamientos. Las aplicaciones nunca tienen acceso a tu contraseña.",
+      "TITLE": "¿Mostramos algún tipo de información a terceras partes externas?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Implementamos una variedad de medidas de seguridad para mantener tu información personal segura cuando escribes, envías o accedes a tu información personal.",
+      "TITLE": "¿De qué modo protegemos tu información?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Toda la información que recogemos de ti podría usarse para proporcionar las funciones básicas de **FitTrackee**: \n- Los ficheros GPX se usan para crear los entrenamientos, mostrar rutas en el mapa (con [OpenStreetMap](https://www.openstreetmap.org) y el servidor de imágenes de mapa configurado) y gráficos, crear miniaturas de mapa, calcular records e obtener datos de meteorología (si se configura el servicio). \n- Los entrenamientos e información de perfil no se muestran públicamente. Un usuario registrado sólo puede ver sus propios entrenamientos. \n- La dirección de correo electrónico proporcionada podría utilizarse para enviarte información o para confirmar las modificaciones en tu cuenta.",
+      "TITLE": "¿Para qué utilizamos tus datos?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "Si este servidor está en la UE o el AEE: nuestra web y servicios están dirigidos a personas de al menos 16 años de edad. Si no tienes 16 años cumplidos, por requerimiento de la [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation) no uses este sitio web.\n\nSi este servidor está en EEUU de América: nuestra web, productos y servicios están orientados a personas de al menos 13 años de edad. Si no tienes 13 cumplidos, por requerimiento de la [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) no uses esta web.\n\nLos requerimientos legales pueden ser diferentes si este servidor se encuentra en otros lugares.",
+      "TITLE": "Uso de esta web por menores"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "Al utilizar nuestra web, aceptas la política de privacidad de nuestra web.",
+      "TITLE": "Tu consentimiento"
+    }
+  },
+  "LAST_UPDATE": "Última actualización",
+  "TITLE": "política de privacidad"
+}

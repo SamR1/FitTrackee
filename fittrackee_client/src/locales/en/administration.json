@@ -1,65 +1,66 @@
 {
-    "ABOUT": {
-        "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
-        "TEXT": "Detailed instance information"
+  "ABOUT": {
+    "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
+    "TEXT": "Detailed instance information"
+  },
+  "ACTION": "Action",
+  "ACTIVATE_USER_ACCOUNT": "Activate account",
+  "ACTIVE": "Active",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administration",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
+  "APPLICATION": "Application",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Administrator email for contact",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "MAX_USERS_HELP": "If 0, no limitation on registration.",
+    "MAX_USERS_LABEL": "Max. number of active users",
+    "NO_CONTACT_EMAIL": "no contact email",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
+    "TITLE": "Application configuration",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+  },
+  "BACK_TO_ADMIN": "Back to admin",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
+  "CURRENT_EMAIL": "Current email",
+  "DELETE_USER": "Delete user",
+  "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
+  "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "NEW_EMAIL": "New email",
+  "NO_TEXT_ENTERED": "No text entered",
+  "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
+  "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
+  "REGISTRATION_DISABLED": "Registration is currently disabled.",
+  "REGISTRATION_ENABLED": "Registration is currently enabled.",
+  "RESET_USER_PASSWORD": "Reset password",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Active",
+      "HAS_WORKOUTS": "workouts exist",
+      "IMAGE": "Image",
+      "LABEL": "Label"
     },
-    "ACTION": "Action",
-    "ACTIVATE_USER_ACCOUNT": "Activate account",
-    "ACTIVE": "Active",
-    "ADMIN": "Admin",
-    "ADMINISTRATION": "Administration",
-    "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
-    "APPLICATION": "Application",
-    "APP_CONFIG": {
-        "ADMIN_CONTACT": "Administrator email for contact",
-        "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
-        "MAX_USERS_HELP": "If 0, no limitation on registration.",
-        "MAX_USERS_LABEL": "Max. number of active users",
-        "NO_CONTACT_EMAIL": "no contact email",
-        "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
-        "TITLE": "Application configuration",
-        "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
+    "TITLE": "Sports administration"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
+  "UPDATE_USER_EMAIL": "Update email",
+  "USER": "user | users",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "admin status",
+        "CREATED_AT": "registration date",
+        "IS_ACTIVE": "account status",
+        "USERNAME": "username",
+        "WORKOUTS_COUNT": "workout count"
+      }
     },
-    "BACK_TO_ADMIN": "Back to admin",
-    "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
-    "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
-    "CURRENT_EMAIL": "Current email",
-    "DELETE_USER": "Delete user",
-    "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
-    "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
-    "NEW_EMAIL": "New email",
-    "NO_TEXT_ENTERED": "No text entered",
-    "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
-    "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
-    "REGISTRATION_DISABLED": "Registration is currently disabled.",
-    "REGISTRATION_ENABLED": "Registration is currently enabled.",
-    "RESET_USER_PASSWORD": "Reset password",
-    "SPORTS": {
-        "TABLE": {
-            "ACTIVE": "Active",
-            "HAS_WORKOUTS": "workouts exist",
-            "IMAGE": "Image",
-            "LABEL": "Label"
-        },
-        "TITLE": "Sports administration"
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Add admin rights",
+      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
     },
-    "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
-    "UPDATE_USER_EMAIL": "Update email",
-    "USER": "user | users",
-    "USERS": {
-        "SELECTS": {
-            "ORDER_BY": {
-                "ADMIN": "admin status",
-                "CREATED_AT": "registration date",
-                "IS_ACTIVE": "account status",
-                "USERNAME": "username",
-                "WORKOUTS_COUNT": "workout count"
-            }
-        },
-        "TABLE": {
-            "ADD_ADMIN_RIGHTS": "Add admin rights",
-            "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
-        }
-    },
-    "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated."
+    "TITLE": "Administration - Users"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated."
 }

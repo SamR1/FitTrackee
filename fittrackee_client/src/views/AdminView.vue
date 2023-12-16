@@ -13,11 +13,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, onBeforeMount } from 'vue'
+  import { computed, onBeforeMount } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import NotFound from '@/components/Common/NotFound.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig, IAppStatistics } from '@/types/application'
+  import type { TAppConfig, IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()

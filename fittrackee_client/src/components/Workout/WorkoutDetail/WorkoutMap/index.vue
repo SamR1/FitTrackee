@@ -16,14 +16,27 @@
             :zoomAnimation="false"
             ref="workoutMap"
             @ready="fitBounds(bounds)"
+            :use-global-leaflet="false"
           >
             <LControlLayers />
-            <LControl position="topleft" class="map-control" @click="resetZoom">
+            <LControl
+              position="topleft"
+              class="map-control"
+              tabindex="0"
+              role="button"
+              :aria-label="$t('workouts.RESET_ZOOM')"
+              @click="resetZoom"
+            >
               <i class="fa fa-refresh" aria-hidden="true" />
             </LControl>
             <LControl
               position="topleft"
               class="map-control"
+              tabindex="0"
+              role="button"
+              :aria-label="
+                $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}_FULLSCREEN`)
+              "
               @click="toggleFullscreen"
             >
               <i
@@ -78,14 +91,15 @@
     LMarker,
     LTileLayer,
   } from '@vue-leaflet/vue-leaflet'
-  import { ComputedRef, computed, ref, toRefs, withDefaults } from 'vue'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { GeoJSONData } from '@/types/geojson'
-  import { IWorkoutData, TCoordinates } from '@/types/workouts'
+  import type { TAppConfig } from '@/types/application'
+  import type { GeoJSONData } from '@/types/geojson'
+  import type { IWorkoutData, TCoordinates } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getApiUrl } from '@/utils'
 
@@ -94,7 +108,7 @@
     markerCoordinates?: TCoordinates
   }
   const props = withDefaults(defineProps<Props>(), {
-    markerCoordinates: () => ({} as TCoordinates),
+    markerCoordinates: () => ({}) as TCoordinates,
   })
 
   const store = useStore()

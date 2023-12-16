@@ -7,7 +7,6 @@ This application is written in Python (API) and Typescript (client):
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
-    - `python-forecast.io <https://github.com/ZeevG/python-forecast.io>`_ to fetch weather data from `Dark Sky <https://darksky.net>`__ (former forecast.io)
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
@@ -23,14 +22,14 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python 3.7+
-    - PostgreSQL 11+
+    - Python >= 3.8.1
+    - PostgreSQL 12+
 - optional
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
-    - `Yarn <https://yarnpkg.com>`__ (for development only)
+    - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
@@ -63,7 +62,7 @@ deployment method.
 
     **FitTrackee** host.
 
-    :default: 127.0.0.1
+    :default: ``127.0.0.1``
 
 
 .. envvar:: PORT
@@ -77,7 +76,7 @@ deployment method.
 
     **FitTrackee** configuration.
 
-    :default: fittrackee.config.ProductionConfig
+    :default: ``fittrackee.config.ProductionConfig``
 
 
 .. envvar:: APP_SECRET_KEY
@@ -105,9 +104,9 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    **Absolute path** to the directory where `uploads` folder will be created.
+    **Absolute path** to the directory where ``uploads`` folder will be created.
 
-    :default: `<application_directory>/fittrackee`
+    :default: ``<application_directory>/fittrackee``
 
     .. danger::
         | With installation from PyPI, the directory will be located in
@@ -120,7 +119,7 @@ deployment method.
 
     .. warning::
         | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
-          engine URL should begin with `postgresql://`.
+          engine URL should begin with ``postgresql://``.
 
 .. envvar:: DATABASE_DISABLE_POOLING
 
@@ -129,7 +128,7 @@ deployment method.
     Disable pooling if needed (when starting application with **FitTrackee** entry point and not directly with **Gunicorn**),
     see `SqlAlchemy documentation <https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork>`__.
 
-    :default: false
+    :default: ``false``
 
 .. envvar:: UI_URL
 
@@ -181,7 +180,7 @@ deployment method.
 
     API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
 
-    :default: `300 per 5 minutes`
+    :default: ``300 per 5 minutes``
 
 
 .. envvar:: TILE_SERVER_URL
@@ -191,7 +190,11 @@ deployment method.
     | Tile server URL (with api key if needed), see `Map tile server <installation.html#map-tile-server>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <installation.html#envvar-DEFAULT_STATICMAP>`__)
 
-    :default: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`
+    .. versionchanged:: 0.7.23
+
+    | The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
+
+    :default: ``https://tile.openstreetmap.org/{z}/{x}/{y}.png``
 
 
 .. envvar:: STATICMAP_SUBDOMAINS
@@ -210,22 +213,22 @@ deployment method.
 
     Map attribution (if using another tile server), see `Map tile server <installation.html#map-tile-server>`__.
 
-    :default: `&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors`
+    :default: ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
 
 
 .. envvar:: DEFAULT_STATICMAP
 
     .. versionadded:: 0.4.9
 
-    | If `True`, it keeps using default tile server to generate static maps (Komoot.de tile server).
+    | If ``True``, it keeps using **staticmap** default tile server to generate static maps (OSM tile server since **staticmap** 0.5.6 (Komoot.de tile server before this version)).
     | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
 
     .. versionchanged:: 0.6.10
 
     | This variable is now case-insensitive.
-    | If `False`, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
+    | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
-    :default: False
+    :default: ``False``
 
 
 .. envvar:: WEATHER_API_KEY
@@ -242,9 +245,9 @@ deployment method.
     Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
 
 
-.. envvar:: VUE_APP_API_URL
+.. envvar:: VITE_APP_API_URL
 
-    **FitTrackee** API URL, only needed in dev environment.
+    .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
 
 
 
@@ -259,8 +262,8 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
 .. warning::
-    | - If the email URL is invalid, the application may not start.
-    | - Sending emails with Office365 may not work if SMTP auth is disabled.
+    | If the email URL is invalid, the application may not start.
+    | Sending emails with Office365 may not work if SMTP auth is disabled.
 
 .. versionchanged:: 0.5.3
 
@@ -274,7 +277,7 @@ Emails sent by FitTrackee are:
 
 - account confirmation instructions
 - password reset request
-- email change (to old and new email adresses)
+- email change (to old and new email addresses)
 - password change
 - notification when a data export archive is ready to download (*new in 0.7.13*)
 
@@ -283,6 +286,11 @@ Emails sent by FitTrackee are:
 For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
 
 A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
+
+.. versionchanged:: 0.7.24
+
+Password can be encoded if it contains special characters.
+For instance with password ``passwordwith@and&and?``, the encoded password will be: ``passwordwith%40and%26and%3F``.
 
 
 Map tile server
@@ -313,6 +321,10 @@ For instance, to set OSM France tile server, the expected values are:
 
 The subdomain will be chosen randomly.
 
+.. versionadded:: 0.7.23
+
+The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
+
 
 API rate limits
 ^^^^^^^^^^^^^^^
@@ -339,7 +351,7 @@ API rate limits
     $ flask limiter
     Usage: flask limiter [OPTIONS] COMMAND [ARGS]...
 
-      Flask-Limiter maintenance & utility commmands
+      Flask-Limiter maintenance & utility commands
 
     Options:
       --help  Show this message and exit.
@@ -356,20 +368,23 @@ Weather data
 
 The following weather data providers are supported by **FitTrackee**:
 
-- `Dark Sky <https://darksky.net>`__ (deprecated, will stop on March 31st, 2023)
 - `Visual Crossing <https://www.visualcrossing.com>`__ (**note**: historical data are provided on hourly period)
 
 To configure a weather provider, set the following environment variables:
 
-- ``WEATHER_API_PROVIDER``: ``darksky`` for **Dark Sky** or ``visualcrossing`` for **Visual Crossing**
 - ``WEATHER_API_KEY``: the key to the corresponding weather provider
+
+
+.. versionchanged:: 0.7.15
+
+**DarkSky** support is discontinued, since the service shut down on March 31, 2023.
 
 
 Installation
 ~~~~~~~~~~~~
 
 .. warning::
-    | Note that FitTrackee is under heavy development, some features may be unstable.
+    | Note that **FitTrackee** is under heavy development, some features may be unstable.
 
 From PyPI
 ^^^^^^^^^
@@ -443,19 +458,15 @@ From sources
 ^^^^^^^^^^^^
 
 .. warning::
-    | Since FitTrackee 0.2.1, Python packages installation needs Poetry.
-    | To install it on ArchLinux:
+    | Since **FitTrackee** 0.2.1, Python packages installation needs Poetry.
+    | For more information, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
+
+.. note::
+    | To keep virtualenv in project directory, update Poetry configuration.
 
     .. code-block:: bash
 
-        $ yay poetry
-        $ poetry --version
-        Poetry 1.0.17
-
-        # optional
         $ poetry config virtualenvs.in-project true
-
-    For other OS, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
 
 Dev environment
 """""""""""""""
@@ -507,13 +518,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.14):
+-  Download the last release (for now, it is the release v0.7.26):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
-   $ tar -xzf v0.7.14.tar.gz
-   $ mv FitTrackee-0.7.14 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.26.tar.gz
+   $ tar -xzf v0.7.26.tar.gz
+   $ mv FitTrackee-0.7.26 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -559,6 +570,10 @@ Upgrade
     | Before upgrading, make a backup of all data:
     | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
     | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+
+.. warning::
+
+    For now, releases do not follow `semantic versioning <https://semver.org>`__). Any version may contain backward-incompatible changes.
 
 
 From PyPI
@@ -633,13 +648,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.14) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.26) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.14.tar.gz
-   $ tar -xzf v0.7.14.tar.gz
-   $ cp -R FitTrackee-0.7.14/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.26.tar.gz
+   $ tar -xzf v0.7.26.tar.gz
+   $ cp -R FitTrackee-0.7.26/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -672,7 +687,7 @@ There are several ways to start **FitTrackee** web application and task queue
 library.
 One way is to use a **systemd** services and **Nginx** to proxy pass to **Gunicorn**.
 
-Examples (to update depending on your application configuration and given distribution):
+Examples (to adapt depending on your instance configuration and operating system):
 
 - for application: ``fittrackee.service``
 
@@ -803,7 +818,7 @@ Installation
 
 .. versionadded:: 0.4.4
 
-For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
+For **evaluation** purposes, docker files are available, installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee**:
 
@@ -858,7 +873,7 @@ Development
 
 .. versionadded:: 0.5.0
 
-- an additional step is needed to install `fittrackee_client`
+- an additional step is needed to install ``fittrackee_client``
 
 .. code-block:: bash
 
@@ -873,13 +888,19 @@ Development
 Open http://localhost:3000
 
 .. note::
-    Some environment variables need to be updated like `UI_URL`
+    Some environment variables need to be updated like ``UI_URL``
 
 - to run lint or tests:
 
 .. code-block:: bash
 
-    $ make docker-lint-client  # run lint on javascript files
+    $ make docker-lint-client  # run type check and lint on javascript files
     $ make docker-test-client  # run unit tests on Client
     $ make docker-lint-python  # run type check and lint on python files
     $ make docker-test-python  # run unit tests on API
+
+
+Yunohost
+~~~~~~~~
+
+A package is available, see https://github.com/YunoHost-Apps/fittrackee_ynh.

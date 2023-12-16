@@ -1,4 +1,4 @@
-import {
+import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,
@@ -36,14 +36,18 @@ export const getDatasets = (
   const coordinates: TCoordinates[] = []
 
   chartData.map((data) => {
-    distance_labels.push(data.distance)
+    distance_labels.push(
+      convertStatsDistance('km', data.distance, useImperialUnits)
+    )
     duration_labels.push(data.duration)
     datasets.speed.data.push(
       convertStatsDistance('km', data.speed, useImperialUnits)
     )
-    datasets.elevation.data.push(
-      convertStatsDistance('m', data.elevation, useImperialUnits)
-    )
+    if (data.elevation !== undefined) {
+      datasets.elevation.data.push(
+        convertStatsDistance('m', data.elevation, useImperialUnits)
+      )
+    }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
 

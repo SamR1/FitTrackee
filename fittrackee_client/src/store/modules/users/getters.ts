@@ -1,8 +1,8 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { USERS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IUsersGetters, IUsersState } from '@/store/modules/users/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { IUsersGetters, IUsersState } from '@/store/modules/users/types'
 
 export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USER]: (state: IUsersState) => {

@@ -24,9 +24,9 @@ bandit:
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: bandit lint-all type-check test-all
+check-all: bandit lint-all type-check-all test-all
 
-check-client: lint-client test-client
+check-client: lint-client type-check-client test-client
 
 check-python: bandit lint-python type-check test-python
 
@@ -43,7 +43,7 @@ clean-install: clean
 
 ## Docker commands for evaluation purposes
 docker-bandit:
-	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_BANDIT) -r fittrackee -c pyproject.toml
+	docker-compose -f docker-compose-dev.yml exec fittrackee bandit -r fittrackee -c pyproject.toml
 
 docker-build:
 	docker-compose -f docker-compose-dev.yml build fittrackee
@@ -55,6 +55,9 @@ docker-build-client:
 
 docker-check-all: docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
 
+docker-downgrade-db:
+	docker-compose -f docker-compose-dev.yml exec fittrackee flask db downgrade --directory $(DOCKER_MIGRATIONS)
+
 docker-init: docker-run docker-init-db docker-restart docker-run-workers
 
 docker-init-db:
@@ -64,7 +67,8 @@ docker-lint-all: docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn lint
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) lint
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) type-check
 
 docker-lint-python: docker-run
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/lint-python.sh
@@ -73,7 +77,7 @@ docker-logs:
 	docker-compose -f docker-compose-dev.yml logs --follow
 
 docker-migrate-db:
-	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db migrate --directory $(DOCKER_MIGRATIONS)
+	docker-compose -f docker-compose-dev.yml exec fittrackee flask db migrate --directory $(DOCKER_MIGRATIONS)
 
 docker-rebuild:
 	docker-compose -f docker-compose-dev.yml build --no-cache
@@ -83,7 +87,7 @@ docker-restart:
 	docker-compose -f docker-compose-dev.yml exec -d fittrackee docker/run-workers.sh
 
 docker-revision:
-	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FLASK) db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)
+	docker-compose -f docker-compose-dev.yml exec fittrackee flask db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
 docker-run-all: docker-run docker-run-workers
 
@@ -95,7 +99,7 @@ docker-run-workers:
 
 docker-serve-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn serve
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
 
 docker-set-admin:
 	docker-compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
@@ -108,7 +112,11 @@ docker-stop:
 
 docker-test-client:
 	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker-compose -f docker-compose-dev.yml exec fittrackee_client yarn test:unit
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit run
+
+docker-test-client-watch:
+	docker-compose -f docker-compose-dev.yml up -d fittrackee_client
+	docker-compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit watch
 
 # needs a running application
 docker-test-e2e: docker-run
@@ -120,27 +128,42 @@ docker-test-python: docker-run
 
 docker-type-check:
 	echo 'Running mypy in docker...'
-	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_MYPY) fittrackee
+	docker-compose -f docker-compose-dev.yml exec fittrackee mypy fittrackee
 
 docker-up:
 	docker-compose -f docker-compose-dev.yml up fittrackee
 
 docker-upgrade-db:
-	docker-compose -f docker-compose-dev.yml exec fittrackee $(DOCKER_FTCLI) db upgrade
+	docker-compose -f docker-compose-dev.yml exec fittrackee ftcli db upgrade
 
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
 
+gettext:
+	$(SPHINXBUILD) -M gettext "$(SOURCEDIR)" "$(DOCSRC)"
+
+LANGUAGE := en
 html:
-	rm -rf docsrc/build
-	rm -rf docs/*
-	touch docs/.nojekyll
-	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	rm -rf docsrc/build/html/_static/bootstrap-2.3.2
-	rm -rf docsrc/build/html/_static/bootswatch-2.3.2
-	find docsrc/build/html/_static/bootswatch-3.4.1/. -maxdepth 1 -not -name flatly -not -name fonts -exec rm -rf '{}' \; 2>/tmp/NULL
-	sed -i "s/\@import url(\"https:\/\/fonts.googleapis.com\/css?family=Lato:400,700,400italic\");//" docsrc/build/html/_static/bootswatch-3.4.1/flatly/bootstrap.min.css
-	cp -a docsrc/build/html/. docs
+	rm -rf $(BUILDDIR)/$(LANGUAGE)
+	rm -rf docs/$(LANGUAGE)/*
+	$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)/$(LANGUAGE)" -D language=$(LANGUAGE)
+	grep -rl "fosstodon.org" $(BUILDDIR)/$(LANGUAGE)/html/ | xargs sed -i "s/href=\"https:\/\/fosstodon.org\/\@FitTrackee\"/rel=\"me\" href=\"https:\/\/fosstodon.org\/\@FitTrackee\"/"
+	cp -a $(BUILDDIR)/$(LANGUAGE)/html/. docs/$(LANGUAGE)
+
+html-all:
+	for language in en fr ; do \
+		echo -e "\r\nGenerating documentation for '$$language'...\r\n" ; \
+		$(MAKE) html LANGUAGE=$$language ; \
+	done
+
+html-update-po:
+	$(SPHINXINTL) update -p "$(GETTEXT)" -d "$(LOCALES_DIRS)" -l $(LANGUAGE)
+
+html-update-po-all:
+	for language in en fr ; do \
+		echo -e "\r\nUpdating .po files for '$$language'...\r\n" ; \
+		$(MAKE) html-update-po LANGUAGE=$$language ; \
+	done
 
 install-db:
 	psql -U postgres -f db/create.sql
@@ -176,10 +199,12 @@ lint-client:
 	cd fittrackee_client && $(NPM) lint
 
 lint-client-fix:
-	cd fittrackee_client && $(NPM) lint-fix
+	cd fittrackee_client && $(NPM) format
 
 lint-python:
-	$(PYTEST) --flake8 --isort --black -m "flake8 or isort or black" fittrackee e2e --ignore=fittrackee/migrations
+	$(PYTEST) --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations
+	echo 'Running flake8...'
+	$(FLAKE8) fittrackee e2e
 
 lint-python-fix:
 	$(BLACK) fittrackee e2e
@@ -213,7 +238,7 @@ serve-dev:
 
 serve-client:
     # for dev environments
-	cd fittrackee_client && PORT=3000 $(NPM) serve
+	cd fittrackee_client && PORT=3000 $(NPM) dev
 
 serve-python:
     # for dev environments
@@ -243,11 +268,19 @@ test-python:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit $(MOCHA_ARGS)
+	cd fittrackee_client && $(NPM) test:unit run
+
+test-client-watch:
+	cd fittrackee_client && $(NPM) test:unit watch
 
 type-check:
 	echo 'Running mypy...'
 	$(MYPY) fittrackee
+
+type-check-all: type-check-client type-check
+
+type-check-client:
+	cd fittrackee_client && $(NPM) type-check
 
 upgrade-db:
 	$(FTCLI) db upgrade
