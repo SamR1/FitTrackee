@@ -60,12 +60,12 @@
               {{ authUser.username }}
             </router-link>
             <button
-              class="logout-button transparent"
+              class="nav-button transparent"
               @click="updateDisplayModal(true)"
-              :aria-label="$t('user.LOGOUT')"
+              :title="$t('user.LOGOUT')"
             >
-              <i class="fa fa-sign-out logout-fa" aria-hidden="true" />
-              <span class="logout-text">{{ $t('user.LOGOUT') }}</span>
+              <i class="fa fa-sign-out nav-button-fa" aria-hidden="true" />
+              <span class="nav-button-text">{{ $t('user.LOGOUT') }}</span>
             </button>
           </div>
           <div class="nav-items-group" v-else>
@@ -76,6 +76,14 @@
               {{ $t('user.REGISTER') }}
             </router-link>
           </div>
+          <button
+            class="nav-button transparent"
+            @click="toggleTheme"
+            :title="$t('user.TOGGLE_THEME')"
+          >
+            <i class="fa nav-button-fa" :class="themeIcon" aria-hidden="true" />
+            <span class="nav-button-text">{{ $t('user.TOGGLE_THEME') }}</span>
+          </button>
           <Dropdown
             v-if="availableLanguages && language"
             class="nav-item"
@@ -93,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, capitalize } from 'vue'
+  import { computed, ref, capitalize, onBeforeMount } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -119,6 +127,12 @@
   )
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
+  const darkTheme: Ref<boolean> = ref(false)
+  const themeIcon: ComputedRef<string> = computed(() =>
+    darkTheme.value ? 'fa-moon' : 'fa-sun-o'
+  )
+
+  onBeforeMount(() => initTheme())
 
   function openMenu() {
     isMenuOpen.value = true
@@ -140,6 +154,24 @@
   }
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
+  }
+  function setTheme() {
+    if (darkTheme.value) {
+      darkTheme.value = true
+      document.body.setAttribute('data-theme', 'dark')
+    } else {
+      document.body.removeAttribute('data-theme')
+    }
+  }
+  function initTheme() {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      darkTheme.value = true
+    }
+    setTheme()
+  }
+  function toggleTheme() {
+    darkTheme.value = !darkTheme.value
+    setTheme()
   }
 </script>
 
@@ -252,13 +284,13 @@
       .nav-separator {
         display: none;
       }
-      .logout-button {
+      .nav-button {
         padding: $default-padding * 0.5 $default-padding * 0.75;
         margin-left: 2px;
-        .logout-fa {
+        .nav-button-fa {
           display: block;
         }
-        .logout-text {
+        .nav-button-text {
           display: none;
         }
       }
@@ -323,15 +355,16 @@
           display: flex;
           flex-direction: column;
 
-          .logout-button {
+          .nav-button {
             padding: $default-padding $default-padding $default-padding
               $default-padding * 2.4;
             color: var(--app-a-color);
             text-align: left;
-            .logout-fa {
+            .nav-button-fa {
               display: none;
+              width: 36px;
             }
-            .logout-text {
+            .nav-button-text {
               display: block;
             }
           }

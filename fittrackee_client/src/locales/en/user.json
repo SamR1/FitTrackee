@@ -136,6 +136,7 @@
   "REVIEW": "review",
   "SHOW_PASSWORD": "show password",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
+  "TOGGLE_THEME": "Toggle theme (Light or Dark mode)",
   "USERNAME": "Username",
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
   "USER_PICTURE": "user picture",
