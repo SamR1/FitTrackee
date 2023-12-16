@@ -1320,7 +1320,7 @@ def update_workout(
     :<json string notes: notes
     :<json integer sport_id: workout sport id
     :<json string title: workout title
-    :<json array of integers equipment_ids: 
+    :<json array of integers equipment_ids:
         the id numbers of one or more pieces of equipment
         to associate with this workout (any existing equipment
         for this workout will be replaced); if an empty array,
@@ -1349,27 +1349,28 @@ def update_workout(
     equipment_ids = workout_data.get('equipment_ids')
     equipment_list = None
     if equipment_ids is not None:
-      equipment_list = []
-      if not isinstance(equipment_ids, list):
-        return InvalidPayloadErrorResponse(
-          "equipment_ids must be an array of integers"
-        )
-      for i in equipment_ids:
-        if not isinstance(i, int):
-          return InvalidPayloadErrorResponse(
-          "equipment_ids must be an array of integers"
-        )
-        equipment = Equipment.query.filter_by(id=i).first()
-        if not equipment:
-            return DataNotFoundErrorResponse(
-              'equipment',
-              f'equipment with id {i} does not exist'
+        equipment_list = []
+        if not isinstance(equipment_ids, list):
+            return InvalidPayloadErrorResponse(
+                "equipment_ids must be an array of integers"
             )
-        response_object = can_view_equipment(auth_user.id, equipment.user_id)
-        if response_object:
-            return response_object
-        equipment_list.append(equipment)
-      workout_data['equipment_list'] = equipment_list
+        for i in equipment_ids:
+            if not isinstance(i, int):
+                return InvalidPayloadErrorResponse(
+                    "equipment_ids must be an array of integers"
+                )
+            equipment = Equipment.query.filter_by(id=i).first()
+            if not equipment:
+                return DataNotFoundErrorResponse(
+                    'equipment', f'equipment with id {i} does not exist'
+                )
+            response_object = can_view_equipment(
+                auth_user.id, equipment.user_id
+            )
+            if response_object:
+                return response_object
+            equipment_list.append(equipment)
+        workout_data['equipment_list'] = equipment_list
 
     try:
         workout_uuid = decode_short_id(workout_short_id)

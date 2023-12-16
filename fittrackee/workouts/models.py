@@ -13,8 +13,8 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import appLog, db
-from fittrackee.files import get_absolute_file_path
 from fittrackee.equipment.models import EquipmentWorkout
+from fittrackee.files import get_absolute_file_path
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
@@ -182,7 +182,6 @@ class Workout(BaseModel):
         'Equipment', secondary=EquipmentWorkout, back_populates='workouts'
     )
 
-
     def __str__(self) -> str:
         return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
 
@@ -228,7 +227,9 @@ class Workout(BaseModel):
             'ave_speed': (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
-            'equipment': [equipment.serialize() for equipment in self.equipment],
+            'equipment': [
+                equipment.serialize() for equipment in self.equipment
+            ],
             'records': [record.serialize() for record in self.records],
             'segments': [segment.serialize() for segment in self.segments],
             'weather_start': self.weather_start,

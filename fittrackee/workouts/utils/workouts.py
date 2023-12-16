@@ -12,7 +12,6 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
-from fittrackee.equipment.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 

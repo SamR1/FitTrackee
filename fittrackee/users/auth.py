@@ -996,7 +996,8 @@ def edit_user_sport_preferences(
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
-    :<json int default_equipment_id: the default equipment to use for this sport
+    :<json int default_equipment_id: the default equipment to use for this
+                                     sport
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1026,13 +1027,15 @@ def edit_user_sport_preferences(
 
     equipment_id = post_data.get('default_equipment_id')
     if equipment_id is not None:
-      equipment = Equipment.query.filter_by(id=equipment_id).first()
-      if equipment is None:
-          return NotFoundErrorResponse(f'equipment with id {equipment_id} does not exist')
+        equipment = Equipment.query.filter_by(id=equipment_id).first()
+        if equipment is None:
+            return NotFoundErrorResponse(
+                f'equipment with id {equipment_id} does not exist'
+            )
 
-      response_object = can_view_equipment(auth_user.id, equipment.user_id)
-      if response_object:
-          return response_object
+        response_object = can_view_equipment(auth_user.id, equipment.user_id)
+        if response_object:
+            return response_object
 
     color = post_data.get('color')
     is_active = post_data.get('is_active')
@@ -1048,7 +1051,7 @@ def edit_user_sport_preferences(
                 user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
-                default_equipment_id=equipment_id
+                default_equipment_id=equipment_id,
             )
             db.session.add(user_sport)
             db.session.flush()

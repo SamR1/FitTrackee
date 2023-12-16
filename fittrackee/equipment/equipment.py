@@ -8,7 +8,6 @@ from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
-    GenericErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
@@ -16,7 +15,6 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 
 from ..equipment.models import Equipment
-from ..users.models import UserSportPreference
 
 equipment_blueprint = Blueprint('equipment', __name__)
 equipment_type_blueprint = Blueprint('equipment_type', __name__)
@@ -54,32 +52,33 @@ def get_equipment(auth_user: User) -> Dict:
 
     {
       "data": {
-          "equipment": [
-			{
-				"creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
-				"description": "The first shoes added to FitTrackee",
-				"equipment_type": 1,
-				"id": 8,
-				"is_active": true,
-				"label": "My shoes",
-				"num_workouts": 0,
-				"total_distance": 0.0,
-				"total_duration": "0:00:00",
-				"user_id": 1
-			},
-			{
-				"creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
-				"description": "The second shoes added to FitTrackee",
-				"equipment_type": 1,
-				"id": 9,
-				"is_active": true,
-				"label": "My shoes 2",
-				"num_workouts": 0,
-				"total_distance": 0.0,
-				"total_duration": "0:00:00",
-				"user_id": 1
-			}
+        "equipment": [
+          {
+            "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
+            "description": "The first shoes added to FitTrackee",
+            "equipment_type": 1,
+            "id": 8,
+            "is_active": true,
+            "label": "My shoes",
+            "num_workouts": 0,
+            "total_distance": 0.0,
+            "total_duration": "0:00:00",
+            "user_id": 1
+        },
+        {
+            "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
+            "description": "The second shoes added to FitTrackee",
+            "equipment_type": 1,
+            "id": 9,
+            "is_active": true,
+            "label": "My shoes 2",
+            "num_workouts": 0,
+            "total_distance": 0.0,
+            "total_duration": "0:00:00",
+            "user_id": 1
+            }
           ]
+        }
       },
       "status": "success"
     }
@@ -106,14 +105,19 @@ def get_equipment(auth_user: User) -> Dict:
         equipment = (
             Equipment.query.filter(
                 Equipment.user_id == auth_user.id,
-                Equipment.equipment_type_id == type_id if type_id else True
-            ).order_by(Equipment.id)
+                Equipment.equipment_type_id == type_id if type_id else True,
+            )
+            .order_by(Equipment.id)
             .all()
         )
     else:
-        equipment = Equipment.query.filter(
-            Equipment.equipment_type_id == type_id if type_id else True
-        ).order_by(Equipment.id).all()
+        equipment = (
+            Equipment.query.filter(
+                Equipment.equipment_type_id == type_id if type_id else True
+            )
+            .order_by(Equipment.id)
+            .all()
+        )
 
     equipment_data = []
     for e in equipment:
@@ -151,20 +155,21 @@ def get_equipment_by_id(
       Content-Type: application/json
 
       {
-          "data": {
-              "equipment": [
-                  {
-                      "description": "Another piece of equipment",
-                      "id": 3,
-                      "is_active": true,
-                      "label": "Other user Equipment",
-                      "num_workouts": 0,
-                      "total_distance": 0.0,
-                      "user_id": 2
-                  }
-              ]
-          },
-          "status": "success"
+        "data": {
+          "equipment": [
+            {
+              "description": "Another piece of equipment",
+              "id": 3,
+              "is_active": true,
+              "label": "Other user Equipment",
+              "num_workouts": 0,
+              "total_distance": 0.0,
+              "user_id": 2
+            }
+          ]
+        }
+      },
+      "status": "success"
       }
 
     - equipment not found
@@ -232,20 +237,20 @@ def post_equipment(
       Content-Type: application/json
 
         {
-            "data": {
-                "equipment": [
-                    {
-                        "description": null,
-                        "id": 12,
-                        "is_active": true,
-                        "label": "New equipment from API",
-                        "num_workouts": 0,
-                        "total_distance": 0.0,
-                        "user_id": 1
-                    }
-                ]
-            },
-            "status": "created"
+          "data": {
+            "equipment": [
+              {
+                "description": null,
+                "id": 12,
+                "is_active": true,
+                "label": "New equipment from API",
+                "num_workouts": 0,
+                "total_distance": 0.0,
+                "user_id": 1
+              }
+            ]
+          },
+          "status": "created"
         }
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
@@ -267,9 +272,11 @@ def post_equipment(
 
     """
     equipment_data = request.get_json()
-    if not equipment_data or \
-        equipment_data.get('label') is None or \
-        equipment_data.get('equipment_type') is None:
+    if (
+        not equipment_data
+        or equipment_data.get('label') is None
+        or equipment_data.get('equipment_type') is None
+    ):
         return InvalidPayloadErrorResponse(
             'The "label" and "equipment_type" parameters must be '
             'provided in the body of the request'
@@ -282,7 +289,7 @@ def post_equipment(
             label=equipment_data.get('label'),
             equipment_type_id=equipment_data.get('equipment_type'),
             is_active=is_active,
-            description=equipment_data.get('description', None)
+            description=equipment_data.get('description', None),
         )
         db.session.add(new_equipment)
         db.session.commit()
@@ -332,23 +339,23 @@ def update_equipment(
       Content-Type: application/json
 
         {
-            "data": {
-                "equipment": [
-                    {
-                        "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
-                        "description": "Change bike to shoes",
-                        "equipment_type": 1,
-                        "id": 11,
-                        "is_active": true,
-                        "label": "Updated bike",
-                        "num_workouts": 0,
-                        "total_distance": 0.0,
-                        "total_duration": "0:00:00",
-                        "user_id": 1
-                    }
-                ]
-            },
-            "status": "success"
+          "data": {
+            "equipment": [
+              {
+                "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
+                "description": "Change bike to shoes",
+                "equipment_type": 1,
+                "id": 11,
+                "is_active": true,
+                "label": "Updated bike",
+                "num_workouts": 0,
+                "total_distance": 0.0,
+                "total_duration": "0:00:00",
+                "user_id": 1
+              }
+            ]
+          },
+          "status": "success"
         }
 
     - equipment not found
@@ -393,8 +400,8 @@ def update_equipment(
         return InvalidPayloadErrorResponse('No request data was supplied')
 
     if not any(
-        i in ['label', 'description', 'equipment_type', 'is_active'] 
-        for i in equipment_data
+        e in ['label', 'description', 'equipment_type', 'is_active']
+        for e in equipment_data
     ):
         return InvalidPayloadErrorResponse('No valid parameters supplied')
 
@@ -430,9 +437,7 @@ def update_equipment(
         )
 
 
-@equipment_blueprint.route(
-    '/equipment/<int:equipment_id>',
-    methods=['DELETE'])
+@equipment_blueprint.route('/equipment/<int:equipment_id>', methods=['DELETE'])
 @require_auth(scopes=['profile:write'])
 # TODO: is it possible to have conditional scope requirment?
 def delete_equipment(
@@ -445,10 +450,10 @@ def delete_equipment(
     only if there are no workouts associated with that equipment (unless
     forced). If equipment was associated with any workouts and deletion is
     forced, the association between this equipment and those workouts will
-    be removed. If this equipment was a default for any sport, that default will 
-    be removed (set to NULL).
+    be removed. If this equipment was a default for any sport, that default
+    will be removed (set to NULL).
 
-    **Scope**: ``profile:write`` (and ``workouts:write`` if 
+    **Scope**: ``profile:write`` (and ``workouts:write`` if
                deleting equipment with workouts)
 
     **Example request**:
@@ -468,7 +473,7 @@ def delete_equipment(
     :param integer equipment_id: equipment id
     :query force: if supplied as argument (no value required), will force
                   deletion of the equipment and remove that equipment
-                  from associated workouts 
+                  from associated workouts
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -479,7 +484,8 @@ def delete_equipment(
         - invalid token, please log in again
     :statuscode 403:
         - you cannot delete another user's equipment without admin rights
-        - you cannot delete equipment that has workouts associated with it (and "force" parameter was not supplied)
+        - you cannot delete equipment that has workouts associated with it
+          (and "force" parameter was not supplied)
     :statuscode 404:
         - equipment does not exist
     :statuscode 500: error, please try again or contact the administrator

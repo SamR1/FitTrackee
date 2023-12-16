@@ -1,10 +1,10 @@
-from typing import Dict, Optional
+from typing import Dict
 
 from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipment.models import Equipment, EquipmentType
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -25,8 +25,8 @@ class TestEquipmentModel:
         return serialized_equip
 
     def test_equipment_model_without_workout(
-        self, 
-        app: Flask, 
+        self,
+        app: Flask,
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
@@ -45,7 +45,7 @@ class TestEquipmentModel:
         equipment_type_2_bike: EquipmentType,
         user_1: User,
         workout_cycling_user_1: Workout,
-        equipment_1_bike: Equipment
+        equipment_1_bike: Equipment,
     ) -> None:
         equipment_1_bike.workouts.append(workout_cycling_user_1)
         db.session.add(equipment_1_bike)
@@ -59,7 +59,7 @@ class TestEquipmentModel:
 class TestEquipmentTypeModel:
     @staticmethod
     def assert_equipment_type_model(
-        equip_type: EquipmentType, is_admin: Optional[bool] = False
+        equip_type: EquipmentType, is_admin: bool = False
     ) -> Dict:
         assert 1 == equip_type.id
         assert 'Shoe' == equip_type.label
@@ -72,19 +72,21 @@ class TestEquipmentTypeModel:
         return serialized_equip
 
     def test_equipment_type_model(
-        self, 
-        app: Flask, 
+        self,
+        app: Flask,
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
         equipment_1_bike: Equipment,
     ) -> None:
-        serialized_equip_type = self.assert_equipment_type_model(equipment_type_1_shoe)
+        serialized_equip_type = self.assert_equipment_type_model(
+            equipment_type_1_shoe
+        )
         assert 'has_workouts' not in serialized_equip_type
 
     def test_equipment_type_model_as_admin(
-        self, 
-        app: Flask, 
+        self,
+        app: Flask,
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
@@ -93,4 +95,4 @@ class TestEquipmentTypeModel:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe, is_admin=True
         )
-        assert serialized_equip_type['has_equipment'] is False   
+        assert serialized_equip_type['has_equipment'] is False

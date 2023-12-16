@@ -1,24 +1,15 @@
-from typing import Dict, Tuple, Union
+from typing import Dict, Union
 
-from flask import Blueprint, request
-from sqlalchemy import exc
+from flask import Blueprint
 
-from fittrackee import db
 from fittrackee.oauth2.server import require_auth
-from fittrackee.responses import (
-    DataNotFoundErrorResponse,
-    ForbiddenErrorResponse,
-    GenericErrorResponse,
-    HttpResponse,
-    InvalidPayloadErrorResponse,
-    handle_error_and_return_response,
-)
+from fittrackee.responses import DataNotFoundErrorResponse, HttpResponse
 from fittrackee.users.models import User
 
-from ..equipment.models import Equipment, EquipmentType
-from ..users.models import UserSportPreference
+from ..equipment.models import EquipmentType
 
 equipment_types_blueprint = Blueprint('equipment_types', __name__)
+
 
 @equipment_types_blueprint.route('/equipment_types', methods=['GET'])
 @require_auth(scopes=['profile:read'])
@@ -166,11 +157,13 @@ def get_equipment_types(auth_user: User) -> Dict:
         'data': {'equipment_types': equipment_types_data},
     }
 
-@equipment_types_blueprint.route('/equipment_types/<int:equipment_type_id>', methods=['GET'])
+
+@equipment_types_blueprint.route(
+    '/equipment_types/<int:equipment_type_id>', methods=['GET']
+)
 @require_auth(scopes=['profile:read'])
 def get_equipment_type(
-  auth_user: User, 
-  equipment_type_id: int
+    auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get a sport
@@ -253,7 +246,9 @@ def get_equipment_type(
     :statuscode 404: equipment_type not found
 
     """
-    equipment_type = EquipmentType.query.filter_by(id=equipment_type_id).first()
+    equipment_type = EquipmentType.query.filter_by(
+        id=equipment_type_id
+    ).first()
     if equipment_type:
         return {
             'status': 'success',

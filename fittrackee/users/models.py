@@ -195,7 +195,9 @@ class User(BaseModel):
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
-            'equipment': [equipment.serialize() for equipment in self.equipment],
+            'equipment': [
+                equipment.serialize() for equipment in self.equipment
+            ],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
             ],
@@ -248,7 +250,9 @@ class UserSportPreference(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     default_equipment_id = db.Column(
-        db.Integer, db.ForeignKey('equipment.id', ondelete="SET NULL"), nullable=True
+        db.Integer,
+        db.ForeignKey('equipment.id', ondelete="SET NULL"),
+        nullable=True,
     )
 
     def __init__(
@@ -256,7 +260,7 @@ class UserSportPreference(BaseModel):
         user_id: int,
         sport_id: int,
         stopped_speed_threshold: float,
-        default_equipment_id: Optional[int] = None
+        default_equipment_id: Optional[int] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id

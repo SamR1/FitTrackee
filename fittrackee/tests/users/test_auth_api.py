@@ -9,6 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.equipment.models import Equipment, EquipmentType
 from fittrackee.users.models import (
     BlacklistedToken,
     User,
@@ -16,7 +17,6 @@ from fittrackee.users.models import (
     UserSportPreference,
 )
 from fittrackee.users.utils.token import get_user_token
-from fittrackee.equipment.models import Equipment, EquipmentType
 from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
