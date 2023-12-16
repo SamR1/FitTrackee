@@ -6,7 +6,7 @@ from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import DataNotFoundErrorResponse, HttpResponse
 from fittrackee.users.models import User
 
-from ..equipment.models import EquipmentType
+from ..equipments.models import EquipmentType
 
 equipment_types_blueprint = Blueprint('equipment_types', __name__)
 
@@ -15,7 +15,7 @@ equipment_types_blueprint = Blueprint('equipment_types', __name__)
 @require_auth(scopes=['profile:read'])
 def get_equipment_types(auth_user: User) -> Dict:
     """
-    Get all sports
+    Get all types of equipment
 
     **Scope**: ``profile:read``
 
@@ -89,43 +89,43 @@ def get_equipment_types(auth_user: User) -> Dict:
         "data": {
           "equipment_types": [
             {
-              "has_equipment": true,
+              "has_equipments": true,
               "id": 1,
               "is_active": true,
               "label": "Shoe"
             },
             {
-              "has_equipment": true,
+              "has_equipments": true,
               "id": 2,
               "is_active": true,
               "label": "Bike"
             },
             {
-              "has_equipment": false,
+              "has_equipments": false,
               "id": 3,
               "is_active": true,
               "label": "Treadmill"
             },
             {
-              "has_equipment": false,
+              "has_equipments": false,
               "id": 4,
               "is_active": true,
               "label": "Bike Trainer"
             },
             {
-              "has_equipment": false,
+              "has_equipments": false,
               "id": 5,
               "is_active": true,
               "label": "Kayak/Boat"
             },
             {
-              "has_equipment": false,
+              "has_equipments": false,
               "id": 6,
               "is_active": true,
               "label": "Skis"
             },
             {
-              "has_equipment": false,
+              "has_equipments": false,
               "id": 7,
               "is_active": true,
               "label": "Snowshoes"
@@ -166,7 +166,7 @@ def get_equipment_type(
     auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get a sport
+    Get a type of equipment
 
     **Scope**: ``profile:read``
 
@@ -210,7 +210,7 @@ def get_equipment_type(
         "data": {
           "equipment_types": [
             {
-              "has_equipment": true,
+              "has_equipments": true,
               "id": 2,
               "is_active": true,
               "label": "Bike"

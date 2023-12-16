@@ -3,7 +3,7 @@ from typing import Dict
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.equipment.models import Equipment, EquipmentType
+from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -95,4 +95,4 @@ class TestEquipmentTypeModel:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe, is_admin=True
         )
-        assert serialized_equip_type['has_equipment'] is False
+        assert serialized_equip_type['has_equipments'] is False

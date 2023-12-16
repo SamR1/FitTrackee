@@ -9,7 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.equipment.models import Equipment, EquipmentType
+from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import (
     BlacklistedToken,
     User,

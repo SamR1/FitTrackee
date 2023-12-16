@@ -13,7 +13,7 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import appLog, db
-from fittrackee.equipment.models import EquipmentWorkout
+from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
@@ -178,8 +178,8 @@ class Workout(BaseModel):
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
-    equipment = db.relationship(
-        'Equipment', secondary=EquipmentWorkout, back_populates='workouts'
+    equipments = db.relationship(
+        'Equipment', secondary=WorkoutEquipment, back_populates='workouts'
     )
 
     def __str__(self) -> str:
@@ -228,7 +228,7 @@ class Workout(BaseModel):
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
             'equipment': [
-                equipment.serialize() for equipment in self.equipment
+                equipment.serialize() for equipment in self.equipments
             ],
             'records': [record.serialize() for record in self.records],
             'segments': [segment.serialize() for segment in self.segments],

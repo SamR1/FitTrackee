@@ -14,17 +14,16 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from ..equipment.models import Equipment
+from ..equipments.models import Equipment
 
-equipment_blueprint = Blueprint('equipment', __name__)
-equipment_type_blueprint = Blueprint('equipment_type', __name__)
+equipments_blueprint = Blueprint('equipments', __name__)
 
 
-@equipment_blueprint.route('/equipment', methods=['GET'])
+@equipments_blueprint.route('/equipments', methods=['GET'])
 @require_auth(scopes=['profile:read'])
 def get_equipment(auth_user: User) -> Dict:
     """
-    Get all equipment. If non-admin, only the user's equipment
+    Get all equipments. If non-admin, only the user's equipment
     will be shown. If admin, all equipment is shown unless the
     "just_me" parameter is given.
 
@@ -128,7 +127,7 @@ def get_equipment(auth_user: User) -> Dict:
     }
 
 
-@equipment_blueprint.route('/equipment/<int:equipment_id>', methods=['GET'])
+@equipments_blueprint.route('/equipments/<int:equipment_id>', methods=['GET'])
 @require_auth(scopes=['profile:read'])
 def get_equipment_by_id(
     auth_user: User, equipment_id: int
@@ -212,7 +211,7 @@ def get_equipment_by_id(
     return DataNotFoundErrorResponse('equipment')
 
 
-@equipment_blueprint.route('/equipment', methods=['POST'])
+@equipments_blueprint.route('/equipments', methods=['POST'])
 @require_auth(scopes=['profile:write'])
 def post_equipment(
     auth_user: User,
@@ -311,7 +310,9 @@ def post_equipment(
         )
 
 
-@equipment_blueprint.route('/equipment/<int:equipment_id>', methods=['PATCH'])
+@equipments_blueprint.route(
+    '/equipments/<int:equipment_id>', methods=['PATCH']
+)
 @require_auth(scopes=['profile:write'])
 def update_equipment(
     auth_user: User, equipment_id: int
@@ -437,7 +438,9 @@ def update_equipment(
         )
 
 
-@equipment_blueprint.route('/equipment/<int:equipment_id>', methods=['DELETE'])
+@equipments_blueprint.route(
+    '/equipments/<int:equipment_id>', methods=['DELETE']
+)
 @require_auth(scopes=['profile:write'])
 # TODO: is it possible to have conditional scope requirment?
 def delete_equipment(

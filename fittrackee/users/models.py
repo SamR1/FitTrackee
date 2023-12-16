@@ -42,21 +42,6 @@ class User(BaseModel):
     date_format = db.Column(db.String(50), nullable=True)
     # does the week start Monday?
     weekm = db.Column(db.Boolean, default=False, nullable=False)
-    workouts = db.relationship(
-        'Workout',
-        lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
-    )
-    records = db.relationship(
-        'Record',
-        lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
-    )
-    equipment = db.relationship(
-        'Equipment',
-        lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
-    )
     language = db.Column(db.String(50), nullable=True)
     imperial_units = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
@@ -68,6 +53,22 @@ class User(BaseModel):
         db.Boolean, default=True, nullable=False
     )
     use_raw_gpx_speed = db.Column(db.Boolean, default=False, nullable=False)
+
+    workouts = db.relationship(
+        'Workout',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
+    )
+    records = db.relationship(
+        'Record',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
+    )
+    equipments = db.relationship(
+        'Equipment',
+        lazy=True,
+        backref=db.backref('user', lazy='joined', single_parent=True),
+    )
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -196,7 +197,7 @@ class User(BaseModel):
             'picture': self.picture is not None,
             'records': [record.serialize() for record in self.records],
             'equipment': [
-                equipment.serialize() for equipment in self.equipment
+                equipment.serialize() for equipment in self.equipments
             ],
             'sports_list': [
                 sport for sportslist in sports for sport in sportslist
@@ -251,7 +252,7 @@ class UserSportPreference(BaseModel):
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
     default_equipment_id = db.Column(
         db.Integer,
-        db.ForeignKey('equipment.id', ondelete="SET NULL"),
+        db.ForeignKey('equipments.id', ondelete="SET NULL"),
         nullable=True,
     )
 

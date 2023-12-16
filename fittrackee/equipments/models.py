@@ -9,25 +9,25 @@ from fittrackee import db
 BaseModel: DeclarativeMeta = db.Model
 
 
-EquipmentWorkout = db.Table(
-    'equipment_workout',
-    db.Column(
-        'equipment_id',
-        db.Integer,
-        db.ForeignKey('equipment.id', ondelete="CASCADE"),
-        primary_key=True,
-    ),
+WorkoutEquipment = db.Table(
+    'workout_equipments',
     db.Column(
         'workout_id',
         db.Integer,
         db.ForeignKey('workouts.id', ondelete="CASCADE"),
         primary_key=True,
     ),
+    db.Column(
+        'equipment_id',
+        db.Integer,
+        db.ForeignKey('equipments.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
 )
 
 
 class Equipment(BaseModel):
-    __tablename__ = 'equipment'
+    __tablename__ = 'equipments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
@@ -35,12 +35,12 @@ class Equipment(BaseModel):
     label = db.Column(db.String(50), unique=False, nullable=False)
     description = db.Column(db.String(200), default=None, nullable=True)
     equipment_type_id = db.Column(
-        db.Integer, db.ForeignKey('equipment_type.id')
+        db.Integer, db.ForeignKey('equipment_types.id')
     )
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     workouts = db.relationship(
-        'Workout', secondary=EquipmentWorkout, back_populates='equipment'
+        'Workout', secondary=WorkoutEquipment, back_populates='equipments'
     )
 
     # a single user can only have one equipment with the
@@ -91,7 +91,7 @@ class Equipment(BaseModel):
 
 
 class EquipmentType(BaseModel):
-    __tablename__ = 'equipment_type'
+    __tablename__ = 'equipment_types'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     label = db.Column(db.String(50), unique=False, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
@@ -99,7 +99,7 @@ class EquipmentType(BaseModel):
         'Equipment',
         lazy=True,
         backref=db.backref(
-            'equipment_type', lazy='joined', single_parent=True
+            'equipment_types', lazy='joined', single_parent=True
         ),
     )
 
@@ -117,7 +117,7 @@ class EquipmentType(BaseModel):
             'is_active': self.is_active,
         }
         if is_admin:
-            serialized_equipment_type['has_equipment'] = (
+            serialized_equipment_type['has_equipments'] = (
                 len(self.equipments) > 0
             )
         return serialized_equipment_type

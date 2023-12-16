@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytest
 
 from fittrackee import db
-from fittrackee.equipment.models import Equipment, EquipmentType
+from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -88,6 +88,6 @@ def workout_w_equipment(
         distance=5,
         duration=timedelta(seconds=1024),
     )
-    workout.equipment.append(equipment_2_shoes)
+    workout.equipments.append(equipment_2_shoes)
     db.session.commit()
     return workout

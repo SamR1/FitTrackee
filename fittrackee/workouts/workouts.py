@@ -17,8 +17,8 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
-from fittrackee.equipment.models import Equipment
-from fittrackee.equipment.utils import can_view_equipment
+from fittrackee.equipments.models import Equipment
+from fittrackee.equipments.utils import can_view_equipment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,

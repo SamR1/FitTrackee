@@ -11,7 +11,7 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
-from fittrackee.equipment.models import Equipment
+from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (

@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from fittrackee import db
-from fittrackee.equipment.models import Equipment, EquipmentType
+from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
