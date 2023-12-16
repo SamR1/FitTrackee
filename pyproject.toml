@@ -35,7 +35,7 @@ flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.5.0", extras = ["redis"]}
 flask-migrate = "^4.0.5"
 flask-sqlalchemy = "3.0.5"
-gpxpy = "=1.6.1"
+gpxpy = "=1.6.2"
 gunicorn = "^21.2.0"
 humanize = "^4.9.0"
 psycopg2-binary = "^2.9.9"
