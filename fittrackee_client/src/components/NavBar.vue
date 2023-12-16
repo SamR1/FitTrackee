@@ -133,7 +133,6 @@
   )
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
-
   const darkMode: ComputedRef<boolean | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
@@ -141,7 +140,7 @@
     () => darkMode.value !== false
   )
   const themeIcon: ComputedRef<string> = computed(() =>
-    darkTheme.value ? 'fa-moon' : 'fa-sun-o'
+    darkTheme.value ? 'fa-moon' : 'fa-sun'
   )
 
   onBeforeMount(() => setTheme())
