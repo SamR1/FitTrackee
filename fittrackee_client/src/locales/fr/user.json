@@ -115,6 +115,14 @@
       "PROFILE": "profil",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Thème",
+      "VALUES": {
+        "DARK": "Sombre",
+        "DEFAULT": "Préférence du navigateur",
+        "LIGHT": "Clair"
+      }
+    },
     "TIMEZONE": "Fuseau horaire",
     "UNITS": {
       "IMPERIAL": "Système impérial (ft, mi, mph, °F)",

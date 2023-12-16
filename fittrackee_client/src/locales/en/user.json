@@ -115,6 +115,14 @@
       "PROFILE": "profile",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Theme mode",
+      "VALUES": {
+        "DARK": "Dark",
+        "DEFAULT": "Browser preference",
+        "LIGHT": "Light"
+      }
+    },
     "TIMEZONE": "Timezone",
     "UNITS": {
       "IMPERIAL": "Imperial system (ft, mi, mph, °F)",

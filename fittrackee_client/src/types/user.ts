@@ -35,6 +35,7 @@ export interface IAuthUserProfile extends IUserProfile {
   timezone: string
   date_format: string
   weekm: boolean
+  use_dark_mode: boolean | null
 }
 
 export interface IUserPayload {
@@ -73,6 +74,7 @@ export interface IUserPreferencesPayload {
   timezone: string
   date_format: string
   weekm: boolean
+  use_dark_mode: boolean | null
 }
 
 export interface IUserSportPreferencesPayload {

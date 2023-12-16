@@ -139,6 +139,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
               res.data.data.language
             )
           }
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE,
+            res.data.data.use_dark_mode
+          )
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         } else {
           handleError(context, null)
@@ -269,6 +273,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           context.commit(
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
+          )
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE,
+            res.data.data.use_dark_mode
           )
           context
             .dispatch(

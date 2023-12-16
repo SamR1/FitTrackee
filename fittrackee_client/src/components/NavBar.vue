@@ -107,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, capitalize, onBeforeMount } from 'vue'
+  import { computed, ref, capitalize, onBeforeMount, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -133,12 +133,18 @@
   )
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
-  const darkTheme: Ref<boolean> = ref(false)
+
+  const darkMode: ComputedRef<boolean | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  )
+  const darkTheme: ComputedRef<boolean> = computed(
+    () => darkMode.value !== false
+  )
   const themeIcon: ComputedRef<string> = computed(() =>
     darkTheme.value ? 'fa-moon' : 'fa-sun-o'
   )
 
-  onBeforeMount(() => initTheme())
+  onBeforeMount(() => setTheme())
 
   function openMenu() {
     isMenuOpen.value = true
@@ -163,22 +169,21 @@
   }
   function setTheme() {
     if (darkTheme.value) {
-      darkTheme.value = true
       document.body.setAttribute('data-theme', 'dark')
     } else {
       document.body.removeAttribute('data-theme')
     }
   }
-  function initTheme() {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      darkTheme.value = true
-    }
-    setTheme()
-  }
   function toggleTheme() {
-    darkTheme.value = !darkTheme.value
-    setTheme()
+    store.commit(ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE, !darkTheme.value)
   }
+
+  watch(
+    () => darkTheme.value,
+    () => {
+      setTheme()
+    }
+  )
 </script>
 
 <style scoped lang="scss">
