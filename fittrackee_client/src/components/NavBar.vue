@@ -76,14 +76,20 @@
               {{ $t('user.REGISTER') }}
             </router-link>
           </div>
-          <button
-            class="nav-button transparent"
-            @click="toggleTheme"
-            :title="$t('user.TOGGLE_THEME')"
-          >
-            <i class="fa nav-button-fa" :class="themeIcon" aria-hidden="true" />
-            <span class="nav-button-text">{{ $t('user.TOGGLE_THEME') }}</span>
-          </button>
+          <div class="theme-button">
+            <button
+              class="nav-button transparent"
+              @click="toggleTheme"
+              :title="$t('user.TOGGLE_THEME')"
+            >
+              <i
+                class="fa nav-button-fa"
+                :class="themeIcon"
+                aria-hidden="true"
+              />
+              <span class="nav-button-text">{{ $t('user.TOGGLE_THEME') }}</span>
+            </button>
+          </div>
           <Dropdown
             v-if="availableLanguages && language"
             class="nav-item"
@@ -393,6 +399,9 @@
           margin: 0 $default-margin * 2;
           padding: 0;
         }
+      }
+      .theme-button {
+        margin-left: $default-padding * 2;
       }
     }
   }

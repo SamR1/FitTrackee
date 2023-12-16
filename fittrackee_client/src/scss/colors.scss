@@ -8,6 +8,7 @@
   --app-loading-top-color: var(--app-color);
 
   --button-hover-color: #ffffff;
+  --button-transparent-hover-color: var(--app-color);
   --button-cancel-bg-color: #ffffff;
   --button-cancel-color: var(--app-color);
   --button-confirm-bg-color: #ffffff;
@@ -20,8 +21,14 @@
   --card-border-color: #c4c7cf;
   --input-border-color: #9da3af;
   --input-bg-color: #ffffff;
+  --input-color: var(--app-color);
   --input-error-color: #dc3545;
   --dropdown-hover-color: #eff0f5;
+  --dropdown-background-color: #ffffff;
+  --dropdown-border-color: lightgrey;
+  --policy-border-color: #ccc;
+  --box-shadow-color: lightgrey;
+  --admin-disabled-input-color: #ffffff;
 
   --custom-checkbox-border-color: #6d797a;
   --custom-checkbox-checked-bg-color: #6d797a;
@@ -29,7 +36,11 @@
 
   --calendar-border-color: #c4c7cf;
   --calendar-week-end-color: #f5f5f5;
+  --calendar-day-color: var(--app-color-light);
   --calendar-today-color: #eff1f3;
+  --calendar-workouts-color: whitesmoke;
+  --calendar-workouts-box-shadow-0: rgba(0, 0, 0, 0.2);
+  --calendar-workouts-box-shadow-1: rgba(0, 0, 0, 0.19);
 
   --modal-background-color: rgba(0, 0, 0, 0.3);
 
@@ -44,6 +55,8 @@
   --footer-border-color: #ebeef3;
   --footer-color: #6f7070;
 
+  --form-info: var(--alert-color);
+
   --alert-background-color: #d6dde3;
   --alert-color: #3f3f3f;
   --info-background-color: #e5e7ea;
@@ -54,6 +67,7 @@
   --success-color: #306430;
 
   --disabled-background-color: #e0e0e0;
+  --disabled-border-color: transparent;
   --disabled-color: #727272;
   --disabled-sport-color: #616161;
 
@@ -64,6 +78,10 @@
     brightness(97%) contrast(96%);
   --workout-no-map-bg-color: #eaeaea;
   --workout-no-map-color: #585959;
+  --map-control-color: #000000;
+  --map-control-bg-color: #ffffff;
+  --map-control-border-color: #bfc0ab;
+  --map-attribution-text: rgba(255, 255, 255, 0.7);
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;

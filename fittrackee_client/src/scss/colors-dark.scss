@@ -1,69 +1,90 @@
 :root [data-theme='dark'] {
-  --app-background-color: #090909;
-  --app-color: #ffffff;
+  --dark-blue: #181a1b;
+  --light-blue: #aec2d3;
+
+  --app-background-color: var(--dark-blue);
+  --app-color: var(--light-blue);
   --app-color-light: #6f7070;
-  --app-a-color: #ffffff;
-  --app-shadow-color: lightgrey;
+  --app-a-color: var(--light-blue);
+  --app-shadow-color: #383d3f;
   --app-loading-color: #f3f3f3;
   --app-loading-top-color: var(--app-color);
 
-  --button-hover-color: #090909;
-  --button-cancel-bg-color: #090909;
+  --button-hover-color: var(--app-color);
+  --button-transparent-hover-color: #233240;
+  --button-cancel-bg-color: var(--dark-blue);
   --button-cancel-color: var(--app-color);
-  --button-confirm-bg-color: #090909;
+  --button-confirm-bg-color: var(--dark-blue);
   --button-confirm-color: var(--app-color);
-  --button-danger-bg-color: #090909;
+  --button-danger-bg-color: var(--dark-blue);
   --button-danger-color: #dc3545;
   --button-danger-hover-bg-color: #dc3545;
-  --button-danger-hover-color: #090909;
+  --button-danger-hover-color: var(--dark-blue);
 
-  --card-border-color: #c4c7cf;
-  --input-border-color: #9da3af;
-  --input-bg-color: #8c8c8c;
+  --card-border-color: #494f52;
+  --input-border-color: #494f52;
+  --input-bg-color: var(--dark-blue);
+  --input-color: var(--app-color);
   --input-error-color: #dc3545;
-  --dropdown-hover-color: #cacaca;
+  --dropdown-hover-color: #233240;
+  --dropdown-background-color: var(--dark-blue);
+  --dropdown-border-color: var(--input-border-color);
+  --policy-border-color: #ccc;
+  --box-shadow-color: lightgrey;
+  --admin-disabled-input-color: var(--dark-blue);
 
-  --custom-checkbox-border-color: #ffffff;
-  --custom-checkbox-checked-bg-color: #ffffff;
-  --custom-checkbox-checked-color: #090909;
+  --custom-checkbox-border-color: #665f54;
+  --custom-checkbox-checked-bg-color: #575e62;
+  --custom-checkbox-checked-color: #e8e6e3;
 
-  --calendar-border-color: #c4c7cf;
-  --calendar-week-end-color: #f5f5f5;
-  --calendar-today-color: #bec6ce;
+  --calendar-border-color: var(--input-border-color);
+  --calendar-week-end-color: #1e2021;
+  --calendar-day-color: var(--app-color);
+  --calendar-today-color: #202324;
+  --calendar-workouts-color: #233240;
+  --calendar-workouts-box-shadow-0: rgba(0, 0, 0, 0.2);
+  --calendar-workouts-box-shadow-1: rgba(0, 0, 0, 0.19);
 
   --modal-background-color: rgba(0, 0, 0, 0.3);
 
-  --nav-bar-background-color: #090909;
+  --nav-bar-background-color: var(--dark-blue);
   --nav-bar-link-active: #ffffff;
-  --nav-border-color: #c5ccdb;
+  --nav-border-color: var(--input-border-color);
 
-  --mobile-menu-selected-color: #090909;
+  --mobile-menu-selected-color: var(--dark-blue);
   --mobile-menu-selected-bgcolor: #9da3af;
 
-  --footer-background-color: #090909;
-  --footer-border-color: #ebeef3;
-  --footer-color: #6f7070;
+  --footer-background-color: var(--dark-blue);
+  --footer-border-color: var(--input-border-color);
+  --footer-color: #9f968a;
+
+  --form-info: var(--app-color);
 
   --alert-background-color: #d6dde3;
   --alert-color: #3f3f3f;
   --info-background-color: #33353a;
   --info-color: var(--app-color);
-  --error-background-color: #ffd2d2;
-  --error-color: #db1924;
-  --success-background-color: #d9ecd9;
-  --success-color: #306430;
+  --error-background-color: #4e0000;
+  --error-color: #ea464f;
+  --success-background-color: #24391c;
+  --success-color: #97cd97;
 
-  --disabled-background-color: #e0e0e0;
+  --disabled-background-color: var(--dark-blue);
+  --disabled-border-color: transparent;
   --disabled-color: #727272;
   --disabled-sport-color: #616161;
 
-  --scroll-button-bg-color: rgba(255, 255, 255, 0.7);
+  --scroll-button-bg-color: var(--dark-blue);
 
   --workout-trophy-color: #daa520;
   --workout-img-color: invert(22%) sepia(25%) saturate(646%) hue-rotate(169deg)
     brightness(97%) contrast(96%);
   --workout-no-map-bg-color: #eaeaea;
   --workout-no-map-color: #585959;
+  --map-control-color: #000000;
+  --map-control-bg-color: #ffffff;
+  --map-control-border-color: #bfc0ab;
+  --map-attribution-text: rgba(255, 255, 255, 0.7);
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;
@@ -71,10 +92,10 @@
   --svg-filter: drop-shadow(10px 10px 10px var(--app-shadow-color));
 
   --password-bg-color: #d7dadf;
-  --password-color-weak: #e46d6e;
-  --password-color-medium: #f8bc4a;
-  --password-color-good: #acc578;
-  --password-color-strong: #57c255;
+  --password-color-weak: #831819;
+  --password-color-medium: #9e6906;
+  --password-color-good: #4b5826;
+  --password-color-strong: #4a8c32;
 
   --scroll-thumb-color: #949697;
 }

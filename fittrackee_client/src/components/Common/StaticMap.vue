@@ -69,7 +69,7 @@
     }
 
     .map-attribution-text {
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: var(--map-attribution-text);
     }
   }
 </style>

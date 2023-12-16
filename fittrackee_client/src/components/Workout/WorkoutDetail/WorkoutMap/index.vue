@@ -214,11 +214,11 @@
       line-height: 400px;
     }
     .map-control {
-      background: #ffffff;
+      background: var(--map-control-bg-color);
       padding: 5px 10px;
-      border: 2px solid #bfc0ab;
+      border: 2px solid var(--map-control-border-color);
       border-radius: 3px;
-      color: #000000;
+      color: var(--map-control-color);
     }
     ::v-deep(.fullscreen) {
       display: flex;
