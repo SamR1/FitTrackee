@@ -59,8 +59,10 @@
   import type { ComputedRef } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
+  import { ROOT_STORE } from '@/store/constants'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -79,13 +81,22 @@
 
   const emit = defineEmits(['getCoordinates'])
 
+  const store = useStore()
   const { t } = useI18n()
 
   const { authUser, workoutData } = toRefs(props)
+  const darkMode: ComputedRef<boolean | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  )
   const displayDistance = ref(true)
   const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-    getDatasets(workoutData.value.chartData, t, authUser.value.imperial_units)
+    getDatasets(
+      workoutData.value.chartData,
+      t,
+      authUser.value.imperial_units,
+      darkMode.value !== false
+    )
   )
   const hasElevation = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0

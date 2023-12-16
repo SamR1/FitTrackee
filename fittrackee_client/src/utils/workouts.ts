@@ -10,21 +10,22 @@ import { convertStatsDistance } from '@/utils/units'
 export const getDatasets = (
   chartData: IWorkoutApiChartData[],
   t: CallableFunction,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  useDarkMode: boolean = false
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
       label: t('workouts.SPEED'),
-      backgroundColor: ['#FFFFFF'],
-      borderColor: ['#8884d8'],
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
       borderWidth: 2,
       data: [],
       yAxisID: 'ySpeed',
     },
     elevation: {
       label: t('workouts.ELEVATION'),
-      backgroundColor: ['#e5e5e5'],
-      borderColor: ['#cccccc'],
+      backgroundColor: [useDarkMode ? '#303030' : '#e5e5e5'],
+      borderColor: [useDarkMode ? '#222222' : '#cccccc'],
       borderWidth: 1,
       fill: true,
       data: [],
