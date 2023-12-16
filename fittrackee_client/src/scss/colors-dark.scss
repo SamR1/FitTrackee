@@ -1,11 +1,11 @@
 :root [data-theme='dark'] {
   --dark-blue: #181a1b;
-  --light-blue: #aec2d3;
+  --light-grey: #cfd0d0;
 
   --app-background-color: var(--dark-blue);
-  --app-color: var(--light-blue);
+  --app-color: var(--light-grey);
   --app-color-light: #6f7070;
-  --app-a-color: var(--light-blue);
+  --app-a-color: var(--light-grey);
   --app-shadow-color: #383d3f;
   --app-loading-color: #f3f3f3;
   --app-loading-top-color: var(--app-color);
