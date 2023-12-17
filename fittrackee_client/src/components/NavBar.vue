@@ -60,7 +60,7 @@
               {{ authUser.username }}
             </router-link>
             <button
-              class="nav-button transparent"
+              class="nav-button logout-button transparent"
               @click="updateDisplayModal(true)"
               :title="$t('user.LOGOUT')"
             >
