@@ -238,6 +238,7 @@
         height: 150px;
         .no-map {
           line-height: 150px;
+          filter: var(--no-map-filter);
         }
         ::v-deep(.bg-map-image) {
           height: 150px;

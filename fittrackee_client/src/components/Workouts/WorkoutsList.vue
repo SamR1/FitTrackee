@@ -354,7 +354,7 @@
           }
           .static-map {
             display: none;
-            box-shadow: 3px 3px 3px 1px var(--app-shadow-color);
+            box-shadow: 3px 3px 3px 1px var(--workout-static-map-shadow-color);
           }
         }
         .workout-title:hover .static-map {

@@ -213,6 +213,7 @@
     }
     .no-map {
       line-height: 400px;
+      filter: var(--no-map-filter);
     }
     .leaflet-container {
       .map {
