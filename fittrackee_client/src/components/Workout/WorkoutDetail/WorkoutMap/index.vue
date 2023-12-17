@@ -17,6 +17,7 @@
             ref="workoutMap"
             @ready="fitBounds(bounds)"
             :use-global-leaflet="false"
+            class="map"
           >
             <LControlLayers />
             <LControl
@@ -213,12 +214,21 @@
     .no-map {
       line-height: 400px;
     }
-    .map-control {
-      background: var(--map-control-bg-color);
-      padding: 5px 10px;
-      border: 2px solid var(--map-control-border-color);
-      border-radius: 3px;
-      color: var(--map-control-color);
+    .leaflet-container {
+      .map {
+        filter: var(--map-filter);
+      }
+      .map-control {
+        background: var(--map-control-bg-color);
+        padding: 5px 10px;
+        border: 2px solid var(--map-control-border-color);
+        border-radius: 3px;
+        color: var(--map-control-color);
+
+        &:hover {
+          background-color: var(--dropdown-hover-color);
+        }
+      }
     }
     ::v-deep(.fullscreen) {
       display: flex;

@@ -85,6 +85,12 @@
   --map-control-bg-color: #ffffff;
   --map-control-border-color: #bfc0ab;
   --map-attribution-text: rgba(255, 255, 255, 0.7);
+  --map-filter: invert(1) hue-rotate(180deg) brightness(0.8) contrast(0.8);
+  --map-layers-overlays: var(--app-color);
+  --map-control-bar: var(--app-color);
+
+  --mountains-filter: invert(90%) sepia(19%) saturate(0%) hue-rotate(39deg)
+    brightness(86%) contrast(102%);
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;
