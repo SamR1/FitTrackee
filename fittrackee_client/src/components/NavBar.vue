@@ -83,8 +83,15 @@
               :title="$t('user.TOGGLE_THEME')"
             >
               <i
-                class="fa nav-button-fa"
-                :class="themeIcon"
+                v-if="darkTheme"
+                class="fa nav-button-fa fa-moon"
+                aria-hidden="true"
+              />
+              <img
+                v-else
+                class="clear-theme"
+                src="/img/weather/clear-day.svg"
+                alt=""
                 aria-hidden="true"
               />
               <span class="nav-button-text">{{ $t('user.TOGGLE_THEME') }}</span>
@@ -137,9 +144,6 @@
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
   const darkTheme: ComputedRef<boolean> = computed(() => getDarkTheme())
-  const themeIcon: ComputedRef<string> = computed(() =>
-    darkTheme.value ? 'fa-moon' : 'fa-sun'
-  )
 
   onBeforeMount(() => setTheme())
 
@@ -310,6 +314,12 @@
         .nav-button-text {
           display: none;
         }
+      }
+
+      .clear-theme {
+        filter: var(--workout-img-color);
+        height: 20px;
+        margin-bottom: -5px;
       }
     }
 
