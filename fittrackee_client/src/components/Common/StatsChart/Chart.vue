@@ -14,6 +14,7 @@
   import { ROOT_STORE } from '@/store/constants'
   import type { IChartDataset } from '@/types/chart'
   import type { TStatisticsDatasetKeys } from '@/types/statistics'
+  import { getDarkTheme } from '@/utils'
   import { formatTooltipValue } from '@/utils/tooltip'
   import { chartsColors } from '@/utils/workouts'
 
@@ -41,17 +42,18 @@
   const darkMode: ComputedRef<boolean | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
   const lineColors = computed(() => ({
-    color:
-      darkMode.value !== false
-        ? chartsColors.darkMode.line
-        : chartsColors.ligthMode.line,
+    color: darkTheme.value
+      ? chartsColors.darkMode.line
+      : chartsColors.ligthMode.line,
   }))
   const textColors = computed(() => ({
-    color:
-      darkMode.value !== false
-        ? chartsColors.darkMode.text
-        : chartsColors.ligthMode.text,
+    color: darkTheme.value
+      ? chartsColors.darkMode.text
+      : chartsColors.ligthMode.text,
   }))
 
   const chartData = computed(() => ({

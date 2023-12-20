@@ -143,9 +143,6 @@
     .mountains {
       padding-right: $default-padding * 0.5;
     }
-    .mountains {
-      filter: var(--mountains-filter);
-    }
 
     .workout-data {
       padding: $default-padding * 0.5 0;

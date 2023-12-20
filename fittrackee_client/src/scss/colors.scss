@@ -82,6 +82,7 @@
   --map-control-color: #000000;
   --map-control-bg-color: #ffffff;
   --map-control-border-color: #bfc0ab;
+  --map-control-hover-bg-color: var(--dropdown-hover-color);
   --map-attribution-text: var(--app-color);
   --map-display-hover-attribution-text: initial;
   --map-attribution-bg-color: rgba(255, 255, 255, 0.7);
@@ -93,7 +94,7 @@
   --workout-static-map-shadow-color: var(--app-shadow-color);
   --workout-static-map-bg-color: var(--workout-no-map-bg-color);
 
-  --mountains-filter: invert(19%) sepia(9%) saturate(2921%) hue-rotate(169deg)
+  --icon-svg-filter: invert(19%) sepia(9%) saturate(2921%) hue-rotate(169deg)
     brightness(85%) contrast(80%);
 
   --cell-heading-bg-color: #eeeeee;

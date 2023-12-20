@@ -70,6 +70,7 @@
     IWorkoutData,
     TCoordinates,
   } from '@/types/workouts'
+  import { getDarkTheme } from '@/utils'
   import { units } from '@/utils/units'
   import { chartsColors, getDatasets } from '@/utils/workouts'
 
@@ -88,6 +89,9 @@
   const darkMode: ComputedRef<boolean | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
   const displayDistance = ref(true)
   const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
@@ -95,7 +99,7 @@
       workoutData.value.chartData,
       t,
       authUser.value.imperial_units,
-      darkMode.value !== false
+      darkTheme.value
     )
   )
   const hasElevation = computed(
@@ -118,16 +122,14 @@
     () => datasets.value.coordinates
   )
   const lineColors = computed(() => ({
-    color:
-      darkMode.value !== false
-        ? chartsColors.darkMode.line
-        : chartsColors.ligthMode.line,
+    color: darkTheme.value
+      ? chartsColors.darkMode.line
+      : chartsColors.ligthMode.line,
   }))
   const textColors = computed(() => ({
-    color:
-      darkMode.value !== false
-        ? chartsColors.darkMode.text
-        : chartsColors.ligthMode.text,
+    color: darkTheme.value
+      ? chartsColors.darkMode.text
+      : chartsColors.ligthMode.text,
   }))
 
   const options = computed<ChartOptions<'line'>>(() => ({

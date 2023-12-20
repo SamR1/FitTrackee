@@ -123,6 +123,7 @@
   import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getDarkTheme } from '@/utils'
   import { availableLanguages } from '@/utils/locales'
 
   const emit = defineEmits(['menuInteraction'])
@@ -143,7 +144,9 @@
   const darkMode: ComputedRef<boolean | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
-  const darkTheme: ComputedRef<boolean> = computed(() => getDarkTheme())
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
 
   onBeforeMount(() => setTheme())
 
@@ -167,15 +170,6 @@
   }
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
-  }
-  function getDarkTheme() {
-    if (
-      darkMode.value === null &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      return true
-    }
-    return darkMode.value === true
   }
   function setTheme() {
     if (darkTheme.value) {

@@ -227,7 +227,7 @@
         color: var(--map-control-color);
 
         &:hover {
-          background-color: var(--dropdown-hover-color);
+          background-color: var(--map-control-hover-bg-color);
         }
       }
     }
