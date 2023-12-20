@@ -117,7 +117,7 @@
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               context.dataset.backgroundColor[0]
-            : '#666666'
+            : textColors.value.color
         },
         rotation: function (context) {
           return fullStats.value && context.chart.chartArea.width < 580
