@@ -88,10 +88,11 @@
   --map-display-hover-attribution-text: #444444;
   --map-attribution-bg-color: none;
   --map-filter: invert(1) hue-rotate(180deg) brightness(0.8) contrast(0.8);
-  --map-display-hover-filter: invert(1) hue-rotate(180deg) brightness(1.5) contrast(0.6);
+  --map-display-hover-filter: invert(1) hue-rotate(180deg) brightness(1.5)
+    contrast(0.6);
   --map-layers-overlays: var(--app-color);
   --map-control-bar: var(--app-color);
-  --no-map-filter: invert(1) brightness(1.5) contrast(.9);
+  --no-map-filter: invert(1) brightness(1.5) contrast(0.9);
   --workout-static-map-shadow-color: #d2d2d2;
 
   --mountains-filter: invert(90%) sepia(19%) saturate(0%) hue-rotate(39deg)
