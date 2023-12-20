@@ -234,7 +234,7 @@
       }
 
       .workout-map {
-        background-color: var(--workout-no-map-bg-color);
+        background-color: var(--workout-static-map-bg-color);
         height: 150px;
         .no-map {
           line-height: 150px;
