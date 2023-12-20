@@ -27,6 +27,7 @@
   --dropdown-background-color: #ffffff;
   --dropdown-border-color: lightgrey;
   --policy-border-color: #ccc;
+  --policy-link-color: var(--app-a-color);
   --box-shadow-color: lightgrey;
   --admin-disabled-input-color: #ffffff;
 
@@ -90,6 +91,7 @@
   --map-control-bar: #bfc0ab;
   --no-map-filter: initial;
   --workout-static-map-shadow-color: var(--app-shadow-color);
+  --workout-static-map-bg-color: var(--workout-no-map-bg-color);
 
   --mountains-filter: invert(19%) sepia(9%) saturate(2921%) hue-rotate(169deg)
     brightness(85%) contrast(80%);

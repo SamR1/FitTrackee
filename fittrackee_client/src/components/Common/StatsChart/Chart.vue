@@ -42,14 +42,16 @@
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
   const lineColors = computed(() => ({
-    color: darkMode.value
-      ? chartsColors.darkMode.line
-      : chartsColors.ligthMode.line,
+    color:
+      darkMode.value !== false
+        ? chartsColors.darkMode.line
+        : chartsColors.ligthMode.line,
   }))
   const textColors = computed(() => ({
-    color: darkMode.value
-      ? chartsColors.darkMode.text
-      : chartsColors.ligthMode.text,
+    color:
+      darkMode.value !== false
+        ? chartsColors.darkMode.text
+        : chartsColors.ligthMode.text,
   }))
 
   const chartData = computed(() => ({
@@ -117,7 +119,7 @@
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               context.dataset.backgroundColor[0]
-            : '#666666'
+            : textColors.value.color
         },
         rotation: function (context) {
           return fullStats.value && context.chart.chartArea.width < 580

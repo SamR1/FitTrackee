@@ -118,14 +118,16 @@
     () => datasets.value.coordinates
   )
   const lineColors = computed(() => ({
-    color: darkMode.value
-      ? chartsColors.darkMode.line
-      : chartsColors.ligthMode.line,
+    color:
+      darkMode.value !== false
+        ? chartsColors.darkMode.line
+        : chartsColors.ligthMode.line,
   }))
   const textColors = computed(() => ({
-    color: darkMode.value
-      ? chartsColors.darkMode.text
-      : chartsColors.ligthMode.text,
+    color:
+      darkMode.value !== false
+        ? chartsColors.darkMode.text
+        : chartsColors.ligthMode.text,
   }))
 
   const options = computed<ChartOptions<'line'>>(() => ({
