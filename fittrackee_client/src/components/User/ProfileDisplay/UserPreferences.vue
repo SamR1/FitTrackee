@@ -1,14 +1,20 @@
 <template>
   <div id="user-preferences" class="description-list">
+    <div class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</div>
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
+      <dt>{{ $t('user.PROFILE.THEME_MODE.LABEL') }}:</dt>
+      <dd>{{ $t(`user.PROFILE.THEME_MODE.VALUES.${darkMode}`) }}</dd>
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
       <dt>{{ $t('user.PROFILE.DATE_FORMAT') }}:</dt>
       <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
+    <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -91,4 +97,25 @@
   const display_ascent = computed(() =>
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
+  const darkMode = computed(() =>
+    props.user.use_dark_mode === true
+      ? 'DARK'
+      : props.user.use_dark_mode === false
+        ? 'LIGHT'
+        : 'DEFAULT'
+  )
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+  #user-preferences {
+    .preferences-section {
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border-color);
+    }
+    .raw-speed-help {
+      margin-top: -$default-margin * 0.5;
+    }
+  }
+</style>

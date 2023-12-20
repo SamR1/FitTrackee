@@ -79,6 +79,7 @@
     "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
     "FIRST_NAME": "Prénom",
+    "INTERFACE": "Interface",
     "LANGUAGE": "Langue",
     "LAST_NAME": "Nom",
     "LOCATION": "Lieu",
@@ -114,6 +115,14 @@
       "PROFILE": "profil",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Thème",
+      "VALUES": {
+        "DARK": "Sombre",
+        "DEFAULT": "Préférence du navigateur",
+        "LIGHT": "Clair"
+      }
+    },
     "TIMEZONE": "Fuseau horaire",
     "UNITS": {
       "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
@@ -135,6 +144,7 @@
   "REVIEW": "accepter",
   "SHOW_PASSWORD": "afficher le mot de passe",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
+  "TOGGLE_THEME": "Modifier le thème (Mode Clair ou Sombre)",
   "USERNAME": "Nom d'utilisateur",
   "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère _ sont autorisés.",
   "USER_PICTURE": "photo de l'utilisateur",

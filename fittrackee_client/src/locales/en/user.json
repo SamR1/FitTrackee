@@ -79,6 +79,7 @@
     "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
     "FIRST_DAY_OF_WEEK": "First day of week",
     "FIRST_NAME": "First name",
+    "INTERFACE": "Interface",
     "LANGUAGE": "Language",
     "LAST_NAME": "Last name",
     "LOCATION": "Location",
@@ -114,6 +115,14 @@
       "PROFILE": "profile",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Theme mode",
+      "VALUES": {
+        "DARK": "Dark",
+        "DEFAULT": "Browser preference",
+        "LIGHT": "Light"
+      }
+    },
     "TIMEZONE": "Timezone",
     "UNITS": {
       "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
@@ -135,6 +144,7 @@
   "REVIEW": "review",
   "SHOW_PASSWORD": "show password",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
+  "TOGGLE_THEME": "Toggle theme (Light or Dark mode)",
   "USERNAME": "Username",
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
   "USER_PICTURE": "user picture",

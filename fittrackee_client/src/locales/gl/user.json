@@ -122,7 +122,8 @@
       "LABEL": "Estratexia para velocidade máx. GPX",
       "RAW_SPEED": "En bruto",
       "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima."
-    }
+    },
+    "INTERFACE": "Interface"
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
   "REGISTER": "Crear conta",
