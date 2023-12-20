@@ -123,7 +123,7 @@
     .scroll-button {
       background-color: var(--scroll-button-bg-color);
       border-radius: $border-radius;
-      box-shadow: 1px 1px 3px lightgrey;
+      box-shadow: 1px 1px 3px var(--app-shadow-color);
       display: none;
       padding: 0 $default-padding;
 

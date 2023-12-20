@@ -7,24 +7,37 @@ import type {
 } from '@/types/workouts'
 import { convertStatsDistance } from '@/utils/units'
 
+export const chartsColors = {
+  ligthMode: {
+    // default chartjs values
+    text: '#666',
+    line: 'rgba(0, 0, 0, 0.1)',
+  },
+  darkMode: {
+    text: '#a1a1a1',
+    line: '#3f3f3f',
+  },
+}
+
 export const getDatasets = (
   chartData: IWorkoutApiChartData[],
   t: CallableFunction,
-  useImperialUnits: boolean
+  useImperialUnits: boolean,
+  useDarkMode: boolean = false
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
       label: t('workouts.SPEED'),
-      backgroundColor: ['#FFFFFF'],
-      borderColor: ['#8884d8'],
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
       borderWidth: 2,
       data: [],
       yAxisID: 'ySpeed',
     },
     elevation: {
       label: t('workouts.ELEVATION'),
-      backgroundColor: ['#e5e5e5'],
-      borderColor: ['#cccccc'],
+      backgroundColor: [useDarkMode ? '#303030' : '#e5e5e5'],
+      borderColor: [useDarkMode ? '#222222' : '#cccccc'],
       borderWidth: 1,
       fill: true,
       data: [],

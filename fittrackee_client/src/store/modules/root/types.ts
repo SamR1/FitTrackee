@@ -22,6 +22,7 @@ export interface IRootState {
   errorMessages: string | string[] | null
   application: IApplication
   appLoading: boolean
+  darkMode: boolean | null
 }
 
 export interface IRootActions {
@@ -50,6 +51,8 @@ export interface IRootGetters {
   [ROOT_STORE.GETTERS.APP_LOADING](state: IRootState): boolean
 
   [ROOT_STORE.GETTERS.APP_STATS](state: IRootState): IAppStatistics
+
+  [ROOT_STORE.GETTERS.DARK_MODE](state: IRootState): boolean | null
 
   [ROOT_STORE.GETTERS.ERROR_MESSAGES](
     state: IRootState
@@ -83,6 +86,10 @@ export type TRootMutations<S = IRootState> = {
     statistics: IAppStatistics
   ): void
   [ROOT_STORE.MUTATIONS.UPDATE_LANG](state: S, language: TLanguage): void
+  [ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE](
+    state: S,
+    darkMode: boolean | null
+  ): void
 }
 
 export type TRootStoreModule<S = IRootState> = Omit<

@@ -92,7 +92,7 @@
 
       .policy-content {
         height: 500px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--policy-border-color);
         overflow: auto;
         margin: $default-margin;
         border-radius: $border-radius;

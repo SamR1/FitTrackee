@@ -1459,6 +1459,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=False,
                     start_elevation_at_zero=False,
+                    use_dark_mode=True,
                     use_raw_gpx_speed=True,
                     date_format='yyyy-MM-dd',
                 )
@@ -1478,6 +1479,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
+        assert data['data']['use_dark_mode'] is True
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
