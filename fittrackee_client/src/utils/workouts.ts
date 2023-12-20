@@ -7,6 +7,18 @@ import type {
 } from '@/types/workouts'
 import { convertStatsDistance } from '@/utils/units'
 
+export const chartsColors = {
+  ligthMode: {
+    // default chartjs values
+    text: '#666',
+    line: 'rgba(0, 0, 0, 0.1)',
+  },
+  darkMode: {
+    text: '#a1a1a1',
+    line: '#3f3f3f',
+  },
+}
+
 export const getDatasets = (
   chartData: IWorkoutApiChartData[],
   t: CallableFunction,

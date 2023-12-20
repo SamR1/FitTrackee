@@ -71,7 +71,7 @@
     TCoordinates,
   } from '@/types/workouts'
   import { units } from '@/utils/units'
-  import { getDatasets } from '@/utils/workouts'
+  import { chartsColors, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -117,6 +117,17 @@
   const coordinates: ComputedRef<TCoordinates[]> = computed(
     () => datasets.value.coordinates
   )
+  const lineColors = computed(() => ({
+    color: darkMode.value
+      ? chartsColors.darkMode.line
+      : chartsColors.ligthMode.line,
+  }))
+  const textColors = computed(() => ({
+    color: darkMode.value
+      ? chartsColors.darkMode.text
+      : chartsColors.ligthMode.text,
+  }))
+
   const options = computed<ChartOptions<'line'>>(() => ({
     responsive: true,
     maintainAspectRatio: false,
@@ -130,6 +141,10 @@
       x: {
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         ticks: {
           count: 10,
@@ -138,6 +153,7 @@
               ? Number(value).toFixed(2)
               : formatDuration(value)
           },
+          ...textColors.value,
         },
         type: 'linear',
         bounds: 'data',
@@ -146,16 +162,25 @@
           text: displayDistance.value
             ? t('workouts.DISTANCE') + ` (${fromKmUnit})`
             : t('workouts.DURATION'),
+          ...textColors.value,
         },
       },
       ySpeed: {
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         position: 'left',
         title: {
           display: true,
           text: t('workouts.SPEED') + ` (${fromKmUnit}/h)`,
+          ...textColors.value,
+        },
+        ticks: {
+          ...textColors.value,
         },
       },
       yElevation: {
@@ -163,11 +188,19 @@
         display: hasElevation.value,
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         position: 'right',
         title: {
           display: true,
           text: t('workouts.ELEVATION') + ` (${fromMUnit})`,
+          ...textColors.value,
+        },
+        ticks: {
+          ...textColors.value,
         },
       },
     },
