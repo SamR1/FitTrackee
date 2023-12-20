@@ -57,6 +57,7 @@ export interface IAuthUserProfile extends IUserProfile {
   total_distance: number
   total_duration: string
   weekm: boolean
+  use_dark_mode: boolean | null
   workouts_visibility: TPrivacyLevels
 }
 
@@ -109,6 +110,7 @@ export interface IUserPreferencesPayload {
   timezone: string
   use_raw_gpx_speed: boolean
   weekm: boolean
+  use_dark_mode: boolean | null
   workouts_visibility: TPrivacyLevels
 }
 

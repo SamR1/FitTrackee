@@ -60,7 +60,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN,
         window.localStorage.authToken
       )
-      context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+      context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, true)
     }
     // after logout in another tab
     if (
@@ -121,13 +121,16 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
   },
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
-    context: ActionContext<IAuthUserState, IRootState>
+    context: ActionContext<IAuthUserState, IRootState>,
+    updateUI: boolean = false
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
       .get('auth/profile')
       .then((res) => {
         if (res.data.status === 'success') {
+          const profileNotLoaded =
+            context.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_NOT_LOADED]
           context.commit(
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
@@ -140,10 +143,16 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data
           )
-          if (res.data.data.language) {
-            context.dispatch(
-              ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
-              res.data.data.language
+          if (profileNotLoaded || updateUI) {
+            if (res.data.data.language) {
+              context.dispatch(
+                ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
+                res.data.data.language
+              )
+            }
+            context.commit(
+              ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE,
+              res.data.data.use_dark_mode
             )
           }
           context.commit(
@@ -217,7 +226,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             window.localStorage.setItem('authToken', token)
             context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
             context
-              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, true)
               .then(() =>
                 router.push(
                   typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
@@ -345,6 +354,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           context.commit(
             ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
             res.data.data
+          )
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE,
+            res.data.data.use_dark_mode
           )
           context
             .dispatch(

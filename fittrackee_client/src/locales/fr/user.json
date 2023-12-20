@@ -130,6 +130,14 @@
       "PROFILE": "profil",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Thème",
+      "VALUES": {
+        "DARK": "Sombre",
+        "DEFAULT": "Préférence du navigateur",
+        "LIGHT": "Clair"
+      }
+    },
     "TIMEZONE": "Fuseau horaire",
     "UNITS": {
       "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
@@ -169,6 +177,7 @@
   "SHOW_PASSWORD": "afficher le mot de passe",
   "SUSPENDED": "Suspendu",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
+  "TOGGLE_THEME": "Modifier le thème (Mode Clair ou Sombre)",
   "USER": "utilisateur | utilisateurs",
   "USERNAME": "Nom d'utilisateur",
   "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère _ sont autorisés.",

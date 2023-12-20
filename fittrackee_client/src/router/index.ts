@@ -119,7 +119,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/password-reset/sent',
     name: 'PasswordEmailSent',
-    component: () => PasswordResetView,
+    component: PasswordResetView,
     props: { action: 'request-sent' },
     meta: {
       title: 'user.PASSWORD_RESET',

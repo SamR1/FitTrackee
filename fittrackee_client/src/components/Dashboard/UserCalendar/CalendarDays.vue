@@ -34,7 +34,7 @@
       padding: $default-padding * 0.5;
       text-align: center;
       text-transform: uppercase;
-      color: var(--app-color-light);
+      color: var(--calendar-day-color);
     }
   }
 </style>

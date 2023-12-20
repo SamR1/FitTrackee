@@ -1548,6 +1548,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=False,
                     start_elevation_at_zero=False,
+                    use_dark_mode=True,
                     use_raw_gpx_speed=True,
                     date_format='yyyy-MM-dd',
                     map_visibility='followers_only',
@@ -1571,6 +1572,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['timezone'] == 'America/New_York'
         assert data['data']['date_format'] == 'yyyy-MM-dd'
         assert data['data']['weekm'] is True
+        assert data['data']['use_dark_mode'] is True
         assert data['data']['manually_approves_followers'] is False
         assert data['data']['hide_profile_in_users_directory'] is False
 
@@ -1609,6 +1611,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility=input_workout_visibility.value,
                     manually_approves_followers=True,
                     hide_profile_in_users_directory=True,
+                    use_dark_mode=None,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1648,6 +1651,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility=PrivacyLevel.PUBLIC.value,
                     manually_approves_followers=True,
                     hide_profile_in_users_directory=True,
+                    use_dark_mode=None,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

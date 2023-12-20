@@ -6,13 +6,17 @@
 
 <script setup lang="ts">
   import type { ChartOptions, LayoutItem } from 'chart.js'
-  import { computed, toRefs } from 'vue'
+  import { computed, type ComputedRef, toRefs } from 'vue'
   import { Bar } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
 
+  import { ROOT_STORE } from '@/store/constants'
   import type { IChartDataset } from '@/types/chart'
   import type { TStatisticsDatasetKeys } from '@/types/statistics'
+  import { getDarkTheme } from '@/utils'
   import { formatTooltipValue } from '@/utils/tooltip'
+  import { chartsColors } from '@/utils/workouts'
 
   interface Props {
     datasets: IChartDataset[]
@@ -32,7 +36,25 @@
     useImperialUnits,
   } = toRefs(props)
 
+  const store = useStore()
   const { t } = useI18n()
+
+  const darkMode: ComputedRef<boolean | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  )
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
+  const lineColors = computed(() => ({
+    color: darkTheme.value
+      ? chartsColors.darkMode.line
+      : chartsColors.ligthMode.line,
+  }))
+  const textColors = computed(() => ({
+    color: darkTheme.value
+      ? chartsColors.darkMode.text
+      : chartsColors.ligthMode.text,
+  }))
 
   const chartData = computed(() => ({
     labels: labels.value,
@@ -53,12 +75,23 @@
         stacked: true,
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
+        },
+        ticks: {
+          ...textColors.value,
         },
       },
       y: {
         stacked: displayedData.value !== 'average_speed',
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         ticks: {
           maxTicksLimit: 6,
@@ -71,6 +104,7 @@
               getUnit(displayedData.value)
             )
           },
+          ...textColors.value,
         },
         afterFit: function (scale: LayoutItem) {
           scale.width = fullStats.value ? 90 : 60
@@ -87,7 +121,7 @@
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               context.dataset.backgroundColor[0]
-            : '#666666'
+            : textColors.value.color
         },
         rotation: function (context) {
           return fullStats.value && context.chart.chartArea.width < 580

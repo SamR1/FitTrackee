@@ -130,6 +130,14 @@
       "PROFILE": "profile",
       "SPORTS": "sports"
     },
+    "THEME_MODE": {
+      "LABEL": "Theme mode",
+      "VALUES": {
+        "DARK": "Dark",
+        "DEFAULT": "Browser preference",
+        "LIGHT": "Light"
+      }
+    },
     "TIMEZONE": "Timezone",
     "UNITS": {
       "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
@@ -169,6 +177,7 @@
   "SHOW_PASSWORD": "show password",
   "SUSPENDED": "Suspended",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
+  "TOGGLE_THEME": "Toggle theme (Light or Dark mode)",
   "USER": "user | users",
   "USERNAME": "Username",
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",

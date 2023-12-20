@@ -25,4 +25,5 @@ export const state: IRootState = {
     },
   },
   appLoading: false,
+  darkMode: null,
 }

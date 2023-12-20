@@ -46,6 +46,12 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
     state.language = language
     state.locale = localeFromLanguage[language]
   },
+  [ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE](
+    state: IRootState,
+    darkMode: boolean | null
+  ) {
+    state.darkMode = darkMode
+  },
   [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
     state: IRootState,
     authUser: IAuthUserProfile

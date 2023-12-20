@@ -1,5 +1,46 @@
 # Change log
 
+## Version 0.7.27 (2023/12/20)
+
+### Features and enhancements
+
+* [#113](https://github.com/SamR1/FitTrackee/issues/113) - add a dark mode
+* [PR#464](https://github.com/SamR1/FitTrackee/pull/464) - Update user preferences display 
+* [PR#471](https://github.com/SamR1/FitTrackee/pull/471) - add new sport: "Cycling (Trekking)"
+
+### Bugs Fixed
+
+* [PR#469](https://github.com/SamR1/FitTrackee/pull/469) - change UI display only on login ou user preferences update 
+* [PR#472](https://github.com/SamR1/FitTrackee/pull/472) - fix redirection when resetting password
+
+### Translations
+
+* [PR#468](https://github.com/SamR1/FitTrackee/pull/468) - Translations update (Galician & Spanish)
+
+### Misc
+
+* [#456](https://github.com/SamR1/FitTrackee/issues/456) - Drop PostgreSQL 11 support
+
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 99%
+- Italian: 85%
+- Norwegian Bokmål: 61%
+- Polish: 99%
+- Spanish: 99%
+
+Thanks to the contributors:
+- @DavidHenryThoreau
+- @gallegonovato
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.7.26 (2023/11/19)
 
 ### Bugs Fixed

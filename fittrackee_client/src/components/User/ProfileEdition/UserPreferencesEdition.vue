@@ -3,7 +3,9 @@
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updateProfile">
-        <p class="preferences-section">{{ $t('user.PROFILE.INTERFACE') }}</p>
+        <div class="preferences-section">
+          {{ $t('user.PROFILE.INTERFACE') }}
+        </div>
         <label class="form-items">
           {{ $t('user.PROFILE.LANGUAGE') }}
           <select id="language" v-model="userForm.language" :disabled="loading">
@@ -13,6 +15,22 @@
               :key="lang.value"
             >
               {{ lang.label }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.THEME_MODE.LABEL') }}
+          <select
+            id="use_dark_mode"
+            v-model="userForm.use_dark_mode"
+            :disabled="loading"
+          >
+            <option
+              v-for="mode in useDarkMode"
+              :value="mode.value"
+              :key="mode.label"
+            >
+              {{ $t(`user.PROFILE.THEME_MODE.VALUES.${mode.label}`) }}
             </option>
           </select>
         </label>
@@ -60,7 +78,9 @@
             </label>
           </div>
         </div>
-        <p class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</p>
+        <div class="preferences-section">
+          {{ $t('user.PROFILE.TABS.ACCOUNT') }}
+        </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}
@@ -117,7 +137,7 @@
             </label>
           </div>
         </div>
-        <p class="preferences-section">{{ $t('workouts.WORKOUT') }}</p>
+        <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.UNITS.LABEL') }}
@@ -285,6 +305,7 @@
     map_visibility: 'private',
     start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
+    use_dark_mode: false,
     use_raw_gpx_speed: false,
     weekm: false,
     workouts_visibility: 'private',
@@ -337,6 +358,20 @@
     {
       label: 'RAW_SPEED',
       value: true,
+    },
+  ]
+  const useDarkMode = [
+    {
+      label: 'DARK',
+      value: true,
+    },
+    {
+      label: 'DEFAULT',
+      value: null,
+    },
+    {
+      label: 'LIGHT',
+      value: false,
     },
   ]
   const manuallyApprovesFollowersValues = [
@@ -403,6 +438,7 @@
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
+    userForm.use_dark_mode = user.use_dark_mode
     userForm.workouts_visibility = user.workouts_visibility
       ? user.workouts_visibility
       : 'private'
@@ -462,6 +498,7 @@
 
     #language,
     #date_format,
+    #use_dark_mode,
     #map_visibility,
     #workouts_visibility {
       padding: $default-padding * 0.5;
