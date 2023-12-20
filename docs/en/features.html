@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
-        <title>Features - FitTrackee 0.7.26 documentation</title>
+        <title>Features - FitTrackee 0.7.27 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.7.26
+      <a href="index.html"><div class="brand">FitTrackee 0.7.27
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.7.26
+  <span class="sidebar-brand-text">FitTrackee 0.7.27
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -235,15 +235,16 @@
 <div class="line"><strong>FitTrackee</strong> allows you to store and display gpx files and some statistics from your outdoor activities.</div>
 <div class="line">For now, this app is kind of a single-user application. Even if several users can register, a user can only view his own workouts.</div>
 </div>
-<p>Gpx files are stored in an upload directory (without encryption).</p>
+<p>Gpx files are stored in an upload directory (<strong>without encryption</strong>).</p>
 <p>With the default configuration, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> is used as tile server in Workout detail and for static map generation.</p>
 <section id="workouts">
 <h2>Workouts<a class="headerlink" href="#workouts" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><dl class="simple">
-<dt>14 sports are supported:</dt><dd><ul>
+<dt>17 sports are supported:</dt><dd><ul>
 <li><p>Cycling (Sport)</p></li>
 <li><p>Cycling (Transport)</p></li>
+<li><p>Cycling (Trekking)  (<em>new in 0.7.27</em>)</p></li>
 <li><p>Cycling (Virtual)  (<em>new in 0.7.3</em>)</p></li>
 <li><p>Hiking</p></li>
 <li><p>Mountain Biking</p></li>
@@ -394,6 +395,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </div>
 <ul class="simple">
 <li><p>A user can set language, timezone and first day of week.</p></li>
+<li><p>A user can set the interface theme (light, dark or according to browser preferences). The default value is <strong>browser preferences</strong>. When the dark or light theme is set, it overrides browser preferences (<em>new in 0.7.27</em>).</p></li>
 <li><p>A user can reset his password (<em>new in 0.3.0</em>)</p></li>
 <li><p>A user can change his email address (<em>new in 0.6.0</em>)</p></li>
 <li><p>A user can choose between metric system and imperial system for distance, elevation and speed display (<em>new in 0.5.0</em>)</p></li>
@@ -643,7 +645,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6eea8100"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=ca920519"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
