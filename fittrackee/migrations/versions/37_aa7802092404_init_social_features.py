@@ -1,7 +1,7 @@
 """init social features
 
 Revision ID: aa7802092404
-Revises: db58d195c5bf
+Revises: 4d51a4ca8001
 Create Date: 2023-04-13 11:28:53.769936
 
 """
@@ -11,7 +11,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = 'aa7802092404'
-down_revision = '24eb097614e4'
+down_revision = '4d51a4ca8001'
 branch_labels = None
 depends_on = None
 
@@ -58,9 +58,7 @@ def upgrade():
         sa.ForeignKeyConstraint(
             ['reply_to'], ['comments.id'], ondelete='SET NULL'
         ),
-        sa.ForeignKeyConstraint(
-            ['user_id'], ['users.id'], ondelete='CASCADE'
-        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.ForeignKeyConstraint(
             ['workout_id'], ['workouts.id'], ondelete='SET NULL'
         ),
@@ -95,9 +93,7 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('workout_id', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(
-            ['user_id'], ['users.id'], ondelete='CASCADE'
-        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.ForeignKeyConstraint(
             ['workout_id'], ['workouts.id'], ondelete='CASCADE'
         ),
@@ -115,9 +111,7 @@ def upgrade():
         sa.ForeignKeyConstraint(
             ['comment_id'], ['comments.id'], ondelete='CASCADE'
         ),
-        sa.ForeignKeyConstraint(
-            ['user_id'], ['users.id'], ondelete='CASCADE'
-        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint(
             'user_id', 'comment_id', name='user_id_comment_id_unique'
@@ -207,22 +201,41 @@ def upgrade():
     op.alter_column('workouts', 'workout_visibility', nullable=False)
     op.alter_column('workouts', 'map_visibility', nullable=False)
 
-    op.create_table('notifications',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('from_user_id', sa.Integer(), nullable=True),
-    sa.Column('to_user_id', sa.Integer(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('marked_as_read', sa.Boolean(), nullable=False),
-    sa.Column('event_object_id', sa.Integer(), nullable=True),
-    sa.Column('event_type', sa.String(length=50), nullable=False),
-    sa.ForeignKeyConstraint(['from_user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['to_user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('from_user_id', 'to_user_id', 'event_type', 'event_object_id', name='users_event_unique')
+    op.create_table(
+        'notifications',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('from_user_id', sa.Integer(), nullable=True),
+        sa.Column('to_user_id', sa.Integer(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('marked_as_read', sa.Boolean(), nullable=False),
+        sa.Column('event_object_id', sa.Integer(), nullable=True),
+        sa.Column('event_type', sa.String(length=50), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['from_user_id'], ['users.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['to_user_id'], ['users.id'], ondelete='CASCADE'
+        ),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint(
+            'from_user_id',
+            'to_user_id',
+            'event_type',
+            'event_object_id',
+            name='users_event_unique',
+        ),
     )
     with op.batch_alter_table('notifications', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_notifications_from_user_id'), ['from_user_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_notifications_to_user_id'), ['to_user_id'], unique=False)
+        batch_op.create_index(
+            batch_op.f('ix_notifications_from_user_id'),
+            ['from_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_notifications_to_user_id'),
+            ['to_user_id'],
+            unique=False,
+        )
 
     op.create_table(
         'blocked_users',
@@ -230,16 +243,27 @@ def upgrade():
         sa.Column('user_id', sa.Integer(), nullable=True),
         sa.Column('by_user_id', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
-        sa.ForeignKeyConstraint(['by_user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(
+            ['by_user_id'], ['users.id'], ondelete='CASCADE'
+        ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
-        sa.UniqueConstraint('user_id', 'by_user_id', name='blocked_users_unique'),
+        sa.UniqueConstraint(
+            'user_id', 'by_user_id', name='blocked_users_unique'
+        ),
     )
     with op.batch_alter_table('blocked_users', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_blocked_users_by_user_id'), ['by_user_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_blocked_users_user_id'), ['user_id'], unique=False)
+        batch_op.create_index(
+            batch_op.f('ix_blocked_users_by_user_id'),
+            ['by_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_blocked_users_user_id'), ['user_id'], unique=False
+        )
 
-    op.create_table('reports',
+    op.create_table(
+        'reports',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
@@ -251,32 +275,65 @@ def upgrade():
         sa.Column('resolved', sa.Boolean(), nullable=False),
         sa.Column('object_type', sa.String(length=50), nullable=False),
         sa.Column('note', sa.String(), nullable=False),
-        sa.ForeignKeyConstraint(['reported_by'], ['users.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['reported_comment_id'], ['comments.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['reported_user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['reported_workout_id'], ['workouts.id'], ondelete='CASCADE'),
-        sa.PrimaryKeyConstraint('id')
+        sa.ForeignKeyConstraint(
+            ['reported_by'], ['users.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['reported_comment_id'], ['comments.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['reported_user_id'], ['users.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['reported_workout_id'], ['workouts.id'], ondelete='CASCADE'
+        ),
+        sa.PrimaryKeyConstraint('id'),
     )
     with op.batch_alter_table('reports', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_reports_reported_by'), ['reported_by'], unique=False)
-        batch_op.create_index(batch_op.f('ix_reports_reported_comment_id'), ['reported_comment_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_reports_reported_user_id'), ['reported_user_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_reports_reported_workout_id'), ['reported_workout_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_reports_object_type'), ['object_type'], unique=False)
+        batch_op.create_index(
+            batch_op.f('ix_reports_reported_by'), ['reported_by'], unique=False
+        )
+        batch_op.create_index(
+            batch_op.f('ix_reports_reported_comment_id'),
+            ['reported_comment_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_reports_reported_user_id'),
+            ['reported_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_reports_reported_workout_id'),
+            ['reported_workout_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_reports_object_type'), ['object_type'], unique=False
+        )
 
-    op.create_table('report_comments',
+    op.create_table(
+        'report_comments',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('report_id', sa.Integer(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=True),
         sa.Column('comment', sa.String(), nullable=False),
-        sa.ForeignKeyConstraint(['report_id'], ['reports.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(
+            ['report_id'], ['reports.id'], ondelete='CASCADE'
+        ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
     )
     with op.batch_alter_table('report_comments', schema=None) as batch_op:
-        batch_op.create_index(batch_op.f('ix_report_comments_report_id'), ['report_id'], unique=False)
-        batch_op.create_index(batch_op.f('ix_report_comments_user_id'), ['user_id'], unique=False)
+        batch_op.create_index(
+            batch_op.f('ix_report_comments_report_id'),
+            ['report_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_report_comments_user_id'), ['user_id'], unique=False
+        )
 
 
 def downgrade():
