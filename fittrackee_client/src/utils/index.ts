@@ -65,3 +65,13 @@ export const handleError = (
       : `api.ERROR.${errorMessages}`
   )
 }
+
+export const getDarkTheme = (darkMode: boolean | null) => {
+  if (
+    darkMode === null &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    return true
+  }
+  return darkMode === true
+}

@@ -47,7 +47,8 @@ export interface IAuthUserActions {
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
-    context: ActionContext<IAuthUserState, IRootState>
+    context: ActionContext<IAuthUserState, IRootState>,
+    updateUI: boolean
   ): void
 
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
@@ -141,6 +142,10 @@ export interface IAuthUserGetters {
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_NOT_LOADED](
+    state: IAuthUserState
+  ): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS](
     state: IAuthUserState

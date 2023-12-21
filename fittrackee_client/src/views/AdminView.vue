@@ -72,8 +72,8 @@
               &:disabled {
                 -webkit-appearance: none;
                 -moz-appearance: textfield;
-                background-color: white;
-                border-color: white;
+                background-color: var(--admin-disabled-input-color);
+                border-color: var(--admin-disabled-input-color);
                 color: var(--app-color);
               }
             }

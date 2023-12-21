@@ -13,6 +13,9 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.APP_STATS]: (state: IRootState) => {
     return state.application.statistics
   },
+  [ROOT_STORE.GETTERS.DARK_MODE]: (state: IRootState) => {
+    return state.darkMode
+  },
   [ROOT_STORE.GETTERS.ERROR_MESSAGES]: (state: IRootState) => {
     return state.errorMessages
   },

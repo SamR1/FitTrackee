@@ -19,6 +19,22 @@
           </select>
         </label>
         <label class="form-items">
+          {{ $t('user.PROFILE.THEME_MODE.LABEL') }}
+          <select
+            id="use_dark_mode"
+            v-model="userForm.use_dark_mode"
+            :disabled="loading"
+          >
+            <option
+              v-for="mode in useDarkMode"
+              :value="mode.value"
+              :key="mode.label"
+            >
+              {{ $t(`user.PROFILE.THEME_MODE.VALUES.${mode.label}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
           {{ $t('user.PROFILE.TIMEZONE') }}
           <TimezoneDropdown
             :input="userForm.timezone"
@@ -195,6 +211,7 @@
     weekm: false,
     start_elevation_at_zero: false,
     use_raw_gpx_speed: false,
+    use_dark_mode: false,
   })
   const weekStart = [
     {
@@ -246,6 +263,20 @@
       value: true,
     },
   ]
+  const useDarkMode = [
+    {
+      label: 'DARK',
+      value: true,
+    },
+    {
+      label: 'DEFAULT',
+      value: null,
+    },
+    {
+      label: 'LIGHT',
+      value: false,
+    },
+  ]
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
@@ -279,6 +310,7 @@
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
+    userForm.use_dark_mode = user.use_dark_mode
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -339,7 +371,8 @@
     }
 
     #language,
-    #date_format {
+    #date_format,
+    #use_dark_mode {
       padding: $default-padding * 0.5;
     }
   }
