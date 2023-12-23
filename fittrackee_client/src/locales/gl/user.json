@@ -1,4 +1,5 @@
 {
+  "ACCOUNT_CONFIRMATION": "Confirmación da conta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non recibiches instrucións?",
   "ACCOUNT_CONFIRMATION_SENT": "Comproba o correo. Enviouse un correo de confirmación ao enderezo proporcionado.",
   "ADMIN": "Admin",
@@ -7,6 +8,7 @@
   "CURRENT_PASSWORD": "Contrasinal actual",
   "EMAIL": "Email",
   "EMAIL_INFO": "Escribe un enderezo válido.",
+  "EMAIL_UPDATE": "Actualizar correo",
   "ENTER_PASSWORD": "Escribe un contrasinal",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Exportar datos",
@@ -26,6 +28,7 @@
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Actualizouse a política de privacidade, podes {0} antes de continuar.",
   "LOGIN": "Acceso",
   "LOGOUT": "Pechar sesión",
+  "LOGOUT_CONFIRMATION": "Tes certeza de querer pechar a sesión?",
   "LOG_IN": "acceder",
   "NEW_PASSWORD": "Novo contrasinal",
   "NO_USERS_FOUND": "Non hai usuarias.",
@@ -76,6 +79,7 @@
     "ERRORED_EMAIL_UPDATE": "{0} para cambiar o enderezo de correo electrónico ou contacta coa administración",
     "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
     "FIRST_NAME": "Nome",
+    "INTERFACE": "Interface",
     "LANGUAGE": "Idioma",
     "LAST_NAME": "Apelido",
     "LOCATION": "Localización",
@@ -111,6 +115,14 @@
       "PROFILE": "perfil",
       "SPORTS": "deportes"
     },
+    "THEME_MODE": {
+      "LABEL": "Decorado",
+      "VALUES": {
+        "DARK": "Escuro",
+        "DEFAULT": "Seguir navegador",
+        "LIGHT": "Claro"
+      }
+    },
     "TIMEZONE": "Zona horaria",
     "UNITS": {
       "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
@@ -119,11 +131,10 @@
     },
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrado",
+      "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima.",
       "LABEL": "Estratexia para velocidade máx. GPX",
-      "RAW_SPEED": "En bruto",
-      "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima."
-    },
-    "INTERFACE": "Interface"
+      "RAW_SPEED": "En bruto"
+    }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
   "REGISTER": "Crear conta",
@@ -133,11 +144,9 @@
   "REVIEW": "revisar",
   "SHOW_PASSWORD": "mostrar contrasinal",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuaria está desactivada.",
+  "TOGGLE_THEME": "Cambiar decorado (modo Claro ou Escuro)",
   "USERNAME": "Identificador",
   "USERNAME_INFO": "Require entre 3 e 30 caracteres, só se permiten alfanuméricos e o trazo baixo \"_\".",
   "USER_PICTURE": "foto da usuaria",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}.",
-  "ACCOUNT_CONFIRMATION": "Confirmación da conta",
-  "EMAIL_UPDATE": "Actualizar correo",
-  "LOGOUT_CONFIRMATION": "Tes certeza de querer pechar a sesión?"
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}."
 }

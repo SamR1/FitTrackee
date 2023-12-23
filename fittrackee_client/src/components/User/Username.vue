@@ -34,6 +34,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-decoration: none;
     @media screen and (max-width: $small-limit) {
       max-width: fit-content;
     }
