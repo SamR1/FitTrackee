@@ -1,5 +1,37 @@
 # Change log
 
+## Version 0.7.28 (2023/12/23)
+
+### Features and enhancements
+
+* [PR#474](https://github.com/SamR1/FitTrackee/pull/474) - Improve links display
+
+### Bugs Fixed
+
+* [6e215aa](https://github.com/SamR1/FitTrackee/commit/6e215aa52eba28b14f74f3484b23197f5f0ddd4d) - fix background color on dark theme when modal is displayed 
+
+### Translations
+
+* [PR#473](https://github.com/SamR1/FitTrackee/pull/473) - Translations update (Galician, Spanish and German)
+
+
+Translation status:
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 98%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @gallegonovato
+- @qwerty287
+- @xmgz
+
+
 ## Version 0.7.27 (2023/12/20)
 
 ### Features and enhancements
