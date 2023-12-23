@@ -1,53 +1,53 @@
 {
-    "Cycling (Sport)": {
-        "LABEL": "Radfahren (Sport)"
-    },
-    "Cycling (Transport)": {
-        "LABEL": "Radfahren (Pendeln)"
-    },
-    "Cycling (Virtual)": {
-        "LABEL": "Radfahren (Virtuell)"
-    },
-    "Hiking": {
-        "LABEL": "Wandern"
-    },
-    "Mountain Biking": {
-        "LABEL": "Mountainbiken"
-    },
-    "Mountain Biking (Electric)": {
-        "LABEL": "Mountainbiken (elektrisch)"
-    },
-    "Mountaineering": {
-        "LABEL": "Bergsteigen"
-    },
-    "Rowing": {
-        "LABEL": "Rudern"
-    },
-    "Running": {
-        "LABEL": "Laufen"
-    },
-    "Skiing (Alpine)": {
-        "LABEL": "Skifahren (Alpin)"
-    },
-    "Skiing (Cross Country)": {
-        "LABEL": "Skifahren (Langlauf)"
-    },
-    "Snowshoes": {
-        "LABEL": "Schneeschuhe"
-    },
-    "Trail": {
-        "LABEL": "Trail"
-    },
-    "Walking": {
-        "LABEL": "Gehen"
-    },
-    "Open Water Swimming": {
-        "LABEL": "Offenes Schwimmen im Wasser"
-    },
-    "Paragliding": {
-        "LABEL": "Paragliden"
-    },
-    "Cycling (Trekking)": {
-        "LABEL": "Radfahren (Trekking)"
-    }
+  "Cycling (Sport)": {
+    "LABEL": "Radfahren (Sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Radfahren (Pendeln)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Radfahren (Trekking)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Radfahren (Virtuell)"
+  },
+  "Hiking": {
+    "LABEL": "Wandern"
+  },
+  "Mountain Biking": {
+    "LABEL": "Mountainbiken"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Mountainbiken (elektrisch)"
+  },
+  "Mountaineering": {
+    "LABEL": "Bergsteigen"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Offenes Schwimmen im Wasser"
+  },
+  "Paragliding": {
+    "LABEL": "Paragliden"
+  },
+  "Rowing": {
+    "LABEL": "Rudern"
+  },
+  "Running": {
+    "LABEL": "Laufen"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Skifahren (Alpin)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Skifahren (Langlauf)"
+  },
+  "Snowshoes": {
+    "LABEL": "Schneeschuhe"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Gehen"
+  }
 }
