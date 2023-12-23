@@ -30,9 +30,8 @@
             href="https://choosealicense.com/licenses/agpl-3.0/"
             target="_blank"
             rel="noopener noreferrer"
+            >AGPLv3</a
           >
-            AGPLv3
-          </a>
         </i18n-t>
       </p>
       <div v-if="appConfig.admin_contact">
