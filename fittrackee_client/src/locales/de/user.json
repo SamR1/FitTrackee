@@ -1,4 +1,5 @@
 {
+  "ACCOUNT_CONFIRMATION": "Account-Bestätigung",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Hast du keine Anweisungen erhalten?",
   "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungs-E-Mail wurde an die angegebene Adresse geschickt.",
   "ADMIN": "Admin",
@@ -7,6 +8,7 @@
   "CURRENT_PASSWORD": "Aktuelles Passwort",
   "EMAIL": "E-Mail",
   "EMAIL_INFO": "Gebe eine gültige E-Mail-Adresse an.",
+  "EMAIL_UPDATE": "E-Mail-Aktualisierung",
   "ENTER_PASSWORD": "Gebe ein Passwort ein",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Datenexport",
@@ -26,6 +28,7 @@
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Die Datenschutzrichtlinie wurde aktualisiert, bitte {0} sie vor dem Fortfahren.",
   "LOGIN": "Anmeldung",
   "LOGOUT": "Abmelden",
+  "LOGOUT_CONFIRMATION": "Bist du sicher, dass du dich abmelden möchtest?",
   "LOG_IN": "Anmelden",
   "NEW_PASSWORD": "Neues Passwort",
   "NO_USERS_FOUND": "Keine Nutzer gefunden.",
@@ -76,6 +79,7 @@
     "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
     "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
     "FIRST_NAME": "Vorname",
+    "INTERFACE": "Schnittstelle",
     "LANGUAGE": "Sprache",
     "LAST_NAME": "Nachname",
     "LOCATION": "Ort",
@@ -111,6 +115,14 @@
       "PROFILE": "Profil",
       "SPORTS": "Sportarten"
     },
+    "THEME_MODE": {
+      "LABEL": "Themenmodus",
+      "VALUES": {
+        "DARK": "Dunkel",
+        "DEFAULT": "Browsereinstellung",
+        "LIGHT": "Hell"
+      }
+    },
     "TIMEZONE": "Zeitzone",
     "UNITS": {
       "IMPERIAL": "Imperiales System (ft, mi, mph, °F)",
@@ -132,11 +144,9 @@
   "REVIEW": "überprüfen",
   "SHOW_PASSWORD": "Passwort anzeigen",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
+  "TOGGLE_THEME": "Thema ändern (Heller oder dunkler Modus)",
   "USERNAME": "Nutzername",
   "USERNAME_INFO": "3 bis 30 Zeichen sind erforderlich, nur alphanumerische Zeichen und der Unterstrich _ sind erlaubt.",
   "USER_PICTURE": "Benutzerbild",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du hast die {0} akzeptiert.",
-  "ACCOUNT_CONFIRMATION": "Account-Bestätigung",
-  "LOGOUT_CONFIRMATION": "Bist du sicher, dass du dich abmelden möchtest?",
-  "EMAIL_UPDATE": "E-Mail-Aktualisierung"
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du hast die {0} akzeptiert."
 }

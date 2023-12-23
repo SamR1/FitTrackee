@@ -5,6 +5,9 @@
   "Cycling (Transport)": {
     "LABEL": "Ciclismo (Transporte)"
   },
+  "Cycling (Trekking)": {
+    "LABEL": "Ciclismo (Trekking)"
+  },
   "Cycling (Virtual)": {
     "LABEL": "Ciclismo (Virtual)"
   },
@@ -19,6 +22,12 @@
   },
   "Mountaineering": {
     "LABEL": "Montañismo"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Natación Auga Aberta"
+  },
+  "Paragliding": {
+    "LABEL": "Paracaidismo"
   },
   "Rowing": {
     "LABEL": "Remo"
@@ -40,11 +49,5 @@
   },
   "Walking": {
     "LABEL": "Camiñar"
-  },
-  "Paragliding": {
-    "LABEL": "Paracaidismo"
-  },
-  "Open Water Swimming": {
-    "LABEL": "Natación Auga Aberta"
   }
 }
