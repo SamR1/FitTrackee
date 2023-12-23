@@ -51,10 +51,6 @@
     color: var(--footer-color);
     font-size: 0.9em;
 
-    a {
-      text-decoration: none;
-    }
-
     .footer-items {
       display: flex;
       flex-wrap: wrap;

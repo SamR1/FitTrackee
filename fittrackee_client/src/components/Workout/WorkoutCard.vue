@@ -216,6 +216,7 @@
           .workout-user-name {
             white-space: nowrap;
             padding-left: 5px;
+            text-decoration: none;
           }
         }
         .workout-date {

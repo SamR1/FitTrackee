@@ -47,7 +47,11 @@ body {
 
 a {
   color: var(--app-a-color);
-  text-decoration: none;
+  text-decoration-color: var(--app-a-text-decoration-color);
+
+  &:hover {
+    text-decoration-color: var(--app-a-color);
+  }
 }
 
 img {
