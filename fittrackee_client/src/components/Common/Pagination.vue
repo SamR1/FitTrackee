@@ -81,6 +81,10 @@
     justify-content: center;
     font-size: 0.9em;
 
+    a {
+      text-decoration: none;
+    }
+
     .pagination {
       display: flex;
       padding-left: 0;

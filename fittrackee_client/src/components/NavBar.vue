@@ -200,6 +200,10 @@
     display: flex;
     padding: 15px 10px;
 
+    a {
+      text-decoration: none;
+    }
+
     .nav-container {
       display: flex;
 
