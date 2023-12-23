@@ -49,7 +49,8 @@ a {
   color: var(--app-a-color);
   text-decoration-color: var(--app-a-text-decoration-color);
 
-  &:hover {
+  &:hover,
+  &:focus {
     text-decoration-color: var(--app-a-color);
   }
 }
