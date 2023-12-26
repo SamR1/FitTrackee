@@ -33,7 +33,11 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
     blocked_by_users = auth_user.get_blocked_by_user_ids()
 
     notifications_pagination = (
-        Notification.query.filter(
+        Notification.query.join(
+            User,
+            Notification.from_user_id == User.id,
+        )
+        .filter(
             Notification.to_user_id == auth_user.id,
             Notification.from_user_id.not_in(blocked_users),
             (
@@ -55,6 +59,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                 )
             ),
             Notification.event_type == event_type if event_type else True,
+            User.suspended_at == None,  # noqa
         )
         .order_by(
             asc(Notification.created_at)
@@ -114,26 +119,34 @@ def update_user_notifications(
 @notifications_blueprint.route("/notifications/unread", methods=["GET"])
 @require_auth(scopes=["notifications:read"])
 def get_status(auth_user: User) -> Dict:
-    unread_notifications = Notification.query.filter(
-        Notification.to_user_id == auth_user.id,
-        Notification.from_user_id.not_in(auth_user.get_blocked_user_ids()),
-        (
-            or_(
-                Notification.event_type.not_in(
-                    ['workout_comment', 'comment_reply']
-                ),
-                and_(
-                    Notification.event_type.in_(
+    unread_notifications = (
+        Notification.query.join(
+            User,
+            Notification.from_user_id == User.id,
+        )
+        .filter(
+            Notification.to_user_id == auth_user.id,
+            Notification.from_user_id.not_in(auth_user.get_blocked_user_ids()),
+            (
+                or_(
+                    Notification.event_type.not_in(
                         ['workout_comment', 'comment_reply']
                     ),
-                    Notification.from_user_id.not_in(
-                        auth_user.get_blocked_by_user_ids()
+                    and_(
+                        Notification.event_type.in_(
+                            ['workout_comment', 'comment_reply']
+                        ),
+                        Notification.from_user_id.not_in(
+                            auth_user.get_blocked_by_user_ids()
+                        ),
                     ),
-                ),
-            )
-        ),
-        Notification.marked_as_read == False,  # noqa
-    ).count()
+                )
+            ),
+            Notification.marked_as_read == False,  # noqa
+            User.suspended_at == None,  # noqa
+        )
+        .count()
+    )
     return {
         "status": "success",
         "unread": unread_notifications > 0,
