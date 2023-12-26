@@ -1,9 +1,11 @@
 import json
+from datetime import datetime
 
 import pytest
 from flask import Flask
 from werkzeug.test import TestResponse
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -183,6 +185,28 @@ class TestGetUserTimeline(ApiTestCaseMixin):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         user_1.blocks_user(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_no_workout_returned(response)
+
+    def test_it_does_not_return_public_workout_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
