@@ -782,9 +782,22 @@ class TestUserFollowers:
 
         assert user_1.followers.all() == [user_2]
 
+    def test_it_does_return_suspended_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        follow_request_from_user_2_to_user_1.is_approved = True
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        user_2.suspended_at = datetime.utcnow()
+
+        assert user_1.followers.all() == []
+
 
 class TestUserFollowing:
-    def test_it_returns_empty_list_if_no_followers(
+    def test_it_returns_empty_list_if_no_following(
         self,
         app: Flask,
         user_1: User,
@@ -799,7 +812,7 @@ class TestUserFollowing:
     ) -> None:
         assert user_1.following.all() == []
 
-    def test_it_returns_follower_if_follow_request_is_approved(
+    def test_it_returns_following_if_follow_request_is_approved(
         self,
         app: Flask,
         user_1: User,
@@ -810,6 +823,19 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2.updated_at = datetime.now()
 
         assert user_1.following.all() == [user_2]
+
+    def test_it_does_not_return_suspended_following_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+        user_2.suspended_at = datetime.utcnow()
+
+        assert user_1.following.all() == []
 
 
 class TestUserFollowRequestStatus(UserModelAssertMixin):

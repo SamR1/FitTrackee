@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.users.models import FollowRequest, User
 
 from ..mixins import ApiTestCaseMixin
@@ -128,6 +129,32 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         assert 'email' not in data['data']['followers'][0]
         assert 'email' not in data['data']['followers'][1]
 
+    def test_it_does_not_return_suspended_followers(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.approves_follow_requests([follow_request_from_user_2_to_user_1])
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}/followers',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['followers']) == 0
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'follow:read': True}.items(),
@@ -222,6 +249,40 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         assert len(data['data']['followers']) == 2
         assert data['data']['followers'][0]['email'] == user_3.email
         assert data['data']['followers'][1]['email'] == user_1.email
+
+    def test_it_does_not_return_suspended_followers(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        self.approves_follow_requests(
+            [
+                follow_request_from_user_1_to_user_2,
+                follow_request_from_user_3_to_user_2,
+            ]
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}/followers',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['followers']) == 1
+        assert data['data']['followers'][0]['email'] == user_1.email
 
 
 class TestFollowersPagination(FollowersAsUserTestCase):
@@ -425,6 +486,39 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         assert 'email' in data['data']['following'][0]
         assert 'email' not in data['data']['following'][1]
 
+    def test_it_does_not_return_suspended_following(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_1: FollowRequest,
+    ) -> None:
+        self.approves_follow_requests(
+            [
+                follow_request_from_user_3_to_user_2,
+                follow_request_from_user_3_to_user_1,
+            ]
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_3.username}/following',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['following']) == 1
+        assert data['data']['following'][0]['username'] == user_1.username
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'follow:read': True}.items(),
@@ -519,6 +613,40 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         assert len(data['data']['following']) == 2
         assert data['data']['following'][0]['email'] == user_1.email
         assert data['data']['following'][1]['email'] == user_2.email
+
+    def test_it_does_not_return_suspended_following(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_3_to_user_1: FollowRequest,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        self.approves_follow_requests(
+            [
+                follow_request_from_user_3_to_user_2,
+                follow_request_from_user_3_to_user_1,
+            ]
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_3.username}/following',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['following']) == 1
+        assert data['data']['following'][0]['email'] == user_1.email
 
 
 class TestFollowingPagination(FollowersAsUserTestCase):
