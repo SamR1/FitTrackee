@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.7.28\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-23 18:15+0100\n"
+"POT-Creation-Date: 2023-12-30 11:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4044,7 +4044,7 @@ msgid "A user can set language, timezone and first day of week."
 msgstr ""
 
 #: ../source/features.rst:113
-msgid "A user can set the interface theme (light, dark or according to browser preferences). The default value is **browser preferences**. When the dark or light theme is set, it overrides browser preferences (*new in 0.7.27*)."
+msgid "A user can set the interface theme (light (default value), dark or according to browser preferences). When the dark or light theme is set, it overrides browser preferences (*new in 0.7.27*)."
 msgstr ""
 
 #: ../source/features.rst:114
