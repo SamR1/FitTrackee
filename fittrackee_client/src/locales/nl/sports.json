@@ -1,50 +1,50 @@
 {
-    "Cycling (Sport)": {
-        "LABEL": "Fietsen (Sport)"
-    },
-    "Cycling (Transport)": {
-        "LABEL": "Fietsen (Transport)"
-    },
-    "Cycling (Virtual)": {
-        "LABEL": "Fietsen (Virtueel)"
-    },
-    "Hiking": {
-        "LABEL": "Trektocht"
-    },
-    "Mountain Biking": {
-        "LABEL": "Mountainbiken"
-    },
-    "Mountain Biking (Electric)": {
-        "LABEL": "Mountainbiken (Elektrisch)"
-    },
-    "Mountaineering": {
-        "LABEL": "Bergbeklimmen"
-    },
-    "Rowing": {
-        "LABEL": "Roeien"
-    },
-    "Running": {
-        "LABEL": "Lopen"
-    },
-    "Skiing (Alpine)": {
-        "LABEL": "Skiën (Alpine)"
-    },
-    "Skiing (Cross Country)": {
-        "LABEL": "Skiën (Cross Country)"
-    },
-    "Snowshoes": {
-        "LABEL": "Sneeuwschoenen"
-    },
-    "Trail": {
-        "LABEL": "Trail"
-    },
-    "Walking": {
-        "LABEL": "Wandelen"
-    },
-    "Open Water Swimming": {
-        "LABEL": "Zwemmen (open water)"
-    },
-    "Paragliding": {
-        "LABEL": "Paragliden"
-    }
+  "Cycling (Sport)": {
+    "LABEL": "Fietsen (Sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Fietsen (Transport)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Fietsen (Virtueel)"
+  },
+  "Hiking": {
+    "LABEL": "Trektocht"
+  },
+  "Mountain Biking": {
+    "LABEL": "Mountainbiken"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Mountainbiken (Elektrisch)"
+  },
+  "Mountaineering": {
+    "LABEL": "Bergbeklimmen"
+  },
+  "Rowing": {
+    "LABEL": "Roeien"
+  },
+  "Running": {
+    "LABEL": "Lopen"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Skiën (Alpine)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Skiën (Cross Country)"
+  },
+  "Snowshoes": {
+    "LABEL": "Sneeuwschoenen"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Wandelen"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Zwemmen (open water)"
+  },
+  "Paragliding": {
+    "LABEL": "Paragliden"
+  }
 }

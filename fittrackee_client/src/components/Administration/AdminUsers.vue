@@ -32,6 +32,7 @@
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -97,11 +98,22 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
+                    {{ $t('user.SUSPENDED') }}
+                  </span>
+                  <i
+                    :class="`fa fa${
+                      user.suspended_at !== null ? '-check' : ''
+                    }-square-o`"
+                    aria-hidden="true"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
                   <button
                     :class="{ danger: user.admin }"
-                    :disabled="getUserName(user) === getUserName(authUser)"
+                    :disabled="isAdminButtonDisabled(user)"
                     @click="updateUser(getUserName(user), !user.admin)"
                   >
                     {{
@@ -134,8 +146,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
-    Ref,
     computed,
     reactive,
     watch,
@@ -143,15 +153,21 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IAuthUserProfile, IUserProfile, TUsersPayload } from '@/types/user'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type {
+    IAuthUserProfile,
+    IUserProfile,
+    TUsersPayload,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -206,6 +222,12 @@
       query.page = 1
     }
     router.push({ path: '/admin/users', query })
+  }
+  function isAdminButtonDisabled(user: IUserProfile) {
+    return (
+      getUserName(user) === getUserName(authUser.value) ||
+      user.suspended_at !== null
+    )
   }
 
   onUnmounted(() => {

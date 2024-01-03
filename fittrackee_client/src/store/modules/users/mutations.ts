@@ -1,9 +1,9 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { USERS_STORE } from '@/store/constants'
-import { IUsersState, TUsersMutations } from '@/store/modules/users/types'
-import { IPagination } from '@/types/api'
-import { IUserProfile } from '@/types/user'
+import type { IUsersState, TUsersMutations } from '@/store/modules/users/types'
+import type { IPagination } from '@/types/api'
+import type { IUserProfile } from '@/types/user'
 import { getUserName } from '@/utils/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
@@ -61,5 +61,11 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     isSuccess: boolean
   ) {
     state.isSuccess = isSuccess
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING](
+    state: IUsersState,
+    currentReporting: boolean
+  ) {
+    state.currentReporting = currentReporting
   },
 }

@@ -1,11 +1,19 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
-import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-import { IReportsState, IReportsActions } from '@/store/modules/reports/types'
-import { IRootState } from '@/store/modules/root/types'
-import { TPaginationPayload } from '@/types/api'
-import { IReportCommentPayload, IReportPayload } from '@/types/reports'
+import {
+  REPORTS_STORE,
+  ROOT_STORE,
+  USERS_STORE,
+  WORKOUTS_STORE,
+} from '@/store/constants'
+import type {
+  IReportsState,
+  IReportsActions,
+} from '@/store/modules/reports/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { TPaginationPayload } from '@/types/api'
+import type { IReportCommentPayload, IReportPayload } from '@/types/reports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
@@ -75,6 +83,18 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
               context.commit(
                 WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION,
                 {}
+              )
+            }
+            if (payload.object_type === 'workout') {
+              context.commit(
+                WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING,
+                false
+              )
+            }
+            if (payload.object_type === 'user') {
+              context.commit(
+                USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING,
+                false
               )
             }
           } else {

@@ -15,10 +15,13 @@
         :useImperialUnits="authUser ? authUser.imperial_units : false"
       />
       <span class="stat-label">
-        {{ user.imperial_units ? 'miles' : 'km' }}
+        {{ authUser.imperial_units ? 'miles' : 'km' }}
       </span>
     </div>
-    <div class="user-stat" v-if="'nb_sports' in user">
+    <div
+      class="user-stat"
+      v-if="'nb_sports' in user && user.nb_sports !== undefined"
+    >
       <span class="stat-number">{{ user.nb_sports }}</span>
       <span class="stat-label">
         {{ $t('workouts.SPORT', user.nb_sports) }}
@@ -26,22 +29,26 @@
     </div>
     <div class="user-stat">
       <router-link
+        v-if="displayLinks"
         :to="`/${getURL(user, authUser, $route.path)}/following`"
         class="stat-number"
       >
         {{ user.following }}
       </router-link>
+      <span v-else class="stat-number">{{ user.following }}</span>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWING', user.following) }}
       </span>
     </div>
     <div class="user-stat">
       <router-link
+        v-if="displayLinks"
         :to="`/${getURL(user, authUser, $route.path)}/followers`"
         class="stat-number"
       >
         {{ user.followers }}
       </router-link>
+      <span v-else class="stat-number">{{ user.followers }}</span>
       <span class="stat-label">
         {{ $t('user.RELATIONSHIPS.FOLLOWER', user.followers) }}
       </span>
@@ -50,10 +57,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -65,6 +73,11 @@
   const store = useStore()
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const displayLinks = computed(() =>
+    user.value.username === authUser?.value.username
+      ? !authUser?.value.suspended_at
+      : true
   )
   function getURL(
     user: IUserProfile,

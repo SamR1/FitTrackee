@@ -67,7 +67,7 @@
       >
         <div class="img">
           <SportImage
-            v-if="sport.label"
+            v-if="sport?.label"
             :sport-label="sport.label"
             :color="sport.color"
           />
@@ -132,16 +132,18 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from 'date-fns'
-  import { ComputedRef, computed, toRefs, withDefaults } from 'vue'
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
@@ -151,11 +153,11 @@
     dateFormat: string
     timezone: string
     workout?: IWorkout
-    sport?: ISport
+    sport?: ISport | null
   }
   const props = withDefaults(defineProps<Props>(), {
-    workout: () => ({} as IWorkout),
-    sport: () => ({} as ISport),
+    workout: () => ({}) as IWorkout,
+    sport: () => ({}) as ISport,
   })
 
   const store = useStore()
@@ -233,10 +235,11 @@
       }
 
       .workout-map {
-        background-color: var(--workout-no-map-bg-color);
+        background-color: var(--workout-static-map-bg-color);
         height: 150px;
         .no-map {
           line-height: 150px;
+          filter: var(--no-map-filter);
         }
         ::v-deep(.bg-map-image) {
           height: 150px;

@@ -1,7 +1,7 @@
 import { enUS } from 'date-fns/locale'
 
-import { IRootState } from '@/store/modules/root/types'
-import { IApplication } from '@/types/application'
+import type { IRootState } from '@/store/modules/root/types'
+import type { IApplication } from '@/types/application'
 
 export const state: IRootState = {
   root: true,
@@ -25,4 +25,5 @@ export const state: IRootState = {
     },
   },
   appLoading: false,
+  darkMode: null,
 }

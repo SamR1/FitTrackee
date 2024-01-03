@@ -4,7 +4,9 @@
   font-style: normal;
   font-weight: 400;
   src: url('~@/assets/fonts/pt-sans-v9-latin-regular.eot'); /* IE9 Compat Modes */
-  src: local('PT Sans'), local('PTSans-Regular'),
+  src:
+    local('PT Sans'),
+    local('PTSans-Regular'),
     url('~@/assets/fonts/pt-sans-v9-latin-regular.eot?#iefix')
       format('embedded-opentype'),
     /* IE6-IE8 */ url('~@/assets/fonts/pt-sans-v9-latin-regular.woff2')
@@ -23,7 +25,9 @@
   font-style: italic;
   font-weight: 400;
   src: url('~@/assets/fonts/pt-sans-v9-latin-italic.eot'); /* IE9 Compat Modes */
-  src: local('PT Sans Italic'), local('PTSans-Italic'),
+  src:
+    local('PT Sans Italic'),
+    local('PTSans-Italic'),
     url('~@/assets/fonts/pt-sans-v9-latin-italic.eot?#iefix')
       format('embedded-opentype'),
     /* IE6-IE8 */ url('~@/assets/fonts/pt-sans-v9-latin-italic.woff2')
@@ -42,7 +46,9 @@
   font-style: normal;
   font-weight: 700;
   src: url('~@/assets/fonts/pt-sans-v9-latin-700.eot'); /* IE9 Compat Modes */
-  src: local('PT Sans Bold'), local('PTSans-Bold'),
+  src:
+    local('PT Sans Bold'),
+    local('PTSans-Bold'),
     url('~@/assets/fonts/pt-sans-v9-latin-700.eot?#iefix')
       format('embedded-opentype'),
     /* IE6-IE8 */ url('~@/assets/fonts/pt-sans-v9-latin-700.woff2')

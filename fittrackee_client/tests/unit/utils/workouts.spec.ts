@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import createI18n from '@/i18n'
 import { getDatasets, getDonutDatasets } from '@/utils/workouts'
@@ -21,7 +21,7 @@ describe('getDatasets', () => {
         datasets: {
           speed: {
             label: 'vitesse',
-            backgroundColor: ['#FFFFFF'],
+            backgroundColor: ['transparent'],
             borderColor: ['#8884d8'],
             borderWidth: 2,
             data: [],
@@ -81,7 +81,7 @@ describe('getDatasets', () => {
         datasets: {
           speed: {
             label: 'speed',
-            backgroundColor: ['#FFFFFF'],
+            backgroundColor: ['transparent'],
             borderColor: ['#8884d8'],
             borderWidth: 2,
             data: [2.89, 20.64, 13.03],
@@ -145,7 +145,7 @@ describe('getDatasets', () => {
         datasets: {
           speed: {
             label: 'speed',
-            backgroundColor: ['#FFFFFF'],
+            backgroundColor: ['transparent'],
             borderColor: ['#8884d8'],
             borderWidth: 2,
             data: [1.8, 12.83, 8.1],
@@ -172,14 +172,97 @@ describe('getDatasets', () => {
   testparams.map((testParams) => {
     it(testParams.description, () => {
       locale.value = testParams.inputParams.locale
-      assert.deepEqual(
+      expect(
         getDatasets(
           testParams.inputParams.charData,
           t,
           testParams.inputParams.useImperialUnits
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
+    })
+  })
+})
+
+describe('getDatasets with dark mode', () => {
+  const testparams = [
+    {
+      description: 'it returns dark mode color',
+      inputParams: {
+        charData: [],
+        locale: 'fr',
+        useImperialUnits: false,
+        useDarkMode: true,
+      },
+      expected: {
+        distance_labels: [],
+        duration_labels: [],
+        datasets: {
+          speed: {
+            label: 'vitesse',
+            backgroundColor: ['transparent'],
+            borderColor: ['#5f5c97'],
+            borderWidth: 2,
+            data: [],
+            yAxisID: 'ySpeed',
+          },
+          elevation: {
+            label: 'altitude',
+            backgroundColor: ['#303030'],
+            borderColor: ['#222222'],
+            borderWidth: 1,
+            fill: true,
+            data: [],
+            yAxisID: 'yElevation',
+          },
+        },
+        coordinates: [],
+      },
+    },
+    {
+      description: 'it returns light mode color',
+      inputParams: {
+        charData: [],
+        locale: 'fr',
+        useImperialUnits: false,
+        useDarkMode: false,
+      },
+      expected: {
+        distance_labels: [],
+        duration_labels: [],
+        datasets: {
+          speed: {
+            label: 'vitesse',
+            backgroundColor: ['transparent'],
+            borderColor: ['#8884d8'],
+            borderWidth: 2,
+            data: [],
+            yAxisID: 'ySpeed',
+          },
+          elevation: {
+            label: 'altitude',
+            backgroundColor: ['#e5e5e5'],
+            borderColor: ['#cccccc'],
+            borderWidth: 1,
+            fill: true,
+            data: [],
+            yAxisID: 'yElevation',
+          },
+        },
+        coordinates: [],
+      },
+    },
+  ]
+  testparams.map((testParams) => {
+    it(testParams.description, () => {
+      locale.value = testParams.inputParams.locale
+      expect(
+        getDatasets(
+          testParams.inputParams.charData,
+          t,
+          testParams.inputParams.useImperialUnits,
+          testParams.inputParams.useDarkMode
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -329,9 +412,9 @@ describe('getDonutDatasets', () => {
   ]
   testparams.map((testParams) => {
     it(testParams.description, () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      assert.deepEqual(getDonutDatasets(testParams.input), testParams.expected)
+      expect(getDonutDatasets(testParams.input)).toStrictEqual(
+        testParams.expected
+      )
     })
   })
 })

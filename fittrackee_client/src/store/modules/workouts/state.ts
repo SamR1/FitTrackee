@@ -1,6 +1,6 @@
-import { IWorkoutsState } from '@/store/modules/workouts/types'
-import { IPagination } from '@/types/api'
-import { ICurrentCommentEdition, IWorkout } from '@/types/workouts'
+import type { IWorkoutsState } from '@/store/modules/workouts/types'
+import type { IPagination } from '@/types/api'
+import type { ICurrentCommentEdition, IWorkout } from '@/types/workouts'
 
 export const workoutsState: IWorkoutsState = {
   calendar_workouts: [],
@@ -15,5 +15,6 @@ export const workoutsState: IWorkoutsState = {
     comments: [],
     commentsLoading: null,
     currentCommentEdition: <ICurrentCommentEdition>{},
+    currentReporting: false,
   },
 }

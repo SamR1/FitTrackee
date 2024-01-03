@@ -1,8 +1,8 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type {
   IWorkoutsGetters,
   IWorkoutsState,
 } from '@/store/modules/workouts/types'

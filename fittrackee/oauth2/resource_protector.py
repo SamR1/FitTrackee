@@ -21,6 +21,7 @@ class CustomResourceProtector(ResourceProtector):
         scopes: Union[str, List, None] = None,
         as_admin: bool = False,
         optional_auth_user: bool = False,
+        allow_suspended_user: bool = False,
     ) -> Callable:
         def wrapper(f: Callable) -> Callable:
             @wraps(f)
@@ -82,7 +83,14 @@ class CustomResourceProtector(ResourceProtector):
                     return UnauthorizedErrorResponse(
                         'provide a valid auth token'
                     )
-                if auth_user and as_admin and not auth_user.admin:
+
+                if auth_user and (
+                    (
+                        allow_suspended_user is False
+                        and auth_user.suspended_at is not None
+                    )
+                    or (as_admin and not auth_user.admin)
+                ):
                     return ForbiddenErrorResponse()
                 return f(auth_user, *args, **kwargs)
 

@@ -50,10 +50,11 @@
 
 <script setup lang="ts">
   import { toRefs } from 'vue'
+  import type { LocationQuery } from 'vue-router'
 
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IOauth2ClientsPayload } from '@/types/oauth'
-  import { TWorkoutsPayload } from '@/types/workouts'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IOauth2ClientsPayload } from '@/types/oauth'
+  import type { TWorkoutsPayload } from '@/types/workouts'
   import { rangePagination } from '@/utils/api'
 
   interface Props {
@@ -65,13 +66,10 @@
 
   const { pagination, path, query } = toRefs(props)
 
-  function getQuery(
-    page: number,
-    cursor?: number
-  ): TPaginationPayload | IOauth2ClientsPayload {
+  function getQuery(page: number, cursor?: number): LocationQuery {
     const newQuery = Object.assign({}, query.value)
     newQuery.page = cursor ? page + cursor : page
-    return newQuery
+    return newQuery as LocationQuery
   }
 </script>
 
@@ -82,6 +80,10 @@
     display: flex;
     justify-content: center;
     font-size: 0.9em;
+
+    a {
+      text-decoration: none;
+    }
 
     .pagination {
       display: flex;

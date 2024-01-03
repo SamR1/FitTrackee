@@ -1,7 +1,7 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import { IRootGetters, IRootState } from '@/store/modules/root/types'
+import type { IRootGetters, IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.APP_CONFIG]: (state: IRootState) => {
@@ -12,6 +12,9 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   },
   [ROOT_STORE.GETTERS.APP_STATS]: (state: IRootState) => {
     return state.application.statistics
+  },
+  [ROOT_STORE.GETTERS.DARK_MODE]: (state: IRootState) => {
+    return state.darkMode
   },
   [ROOT_STORE.GETTERS.ERROR_MESSAGES]: (state: IRootState) => {
     return state.errorMessages

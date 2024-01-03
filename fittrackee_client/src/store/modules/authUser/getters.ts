@@ -1,11 +1,11 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 
 import { AUTH_USER_STORE } from '@/store/constants'
-import {
+import type {
   IAuthUserGetters,
   IAuthUserState,
 } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
+import type { IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IAuthUserState, IRootState> &
   IAuthUserGetters = {
@@ -38,7 +38,16 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS]: (state: IAuthUserState) => {
     return state.isSuccess
   },
+  [AUTH_USER_STORE.GETTERS.IS_SUSPENDED]: (state: IAuthUserState) => {
+    return state.authUserProfile && state.authUserProfile.suspended_at !== null
+  },
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED]: (state: IAuthUserState) => {
+    return state.authUserProfile?.username !== undefined
+  },
   [AUTH_USER_STORE.GETTERS.USER_LOADING]: (state: IAuthUserState) => {
     return state.loading
+  },
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_NOT_LOADED]: (state: IAuthUserState) => {
+    return state.authUserProfile.username === undefined
   },
 }

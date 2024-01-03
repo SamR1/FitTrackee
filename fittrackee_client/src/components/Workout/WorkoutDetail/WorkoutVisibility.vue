@@ -44,12 +44,13 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { TPrivacyLevels } from '@/types/user'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { TAppConfig } from '@/types/application'
+  import type { TPrivacyLevels } from '@/types/user'
+  import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getPrivacyLevelForLabel } from '@/utils/privacy'
   interface Props {
@@ -63,7 +64,9 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  function getPrivacyIcon(privacyLevel: TPrivacyLevels): string {
+  function getPrivacyIcon(
+    privacyLevel: TPrivacyLevels | null | undefined
+  ): string {
     switch (privacyLevel) {
       case 'public':
         return 'globe'

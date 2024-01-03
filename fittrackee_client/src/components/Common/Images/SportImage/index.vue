@@ -5,6 +5,7 @@
     :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
+    <CyclingTrekking v-if="sportLabel === 'Cycling (Trekking)'" />
     <CyclingTransport v-if="sportLabel === 'Cycling (Transport)'" />
     <CyclingVirtual v-if="sportLabel === 'Cycling (Virtual)'" />
     <Hiking v-if="sportLabel === 'Hiking'" />
@@ -26,10 +27,11 @@
 </template>
 
 <script setup lang="ts">
-  import { inject, toRefs, withDefaults } from 'vue'
+  import { inject, toRefs } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
+  import CyclingTrekking from '@/components/Common/Images/SportImage/CyclingTrekking.vue'
   import CyclingVirtual from '@/components/Common/Images/SportImage/CyclingVirtual.vue'
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
@@ -55,5 +57,5 @@
   })
 
   const { color, sportLabel, title } = toRefs(props)
-  const sportColors = inject('sportColors')
+  const sportColors = inject('sportColors') as Record<string, string>
 </script>

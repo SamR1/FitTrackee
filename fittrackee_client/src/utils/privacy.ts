@@ -1,4 +1,4 @@
-import { TPrivacyLevels } from '@/types/user'
+import type { TPrivacyLevels } from '@/types/user'
 
 export const getPrivacyLevels = (
   federationEnabled: boolean
@@ -9,9 +9,12 @@ export const getPrivacyLevels = (
 }
 
 export const getPrivacyLevelForLabel = (
-  privacyLevel: string,
+  privacyLevel: TPrivacyLevels | null | undefined,
   federationEnabled: boolean
 ): string => {
+  if (!privacyLevel) {
+    return ''
+  }
   if (privacyLevel !== 'followers_only') {
     return privacyLevel
   }

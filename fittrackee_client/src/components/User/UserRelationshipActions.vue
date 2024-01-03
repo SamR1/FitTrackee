@@ -52,10 +52,10 @@
 </template>
 
 <script lang="ts" setup>
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { isAuthUser, getUserName } from '@/utils/user'
 
@@ -101,6 +101,7 @@
     justify-content: space-between;
     align-items: flex-end;
     min-height: 35px;
+    gap: $default-padding * 0.5;
 
     .pending {
       border-radius: $border-radius;
@@ -110,11 +111,15 @@
     .actions-buttons,
     .blocked-user {
       display: flex;
-      gap: $default-padding;
+      gap: $default-padding * 0.5;
       align-items: center;
       button {
         text-transform: capitalize;
+        white-space: nowrap;
       }
+    }
+    .follows-you {
+      white-space: nowrap;
     }
   }
 </style>

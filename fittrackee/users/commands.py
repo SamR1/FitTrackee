@@ -81,7 +81,7 @@ def manage_user(
             _, is_user_updated, password = user_manager_service.update(
                 is_admin=set_admin,
                 with_confirmation=False,
-                activate=activate,
+                activate=activate if activate else None,
                 reset_password=reset_password,
                 new_email=update_email,
             )

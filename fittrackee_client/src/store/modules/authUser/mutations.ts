@@ -1,11 +1,15 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { AUTH_USER_STORE } from '@/store/constants'
-import {
+import type {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
-import { IAuthUserProfile, IExportRequest, IUserProfile } from '@/types/user'
+import type {
+  IAuthUserProfile,
+  IExportRequest,
+  IUserProfile,
+} from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {

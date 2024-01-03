@@ -1,38 +1,38 @@
 {
-    "CONTENT": {
-        "ACCOUNT_DELETION": {
-            "CONTENT": "Vous pouvez demander à tout moment la suppression de votre compte en vous rendant à cette adresse (après vous être connecté à votre compte), puis en cliquant sur le bouton sous \"Supprimer mon compte\" dans l'espace de mise à jour de votre compte.",
-            "TITLE": "Suppression du compte"
-        },
-        "CHANGES_TO_OUR_PRIVACY_POLICY": {
-            "CONTENT": "Si nous décidons de changer notre politique de confidentialité, nous afficherons ces modifications sur cette page.\n\nCe document est sous licence [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptée de la politique de confidentialité de [Discourse](https://github.com/discourse/discourse).",
-            "TITLE": "Modifications de notre politique de confidentialité"
-        },
-        "DATA_COLLECTED": {
-            "CONTENT": "Les informations suivantes sont collectées :\n- Informations liées au compte (nom d'utilisateur, courriel et mot de passe). Vous pouvez également saisir les informations du profil tel que le prénom, le nom de famille, la date de naissance, la localisation, une biographie et envoyer une image de profil.\n- Fichiers [GPX](https://fr.wikipedia.org/wiki/GPX_(format_de_fichier). Ces fichiers contiennent les données liées à vos activités (coordonnées géographiques, date, distance, durée, vitesses maximale et moyenne, altitude, rythme cardiaque…). Si vous ne souhaitez pas exposer certaines données, nettoyer les fichiers avant de les envoyer ou ajouter des activités sans fichier GPX.\n- Données d'activités (sport, titre, date, durée, distance, dénivelé positif et négatif, notes).\n- Données techniques (nom du navigateur et du système d'exploitation).",
-            "TITLE": "Quelles sont les informations que nous recueillons ?"
-        },
-        "INFORMATION_DISCLOSURE": {
-            "CONTENT": "Nous ne vendons pas, ni échangeons ou même transférons vos renseignements personnelles à des tiers.\n\nCeci n’inclut pas les tiers de confiance qui nous aident à exploiter notre site ou vous servir, tant que ces parties conviennent à garder ces informations confidentielles.\n\nNous pouvons également divulguer vos informations lorsque nous croyons nécessaire de se conformer à la loi, appliquer nos politiques de site, ou la nôtre ou d’autres droits, la propriété ou la sécurité.\n\nSi vous autorisez une application tierce à utiliser votre compte, selon le périmètre des permissions accordées, elle pourra avoir accès à vos informations de profil ou vos activités. Les applications tierces ne peuvent jamais accéder à votre mot de passe.",
-            "TITLE": "Divulguons-nous des informations à des tiers ?"
-        },
-        "INFORMATION_PROTECTION": {
-            "CONTENT": "Nous mettons en œuvre une variété de mesures de sécurité pour maintenir la sécurité de vos informations personnelles lorsque vous saisissez, soumettez ou d’accédez à vos renseignements personnels.",
-            "TITLE": "Comment protégeons-nous vos informations ?"
-        },
-        "INFORMATION_USAGE": {
-            "CONTENT": "Toutes les informations que nous recueillons auprès de vous peuvent être utilisées afin de fournir les fonctionnalités de **FitTrackee** :\n- Les fichiers GPX sont utilisés pour créer des activités, afficher des traces sur une carte (avec [OpenStreetMap](https://www.openstreetmap.org) et le serveur de tuiles configuré) et des graphiques, générer des vignettes de cartes, calculer des records et obtenir des données météo (si un fournisseur de données météorologiques est configuré).\n- Les informations du profil et les activités ne sont pas affichées publiquement. Un utilisateur enregistré ne peut voir que ses propres activités.\n- Le courriel que vous avez fourni peut être utilisé pour vous envoyer des informations ou confirmer des actions de modification de votre compte.",
-            "TITLE": "Comment utilisons-nous vos informations ?"
-        },
-        "SITE_USAGE_BY_CHILDREN": {
-            "CONTENT": "Si ce serveur est localisé dans l'Union Européenne (UE) ou l'Espace Economique Européen (EEA) : notre site et nos services sont tous destinés aux personnes âgées d'au moins 16 ans. Si vous avez moins de 16 ans, conformément aux exigences du [RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es) (Règlement général sur la protection des données), n'utilisez pas ce site.\n\nSi ce serveur se trouve aux États-Unis : notre site et nos services sont tous destinés à des personnes âgées d'au moins 13 ans. Si vous avez moins de 13 ans, conformément aux exigences de la loi [COPPA](https://fr.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), n'utilisez pas ce site.\n\nLes exigences légales peuvent être différentes si ce serveur se trouve dans une autre juridiction.",
-            "TITLE": "Protection des mineurs"
-        },
-        "YOUR_CONSENT": {
-            "CONTENT": "En utilisant notre site, vous acceptez la politique de confidentialité de notre site web.",
-            "TITLE": "Votre consentement"
-        }
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Vous pouvez demander à tout moment la suppression de votre compte en vous rendant à cette adresse (après vous être connecté à votre compte), puis en cliquant sur le bouton sous \"Supprimer mon compte\" dans l'espace de mise à jour de votre compte.",
+      "TITLE": "Suppression du compte"
     },
-    "LAST_UPDATE": "Dernière mise à jour",
-    "TITLE": "politique de confidentialité"
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Si nous décidons de changer notre politique de confidentialité, nous afficherons ces modifications sur cette page.\n\nCe document est sous licence [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptée de la politique de confidentialité de [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Modifications de notre politique de confidentialité"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Les informations suivantes sont collectées :\n- Informations liées au compte (nom d'utilisateur, courriel et mot de passe). Vous pouvez également saisir les informations du profil tel que le prénom, le nom de famille, la date de naissance, la localisation, une biographie et envoyer une image de profil.\n- Fichiers [GPX](https://fr.wikipedia.org/wiki/GPX_(format_de_fichier). Ces fichiers contiennent les données liées à vos activités (coordonnées géographiques, date, distance, durée, vitesses maximale et moyenne, altitude, rythme cardiaque…). Si vous ne souhaitez pas exposer certaines données, nettoyer les fichiers avant de les envoyer ou ajouter des activités sans fichier GPX.\n- Données d'activités (sport, titre, date, durée, distance, dénivelé positif et négatif, notes).\n- Données techniques (nom du navigateur et du système d'exploitation).",
+      "TITLE": "Quelles sont les informations que nous recueillons ?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "Nous ne vendons pas, ni échangeons ou même transférons vos renseignements personnelles à des tiers.\n\nCeci n’inclut pas les tiers de confiance qui nous aident à exploiter notre site ou vous servir, tant que ces parties conviennent à garder ces informations confidentielles.\n\nNous pouvons également divulguer vos informations lorsque nous croyons nécessaire de se conformer à la loi, appliquer nos politiques de site, ou la nôtre ou d’autres droits, la propriété ou la sécurité.\n\nSi vous autorisez une application tierce à utiliser votre compte, selon le périmètre des permissions accordées, elle pourra avoir accès à vos informations de profil ou vos activités. Les applications tierces ne peuvent jamais accéder à votre mot de passe.",
+      "TITLE": "Divulguons-nous des informations à des tiers ?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Nous mettons en œuvre une variété de mesures de sécurité pour maintenir la sécurité de vos informations personnelles lorsque vous saisissez, soumettez ou d’accédez à vos renseignements personnels.",
+      "TITLE": "Comment protégeons-nous vos informations ?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Toutes les informations que nous recueillons auprès de vous peuvent être utilisées afin de fournir les fonctionnalités de **FitTrackee** :\n- Les fichiers GPX sont utilisés pour créer des activités, afficher des traces sur une carte (avec [OpenStreetMap](https://www.openstreetmap.org) et le serveur de tuiles configuré) et des graphiques, générer des vignettes de cartes, calculer des records et obtenir des données météo (si un fournisseur de données météorologiques est configuré).\n- Les informations du profil et les activités ne sont pas affichées publiquement. Un utilisateur enregistré ne peut voir que ses propres activités.\n- Le courriel que vous avez fourni peut être utilisé pour vous envoyer des informations ou confirmer des actions de modification de votre compte.",
+      "TITLE": "Comment utilisons-nous vos informations ?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "Si ce serveur est localisé dans l'Union Européenne (UE) ou l'Espace Economique Européen (EEA) : notre site et nos services sont tous destinés aux personnes âgées d'au moins 16 ans. Si vous avez moins de 16 ans, conformément aux exigences du [RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es) (Règlement général sur la protection des données), n'utilisez pas ce site.\n\nSi ce serveur se trouve aux États-Unis : notre site et nos services sont tous destinés à des personnes âgées d'au moins 13 ans. Si vous avez moins de 13 ans, conformément aux exigences de la loi [COPPA](https://fr.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), n'utilisez pas ce site.\n\nLes exigences légales peuvent être différentes si ce serveur se trouve dans une autre juridiction.",
+      "TITLE": "Protection des mineurs"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "En utilisant notre site, vous acceptez la politique de confidentialité de notre site web.",
+      "TITLE": "Votre consentement"
+    }
+  },
+  "LAST_UPDATE": "Dernière mise à jour",
+  "TITLE": "politique de confidentialité"
 }

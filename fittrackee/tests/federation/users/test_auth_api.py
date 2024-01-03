@@ -101,6 +101,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     use_raw_gpx_speed=True,
                     manually_approves_followers=False,
                     hide_profile_in_users_directory=False,
+                    use_dark_mode=True,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

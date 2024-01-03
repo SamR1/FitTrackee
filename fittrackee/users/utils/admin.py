@@ -26,15 +26,11 @@ class UserManagerService:
             raise InvalidUserException
         return user
 
-    def _update_admin_rights(self, user: User, is_admin: bool) -> None:
-        user.admin = is_admin
-        if is_admin:
-            self._activate_user(user)
-
     @staticmethod
-    def _activate_user(user: User) -> None:
-        user.is_active = True
-        user.confirmation_token = None
+    def _update_active_status(user: User, active_status: bool) -> None:
+        user.is_active = active_status
+        if active_status:
+            user.confirmation_token = None
 
     @staticmethod
     def _reset_user_password(user: User) -> str:
@@ -61,7 +57,7 @@ class UserManagerService:
     def update(
         self,
         is_admin: Optional[bool] = None,
-        activate: bool = False,
+        activate: Optional[bool] = None,
         reset_password: bool = False,
         new_email: Optional[str] = None,
         with_confirmation: bool = True,
@@ -71,11 +67,13 @@ class UserManagerService:
         user = self._get_user()
 
         if is_admin is not None:
-            self._update_admin_rights(user, is_admin)
+            user.admin = is_admin
+            if is_admin:
+                activate = True
             user_updated = True
 
-        if activate:
-            self._activate_user(user)
+        if activate is not None:
+            self._update_active_status(user, activate)
             user_updated = True
 
         if reset_password:

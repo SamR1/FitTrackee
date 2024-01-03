@@ -37,6 +37,20 @@ class TestGetUserTimeline(ApiTestCaseMixin):
 
         assert response.status_code == 401
 
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_empty_list_when_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:

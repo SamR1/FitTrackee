@@ -37,14 +37,19 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, ref, onBeforeMount, toRefs } from 'vue'
+  import { computed, ref, onBeforeMount, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout } from '@/types/workouts'
+  import {
+    AUTH_USER_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
@@ -78,23 +83,30 @@
   const dateFormat: ComputedRef<string> = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)
   )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() => loadWorkouts())
 
   function loadWorkouts() {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
-      page: page.value,
-      per_page,
-      ...defaultOrder,
-    })
+    if (!isSuspended.value) {
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
+        page: page.value,
+        per_page,
+        ...defaultOrder,
+      })
+    }
   }
   function loadMoreWorkouts() {
-    page.value += 1
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
-      page: page.value,
-      per_page,
-      ...defaultOrder,
-    })
+    if (!isSuspended.value) {
+      page.value += 1
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
+        page: page.value,
+        per_page,
+        ...defaultOrder,
+      })
+    }
   }
 </script>
 

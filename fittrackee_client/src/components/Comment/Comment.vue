@@ -162,15 +162,10 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, formatDistance } from 'date-fns'
-  import {
-    ComputedRef,
-    computed,
-    toRefs,
-    onUnmounted,
-    withDefaults,
-    watch,
-  } from 'vue'
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, toRefs, onUnmounted, withDefaults, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
@@ -178,9 +173,13 @@
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IDisplayOptions } from '@/types/application'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { IComment, ICurrentCommentEdition, IWorkout } from '@/types/workouts'
+  import type { IDisplayOptions } from '@/types/application'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type {
+    IComment,
+    ICurrentCommentEdition,
+    IWorkout,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
   import { linkifyAndClean } from '@/utils/inputs'

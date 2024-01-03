@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, toRefs, withDefaults } from 'vue'
+  import { onMounted, toRefs } from 'vue'
 
   interface Props {
     tabs: string[]
@@ -76,6 +76,7 @@
     justify-content: center;
     flex-wrap: wrap;
     gap: $default-margin * 0.5;
+    margin-bottom: $default-margin;
   }
   @media screen and (max-width: $small-limit) {
     .profile-tabs-checkboxes {

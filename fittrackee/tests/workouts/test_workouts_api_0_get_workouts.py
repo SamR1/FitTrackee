@@ -113,6 +113,27 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert 'error' in data['status']
         assert 'provide a valid auth token' in data['message']
 
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:read': True}.items(),

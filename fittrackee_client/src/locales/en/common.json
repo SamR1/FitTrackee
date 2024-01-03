@@ -1,31 +1,31 @@
 {
-    "ABOUT": "about",
-    "CONFIRMATION": "Confirmation",
-    "CONTACT": "contact",
-    "DAY": "day | days",
-    "DISPLAYED": "Displayed",
-    "DOCUMENTATION": "documentation",
-    "EDITED": "edited",
-    "HERE": "here",
-    "HIDDEN": "Hidden",
-    "HOME": "Home",
-    "LAST_UPDATED_ON": "Last updated on",
-    "NO_NOTES": "No notes",
-    "REPORT_PLACEHOLDER": "indicate the reason for reporting",
-    "REPORT_SUBMITTED": "Report submitted.",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "ascending",
-            "DESC": "descending",
-            "LABEL": "sort"
-        },
-        "ORDER_BY": {
-            "LABEL": "order by"
-        },
-        "PER_PAGE": {
-            "LABEL": "par page"
-        }
+  "ABOUT": "about",
+  "CONFIRMATION": "Confirmation",
+  "CONTACT": "contact",
+  "DAY": "day | days",
+  "DISPLAYED": "Displayed",
+  "DOCUMENTATION": "documentation",
+  "EDITED": "edited",
+  "HERE": "here",
+  "HIDDEN": "Hidden",
+  "HOME": "Home",
+  "LAST_UPDATED_ON": "Last updated on",
+  "NO_NOTES": "No notes",
+  "REPORT_PLACEHOLDER": "indicate the reason for reporting",
+  "REPORT_SUBMITTED": "Report submitted.",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascending",
+      "DESC": "descending",
+      "LABEL": "sort"
     },
-    "TOTAL": "Total",
-    "TYPE": "type"
+    "ORDER_BY": {
+      "LABEL": "order by"
+    },
+    "PER_PAGE": {
+      "LABEL": "par page"
+    }
+  },
+  "TOTAL": "Total",
+  "TYPE": "type"
 }

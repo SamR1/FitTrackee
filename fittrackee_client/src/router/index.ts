@@ -1,5 +1,6 @@
 import { capitalize } from 'vue'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
@@ -28,10 +29,25 @@ import createI18n from '@/i18n'
 import store from '@/store'
 import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
+import AdminView from '@/views/AdminView.vue'
 import Dashboard from '@/views/Dashboard.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
+import StatisticsView from '@/views/StatisticsView.vue'
+import AccountConfirmationResendView from '@/views/user/AccountConfirmationResendView.vue'
+import AccountConfirmationView from '@/views/user/AccountConfirmationView.vue'
+import EmailUpdateView from '@/views/user/EmailUpdateView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
+import NotificationsView from '@/views/user/NotificationsView.vue'
+import PasswordResetView from '@/views/user/PasswordResetView.vue'
+import ProfileView from '@/views/user/ProfileView.vue'
+import UserView from '@/views/user/UserView.vue'
+import UsersView from '@/views/UsersView.vue'
+import AddWorkout from '@/views/workouts/AddWorkout.vue'
+import CommentView from '@/views/workouts/CommentView.vue'
+import EditWorkout from '@/views/workouts/EditWorkout.vue'
+import Workout from '@/views/workouts/Workout.vue'
+import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
 
 const { t } = createI18n.global
 
@@ -48,6 +64,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     meta: {
       title: 'dashboard.DASHBOARD',
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -73,10 +90,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/account-confirmation',
     name: 'AccountConfirmation',
-    component: () =>
-      import(
-        /* webpackChunkName: 'profile' */ '@/views/user/AccountConfirmationView.vue'
-      ),
+    component: AccountConfirmationView,
     meta: {
       title: 'user.ACCOUNT_CONFIRMATION',
       withoutAuth: true,
@@ -85,10 +99,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/account-confirmation/resend',
     name: 'AccountConfirmationResend',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
-      ),
+    component: AccountConfirmationResendView,
     props: { action: 'account-confirmation-resend' },
     meta: {
       title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
@@ -98,10 +109,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/account-confirmation/email-sent',
     name: 'AccountConfirmationEmailSend',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/AccountConfirmationResendView.vue'
-      ),
+    component: AccountConfirmationResendView,
     props: { action: 'email-sent' },
     meta: {
       title: 'buttons.ACCOUNT-CONFIRMATION-RESEND',
@@ -111,10 +119,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/password-reset/sent',
     name: 'PasswordEmailSent',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
-      ),
+    component: PasswordResetView,
     props: { action: 'request-sent' },
     meta: {
       title: 'user.PASSWORD_RESET',
@@ -124,10 +129,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/password-reset/request',
     name: 'PasswordResetRequest',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
-      ),
+    component: PasswordResetView,
     props: { action: 'reset-request' },
     meta: {
       title: 'user.PASSWORD_RESET',
@@ -137,10 +139,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/password-reset/password-updated',
     name: 'PasswordUpdated',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
-      ),
+    component: PasswordResetView,
     props: { action: 'password-updated' },
     meta: {
       title: 'user.PASSWORD_RESET',
@@ -150,10 +149,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/password-reset',
     name: 'PasswordReset',
-    component: () =>
-      import(
-        /* webpackChunkName: 'reset' */ '@/views/user/PasswordResetView.vue'
-      ),
+    component: PasswordResetView,
     props: { action: 'reset' },
     meta: {
       title: 'user.PASSWORD_RESET',
@@ -163,10 +159,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/email-update',
     name: 'EmailUpdate',
-    component: () =>
-      import(
-        /* webpackChunkName: 'profile' */ '@/views/user/EmailUpdateView.vue'
-      ),
+    component: EmailUpdateView,
     meta: {
       title: 'user.EMAIL_UPDATE',
       withoutChecks: true,
@@ -175,8 +168,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/profile',
     name: 'Profile',
-    component: () =>
-      import(/* webpackChunkName: 'profile' */ '@/views/user/ProfileView.vue'),
+    component: ProfileView,
     children: [
       {
         path: '',
@@ -349,35 +341,37 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/notifications',
     name: 'Notifications',
-    component: () =>
-      import(
-        /* webpackChunkName: 'notifications' */ '@/views/user/NotificationsView.vue'
-      ),
+    component: NotificationsView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/statistics',
     name: 'Statistics',
-    component: () =>
-      import(/* webpackChunkName: 'statistics' */ '@/views/StatisticsView.vue'),
+    component: StatisticsView,
     meta: {
       title: 'statistics.STATISTICS',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/users',
     name: 'Users',
-    component: () =>
-      import(/* webpackChunkName: 'users' */ '@/views/UsersView.vue'),
+    component: UsersView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/users/:username',
     name: 'User',
     props: { fromAdmin: false },
-    component: () =>
-      import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
+    component: UserView,
     meta: {
       title: 'user.USER',
       withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
     children: [
       {
@@ -397,79 +391,77 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/workouts',
     name: 'Workouts',
-    component: () =>
-      import(
-        /* webpackChunkName: 'workouts' */ '@/views/workouts/WorkoutsView.vue'
-      ),
+    component: WorkoutsView,
     meta: {
       title: 'workouts.WORKOUT',
       count: 0,
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/workouts/:workoutId',
     name: 'Workout',
-    component: () =>
-      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    component: Workout,
     props: { displaySegment: false },
     meta: {
       title: 'workouts.WORKOUT',
       withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/workouts/:workoutId/edit',
     name: 'EditWorkout',
-    component: () =>
-      import(
-        /* webpackChunkName: 'workouts' */ '@/views/workouts/EditWorkout.vue'
-      ),
+    component: EditWorkout,
     meta: {
       title: 'workouts.EDIT_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/workouts/:workoutId/segment/:segmentId',
     name: 'WorkoutSegment',
-    component: () =>
-      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    component: Workout,
     props: { displaySegment: true },
     meta: {
       title: 'workouts.SEGMENT',
       count: 0,
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/workouts/:workoutId/comments/:commentId',
     name: 'WorkoutComment',
-    component: () =>
-      import(/* webpackChunkName: 'workouts' */ '@/views/workouts/Workout.vue'),
+    component: Workout,
     props: { displaySegment: false },
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/comments/:commentId',
     name: 'Comment',
-    component: () =>
-      import(
-        /* webpackChunkName: 'workouts' */ '@/views/workouts/CommentView.vue'
-      ),
+    component: CommentView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
   },
   {
     path: '/workouts/add',
     name: 'AddWorkout',
-    component: () =>
-      import(
-        /* webpackChunkName: 'workouts' */ '@/views/workouts/AddWorkout.vue'
-      ),
+    component: AddWorkout,
     meta: {
       title: 'workouts.ADD_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/admin',
     name: 'Administration',
-    component: () =>
-      import(/* webpackChunkName: 'admin' */ '@/views/AdminView.vue'),
+    component: AdminView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
     children: [
       {
         path: '',
@@ -523,8 +515,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'users/:username',
         name: 'UserFromAdmin',
-        component: () =>
-          import(/* webpackChunkName: 'profile' */ '@/views/user/UserView.vue'),
+        component: UserView,
         props: { fromAdmin: true },
         meta: {
           title: 'admin.USER',
@@ -570,7 +561,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
@@ -593,7 +584,20 @@ router.beforeEach((to, from, next) => {
         return next()
       }
 
-      if (store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED] &&
+        !to.path.startsWith('/profile') &&
+        !to.meta.allowedToSuspendedUser
+      ) {
+        return next('/profile')
+      }
+
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        !store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+      ) {
         store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
       }
 

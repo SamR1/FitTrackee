@@ -22,6 +22,41 @@ class FollowersAsUserTestCase(ApiTestCaseMixin):
             follows_request.updated_at = datetime.utcnow()
 
 
+class TestFollowersAsUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}/followers',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+
+class TestFollowersAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}/followers',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+
 class TestFollowersAsUser(FollowersAsUserTestCase):
     def test_it_returns_404_if_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -282,6 +317,41 @@ class TestFollowersPagination(FollowersAsUserTestCase):
             'pages': 2,
             'total': 2,
         }
+
+
+class TestFollowingAsUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}/following',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+
+class TestFollowingAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}/following',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
 
 class TestFollowingAsUser(FollowersAsUserTestCase):

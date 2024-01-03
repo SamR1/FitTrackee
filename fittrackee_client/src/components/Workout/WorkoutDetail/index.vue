@@ -11,11 +11,28 @@
     <Card>
       <template #title>
         <WorkoutCardTitle
+          v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           @displayModal="updateDisplayModal(true)"
         />
+        <ReportForm
+          v-if="workoutData.currentReporting"
+          :object-id="workoutObject.workoutId"
+          object-type="workout"
+        />
+        <div
+          class="report-submitted"
+          v-if="reportStatus === `workout-${workoutObject.workoutId}-created`"
+        >
+          <div class="info-box">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('common.REPORT_SUBMITTED') }}
+            </span>
+          </div>
+        </div>
       </template>
       <template #content>
         <div class="workout-map-data">
@@ -41,26 +58,20 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    withDefaults,
-  } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import ReportForm from '@/components/Common/ReportForm.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IDisplayOptions } from "@/types/application";
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IDisplayOptions } from '@/types/application'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkout,
     IWorkoutData,
     IWorkoutObject,
@@ -79,14 +90,13 @@
     isWorkoutOwner: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
-    markerCoordinates: () => ({} as TCoordinates),
+    markerCoordinates: () => ({}) as TCoordinates,
   })
 
   const route = useRoute()
   const store = useStore()
 
-  const { isWorkoutOwner, markerCoordinates, workoutData } =
-    toRefs(props)
+  const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
@@ -104,10 +114,13 @@
       ? props.sports.find(
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
-      : {}
+      : ({} as ISport)
   )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
@@ -122,14 +135,14 @@
       displaySegment && segmentId && segmentId !== 1
         ? `/workouts/${workout.id}/segment/${segmentId - 1}`
         : !displaySegment && workout.previous_workout
-        ? `/workouts/${workout.previous_workout}`
-        : null
+          ? `/workouts/${workout.previous_workout}`
+          : null
     const nextUrl =
       displaySegment && segmentId && segmentId < workout.segments.length
         ? `/workouts/${workout.id}/segment/${segmentId + 1}`
         : !displaySegment && workout.next_workout
-        ? `/workouts/${workout.next_workout}`
-        : null
+          ? `/workouts/${workout.next_workout}`
+          : null
     return {
       previousUrl,
       nextUrl,
@@ -160,7 +173,7 @@
       mapVisibility: segment ? null : workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       liked: workout.liked,
-      likes_count:  workout.likes_count,
+      likes_count: workout.likes_count,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
@@ -229,6 +242,13 @@
       width: 100%;
       .card-title {
         padding: $default-padding $default-padding * 1.5;
+        .report-submitted {
+          display: flex;
+          .info-box {
+            padding: $default-padding $default-padding * 2;
+            margin: $default-margin * 0.5 0 0 $default-margin;
+          }
+        }
       }
       .card-content {
         display: flex;

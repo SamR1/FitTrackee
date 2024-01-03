@@ -17,13 +17,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, toRefs, watch, withDefaults } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
 
   interface Props {
     name: string
     charLimit?: number
     disabled?: boolean
-    input?: string | null
+    input?: string
     required?: boolean
     placeholder?: string
   }
@@ -40,10 +40,11 @@
   const { input } = toRefs(props)
   const text = ref(input.value)
 
-  function updateText(event: Event & { target: HTMLInputElement }) {
+  function updateText(event: Event) {
+    const target = event.target as HTMLInputElement
     emit('updateValue', {
-      value: event.target.value,
-      selectionStart: event.target.selectionStart,
+      value: target.value,
+      selectionStart: target.selectionStart,
     })
   }
 

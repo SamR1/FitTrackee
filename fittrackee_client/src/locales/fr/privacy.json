@@ -1,20 +1,20 @@
 {
-    "COMMENT_LEVELS": {
-        "followers_and_remote_only": "Abonnées locaux et distants uniquement",
-        "followers_only": "Abonnées uniquement",
-        "local_followers_only": "Abonnées locaux uniquement",
-        "private": "Privé (seulement les utilisateurs mentionnés)",
-        "public": "Public (tout le monde)"
-    },
-    "LEVELS": {
-        "followers_and_remote_only": "Abonnées locaux et distants uniquement",
-        "followers_only": "Abonnées uniquement",
-        "local_followers_only": "Abonnées locaux uniquement",
-        "private": "Privé (seulement moi)",
-        "public": "Public (tout le monde)"
-    },
-    "MAP_VISIBILITY": "Visibilité de la carte et de l'analyse",
-    "VISIBILITY": "visibilité",
-    "WORKOUTS_VISIBILITY": "Visibilité des données relatives aux séances",
-    "WORKOUT_VISIBILITY": "Visibilité de la séance"
+  "COMMENT_LEVELS": {
+    "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+    "followers_only": "Abonnées uniquement",
+    "local_followers_only": "Abonnées locaux uniquement",
+    "private": "Privé (seulement les utilisateurs mentionnés)",
+    "public": "Public (tout le monde)"
+  },
+  "LEVELS": {
+    "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+    "followers_only": "Abonnées uniquement",
+    "local_followers_only": "Abonnées locaux uniquement",
+    "private": "Privé (seulement moi)",
+    "public": "Public (tout le monde)"
+  },
+  "MAP_VISIBILITY": "Visibilité de la carte et de l'analyse",
+  "VISIBILITY": "visibilité",
+  "WORKOUTS_VISIBILITY": "Visibilité des données relatives aux séances",
+  "WORKOUT_VISIBILITY": "Visibilité de la séance"
 }

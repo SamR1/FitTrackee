@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import pytest
 from flask import Flask
@@ -30,6 +31,30 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_return_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_404_when_workout_does_not_exist(
         self,
@@ -221,6 +246,35 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        like = WorkoutLike(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        )
+        db.session.add(like)
+        db.session.flush()
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        response = client.post(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_404_when_workout_does_not_exist(
         self,

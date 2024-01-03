@@ -30,9 +30,8 @@
             href="https://choosealicense.com/licenses/agpl-3.0/"
             target="_blank"
             rel="noopener noreferrer"
+            >AGPLv3</a
           >
-            AGPLv3
-          </a>
         </i18n-t>
       </p>
       <div v-if="appConfig.admin_contact">
@@ -49,9 +48,7 @@
       </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
-        <div
-          v-html="snarkdown(linkifyAndClean(appConfig.about))"
-        />
+        <div v-html="snarkdown(linkifyAndClean(appConfig.about))" />
       </template>
     </div>
   </div>
@@ -59,10 +56,11 @@
 
 <script lang="ts" setup>
   import snarkdown from 'snarkdown'
-  import { ComputedRef, computed, capitalize } from 'vue'
+  import { computed, capitalize } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
+  import type { TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
   import { linkifyAndClean } from '@/utils/inputs'
 
@@ -113,7 +111,7 @@
     }
     .about-instance {
       font-weight: bold;
-      margin-top: $default-margin*3;
+      margin-top: $default-margin * 3;
     }
   }
 </style>

@@ -39,6 +39,7 @@ class UserModelAssertMixin:
         assert serialized_user['admin'] == user.admin
         assert serialized_user['is_active'] == user.is_active
         assert serialized_user['username'] == user.username
+        assert serialized_user['suspended_at'] is None
 
     @staticmethod
     def assert_user_profile(serialized_user: Dict, user: User) -> None:
@@ -87,6 +88,12 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['timezone'] == user_1.timezone
         assert serialized_user['weekm'] == user_1.weekm
         assert serialized_user['display_ascent'] == user_1.display_ascent
+        assert (
+            serialized_user['start_elevation_at_zero']
+            == user_1.start_elevation_at_zero
+        )
+        assert serialized_user['use_raw_gpx_speed'] == user_1.use_raw_gpx_speed
+        assert serialized_user['use_dark_mode'] == user_1.use_dark_mode
         assert (
             serialized_user['workouts_visibility']
             == user_1.workouts_visibility
@@ -180,6 +187,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         assert 'language' not in serialized_user
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
+        assert 'start_elevation_at_zero' not in serialized_user
+        assert 'use_raw_gpx_speed' not in serialized_user
+        assert 'use_dark_mode' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user

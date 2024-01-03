@@ -60,6 +60,33 @@ class TestGetSports(ApiTestCaseMixin):
             sport_2_running.serialize()
         )
 
+    def test_it_gets_all_sports_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/sports',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 2
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize()
+        )
+        assert data['data']['sports'][1] == jsonify_dict(
+            sport_2_running.serialize()
+        )
+
     def test_it_gets_all_sports_with_inactive_one(
         self,
         app: Flask,
@@ -200,6 +227,20 @@ class TestGetSport(ApiTestCaseMixin):
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling.serialize()
         )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            f'/api/sports/{sport_1_cycling.id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_gets_a_sport_with_preferences(
         self,

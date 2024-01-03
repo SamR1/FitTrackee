@@ -87,14 +87,15 @@ class TestUserManagerServiceUserUpdate:
 
         assert user_1_admin.admin is True
 
-    def test_it_activates_account_if_user_is_inactive(
-        self, app: Flask, inactive_user: User
+    @pytest.mark.parametrize('input_activate', [True, False])
+    def test_it_activates_admin_account_if_user_is_inactive_regardless_activate_value(  # noqa
+        self, app: Flask, inactive_user: User, input_activate: bool
     ) -> None:
         user_manager_service = UserManagerService(
             username=inactive_user.username
         )
 
-        user_manager_service.update(is_admin=True)
+        user_manager_service.update(is_admin=True, activate=input_activate)
 
         assert inactive_user.admin is True
         assert inactive_user.is_active is True
@@ -110,6 +111,16 @@ class TestUserManagerServiceUserUpdate:
         user_manager_service.update(activate=True)
 
         assert inactive_user.is_active is True
+
+    def test_it_deactivates_given_user_account(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_manager_service = UserManagerService(username=user_1.username)
+
+        user_manager_service.update(activate=False)
+
+        assert user_1.is_active is False
+        assert user_1.confirmation_token is None
 
     def test_it_empties_confirmation_token(
         self, app: Flask, inactive_user: User

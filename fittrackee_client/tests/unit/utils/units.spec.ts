@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import { TUnit } from '@/types/units'
 import { convertDistance, getTemperature, getWindSpeed } from '@/utils/units'
@@ -26,8 +26,7 @@ describe('convertDistance', () => {
 
   testsParams.map((testParams) => {
     it(`convert ${testParams[0]}${testParams[1]} in ${testParams[2]}}`, () => {
-      assert.equal(
-        convertDistance(testParams[0], testParams[1], testParams[2]),
+      expect(convertDistance(testParams[0], testParams[1], testParams[2])).toBe(
         testParams[3]
       )
     })
@@ -44,15 +43,14 @@ describe('convertDistance w/ digits', () => {
 
   testsParams.map((testParams) => {
     it(`convert ${testParams[0]}${testParams[1]} in ${testParams[2]}}`, () => {
-      assert.equal(
+      expect(
         convertDistance(
           testParams[0],
           testParams[1],
           testParams[2],
           testParams[3]
-        ),
-        testParams[4]
-      )
+        )
+      ).toBe(testParams[4])
     })
   })
 })
@@ -68,7 +66,7 @@ describe('getTemperature', () => {
 
   testsParams.map((testParams) => {
     it(`get temperature for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
-      assert.equal(getTemperature(testParams[0], testParams[1]), testParams[2])
+      expect(getTemperature(testParams[0], testParams[1])).toBe(testParams[2])
     })
   })
 })
@@ -84,7 +82,7 @@ describe('getWindSpeed', () => {
 
   testsParams.map((testParams) => {
     it(`get wind speed for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
-      assert.equal(getWindSpeed(testParams[0], testParams[1]), testParams[2])
+      expect(getWindSpeed(testParams[0], testParams[1])).toBe(testParams[2])
     })
   })
 })

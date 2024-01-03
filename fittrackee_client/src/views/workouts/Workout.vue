@@ -46,16 +46,8 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    Ref,
-    computed,
-    ref,
-    toRefs,
-    watch,
-    onBeforeMount,
-    onUnmounted,
-  } from 'vue'
+  import { computed, ref, toRefs, watch, onBeforeMount, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import Comments from '@/components/Comment/Comments.vue'
@@ -70,9 +62,13 @@
     SPORTS_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData, IWorkoutPayload, TCoordinates } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
+    IWorkoutData,
+    IWorkoutPayload,
+    TCoordinates,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUserName } from '@/utils/user'
 
@@ -103,13 +99,18 @@
       getUserName(authUser.value) ===
       getUserName(workoutData.value.workout.user)
   )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() => {
-    const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
-    if (props.displaySegment) {
-      payload.segmentId = route.params.segmentId
+    if (!isSuspended.value) {
+      const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
+      if (props.displaySegment) {
+        payload.segmentId = route.params.segmentId
+      }
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
     }
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
     if (sports.value.length === 0) {
       store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
     }

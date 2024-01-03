@@ -1,10 +1,11 @@
 import os
 import re
 import shutil
+from datetime import datetime
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import asc, desc, exc, func
+from sqlalchemy import asc, desc, exc, func, nullslast
 
 from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
@@ -59,6 +60,15 @@ EMPTY_USERS_RESPONSE = {
 }
 
 
+def _get_value_depending_on_user_rights(
+    params: Dict, key: str, auth_user: Optional[User]
+) -> str:
+    value = params.get(key, 'false').lower()
+    if not auth_user or not auth_user.admin:
+        value = 'false'
+    return value
+
+
 def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     params = request.args.copy()
 
@@ -94,12 +104,17 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
     if column != 'username':
         order_clauses.append(User.username.asc())
-    with_inactive = params.get('with_inactive', 'false').lower()
-    if not auth_user or not auth_user.admin:
-        with_inactive = 'false'
-    with_hidden_users = params.get('with_hidden', 'false').lower()
-    if not auth_user or not auth_user.admin:
-        with_hidden_users = 'false'
+    if column == "suspended_at":
+        order_clauses = [nullslast(order_clauses[0])]
+    with_inactive = _get_value_depending_on_user_rights(
+        params, 'with_inactive', auth_user
+    )
+    with_hidden_users = _get_value_depending_on_user_rights(
+        params, 'with_hidden', auth_user
+    )
+    with_suspended_users = _get_value_depending_on_user_rights(
+        params, 'with_suspended', auth_user
+    )
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
@@ -110,6 +125,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             True
             if with_hidden_users == 'true' or remote
             else User.hide_profile_in_users_directory == False,  # noqa
+            True
+            if with_suspended_users == 'true'
+            else User.suspended_at == None,  # noqa
         )
         .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
@@ -603,6 +621,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
       if sending enabled)
     - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
+    - deactivate account after report.
 
     Only user with admin rights can modify another user.
 
@@ -705,10 +724,12 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :param string user_name: user name
 
-    :<json boolean activate: activate user account
+    :<json boolean activate: (de-)activate user account
     :<json boolean admin: does the user have administrator rights
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
+    :<json boolean suspend: suspend user if true
+    :<json boolean unsuspend: unsuspend user if true
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -729,17 +750,31 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
+    activate = user_data.get('activate')
+    suspend = user_data.get('suspend')
+    if (activate is False and user_name == auth_user.username) or (
+        suspend and user_name == auth_user.username
+    ):
+        return ForbiddenErrorResponse()
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
         user_manager_service = UserManagerService(username=user_name)
         user, _, _ = user_manager_service.update(
             is_admin=user_data.get('admin'),
-            activate=user_data.get('activate', False),
+            activate=user_data.get('activate'),
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
         )
+
+        if suspend is True:
+            user.suspended_at = datetime.utcnow()
+            user.admin = False
+        if user_data.get('unsuspend') is True:
+            user.suspended_at = None
+        db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
             user_language = get_language(user.language)
@@ -807,7 +842,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['users:write'], allow_suspended_user=True)
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

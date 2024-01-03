@@ -27,16 +27,22 @@
 </template>
 
 <script setup lang="ts">
-  import { Locale, addMonths, format, subMonths } from 'date-fns'
-  import { ComputedRef, computed, ref, toRefs, onBeforeMount } from 'vue'
+  import { addMonths, format, subMonths } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, ref, toRefs, onBeforeMount } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import CalendarCells from '@/components/Dashboard/UserCalendar/CalendarCells.vue'
   import CalendarDays from '@/components/Dashboard/UserCalendar/CalendarDays.vue'
   import CalendarHeader from '@/components/Dashboard/UserCalendar/CalendarHeader.vue'
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkout, TWorkoutsPayload } from '@/types/workouts'
+  import {
+    AUTH_USER_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout, TWorkoutsPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getCalendarStartAndEnd } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
@@ -59,19 +65,24 @@
   const localeOptions: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() => getCalendarWorkouts())
 
   function getCalendarWorkouts() {
-    calendarDates.value = getCalendarStartAndEnd(day.value, props.user.weekm)
-    const apiParams: TWorkoutsPayload = {
-      from: format(calendarDates.value.start, dateFormat),
-      to: format(calendarDates.value.end, dateFormat),
-      page: 1,
-      per_page: 100,
-      ...defaultOrder,
+    if (!isSuspended.value) {
+      calendarDates.value = getCalendarStartAndEnd(day.value, props.user.weekm)
+      const apiParams: TWorkoutsPayload = {
+        from: format(calendarDates.value.start, dateFormat),
+        to: format(calendarDates.value.end, dateFormat),
+        page: 1,
+        per_page: 100,
+        ...defaultOrder,
+      }
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS, apiParams)
     }
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS, apiParams)
   }
   function displayNextMonth() {
     day.value = addMonths(day.value, 1)

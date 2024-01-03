@@ -23,13 +23,13 @@ Prerequisites
 
 - mandatory
     - Python >= 3.8.1
-    - PostgreSQL 11+
+    - PostgreSQL 12+
 - optional
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
     - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
-    - `Node <https://nodejs.org>`__ 16+ and `Yarn <https://yarnpkg.com>`__ (for development only)
+    - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
 .. note::
@@ -245,9 +245,9 @@ deployment method.
     Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
 
 
-.. envvar:: VUE_APP_API_URL
+.. envvar:: VITE_APP_API_URL
 
-    **FitTrackee** API URL, only needed in dev environment.
+    .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
 
 
 
@@ -518,13 +518,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.25):
+-  Download the last release (for now, it is the release v0.7.27):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.25.tar.gz
-   $ tar -xzf v0.7.25.tar.gz
-   $ mv FitTrackee-0.7.25 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.27.tar.gz
+   $ tar -xzf v0.7.27.tar.gz
+   $ mv FitTrackee-0.7.27 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -648,13 +648,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.25) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.27) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.25.tar.gz
-   $ tar -xzf v0.7.25.tar.gz
-   $ cp -R FitTrackee-0.7.25/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.27.tar.gz
+   $ tar -xzf v0.7.27.tar.gz
+   $ cp -R FitTrackee-0.7.27/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -818,7 +818,7 @@ Installation
 
 .. versionadded:: 0.4.4
 
-For evaluation purposes, docker files are available, installing **FitTrackee** from **sources**.
+For **evaluation** purposes, docker files are available, installing **FitTrackee** from **sources**.
 
 - To install **FitTrackee**:
 
@@ -894,7 +894,7 @@ Open http://localhost:3000
 
 .. code-block:: bash
 
-    $ make docker-lint-client  # run lint on javascript files
+    $ make docker-lint-client  # run type check and lint on javascript files
     $ make docker-test-client  # run unit tests on Client
     $ make docker-lint-python  # run type check and lint on python files
     $ make docker-test-python  # run unit tests on API

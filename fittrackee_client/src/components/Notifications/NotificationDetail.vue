@@ -87,9 +87,9 @@
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import { INotification, TNotificationType } from '@/types/notifications'
-  import { ISport } from '@/types/sports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { INotification, TNotificationType } from '@/types/notifications'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
 

@@ -1,7 +1,7 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!userLoading">
-      <AdminReport v-if="isAuthUserAmin" />
+      <AdminReport v-if="isAuthUserAdmin" />
       <NotFound v-else />
       <div id="bottom" />
     </div>
@@ -9,7 +9,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef } from 'vue'
+  import { computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import AdminReport from '@/components/Administration/AdminReport.vue'
   import NotFound from '@/components/Common/NotFound.vue'
@@ -18,7 +19,7 @@
 
   const store = useStore()
 
-  const isAuthUserAmin: ComputedRef<boolean> = computed(
+  const isAuthUserAdmin: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
   )
   const userLoading: ComputedRef<boolean> = computed(

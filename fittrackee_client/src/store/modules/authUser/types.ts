@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { AUTH_USER_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagePayload } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagePayload } from '@/types/api'
+import type {
   IAuthUserProfile,
   IFollowRequestsActionPayload,
   ILoginOrRegisterData,
@@ -52,7 +52,8 @@ export interface IAuthUserActions {
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
-    context: ActionContext<IAuthUserState, IRootState>
+    context: ActionContext<IAuthUserState, IRootState>,
+    updateUI: boolean
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
@@ -168,11 +169,19 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_NOT_LOADED](
+    state: IAuthUserState
+  ): boolean
+
   [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS](
     state: IAuthUserState
   ): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_SUSPENDED](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
 }
@@ -229,7 +238,7 @@ export type TAuthUserStoreModule<S = IAuthUserState> = Omit<
 } & {
   commit<
     K extends keyof TAuthUserMutations,
-    P extends Parameters<TAuthUserMutations[K]>[1]
+    P extends Parameters<TAuthUserMutations[K]>[1],
   >(
     key: K,
     payload?: P,

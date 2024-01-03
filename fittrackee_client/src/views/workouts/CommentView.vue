@@ -22,14 +22,15 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, watch, onBeforeMount, onUnmounted } from 'vue'
+  import { computed, watch, onBeforeMount, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import Comments from '@/components/Comment/Comments.vue'
   import NotFound from '@/components/Common/NotFound.vue'
   import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import { IAuthUserProfile } from '@/types/user'
-  import { IWorkoutData } from '@/types/workouts'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
@@ -45,7 +46,7 @@
   onBeforeMount(() => {
     store.dispatch(
       WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
-      route.params.commentId
+      route.params.commentId as string
     )
   })
 
@@ -57,9 +58,10 @@
     () => route.params.commentId,
     async (newCommentId) => {
       if (newCommentId) {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT, {
-          commentId: newCommentId,
-        })
+        store.dispatch(
+          WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
+          newCommentId as string
+        )
       }
     }
   )

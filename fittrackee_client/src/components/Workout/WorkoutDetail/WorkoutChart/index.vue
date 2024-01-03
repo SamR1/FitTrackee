@@ -24,11 +24,14 @@
           </label>
         </div>
         <div id="chart-legend" />
-        <LineChart
-          v-bind="lineChartProps"
-          class="line-chart"
-          @mouseleave="emitEmptyCoordinates"
-        />
+        <div class="line-chart">
+          <Line
+            :data="chartData"
+            :options="options"
+            :plugins="plugins"
+            @mouseleave="emitEmptyCoordinates"
+          />
+        </div>
         <div class="chart-info">
           <div class="no-data-cleaning">
             {{ $t('workouts.NO_DATA_CLEANING') }}
@@ -51,21 +54,25 @@
 </template>
 
 <script setup lang="ts">
-  import { ChartData, ChartOptions } from 'chart.js'
-  import { ComputedRef, computed, ref, toRefs } from 'vue'
-  import { LineChart, useLineChart } from 'vue-chart-3'
+  import type { ChartData, ChartOptions } from 'chart.js'
+  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
-  import { TUnit } from '@/types/units'
-  import { IAuthUserProfile } from '@/types/user'
-  import {
+  import { ROOT_STORE } from '@/store/constants'
+  import type { TUnit } from '@/types/units'
+  import type { IAuthUserProfile } from '@/types/user'
+  import type {
     IWorkoutChartData,
     IWorkoutData,
     TCoordinates,
   } from '@/types/workouts'
+  import { getDarkTheme } from '@/utils'
   import { units } from '@/utils/units'
-  import { getDatasets } from '@/utils/workouts'
+  import { chartsColors, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -75,13 +82,25 @@
 
   const emit = defineEmits(['getCoordinates'])
 
+  const store = useStore()
   const { t } = useI18n()
 
   const { authUser, workoutData } = toRefs(props)
+  const darkMode: ComputedRef<boolean | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  )
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
   const displayDistance = ref(true)
   const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
-    getDatasets(workoutData.value.chartData, t, authUser.value.imperial_units)
+    getDatasets(
+      workoutData.value.chartData,
+      t,
+      authUser.value.imperial_units,
+      darkTheme.value
+    )
   )
   const hasElevation = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0
@@ -102,9 +121,20 @@
   const coordinates: ComputedRef<TCoordinates[]> = computed(
     () => datasets.value.coordinates
   )
+  const lineColors = computed(() => ({
+    color: darkTheme.value
+      ? chartsColors.darkMode.line
+      : chartsColors.ligthMode.line,
+  }))
+  const textColors = computed(() => ({
+    color: darkTheme.value
+      ? chartsColors.darkMode.text
+      : chartsColors.ligthMode.text,
+  }))
+
   const options = computed<ChartOptions<'line'>>(() => ({
     responsive: true,
-    maintainAspectRatio: true,
+    maintainAspectRatio: false,
     animation: false,
     layout: {
       padding: {
@@ -115,6 +145,10 @@
       x: {
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         ticks: {
           count: 10,
@@ -123,6 +157,7 @@
               ? Number(value).toFixed(2)
               : formatDuration(value)
           },
+          ...textColors.value,
         },
         type: 'linear',
         bounds: 'data',
@@ -131,16 +166,25 @@
           text: displayDistance.value
             ? t('workouts.DISTANCE') + ` (${fromKmUnit})`
             : t('workouts.DURATION'),
+          ...textColors.value,
         },
       },
       ySpeed: {
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         position: 'left',
         title: {
           display: true,
           text: t('workouts.SPEED') + ` (${fromKmUnit}/h)`,
+          ...textColors.value,
+        },
+        ticks: {
+          ...textColors.value,
         },
       },
       yElevation: {
@@ -148,11 +192,19 @@
         display: hasElevation.value,
         grid: {
           drawOnChartArea: false,
+          ...lineColors.value,
+        },
+        border: {
+          ...lineColors.value,
         },
         position: 'right',
         title: {
           display: true,
           text: t('workouts.ELEVATION') + ` (${fromMUnit})`,
+          ...textColors.value,
+        },
+        ticks: {
+          ...textColors.value,
         },
       },
     },
@@ -185,12 +237,12 @@
             return tooltipItems.length === 0
               ? ''
               : displayDistance.value
-              ? `${t('workouts.DISTANCE')}: ${
-                  tooltipItems[0].label
-                } ${fromKmUnit}`
-              : `${t('workouts.DURATION')}: ${formatDuration(
-                  tooltipItems[0].label.replace(',', '')
-                )}`
+                ? `${t('workouts.DISTANCE')}: ${
+                    tooltipItems[0].label
+                  } ${fromKmUnit}`
+                : `${t('workouts.DURATION')}: ${formatDuration(
+                    tooltipItems[0].label.replace(',', '')
+                  )}`
           },
         },
       },
@@ -203,11 +255,7 @@
       },
     },
   }))
-  const { lineChartProps } = useLineChart({
-    chartData,
-    options,
-    plugins: [htmlLegendPlugin],
-  })
+  const plugins = [htmlLegendPlugin]
 
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value
@@ -279,6 +327,9 @@
             }
           }
         }
+        .line-chart {
+          min-height: 400px;
+        }
       }
 
       @media screen and (max-width: $small-limit) {
@@ -293,6 +344,9 @@
             .no-data-cleaning {
               padding: 0 $default-padding * 2;
             }
+          }
+          .line-chart {
+            min-height: 338px;
           }
         }
       }

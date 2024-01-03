@@ -173,6 +173,24 @@ def inactive_user() -> User:
 
 
 @pytest.fixture()
+def suspended_user() -> User:
+    user = User(
+        username='suspended_user',
+        email='suspended_user@example.com',
+        password='12345678',
+    )
+    user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.accepted_policy = datetime.datetime.utcnow()
+    user.suspended_at = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.flush()
+    user.create_actor()
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_sport_1_preference(
     user_1: User, sport_1_cycling: Sport
 ) -> UserSportPreference:

@@ -1,7 +1,7 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!userLoading">
-      <router-view v-if="isAuthUserAmin" />
+      <router-view v-if="isAuthUserAdmin" />
       <NotFound v-else />
       <div id="bottom" />
     </div>
@@ -9,7 +9,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ComputedRef, onBeforeMount } from 'vue'
+  import { computed, onBeforeMount } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import NotFound from '@/components/Common/NotFound.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
@@ -17,14 +18,17 @@
 
   const store = useStore()
 
-  const isAuthUserAmin: ComputedRef<boolean> = computed(
+  const isAuthUserAdmin: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
   )
   const userLoading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-
-  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
+  onBeforeMount(() => {
+    if (isAuthUserAdmin.value) {
+      store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -60,8 +64,8 @@
               &:disabled {
                 -webkit-appearance: none;
                 -moz-appearance: textfield;
-                background-color: white;
-                border-color: white;
+                background-color: var(--admin-disabled-input-color);
+                border-color: var(--admin-disabled-input-color);
                 color: var(--app-color);
               }
             }

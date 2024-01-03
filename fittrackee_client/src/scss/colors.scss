@@ -1,50 +1,65 @@
 :root {
-  --app-background-color: #FFFFFF;
+  --app-background-color: #ffffff;
   --app-color: #2c3e50;
   --app-color-light: #6f7070;
   --app-color-lighter: #959ea7;
   --app-a-color: #40578a;
+  --app-a-text-decoration-color: #d2d2d2;
   --app-shadow-color: lightgrey;
-  --app-loading-color:  #f3f3f3;
+  --app-loading-color: #f3f3f3;
   --app-loading-top-color: var(--app-color);
 
-  --button-hover-color: #FFFFFF;
-  --button-cancel-bg-color: #FFFFFF;
+  --button-hover-color: #ffffff;
+  --button-transparent-hover-color: var(--app-color);
+  --button-cancel-bg-color: #ffffff;
   --button-cancel-color: var(--app-color);
-  --button-confirm-bg-color: #FFFFFF;
+  --button-confirm-bg-color: #ffffff;
   --button-confirm-color: var(--app-color);
-  --button-danger-bg-color: #FFFFFF;
+  --button-danger-bg-color: #ffffff;
   --button-danger-color: #dc3545;
   --button-danger-hover-bg-color: #dc3545;
-  --button-danger-hover-color: #FFFFFF;
+  --button-danger-hover-color: #ffffff;
 
   --card-border-color: #c4c7cf;
   --input-border-color: #9da3af;
   --comment-border-color: #d5d7de;
-  --input-bg-color: #FFFFFF;
+  --input-bg-color: #ffffff;
+  --input-color: var(--app-color);
   --input-error-color: #dc3545;
   --dropdown-hover-color: #eff0f5;
+  --dropdown-background-color: #ffffff;
+  --dropdown-border-color: lightgrey;
+  --policy-border-color: #ccc;
+  --policy-link-color: var(--app-a-color);
+  --box-shadow-color: lightgrey;
+  --admin-disabled-input-color: #ffffff;
 
   --custom-checkbox-border-color: #6d797a;
   --custom-checkbox-checked-bg-color: #6d797a;
-  --custom-checkbox-checked-color: #FFFFFF;
+  --custom-checkbox-checked-color: #ffffff;
 
   --calendar-border-color: #c4c7cf;
   --calendar-week-end-color: #f5f5f5;
+  --calendar-day-color: var(--app-color-light);
   --calendar-today-color: #eff1f3;
+  --calendar-workouts-color: whitesmoke;
+  --calendar-workouts-box-shadow-0: rgba(0, 0, 0, 0.2);
+  --calendar-workouts-box-shadow-1: rgba(0, 0, 0, 0.19);
 
   --modal-background-color: rgba(0, 0, 0, 0.3);
 
-  --nav-bar-background-color: #FFFFFF;
+  --nav-bar-background-color: #ffffff;
   --nav-bar-link-active: #485b6e;
   --nav-border-color: #c5ccdb;
 
-  --mobile-menu-selected-color: #FFFFFF;
+  --mobile-menu-selected-color: #ffffff;
   --mobile-menu-selected-bgcolor: #9da3af;
 
-  --footer-background-color: #FFFFFF;
+  --footer-background-color: #ffffff;
   --footer-border-color: #ebeef3;
   --footer-color: #6f7070;
+
+  --form-info: var(--alert-color);
 
   --alert-background-color: #d6dde3;
   --alert-color: #3f3f3f;
@@ -56,16 +71,34 @@
   --success-color: #306430;
 
   --disabled-background-color: #e0e0e0;
+  --disabled-border-color: transparent;
   --disabled-color: #727272;
   --disabled-sport-color: #616161;
 
-  --scroll-button-bg-color: rgba(255, 255, 255, .7);
+  --scroll-button-bg-color: rgba(255, 255, 255, 0.7);
 
   --workout-trophy-color: #daa520;
   --workout-img-color: invert(22%) sepia(25%) saturate(646%) hue-rotate(169deg)
-        brightness(97%) contrast(96%);
+    brightness(97%) contrast(96%);
   --workout-no-map-bg-color: #eaeaea;
   --workout-no-map-color: #585959;
+  --map-control-color: #000000;
+  --map-control-bg-color: #ffffff;
+  --map-control-border-color: #bfc0ab;
+  --map-control-hover-bg-color: var(--dropdown-hover-color);
+  --map-attribution-text: var(--app-color);
+  --map-display-hover-attribution-text: initial;
+  --map-attribution-bg-color: rgba(255, 255, 255, 0.7);
+  --map-filter: initial;
+  --map-display-hover-filter: initial;
+  --map-layers-overlays: initial;
+  --map-control-bar: #bfc0ab;
+  --no-map-filter: initial;
+  --workout-static-map-shadow-color: var(--app-shadow-color);
+  --workout-static-map-bg-color: var(--workout-no-map-bg-color);
+
+  --icon-svg-filter: invert(19%) sepia(9%) saturate(2921%) hue-rotate(169deg)
+    brightness(85%) contrast(80%);
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;
@@ -83,6 +116,6 @@
   --text-background-color: rgb(114, 114, 114, 0.1);
   --text-visibilty: rgba(37, 37, 37, 0.65);
 
-  --comment-background: #FFF;
+  --comment-background: #fff;
   --comment-background-highlight: linear-gradient(to right, #eef1f4, #f3f7fa);
 }

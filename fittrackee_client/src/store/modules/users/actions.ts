@@ -1,12 +1,17 @@
-import { ActionContext, ActionTree } from 'vuex'
+import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-import { IAuthUserState } from '@/store/modules/authUser/types'
-import { IRootState } from '@/store/modules/root/types'
-import { IUsersActions, IUsersState } from '@/store/modules/users/types'
 import {
+  AUTH_USER_STORE,
+  REPORTS_STORE,
+  ROOT_STORE,
+  USERS_STORE,
+} from '@/store/constants'
+import type { IAuthUserState } from '@/store/modules/authUser/types'
+import type { IRootState } from '@/store/modules/root/types'
+import type { IUsersActions, IUsersState } from '@/store/modules/users/types'
+import type {
   IAdminUserPayload,
   IUserDeletionPayload,
   IUserRelationshipActionPayload,
@@ -55,6 +60,7 @@ const getUsers = (
   if (forAdmin) {
     payload.with_inactive = 'true'
     payload.with_hidden = 'true'
+    payload.with_suspended = 'true'
   }
   authApi
     .get(`users${isRemote}`, { params: payload })
@@ -144,20 +150,34 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     if (payload.resetPassword) {
       data.reset_password = payload.resetPassword
     }
-    if (payload.activate) {
+    if ('activate' in payload && payload.activate !== undefined) {
       data.activate = payload.activate
     }
     if (payload.new_email !== undefined) {
       data.new_email = payload.new_email
     }
+    if (payload.suspend) {
+      data.suspend = payload.suspend
+    }
+    if (payload.unsuspend) {
+      data.unsuspend = payload.unsuspend
+    }
     authApi
       .patch(`users/${payload.username}`, data)
       .then((res) => {
         if (res.data.status === 'success') {
-          context.commit(
-            USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
-            res.data.data.users[0]
-          )
+          if (payload.from_report) {
+            context.dispatch(
+              REPORTS_STORE.ACTIONS.GET_REPORT,
+              payload.from_report
+            )
+            context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+          } else {
+            context.commit(
+              USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+              res.data.data.users[0]
+            )
+          }
           if (payload.resetPassword || payload.new_email) {
             context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           }
@@ -199,8 +219,8 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
                 payload.from === 'userInfos'
                   ? USERS_STORE.MUTATIONS.UPDATE_USER
                   : payload.from === 'userCard'
-                  ? USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS
-                  : USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS,
+                    ? USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS
+                    : USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS,
                 res.data.data.users[0]
               )
               context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)

@@ -15,9 +15,9 @@ import {
 } from 'date-fns'
 
 import createI18n from '@/i18n'
-import { IChartDataset } from '@/types/chart'
-import { ISport } from '@/types/sports'
-import {
+import type { IChartDataset } from '@/types/chart'
+import type { ISport } from '@/types/sports'
+import type {
   IStatisticsChartData,
   IStatisticsDateParams,
   TStatisticsDatasetKeys,
@@ -84,6 +84,8 @@ const getStatisticsChartDataset = (
     dataset.type = 'line'
     dataset.borderColor = [color]
     dataset.spanGaps = true
+  } else {
+    dataset.type = 'bar'
   }
   return dataset
 }
@@ -174,8 +176,8 @@ export const formatStats = (
                 useImperialUnits
               )
             : datasetKey === 'average_speed'
-            ? null
-            : 0
+              ? null
+              : 0
         )
       })
     })
@@ -196,14 +198,14 @@ export const getStatsDateParams = (
     timeFrame === 'year'
       ? startOfYear(subYears(date, 9))
       : timeFrame === 'week'
-      ? startOfWeek(subMonths(date, 2), { weekStartsOn })
-      : startOfMonth(subMonths(date, 11)) // month
+        ? startOfWeek(subMonths(date, 2), { weekStartsOn })
+        : startOfMonth(subMonths(date, 11)) // month
   const end =
     timeFrame === 'year'
       ? endOfYear(date)
       : timeFrame === 'week'
-      ? endOfWeek(date, { weekStartsOn })
-      : endOfMonth(date) // month
+        ? endOfWeek(date, { weekStartsOn })
+        : endOfMonth(date) // month
   return {
     duration: timeFrame,
     end,
@@ -224,17 +226,17 @@ export const updateChartParams = (
       duration === 'year'
         ? endOfYear(backward ? subYears(end, 1) : addYears(end, 1))
         : duration === 'week'
-        ? endOfWeek(backward ? subWeeks(end, 1) : addWeeks(end, 1), {
-            weekStartsOn,
-          })
-        : endOfMonth(backward ? subMonths(end, 1) : addMonths(end, 1)),
+          ? endOfWeek(backward ? subWeeks(end, 1) : addWeeks(end, 1), {
+              weekStartsOn,
+            })
+          : endOfMonth(backward ? subMonths(end, 1) : addMonths(end, 1)),
     start:
       duration === 'year'
         ? startOfYear(backward ? subYears(start, 1) : addYears(start, 1))
         : duration === 'week'
-        ? startOfWeek(backward ? subWeeks(start, 1) : addWeeks(start, 1), {
-            weekStartsOn,
-          })
-        : startOfMonth(backward ? subMonths(start, 1) : addMonths(start, 1)),
+          ? startOfWeek(backward ? subWeeks(start, 1) : addWeeks(start, 1), {
+              weekStartsOn,
+            })
+          : startOfMonth(backward ? subMonths(start, 1) : addMonths(start, 1)),
   }
 }

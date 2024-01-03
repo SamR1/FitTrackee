@@ -30,7 +30,8 @@
 </template>
 
 <script setup lang="ts">
-  import { Ref, ref, toRefs, watch, withDefaults } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
   import PasswordStrength from '@/components/Common/PasswordStength.vue'
 
@@ -61,8 +62,8 @@
   function togglePassword() {
     showPassword.value = !showPassword.value
   }
-  function updatePassword(event: Event & { target: HTMLInputElement }) {
-    emit('updatePassword', event.target.value)
+  function updatePassword(event: Event) {
+    emit('updatePassword', (event.target as HTMLInputElement).value)
   }
   function invalidPassword() {
     emit('passwordError')

@@ -270,7 +270,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -376,6 +376,7 @@ def get_authenticated_user_profile(
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_dark_mode": null,
           "use_raw_gpx_speed": false,
           "username": "sam",
           "weekm": false,
@@ -396,7 +397,7 @@ def get_authenticated_user_profile(
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
@@ -500,6 +501,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_dark_mode": null,
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
@@ -567,7 +569,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user email and password.
@@ -676,6 +678,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_dark_mode": null,
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
@@ -796,7 +799,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
@@ -911,6 +914,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "total_ascent": 720.35,
           "total_distance": 67.895,
           "total_duration": "6:50:27",
+          "use_dark_mode": null,
           "use_raw_gpx_speed": true,
           "username": "sam"
           "weekm": true,
@@ -932,6 +936,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                         automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
+    :<json boolean use_dark_mode: Display interface with dark mode if true.
+                   If null, it uses browser preferences.
     :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
     :<json string workouts_visibility: user workouts visibility
@@ -961,6 +967,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         'map_visibility',
         'start_elevation_at_zero',
         'timezone',
+        'use_dark_mode',
         'use_raw_gpx_speed',
         'weekm',
         'workouts_visibility',
@@ -974,6 +981,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     language = get_language(post_data.get('language'))
     start_elevation_at_zero = post_data.get('start_elevation_at_zero')
     use_raw_gpx_speed = post_data.get('use_raw_gpx_speed')
+    use_dark_mode = post_data.get('use_dark_mode')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
@@ -996,6 +1004,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.language = language
         auth_user.start_elevation_at_zero = start_elevation_at_zero
         auth_user.timezone = timezone
+        auth_user.use_dark_mode = use_dark_mode
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
         auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
@@ -1181,7 +1190,7 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
@@ -1270,7 +1279,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
@@ -1648,7 +1657,7 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/logout', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     User logout.
@@ -1714,7 +1723,7 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     The authenticated user accepts the privacy policy.
@@ -1765,7 +1774,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export/request', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Request a data export for authenticated user.
@@ -1838,7 +1847,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get a data export info for authenticated user if a request exists.
@@ -1907,7 +1916,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route(
     '/auth/account/export/<string:file_name>', methods=['GET']
 )
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def download_data_export(
     auth_user: User, file_name: str
 ) -> Union[Response, HttpResponse]:

@@ -1,10 +1,12 @@
 import json
+from datetime import datetime
 from typing import Dict
 from uuid import uuid4
 
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
@@ -264,6 +266,29 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         assert response.status_code == 401
+
+    def test_it_returns_403_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(
+            app, gpx_file, workout_visibility=PrivacyLevel.PRIVATE
+        )
+        client = app.test_client()
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(sport_id=2, title="Workout test")),
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_updates_sport(
         self,
@@ -626,6 +651,36 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         assert response.status_code == 401
+
+    def test_it_returns_403_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=2,
+                    duration=3600,
+                    workout_date='2018-05-15 15:05',
+                    distance=8,
+                    title='Workout test',
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_updates_a_workout_wo_gpx_with_timezone(
         self,

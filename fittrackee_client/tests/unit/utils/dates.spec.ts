@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai'
+import { describe, it, expect } from 'vitest'
 
 import {
   getCalendarStartAndEnd,
@@ -36,8 +36,7 @@ describe('startDate (week starting Sunday)', () => {
     it(testParams.description, () => {
       const day: Date = new Date(testParams.inputDate)
       const expected: Date = new Date(testParams.expectedDate)
-      assert.deepEqual(
-        getStartDate(testParams.inputDuration, day, false),
+      expect(getStartDate(testParams.inputDuration, day, false)).toStrictEqual(
         expected
       )
     })
@@ -70,8 +69,7 @@ describe('startDate (week starting Monday)', () => {
     it(testParams.description, () => {
       const day: Date = new Date(testParams.inputDate)
       const expected: Date = new Date(testParams.expectedDate)
-      assert.deepEqual(
-        getStartDate(testParams.inputDuration, day, true),
+      expect(getStartDate(testParams.inputDuration, day, true)).toStrictEqual(
         expected
       )
     })
@@ -133,7 +131,9 @@ describe('dateIncrement', () => {
     it(testParams.description, () => {
       const day: Date = new Date(testParams.inputDate)
       const expected: Date = new Date(testParams.expectedDate)
-      assert.deepEqual(incrementDate(testParams.inputDuration, day), expected)
+      expect(incrementDate(testParams.inputDuration, day)).toStrictEqual(
+        expected
+      )
     })
   )
 })
@@ -173,8 +173,10 @@ describe('getCalendarStartAndEnd', () => {
         date,
         testParams.inputWeekStartingMonday
       )
-      assert.deepEqual(results.start, new Date(testParams.expectedStartDate))
-      assert.deepEqual(results.end, new Date(testParams.expectedEndDate))
+      expect(results.start).toStrictEqual(
+        new Date(testParams.expectedStartDate)
+      )
+      expect(results.end).toStrictEqual(new Date(testParams.expectedEndDate))
     })
   )
 })
@@ -232,14 +234,13 @@ describe('formatWorkoutDate', () => {
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         formatWorkoutDate(
           testParams.inputParams.date,
           testParams.inputParams.dateFormat,
           testParams.inputParams.timeFormat
-        ),
-        testParams.expected
-      )
+        )
+      ).toStrictEqual(testParams.expected)
     })
   })
 })
@@ -271,31 +272,29 @@ describe('formatDate', () => {
   ]
   testsParams.map((testParams) => {
     it(testParams.description, () => {
-      assert.deepEqual(
+      expect(
         formatDate(
           dateString,
           testParams.inputParams.timezone,
           testParams.inputParams.dateFormat,
           testParams.inputParams.withTime
-        ),
-        testParams.expectedDate
-      )
+        )
+      ).toStrictEqual(testParams.expectedDate)
     })
   })
 })
 
 describe('formatDate (w/ default value)', () => {
   it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format', () => {
-    assert.deepEqual(
-      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd'),
-      '2022-11-01 01:00'
-    )
+    expect(
+      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd')
+    ).toBe('2022-11-01 01:00')
   })
 })
 
 describe('formatDate with_seconds', () => {
   it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format and seconds', () => {
-    assert.deepEqual(
+    expect(
       formatDate(
         'Tue, 01 Nov 2022 00:00:00 GMT',
         'Europe/Paris',
@@ -303,9 +302,8 @@ describe('formatDate with_seconds', () => {
         true,
         null,
         true
-      ),
-      '2022-11-01 01:00:00'
-    )
+      )
+    ).toBe('2022-11-01 01:00:00')
   })
 })
 
@@ -356,13 +354,12 @@ describe('getDateFormat', () => {
   ]
   testsParams.map((testParams) => {
     it(`get date format for "${testParams.inputParams.language}" and  "${testParams.inputParams.dateFormat}" `, () => {
-      assert.deepEqual(
+      expect(
         getDateFormat(
           testParams.inputParams.dateFormat,
           testParams.inputParams.language
-        ),
-        testParams.expectedFormat
-      )
+        )
+      ).toBe(testParams.expectedFormat)
     })
   })
 })
@@ -403,14 +400,13 @@ describe('availableDateFormatOptions', () => {
 
   testsParams.map((testParams) => {
     it(`returns available options for ${testParams.inputLanguage} locale`, () => {
-      assert.deepEqual(
+      expect(
         availableDateFormatOptions(
           inputDate,
           inputTimezone,
           testParams.inputLanguage
-        ),
-        testParams.expectedOptions
-      )
+        )
+      ).toStrictEqual(testParams.expectedOptions)
     })
   })
 })

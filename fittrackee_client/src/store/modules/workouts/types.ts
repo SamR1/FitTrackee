@@ -1,4 +1,4 @@
-import {
+import type {
   ActionContext,
   CommitOptions,
   DispatchOptions,
@@ -6,9 +6,9 @@ import {
 } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import { IRootState } from '@/store/modules/root/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination } from '@/types/api'
+import type {
   ICommentForm,
   IWorkout,
   IWorkoutApiChartData,
@@ -90,13 +90,13 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     comment: IComment
   ): void
-  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
-    context: ActionContext<IWorkoutsState, IRootState>,
-    comment: IComment
-  ): void
   [WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
   ): void
   [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -164,6 +164,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     currentCommentEdition: ICurrentCommentEdition
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING](
+    state: S,
+    currentReporting: boolean
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<
@@ -182,7 +186,7 @@ export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<
 } & {
   commit<
     K extends keyof TWorkoutsMutations,
-    P extends Parameters<TWorkoutsMutations[K]>[1]
+    P extends Parameters<TWorkoutsMutations[K]>[1],
   >(
     key: K,
     payload?: P,

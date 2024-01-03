@@ -15,7 +15,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IUserProfile } from "@/types/user"
+  import type { IUserProfile } from '@/types/user'
   import { getUserName } from '@/utils/user'
 
   interface Props {
@@ -35,6 +35,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-decoration: none;
     @media screen and (max-width: $small-limit) {
       max-width: fit-content;
     }

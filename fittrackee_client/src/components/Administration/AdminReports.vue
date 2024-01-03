@@ -87,7 +87,6 @@
                     {{ $t('admin.APP_MODERATION.REPORTED_USER') }}
                   </span>
                   <router-link
-                    v-if="report.reported_user"
                     class="link-with-image"
                     :to="`/admin/users/${report.reported_user.username}`"
                   >
@@ -100,7 +99,10 @@
                     {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
                   </span>
                   <router-link :to="`/admin/reports/${report.id}`">
-                    {{ $t(getI18nString(report.object_type)) }}
+                    {{ $t(objectTypes[report.object_type]) }}
+                    <span v-if="getReportedObjectContent(report)">
+                      ({{ getReportedObjectContent(report) }})
+                    </span>
                   </router-link>
                 </td>
                 <td>
@@ -163,7 +165,6 @@
 
 <script setup lang="ts">
   import {
-    ComputedRef,
     capitalize,
     computed,
     reactive,
@@ -171,15 +172,17 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import { LocationQuery, useRoute, useRouter } from 'vue-router'
+  import type { ComputedRef } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
-  import { IPagination, TPaginationPayload } from '@/types/api'
-  import { IReport } from '@/types/reports'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IReport } from '@/types/reports'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -210,27 +213,26 @@
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const maxTextLength = 20
 
   onBeforeMount(() => loadReports(query))
 
   function loadReports(queryParams: TPaginationPayload) {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORTS, queryParams)
   }
-  function reloadReportsOnTypeChange(
-    event: Event & { target: HTMLInputElement }
-  ) {
-    if (event.target.value) {
-      query.object_type = event.target.value
+  function reloadReportsOnTypeChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.value) {
+      query.object_type = target.value
     } else {
       delete query.object_type
     }
     router.push({ path: '/admin/reports', query })
   }
-  function reloadReportsOnResolvedChange(
-    event: Event & { target: HTMLInputElement }
-  ) {
-    if (event.target.value) {
-      query.resolved = event.target.value
+  function reloadReportsOnResolvedChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.value) {
+      query.resolved = target.value
     } else {
       delete query.resolved
     }
@@ -243,23 +245,31 @@
     }
     router.push({ path: '/admin/reports', query })
   }
-  function getI18nString(objectType: string): string {
-    switch (objectType) {
-      case 'comment':
-        return 'workouts.COMMENTS.COMMENTS'
-      case 'workout':
-        return 'workouts.WORKOUTS'
-      case 'user':
-      default:
-        return 'user.USERS'
-    }
-  }
   function getDate(dateToFormat: string) {
     return formatDate(
       dateToFormat,
       authUser.value.timezone,
       authUser.value.date_format
     )
+  }
+  function getReportedObjectContent(report: IReport): string {
+    let text: string | undefined
+    switch (report.object_type) {
+      case 'workout':
+        text = report.reported_workout?.title
+        break
+      case 'comment':
+        text = report.reported_comment?.text
+        break
+      default:
+        text = ''
+    }
+    if (text) {
+      return text.length > maxTextLength
+        ? `${text.substring(0, maxTextLength - 1)}…`
+        : text
+    }
+    return ''
   }
 
   onUnmounted(() => {
@@ -298,18 +308,21 @@
     .left-text {
       text-align: left;
     }
-    ::v-deep(.user-picture) {
-      img {
-        height: 30px;
-        width: 30px;
-      }
-      .no-picture {
-        font-size: 2em;
-      }
-    }
+
     .link-with-image {
       display: flex;
       align-items: center;
+
+      ::v-deep(.user-picture) {
+        min-width: 40px;
+        img {
+          height: 30px;
+          width: 30px;
+        }
+        .no-picture {
+          font-size: 2em;
+        }
+      }
     }
 
     @media screen and (max-width: $small-limit) {
@@ -319,6 +332,10 @@
       }
       .pagination-center {
         margin-top: -3 * $default-margin;
+      }
+
+      .link-with-image {
+        justify-content: center;
       }
     }
   }

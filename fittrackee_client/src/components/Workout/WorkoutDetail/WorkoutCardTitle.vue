@@ -74,6 +74,14 @@
           >
             <i class="fa fa-trash" aria-hidden="true" />
           </button>
+          <button
+            v-if="!isWorkoutOwner"
+            class="transparent icon-button"
+            @click.prevent="displayReportForm"
+            :title="$t('workouts.REPORT_WORKOUT')"
+          >
+            <i class="fa fa-flag" aria-hidden="true" />
+          </button>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
           {{ workoutObject.title }}
@@ -125,8 +133,8 @@
 
   import authApi from '@/api/authApi'
   import { WORKOUTS_STORE } from '@/store/constants'
-  import { ISport } from '@/types/sports'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { ISport } from '@/types/sports'
+  import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -168,6 +176,9 @@
         : WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT,
       workout.workoutId
     )
+  }
+  function displayReportForm() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING, true)
   }
 </script>
 

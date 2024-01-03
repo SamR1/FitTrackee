@@ -1,4 +1,4 @@
-import { IAuthUserProfile, IUserProfile } from '@/types/user'
+import type { IAuthUserProfile, IUserProfile } from '@/types/user'
 
 export const isAuthUser = (
   user: IUserProfile,

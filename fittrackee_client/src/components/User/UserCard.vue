@@ -21,35 +21,51 @@
       <UserStats :user="user" />
     </div>
     <UserRelationshipActions
+      v-if="hideRelationship !== true"
       :authUser="authUser"
       :user="user"
       :from="from ? from : 'userCard'"
       :displayFollowsYou="true"
       @updatedUser="emitUser"
     />
+    <AlertMessage
+      message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
+      v-if="!user.is_active"
+    />
+    <AlertMessage
+      message="user.ACCOUNT_SUSPENDED_AT"
+      :param="suspensionDate"
+      v-if="user.suspended_at !== null"
+    />
     <ErrorMessage
       :message="errorMessages"
-      v-if="errorMessages && updatedUser === user.username"
+      v-if="
+        errorMessages &&
+        ((updatedUser && updatedUser === user.username) || !updatedUser)
+      "
     />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
   import { getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
     user: IUserProfile
-    updatedUser?: string
+    updatedUser?: string | null
     from?: string
+    hideRelationship?: boolean
   }
   const props = defineProps<Props>()
 
@@ -57,10 +73,20 @@
 
   const { from } = toRefs(props)
 
-  const { authUser, updatedUser, user } = toRefs(props)
+  const { authUser, updatedUser, user, hideRelationship } = toRefs(props)
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const suspensionDate: ComputedRef<string | null> = computed(() =>
+    user.value.suspended_at
+      ? formatDate(
+          user.value.suspended_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
+      : null
+  )
+
   const emit = defineEmits(['updatedUserRelationship'])
 
   function emitUser(username: string) {
@@ -72,7 +98,7 @@
   @import '~@/scss/vars.scss';
 
   .box {
-    padding: $default-padding $default-padding * 2;
+    padding: $default-padding $default-padding * 1.2;
     .user-card {
       display: flex;
       min-height: 140px;

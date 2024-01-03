@@ -43,8 +43,8 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
-  import { INotification } from '@/types/notifications'
-  import { IAuthUserProfile, TFollowRequestAction } from '@/types/user'
+  import type { INotification } from '@/types/notifications'
+  import type { IAuthUserProfile, TFollowRequestAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -60,12 +60,11 @@
   const emit = defineEmits(['updatedUserRelationship'])
 
   function updateFollowRequest(username: string, action: TFollowRequestAction) {
-    store
-      .dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS, {
-        username,
-        action,
-      })
-      .then(() => emit('updatedUserRelationship'))
+    store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS, {
+      username,
+      action,
+    })
+    emit('updatedUserRelationship')
   }
 </script>
 

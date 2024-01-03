@@ -23,9 +23,9 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, withDefaults } from 'vue'
+  import { toRefs } from 'vue'
 
-  import { IWorkout } from '@/types/workouts'
+  import type { IWorkout } from '@/types/workouts'
   import { getApiUrl } from '@/utils'
 
   interface Props {
@@ -51,6 +51,12 @@
       width: 400px;
       height: 225px;
       z-index: 100;
+      filter: var(--map-display-hover-filter);
+
+      .map-attribution-text {
+        color: var(--map-display-hover-attribution-text);
+        background-color: var(--map-attribution-bg-color);
+      }
     }
 
     .bg-map-image {
@@ -59,6 +65,7 @@
       opacity: 0.6;
       height: 200px;
       width: 100%;
+      filter: var(--map-filter);
     }
 
     .map-attribution {
@@ -69,7 +76,8 @@
     }
 
     .map-attribution-text {
-      background-color: rgba(255, 255, 255, 0.7);
+      color: var(--map-attribution-text);
+      background-color: var(--map-attribution-bg-color);
     }
   }
 </style>

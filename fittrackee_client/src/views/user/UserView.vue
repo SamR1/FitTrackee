@@ -18,20 +18,15 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    ComputedRef,
-    computed,
-    onBeforeMount,
-    onBeforeUnmount,
-    toRefs,
-    watch,
-  } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { computed, onBeforeMount, onBeforeUnmount, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import type { LocationQuery } from 'vue-router'
+  import { useRoute } from 'vue-router'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {

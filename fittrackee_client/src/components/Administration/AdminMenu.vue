@@ -71,12 +71,13 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, computed, capitalize, onMounted } from 'vue'
+  import { capitalize, computed, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
   import { ROOT_STORE } from '@/store/constants'
-  import { IAppStatistics, TAppConfig } from '@/types/application'
+  import type { IAppStatistics, TAppConfig } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -87,6 +88,7 @@
   const appStatistics: ComputedRef<IAppStatistics> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
   )
+
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')
     if (applicationLink) {

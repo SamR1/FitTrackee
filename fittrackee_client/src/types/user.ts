@@ -1,14 +1,15 @@
-import { LocationQueryValue } from 'vue-router'
+import type { LocationQueryValue } from 'vue-router'
 
-import { IPagePayload, TPaginationPayload } from '@/types/api'
-import { IRecord } from '@/types/workouts'
+import type { IPagePayload, TPaginationPayload } from '@/types/api'
+import type { TLanguage } from '@/types/locales'
+import type { IRecord } from '@/types/workouts'
 
 export type TPrivacyLevels =
   | 'private'
   | 'followers_only'
   | 'followers_and_remote_only'
   | 'public'
-export type TRelationshipAction = 'follow' | 'unfollow'
+export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 
@@ -36,6 +37,7 @@ export interface IUserProfile {
   profile_link?: string
   records: IRecord[]
   sports_list: number[]
+  suspended_at: string | null
   total_ascent: number
   total_distance: number
   total_duration: string
@@ -50,7 +52,7 @@ export interface IAuthUserProfile extends IUserProfile {
   imperial_units: boolean
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
-  language: string | null
+  language: TLanguage | null
   manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   nb_sports: number
@@ -61,6 +63,7 @@ export interface IAuthUserProfile extends IUserProfile {
   total_distance: number
   total_duration: string
   weekm: boolean
+  use_dark_mode: boolean | null
   workouts_visibility: TPrivacyLevels
 }
 
@@ -84,11 +87,14 @@ export interface IUserAccountUpdatePayload {
 }
 
 export interface IAdminUserPayload {
-  username: string
-  admin?: boolean
-  resetPassword?: boolean
   activate?: boolean
+  admin?: boolean
+  from_report?: number
   new_email?: string
+  resetPassword?: boolean
+  suspend?: boolean
+  unsuspend?: boolean
+  username: string
 }
 
 export interface IUserRelationshipActionPayload {
@@ -103,13 +109,14 @@ export interface IUserPreferencesPayload {
   display_ascent: boolean
   hide_profile_in_users_directory: boolean
   imperial_units: boolean
-  language: string
+  language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TPrivacyLevels
   start_elevation_at_zero: boolean
   timezone: string
   use_raw_gpx_speed: boolean
   weekm: boolean
+  use_dark_mode: boolean | null
   workouts_visibility: TPrivacyLevels
 }
 

@@ -1,6 +1,6 @@
-import { assert } from 'chai'
+import { describe, it, expect } from 'vitest'
 
-import { TPrivacyLevels } from '@/types/user'
+import type { TPrivacyLevels } from '@/types/user'
 import {
   getCommentVisibilityLevels,
   getMapVisibilityLevels,
@@ -35,10 +35,9 @@ describe('getUpdatedMapVisibility', () => {
 
   testsParams.map((testParams) => {
     it(`get map visibility (input value: '${testParams[0]}') when workout visibility is '${testParams[1]}'`, () => {
-      assert.equal(
-        getUpdatedMapVisibility(testParams[0], testParams[1]),
-        testParams[2]
-      )
+      expect(
+        getUpdatedMapVisibility(testParams[0], testParams[1])
+      ).toStrictEqual(testParams[2])
     })
   })
 })
@@ -59,10 +58,9 @@ describe('getPrivacyLevelForLabel', () => {
     it(`get privacy level label for ${testParams[0]} and federation ${
       testParams[1] ? 'enabled' : ' disabled'
     }`, () => {
-      assert.equal(
-        getPrivacyLevelForLabel(testParams[0], testParams[1]),
-        testParams[2]
-      )
+      expect(
+        getPrivacyLevelForLabel(testParams[0], testParams[1])
+      ).toStrictEqual(testParams[2])
     })
   })
 })
@@ -77,7 +75,7 @@ describe('getMapVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (input value: '${testParams[0]}')`, () => {
-      assert.deepEqual(getMapVisibilityLevels(testParams[0]), testParams[1])
+      expect(getMapVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
     })
   })
 })
@@ -107,10 +105,9 @@ describe('getCommentVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (federation enable: '${testParams[0]}',input value: '${testParams[1]}')`, () => {
-      assert.deepEqual(
-        getCommentVisibilityLevels(testParams[1], testParams[0]),
-        testParams[2]
-      )
+      expect(
+        getCommentVisibilityLevels(testParams[1], testParams[0])
+      ).toStrictEqual(testParams[2])
     })
   })
 })

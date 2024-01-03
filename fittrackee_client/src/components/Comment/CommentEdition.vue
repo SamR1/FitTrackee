@@ -75,14 +75,19 @@
 </template>
 
 <script setup lang="ts">
-  import { ComputedRef, Ref, computed, onUnmounted, ref, toRefs } from 'vue'
+  import { computed, onUnmounted, ref, toRefs } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, WORKOUTS_STORE, USERS_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { ICustomTextareaData } from '@/types/forms'
-  import { TPrivacyLevels, IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { IComment, ICommentForm, IWorkout } from '@/types/workouts'
+  import { ROOT_STORE, USERS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { TAppConfig } from '@/types/application'
+  import type { ICustomTextareaData } from '@/types/forms'
+  import type {
+    IAuthUserProfile,
+    IUserProfile,
+    TPrivacyLevels,
+  } from '@/types/user'
+  import type { IComment, ICommentForm, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUsernameQuery, replaceUsername } from '@/utils/inputs'
   import {

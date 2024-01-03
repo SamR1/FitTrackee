@@ -1,6 +1,11 @@
 @import 'colors';
+@import 'colors-dark';
 @import 'fonts';
 @import 'vars';
+
+html [data-theme='dark'] {
+  color-scheme: dark;
+}
 
 body {
   margin: 0;
@@ -42,21 +47,29 @@ body {
 
 a {
   color: var(--app-a-color);
-  text-decoration: none;
+  text-decoration-color: var(--app-a-text-decoration-color);
+
+  &:hover,
+  &:focus {
+    text-decoration-color: var(--app-a-color);
+  }
 }
 
 img {
   max-width: 100%;
 }
 
-input, textarea, select {
-  background-color:  var(--input-bg-color);
+input,
+textarea,
+select {
+  background-color: var(--input-bg-color);
   border-radius: $border-radius;
   border: solid 1px var(--input-border-color);
+  color: var(--input-color);
   padding: $default-padding;
 
   &:disabled {
-    background-color:  var(--disabled-background-color);
+    background-color: var(--disabled-background-color);
     border-color: var(--disabled-color);
   }
 }
@@ -86,7 +99,8 @@ button {
     border-color: transparent;
     box-shadow: none;
 
-    &:hover, &:disabled {
+    &:hover,
+    &:disabled {
       background: transparent;
     }
 
@@ -98,8 +112,9 @@ button {
       box-shadow: none;
     }
 
-    &:disabled, &.confirm:disabled {
-      border-color: transparent;
+    &:disabled,
+    &.confirm:disabled {
+      border-color: var(--disabled-border-color);
       color: var(--disabled-color);
     }
   }
@@ -109,7 +124,7 @@ button {
   }
 
   &:hover {
-    background: var(--app-color);
+    background: var(--button-transparent-hover-color);
     color: var(--button-hover-color);
   }
 
@@ -118,7 +133,8 @@ button {
     transform: translateY(2px);
   }
 
-  &:disabled, &.confirm:disabled {
+  &:disabled,
+  &.confirm:disabled {
     background: var(--disabled-background-color);
     border-color: var(--disabled-color);
     color: var(--disabled-color);
@@ -128,7 +144,7 @@ button {
     background: var(--button-cancel-bg-color);
     color: var(--button-cancel-color);
     &:hover {
-      background: var(--app-color);
+      background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }
   }
@@ -137,7 +153,7 @@ button {
     background: var(--button-confirm-bg-color);
     color: var(--button-confirm-color);
     &:hover {
-      background: var(--app-color);
+      background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }
   }
@@ -183,19 +199,18 @@ button {
 
 .form-box {
   .form-items {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
 
-      input {
-        margin: $default-margin;
-        padding: $default-padding * .5;
-      }
+    input {
+      margin: $default-margin;
+      padding: $default-padding * 0.5;
     }
+  }
 }
 
-
 .form-info {
-  color: var(--alert-color);
+  color: var(--form-info);
   font-size: 0.8em;
   margin-top: -0.2 * $default-margin;
   padding: 0 $default-padding * 1.5;
@@ -211,26 +226,32 @@ button {
   text-transform: uppercase;
 }
 
-.view  {
+.view {
   padding-bottom: 35px;
   background-color: var(--app-background-color);
 }
 
 .fa-trophy {
-  color: var(--workout-trophy-color)
+  color: var(--workout-trophy-color);
 }
 
 .mountains {
   margin-bottom: -3px;
   height: 16px;
-  filter: var(--workout-img-color);
+  filter: var(--icon-svg-filter);
 }
 
 .section-title {
   font-weight: bold;
   padding-top: $default-padding * 1.5;
   padding-left: $default-padding;
-  text-transform: capitalize;
+  .title {
+    padding-left: $default-padding * 0.5;
+    text-transform: capitalize;
+  }
+}
+.section-title::first-letter {
+  text-transform: uppercase;
 }
 
 .no-map {
@@ -257,7 +278,7 @@ button {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: $default-padding * .5;
+      gap: $default-padding * 0.5;
     }
 
     .custom-checkbox {
@@ -409,7 +430,8 @@ button {
   gap: $default-padding;
 }
 
-.follows-you, .blocked {
+.follows-you,
+.blocked {
   font-size: 0.7em;
   font-style: italic;
   text-transform: uppercase;

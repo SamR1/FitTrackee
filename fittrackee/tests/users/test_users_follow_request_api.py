@@ -13,6 +13,32 @@ from ..utils import OAUTH_SCOPES, random_string
 
 
 class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            '/api/follow-requests',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/follow-requests',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        self.assert_403(response)
+
     def test_it_returns_empty_list_if_no_follow_request(
         self, app: Flask, user_1: User
     ) -> None:
@@ -316,6 +342,37 @@ class FollowRequestTestCase(ApiTestCaseMixin):
 
 
 class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f'/api/follow-requests/{user_1.username}/accept',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/follow-requests/{user_1.username}/accept',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        self.assert_403(response)
+
     def test_it_raises_error_if_target_user_does_not_exist(
         self,
         app: Flask,
@@ -405,6 +462,37 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
 
 
 class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f'/api/follow-requests/{user_1.username}/reject',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/follow-requests/{user_1.username}/reject',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        self.assert_403(response)
+
     def test_it_raises_error_if_target_user_does_not_exist(
         self,
         app: Flask,

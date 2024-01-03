@@ -27,7 +27,7 @@
   import { computed, toRefs } from 'vue'
 
   import StatCard from '@/components/Common/StatCard.vue'
-  import { IAppStatistics } from '@/types/application'
+  import type { IAppStatistics } from '@/types/application'
   import { getReadableFileSize } from '@/utils/files'
 
   interface Props {
@@ -37,7 +37,7 @@
 
   const { appStatistics } = toRefs(props)
   const uploadDirSize = computed(() =>
-    getReadableFileSize(appStatistics.value.uploads_dir_size, false)
+    getReadableFileSize(appStatistics.value.uploads_dir_size)
   )
 </script>
 

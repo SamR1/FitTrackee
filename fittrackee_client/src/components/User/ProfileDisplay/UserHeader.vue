@@ -1,30 +1,41 @@
 <template>
-  <div class="box user-header">
-    <div class="follows-you" v-if="user.follows === 'true'">
-      {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
+  <div class="box">
+    <div class="user-header">
+      <div class="follows-you" v-if="user.follows === 'true'">
+        {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
+      </div>
+      <UserPicture :user="user" />
+      <div class="user-details">
+        <div class="user-name">{{ user.username }}</div>
+        <a
+          class="remote-user-account"
+          v-if="user.is_remote"
+          :href="user.profile_link"
+          target="_blank"
+        >
+          {{ user.fullname }}
+        </a>
+        <UserStats :user="user" />
+      </div>
     </div>
-    <UserPicture :user="user" />
-    <div class="user-details">
-      <div class="user-name">{{ user.username }}</div>
-      <a
-        class="remote-user-account"
-        v-if="user.is_remote"
-        :href="user.profile_link"
-        target="_blank"
-      >
-        {{ user.fullname }}
-      </a>
-      <UserStats :user="user" />
-    </div>
+    <AlertMessage
+      message="user.ACCOUNT_SUSPENDED_AT"
+      :param="suspensionDate"
+      v-if="user.suspended_at !== null"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, type ComputedRef, toRefs } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { ROOT_STORE } from '@/store/constants'
+  import type { IDisplayOptions } from '@/types/application'
+  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates'
 
   interface Props {
     user: IUserProfile
@@ -33,6 +44,21 @@
   const props = defineProps<Props>()
 
   const { user } = toRefs(props)
+
+  const store = useStore()
+
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
+  )
+  const suspensionDate: ComputedRef<string | null> = computed(() =>
+    user.value.suspended_at
+      ? formatDate(
+          user.value.suspended_at,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat
+        )
+      : ''
+  )
 </script>
 
 <style lang="scss" scoped>

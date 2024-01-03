@@ -25,11 +25,12 @@
 
 <script lang="ts" setup>
   import snarkdown from 'snarkdown'
-  import { ComputedRef, capitalize, computed } from 'vue'
+  import { capitalize, computed } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import { TAppConfig } from '@/types/application'
-  import { IAuthUserProfile } from '@/types/user'
+  import type { TAppConfig } from '@/types/application'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { dateStringFormats, formatDate } from '@/utils/dates'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -63,8 +64,8 @@
     return authUser.value.timezone
       ? authUser.value.timezone
       : Intl.DateTimeFormat().resolvedOptions().timeZone
-      ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      : 'Europe/Paris'
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : 'Europe/Paris'
   }
   function getDateFormat() {
     return dateStringFormats[language.value]

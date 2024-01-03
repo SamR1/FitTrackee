@@ -1,26 +1,26 @@
 {
-    "ABOUT": "over",
-    "CONFIRMATION": "Bevestiging",
-    "CONTACT": "contacteer",
-    "DAY": "dag | dagen",
-    "DISPLAYED": "Weergegeven",
-    "DOCUMENTATION": "documentatie",
-    "HERE": "hier",
-    "HIDDEN": "Verborgen",
-    "HOME": "Startscherm",
-    "NO_NOTES": "Geen notities",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "oplopend",
-            "DESC": "aflopend",
-            "LABEL": "sorteer"
-        },
-        "ORDER_BY": {
-            "LABEL": "sorteer op"
-        },
-        "PER_PAGE": {
-            "LABEL": "per pagina"
-        }
+  "ABOUT": "over",
+  "CONFIRMATION": "Bevestiging",
+  "CONTACT": "contacteer",
+  "DAY": "dag | dagen",
+  "DISPLAYED": "Weergegeven",
+  "DOCUMENTATION": "documentatie",
+  "HERE": "hier",
+  "HIDDEN": "Verborgen",
+  "HOME": "Startscherm",
+  "NO_NOTES": "Geen notities",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "oplopend",
+      "DESC": "aflopend",
+      "LABEL": "sorteer"
     },
-    "TOTAL": "Totaal"
+    "ORDER_BY": {
+      "LABEL": "sorteer op"
+    },
+    "PER_PAGE": {
+      "LABEL": "per pagina"
+    }
+  },
+  "TOTAL": "Totaal"
 }

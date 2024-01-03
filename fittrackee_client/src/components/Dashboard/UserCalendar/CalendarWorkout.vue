@@ -20,7 +20,9 @@
             .filter((record) =>
               displayHARecord ? true : record.record_type !== 'HA'
             )
-            .map((record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`)
+            .map(
+              (record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`
+            )[0]
         "
       />
     </sup>
@@ -30,7 +32,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import { IWorkout } from '@/types/workouts'
+  import type { IWorkout } from '@/types/workouts'
   interface Props {
     displayHARecord: boolean
     workout: IWorkout

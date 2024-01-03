@@ -21,7 +21,7 @@
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { IUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { getUserName } from '@/utils/user'
 
   interface Props {

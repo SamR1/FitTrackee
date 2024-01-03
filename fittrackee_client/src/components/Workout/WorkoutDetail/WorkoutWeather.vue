@@ -121,7 +121,7 @@
   import { toRefs } from 'vue'
 
   import WeatherWind from '@/components/Workout/WorkoutDetail/WeatherWind.vue'
-  import { IWorkoutObject } from '@/types/workouts'
+  import type { IWorkoutObject } from '@/types/workouts'
   import { getTemperature } from '@/utils/units'
 
   interface Props {
@@ -139,7 +139,7 @@
     padding-top: $default-padding;
     .weather-img {
       height: 30px;
-      filter: var(--workout-img-color);
+      filter: var(--icon-svg-filter);
     }
     .weather-img-small {
       height: 20px;

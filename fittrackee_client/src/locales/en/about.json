@@ -1,8 +1,8 @@
 {
-    "ABOUT_THIS_INSTANCE": "About this instance",
-    "CONTACT_ADMIN": "Contact the administrator",
-    "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> is a self-hosted outdoor activity tracker.",
-    "FITTRACKEE_LICENSE": "under {0} license ",
-    "SOURCE_CODE": "Source code",
-    "WEATHER_DATA_FROM": "Weather data from:"
+  "ABOUT_THIS_INSTANCE": "About this instance",
+  "CONTACT_ADMIN": "Contact the administrator",
+  "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> is a self-hosted outdoor activity tracker.",
+  "FITTRACKEE_LICENSE": "under {0} license ",
+  "SOURCE_CODE": "Source code",
+  "WEATHER_DATA_FROM": "Weather data from:"
 }

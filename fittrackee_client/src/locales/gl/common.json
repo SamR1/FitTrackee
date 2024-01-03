@@ -1,26 +1,26 @@
 {
-    "ABOUT": "acerca de",
-    "CONFIRMATION": "Confirmación",
-    "CONTACT": "contacto",
-    "DAY": "día | días",
-    "DISPLAYED": "Mostrado",
-    "DOCUMENTATION": "documentación",
-    "HERE": "aquí",
-    "HIDDEN": "Agochado",
-    "HOME": "Inicio",
-    "NO_NOTES": "Sen notas",
-    "SELECTS": {
-        "ORDER": {
-            "ASC": "ascenso",
-            "DESC": "descenso",
-            "LABEL": "orde"
-        },
-        "ORDER_BY": {
-            "LABEL": "ordenar por"
-        },
-        "PER_PAGE": {
-            "LABEL": "por páxina"
-        }
+  "ABOUT": "acerca de",
+  "CONFIRMATION": "Confirmación",
+  "CONTACT": "contacto",
+  "DAY": "día | días",
+  "DISPLAYED": "Mostrado",
+  "DOCUMENTATION": "documentación",
+  "HERE": "aquí",
+  "HIDDEN": "Agochado",
+  "HOME": "Inicio",
+  "NO_NOTES": "Sen notas",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascenso",
+      "DESC": "descenso",
+      "LABEL": "orde"
     },
-    "TOTAL": "Total"
+    "ORDER_BY": {
+      "LABEL": "ordenar por"
+    },
+    "PER_PAGE": {
+      "LABEL": "por páxina"
+    }
+  },
+  "TOTAL": "Total"
 }

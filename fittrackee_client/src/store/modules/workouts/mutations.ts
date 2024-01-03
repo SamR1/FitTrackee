@@ -1,12 +1,12 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
-import {
+import type {
   IWorkoutsState,
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
-import { IPagination } from '@/types/api'
-import {
+import type { IPagination } from '@/types/api'
+import type {
   IComment,
   ICurrentCommentEdition,
   IWorkout,
@@ -85,6 +85,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       comments: [],
       commentsLoading: null,
       currentCommentEdition: <ICurrentCommentEdition>{},
+      currentReporting: false,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -110,5 +111,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     currentCommentEdition: ICurrentCommentEdition
   ) {
     state.workoutData.currentCommentEdition = currentCommentEdition
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING](
+    state: IWorkoutsState,
+    currentReporting: boolean
+  ) {
+    state.workoutData.currentReporting = currentReporting
   },
 }

@@ -51,21 +51,16 @@
 </template>
 
 <script lang="ts" setup>
-  import {
-    ComputedRef,
-    computed,
-    onBeforeMount,
-    watch,
-    onUnmounted,
-    toRefs,
-  } from 'vue'
-  import { LocationQuery, useRoute } from 'vue-router'
+  import { computed, onBeforeMount, watch, onUnmounted, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
-  import { IPagination } from '@/types/api'
-  import {
+  import type { IPagination } from '@/types/api'
+  import type {
     IAuthUserProfile,
     IUserProfile,
     IUserRelationshipsPayload,
