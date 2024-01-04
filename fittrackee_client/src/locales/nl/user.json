@@ -1,4 +1,5 @@
 {
+  "ACCOUNT_CONFIRMATION": "Account bevestigen",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Geen instructies ontvangen?",
   "ACCOUNT_CONFIRMATION_SENT": "Controleer uw email. Een nieuwe bevestigingsmail werd verzonden naar het opgegeven adres.",
   "ADMIN": "Beheer",
@@ -7,6 +8,7 @@
   "CURRENT_PASSWORD": "Huidig wachtwoord",
   "EMAIL": "Email",
   "EMAIL_INFO": "Geef een geldig email adres op.",
+  "EMAIL_UPDATE": "Update email",
   "ENTER_PASSWORD": "Geef een paswoord in",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Data exporteren",
@@ -26,6 +28,7 @@
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Het privacybeleid werd aangepast, gelieve te {0} voor verdergaan.",
   "LOGIN": "Inloggen",
   "LOGOUT": "Uitloggen",
+  "LOGOUT_CONFIRMATION": "Zeker dat u wilt uitloggen?",
   "LOG_IN": "inloggen",
   "NEW_PASSWORD": "Nieuw wachtwoord",
   "NO_USERS_FOUND": "Geen gebruikers gevonden.",
@@ -111,6 +114,14 @@
       "PROFILE": "profiel",
       "SPORTS": "sporten"
     },
+    "THEME_MODE": {
+      "LABEL": "Thema modus",
+      "VALUES": {
+        "DARK": "Donker",
+        "DEFAULT": "Browser voorkeur",
+        "LIGHT": "Licht"
+      }
+    },
     "TIMEZONE": "Tijdzone",
     "UNITS": {
       "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
@@ -132,11 +143,9 @@
   "REVIEW": "beoordeel",
   "SHOW_PASSWORD": "toon wachtwoord",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
+  "TOGGLE_THEME": "Schakel thema (lichte of donkere modus)",
   "USERNAME": "Gebruikersnaam",
   "USERNAME_INFO": "3 tot 30 karakters vereist, enkel alfanumerieke karakters en het underscore karakter \"_\" zijn toegestaan.",
   "USER_PICTURE": "gebruikersafbeelding",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard.",
-  "ACCOUNT_CONFIRMATION": "Account bevestigen",
-  "LOGOUT_CONFIRMATION": "Zeker dat u wilt uitloggen?",
-  "EMAIL_UPDATE": "Update email"
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard."
 }
