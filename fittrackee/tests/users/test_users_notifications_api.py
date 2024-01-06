@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from unittest.mock import patch
 
 import pytest
@@ -753,6 +754,268 @@ class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
+    def test_it_does_not_return_follow_request_from_suspended_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_accepted_follow_from_suspended_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_workout_like_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_comment_like_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        like = CommentLike(user_id=user_2.id, comment_id=comment.id)
+        db.session.add(like)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_comment_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_reply_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=comment,
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_mention_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'notifications:read': True}.items(),
@@ -1053,6 +1316,38 @@ class TestUserNotificationsStatus(CommentMixin, ApiTestCaseMixin):
         db.session.add(like)
         db.session.commit()
         user_1.blocks_user(user_2)
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unread"] is False
+
+    def test_it_returns_unread_as_false_when_notification_is_from_suspended_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        db.session.flush()
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

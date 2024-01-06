@@ -10,7 +10,7 @@
     />
     <div class="nav-container">
       <div class="nav-app-name">
-        <div class="nav-item app-name">FitTrackee</div>
+        <router-link class="nav-item app-name" to="/"> FitTrackee </router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <button class="menu-button transparent" @click="openMenu()">
@@ -19,7 +19,9 @@
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
         <div class="nav-items-close">
-          <div class="app-name">FitTrackee</div>
+          <router-link class="nav-item app-name" to="/">
+            FitTrackee
+          </router-link>
           <button class="menu-button transparent" @click="closeMenu()">
             <i
               class="fa fa-close close-icon nav-item"
@@ -253,10 +255,14 @@
       &.router-link-exact-active {
         color: var(--nav-bar-link-active);
         font-weight: bold;
+        &.app-name {
+          color: var(--app-color);
+        }
       }
     }
 
     .app-name {
+      color: var(--app-color);
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;

@@ -304,7 +304,10 @@ class User(BaseModel):
             id == FollowRequest.followed_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=id == FollowRequest.follower_user_id,
+        secondaryjoin=and_(
+            id == FollowRequest.follower_user_id,
+            suspended_at == None,  # noqa
+        ),
         lazy='dynamic',
         viewonly=True,
     )
@@ -315,7 +318,10 @@ class User(BaseModel):
             id == FollowRequest.follower_user_id,
             FollowRequest.is_approved == True,  # noqa
         ),
-        secondaryjoin=id == FollowRequest.followed_user_id,
+        secondaryjoin=and_(
+            id == FollowRequest.followed_user_id,
+            suspended_at == None,  # noqa
+        ),
         lazy='dynamic',
         viewonly=True,
     )

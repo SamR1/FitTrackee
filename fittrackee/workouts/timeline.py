@@ -28,7 +28,11 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
         blocked_users = auth_user.get_blocked_user_ids()
         blocked_by_users = auth_user.get_blocked_by_user_ids()
         workouts_pagination = (
-            Workout.query.filter(
+            Workout.query.join(
+                User,
+                Workout.user_id == User.id,
+            )
+            .filter(
                 or_(
                     Workout.user_id == auth_user.id,
                     and_(
@@ -51,7 +55,8 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                             blocked_users + blocked_by_users
                         ),
                     ),
-                )
+                ),
+                User.suspended_at == None,  # noqa
             )
             .order_by(
                 Workout.workout_date.desc(),

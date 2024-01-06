@@ -8,12 +8,12 @@
   "DISABLE": "Wyłącz",
   "EDIT": "Edytuj",
   "ENABLE": "Włącz",
+  "FILTER": "Filtruj",
   "LOGIN": "Zaloguj się",
   "NO": "Nie",
-  "SUBMIT": "Wyślij",
-  "YES": "Tak",
-  "FILTER": "Filtruj",
   "REGISTER": "Zarejestruj",
   "REQUEST_DATA_EXPORT": "Zleć eksport danych",
-  "RESET": "Reset"
+  "RESET": "Reset",
+  "SUBMIT": "Wyślij",
+  "YES": "Tak"
 }
