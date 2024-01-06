@@ -131,7 +131,6 @@ button {
   &:disabled,
   &.confirm:disabled {
     background: var(--disabled-background-color);
-    border-color: var(--disabled-color);
     color: var(--disabled-color);
   }
 
@@ -162,7 +161,6 @@ button {
     }
     &:disabled {
       background: var(--disabled-background-color);
-      border-color: var(--disabled-color);
       color: var(--disabled-color);
     }
   }
