@@ -110,7 +110,7 @@ Account & preferences
   In case email sending is not configured, a `command line <cli.html#ftcli-users-update>`__ allows to activate users account.
 
 - A user can set language, timezone and first day of week.
-- A user can set the interface theme (light, dark or according to browser preferences). The default value is **browser preferences**. When the dark or light theme is set, it overrides browser preferences (*new in 0.7.27*).
+- A user can set the interface theme (light, dark or according to browser preferences) (*new in 0.7.27*).
 - A user can reset his password (*new in 0.3.0*)
 - A user can change his email address (*new in 0.6.0*)
 - A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)

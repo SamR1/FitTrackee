@@ -1,4 +1,5 @@
 {
+  "ACCOUNT-CONFIRMATION-RESEND": "Send bekreftelse per e-post igjen",
   "BACK": "Tilbake",
   "CANCEL": "Avbryt",
   "CLEAR_FILTER": "Tøm filtre",
@@ -9,9 +10,8 @@
   "LOGIN": "Logg inn",
   "NO": "Nei",
   "REGISTER": "Registrer",
+  "REQUEST_DATA_EXPORT": "Forespør dataeksport",
   "RESET": "Tilbakestill",
-  "ACCOUNT-CONFIRMATION-RESEND": "Send bekreftelse per e-post igjen",
-  "YES": "Ja",
   "SUBMIT": "Send inn",
-  "REQUEST_DATA_EXPORT": "Forespør dataeksport"
+  "YES": "Ja"
 }

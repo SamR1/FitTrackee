@@ -14,6 +14,9 @@
   "Mountain Biking (Electric)": {
     "LABEL": "Fjellsykling (elektrisk)"
   },
+  "Paragliding": {
+    "LABEL": "Paragliding"
+  },
   "Rowing": {
     "LABEL": "Roing"
   },
@@ -22,8 +25,5 @@
   },
   "Snowshoes": {
     "LABEL": "Truger"
-  },
-  "Paragliding": {
-    "LABEL": "Paragliding"
   }
 }

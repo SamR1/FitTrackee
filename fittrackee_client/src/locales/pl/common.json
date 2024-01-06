@@ -1,4 +1,5 @@
 {
+  "ABOUT": "o",
   "CONFIRMATION": "Potwierdzenie",
   "CONTACT": "kontakt",
   "DAY": "dzień | dni",
@@ -6,6 +7,7 @@
   "DOCUMENTATION": "dokumentacja",
   "HERE": "tutaj",
   "HIDDEN": "Ukryty",
+  "HOME": "Dom",
   "SELECTS": {
     "ORDER": {
       "ASC": "rosnąco",
@@ -19,7 +21,5 @@
       "LABEL": "na stronę"
     }
   },
-  "TOTAL": "Łącznie",
-  "ABOUT": "o",
-  "HOME": "Dom"
+  "TOTAL": "Łącznie"
 }
