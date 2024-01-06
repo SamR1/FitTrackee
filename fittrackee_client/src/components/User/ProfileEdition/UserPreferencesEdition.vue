@@ -495,6 +495,9 @@
       border-bottom: 1px solid var(--card-border-color);
       margin-bottom: $default-padding * 0.5;
     }
+    .preferences-section:not(:first-child) {
+      margin-top: $default-padding * 1.5;
+    }
 
     #language,
     #date_format,

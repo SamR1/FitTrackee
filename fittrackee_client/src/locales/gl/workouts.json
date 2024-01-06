@@ -6,13 +6,16 @@
   "AVE_SPEED": "vel. media",
   "BACK_TO_WORKOUT": "volver ao adestramento",
   "DATE": "data",
+  "DELETE_WORKOUT": "Eliminar o adestramento",
   "DESCENT": "descenso",
   "DISPLAY_FILTERS": "mostrar filtros",
   "DISTANCE": "distancia",
+  "DOWNLOAD_WORKOUT": "Descargar o adestramento",
   "DURATION": "duración",
   "EDIT_WORKOUT": "Editar adestramento",
   "ELEVATION": "altitude",
   "END": "fin",
+  "EXIT_FULLSCREEN": "Saír da pantalla completa",
   "FROM": "desde",
   "GPX_FILE": "ficheiro .gpx",
   "HIDE_FILTERS": "agochar filtros",
@@ -49,6 +52,7 @@
   "RECORD_LD": "A duración máis longa",
   "RECORD_MS": "Vel. máxima",
   "REMAINING_CHARS": "caracteres restantes",
+  "RESET_ZOOM": "Restablecer vista",
   "SEGMENT": "tramo | tramos",
   "SPEED": "velocidade",
   "SPORT": "deporte | deportes",
@@ -59,6 +63,7 @@
   "TO": "a",
   "TOTAL_DURATION": "duración total",
   "UPLOAD_FIRST_WORKOUT": "Subiches un!",
+  "VIEW_FULLSCREEN": "Ver en pantalla completa",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "día despexado",
@@ -100,10 +105,5 @@
   "WORKOUT_DATE": "data do adestramento",
   "WORKOUT_DELETION_CONFIRMATION": "Tes certeza de querer borrar este adestramento?",
   "ZIP_ARCHIVE": "ficheiro .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros .gpx",
-  "DELETE_WORKOUT": "Eliminar o adestramento",
-  "RESET_ZOOM": "Restablecer vista",
-  "VIEW_FULLSCREEN": "Ver en pantalla completa",
-  "DOWNLOAD_WORKOUT": "Descargar o adestramento",
-  "EXIT_FULLSCREEN": "Saír da pantalla completa"
+  "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros .gpx"
 }
