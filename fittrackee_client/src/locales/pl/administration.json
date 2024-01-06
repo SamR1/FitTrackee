@@ -1,47 +1,39 @@
 {
-  "APP_CONFIG": {
-    "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu",
-    "MAX_USERS_HELP": "Jeśli 0, to nie ma limitu rejestracji.",
-    "MAX_USERS_LABEL": "Maks. liczba aktywnych użytkowników",
-    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość nadesłanych plików (w Mb)",
-    "TITLE": "Konfiguracja aplikacji",
-    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość archiwum zip (w Mb)",
-    "ADMIN_CONTACT": "Kontaktowy e-mail administratora",
-    "MAX_FILES_IN_ZIP_LABEL": "Maks. plików archiwum zip"
-  },
-  "CONFIRM_USER_PASSWORD_RESET": "Czy na pewno chcesz zresetować {0} hasło?",
-  "CURRENT_EMAIL": "Aktualny e-mail",
-  "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
-  "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
-  "NEW_EMAIL": "Nowy e-mail",
-  "NO_TEXT_ENTERED": "Nie podano tekstu",
-  "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
-  "RESET_USER_PASSWORD": "Zresetuj hasło",
-  "UPDATE_USER_EMAIL": "Zaktualizuj e-mail",
-  "USER": "użytkownik | użytkowników",
-  "USERS": {
-    "SELECTS": {
-      "ORDER_BY": {
-        "USERNAME": "nazwa użytkownika",
-        "ADMIN": "status administratora",
-        "CREATED_AT": "data rejestracji",
-        "IS_ACTIVE": "status konta",
-        "WORKOUTS_COUNT": "liczba treningów"
-      }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Dodaj uprawnienia administratora",
-      "REMOVE_ADMIN_RIGHTS": "Usuń uprawnienia administratora"
-    },
-    "TITLE": "Administracja - Użytkownicy"
-  },
-  "USER_EMAIL_UPDATE_SUCCESSFUL": "Adres e-mail został zaktualizowany.",
   "ABOUT": {
     "DESCRIPTION": "Ewentualne dodatkowe informacje, które mogą być użyteczne użytkownikom. Można używać składni Markdown.",
     "TEXT": "Szczegółowe informacje o instancji"
   },
   "ACTION": "Akcja",
+  "ACTIVATE_USER_ACCOUNT": "Aktywuj konto",
+  "ACTIVE": "Aktywne",
+  "ADMIN": "Administrator",
+  "ADMINISTRATION": "Administracja",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Dodaj/usuń uprawnienia administratora, usuń konto użytkownika.",
+  "APPLICATION": "Aplikacja",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Kontaktowy e-mail administratora",
+    "MAX_FILES_IN_ZIP_LABEL": "Maks. plików archiwum zip",
+    "MAX_USERS_HELP": "Jeśli 0, to nie ma limitu rejestracji.",
+    "MAX_USERS_LABEL": "Maks. liczba aktywnych użytkowników",
+    "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość nadesłanych plików (w Mb)",
+    "TITLE": "Konfiguracja aplikacji",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość archiwum zip (w Mb)"
+  },
+  "BACK_TO_ADMIN": "Wróć do administratora",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Czy na pewno usunąć konto {0}? Wszystkie dane zostaną skasowane, tego nie da się cofnąć.",
+  "CONFIRM_USER_PASSWORD_RESET": "Czy na pewno chcesz zresetować {0} hasło?",
+  "CURRENT_EMAIL": "Aktualny e-mail",
   "DELETE_USER": "Usuń użytkownika",
+  "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
+  "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
+  "NEW_EMAIL": "Nowy e-mail",
+  "NO_TEXT_ENTERED": "Nie podano tekstu",
+  "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
+  "PRIVACY_POLICY_DESCRIPTION": "Dodaj swoją politykę prywatności lub zostaw puste aby użyć domyślnej. Można używać składni Markdown.",
+  "REGISTRATION_DISABLED": "Zakładanie kont jest wyłączone.",
+  "REGISTRATION_ENABLED": "Zakładanie kont jest włączone.",
+  "RESET_USER_PASSWORD": "Zresetuj hasło",
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Aktywny",
@@ -52,15 +44,23 @@
     "TITLE": "Zarządzanie sportami"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Zaktualizuj konfigurację aplikacji.",
-  "BACK_TO_ADMIN": "Wróć do administratora",
-  "CONFIRM_USER_ACCOUNT_DELETION": "Czy na pewno usunąć konto {0}? Wszystkie dane zostaną skasowane, tego nie da się cofnąć.",
-  "ACTIVATE_USER_ACCOUNT": "Aktywuj konto",
-  "ACTIVE": "Aktywne",
-  "ADMIN": "Administrator",
-  "ADMINISTRATION": "Administracja",
-  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Dodaj/usuń uprawnienia administratora, usuń konto użytkownika.",
-  "APPLICATION": "Aplikacja",
-  "PRIVACY_POLICY_DESCRIPTION": "Dodaj swoją politykę prywatności lub zostaw puste aby użyć domyślnej. Można używać składni Markdown.",
-  "REGISTRATION_DISABLED": "Zakładanie kont jest wyłączone.",
-  "REGISTRATION_ENABLED": "Zakładanie kont jest włączone."
+  "UPDATE_USER_EMAIL": "Zaktualizuj e-mail",
+  "USER": "użytkownik | użytkowników",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "status administratora",
+        "CREATED_AT": "data rejestracji",
+        "IS_ACTIVE": "status konta",
+        "USERNAME": "nazwa użytkownika",
+        "WORKOUTS_COUNT": "liczba treningów"
+      }
+    },
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Dodaj uprawnienia administratora",
+      "REMOVE_ADMIN_RIGHTS": "Usuń uprawnienia administratora"
+    },
+    "TITLE": "Administracja - Użytkownicy"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Adres e-mail został zaktualizowany."
 }

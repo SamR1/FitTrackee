@@ -9,12 +9,12 @@
   "HIDDEN": "Skjult",
   "HOME": "Hjem",
   "SELECTS": {
+    "ORDER": {
+      "ASC": "stigende",
+      "DESC": "synkende"
+    },
     "ORDER_BY": {
       "LABEL": "sorter etter"
-    },
-    "ORDER": {
-      "DESC": "synkende",
-      "ASC": "stigende"
     }
   }
 }
