@@ -40,8 +40,8 @@ export const languageLabels: Record<TLanguage, string> = {
   gl: 'Galego',
   it: 'Italiano (84%)',
   nb: 'Norsk bokmål (60%)',
-  nl: 'Nederlands (98%)',
-  pl: 'Polski(98%)',
+  nl: 'Nederlands',
+  pl: 'Polski',
 }
 
 const { availableLocales } = createI18n.global

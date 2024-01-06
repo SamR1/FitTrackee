@@ -1,5 +1,43 @@
 # Change log
 
+## Version 0.7.29 (2024/01/06)
+
+### Features and enhancements
+
+* [8aa4cff](https://github.com/SamR1/FitTrackee/commit/8aa4cff2bb21c877e382c7498442ccef35935d5f) - Update loader color on dark theme 
+* [#478](https://github.com/SamR1/FitTrackee/issues/478) - Make application name clickable to access dashboard
+
+### Bugs Fixed
+
+* [PR#479](https://github.com/SamR1/FitTrackee/pull/479) - Minor fixes on UI
+
+### Translations
+
+* [PR#476](https://github.com/SamR1/FitTrackee/pull/476) - Translations update (Polish)
+* [PR#477](https://github.com/SamR1/FitTrackee/pull/477) - Translations update (Dutch)
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 100%
+- Spanish: 100%
+
+### Misc
+
+* [PR#475](https://github.com/SamR1/FitTrackee/pull/475) - Build - use poetry-core instead of poetry
+
+
+Thanks to the contributors:
+- @traxys
+- Mariuz
+- Koen
+
+
 ## Version 0.7.28 (2023/12/23)
 
 ### Features and enhancements
