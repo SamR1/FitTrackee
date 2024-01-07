@@ -43,28 +43,29 @@ def assert_workout_data_with_gpx(
     assert len(records) == 5
     assert records[0]['sport_id'] == sport_id
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[0]['record_type'] == 'MS'
+    assert records[0]['record_type'] == 'AS'
     assert records[0]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[0]['value'] == 5.12
+    assert records[0]['value'] == 4.61
     assert records[1]['sport_id'] == sport_id
     assert records[1]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[1]['record_type'] == 'LD'
+    assert records[1]['record_type'] == 'FD'
     assert records[1]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[1]['value'] == '0:04:10'
+    assert records[1]['value'] == 0.32
     assert records[2]['sport_id'] == sport_id
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[2]['record_type'] == 'HA'
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[2]['value'] == 0.4
     assert records[3]['sport_id'] == sport_id
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'FD'
+    assert records[3]['record_type'] == 'LD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 0.32
+    assert records[3]['value'] == '0:04:10'
     assert records[4]['sport_id'] == sport_id
     assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[4]['record_type'] == 'AS'
+    assert records[4]['record_type'] == 'MS'
     assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[4]['value'] == 4.61
+    assert records[4]['value'] == 5.12
 
 
 class TestEditWorkoutWithGpx(ApiTestCaseMixin):
@@ -442,22 +443,22 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
         assert records[0]['workout_id'] == workout_short_id
-        assert records[0]['record_type'] == 'MS'
+        assert records[0]['record_type'] == 'AS'
         assert records[0]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[0]['value'] == 8.0
         assert records[1]['sport_id'] == sport_2_running.id
         assert records[1]['workout_id'] == workout_short_id
-        assert records[1]['record_type'] == 'LD'
+        assert records[1]['record_type'] == 'FD'
         assert records[1]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
-        assert records[1]['value'] == '1:00:00'
+        assert records[1]['value'] == 8.0
         assert records[2]['sport_id'] == sport_2_running.id
         assert records[2]['workout_id'] == workout_short_id
-        assert records[2]['record_type'] == 'FD'
+        assert records[2]['record_type'] == 'LD'
         assert records[2]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
-        assert records[2]['value'] == 8.0
+        assert records[2]['value'] == '1:00:00'
         assert records[3]['sport_id'] == sport_2_running.id
         assert records[3]['workout_id'] == workout_short_id
-        assert records[3]['record_type'] == 'AS'
+        assert records[3]['record_type'] == 'MS'
         assert records[3]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[3]['value'] == 8.0
 
@@ -740,22 +741,22 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
         assert records[0]['workout_id'] == workout_short_id
-        assert records[0]['record_type'] == 'MS'
+        assert records[0]['record_type'] == 'AS'
         assert records[0]['workout_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[0]['value'] == 8.0
         assert records[1]['sport_id'] == sport_2_running.id
         assert records[1]['workout_id'] == workout_short_id
-        assert records[1]['record_type'] == 'LD'
+        assert records[1]['record_type'] == 'FD'
         assert records[1]['workout_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
-        assert records[1]['value'] == '1:00:00'
+        assert records[1]['value'] == 8.0
         assert records[2]['sport_id'] == sport_2_running.id
         assert records[2]['workout_id'] == workout_short_id
-        assert records[2]['record_type'] == 'FD'
+        assert records[2]['record_type'] == 'LD'
         assert records[2]['workout_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
-        assert records[2]['value'] == 8.0
+        assert records[2]['value'] == '1:00:00'
         assert records[3]['sport_id'] == sport_2_running.id
         assert records[3]['workout_id'] == workout_short_id
-        assert records[3]['record_type'] == 'AS'
+        assert records[3]['record_type'] == 'MS'
         assert records[3]['workout_date'] == 'Tue, 15 May 2018 13:05:00 GMT'
         assert records[3]['value'] == 8.0
 
@@ -809,22 +810,22 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(records) == 4
         assert records[0]['sport_id'] == sport_2_running.id
         assert records[0]['workout_id'] == workout_short_id
-        assert records[0]['record_type'] == 'MS'
+        assert records[0]['record_type'] == 'AS'
         assert records[0]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[0]['value'] == 20.0
         assert records[1]['sport_id'] == sport_2_running.id
         assert records[1]['workout_id'] == workout_short_id
-        assert records[1]['record_type'] == 'LD'
+        assert records[1]['record_type'] == 'FD'
         assert records[1]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[1]['value'] == '1:00:00'
+        assert records[1]['value'] == 20.0
         assert records[2]['sport_id'] == sport_2_running.id
         assert records[2]['workout_id'] == workout_short_id
-        assert records[2]['record_type'] == 'FD'
+        assert records[2]['record_type'] == 'LD'
         assert records[2]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[2]['value'] == 20.0
+        assert records[2]['value'] == '1:00:00'
         assert records[3]['sport_id'] == sport_2_running.id
         assert records[3]['workout_id'] == workout_short_id
-        assert records[3]['record_type'] == 'AS'
+        assert records[3]['record_type'] == 'MS'
         assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[3]['value'] == 20.0
 
@@ -860,27 +861,27 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(records) == 5
         assert records[0]['sport_id'] == sport_1_cycling.id
         assert records[0]['workout_id'] == workout_short_id
-        assert records[0]['record_type'] == 'HA'
+        assert records[0]['record_type'] == 'AS'
         assert records[0]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[0]['value'] == ascent
+        assert records[0]['value'] == 10.0
         assert records[1]['sport_id'] == sport_1_cycling.id
         assert records[1]['workout_id'] == workout_short_id
-        assert records[1]['record_type'] == 'MS'
+        assert records[1]['record_type'] == 'FD'
         assert records[1]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[1]['value'] == 10.0
         assert records[2]['sport_id'] == sport_1_cycling.id
         assert records[2]['workout_id'] == workout_short_id
-        assert records[2]['record_type'] == 'LD'
+        assert records[2]['record_type'] == 'HA'
         assert records[2]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[2]['value'] == '1:00:00'
+        assert records[2]['value'] == ascent
         assert records[3]['sport_id'] == sport_1_cycling.id
         assert records[3]['workout_id'] == workout_short_id
-        assert records[3]['record_type'] == 'FD'
+        assert records[3]['record_type'] == 'LD'
         assert records[3]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
-        assert records[3]['value'] == 10.0
+        assert records[3]['value'] == '1:00:00'
         assert records[4]['sport_id'] == sport_1_cycling.id
         assert records[4]['workout_id'] == workout_short_id
-        assert records[4]['record_type'] == 'AS'
+        assert records[4]['record_type'] == 'MS'
         assert records[4]['workout_date'] == 'Mon, 01 Jan 2018 00:00:00 GMT'
         assert records[4]['value'] == 10.0
 
