@@ -1,149 +1,3 @@
-<script setup lang="ts">
-  import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
-  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-
-  import Comment from '@/components/Comment/Comment.vue'
-  import NotFound from '@/components/Common/NotFound.vue'
-  import UserCard from '@/components/User/UserCard.vue'
-  import Username from '@/components/User/Username.vue'
-  import UserPicture from '@/components/User/UserPicture.vue'
-  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
-  import {
-    AUTH_USER_STORE,
-    REPORTS_STORE,
-    ROOT_STORE,
-    SPORTS_STORE,
-    USERS_STORE,
-  } from '@/store/constants'
-  import type { ICustomTextareaData } from '@/types/forms'
-  import type { IReportCommentPayload, IReportForAdmin } from '@/types/reports'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { formatDate, getDateFormat } from '@/utils/dates'
-
-  const store = useStore()
-  const route = useRoute()
-  const router = useRouter()
-
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const report: ComputedRef<IReportForAdmin> = computed(
-    () => store.getters[REPORTS_STORE.GETTERS.REPORT]
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const appLanguage: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const isSuccess = computed(
-    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
-  )
-  const dateFormat: ComputedRef<string> = computed(() =>
-    getDateFormat(authUser.value.date_format, appLanguage.value)
-  )
-  const reportCommentText: Ref<string> = ref('')
-  const displayReportCommentTextarea: Ref<boolean> = ref(false)
-  const currentAction: Ref<string> = ref('')
-  const displayModal: Ref<string> = ref('')
-
-  function loadReport() {
-    store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
-  }
-  function displayTextArea(action = '') {
-    currentAction.value = action
-    displayReportCommentTextarea.value = true
-  }
-  function updateCommentText(textareaData: ICustomTextareaData) {
-    reportCommentText.value = textareaData.value
-  }
-  function onCancel() {
-    displayReportCommentTextarea.value = false
-    reportCommentText.value = ''
-    currentAction.value = ''
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
-  function updateReport() {
-    const payload: IReportCommentPayload = {
-      reportId: report.value.id,
-      comment: reportCommentText.value,
-    }
-    if (
-      ['MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(currentAction.value)
-    ) {
-      payload.resolved = currentAction.value === 'MARK_AS_RESOLVED'
-    }
-    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, payload)
-  }
-  function getButtonLabel() {
-    switch (currentAction.value) {
-      case 'MARK_AS_RESOLVED':
-        return `admin.APP_MODERATION.ACTIONS.${currentAction.value}`
-      default:
-        return 'buttons.SUBMIT'
-    }
-  }
-  function updateUserSuspendedAt() {
-    const suspension_action =
-      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
-    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
-      username: report.value.reported_user.username,
-      [suspension_action]: true,
-      from_report: report.value.id,
-    })
-  }
-  function updateDisplayModal(value: string) {
-    displayModal.value = value
-    if (value !== '') {
-      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    }
-  }
-  function goBack() {
-    router.go(-1)
-    store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
-  }
-  function getDate(dateToFormat: string) {
-    return formatDate(
-      dateToFormat,
-      authUser.value.timezone,
-      authUser.value.date_format
-    )
-  }
-
-  onBeforeMount(async () => loadReport())
-
-  watch(
-    () => report.value.comments,
-    () => {
-      displayReportCommentTextarea.value = false
-      reportCommentText.value = ''
-    }
-  )
-  watch(
-    () => isSuccess.value,
-    (newIsSuccess) => {
-      if (newIsSuccess) {
-        updateDisplayModal('')
-      }
-    }
-  )
-
-  onUnmounted(() =>
-    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  )
-</script>
-
 <template>
   <div
     id="admin-report"
@@ -387,6 +241,152 @@
     <NotFound target="REPORT" />
   </div>
 </template>
+
+<script setup lang="ts">
+  import { formatDistance } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+
+  import Comment from '@/components/Comment/Comment.vue'
+  import NotFound from '@/components/Common/NotFound.vue'
+  import UserCard from '@/components/User/UserCard.vue'
+  import Username from '@/components/User/Username.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
+  import {
+    AUTH_USER_STORE,
+    REPORTS_STORE,
+    ROOT_STORE,
+    SPORTS_STORE,
+    USERS_STORE,
+  } from '@/store/constants'
+  import type { ICustomTextareaData } from '@/types/forms'
+  import type { IReportCommentPayload, IReportForAdmin } from '@/types/reports'
+  import type { ISport } from '@/types/sports'
+  import type { IAuthUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
+  import { formatDate, getDateFormat } from '@/utils/dates'
+
+  const store = useStore()
+  const route = useRoute()
+  const router = useRouter()
+
+  const locale: ComputedRef<Locale> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const report: ComputedRef<IReportForAdmin> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const appLanguage: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  const dateFormat: ComputedRef<string> = computed(() =>
+    getDateFormat(authUser.value.date_format, appLanguage.value)
+  )
+  const reportCommentText: Ref<string> = ref('')
+  const displayReportCommentTextarea: Ref<boolean> = ref(false)
+  const currentAction: Ref<string> = ref('')
+  const displayModal: Ref<string> = ref('')
+
+  function loadReport() {
+    store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
+  }
+  function displayTextArea(action = '') {
+    currentAction.value = action
+    displayReportCommentTextarea.value = true
+  }
+  function updateCommentText(textareaData: ICustomTextareaData) {
+    reportCommentText.value = textareaData.value
+  }
+  function onCancel() {
+    displayReportCommentTextarea.value = false
+    reportCommentText.value = ''
+    currentAction.value = ''
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  }
+  function updateReport() {
+    const payload: IReportCommentPayload = {
+      reportId: report.value.id,
+      comment: reportCommentText.value,
+    }
+    if (
+      ['MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(currentAction.value)
+    ) {
+      payload.resolved = currentAction.value === 'MARK_AS_RESOLVED'
+    }
+    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, payload)
+  }
+  function getButtonLabel() {
+    switch (currentAction.value) {
+      case 'MARK_AS_RESOLVED':
+        return `admin.APP_MODERATION.ACTIONS.${currentAction.value}`
+      default:
+        return 'buttons.SUBMIT'
+    }
+  }
+  function updateUserSuspendedAt() {
+    const suspension_action =
+      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+      username: report.value.reported_user.username,
+      [suspension_action]: true,
+      from_report: report.value.id,
+    })
+  }
+  function updateDisplayModal(value: string) {
+    displayModal.value = value
+    if (value !== '') {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    }
+  }
+  function goBack() {
+    router.go(-1)
+    store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
+  }
+  function getDate(dateToFormat: string) {
+    return formatDate(
+      dateToFormat,
+      authUser.value.timezone,
+      authUser.value.date_format
+    )
+  }
+
+  onBeforeMount(async () => loadReport())
+
+  watch(
+    () => report.value.comments,
+    () => {
+      displayReportCommentTextarea.value = false
+      reportCommentText.value = ''
+    }
+  )
+  watch(
+    () => isSuccess.value,
+    (newIsSuccess) => {
+      if (newIsSuccess) {
+        updateDisplayModal('')
+      }
+    }
+  )
+
+  onUnmounted(() =>
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+  )
+</script>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';

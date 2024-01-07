@@ -1,17 +1,3 @@
-<script setup lang="ts">
-  import { toRefs } from 'vue'
-
-  import UserPicture from '@/components/User/UserPicture.vue'
-  import type { IReportForAdmin } from '@/types/reports'
-
-  interface Props {
-    report: IReportForAdmin
-  }
-
-  const props = defineProps<Props>()
-  const { report } = toRefs(props)
-</script>
-
 <template>
   <div class="report-notification" v-if="report.reported_user">
     <div class="reported-user">
@@ -29,6 +15,20 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+  import { toRefs } from 'vue'
+
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import type { IReportForAdmin } from '@/types/reports'
+
+  interface Props {
+    report: IReportForAdmin
+  }
+
+  const props = defineProps<Props>()
+  const { report } = toRefs(props)
+</script>
 
 <style scoped lang="scss">
   @import '~@/scss/vars';
