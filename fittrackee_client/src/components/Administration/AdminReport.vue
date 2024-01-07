@@ -19,7 +19,7 @@
     USERS_STORE,
   } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { IReportForAdmin } from '@/types/reports'
+  import type { IReportCommentPayload, IReportForAdmin } from '@/types/reports'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -75,11 +75,16 @@
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   }
   function updateReport() {
-    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, {
+    const payload: IReportCommentPayload = {
       reportId: report.value.id,
       comment: reportCommentText.value,
-      resolved: currentAction.value === 'MARK_AS_RESOLVED',
-    })
+    }
+    if (
+      ['MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(currentAction.value)
+    ) {
+      payload.resolved = currentAction.value === 'MARK_AS_RESOLVED'
+    }
+    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, payload)
   }
   function getButtonLabel() {
     switch (currentAction.value) {
@@ -243,6 +248,15 @@
                 {{ getDate(report.resolved_at) }}
               </time>
             </dd>
+            <dt v-if="report.resolved_by">
+              {{ $t('admin.APP_MODERATION.RESOLVED_BY') }}:
+            </dt>
+            <dd v-if="report.resolved_by">
+              <div class="resolver-user">
+                <UserPicture :user="report.resolved_by" />
+                <Username :user="report.resolved_by" />
+              </div>
+            </dd>
             <dt v-if="report.updated_at">
               {{ $t('common.LAST_UPDATED_ON') }}:
             </dt>
@@ -378,7 +392,8 @@
   @import '~@/scss/vars.scss';
 
   #admin-report {
-    .report-comment-user {
+    .report-comment-user,
+    .resolver-user {
       display: flex;
       gap: $default-padding * 0.5;
       ::v-deep(.user-picture) {

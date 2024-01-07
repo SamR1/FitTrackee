@@ -50,6 +50,7 @@
       "TRUE": "Resolved"
     },
     "RESOLVED_AT": "Resolved at",
+    "RESOLVED_BY": "Resolved by",
     "STATUS": "status",
     "TITLE": "Moderation"
   },

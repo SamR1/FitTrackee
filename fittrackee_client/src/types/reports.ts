@@ -12,6 +12,7 @@ export interface IReport {
   reported_workout: IWorkout | null
   resolved: boolean
   resolved_at: string
+  resolved_by: null | IUserProfile
   updated_at: string
 }
 
