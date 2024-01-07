@@ -319,13 +319,17 @@
               <button @click="displayTextArea()">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
-              <button>
+              <button v-if="!report.resolved">
                 {{ $t('admin.APP_MODERATION.ACTIONS.SEND_EMAIL') }}
               </button>
-              <button class="danger" v-if="report.object_type !== 'user'">
+              <button
+                class="danger"
+                v-if="!report.resolved && report.object_type !== 'user'"
+              >
                 {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
               </button>
               <button
+                v-if="!report.resolved"
                 :class="{ danger: report.reported_user.suspended_at === null }"
                 @click="
                   report.reported_user.suspended_at === null
