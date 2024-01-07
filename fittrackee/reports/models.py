@@ -54,6 +54,12 @@ class Report(BaseModel):
         index=True,
         nullable=True,
     )
+    resolved_by = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+        nullable=True,
+    )
     resolved = db.Column(db.Boolean, default=False, nullable=False)
     object_type = db.Column(db.String(50), nullable=False, index=True)
     note = db.Column(db.String(), nullable=False)
@@ -78,6 +84,15 @@ class Report(BaseModel):
         primaryjoin=reported_by == User.id,
         backref=db.backref(
             'user_own_reports',
+            lazy='joined',
+            single_parent=True,
+        ),
+    )
+    resolver = db.relationship(
+        'User',
+        primaryjoin=resolved_by == User.id,
+        backref=db.backref(
+            'user_resolved_reports',
             lazy='joined',
             single_parent=True,
         ),
@@ -153,6 +168,11 @@ class Report(BaseModel):
             report["comments"] = [
                 comment.serialize(current_user) for comment in self.comments
             ]
+            report["resolved_by"] = (
+                None
+                if self.resolved_by is None
+                else self.resolver.serialize(current_user)
+            )
             report["updated_at"] = self.updated_at
         return report
 

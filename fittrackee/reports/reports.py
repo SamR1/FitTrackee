@@ -176,7 +176,7 @@ def update_report(
             report_id=report_id,
             admin_user=auth_user,
             report_comment=comment,
-            resolved=data.get("resolved") is True,
+            resolved=data.get("resolved"),
         )
     except ReportNotFoundException:
         return NotFoundErrorResponse(f"report not found (id: {report_id})")

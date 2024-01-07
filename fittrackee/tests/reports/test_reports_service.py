@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from flask import Flask
@@ -118,6 +118,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         assert comment_report.reported_user_id is None
         assert comment_report.resolved is False
         assert comment_report.resolved_at is None
+        assert comment_report.resolved_by is None
         assert comment_report.updated_at is None
 
 
@@ -202,6 +203,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         assert workout_report.reported_user_id is None
         assert workout_report.resolved is False
         assert workout_report.resolved_at is None
+        assert workout_report.resolved_by is None
         assert workout_report.updated_at is None
 
 
@@ -269,6 +271,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         assert user_report.reported_user_id == user_2.id
         assert user_report.resolved is False
         assert user_report.resolved_at is None
+        assert user_report.resolved_by is None
         assert user_report.updated_at is None
 
 
@@ -315,6 +318,7 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.reported_user_id == user_3.id
         assert updated_report.resolved is False
         assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
         assert updated_report.updated_at == now
 
     def test_it_creates_a_report_comment_when_it_updates_report(
@@ -375,6 +379,7 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.reported_user_id == user_3.id
         assert updated_report.resolved is True
         assert updated_report.resolved_at == now
+        assert updated_report.resolved_by == user_1_admin.id
         assert updated_report.updated_at == now
 
     def test_it_marks_report_as_unresolved(
@@ -391,6 +396,7 @@ class TestReportServiceUpdate(CommentMixin):
         created_at = report.created_at
         report.resolved = True
         report.resolved_at = datetime.utcnow()
+        report.resolved_by = user_1_admin.id
         now = datetime.utcnow()
 
         with freeze_time(now):
@@ -410,4 +416,49 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.reported_user_id == user_3.id
         assert updated_report.resolved is False
         assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
         assert updated_report.updated_at == now
+
+    def test_it_updates_resolved_report_when_adding_comment(
+        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        note = self.random_string()
+        report = report_service.create_report(
+            reporter=user_2_admin,
+            note=note,
+            object_id=user_3.username,
+            object_type="user",
+        )
+        created_at = report.created_at
+        resolved_time = datetime.utcnow()
+
+        # resolved by user_1_admin
+        with freeze_time(resolved_time):
+            report_service.update_report(
+                report_id=report.id,
+                admin_user=user_1_admin,
+                report_comment=self.random_string(),
+                resolved=True,
+            )
+
+        # comment added by user_2_admin
+        comment_time = resolved_time + timedelta(minutes=10)
+        with freeze_time(comment_time):
+            updated_report = report_service.update_report(
+                report_id=report.id,
+                admin_user=user_1_admin,
+                report_comment=self.random_string(),
+            )
+
+        assert updated_report.created_at == created_at
+        assert updated_report.note == note
+        assert updated_report.object_type == "user"
+        assert updated_report.reported_by == user_2_admin.id
+        assert updated_report.reported_comment_id is None
+        assert updated_report.reported_workout_id is None
+        assert updated_report.reported_user_id == user_3.id
+        assert updated_report.resolved is True
+        assert updated_report.resolved_at == resolved_time
+        assert updated_report.resolved_by == user_1_admin.id
+        assert updated_report.updated_at == comment_time

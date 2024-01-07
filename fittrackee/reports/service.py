@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import func
 
@@ -57,7 +58,7 @@ class ReportService:
         report_id: int,
         admin_user: User,
         report_comment: str,
-        resolved: bool = False,
+        resolved: Optional[bool] = None,
     ) -> Report:
         report = Report.query.filter_by(id=report_id).first()
         if not report:
@@ -70,8 +71,14 @@ class ReportService:
 
         now = datetime.utcnow()
         report.updated_at = now
-        report.resolved = resolved
-        report.resolved_at = now if resolved else None
+        if resolved is not None:
+            report.resolved = resolved
+        if resolved is True and report.resolved_by is None:
+            report.resolved_at = now
+            report.resolved_by = admin_user.id
+        if resolved is False:
+            report.resolved_at = None
+            report.resolved_by = None
 
         db.session.commit()
 

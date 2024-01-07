@@ -63,6 +63,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.reported_workout_id is None
         assert report.resolved is False
         assert report.resolved_at is None
+        assert report.resolved_by is None
         assert report.updated_at is None
 
     def test_it_creates_report_for_a_user(
@@ -91,6 +92,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.reported_workout_id is None
         assert report.resolved is False
         assert report.resolved_at is None
+        assert report.resolved_by is None
         assert report.updated_at is None
 
     def test_it_creates_report_for_a_workout(
@@ -122,6 +124,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.reported_workout_id == workout_cycling_user_2.id
         assert report.resolved is False
         assert report.resolved_at is None
+        assert report.resolved_by is None
         assert report.updated_at is None
 
     def test_it_creates_report_without_date(
@@ -147,6 +150,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.reported_workout_id is None
         assert report.resolved is False
         assert report.resolved_at is None
+        assert report.resolved_by is None
         assert report.updated_at is None
 
 
@@ -456,6 +460,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
+            "resolved_by": None,
             "updated_at": None,
         }
 
@@ -500,6 +505,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_workout": reported_object,
             "resolved": False,
             "resolved_at": None,
+            "resolved_by": None,
             "updated_at": None,
         }
 
@@ -536,6 +542,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
+            "resolved_by": None,
             "updated_at": None,
         }
 
@@ -579,6 +586,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
+            "resolved_by": None,
             "updated_at": None,
         }
 

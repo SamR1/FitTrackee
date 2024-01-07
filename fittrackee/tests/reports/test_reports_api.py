@@ -1442,6 +1442,9 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["resolved"] is True
         date_string = self.get_date_string(date=now)
         assert data["report"]["resolved_at"] == date_string
+        assert data["report"]["resolved_by"] == jsonify_dict(
+            user_1_admin.serialize(user_1_admin)
+        )
         assert data["report"]["updated_at"] == date_string
         assert len(data["report"]["comments"]) == 2
         assert data["report"]["comments"][1]["comment"] == comment
@@ -1452,6 +1455,7 @@ class TestPatchReport(ReportTestCase):
         report = self.create_report(user_3, reported_object=user_2)
         report.resolved = True
         report.resolved_at = datetime.utcnow()
+        report.resolved_by = user_1_admin.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -1472,6 +1476,46 @@ class TestPatchReport(ReportTestCase):
         assert data["status"] == "success"
         assert data["report"]["resolved"] is False
         assert data["report"]["resolved_at"] is None
+        assert data["report"]["resolved_by"] is None
         assert data["report"]["updated_at"] == self.get_date_string(date=now)
+        assert len(data["report"]["comments"]) == 1
+        assert data["report"]["comments"][0]["comment"] == comment
+
+    def test_it_adds_comment_one_resolved_report(
+        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2_admin)
+        report.resolved = True
+        resolved_time = datetime.utcnow()
+        report.resolved_at = resolved_time
+        report.resolved_by = user_2_admin.id
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        comment_time = datetime.utcnow()
+        comment = self.random_string()
+
+        with freeze_time(comment_time):
+            response = client.patch(
+                self.route.format(report_id=report.id),
+                content_type="application/json",
+                data=json.dumps(dict(comment=comment)),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["report"]["resolved"] is True
+        assert data["report"]["resolved_at"] == self.get_date_string(
+            date=resolved_time
+        )
+        assert data["report"]["resolved_by"] == jsonify_dict(
+            user_2_admin.serialize(user_1_admin)
+        )
+        assert data["report"]["updated_at"] == self.get_date_string(
+            date=comment_time
+        )
         assert len(data["report"]["comments"]) == 1
         assert data["report"]["comments"][0]["comment"] == comment
