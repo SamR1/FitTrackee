@@ -4,6 +4,7 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
@@ -11,7 +12,6 @@ from fittrackee.reports.exceptions import (
     ReportNotFoundException,
 )
 from fittrackee.reports.models import ReportComment
-from fittrackee.reports.service import ReportService
 from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User

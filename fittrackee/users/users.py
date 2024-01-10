@@ -6,6 +6,7 @@ from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import asc, desc, exc, func, nullslast
 
 from fittrackee import appLog, db, limiter
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -32,7 +33,6 @@ from .exceptions import (
     UserNotFoundException,
 )
 from .models import FollowRequest, User, UserDataExport, UserSportPreference
-from .utils.admin import UserManagerService
 from .utils.language import get_language
 
 users_blueprint = Blueprint('users', __name__)

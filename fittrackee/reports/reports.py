@@ -4,6 +4,7 @@ from flask import Blueprint, request
 from sqlalchemy import asc, desc, nullslast
 
 from fittrackee import db
+from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -18,7 +19,6 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import InvalidReporterException, ReportNotFoundException
 from .models import REPORT_OBJECT_TYPES, Report
-from .service import ReportService
 
 reports_blueprint = Blueprint('reports', __name__)
 

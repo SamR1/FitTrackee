@@ -5,15 +5,14 @@ from typing import Optional, Tuple
 from sqlalchemy import func
 
 from fittrackee import db
-
-from ..exceptions import (
+from fittrackee.users.exceptions import (
     InvalidEmailException,
     UserControlsException,
     UserCreationException,
     UserNotFoundException,
 )
-from ..models import User
-from ..utils.controls import is_valid_email, register_controls
+from fittrackee.users.models import User
+from fittrackee.users.utils.controls import is_valid_email, register_controls
 
 
 class UserManagerService:

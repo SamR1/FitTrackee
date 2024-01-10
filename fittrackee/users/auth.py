@@ -17,6 +17,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -50,7 +51,6 @@ from .models import (
     UserSportPreference,
 )
 from .tasks import export_data
-from .utils.admin import UserManagerService
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.token import decode_user_token
