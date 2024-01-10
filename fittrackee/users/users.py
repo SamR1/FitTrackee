@@ -1,6 +1,5 @@
 import os
 import shutil
-from datetime import datetime
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
@@ -635,6 +634,12 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     ):
         return ForbiddenErrorResponse()
 
+    suspended = None
+    if suspend is True:
+        suspended = True
+    if user_data.get('unsuspend') is True:
+        suspended = False
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
@@ -645,14 +650,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
+            suspended=suspended,
         )
-
-        if suspend is True:
-            user.suspended_at = datetime.utcnow()
-            user.admin = False
-        if user_data.get('unsuspend') is True:
-            user.suspended_at = None
-        db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
             user_language = get_language(user.language)

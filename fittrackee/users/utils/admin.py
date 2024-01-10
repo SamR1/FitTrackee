@@ -1,4 +1,5 @@
 import secrets
+from datetime import datetime
 from typing import Optional, Tuple
 
 from sqlalchemy import func
@@ -60,6 +61,7 @@ class UserManagerService:
         reset_password: bool = False,
         new_email: Optional[str] = None,
         with_confirmation: bool = True,
+        suspended: Optional[bool] = None,
     ) -> Tuple[User, bool, Optional[str]]:
         user_updated = False
         new_password = None
@@ -81,6 +83,14 @@ class UserManagerService:
 
         if new_email is not None:
             self._update_user_email(user, new_email, with_confirmation)
+            user_updated = True
+
+        if suspended is True:
+            user.suspended_at = datetime.utcnow()
+            user.admin = False
+            user_updated = True
+        if suspended is False:
+            user.suspended_at = None
             user_updated = True
 
         db.session.commit()
