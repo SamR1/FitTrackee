@@ -4,6 +4,7 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
+from fittrackee.administration.models import AdminAction
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.privacy_levels import PrivacyLevel
@@ -348,6 +349,25 @@ class TestReportServiceUpdate(CommentMixin):
         assert report_comment.created_at == now
         assert report_comment.user_id == user_1_admin.id
 
+    def test_it_does_not_create_admin_action_on_report_comment(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=user_3.username,
+            object_type="user",
+        )
+
+        report_service.update_report(
+            report_id=report.id,
+            admin_user=user_1_admin,
+            report_comment=self.random_string(),
+        )
+
+        assert AdminAction.query.filter_by(report_id=report.id).count() == 0
+
     def test_it_marks_report_as_resolved(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -381,6 +401,34 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.resolved_at == now
         assert updated_report.resolved_by == user_1_admin.id
         assert updated_report.updated_at == now
+
+    def test_it_creates_report_action_when_resolving_report(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=user_3.username,
+            object_type="user",
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            report_service.update_report(
+                report_id=report.id,
+                admin_user=user_1_admin,
+                report_comment=self.random_string(),
+                resolved=True,
+            )
+
+        report_action = AdminAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "report_resolution"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.report_id == report.id
 
     def test_it_marks_report_as_unresolved(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -418,6 +466,58 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.resolved_at is None
         assert updated_report.resolved_by is None
         assert updated_report.updated_at == now
+
+    def test_it_creates_report_action_when_make_report_as_unresolved(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=user_3.username,
+            object_type="user",
+        )
+        report.resolved = True
+        report.resolved_at = datetime.utcnow()
+        report.resolved_by = user_1_admin.id
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            report_service.update_report(
+                report_id=report.id,
+                admin_user=user_1_admin,
+                report_comment=self.random_string(),
+                resolved=False,
+            )
+
+        report_action = AdminAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "report_reopening"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.report_id == report.id
+
+    def test_it_does_not_create_report_action_when_already_unresolved(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=user_3.username,
+            object_type="user",
+        )
+
+        with freeze_time(datetime.utcnow()):
+            report_service.update_report(
+                report_id=report.id,
+                admin_user=user_1_admin,
+                report_comment=self.random_string(),
+                resolved=False,
+            )
+
+        assert AdminAction.query.filter_by(report_id=report.id).count() == 0
 
     def test_it_updates_resolved_report_when_adding_comment(
         self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User

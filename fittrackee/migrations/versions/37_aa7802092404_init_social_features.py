@@ -349,8 +349,47 @@ def upgrade():
             'workout_records', ['workout_id', 'record_type'], unique=False
         )
 
+    op.create_table(
+        'admin_actions',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=True),
+        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('report_id', sa.Integer(), nullable=True),
+        sa.Column('user_id', sa.Integer(), nullable=True),
+        sa.Column('action_type', sa.String(length=50), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+        ),
+        sa.ForeignKeyConstraint(
+            ['report_id'], ['reports.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+    )
+    with op.batch_alter_table('admin_actions', schema=None) as batch_op:
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_admin_user_id'),
+            ['admin_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_report_id'),
+            ['report_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_user_id'), ['user_id'], unique=False
+        )
+
 
 def downgrade():
+    with op.batch_alter_table('admin_actions', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_admin_actions_user_id'))
+        batch_op.drop_index(batch_op.f('ix_admin_actions_report_id'))
+        batch_op.drop_index(batch_op.f('ix_admin_actions_admin_user_id'))
+
+    op.drop_table('admin_actions')
+
     with op.batch_alter_table('records', schema=None) as batch_op:
         batch_op.drop_index('workout_records')
 

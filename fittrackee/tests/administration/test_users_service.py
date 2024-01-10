@@ -5,7 +5,9 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import bcrypt
+from fittrackee.administration.models import AdminAction
 from fittrackee.administration.users_service import UserManagerService
+from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     UserCreationException,
@@ -247,6 +249,45 @@ class TestUserManagerServiceUserUpdate:
         assert user_1.is_active is True
         assert user_1.suspended_at == suspended_at
         assert user_updated is False
+
+    @pytest.mark.parametrize(
+        'input_suspended, expected_action_action',
+        [(True, "user_suspension"), (False, "user_unsuspension")],
+    )
+    @pytest.mark.parametrize('created_report', [True, False])
+    def test_it_creates_admin_action_when_updated_suspended_status(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_suspended: bool,
+        expected_action_action: str,
+        created_report: bool,
+    ) -> None:
+        report_id = None
+        if created_report:
+            report_id = Report(
+                reported_by=user_1_admin.id,
+                note=random_string(),
+                object_type='user',
+                object_id=user_2.id,
+            ).id
+
+        user_manager_service = UserManagerService(
+            admin_user_id=user_1_admin.id, username=user_2.username
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            user_manager_service.update(suspended=input_suspended)
+
+        admin_action = AdminAction.query.filter_by(
+            admin_user_id=user_1_admin.id,
+            action_type=expected_action_action,
+            user_id=user_2.id,
+        ).first()
+        assert admin_action.created_at == now
+        assert admin_action.report_id == report_id
 
 
 class TestUserManagerServiceUserCreation:

@@ -4,6 +4,7 @@ from typing import Optional
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.administration.models import AdminAction
 from fittrackee.comments.utils import get_comment
 from fittrackee.reports.exceptions import (
     InvalidReporterException,
@@ -63,6 +64,7 @@ class ReportService:
         report = Report.query.filter_by(id=report_id).first()
         if not report:
             raise ReportNotFoundException()
+        previous_resolved = report.resolved
 
         new_report_comment = ReportComment(
             comment=report_comment, report_id=report_id, user_id=admin_user.id
@@ -71,14 +73,31 @@ class ReportService:
 
         now = datetime.utcnow()
         report.updated_at = now
+        report_action = None
         if resolved is not None:
             report.resolved = resolved
         if resolved is True and report.resolved_by is None:
             report.resolved_at = now
             report.resolved_by = admin_user.id
+            report_action = AdminAction(
+                report_id=report.id,
+                admin_user_id=admin_user.id,
+                action_type="report_resolution",
+                created_at=now,
+            )
         if resolved is False:
             report.resolved_at = None
             report.resolved_by = None
+            if previous_resolved is True:
+                report_action = AdminAction(
+                    report_id=report.id,
+                    admin_user_id=admin_user.id,
+                    action_type="report_reopening",
+                    created_at=now,
+                )
+
+        if report_action:
+            db.session.add(report_action)
 
         db.session.commit()
 

@@ -640,10 +640,16 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if user_data.get('unsuspend') is True:
         suspended = False
 
+    report_id = user_data.get('report_id')
+    if suspended is not None and report_id is None:
+        return InvalidPayloadErrorResponse('report_id is missing')
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
-        user_manager_service = UserManagerService(username=user_name)
+        user_manager_service = UserManagerService(
+            username=user_name, admin_user_id=auth_user.id
+        )
         user, _, _ = user_manager_service.update(
             is_admin=user_data.get('admin'),
             activate=user_data.get('activate'),
@@ -651,6 +657,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
             suspended=suspended,
+            report_id=report_id,
         )
 
         if current_app.config['CAN_SEND_EMAILS']:

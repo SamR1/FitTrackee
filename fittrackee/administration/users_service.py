@@ -5,6 +5,7 @@ from typing import Optional, Tuple
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.administration.models import AdminAction
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     UserControlsException,
@@ -16,8 +17,9 @@ from fittrackee.users.utils.controls import is_valid_email, register_controls
 
 
 class UserManagerService:
-    def __init__(self, username: str):
+    def __init__(self, username: str, admin_user_id: Optional[int] = None):
         self.username = username
+        self.admin_user_id = admin_user_id
 
     def _get_user(self) -> User:
         user = User.query.filter_by(username=self.username).first()
@@ -61,6 +63,7 @@ class UserManagerService:
         new_email: Optional[str] = None,
         with_confirmation: bool = True,
         suspended: Optional[bool] = None,
+        report_id: Optional[int] = None,
     ) -> Tuple[User, bool, Optional[str]]:
         user_updated = False
         new_password = None
@@ -84,13 +87,25 @@ class UserManagerService:
             self._update_user_email(user, new_email, with_confirmation)
             user_updated = True
 
+        now = datetime.utcnow()
         if suspended is True:
-            user.suspended_at = datetime.utcnow()
+            user.suspended_at = now
             user.admin = False
             user_updated = True
         if suspended is False:
             user.suspended_at = None
             user_updated = True
+        if self.admin_user_id and suspended is not None:
+            admin_action = AdminAction(
+                admin_user_id=self.admin_user_id,
+                action_type=(
+                    "user_suspension" if suspended else "user_unsuspension"
+                ),
+                created_at=now,
+                report_id=report_id,
+                user_id=user.id,
+            )
+            db.session.add(admin_action)
 
         db.session.commit()
         return user, user_updated, new_password

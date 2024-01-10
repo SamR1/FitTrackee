@@ -1,0 +1,6 @@
+class AdminActionForbiddenException(Exception):
+    ...
+
+
+class InvalidAdminActionException(Exception):
+    ...
