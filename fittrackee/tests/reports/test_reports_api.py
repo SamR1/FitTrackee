@@ -1198,7 +1198,9 @@ class TestGetReportAsAdmin(GetReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["report"] == jsonify_dict(report.serialize(user_1_admin))
+        assert data["report"] == jsonify_dict(
+            report.serialize(user_1_admin, full=True)
+        )
 
     def test_it_returns_report_from_another_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -1217,7 +1219,9 @@ class TestGetReportAsAdmin(GetReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["report"] == jsonify_dict(report.serialize(user_1_admin))
+        assert data["report"] == jsonify_dict(
+            report.serialize(user_1_admin, full=True)
+        )
 
 
 class TestGetReportAsUser(GetReportTestCase):

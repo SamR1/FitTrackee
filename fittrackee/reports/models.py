@@ -126,7 +126,7 @@ class Report(BaseModel):
         self.object_type = object_type
         self.resolved = False
 
-    def serialize(self, current_user: User) -> Dict:
+    def serialize(self, current_user: User, full: bool = False) -> Dict:
         if not current_user.admin and self.reported_by != current_user.id:
             raise ReportForbiddenException()
 
@@ -170,12 +170,15 @@ class Report(BaseModel):
             "resolved_at": self.resolved_at,
         }
         if current_user.admin:
-            report["admin_actions"] = [
-                action.serialize(current_user) for action in self.admin_actions
-            ]
-            report["comments"] = [
-                comment.serialize(current_user) for comment in self.comments
-            ]
+            if full:
+                report["admin_actions"] = [
+                    action.serialize(current_user)
+                    for action in self.admin_actions
+                ]
+                report["comments"] = [
+                    comment.serialize(current_user)
+                    for comment in self.comments
+                ]
             report["resolved_by"] = (
                 None
                 if self.resolved_by is None

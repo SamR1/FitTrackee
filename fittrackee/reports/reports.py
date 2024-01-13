@@ -157,7 +157,7 @@ def get_report(
 
     return {
         "status": "success",
-        "report": report.serialize(auth_user),
+        "report": report.serialize(auth_user, full=True),
     }, 200
 
 
@@ -183,5 +183,5 @@ def update_report(
 
     return {
         "status": "success",
-        "report": report.serialize(auth_user),
+        "report": report.serialize(auth_user, full=True),
     }, 200

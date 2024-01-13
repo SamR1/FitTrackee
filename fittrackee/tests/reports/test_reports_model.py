@@ -415,7 +415,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         }
 
 
-class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
+class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
     def test_it_returns_serialized_comment_when_comment_is_not_visible(
         self,
         app: Flask,
@@ -448,9 +448,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin)
 
         assert serialized_report == {
-            "admin_actions": [],
             "created_at": report.created_at,
-            "comments": [],
             "id": report.id,
             "note": report_note,
             "object_type": "comment",
@@ -496,9 +494,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             user_1_admin, for_report=True
         )
         assert serialized_report == {
-            "admin_actions": [],
             "created_at": report.created_at,
-            "comments": [],
             "id": report.id,
             "note": report_note,
             "object_type": "workout",
@@ -534,9 +530,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin)
 
         assert serialized_report == {
-            "admin_actions": [],
             "created_at": report.created_at,
-            "comments": [],
             "id": report.id,
             "note": report_note,
             "object_type": "user",
@@ -550,6 +544,95 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "updated_at": None,
         }
 
+    def test_it_does_not_return_serialized_object_with_report_comments_when_flag_is_false(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_2.id,
+            note=report_note,
+            object_id=user_3.id,
+            object_type='user',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        db.session.flush()
+        report_comment = ReportComment(
+            report_id=report.id,
+            user_id=user_1_admin.id,
+            comment=self.random_string(),
+        )
+        db.session.add(report_comment)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin, full=False)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report_note,
+            "object_type": "user",
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": user_3.serialize(user_1_admin),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_deso_not_return_serialized_object_with_admin_actions_when_flag_is_false(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_2.id,
+            note=report_note,
+            object_id=user_3.id,
+            object_type='user',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        db.session.flush()
+        admin_action = AdminAction(
+            action_type="user_suspension",
+            admin_user_id=user_1_admin.id,
+            report_id=report.id,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin, full=False)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report_note,
+            "object_type": "user",
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": user_3.serialize(user_1_admin),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+
+class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
     def test_it_returns_serialized_object_with_report_comments(
         self,
         app: Flask,
@@ -576,7 +659,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         db.session.add(report_comment)
         db.session.commit()
 
-        serialized_report = report.serialize(user_1_admin)
+        serialized_report = report.serialize(user_1_admin, full=True)
 
         assert serialized_report == {
             "admin_actions": [],
@@ -628,7 +711,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         db.session.add(admin_action_2)
         db.session.commit()
 
-        serialized_report = report.serialize(user_1_admin)
+        serialized_report = report.serialize(user_1_admin, full=True)
 
         assert serialized_report == {
             "admin_actions": [
