@@ -16,6 +16,15 @@ export interface IReport {
   updated_at: string
 }
 
+export interface IAdminActionComment {
+  action_type: string
+  admin_user: IUserProfile
+  created_at: string
+  id: number
+  report_id: number | null
+  user: IUserProfile | null
+}
+
 export interface IReportComment {
   created_at: string
   comment: string
@@ -25,7 +34,8 @@ export interface IReportComment {
 }
 
 export interface IReportForAdmin extends IReport {
-  comments: IReportComment[]
+  admin_actions?: IAdminActionComment[]
+  comments?: IReportComment[]
 }
 
 export interface IReportPayload {

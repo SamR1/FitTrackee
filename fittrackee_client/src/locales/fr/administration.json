@@ -38,6 +38,12 @@
       "UPDATED_AT": "date de mise à jour"
     },
     "REPORT": "signalement | signalements",
+    "REPORT_ACTIONS": {
+      "user_suspension": "{0} a été suspendu(e) par {1} {2}",
+      "user_unsuspension": "La suspension de {0} a été levée par {1} {2}",
+      "report_resolution": "Le signalement a été marqué comme résolu par {1} {2}",
+      "report_reopening": "Le signalement a été réouvert par {1} {2}"
+    },
     "REPORTED_BY": "Signalé par",
     "REPORTED_CONTENT": "Contenu signalé",
     "REPORTED_OBJECT": "Objet",

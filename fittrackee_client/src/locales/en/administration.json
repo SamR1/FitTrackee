@@ -38,6 +38,12 @@
       "UPDATED_AT": "update date"
     },
     "REPORT": "report | reports",
+    "REPORT_ACTIONS": {
+      "user_suspension": "{0} has been suspended by {1} {2}",
+      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}",
+      "report_resolution": "The report has been marked as resolved by {1} {2}",
+      "report_reopening": "The report has been reopened by {1} {2}"
+    },
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",
     "REPORTED_OBJECT": "Object",

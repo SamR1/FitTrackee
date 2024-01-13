@@ -122,36 +122,71 @@
           </dl>
         </div>
 
-        <Card class="report-comments">
+        <Card class="report-action-and-comments">
           <template #title>
             {{ $t('admin.APP_MODERATION.NOTES_AND_ACTIONS') }}
           </template>
           <template #content>
-            <div
-              class="report-comment"
-              v-for="comment in report.comments"
-              :key="comment.id"
-            >
-              <div class="report-comment-info">
-                <div class="report-comment-user">
-                  <UserPicture :user="comment.user" />
-                  <Username :user="comment.user" />
+            <div v-for="item in reportsItems" :key="item.id">
+              <div class="report-comment" v-if="'comment' in item">
+                <div class="report-comment-info">
+                  <div class="report-comment-user">
+                    <UserPicture :user="item.user" />
+                    <Username :user="item.user" />
+                  </div>
+                  <div
+                    class="report-comment-date"
+                    :title="getDate(item.created_at)"
+                  >
+                    {{
+                      formatDistance(new Date(item.created_at), new Date(), {
+                        addSuffix: true,
+                        locale,
+                      })
+                    }}
+                  </div>
                 </div>
-                <div
-                  class="report-comment-date"
-                  :title="getDate(comment.created_at)"
-                >
-                  {{
-                    formatDistance(new Date(comment.created_at), new Date(), {
-                      addSuffix: true,
-                      locale,
-                    })
-                  }}
-                </div>
+                <div class="report-comment-comment">{{ item.comment }}</div>
               </div>
-              <div class="report-comment-comment">{{ comment.comment }}</div>
+              <div class="report-action" v-if="'action_type' in item">
+                •
+                <i18n-t
+                  :keypath="`admin.APP_MODERATION.REPORT_ACTIONS.${item.action_type}`"
+                >
+                  <router-link
+                    class="user-name"
+                    v-if="
+                      ['user_suspension', 'user_unsuspension'].includes(
+                        item.action_type
+                      ) && item.user
+                    "
+                    :to="`/admin/users/${item.user.username}`"
+                    :title="item.user.username"
+                  >
+                    {{ item.user.username }}
+                  </router-link>
+                  <router-link
+                    class="user-name"
+                    :to="`/admin/users/${item.admin_user.username}`"
+                    :title="item.admin_user.username"
+                  >
+                    {{ item.admin_user.username }}
+                  </router-link>
+                  <span
+                    class="report-action-date"
+                    :title="getDate(item.created_at)"
+                  >
+                    {{
+                      formatDistance(new Date(item.created_at), new Date(), {
+                        addSuffix: true,
+                        locale,
+                      })
+                    }}
+                  </span>
+                </i18n-t>
+              </div>
             </div>
-            <div v-if="report.comments.length === 0" class="no-notes">
+            <div v-if="reportsItems.length == 0" class="no-notes">
               {{ $t('common.NO_NOTES') }}
             </div>
           </template>
@@ -243,7 +278,7 @@
 </template>
 
 <script setup lang="ts">
-  import { formatDistance } from 'date-fns'
+  import { formatDistance, compareAsc } from 'date-fns'
   import type { Locale } from 'date-fns'
   import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
@@ -263,7 +298,12 @@
     USERS_STORE,
   } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { IReportCommentPayload, IReportForAdmin } from '@/types/reports'
+  import type {
+    IAdminActionComment,
+    IReportComment,
+    IReportCommentPayload,
+    IReportForAdmin,
+  } from '@/types/reports'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -301,6 +341,8 @@
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
   const currentAction: Ref<string> = ref('')
   const displayModal: Ref<string> = ref('')
+  const reportsItems: ComputedRef<(IAdminActionComment | IReportComment)[]> =
+    computed(() => getActionsAndComments())
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
@@ -364,6 +406,22 @@
       authUser.value.date_format
     )
   }
+  function sortCreatedAt(
+    a: IAdminActionComment | IReportComment,
+    b: IAdminActionComment | IReportComment
+  ): number {
+    return compareAsc(new Date(a.created_at), new Date(b.created_at))
+  }
+  function getActionsAndComments(): (IAdminActionComment | IReportComment)[] {
+    if (!report.value.admin_actions && !report.value.comments) {
+      return []
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return [...report.value.admin_actions, ...report.value.comments].sort(
+      sortCreatedAt
+    )
+  }
 
   onBeforeMount(async () => loadReport())
 
@@ -410,7 +468,7 @@
     }
 
     .report-detail-card,
-    .report-comments {
+    .report-action-and-comments {
       margin: $default-margin 0 $default-margin * 2;
     }
 
@@ -448,26 +506,38 @@
       text-transform: lowercase;
     }
 
-    .report-comments {
-      .report-comment {
+    .report-action-and-comments {
+      ::v-deep(.card-content) {
         display: flex;
         flex-direction: column;
-        padding-bottom: $default-padding;
+        gap: $default-padding * 1.2;
 
-        .report-comment-info {
+        .report-comment {
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
 
-          .report-comment-date {
-            font-size: 0.85em;
-            font-style: italic;
-            white-space: nowrap;
+          .report-comment-info {
+            display: flex;
+            justify-content: space-between;
+
+            .report-comment-date {
+              font-size: 0.85em;
+              font-style: italic;
+              white-space: nowrap;
+            }
+          }
+
+          .report-comment-comment {
+            padding-top: $default-padding;
           }
         }
+      }
 
-        .report-comment-comment {
-          padding: $default-padding 0;
-        }
+      .report-action {
+        color: var(--app-color-light);
+        font-style: italic;
+        font-size: 0.9em;
+        margin-left: $default-padding;
       }
 
       .no-notes {
