@@ -5,6 +5,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.administration.models import AdminAction
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReportException,
@@ -447,6 +448,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin)
 
         assert serialized_report == {
+            "admin_actions": [],
             "created_at": report.created_at,
             "comments": [],
             "id": report.id,
@@ -494,6 +496,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
             user_1_admin, for_report=True
         )
         assert serialized_report == {
+            "admin_actions": [],
             "created_at": report.created_at,
             "comments": [],
             "id": report.id,
@@ -531,6 +534,7 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin)
 
         assert serialized_report == {
+            "admin_actions": [],
             "created_at": report.created_at,
             "comments": [],
             "id": report.id,
@@ -575,8 +579,64 @@ class TestReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin)
 
         assert serialized_report == {
+            "admin_actions": [],
             "created_at": report.created_at,
             "comments": [report_comment.serialize(user_1_admin)],
+            "id": report.id,
+            "note": report_note,
+            "object_type": "user",
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": user_3.serialize(user_1_admin),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_object_with_admin_actions(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            reported_by=user_2.id,
+            note=report_note,
+            object_id=user_3.id,
+            object_type='user',
+            created_at=report_created_at,
+        )
+        db.session.add(report)
+        db.session.flush()
+        admin_action_1 = AdminAction(
+            action_type="user_suspension",
+            admin_user_id=user_1_admin.id,
+            report_id=report.id,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action_1)
+        admin_action_2 = AdminAction(
+            action_type="report_resolution",
+            admin_user_id=user_1_admin.id,
+            report_id=report.id,
+        )
+        db.session.add(admin_action_2)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "admin_actions": [
+                admin_action_1.serialize(user_1_admin),
+                admin_action_2.serialize(user_1_admin),
+            ],
+            "created_at": report.created_at,
+            "comments": [],
             "id": report.id,
             "note": report_note,
             "object_type": "user",

@@ -97,10 +97,15 @@ class Report(BaseModel):
             single_parent=True,
         ),
     )
-
     comments = db.relationship(
         'ReportComment',
         backref=db.backref('report', lazy='joined'),
+    )
+    admin_actions = db.relationship(
+        'AdminAction',
+        lazy=True,
+        backref=db.backref('report', lazy='joined', single_parent=True),
+        order_by='AdminAction.created_at.asc()',
     )
 
     def __init__(
@@ -165,6 +170,9 @@ class Report(BaseModel):
             "resolved_at": self.resolved_at,
         }
         if current_user.admin:
+            report["admin_actions"] = [
+                action.serialize(current_user) for action in self.admin_actions
+            ]
             report["comments"] = [
                 comment.serialize(current_user) for comment in self.comments
             ]
