@@ -49,7 +49,6 @@
     "REPORTED_OBJECT": "Object",
     "REPORTED_USER": "Reported user",
     "REPORTER": "reporter",
-    "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
     "REPORT_NOTE": "Note by",
     "RESOLVED": {
       "FALSE": "Unresolved",
@@ -58,6 +57,9 @@
     "RESOLVED_AT": "Resolved at",
     "RESOLVED_BY": "Resolved by",
     "STATUS": "status",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Add comment, action taken or any other useful information."
+    },
     "TITLE": "Moderation"
   },
   "BACK_TO_ADMIN": "Back to admin",

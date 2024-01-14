@@ -198,12 +198,17 @@
           <template #content>
             <div class="comment-textarea" v-if="displayReportCommentTextarea">
               <form @submit.prevent="updateReport">
+                <label for="report-comment">
+                  {{ $t(`admin.APP_MODERATION.ACTIONS.${currentAction}`) }}:
+                </label>
                 <CustomTextArea
                   class="report-comment-textarea"
                   name="report-comment"
                   :required="true"
                   :placeholder="
-                    $t('admin.APP_MODERATION.REPORT_COMMENT_PLACEHOLDER')
+                    $t(
+                      `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${currentAction}`
+                    )
                   "
                   @updateValue="updateCommentText"
                 />
@@ -219,7 +224,7 @@
               </form>
             </div>
             <div v-else class="actions-buttons">
-              <button @click="displayTextArea()">
+              <button @click="displayTextArea('ADD_COMMENT')">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
               <button v-if="!report.resolved">

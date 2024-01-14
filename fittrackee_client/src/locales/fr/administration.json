@@ -49,7 +49,6 @@
     "REPORTED_OBJECT": "Objet",
     "REPORTED_USER": "Utilisateur signalé",
     "REPORTER": "rapporteur",
-    "REPORT_COMMENT_PLACEHOLDER": "Ajouter un commentaire, une action entreprise ou toute autre information utile",
     "REPORT_NOTE": "Note par ",
     "RESOLVED": {
       "FALSE": "Non résolu",
@@ -58,6 +57,9 @@
     "RESOLVED_AT": "Résolu le",
     "RESOLVED_BY": "Résolu par",
     "STATUS": "état",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile."
+    },
     "TITLE": "Modération"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
