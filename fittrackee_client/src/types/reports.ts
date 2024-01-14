@@ -50,3 +50,5 @@ export interface IReportCommentPayload {
   comment: string
   resolved?: boolean
 }
+
+export type TReportAction = 'MARK_AS_RESOLVED' | 'MARK_AS_UNRESOLVED'

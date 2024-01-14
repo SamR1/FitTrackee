@@ -303,6 +303,7 @@
     IReportComment,
     IReportCommentPayload,
     IReportForAdmin,
+    TReportAction,
   } from '@/types/reports'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -339,7 +340,7 @@
   )
   const reportCommentText: Ref<string> = ref('')
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
-  const currentAction: Ref<string> = ref('')
+  const currentAction: Ref<TReportAction | null> = ref(null)
   const displayModal: Ref<string> = ref('')
   const reportsItems: ComputedRef<(IAdminActionComment | IReportComment)[]> =
     computed(() => getActionsAndComments())
@@ -347,7 +348,7 @@
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
   }
-  function displayTextArea(action = '') {
+  function displayTextArea(action: TReportAction | null = null) {
     currentAction.value = action
     displayReportCommentTextarea.value = true
   }
@@ -357,7 +358,7 @@
   function onCancel() {
     displayReportCommentTextarea.value = false
     reportCommentText.value = ''
-    currentAction.value = ''
+    currentAction.value = null
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   }
   function updateReport() {
@@ -366,6 +367,7 @@
       comment: reportCommentText.value,
     }
     if (
+      currentAction.value &&
       ['MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(currentAction.value)
     ) {
       payload.resolved = currentAction.value === 'MARK_AS_RESOLVED'
