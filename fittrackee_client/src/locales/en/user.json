@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "hide password",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
-  "LANGUAGE": "Language",
+  "LANGUAGE": "Language | Languages",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
@@ -123,7 +123,7 @@
         "LIGHT": "Light"
       }
     },
-    "TIMEZONE": "Timezone",
+    "TIMEZONE": "Timezone | Timezones",
     "UNITS": {
       "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
       "LABEL": "Units for distance",

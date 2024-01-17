@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "verberg wachtwoord",
   "INVALID_TOKEN": "Ongeldig token, vraag een nieuwe wachtwoord reset aan.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Ik wil mijn account verwijderen",
-  "LANGUAGE": "Taal",
+  "LANGUAGE": "Taal | Talen",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Het privacybeleid werd aangepast, gelieve te {0} voor verdergaan.",
   "LOGIN": "Inloggen",
   "LOGOUT": "Uitloggen",

@@ -11,7 +11,7 @@
   "FILTER_ON_USERNAME": "Filtra per username",
   "HIDE_PASSWORD": "nascondi password",
   "INVALID_TOKEN": "Token invalido, per favore richiedi un nuovo reset della password.",
-  "LANGUAGE": "Lingua",
+  "LANGUAGE": "Lingua | Le lingue",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
   "LOG_IN": "log in",
