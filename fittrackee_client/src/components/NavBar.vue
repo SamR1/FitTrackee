@@ -129,8 +129,9 @@
             :selected="language"
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
+            :listLabel="$t('user.LANGUAGE', 0)"
           >
-            <i class="fa fa-language"></i>
+            <i class="fa fa-language" aria-hidden="true"></i>
           </Dropdown>
         </div>
       </div>

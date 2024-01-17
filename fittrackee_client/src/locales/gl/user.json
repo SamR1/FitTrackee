@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "agochar contrasinal",
   "INVALID_TOKEN": "Token non válido, solicita un novo restablecemento de contrasinal.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Quero eliminar a miña conta",
-  "LANGUAGE": "Idioma",
+  "LANGUAGE": "Idioma | Idiomas",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Actualizouse a política de privacidade, podes {0} antes de continuar.",
   "LOGIN": "Acceso",
   "LOGOUT": "Pechar sesión",
