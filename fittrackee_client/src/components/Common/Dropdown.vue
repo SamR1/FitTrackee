@@ -1,23 +1,37 @@
 <template>
   <div class="dropdown-wrapper">
     <button
-      :aria-label="buttonLabel"
+      aria-controls="dropdown-list"
       :aria-expanded="isOpen"
+      aria-haspopup="true"
+      :aria-label="buttonLabel"
       class="dropdown-selector transparent"
-      @click="toggleDropdown"
+      @click="toggleDropdown()"
+      ref="dropdownButton"
     >
       <slot></slot>
     </button>
-    <ul class="dropdown-list" v-if="isOpen">
+    <ul
+      v-if="isOpen"
+      :aria-labelledby="listLabel"
+      class="dropdown-list"
+      id="dropdown-list"
+      role="menu"
+    >
       <li
         class="dropdown-item"
-        :class="{ selected: option.value === selected }"
-        v-for="(option, index) in dropdownOptions"
+        :class="{
+          selected: option.value === selected,
+          focused: index === focusOptionIndex,
+        }"
+        v-for="(option, index) in options"
         :key="index"
-        tabindex="0"
+        :id="`dropdown-item-${index}`"
+        tabindex="-1"
         @click="updateSelected(option)"
         @keydown.enter="updateSelected(option)"
-        role="button"
+        @mouseover="onMouseOver(index)"
+        role="menuitem"
       >
         {{ option.label }}
       </li>
@@ -26,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, toRefs, watch } from 'vue'
+  import { type Ref, ref, onMounted, onUnmounted, toRefs, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
   import type { IDropdownOption, TDropdownOptions } from '@/types/forms'
@@ -34,9 +48,10 @@
     options: TDropdownOptions
     selected: string
     buttonLabel: string
+    listLabel: string
   }
   const props = defineProps<Props>()
-  const { options } = toRefs(props)
+  const { options, selected } = toRefs(props)
 
   const emit = defineEmits({
     selected: (option: IDropdownOption) => option,
@@ -44,20 +59,93 @@
 
   const route = useRoute()
   const isOpen = ref(false)
-  const dropdownOptions = options.value.map((option) => option)
+  const dropdownButton: Ref<HTMLButtonElement | null> = ref(null)
+  const focusOptionIndex: Ref<number> = ref(
+    getIndexFromOptionValue(selected.value)
+  )
 
   function toggleDropdown() {
-    isOpen.value = !isOpen.value
+    if (isOpen.value) {
+      closeDropdown()
+    } else {
+      isOpen.value = true
+      const option = document.getElementById(
+        `dropdown-item-${focusOptionIndex.value}`
+      )
+      option?.focus()
+    }
+  }
+  function closeDropdown() {
+    isOpen.value = false
+    focusOptionIndex.value = getIndexFromOptionValue(selected.value)
+    dropdownButton.value?.focus()
   }
   function updateSelected(option: IDropdownOption) {
     emit('selected', option)
     isOpen.value = false
+  }
+  function getIndexFromOptionValue(value: string) {
+    const index = options.value.findIndex((o) => o.value === value)
+    return index >= 0 ? index : 0
+  }
+  function handleKey(e: KeyboardEvent) {
+    let prevent = false
+    if (isOpen.value) {
+      if (e.key === 'ArrowDown') {
+        prevent = true
+        focusOptionIndex.value += 1
+        if (focusOptionIndex.value > options.value.length) {
+          focusOptionIndex.value = 0
+        }
+      }
+      if (e.key === 'ArrowUp') {
+        prevent = true
+        focusOptionIndex.value -= 1
+        if (focusOptionIndex.value < 0) {
+          focusOptionIndex.value = options.value.length - 1
+        }
+      }
+      if (e.key === 'Home') {
+        prevent = true
+        focusOptionIndex.value = 0
+      }
+      if (e.key === 'End') {
+        prevent = true
+        focusOptionIndex.value = options.value.length - 1
+      }
+      if (e.key === 'Enter') {
+        prevent = true
+        updateSelected(options.value[focusOptionIndex.value])
+      }
+      if (e.key === 'Escape' || e.key === 'Tab') {
+        prevent = e.key === 'Escape'
+        closeDropdown()
+      }
+    }
+    if (prevent) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+  }
+  function onMouseOver(index: number) {
+    focusOptionIndex.value = index
   }
 
   watch(
     () => route.path,
     () => (isOpen.value = false)
   )
+  watch(
+    () => selected.value,
+    (value) => (focusOptionIndex.value = getIndexFromOptionValue(value))
+  )
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleKey)
+  })
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleKey)
+  })
 </script>
 
 <style scoped lang="scss">
@@ -90,7 +178,8 @@
           content: ' ✔';
         }
 
-        &:hover {
+        &:hover,
+        &.focused {
           background-color: var(--dropdown-hover-color);
         }
       }
