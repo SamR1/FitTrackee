@@ -123,7 +123,7 @@
         "LIGHT": "Clair"
       }
     },
-    "TIMEZONE": "Fuseau horaire",
+    "TIMEZONE": "Fuseau horaire | Fuseaux horaires",
     "UNITS": {
       "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
       "LABEL": "Unités pour les distances",
