@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "ukryj hasło",
   "INVALID_TOKEN": "Niepoprawny token, proszę zlecić nowy reset hasła.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Chcę usunąć swoje konto",
-  "LANGUAGE": "Język",
+  "LANGUAGE": "Język | Języki",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Polityka prywatności uległa zmianie, proszę {0} ją przed przejściem dalej.",
   "LOGIN": "Zaloguj",
   "LOGOUT": "Wyloguj",
