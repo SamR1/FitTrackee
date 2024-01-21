@@ -42,19 +42,13 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     try:
-        new_report = report_service.create_report(
+        report_service.create_report(
             reporter=auth_user,
             note=note,
             object_id=object_id,
             object_type=object_type,
         )
-        return (
-            {
-                "status": "created",
-                "report": new_report.serialize(auth_user),
-            },
-            201,
-        )
+        return {"status": "created"}, 201
     except (
         CommentForbiddenException,
         UserNotFoundException,

@@ -282,13 +282,14 @@ class TestPostCommentReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        report_note = self.random_string()
 
         response = client.post(
             self.route,
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    note=self.random_string(),
+                    note=report_note,
                     object_id=comment.short_id,
                     object_type=self.object_type,
                 )
@@ -297,10 +298,18 @@ class TestPostCommentReport(ReportTestCase):
         )
 
         assert response.status_code == 201
-        data = json.loads(response.data.decode())
+        assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
-        assert data["status"] == "created"
-        assert data["report"] == jsonify_dict(new_report.serialize(user_1))
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id == comment.id
+        assert new_report.reported_user_id is None
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
 
 
 class TestPostWorkoutReport(ReportTestCase):
@@ -370,13 +379,14 @@ class TestPostWorkoutReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        report_note = self.random_string()
 
         response = client.post(
             self.route,
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    note=self.random_string(),
+                    note=report_note,
                     object_id=workout_cycling_user_2.short_id,
                     object_type=self.object_type,
                 )
@@ -385,10 +395,18 @@ class TestPostWorkoutReport(ReportTestCase):
         )
 
         assert response.status_code == 201
-        data = json.loads(response.data.decode())
+        assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
-        assert data["status"] == "created"
-        assert data["report"] == jsonify_dict(new_report.serialize(user_1))
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id is None
+        assert new_report.reported_workout_id == workout_cycling_user_2.id
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
 
 
 class TestPostUserReport(ReportTestCase):
@@ -451,13 +469,14 @@ class TestPostUserReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        report_note = self.random_string()
 
         response = client.post(
             self.route,
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    note=self.random_string(),
+                    note=report_note,
                     object_id=user_2.username,
                     object_type=self.object_type,
                 )
@@ -466,10 +485,18 @@ class TestPostUserReport(ReportTestCase):
         )
 
         assert response.status_code == 201
-        data = json.loads(response.data.decode())
+        assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
-        assert data["status"] == "created"
-        assert data["report"] == jsonify_dict(new_report.serialize(user_1))
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
 
 
 class TestGetReportsAsAdmin(ReportTestCase):
