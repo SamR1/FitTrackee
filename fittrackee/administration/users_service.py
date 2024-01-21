@@ -8,6 +8,7 @@ from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
     UserNotFoundException,
@@ -89,6 +90,10 @@ class UserManagerService:
 
         now = datetime.utcnow()
         if suspended is True:
+            if user.suspended_at:
+                raise UserAlreadySuspendedException(
+                    f"user '{user.username}' already suspended"
+                )
             user.suspended_at = now
             user.admin = False
             user_updated = True

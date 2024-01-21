@@ -10,6 +10,7 @@ from fittrackee.administration.users_service import UserManagerService
 from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    UserAlreadySuspendedException,
     UserCreationException,
     UserNotFoundException,
 )
@@ -210,6 +211,18 @@ class TestUserManagerServiceUserUpdate:
         assert user_1.is_active is True
         assert user_1.suspended_at == now
         assert user_updated is True
+
+    def test_it_raises_error_when_user_is_already_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        user_manager_service = UserManagerService(username=user_1.username)
+
+        with pytest.raises(
+            UserAlreadySuspendedException,
+            match=f"user '{user_1.username}' already suspended",
+        ):
+            user_manager_service.update(suspended=True)
 
     def test_it_removes_admin_right_when_user_is_suspended(
         self, app: Flask, user_1_admin: User

@@ -2259,6 +2259,27 @@ class TestUpdateUser(ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    def test_it_returns_error_when_when_user_already_suspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True, report_id=report.id)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, f"user '{user_2.username}' already suspended"
+        )
+
     def test_it_does_not_enable_registration_on_user_suspension(
         self,
         app_with_3_users_max: Flask,

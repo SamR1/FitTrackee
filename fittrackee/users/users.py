@@ -30,6 +30,7 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
     NotExistingFollowRequestError,
+    UserAlreadySuspendedException,
     UserNotFoundException,
 )
 from .models import FollowRequest, User, UserDataExport, UserSportPreference
@@ -717,7 +718,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
-    except InvalidEmailException as e:
+    except (InvalidEmailException, UserAlreadySuspendedException) as e:
         return InvalidPayloadErrorResponse(str(e))
     except exc.StatementError as e:
         return handle_error_and_return_response(e, db=db)

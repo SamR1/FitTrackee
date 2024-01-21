@@ -32,3 +32,7 @@ class NotExistingFollowRequestError(Exception):
 
 class UserNotFoundException(Exception):
     ...
+
+
+class UserAlreadySuspendedException(Exception):
+    ...
