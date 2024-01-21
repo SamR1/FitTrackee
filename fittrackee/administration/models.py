@@ -1,8 +1,12 @@
 from datetime import datetime
 from typing import Dict, Optional
+from uuid import uuid4
+
+from sqlalchemy.dialects import postgresql
 
 from fittrackee import BaseModel, db
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 
 from .exceptions import (
     AdminActionForbiddenException,
@@ -24,6 +28,12 @@ ADMIN_ACTION_TYPES = REPORT_ACTION_TYPES + USER_ACTION_TYPES
 class AdminAction(BaseModel):
     __tablename__ = "admin_actions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     admin_user_id = db.Column(
         db.Integer,
@@ -79,14 +89,23 @@ class AdminAction(BaseModel):
         self.report_id = report_id
         self.user_id = user_id if action_type in USER_ACTION_TYPES else None
 
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
     def serialize(self, current_user: User) -> Dict:
-        if not current_user.admin:
-            raise AdminActionForbiddenException
-        return {
+        if not current_user.admin and current_user.id != self.user_id:
+            raise AdminActionForbiddenException()
+        action = {
             "action_type": self.action_type,
-            "admin_user": self.admin_user.serialize(current_user),
             "created_at": self.created_at,
-            "id": self.id,
-            "report_id": self.report_id,
+            "id": self.short_id,
             "user": self.user.serialize(current_user) if self.user else None,
         }
+        if current_user.admin:
+            action = {
+                **action,
+                "admin_user": self.admin_user.serialize(current_user),
+                "report_id": self.report_id,
+            }
+        return action

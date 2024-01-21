@@ -352,6 +352,7 @@ def upgrade():
     op.create_table(
         'admin_actions',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('admin_user_id', sa.Integer(), nullable=True),
         sa.Column('report_id', sa.Integer(), nullable=True),
@@ -365,6 +366,7 @@ def upgrade():
         ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('uuid'),
     )
     with op.batch_alter_table('admin_actions', schema=None) as batch_op:
         batch_op.create_index(

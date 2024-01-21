@@ -9,7 +9,7 @@ from fittrackee.administration.exceptions import (
     AdminActionForbiddenException,
     InvalidAdminActionException,
 )
-from fittrackee.administration.models import AdminAction
+from fittrackee.administration.models import REPORT_ACTION_TYPES, AdminAction
 from fittrackee.reports.models import Report
 from fittrackee.users.models import User
 
@@ -214,18 +214,6 @@ class TestAdminActionModel(AdminActionTestCase):
 
 
 class TestAdminActionSerializer(AdminActionTestCase):
-    def test_it_raises_exception_when_user_has_no_admin_rights(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
-    ) -> None:
-        admin_action = AdminAction(
-            admin_user_id=user_1_admin.id,
-            action_type="user_suspension",
-            user_id=user_2.id,
-        )
-
-        with pytest.raises(AdminActionForbiddenException):
-            admin_action.serialize(user_3)
-
     def test_it_returns_serialized_admin_action_without_report(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -244,7 +232,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
             user_1_admin
         )
         assert serialized_action['created_at'] == admin_action.created_at
-        assert serialized_action['id'] == admin_action.id
+        assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
 
@@ -267,6 +255,60 @@ class TestAdminActionSerializer(AdminActionTestCase):
             user_1_admin
         )
         assert serialized_action['created_at'] == admin_action.created_at
-        assert serialized_action['id'] == admin_action.id
+        assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['report_id'] == report.id
         assert serialized_action['user'] is None
+
+    def test_it_serialized_action_for_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="user_suspension",
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            serialized_action = admin_action.serialize(user_2)
+
+        assert serialized_action == {
+            "action_type": admin_action.action_type,
+            "created_at": admin_action.created_at,
+            "id": admin_action.short_id,
+            "user": user_2.serialize(user_2),
+        }
+
+    def test_it_raises_error_when_user_is_not_action_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="user_suspension",
+            user_id=user_2.id,
+        )
+
+        with pytest.raises(AdminActionForbiddenException):
+            admin_action.serialize(user_3)
+
+    @pytest.mark.parametrize('input_action_type', REPORT_ACTION_TYPES)
+    def test_it_raises_error_when_user_has_no_admin_rights_and_action_is_report_related(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_action_type: str,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_user=user_2
+        )
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type=input_action_type,
+            report_id=report.id,
+        )
+
+        with pytest.raises(AdminActionForbiddenException):
+            admin_action.serialize(user_2)
