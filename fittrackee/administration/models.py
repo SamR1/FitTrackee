@@ -9,7 +9,10 @@ from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
 
 from .exceptions import (
+    AdminActionAppealForbiddenException,
     AdminActionForbiddenException,
+    InvalidAdminActionAppealException,
+    InvalidAdminActionAppealUserException,
     InvalidAdminActionException,
 )
 
@@ -113,3 +116,97 @@ class AdminAction(BaseModel):
                 "report_id": self.report_id,
             }
         return action
+
+
+class AdminActionAppeal(BaseModel):
+    __tablename__ = "admin_action_appeals"
+    __table_args__ = (
+        db.UniqueConstraint(
+            'action_id', 'user_id', name='action_id_user_id_unique'
+        ),
+    )
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
+    action_id = db.Column(
+        db.Integer,
+        db.ForeignKey("admin_actions.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        index=True,
+        nullable=False,
+    )
+    admin_user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
+    created_at = db.Column(
+        db.DateTime, default=datetime.utcnow, nullable=False
+    )
+    updated_at = db.Column(db.DateTime)
+    approved = db.Column(db.Boolean, nullable=True)
+    text = db.Column(db.String(), nullable=False)
+
+    admin_user = db.relationship(
+        "User",
+        primaryjoin=admin_user_id == User.id,
+        lazy="joined",
+        single_parent=True,
+    )
+    user = db.relationship(
+        "User",
+        primaryjoin=user_id == User.id,
+        lazy="joined",
+        single_parent=True,
+    )
+
+    def __init__(
+        self,
+        action_id: str,
+        user_id: int,
+        text: str,
+        created_at: Optional[datetime] = None,
+    ):
+        action = AdminAction.query.filter_by(id=action_id).first()
+        if action.action_type != "user_suspension":
+            raise InvalidAdminActionAppealException()
+        if action.user_id != user_id:
+            raise InvalidAdminActionAppealUserException()
+        self.action_id = action_id
+        self.created_at = created_at if created_at else datetime.utcnow()
+        self.text = text
+        self.user_id = user_id
+
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
+    def serialize(self, current_user: User) -> Dict:
+        if not current_user.admin and current_user.id != self.user_id:
+            raise AdminActionAppealForbiddenException()
+        appeal = {
+            "approved": self.approved,
+            "created_at": self.created_at,
+            "id": self.short_id,
+            "text": self.text,
+            "user": self.user.serialize(current_user),
+            "updated_at": self.updated_at,
+        }
+        if current_user.admin:
+            appeal["admin_user"] = (
+                self.admin_user.serialize(current_user)
+                if self.admin_user
+                else None
+            )
+        return appeal

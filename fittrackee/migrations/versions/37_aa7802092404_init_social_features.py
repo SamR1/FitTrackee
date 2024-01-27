@@ -384,8 +384,58 @@ def upgrade():
             batch_op.f('ix_admin_actions_user_id'), ['user_id'], unique=False
         )
 
+    op.create_table(
+        'admin_action_appeals',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('action_id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.Column('approved', sa.Boolean(), nullable=True),
+        sa.Column('text', sa.String(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['action_id'], ['admin_actions.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint(
+            'action_id', 'user_id', name='action_id_user_id_unique'
+        ),
+        sa.UniqueConstraint('uuid'),
+    )
+    with op.batch_alter_table('admin_action_appeals', schema=None) as batch_op:
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_action_id'),
+            ['action_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_admin_user_id'),
+            ['admin_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_user_id'),
+            ['user_id'],
+            unique=False,
+        )
+
 
 def downgrade():
+    with op.batch_alter_table('admin_action_appeals', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_admin_action_appeals_user_id'))
+        batch_op.drop_index(
+            batch_op.f('ix_admin_action_appeals_admin_user_id')
+        )
+        batch_op.drop_index(batch_op.f('ix_admin_action_appeals_action_id'))
+
+    op.drop_table('admin_action_appeals')
+
     with op.batch_alter_table('admin_actions', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_admin_actions_user_id'))
         batch_op.drop_index(batch_op.f('ix_admin_actions_report_id'))

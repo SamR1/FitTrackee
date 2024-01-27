@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 import pytest
 from flask import Flask
@@ -6,10 +7,17 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.administration.exceptions import (
+    AdminActionAppealForbiddenException,
     AdminActionForbiddenException,
+    InvalidAdminActionAppealException,
+    InvalidAdminActionAppealUserException,
     InvalidAdminActionException,
 )
-from fittrackee.administration.models import REPORT_ACTION_TYPES, AdminAction
+from fittrackee.administration.models import (
+    REPORT_ACTION_TYPES,
+    AdminAction,
+    AdminActionAppeal,
+)
 from fittrackee.reports.models import Report
 from fittrackee.users.models import User
 
@@ -27,6 +35,25 @@ class AdminActionTestCase(RandomMixin):
         db.session.add(report)
         db.session.commit()
         return report
+
+    def create_admin_action(
+        self,
+        admin_user: User,
+        user: User,
+        action_type: Optional[str] = None,
+    ) -> AdminAction:
+        report_id = None
+        if action_type in REPORT_ACTION_TYPES:
+            report_id = self.create_report(admin_user, user).id
+        admin_action = AdminAction(
+            admin_user_id=admin_user.id,
+            action_type=action_type if action_type else "user_suspension",
+            report_id=report_id,
+            user_id=user.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+        return admin_action
 
 
 class TestAdminActionModel(AdminActionTestCase):
@@ -343,3 +370,145 @@ class TestAdminActionSerializer(AdminActionTestCase):
 
         with pytest.raises(AdminActionForbiddenException):
             admin_action.serialize(user_2)
+
+
+class TestAdminActionAppealModel(AdminActionTestCase):
+    def test_it_raises_error_when_user_is_not_admin_action_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+
+        with pytest.raises(InvalidAdminActionAppealUserException):
+            AdminActionAppeal(
+                action_id=admin_action.id,
+                user_id=user_3.id,
+                text=self.random_string(),
+            )
+
+    def test_it_raises_error_when_action_is_not_user_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        admin_action = self.create_admin_action(
+            user_1_admin, user_2, action_type="user_unsuspension"
+        )
+
+        with pytest.raises(InvalidAdminActionAppealException):
+            AdminActionAppeal(
+                action_id=admin_action.id,
+                user_id=user_2.id,
+                text=self.random_string(),
+            )
+
+    def test_it_creates_appeal_for_a_given_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        appeal_text = self.random_string()
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        created_at = datetime.now()
+
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=appeal_text,
+            created_at=created_at,
+        )
+
+        assert appeal.action_id == admin_action.id
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == created_at
+        assert appeal.user_id == user_2.id
+        assert appeal.updated_at is None
+
+    def test_it_creates_appeal_for_a_given_action_without_creation_date(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        appeal_text = self.random_string()
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        now = datetime.now()
+
+        with freeze_time(now):
+            appeal = AdminActionAppeal(
+                action_id=admin_action.id, user_id=user_2.id, text=appeal_text
+            )
+
+        assert appeal.action_id == admin_action.id
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == now
+        assert appeal.user_id == user_2.id
+        assert appeal.updated_at is None
+
+
+class TestAdminActionAppealSerializer(AdminActionTestCase):
+    def test_it_returns_serialized_appeal_for_admin(
+        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
+    ) -> None:
+        admin_action = self.create_admin_action(user_1_admin, user_3)
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_3.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.flush()
+
+        serialized_appeal = appeal.serialize(user_2_admin)
+
+        assert serialized_appeal["admin_user"] is None
+        assert serialized_appeal["approved"] is None
+        assert serialized_appeal["created_at"] == appeal.created_at
+        assert serialized_appeal["id"] == appeal.short_id
+        assert serialized_appeal["text"] == appeal.text
+        assert serialized_appeal["user"] == user_3.serialize(user_2_admin)
+        assert serialized_appeal["updated_at"] is None
+
+    def test_it_returns_serialized_appeal_for_appeal_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.flush()
+
+        serialized_appeal = appeal.serialize(user_2)
+
+        assert serialized_appeal == {
+            "approved": None,
+            "created_at": appeal.created_at,
+            "id": appeal.short_id,
+            "text": appeal.text,
+            "user": user_2.serialize(user_2),
+            "updated_at": None,
+        }
+
+    def test_it_raises_error_when_user_is_not_appeal_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=self.random_string(),
+        )
+
+        with pytest.raises(AdminActionAppealForbiddenException):
+            appeal.serialize(user_3)

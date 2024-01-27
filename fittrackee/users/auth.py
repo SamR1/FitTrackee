@@ -17,6 +17,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     account_confirmation_email,
@@ -1984,3 +1985,48 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
             "total": paginated_relations.total,
         },
     }
+
+
+@auth_blueprint.route("/auth/account/suspension", methods=["GET"])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+def get_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    return {
+        "status": "success",
+        "user_suspension": auth_user.suspension_action.serialize(auth_user),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+def appeal_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=auth_user.suspension_action.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
