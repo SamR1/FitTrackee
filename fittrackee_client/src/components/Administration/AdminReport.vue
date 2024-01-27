@@ -197,14 +197,14 @@
           </template>
           <template #content>
             <div class="comment-textarea" v-if="displayReportCommentTextarea">
-              <form @submit.prevent="updateReport">
+              <form @submit.prevent="submit">
                 <label for="report-comment">
-                  {{ $t(`admin.APP_MODERATION.ACTIONS.${currentAction}`) }}:
+                  {{ $t(`admin.APP_MODERATION.ACTIONS.${currentAction}`) }}
                 </label>
                 <CustomTextArea
                   class="report-comment-textarea"
                   name="report-comment"
-                  :required="true"
+                  :required="isNoteMandatory"
                   :placeholder="
                     $t(
                       `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${currentAction}`
@@ -240,9 +240,9 @@
                 v-if="!report.resolved"
                 :class="{ danger: report.reported_user.suspended_at === null }"
                 @click="
-                  report.reported_user.suspended_at === null
-                    ? updateDisplayModal('suspension')
-                    : updateUserSuspendedAt()
+                  displayTextArea(
+                    `${report.reported_user.suspended_at === null ? '' : 'UN'}SUSPEND_ACCOUNT`
+                  )
                 "
               >
                 {{
@@ -311,7 +311,7 @@
     TReportAction,
   } from '@/types/reports'
   import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAdminUserPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
 
@@ -349,6 +349,13 @@
   const displayModal: Ref<string> = ref('')
   const reportsItems: ComputedRef<(IAdminActionComment | IReportComment)[]> =
     computed(() => getActionsAndComments())
+  const isNoteMandatory: ComputedRef<boolean> = computed(
+    () =>
+      currentAction.value !== null &&
+      ['ADD_COMMENT', 'MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(
+        currentAction.value
+      )
+  )
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
@@ -379,6 +386,18 @@
     }
     store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, payload)
   }
+  function submit() {
+    switch (currentAction.value) {
+      case 'SUSPEND_ACCOUNT':
+        updateDisplayModal('suspension')
+        break
+      case 'UNSUSPEND_ACCOUNT':
+        updateUserSuspendedAt()
+        break
+      default:
+        return updateReport()
+    }
+  }
   function getButtonLabel() {
     switch (currentAction.value) {
       case 'MARK_AS_RESOLVED':
@@ -390,11 +409,15 @@
   function updateUserSuspendedAt() {
     const suspension_action =
       report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
-    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
+    const payload: IAdminUserPayload = {
       username: report.value.reported_user.username,
       [suspension_action]: true,
       from_report: report.value.id,
-    })
+    }
+    if (reportCommentText.value) {
+      payload.note = reportCommentText.value
+    }
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
   }
   function updateDisplayModal(value: string) {
     displayModal.value = value

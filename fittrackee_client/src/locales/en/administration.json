@@ -58,7 +58,9 @@
     "RESOLVED_BY": "Resolved by",
     "STATUS": "status",
     "TEXTAREA_PLACEHOLDER": {
-      "ADD_COMMENT": "Add comment, action taken or any other useful information."
+      "ADD_COMMENT": "Add comment, action taken or any other useful information.",
+      "SUSPEND_ACCOUNT": "Indicate the reason for suspension (not mandatory). This information will be visible to the user.",
+      "UNSUSPEND_ACCOUNT": "Add a comment (not mandatory). This information will be visible to the user."
     },
     "TITLE": "Moderation"
   },

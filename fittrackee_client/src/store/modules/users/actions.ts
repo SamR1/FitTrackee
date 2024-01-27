@@ -156,10 +156,12 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     if (payload.suspend) {
       data.suspend = payload.suspend
       data.report_id = payload.from_report
+      data.note = payload.note
     }
     if (payload.unsuspend) {
       data.unsuspend = payload.unsuspend
       data.report_id = payload.from_report
+      data.note = payload.note
     }
     authApi
       .patch(`users/${payload.username}`, data)

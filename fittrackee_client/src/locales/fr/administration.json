@@ -58,7 +58,9 @@
     "RESOLVED_BY": "Résolu par",
     "STATUS": "état",
     "TEXTAREA_PLACEHOLDER": {
-      "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile."
+      "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile.",
+      "SUSPEND_ACCOUNT": "Indiquer la raison de la suspension (non obligatoire). Cette information sera visible de l'utilisateur.",
+      "UNSUSPEND_ACCOUNT": "Ajouter un commentaire (non obligatoire). Cette information sera visible de l'utilisateur."
     },
     "TITLE": "Modération"
   },

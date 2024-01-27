@@ -55,3 +55,5 @@ export type TReportAction =
   | 'ADD_COMMENT'
   | 'MARK_AS_RESOLVED'
   | 'MARK_AS_UNRESOLVED'
+  | 'SUSPEND_ACCOUNT'
+  | 'UNSUSPEND_ACCOUNT'
