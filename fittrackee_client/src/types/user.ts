@@ -177,8 +177,17 @@ export interface IFollowRequestsActionPayload {
   getFollowRequests?: boolean
 }
 
+export interface IAccountSuspensionAppeal {
+  approved: boolean | null
+  created_at: string
+  id: string
+  text: string
+  updated_at: string
+}
+
 export interface IAccountSuspension {
   action_type: string
+  appeal: IAccountSuspensionAppeal
   created_at: string
   id: string
   note: string

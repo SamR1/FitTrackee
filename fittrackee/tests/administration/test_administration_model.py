@@ -316,6 +316,37 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action['report_id'] == report.id
         assert serialized_action['user'] is None
 
+    def test_it_returns_serialized_admin_action_with_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="user_suspension",
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.flush()
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_1_admin)
+
+        assert serialized_action['action_type'] == admin_action.action_type
+        assert serialized_action['admin_user'] == user_1_admin.serialize(
+            user_1_admin
+        )
+        assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
+        assert serialized_action['created_at'] == admin_action.created_at
+        assert serialized_action['id'] == admin_action.short_id
+        assert serialized_action['note'] is None
+        assert serialized_action['report_id'] is None
+        assert serialized_action['user'] == user_2.serialize(user_1_admin)
+
     def test_it_serialized_action_for_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -326,17 +357,43 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         db.session.add(admin_action)
         db.session.commit()
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            serialized_action = admin_action.serialize(user_2)
+        serialized_action = admin_action.serialize(user_2)
 
         assert serialized_action == {
             "action_type": admin_action.action_type,
+            "appeal": None,
             "created_at": admin_action.created_at,
             "note": admin_action.note,
             "id": admin_action.short_id,
-            "user": user_2.serialize(user_2),
+        }
+
+    def test_it_serialized_action_with_appeal_for_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="user_suspension",
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.flush()
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_2)
+
+        assert serialized_action == {
+            "action_type": admin_action.action_type,
+            "appeal": appeal.serialize(user_2),
+            "created_at": admin_action.created_at,
+            "note": admin_action.note,
+            "id": admin_action.short_id,
         }
 
     def test_it_raises_error_when_user_is_not_action_user(
@@ -496,7 +553,6 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
             "created_at": appeal.created_at,
             "id": appeal.short_id,
             "text": appeal.text,
-            "user": user_2.serialize(user_2),
             "updated_at": None,
         }
 

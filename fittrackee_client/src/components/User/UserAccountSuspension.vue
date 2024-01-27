@@ -8,11 +8,17 @@
         <dt>{{ $t('user.SUSPENSION_REASON') }}:</dt>
         <dd>{{ accountSuspension.note }}</dd>
       </dl>
-      <div v-if="isSuccess" class="appeal-submitted">
-        <div class="info-box success-message appeal-success">
+      <div
+        v-if="isSuccess || accountSuspension.appeal"
+        class="appeal-submitted"
+      >
+        <div
+          class="info-box"
+          :class="{ 'success-message': isSuccess, 'appeal-success': isSuccess }"
+        >
           <span>
             <i class="fa fa-info-circle" aria-hidden="true" />
-            {{ $t('user.APPEAL_SUBMITTED') }}
+            {{ $t(`user.APPEAL_${isSuccess ? 'SUBMITTED' : 'IN_PROGRESS'}`) }}
           </span>
         </div>
         <div>

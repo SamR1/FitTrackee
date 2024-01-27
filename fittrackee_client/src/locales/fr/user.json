@@ -8,6 +8,7 @@
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "APPEAL_SUBMITTED": "Appel envoyé.",
+  "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
   "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacées.",
   "CURRENT_PASSWORD": "Mot de passe actuel",
   "EMAIL": "Courriel",

@@ -71,6 +71,7 @@ class AdminAction(BaseModel):
         lazy="joined",
         single_parent=True,
     )
+    appeal = db.relationship("AdminActionAppeal", uselist=False)
 
     def __init__(
         self,
@@ -104,16 +105,21 @@ class AdminAction(BaseModel):
             raise AdminActionForbiddenException()
         action = {
             "action_type": self.action_type,
+            "appeal": (
+                self.appeal.serialize(current_user) if self.appeal else None
+            ),
             "created_at": self.created_at,
             "id": self.short_id,
             "note": self.note,
-            "user": self.user.serialize(current_user) if self.user else None,
         }
         if current_user.admin:
             action = {
                 **action,
                 "admin_user": self.admin_user.serialize(current_user),
                 "report_id": self.report_id,
+                "user": (
+                    self.user.serialize(current_user) if self.user else None
+                ),
             }
         return action
 
@@ -200,7 +206,6 @@ class AdminActionAppeal(BaseModel):
             "created_at": self.created_at,
             "id": self.short_id,
             "text": self.text,
-            "user": self.user.serialize(current_user),
             "updated_at": self.updated_at,
         }
         if current_user.admin:
@@ -209,4 +214,5 @@ class AdminActionAppeal(BaseModel):
                 if self.admin_user
                 else None
             )
+            appeal["user"] = self.user.serialize(current_user)
         return appeal
