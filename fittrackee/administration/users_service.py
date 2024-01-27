@@ -65,6 +65,7 @@ class UserManagerService:
         with_confirmation: bool = True,
         suspended: Optional[bool] = None,
         report_id: Optional[int] = None,
+        action_note: Optional[str] = None,
     ) -> Tuple[User, bool, Optional[str]]:
         user_updated = False
         new_password = None
@@ -108,6 +109,7 @@ class UserManagerService:
                 ),
                 created_at=now,
                 report_id=report_id,
+                note=action_note,
                 user_id=user.id,
             )
             db.session.add(admin_action)

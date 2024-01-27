@@ -278,6 +278,7 @@ class TestUserManagerServiceUserUpdate:
         created_report: bool,
     ) -> None:
         report_id = None
+        action_note = random_string()
         if created_report:
             report_id = Report(
                 reported_by=user_1_admin.id,
@@ -292,7 +293,11 @@ class TestUserManagerServiceUserUpdate:
         now = datetime.utcnow()
 
         with freeze_time(now):
-            user_manager_service.update(suspended=input_suspended)
+            user_manager_service.update(
+                suspended=input_suspended,
+                report_id=report_id,
+                action_note=action_note,
+            )
 
         admin_action = AdminAction.query.filter_by(
             admin_user_id=user_1_admin.id,
@@ -300,6 +305,7 @@ class TestUserManagerServiceUserUpdate:
             user_id=user_2.id,
         ).first()
         assert admin_action.created_at == now
+        assert admin_action.note == action_note
         assert admin_action.report_id == report_id
 
 

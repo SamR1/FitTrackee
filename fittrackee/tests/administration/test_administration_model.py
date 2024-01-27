@@ -77,6 +77,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
+        assert admin_action.note is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
@@ -99,6 +100,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == "user_suspension"
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
+        assert admin_action.note is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id == user_2.id
 
@@ -142,6 +144,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
+        assert admin_action.note is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
 
@@ -165,6 +168,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == now
+        assert admin_action.note is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
 
@@ -186,6 +190,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == now
+        assert admin_action.note is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
@@ -209,7 +214,30 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id is None
         assert admin_action.created_at == now
+        assert admin_action.note is None
         assert admin_action.report_id is None
+        assert admin_action.user_id == user_2.id
+
+    def test_it_creates_action_with_note(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action_type = "user_suspension"
+        now = datetime.utcnow()
+        note = self.random_string()
+        admin_action = AdminAction(
+            action_type=action_type,
+            admin_user_id=user_1_admin.id,
+            created_at=now,
+            note=note,
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == action_type
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.note == note
         assert admin_action.user_id == user_2.id
 
 
@@ -233,6 +261,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
+        assert serialized_action['note'] is None
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
 
@@ -256,6 +285,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
+        assert serialized_action['note'] is None
         assert serialized_action['report_id'] == report.id
         assert serialized_action['user'] is None
 
@@ -277,6 +307,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action == {
             "action_type": admin_action.action_type,
             "created_at": admin_action.created_at,
+            "note": admin_action.note,
             "id": admin_action.short_id,
             "user": user_2.serialize(user_2),
         }

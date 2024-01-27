@@ -358,6 +358,7 @@ def upgrade():
         sa.Column('report_id', sa.Integer(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=True),
         sa.Column('action_type', sa.String(length=50), nullable=False),
+        sa.Column('note', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
             ['admin_user_id'], ['users.id'], ondelete='SET NULL'
         ),
