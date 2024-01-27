@@ -23,6 +23,7 @@ import type {
   IUserAccountPayload,
   IUserAccountUpdatePayload,
   IExportRequest,
+  IAccountSuspension,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -34,6 +35,7 @@ export interface IAuthUserState {
   exportRequest: IExportRequest | null
   followRequests: IUserProfile[]
   blockedUsers: IUserProfile[]
+  accountSuspension: IAccountSuspension
 }
 
 export interface IAuthUserActions {
@@ -54,6 +56,10 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
     updateUI: boolean
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION](
+    context: ActionContext<IAuthUserState, IRootState>
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
@@ -146,6 +152,11 @@ export interface IAuthUserActions {
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IPagePayload
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.MAKE_APPEAL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    appealText: string
+  ): void
 }
 
 export interface IAuthUserGetters {
@@ -184,6 +195,10 @@ export interface IAuthUserGetters {
   [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION](
+    state: IAuthUserState
+  ): IAccountSuspension
 }
 
 export type TAuthUserMutations<S = IAuthUserState> = {
@@ -219,6 +234,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS](
     state: S,
     loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION](
+    state: S,
+    accountSuspension: IAccountSuspension
   ): void
 }
 

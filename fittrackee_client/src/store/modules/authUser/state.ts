@@ -1,5 +1,5 @@
 import type { IAuthUserState } from '@/store/modules/authUser/types'
-import type { IAuthUserProfile } from '@/types/user'
+import type { IAccountSuspension, IAuthUserProfile } from '@/types/user'
 
 export const authUserState: IAuthUserState = {
   authToken: null,
@@ -10,4 +10,5 @@ export const authUserState: IAuthUserState = {
   exportRequest: null,
   followRequests: [],
   blockedUsers: [],
+  accountSuspension: <IAccountSuspension>{},
 }

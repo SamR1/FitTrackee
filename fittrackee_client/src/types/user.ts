@@ -176,3 +176,11 @@ export interface IFollowRequestsActionPayload {
   action: TFollowRequestAction
   getFollowRequests?: boolean
 }
+
+export interface IAccountSuspension {
+  action_type: string
+  created_at: string
+  id: string
+  note: string
+  user: IUserProfile
+}
