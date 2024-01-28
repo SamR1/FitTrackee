@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Dict, Optional
+from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -10,7 +10,6 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction, AdminActionAppeal
-from fittrackee.reports.models import Report
 from fittrackee.users.models import (
     FollowRequest,
     User,
@@ -20,52 +19,8 @@ from fittrackee.users.models import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-
-
-class UserModerationMixin(ApiTestCaseMixin):
-    def create_report(self, admin: User, user: User) -> Report:
-        report = Report(
-            reported_by=admin.id,
-            note=self.random_string(),
-            object_type="user",
-            object_id=user.id,
-        )
-        db.session.add(report)
-        db.session.commit()
-        return report
-
-    def create_user_suspension_action(
-        self,
-        admin: User,
-        user: User,
-        report_id: Optional[int] = None,
-    ) -> AdminAction:
-        if not report_id:
-            report_id = self.create_report(admin, user).id
-        admin_action = AdminAction(
-            action_type="user_suspension",
-            admin_user_id=admin.id,
-            user_id=user.id,
-            report_id=report_id,
-        )
-        db.session.add(admin_action)
-        user.suspended_at = datetime.utcnow()
-        db.session.commit()
-        return admin_action
-
-    def create_action_appeal(
-        self, action_id: int, user: User
-    ) -> AdminActionAppeal:
-        admin_action_appeal = AdminActionAppeal(
-            action_id=action_id,
-            user_id=user.id,
-            text=self.random_string(),
-        )
-        db.session.add(admin_action_appeal)
-        db.session.commit()
-        return admin_action_appeal
 
 
 class TestGetUserAsAdmin(ApiTestCaseMixin):
@@ -1708,7 +1663,7 @@ class TestGetUserPicture(ApiTestCaseMixin):
         self.assert_404_with_entity(response, 'user')
 
 
-class TestUpdateUser(UserModerationMixin):
+class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
     def test_it_returns_error_if_auth_user_has_no_admin_rights(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2967,7 +2922,7 @@ class TestUnBlockUser(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestProcessAdminActionAppeal(UserModerationMixin):
+class TestProcessAdminActionAppeal(UserModerationMixin, ApiTestCaseMixin):
     route = '/api/users/suspensions/appeals/{appeal_id}'
 
     def test_it_returns_error_if_user_is_not_authenticated(

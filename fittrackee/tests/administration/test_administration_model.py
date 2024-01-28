@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 import pytest
 from flask import Flask
@@ -18,42 +17,13 @@ from fittrackee.administration.models import (
     AdminAction,
     AdminActionAppeal,
 )
-from fittrackee.reports.models import Report
 from fittrackee.users.models import User
 
-from ..mixins import RandomMixin
+from ..mixins import UserModerationMixin
 
 
-class AdminActionTestCase(RandomMixin):
-    def create_report(self, reporter: User, reported_user: User) -> Report:
-        report = Report(
-            reported_by=reporter.id,
-            note=self.random_string(),
-            object_type='user',
-            object_id=reported_user.id,
-        )
-        db.session.add(report)
-        db.session.commit()
-        return report
-
-    def create_admin_action(
-        self,
-        admin_user: User,
-        user: User,
-        action_type: Optional[str] = None,
-    ) -> AdminAction:
-        report_id = None
-        if action_type in REPORT_ACTION_TYPES:
-            report_id = self.create_report(admin_user, user).id
-        admin_action = AdminAction(
-            admin_user_id=admin_user.id,
-            action_type=action_type if action_type else "user_suspension",
-            report_id=report_id,
-            user_id=user.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-        return admin_action
+class AdminActionTestCase(UserModerationMixin):
+    ...
 
 
 class TestAdminActionModel(AdminActionTestCase):
@@ -111,7 +81,7 @@ class TestAdminActionModel(AdminActionTestCase):
     def test_it_creates_user_admin_action_for_a_given_type_with_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         created_at = datetime.now()
 
         admin_action = AdminAction(
@@ -156,7 +126,7 @@ class TestAdminActionModel(AdminActionTestCase):
         user_3: User,
         input_action_type: str,
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         created_at = datetime.now()
 
         admin_action = AdminAction(
@@ -179,7 +149,7 @@ class TestAdminActionModel(AdminActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         now = datetime.utcnow()
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         action_type = "report_resolution"
 
         with freeze_time(now):
@@ -295,7 +265,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
     def test_it_returns_serialized_admin_action_with_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         admin_action = AdminAction(
             action_type="report_resolution",
             admin_user_id=user_1_admin.id,
@@ -417,7 +387,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         input_action_type: str,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_user=user_2
+            reporter=user_1_admin, reported_object=user_2
         )
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,

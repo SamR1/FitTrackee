@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta
-from typing import List, Optional, Union
+from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -8,35 +8,20 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import Report, ReportComment
 from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
-class ReportTestCase(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
+class ReportTestCase(
+    CommentMixin, UserModerationMixin, ApiTestCaseMixin, BaseTestMixin
+):
     route = "/api/reports"
-
-    def create_report(
-        self,
-        reporter: User,
-        reported_object: Union[Comment, User, Workout],
-        note: Optional[str] = None,
-    ) -> Report:
-        report = Report(
-            reported_by=reporter.id,
-            note=note if note else self.random_string(),
-            object_type=reported_object.__class__.__name__.lower(),
-            object_id=reported_object.id,
-        )
-        db.session.add(report)
-        db.session.commit()
-        return report
 
     def create_reports(
         self,

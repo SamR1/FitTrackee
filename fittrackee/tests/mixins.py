@@ -11,9 +11,17 @@ from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
+from fittrackee.administration.models import (
+    REPORT_ACTION_TYPES,
+    AdminAction,
+    AdminActionAppeal,
+)
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
+from fittrackee.reports.models import Report
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Workout
 
 from .custom_asserts import (
     assert_errored_response,
@@ -368,3 +376,70 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         self.assert_return_not_found(
             url, client, auth_token, 'user does not exist'
         )
+
+
+class UserModerationMixin(RandomMixin):
+    def create_report(
+        self,
+        reporter: User,
+        reported_object: Union[Comment, User, Workout],
+        note: Optional[str] = None,
+    ) -> Report:
+        report = Report(
+            reported_by=reporter.id,
+            note=note if note else self.random_string(),
+            object_type=reported_object.__class__.__name__.lower(),
+            object_id=reported_object.id,
+        )
+        db.session.add(report)
+        db.session.commit()
+        return report
+
+    def create_user_report(self, admin: User, user: User) -> Report:
+        return self.create_report(reporter=admin, reported_object=user)
+
+    def create_admin_action(
+        self,
+        admin_user: User,
+        user: User,
+        action_type: Optional[str] = None,
+        report_id: Optional[int] = None,
+    ) -> AdminAction:
+        if action_type in REPORT_ACTION_TYPES and not report_id:
+            report_id = self.create_report(admin_user, user).id
+        admin_action = AdminAction(
+            admin_user_id=admin_user.id,
+            action_type=action_type if action_type else "user_suspension",
+            report_id=report_id,
+            user_id=user.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+        return admin_action
+
+    def create_user_suspension_action(
+        self,
+        admin: User,
+        user: User,
+        report_id: Optional[int] = None,
+    ) -> AdminAction:
+        if not report_id:
+            report_id = self.create_user_report(admin, user).id
+        admin_action = self.create_admin_action(
+            admin, user, "user_suspension", report_id
+        )
+        user.suspended_at = datetime.utcnow()
+        db.session.commit()
+        return admin_action
+
+    def create_action_appeal(
+        self, action_id: int, user: User
+    ) -> AdminActionAppeal:
+        admin_action_appeal = AdminActionAppeal(
+            action_id=action_id,
+            user_id=user.id,
+            text=self.random_string(),
+        )
+        db.session.add(admin_action_appeal)
+        db.session.commit()
+        return admin_action_appeal

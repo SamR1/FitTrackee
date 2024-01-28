@@ -17,7 +17,7 @@ from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin
+from ..mixins import RandomMixin, UserModerationMixin
 
 
 class TestReportModel(CommentMixin, RandomMixin):
@@ -734,24 +734,15 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         }
 
 
-class ReportCommentTestCase(CommentMixin, RandomMixin):
-    def create_report(self, reporter: User, reported_user: User) -> Report:
-        report = Report(
-            reported_by=reporter.id,
-            note=self.random_string(),
-            object_type='user',
-            object_id=reported_user.id,
-        )
-        db.session.add(report)
-        db.session.commit()
-        return report
+class ReportCommentTestCase(CommentMixin, UserModerationMixin):
+    ...
 
 
 class TestReportCommentModel(ReportCommentTestCase):
     def test_it_creates_comment_for_a_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         created_at = datetime.now()
         comment = self.random_string()
 
@@ -772,7 +763,7 @@ class TestReportCommentModel(ReportCommentTestCase):
     def test_it_creates_comment_for_a_report_without_date(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         comment = self.random_string()
         now = datetime.utcnow()
 
@@ -795,7 +786,7 @@ class TestReportCommentSerializer(ReportCommentTestCase):
     def test_it_raises_exception_when_user_has_no_admin_rights(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         report_comment = ReportComment(
             report_id=report.id,
             user_id=user_1_admin.id,
@@ -808,7 +799,7 @@ class TestReportCommentSerializer(ReportCommentTestCase):
     def test_it_returns_serialized_report_comment(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(reporter=user_2, reported_user=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         comment = self.random_string()
         report_comment = ReportComment(
             report_id=report.id,

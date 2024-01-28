@@ -9,7 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction, AdminActionAppeal
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import (
     BlacklistedToken,
@@ -20,7 +20,7 @@ from fittrackee.users.models import (
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 USER_AGENT = (
@@ -3797,19 +3797,8 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class UserSuspensionTestCase(ApiTestCaseMixin):
-    @staticmethod
-    def create_admin_action(
-        admin_user: User, user: User, action_type: Optional[str] = None
-    ) -> AdminAction:
-        admin_action = AdminAction(
-            admin_user_id=admin_user.id,
-            action_type=action_type if action_type else "user_suspension",
-            user_id=user.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-        return admin_action
+class UserSuspensionTestCase(UserModerationMixin, ApiTestCaseMixin):
+    ...
 
 
 class TestGetUserSuspension(UserSuspensionTestCase):
@@ -3894,19 +3883,6 @@ class TestGetUserSuspension(UserSuspensionTestCase):
 
 class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
     route = "/api/auth/account/suspension/appeal"
-
-    @staticmethod
-    def create_admin_action(
-        admin_user: User, user: User, action_type: Optional[str] = None
-    ) -> AdminAction:
-        admin_action = AdminAction(
-            admin_user_id=admin_user.id,
-            action_type=action_type if action_type else "user_suspension",
-            user_id=user.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-        return admin_action
 
     def test_it_returns_error_when_user_is_not_authenticated(
         self, app: Flask
