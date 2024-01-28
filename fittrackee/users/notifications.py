@@ -47,19 +47,37 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
             ),
             (
                 or_(
-                    Notification.event_type.not_in(
-                        ['workout_comment', 'comment_reply']
+                    (
+                        and_(
+                            (
+                                or_(
+                                    Notification.event_type.not_in(
+                                        ['workout_comment', 'comment_reply']
+                                    ),
+                                    and_(
+                                        Notification.event_type.in_(
+                                            [
+                                                'workout_comment',
+                                                'comment_reply',
+                                            ]
+                                        ),
+                                        Notification.from_user_id.not_in(
+                                            blocked_by_users
+                                        ),
+                                    ),
+                                )
+                            ),
+                            User.suspended_at == None,  # noqa
+                        )
                     ),
-                    and_(
+                    (
                         Notification.event_type.in_(
-                            ['workout_comment', 'comment_reply']
-                        ),
-                        Notification.from_user_id.not_in(blocked_by_users),
+                            ['report', 'suspension_appeal']
+                        )
                     ),
                 )
             ),
             Notification.event_type == event_type if event_type else True,
-            User.suspended_at == None,  # noqa
         )
         .order_by(
             asc(Notification.created_at)
@@ -129,21 +147,37 @@ def get_status(auth_user: User) -> Dict:
             Notification.from_user_id.not_in(auth_user.get_blocked_user_ids()),
             (
                 or_(
-                    Notification.event_type.not_in(
-                        ['workout_comment', 'comment_reply']
+                    (
+                        and_(
+                            (
+                                or_(
+                                    Notification.event_type.not_in(
+                                        ['workout_comment', 'comment_reply']
+                                    ),
+                                    and_(
+                                        Notification.event_type.in_(
+                                            [
+                                                'workout_comment',
+                                                'comment_reply',
+                                            ]
+                                        ),
+                                        Notification.from_user_id.not_in(
+                                            auth_user.get_blocked_by_user_ids()
+                                        ),
+                                    ),
+                                )
+                            ),
+                            User.suspended_at == None,  # noqa
+                        )
                     ),
-                    and_(
+                    (
                         Notification.event_type.in_(
-                            ['workout_comment', 'comment_reply']
-                        ),
-                        Notification.from_user_id.not_in(
-                            auth_user.get_blocked_by_user_ids()
-                        ),
+                            ['report', 'suspension_appeal']
+                        )
                     ),
                 )
             ),
             Notification.marked_as_read == False,  # noqa
-            User.suspended_at == None,  # noqa
         )
         .count()
     )

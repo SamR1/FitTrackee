@@ -63,7 +63,10 @@
         @updatedUserRelationship="emitReload"
       />
       <ReportNotification
-        v-else-if="notification.type === 'report' && notification.report"
+        v-else-if="
+          ['report', 'suspension_appeal'].includes(notification.type) &&
+          notification.report
+        "
         :report="notification.report"
       />
       <WorkoutCard
@@ -152,6 +155,8 @@
         return 'notifications.SEND_FOLLOW_REQUEST_TO_YOU'
       case 'mention':
         return 'notifications.MENTIONED_YOU'
+      case 'suspension_appeal':
+        return 'notifications.APPEALED_SUSPENSION'
       case 'workout_comment':
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':
@@ -168,6 +173,7 @@
     switch (notificationType) {
       case 'mention':
         return 'at'
+      case 'suspension_appeal':
       case 'report':
         return 'flag'
       default:

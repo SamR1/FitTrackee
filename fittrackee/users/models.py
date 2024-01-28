@@ -45,6 +45,7 @@ NOTIFICATION_TYPES = [
     'follow_request',
     'mention',
     'report',
+    'suspension_appeal',
     'workout_comment',
     'workout_like',
 ]
@@ -885,10 +886,21 @@ class Notification(BaseModel):
                 user=to_user
             )
 
-        if self.event_type == "report":
+        if self.event_type in ["report", "suspension_appeal"]:
+            from fittrackee.administration.models import AdminActionAppeal
             from fittrackee.reports.models import Report
 
-            report = Report.query.filter_by(id=self.event_object_id).first()
+            if self.event_type == "suspension_appeal":
+                appeal = AdminActionAppeal.query.filter_by(
+                    id=self.event_object_id
+                ).first()
+                report = Report.query.filter_by(
+                    id=appeal.action.report_id
+                ).first()
+            else:
+                report = Report.query.filter_by(
+                    id=self.event_object_id
+                ).first()
             serialized_notification["report"] = report.serialize(
                 current_user=to_user
             )

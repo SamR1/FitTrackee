@@ -12,6 +12,7 @@ from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
+from ..mixins import UserModerationMixin
 from ..utils import random_int, random_string
 
 
@@ -1093,3 +1094,66 @@ class TestNotificationForReport(NotificationTestCase):
             user_1_admin
         )
         assert serialized_notification["type"] == "report"
+
+
+class TestNotificationForSuspensionAppeal(UserModerationMixin):
+    def test_it_does_not_create_notification_when_admin_is_inactive(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        self.create_action_appeal(
+            suspension_action.id, user_2, with_commit=False
+        )
+        user_1_admin.is_active = False
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+        ).first()
+        assert notification is None
+
+    def test_it_creates_notification_on_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+        ).first()
+        assert notification.created_at == appeal.created_at
+        assert notification.marked_as_read is False
+        assert notification.event_type == "suspension_appeal"
+        assert notification.event_object_id == appeal.id
+
+    def test_it_serializes_suspension_appeal_notification(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, user_2)
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2, report.id
+        )
+        self.create_action_appeal(suspension_action.id, user_2)
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_2.serialize(
+            user_1_admin
+        )
+        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["report"] == report.serialize(
+            user_1_admin
+        )
+        assert serialized_notification["type"] == "suspension_appeal"

@@ -433,7 +433,7 @@ class UserModerationMixin(RandomMixin):
         return admin_action
 
     def create_action_appeal(
-        self, action_id: int, user: User
+        self, action_id: int, user: User, with_commit: bool = True
     ) -> AdminActionAppeal:
         admin_action_appeal = AdminActionAppeal(
             action_id=action_id,
@@ -441,5 +441,6 @@ class UserModerationMixin(RandomMixin):
             text=self.random_string(),
         )
         db.session.add(admin_action_appeal)
-        db.session.commit()
+        if with_commit:
+            db.session.commit()
         return admin_action_appeal

@@ -9,6 +9,7 @@ export type TNotificationType =
   | 'comment_reply'
   | 'mention'
   | 'report'
+  | 'suspension_appeal'
   | 'workout_comment'
   | 'workout_like'
 

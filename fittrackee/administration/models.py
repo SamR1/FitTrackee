@@ -3,6 +3,10 @@ from typing import Dict, Optional
 from uuid import uuid4
 
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.engine.base import Connection
+from sqlalchemy.event import listens_for
+from sqlalchemy.orm.mapper import Mapper
+from sqlalchemy.orm.session import Session
 
 from fittrackee import BaseModel, db
 from fittrackee.users.models import User
@@ -222,3 +226,26 @@ class AdminActionAppeal(BaseModel):
             )
             appeal["user"] = self.user.serialize(current_user)
         return appeal
+
+
+@listens_for(AdminActionAppeal, 'after_insert')
+def on_report_insert(
+    mapper: Mapper, connection: Connection, new_appeal: AdminActionAppeal
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification, User
+
+        for admin in User.query.filter(
+            User.admin == True,  # noqa
+            User.id != new_appeal.user_id,
+            User.is_active == True,  # noqa
+        ).all():
+            notification = Notification(
+                from_user_id=new_appeal.user_id,
+                to_user_id=admin.id,
+                created_at=new_appeal.created_at,
+                event_type='suspension_appeal',
+                event_object_id=new_appeal.id,
+            )
+            session.add(notification)
