@@ -395,8 +395,8 @@ class UserModerationMixin(RandomMixin):
         db.session.commit()
         return report
 
-    def create_user_report(self, admin: User, user: User) -> Report:
-        return self.create_report(reporter=admin, reported_object=user)
+    def create_user_report(self, reporter: User, user: User) -> Report:
+        return self.create_report(reporter=reporter, reported_object=user)
 
     def create_admin_action(
         self,

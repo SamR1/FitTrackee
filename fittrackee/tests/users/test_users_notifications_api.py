@@ -12,11 +12,13 @@ from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..comments.utils import CommentMixin
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
-class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
+class TestUserNotifications(
+    CommentMixin, UserModerationMixin, ApiTestCaseMixin
+):
     route = "/api/notifications"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -996,6 +998,75 @@ class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_returns_report_notification(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type="report",
+        ).first()
+        assert data["notifications"] == [
+            jsonify_dict(report_notification.serialize())
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_does_not_return_report_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.get(
