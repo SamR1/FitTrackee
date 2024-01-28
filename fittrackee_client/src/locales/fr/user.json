@@ -35,7 +35,7 @@
   "LOGOUT": "Se déconnecter",
   "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
   "LOG_IN": "connecter",
-  "MAKE_APPEAL": "Faire appel",
+  "APPEAL": "Faire appel",
   "NEW_PASSWORD": "Nouveau mot de passe",
   "NO_USERS_FOUND": "Aucun utilisateur.",
   "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", seuls les {0} de cette instance sont affichés",

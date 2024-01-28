@@ -35,7 +35,7 @@
   "LOGOUT": "Logout",
   "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
   "LOG_IN": "log in",
-  "MAKE_APPEAL": "Make an appael",
+  "APPEAL": "Appeal",
   "NEW_PASSWORD": "New password",
   "NO_USERS_FOUND": "No users found.",
   "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", only {0} from this instance are displayed",

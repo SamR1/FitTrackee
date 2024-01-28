@@ -153,7 +153,7 @@ export interface IAuthUserActions {
     payload: IPagePayload
   ): void
 
-  [AUTH_USER_STORE.ACTIONS.MAKE_APPEAL](
+  [AUTH_USER_STORE.ACTIONS.APPEAL](
     context: ActionContext<IAuthUserState, IRootState>,
     appealText: string
   ): void

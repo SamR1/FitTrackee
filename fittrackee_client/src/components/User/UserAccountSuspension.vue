@@ -30,7 +30,7 @@
       <form v-else @submit.prevent="submitAppeal">
         <div class="form-items">
           <div class="form-item">
-            <label for="appeal">{{ $t('user.MAKE_APPEAL') }}:</label>
+            <label for="appeal">{{ $t('user.APPEAL') }}:</label>
             <CustomTextArea
               name="appeal"
               :required="true"
@@ -98,7 +98,7 @@
     appealText.value = textareaData.value
   }
   function submitAppeal() {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.MAKE_APPEAL, appealText.value)
+    store.dispatch(AUTH_USER_STORE.ACTIONS.APPEAL, appealText.value)
   }
 
   onUnmounted(() =>

@@ -17,7 +17,7 @@
     >
       <template #additionalMessage v-if="displayMakeAppeal">
         <router-link to="/profile/suspension" class="appeal-link">
-          {{ $t('user.MAKE_APPEAL') }}
+          {{ $t('user.APPEAL') }}
         </router-link>
       </template>
     </AlertMessage>

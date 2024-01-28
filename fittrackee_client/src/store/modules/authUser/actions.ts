@@ -289,7 +289,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
       .catch((error) => handleError(context, error))
   },
-  [AUTH_USER_STORE.ACTIONS.MAKE_APPEAL](
+  [AUTH_USER_STORE.ACTIONS.APPEAL](
     context: ActionContext<IAuthUserState, IRootState>,
     appealText: string
   ): void {
