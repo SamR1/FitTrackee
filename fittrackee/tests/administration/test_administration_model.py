@@ -485,8 +485,9 @@ class TestAdminActionAppealModel(AdminActionTestCase):
         assert appeal.admin_user_id is None
         assert appeal.approved is None
         assert appeal.created_at == created_at
-        assert appeal.user_id == user_2.id
+        assert appeal.reason is None
         assert appeal.updated_at is None
+        assert appeal.user_id == user_2.id
 
     def test_it_creates_appeal_for_a_given_action_without_creation_date(
         self,
@@ -507,8 +508,9 @@ class TestAdminActionAppealModel(AdminActionTestCase):
         assert appeal.admin_user_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
-        assert appeal.user_id == user_2.id
+        assert appeal.reason is None
         assert appeal.updated_at is None
+        assert appeal.user_id == user_2.id
 
 
 class TestAdminActionAppealSerializer(AdminActionTestCase):
@@ -531,6 +533,7 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
         assert serialized_appeal["created_at"] == appeal.created_at
         assert serialized_appeal["id"] == appeal.short_id
         assert serialized_appeal["text"] == appeal.text
+        assert serialized_appeal["reason"] is None
         assert serialized_appeal["user"] == user_3.serialize(user_2_admin)
         assert serialized_appeal["updated_at"] is None
 
@@ -552,6 +555,7 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
             "approved": None,
             "created_at": appeal.created_at,
             "id": appeal.short_id,
+            "reason": appeal.reason,
             "text": appeal.text,
             "updated_at": None,
         }

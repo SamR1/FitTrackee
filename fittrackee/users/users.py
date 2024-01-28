@@ -1,11 +1,13 @@
 import os
 import shutil
+from datetime import datetime
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import asc, desc, exc, func, nullslast
 
 from fittrackee import appLog, db, limiter
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
@@ -22,7 +24,7 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.utils import get_readable_duration
+from fittrackee.utils import decode_short_id, get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from .exceptions import (
@@ -1227,3 +1229,46 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     auth_user.unblocks_user(target_user)
 
     return {"status": "success"}
+
+
+@users_blueprint.route(
+    '/users/suspensions/appeals/<string:appeal_id>', methods=["PATCH"]
+)
+@require_auth(scopes=['users:write'], as_admin=True)
+def process_appeal(
+    auth_user: User, appeal_id: str
+) -> Union[Dict, HttpResponse]:
+    appeal_uuid = decode_short_id(appeal_id)
+    appeal = AdminActionAppeal.query.filter_by(uuid=appeal_uuid).first()
+
+    if not appeal:
+        return NotFoundErrorResponse(
+            message=f"appeal not found (id: {appeal_id})"
+        )
+
+    data = request.get_json()
+    if not data or "approved" not in data or not data.get("reason"):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        appeal.admin_user_id = auth_user.id
+        appeal.approved = data["approved"]
+        appeal.reason = data["reason"]
+        appeal.updated_at = datetime.utcnow()
+
+        if data["approved"]:
+            user_manager_service = UserManagerService(
+                username=appeal.user.username, admin_user_id=auth_user.id
+            )
+            user, _, _ = user_manager_service.update(
+                suspended=False,
+                report_id=appeal.action.report_id,
+            )
+        db.session.commit()
+        return {
+            "status": "success",
+            "appeal": appeal.serialize(auth_user),
+        }
+
+    except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

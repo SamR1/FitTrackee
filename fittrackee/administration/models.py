@@ -71,7 +71,11 @@ class AdminAction(BaseModel):
         lazy="joined",
         single_parent=True,
     )
-    appeal = db.relationship("AdminActionAppeal", uselist=False)
+    appeal = db.relationship(
+        "AdminActionAppeal",
+        uselist=False,
+        backref=db.backref("action", lazy='joined', single_parent=True),
+    )
 
     def __init__(
         self,
@@ -163,6 +167,7 @@ class AdminActionAppeal(BaseModel):
     updated_at = db.Column(db.DateTime)
     approved = db.Column(db.Boolean, nullable=True)
     text = db.Column(db.String(), nullable=False)
+    reason = db.Column(db.String(), nullable=True)
 
     admin_user = db.relationship(
         "User",
@@ -179,7 +184,7 @@ class AdminActionAppeal(BaseModel):
 
     def __init__(
         self,
-        action_id: str,
+        action_id: int,
         user_id: int,
         text: str,
         created_at: Optional[datetime] = None,
@@ -205,6 +210,7 @@ class AdminActionAppeal(BaseModel):
             "approved": self.approved,
             "created_at": self.created_at,
             "id": self.short_id,
+            "reason": self.reason,
             "text": self.text,
             "updated_at": self.updated_at,
         }

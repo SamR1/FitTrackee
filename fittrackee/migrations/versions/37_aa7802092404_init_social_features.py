@@ -395,6 +395,7 @@ def upgrade():
         sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.Column('approved', sa.Boolean(), nullable=True),
         sa.Column('text', sa.String(), nullable=False),
+        sa.Column('reason', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
             ['action_id'], ['admin_actions.id'], ondelete='CASCADE'
         ),
