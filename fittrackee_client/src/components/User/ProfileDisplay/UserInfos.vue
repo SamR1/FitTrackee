@@ -150,7 +150,8 @@
             v-if="
               $route.name === 'User' &&
               user.username !== authUser?.username &&
-              user.suspended_at === null
+              user.suspended_at === null &&
+              reportStatus !== `user-${user.username}-created`
             "
             @click="displayReportForm"
           >
