@@ -10,20 +10,20 @@
         </div>
         <div v-if="user.blocked" class="blocked-user">
           <button @click="updateBlock(user.username, false)">
-            {{ $t('user.RELATIONSHIPS.UNBLOCK') }}
+            {{ $t('buttons.UNBLOCK') }}
           </button>
         </div>
         <div v-else class="follow-requests-list-actions">
           <button @click="updateFollowRequest(user.username, 'accept')">
             <i class="fa fa-check" aria-hidden="true" />
-            {{ $t('user.RELATIONSHIPS.ACCEPT') }}
+            {{ $t('buttons.ACCEPT') }}
           </button>
           <button
             @click="updateFollowRequest(user.username, 'reject')"
             class="danger"
           >
             <i class="fa fa-times" aria-hidden="true" />
-            {{ $t('user.RELATIONSHIPS.REJECT') }}
+            {{ $t('buttons.REJECT') }}
           </button>
         </div>
       </div>

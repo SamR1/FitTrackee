@@ -31,9 +31,9 @@
       "UNSUSPEND_ACCOUNT": "Réactiver le compte de l'utilisateur"
     },
     "APPEAL": {
-      "REASON_IS": "La raison est :",
       "APPROVED": "Ce recours a été approuvé {0}.",
       "HIDE": "Masquer le recours",
+      "REASON_IS": "La raison est :",
       "REJECTED": "Ce recours a été rejeté {0}.",
       "SEE": "Afficher le recours"
     },

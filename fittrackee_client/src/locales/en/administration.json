@@ -31,9 +31,9 @@
       "UNSUSPEND_ACCOUNT": "Unsuspend user account"
     },
     "APPEAL": {
-      "REASON_IS": "The reason is:",
       "APPROVED": "This appeal has been approved {0}.",
       "HIDE": "Hide appeal",
+      "REASON_IS": "The reason is:",
       "REJECTED": "This appeal has been rejected {0}.",
       "SEE": "See appeal"
     },
@@ -45,17 +45,17 @@
       "UPDATED_AT": "update date"
     },
     "REPORT": "report | reports",
-    "REPORT_ACTIONS": {
-      "user_suspension": "{0} has been suspended by {1} {2}.",
-      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
-      "report_resolution": "The report has been marked as resolved by {1} {2}.",
-      "report_reopening": "The report has been reopened by {1} {2}."
-    },
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",
     "REPORTED_OBJECT": "Object",
     "REPORTED_USER": "Reported user",
     "REPORTER": "reporter",
+    "REPORT_ACTIONS": {
+      "report_reopening": "The report has been reopened by {1} {2}.",
+      "report_resolution": "The report has been marked as resolved by {1} {2}.",
+      "user_suspension": "{0} has been suspended by {1} {2}.",
+      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}."
+    },
     "REPORT_NOTE": "Note by",
     "RESOLVED": {
       "FALSE": "Unresolved",

@@ -16,14 +16,14 @@
         @click="updateFollowRequest(notification.from.username, 'accept')"
       >
         <i class="fa fa-check" aria-hidden="true" />
-        {{ $t('user.RELATIONSHIPS.ACCEPT') }}
+        {{ $t('buttons.ACCEPT') }}
       </button>
       <button
         @click="updateFollowRequest(notification.from.username, 'reject')"
         class="danger"
       >
         <i class="fa fa-times" aria-hidden="true" />
-        {{ $t('user.RELATIONSHIPS.REJECT') }}
+        {{ $t('buttons.REJECT') }}
       </button>
     </div>
     <div class="follow-request-actions" v-else>
