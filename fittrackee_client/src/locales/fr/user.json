@@ -2,7 +2,7 @@
   "ACCOUNT_CONFIRMATION": "Confirmation du compte",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Vous n'avez pas reçu les instructions ?",
   "ACCOUNT_CONFIRMATION_SENT": "Vérifiez vos courriels. Un nouveau courriel de confirmation a été envoyé à l'adresse électronique fournie.",
-  "ACCOUNT_SUSPENDED_AT": "Compte suspendu le {0}",
+  "ACCOUNT_SUSPENDED_AT": "Compte suspendu le {0}.",
   "ACTIVE_ACCOUNT": "Le compte est actif.",
   "ACTIVE_USER": "utilisateur actif | utilisateurs actifs",
   "ADMIN": "Admin",

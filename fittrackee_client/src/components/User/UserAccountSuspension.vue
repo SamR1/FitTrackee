@@ -52,6 +52,9 @@
             <button class="confirm" type="submit" :disabled="!appealText">
               {{ $t('buttons.SUBMIT') }}
             </button>
+            <button @click="$router.push('/profile')">
+              {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
+            </button>
           </div>
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -120,6 +123,10 @@
       .appeal-success {
         margin: 0;
       }
+    }
+    .report-buttons {
+      display: flex;
+      gap: $default-padding;
     }
   }
 </style>
