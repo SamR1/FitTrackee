@@ -149,41 +149,62 @@
                 <div class="report-comment-comment">{{ item.comment }}</div>
               </div>
               <div class="report-action" v-if="'action_type' in item">
-                •
-                <i18n-t
-                  :keypath="`admin.APP_MODERATION.REPORT_ACTIONS.${item.action_type}`"
-                >
-                  <router-link
-                    class="user-name"
-                    v-if="
-                      ['user_suspension', 'user_unsuspension'].includes(
-                        item.action_type
-                      ) && item.user
-                    "
-                    :to="`/admin/users/${item.user.username}`"
-                    :title="item.user.username"
+                <div>
+                  •
+                  <i18n-t
+                    :keypath="`admin.APP_MODERATION.REPORT_ACTIONS.${item.action_type}`"
                   >
-                    {{ item.user.username }}
-                  </router-link>
-                  <router-link
-                    class="user-name"
-                    :to="`/admin/users/${item.admin_user.username}`"
-                    :title="item.admin_user.username"
-                  >
-                    {{ item.admin_user.username }}
-                  </router-link>
-                  <span
-                    class="report-action-date"
-                    :title="getDate(item.created_at)"
+                    <router-link
+                      class="user-name"
+                      v-if="
+                        ['user_suspension', 'user_unsuspension'].includes(
+                          item.action_type
+                        ) && item.user
+                      "
+                      :to="`/admin/users/${item.user.username}`"
+                      :title="item.user.username"
+                    >
+                      {{ item.user.username }}
+                    </router-link>
+                    <router-link
+                      class="user-name"
+                      :to="`/admin/users/${item.admin_user.username}`"
+                      :title="item.admin_user.username"
+                    >
+                      {{ item.admin_user.username }}
+                    </router-link>
+                    <span
+                      class="report-action-date"
+                      :title="getDate(item.created_at)"
+                    >
+                      {{
+                        formatDistance(new Date(item.created_at), new Date(), {
+                          addSuffix: true,
+                          locale,
+                        })
+                      }}
+                    </span>
+                  </i18n-t>
+                  <button
+                    v-if="item.appeal"
+                    class="appeal-button small transparent"
+                    @click="toggleAppeal(item.appeal.id)"
                   >
                     {{
-                      formatDistance(new Date(item.created_at), new Date(), {
-                        addSuffix: true,
-                        locale,
-                      })
+                      $t(
+                        `admin.APP_MODERATION.APPEAL.${displayedAppeals.includes(item.appeal.id) ? 'HIDE' : 'SEE'}`
+                      )
                     }}
-                  </span>
-                </i18n-t>
+                  </button>
+                </div>
+                <AdminActionAppeal
+                  v-if="
+                    item.appeal && displayedAppeals.includes(item.appeal.id)
+                  "
+                  :appeal="item.appeal"
+                  :auth-user="authUser"
+                  @updateAppeal="updateAppeal"
+                />
               </div>
             </div>
             <div v-if="reportsItems.length == 0" class="no-notes">
@@ -289,6 +310,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
+  import AdminActionAppeal from '@/components/Administration/AdminActionAppeal.vue'
   import Comment from '@/components/Comment/Comment.vue'
   import NotFound from '@/components/Common/NotFound.vue'
   import UserCard from '@/components/User/UserCard.vue'
@@ -314,6 +336,12 @@
   import type { IAdminUserPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
+
+  interface AppealEventData {
+    approved: boolean
+    appealId: string
+    reason: string
+  }
 
   const store = useStore()
   const route = useRoute()
@@ -356,6 +384,7 @@
         currentAction.value
       )
   )
+  const displayedAppeals: Ref<string[]> = ref([])
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
@@ -452,7 +481,19 @@
       sortCreatedAt
     )
   }
-
+  function toggleAppeal(appealId: string) {
+    if (displayedAppeals.value.includes(appealId)) {
+      displayedAppeals.value.splice(displayedAppeals.value.indexOf(appealId), 1)
+    } else {
+      displayedAppeals.value.push(appealId)
+    }
+  }
+  function updateAppeal(data: AppealEventData) {
+    store.dispatch(REPORTS_STORE.ACTIONS.PROCESS_APPEAL, {
+      ...data,
+      reportId: report.value.id,
+    })
+  }
   onBeforeMount(async () => loadReport())
 
   watch(
@@ -568,6 +609,10 @@
         font-style: italic;
         font-size: 0.9em;
         margin-left: $default-padding;
+
+        .appeal-button {
+          margin-left: 3px;
+        }
       }
 
       .no-notes {

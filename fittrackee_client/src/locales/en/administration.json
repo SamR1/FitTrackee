@@ -30,6 +30,13 @@
       "SUSPEND_ACCOUNT": "Suspend user account",
       "UNSUSPEND_ACCOUNT": "Unsuspend user account"
     },
+    "APPEAL": {
+      "REASON_IS": "The reason is:",
+      "APPROVED": "This appeal has been approved {0}.",
+      "HIDE": "Hide appeal",
+      "REJECTED": "This appeal has been rejected {0}.",
+      "SEE": "See appeal"
+    },
     "DESCRIPTION": "Reports management.",
     "NOTES_AND_ACTIONS": "Notes and actions",
     "NO_REPORTS_FOUND": "No reports",
@@ -39,10 +46,10 @@
     },
     "REPORT": "report | reports",
     "REPORT_ACTIONS": {
-      "user_suspension": "{0} has been suspended by {1} {2}",
-      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}",
-      "report_resolution": "The report has been marked as resolved by {1} {2}",
-      "report_reopening": "The report has been reopened by {1} {2}"
+      "user_suspension": "{0} has been suspended by {1} {2}.",
+      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
+      "report_resolution": "The report has been marked as resolved by {1} {2}.",
+      "report_reopening": "The report has been reopened by {1} {2}."
     },
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",
@@ -60,7 +67,8 @@
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Add comment, action taken or any other useful information.",
       "SUSPEND_ACCOUNT": "Indicate the reason for suspension (not mandatory). This information will be visible to the user.",
-      "UNSUSPEND_ACCOUNT": "Add a comment (not mandatory). This information will be visible to the user."
+      "UNSUSPEND_ACCOUNT": "Add a comment (not mandatory). This information will be visible to the user.",
+      "UPDATE_APPEAL": "Indicate the reason for this appeal processing. This information will be visible to the user."
     },
     "TITLE": "Moderation"
   },

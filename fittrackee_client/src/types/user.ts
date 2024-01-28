@@ -181,6 +181,7 @@ export interface IAccountSuspensionAppeal {
   approved: boolean | null
   created_at: string
   id: string
+  reason: string | null
   text: string
   updated_at: string
 }

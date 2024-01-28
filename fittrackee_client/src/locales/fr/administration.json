@@ -30,6 +30,13 @@
       "SUSPEND_ACCOUNT": "Suspendre le compte de l'utilisateur",
       "UNSUSPEND_ACCOUNT": "Réactiver le compte de l'utilisateur"
     },
+    "APPEAL": {
+      "REASON_IS": "La raison est :",
+      "APPROVED": "Ce recours a été approuvé {0}.",
+      "HIDE": "Masquer le recours",
+      "REJECTED": "Ce recours a été rejeté {0}.",
+      "SEE": "Afficher le recours"
+    },
     "DESCRIPTION": "Gestion des signalements.",
     "NOTES_AND_ACTIONS": "Notes et actions",
     "NO_REPORTS_FOUND": "Pas de signalements",
@@ -38,17 +45,17 @@
       "UPDATED_AT": "date de mise à jour"
     },
     "REPORT": "signalement | signalements",
-    "REPORT_ACTIONS": {
-      "user_suspension": "{0} a été suspendu(e) par {1} {2}",
-      "user_unsuspension": "La suspension de {0} a été levée par {1} {2}",
-      "report_resolution": "Le signalement a été marqué comme résolu par {1} {2}",
-      "report_reopening": "Le signalement a été réouvert par {1} {2}"
-    },
     "REPORTED_BY": "Signalé par",
     "REPORTED_CONTENT": "Contenu signalé",
     "REPORTED_OBJECT": "Objet",
     "REPORTED_USER": "Utilisateur signalé",
     "REPORTER": "rapporteur",
+    "REPORT_ACTIONS": {
+      "report_reopening": "Le signalement a été réouvert par {1} {2}.",
+      "report_resolution": "Le signalement a été marqué comme résolu par {1} {2}.",
+      "user_suspension": "{0} a été suspendu(e) par {1} {2}.",
+      "user_unsuspension": "La suspension de {0} a été levée par {1} {2}."
+    },
     "REPORT_NOTE": "Note par ",
     "RESOLVED": {
       "FALSE": "Non résolu",
@@ -59,8 +66,9 @@
     "STATUS": "état",
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile.",
-      "SUSPEND_ACCOUNT": "Indiquer la raison de la suspension (non obligatoire). Cette information sera visible de l'utilisateur.",
-      "UNSUSPEND_ACCOUNT": "Ajouter un commentaire (non obligatoire). Cette information sera visible de l'utilisateur."
+      "SUSPEND_ACCOUNT": "Indiquer le motif de la suspension (non obligatoire). Cette information sera visible de l'utilisateur.",
+      "UNSUSPEND_ACCOUNT": "Ajouter un commentaire (non obligatoire). Cette information sera visible de l'utilisateur.",
+      "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours. Cette information sera visible de l'utilisateur."
     },
     "TITLE": "Modération"
   },

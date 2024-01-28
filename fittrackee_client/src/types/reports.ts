@@ -1,4 +1,4 @@
-import type { IUserProfile } from '@/types/user'
+import type { IAccountSuspensionAppeal, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
@@ -19,6 +19,7 @@ export interface IReport {
 export interface IAdminActionComment {
   action_type: string
   admin_user: IUserProfile
+  appeal: IAccountSuspensionAppeal
   created_at: string
   id: number
   report_id: number | null
@@ -57,3 +58,10 @@ export type TReportAction =
   | 'MARK_AS_UNRESOLVED'
   | 'SUSPEND_ACCOUNT'
   | 'UNSUSPEND_ACCOUNT'
+
+export interface IAppealPayload {
+  appealId: string
+  approved: boolean
+  reason: string
+  reportId: number
+}

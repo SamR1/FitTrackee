@@ -13,7 +13,11 @@ import type {
 } from '@/store/modules/reports/types'
 import type { IRootState } from '@/store/modules/root/types'
 import type { TPaginationPayload } from '@/types/api'
-import type { IReportCommentPayload, IReportPayload } from '@/types/reports'
+import type {
+  IAppealPayload,
+  IReportCommentPayload,
+  IReportPayload,
+} from '@/types/reports'
 import { handleError } from '@/utils'
 
 export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
@@ -64,6 +68,25 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
           }
         })
         .catch((error) => handleError(context, error))
+    },
+    [REPORTS_STORE.ACTIONS.PROCESS_APPEAL](
+      context: ActionContext<IReportsState, IRootState>,
+      payload: IAppealPayload
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      const { appealId, reportId, ...data } = payload
+      authApi
+        .patch(`users/suspensions/appeals/${appealId}`, data)
+        .then((res) => {
+          if (res.data.status === 'success') {
+            context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, reportId)
+          } else {
+            handleError(context, null)
+          }
+        })
+        .catch((error) => {
+          handleError(context, error)
+        })
     },
     [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
       context: ActionContext<IReportsState, IRootState>,

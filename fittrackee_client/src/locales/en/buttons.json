@@ -1,5 +1,6 @@
 {
   "ACCOUNT-CONFIRMATION-RESEND": "Resend confirmation email",
+  "APPROVE": "Approve",
   "AUTHORIZE": "Authorize",
   "BACK": "Back",
   "CANCEL": "Cancel",
@@ -13,6 +14,7 @@
   "NO": "No",
   "REGISTER": "Register",
   "REQUEST_DATA_EXPORT": "Request data export",
+  "REJECT": "Reject",
   "RESET": "Reset",
   "SUBMIT": "Submit",
   "YES": "Yes"

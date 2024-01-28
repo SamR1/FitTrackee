@@ -122,6 +122,10 @@ button {
     cursor: pointer;
     padding: 0;
   }
+  &.small {
+    font-size: 0.9em;
+    padding: 3px 7px;
+  }
 
   &:hover {
     background: var(--button-transparent-hover-color);

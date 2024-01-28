@@ -4,7 +4,7 @@
   </div>
   <div id="suspension-appeal" v-else>
     <div v-if="accountSuspension.id" class="description-list">
-      <dl>
+      <dl v-if="accountSuspension.note">
         <dt>{{ $t('user.SUSPENSION_REASON') }}:</dt>
         <dd>{{ accountSuspension.note }}</dd>
       </dl>
