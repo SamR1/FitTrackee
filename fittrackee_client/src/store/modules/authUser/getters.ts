@@ -50,4 +50,7 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.IS_PROFILE_NOT_LOADED]: (state: IAuthUserState) => {
     return state.authUserProfile.username === undefined
   },
+  [AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]: (state: IAuthUserState) => {
+    return state.accountSuspension
+  },
 }

@@ -22,16 +22,23 @@
       message="user.ACCOUNT_SUSPENDED_AT"
       :param="suspensionDate"
       v-if="user.suspended_at !== null"
-    />
+    >
+      <template #additionalMessage v-if="displayMakeAppeal">
+        <router-link to="/profile/suspension" class="appeal-link">
+          {{ $t('user.APPEAL') }}
+        </router-link>
+      </template>
+    </AlertMessage>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed, type ComputedRef, toRefs } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -39,14 +46,17 @@
 
   interface Props {
     user: IUserProfile
-    authUser?: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
   const { user } = toRefs(props)
 
   const store = useStore()
+  const route = useRoute()
 
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
@@ -58,6 +68,12 @@
           displayOptions.value.dateFormat
         )
       : ''
+  )
+  const displayMakeAppeal: ComputedRef<boolean> = computed(
+    () =>
+      user.value.suspended_at !== null &&
+      route.name !== 'AuthUserAccountSuspension' &&
+      user.value.username === authUser?.value.username
   )
 </script>
 

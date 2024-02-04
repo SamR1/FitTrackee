@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "Passwort verbergen",
   "INVALID_TOKEN": "Ungültiges Token, bitte fordere ein neues Passworts an.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Ich möchte meinen Account löschen",
-  "LANGUAGE": "Sprache",
+  "LANGUAGE": "Sprache | Sprachen",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "Die Datenschutzrichtlinie wurde aktualisiert, bitte {0} sie vor dem Fortfahren.",
   "LOGIN": "Anmeldung",
   "LOGOUT": "Abmelden",
@@ -123,7 +123,7 @@
         "LIGHT": "Hell"
       }
     },
-    "TIMEZONE": "Zeitzone",
+    "TIMEZONE": "Zeitzone | Zeitzonen",
     "UNITS": {
       "IMPERIAL": "Imperiales System (ft, mi, mph, °F)",
       "LABEL": "Einheiten für die Distanz",

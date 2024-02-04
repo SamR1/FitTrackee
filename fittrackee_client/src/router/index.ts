@@ -18,6 +18,7 @@ import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
+import UserAccountSuspension from '@/components/User/UserAccountSuspension.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
@@ -274,6 +275,11 @@ const routes: Array<RouteRecordRaw> = [
             name: 'AuthUserFollowing',
             component: UserRelationships,
             props: { relationship: 'following' },
+          },
+          {
+            path: 'suspension',
+            name: 'AuthUserAccountSuspension',
+            component: UserAccountSuspension,
           },
         ],
       },

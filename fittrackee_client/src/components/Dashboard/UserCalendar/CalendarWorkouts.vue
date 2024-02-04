@@ -21,6 +21,7 @@
           :datasets="chartDatasets"
           :colors="colors"
           :displayHARecord="displayHARecord"
+          :index="index"
         />
       </div>
     </div>
@@ -32,6 +33,7 @@
           :datasets="chartDatasets"
           :colors="colors"
           :displayHARecord="displayHARecord"
+          :index="index"
         />
       </div>
     </div>
@@ -52,10 +54,11 @@
     displayHARecord: boolean
     workouts: IWorkout[]
     sports: ISport[]
+    index: number
   }
   const props = defineProps<Props>()
 
-  const { displayHARecord, workouts, sports } = toRefs(props)
+  const { displayHARecord, index, sports, workouts } = toRefs(props)
   const chartDatasets = computed(() => getDonutDatasets(props.workouts))
   const colors = computed(() => sportIdColors(props.sports))
   const displayedWorkoutCount = 6

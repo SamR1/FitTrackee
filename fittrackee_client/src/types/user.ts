@@ -91,6 +91,7 @@ export interface IAdminUserPayload {
   admin?: boolean
   from_report?: number
   new_email?: string
+  note?: string
   resetPassword?: boolean
   suspend?: boolean
   unsuspend?: boolean
@@ -180,4 +181,22 @@ export interface IFollowRequestsActionPayload {
   username: string
   action: TFollowRequestAction
   getFollowRequests?: boolean
+}
+
+export interface IAccountSuspensionAppeal {
+  approved: boolean | null
+  created_at: string
+  id: string
+  reason: string | null
+  text: string
+  updated_at: string
+}
+
+export interface IAccountSuspension {
+  action_type: string
+  appeal: IAccountSuspensionAppeal
+  created_at: string
+  id: string
+  note: string
+  user: IUserProfile
 }

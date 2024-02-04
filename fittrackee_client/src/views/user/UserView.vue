@@ -1,6 +1,6 @@
 <template>
   <div id="user" class="view" v-if="user.username">
-    <UserHeader :authUser="authUser" :user="user" />
+    <UserHeader :user="user" />
     <div class="box">
       <router-view
         v-if="$route.path.includes('follow')"

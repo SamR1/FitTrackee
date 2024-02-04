@@ -272,6 +272,7 @@ def upgrade():
         sa.Column('reported_comment_id', sa.Integer(), nullable=True),
         sa.Column('reported_user_id', sa.Integer(), nullable=True),
         sa.Column('reported_workout_id', sa.Integer(), nullable=True),
+        sa.Column('resolved_by', sa.Integer(), nullable=True),
         sa.Column('resolved', sa.Boolean(), nullable=False),
         sa.Column('object_type', sa.String(length=50), nullable=False),
         sa.Column('note', sa.String(), nullable=False),
@@ -286,6 +287,9 @@ def upgrade():
         ),
         sa.ForeignKeyConstraint(
             ['reported_workout_id'], ['workouts.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['resolved_by'], ['users.id'], ondelete='CASCADE'
         ),
         sa.PrimaryKeyConstraint('id'),
     )
@@ -306,6 +310,11 @@ def upgrade():
         batch_op.create_index(
             batch_op.f('ix_reports_reported_workout_id'),
             ['reported_workout_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_reports_resolved_by'),
+            ['resolved_by'],
             unique=False,
         )
         batch_op.create_index(
@@ -335,8 +344,109 @@ def upgrade():
             batch_op.f('ix_report_comments_user_id'), ['user_id'], unique=False
         )
 
+    with op.batch_alter_table('records', schema=None) as batch_op:
+        batch_op.create_index(
+            'workout_records', ['workout_id', 'record_type'], unique=False
+        )
+
+    op.create_table(
+        'admin_actions',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=True),
+        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('report_id', sa.Integer(), nullable=True),
+        sa.Column('user_id', sa.Integer(), nullable=True),
+        sa.Column('action_type', sa.String(length=50), nullable=False),
+        sa.Column('note', sa.String(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+        ),
+        sa.ForeignKeyConstraint(
+            ['report_id'], ['reports.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('uuid'),
+    )
+    with op.batch_alter_table('admin_actions', schema=None) as batch_op:
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_admin_user_id'),
+            ['admin_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_report_id'),
+            ['report_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_user_id'), ['user_id'], unique=False
+        )
+
+    op.create_table(
+        'admin_action_appeals',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('action_id', sa.Integer(), nullable=False),
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), nullable=True),
+        sa.Column('approved', sa.Boolean(), nullable=True),
+        sa.Column('text', sa.String(), nullable=False),
+        sa.Column('reason', sa.String(), nullable=True),
+        sa.ForeignKeyConstraint(
+            ['action_id'], ['admin_actions.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint(
+            'action_id', 'user_id', name='action_id_user_id_unique'
+        ),
+        sa.UniqueConstraint('uuid'),
+    )
+    with op.batch_alter_table('admin_action_appeals', schema=None) as batch_op:
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_action_id'),
+            ['action_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_admin_user_id'),
+            ['admin_user_id'],
+            unique=False,
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_action_appeals_user_id'),
+            ['user_id'],
+            unique=False,
+        )
+
 
 def downgrade():
+    with op.batch_alter_table('admin_action_appeals', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_admin_action_appeals_user_id'))
+        batch_op.drop_index(
+            batch_op.f('ix_admin_action_appeals_admin_user_id')
+        )
+        batch_op.drop_index(batch_op.f('ix_admin_action_appeals_action_id'))
+
+    op.drop_table('admin_action_appeals')
+
+    with op.batch_alter_table('admin_actions', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_admin_actions_user_id'))
+        batch_op.drop_index(batch_op.f('ix_admin_actions_report_id'))
+        batch_op.drop_index(batch_op.f('ix_admin_actions_admin_user_id'))
+
+    op.drop_table('admin_actions')
+
+    with op.batch_alter_table('records', schema=None) as batch_op:
+        batch_op.drop_index('workout_records')
+
     with op.batch_alter_table('report_comments', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_report_comments_user_id'))
         batch_op.drop_index(batch_op.f('ix_report_comments_report_id'))
@@ -344,6 +454,7 @@ def downgrade():
     op.drop_table('report_comments')
     with op.batch_alter_table('reports', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_reports_object_type'))
+        batch_op.drop_index(batch_op.f('ix_reports_resolved_by'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_workout_id'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_user_id'))
         batch_op.drop_index(batch_op.f('ix_reports_reported_comment_id'))

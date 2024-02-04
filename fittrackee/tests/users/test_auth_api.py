@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Optional, Union
+from typing import Dict, Optional, Union
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -9,6 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import (
     BlacklistedToken,
@@ -20,7 +21,7 @@ from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
 from ..federation.users.test_auth_api import assert_actor_is_created
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 USER_AGENT = (
@@ -3833,6 +3834,229 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users",
             content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class UserSuspensionTestCase(UserModerationMixin, ApiTestCaseMixin):
+    ...
+
+
+class TestGetUserSuspension(UserSuspensionTestCase):
+    route = "/api/auth/account/suspension"
+
+    def test_it_returns_error_when_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_when_user_is_not_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            "user account is not suspended",
+        )
+
+    def test_it_returns_user_suspension(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_admin_action(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "user_suspension": jsonify_dict(action.serialize(user_2)),
+        }
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'profile:read': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=self.random_short_id()),
+            content_type='application/json',
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
+    route = "/api/auth/account/suspension/appeal"
+
+    def test_it_returns_error_when_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route,
+            data=json.dumps(dict(text=self.random_string())),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_when_when_user_is_not_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            "user account is not suspended",
+        )
+
+    @pytest.mark.parametrize(
+        'input_data', [{}, {"text": ""}, {"comment": "some text"}]
+    )
+    def test_it_returns_400_when_no_text_provided(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        self.create_admin_action(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            data=json.dumps(input_data),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'no text provided')
+
+    def test_user_can_appeal_user_suspension(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_admin_action(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        text = self.random_string()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.post(
+                self.route,
+                content_type='application/json',
+                data=json.dumps(dict(text=text)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "success"}
+        appeal = AdminActionAppeal.query.filter_by(action_id=action.id).first()
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == now
+        assert appeal.user_id == user_2.id
+        assert appeal.updated_at is None
+
+    def test_user_can_appeal_user_suspension_only_once(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_admin_action(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        appeal = AdminActionAppeal(
+            action_id=action.id,
+            user_id=user_2.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        text = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            data=json.dumps(dict(text=text)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='you can appeal only once')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'profile:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            self.route.format(action_short_id=self.random_short_id()),
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
             headers=dict(Authorization=f"Bearer {access_token}"),
         )
 

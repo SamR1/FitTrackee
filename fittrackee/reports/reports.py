@@ -4,6 +4,7 @@ from flask import Blueprint, request
 from sqlalchemy import asc, desc, nullslast
 
 from fittrackee import db
+from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -18,7 +19,6 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import InvalidReporterException, ReportNotFoundException
 from .models import REPORT_OBJECT_TYPES, Report
-from .service import ReportService
 
 reports_blueprint = Blueprint('reports', __name__)
 
@@ -42,19 +42,13 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     try:
-        new_report = report_service.create_report(
+        report_service.create_report(
             reporter=auth_user,
             note=note,
             object_id=object_id,
             object_type=object_type,
         )
-        return (
-            {
-                "status": "created",
-                "report": new_report.serialize(auth_user),
-            },
-            201,
-        )
+        return {"status": "created"}, 201
     except (
         CommentForbiddenException,
         UserNotFoundException,
@@ -157,7 +151,7 @@ def get_report(
 
     return {
         "status": "success",
-        "report": report.serialize(auth_user),
+        "report": report.serialize(auth_user, full=True),
     }, 200
 
 
@@ -176,12 +170,12 @@ def update_report(
             report_id=report_id,
             admin_user=auth_user,
             report_comment=comment,
-            resolved=data.get("resolved") is True,
+            resolved=data.get("resolved"),
         )
     except ReportNotFoundException:
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     return {
         "status": "success",
-        "report": report.serialize(auth_user),
+        "report": report.serialize(auth_user, full=True),
     }, 200

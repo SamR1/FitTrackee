@@ -12,11 +12,13 @@ from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..comments.utils import CommentMixin
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
-class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
+class TestUserNotifications(
+    CommentMixin, UserModerationMixin, ApiTestCaseMixin
+):
     route = "/api/notifications"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1016,6 +1018,121 @@ class TestUserNotifications(CommentMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
+    def test_it_returns_report_notification(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type="report",
+        ).first()
+        assert data["notifications"] == [
+            jsonify_dict(report_notification.serialize())
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_returns_report_notification_from_suspended_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type="report",
+        ).first()
+        assert data["notifications"] == [
+            jsonify_dict(report_notification.serialize())
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_returns_suspension_appeal_notification(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        admin_action = self.create_user_suspension_action(user_2_admin, user_3)
+        self.create_action_appeal(admin_action.id, user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        appeal_notification = Notification.query.filter_by(
+            from_user_id=user_3.id,
+            to_user_id=user_1_admin.id,
+            event_type="suspension_appeal",
+        ).first()
+        assert (
+            jsonify_dict(appeal_notification.serialize())
+            in data["notifications"]
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'notifications:read': True}.items(),
@@ -1210,7 +1327,9 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestUserNotificationsStatus(CommentMixin, ApiTestCaseMixin):
+class TestUserNotificationsStatus(
+    CommentMixin, UserModerationMixin, ApiTestCaseMixin
+):
     route = "/api/notifications/unread"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1264,6 +1383,55 @@ class TestUserNotificationsStatus(CommentMixin, ApiTestCaseMixin):
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unread"] is True
+
+    def test_it_returns_unread_as_true_when_user_has_unread_report_notification(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unread"] is True
+
+    def test_it_returns_unread_as_true_when_user_has_unread_suspension_notification(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        admin_action = self.create_user_suspension_action(user_2_admin, user_3)
+        Notification.query.update({Notification.marked_as_read: True})
+        db.session.commit()
+        self.create_action_appeal(admin_action.id, user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.get(

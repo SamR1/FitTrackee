@@ -195,6 +195,7 @@ class Workout(BaseModel):
         lazy=True,
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
+        order_by='Record.record_type.asc()',
     )
     comments = db.relationship(
         Comment,
@@ -571,6 +572,7 @@ class Record(BaseModel):
         db.UniqueConstraint(
             'user_id', 'sport_id', 'record_type', name='user_sports_records'
         ),
+        db.Index('workout_records', 'workout_id', 'record_type'),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

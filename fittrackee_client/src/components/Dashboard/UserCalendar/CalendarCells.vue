@@ -15,6 +15,7 @@
           :workouts="filterWorkouts(day, workouts)"
           :sports="sports"
           :displayHARecord="displayHARecord"
+          :index="i"
         />
         <div class="calendar-cell-day">
           {{ format(day, 'd') }}

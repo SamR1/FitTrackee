@@ -54,6 +54,12 @@ class Report(BaseModel):
         index=True,
         nullable=True,
     )
+    resolved_by = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        index=True,
+        nullable=True,
+    )
     resolved = db.Column(db.Boolean, default=False, nullable=False)
     object_type = db.Column(db.String(50), nullable=False, index=True)
     note = db.Column(db.String(), nullable=False)
@@ -82,10 +88,24 @@ class Report(BaseModel):
             single_parent=True,
         ),
     )
-
+    resolver = db.relationship(
+        'User',
+        primaryjoin=resolved_by == User.id,
+        backref=db.backref(
+            'user_resolved_reports',
+            lazy='joined',
+            single_parent=True,
+        ),
+    )
     comments = db.relationship(
         'ReportComment',
         backref=db.backref('report', lazy='joined'),
+    )
+    admin_actions = db.relationship(
+        'AdminAction',
+        lazy=True,
+        backref=db.backref('report', lazy='joined', single_parent=True),
+        order_by='AdminAction.created_at.asc()',
     )
 
     def __init__(
@@ -106,7 +126,7 @@ class Report(BaseModel):
         self.object_type = object_type
         self.resolved = False
 
-    def serialize(self, current_user: User) -> Dict:
+    def serialize(self, current_user: User, full: bool = False) -> Dict:
         if not current_user.admin and self.reported_by != current_user.id:
             raise ReportForbiddenException()
 
@@ -150,9 +170,20 @@ class Report(BaseModel):
             "resolved_at": self.resolved_at,
         }
         if current_user.admin:
-            report["comments"] = [
-                comment.serialize(current_user) for comment in self.comments
-            ]
+            if full:
+                report["admin_actions"] = [
+                    action.serialize(current_user)
+                    for action in self.admin_actions
+                ]
+                report["comments"] = [
+                    comment.serialize(current_user)
+                    for comment in self.comments
+                ]
+            report["resolved_by"] = (
+                None
+                if self.resolved_by is None
+                else self.resolver.serialize(current_user)
+            )
             report["updated_at"] = self.updated_at
         return report
 

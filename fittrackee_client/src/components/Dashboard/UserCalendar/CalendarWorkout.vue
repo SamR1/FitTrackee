@@ -1,9 +1,7 @@
 <template>
-  <div
+  <router-link
     class="calendar-workout"
-    @click="
-      $router.push({ name: 'Workout', params: { workoutId: workout.id } })
-    "
+    :to="{ name: 'Workout', params: { workoutId: workout.id } }"
   >
     <SportImage
       :sport-label="sportLabel"
@@ -26,7 +24,7 @@
         "
       />
     </sup>
-  </div>
+  </router-link>
 </template>
 
 <script setup lang="ts">

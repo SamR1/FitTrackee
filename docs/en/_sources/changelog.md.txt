@@ -1,5 +1,45 @@
 # Change log
 
+## Version 0.7.30 (2024/02/04)
+
+### Features and enhancements
+
+* [b748459](https://github.com/SamR1/FitTrackee/commit/b7484598258b4891b5699e8e8512deee7977d517) - Update alert message colors on dark mode 
+
+### Bugs Fixed
+
+* [PR#481](https://github.com/SamR1/FitTrackee/pull/481) - Handle keyboard navigation on dropdowns
+* [3821e37](https://github.com/SamR1/FitTrackee/commit/3821e370228cf14cc73a9c3f17d47178e17e8842) - Make calendar arrows accessible to keyboard navigation 
+* [PR#488](https://github.com/SamR1/FitTrackee/pull/488) - CLI - fix user creation when user already exists with same email
+* [PR#489](https://github.com/SamR1/FitTrackee/pull/489) - Handle keyboard navigation on calendar
+
+### Translations
+
+* [PR#482](https://github.com/SamR1/FitTrackee/pull/482) - Translations update (Galician and Spanish)
+* [PR#484](https://github.com/SamR1/FitTrackee/pull/484) - Translations update (German)
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 99%
+- Spanish: 100%
+
+### Misc
+
+* [aff4d68](https://github.com/SamR1/FitTrackee/commit/aff4d68a913b9aee5a620c4fb7f6049410ad7724) - CI - update actions version 
+
+
+Thanks to the contributors:
+- @gallegonovato
+- @qwerty287
+- @xmgz
+
+
 ## Version 0.7.29 (2024/01/06)
 
 ### Features and enhancements

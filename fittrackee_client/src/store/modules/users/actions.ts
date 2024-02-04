@@ -143,7 +143,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    const data: Record<string, boolean | string> = {}
+    const data: Record<string, boolean | string | number | undefined> = {}
     if (payload.admin !== undefined) {
       data.admin = payload.admin
     }
@@ -158,9 +158,13 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     }
     if (payload.suspend) {
       data.suspend = payload.suspend
+      data.report_id = payload.from_report
+      data.note = payload.note
     }
     if (payload.unsuspend) {
       data.unsuspend = payload.unsuspend
+      data.report_id = payload.from_report
+      data.note = payload.note
     }
     authApi
       .patch(`users/${payload.username}`, data)

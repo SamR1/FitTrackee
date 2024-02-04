@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "ocultar contraseña",
   "INVALID_TOKEN": "Clave secreta no válida, solicita un nuevo restablecimiento de contraseña.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Quiero eliminar mi cuenta",
-  "LANGUAGE": "Idioma",
+  "LANGUAGE": "Idioma | Idiomas",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "La política de privacidad ha sido actualizada, {0} antes de continuar.",
   "LOGIN": "Acceder",
   "LOGOUT": "Cerrar sesión",
@@ -123,7 +123,7 @@
         "LIGHT": "Claro"
       }
     },
-    "TIMEZONE": "Zona horaria",
+    "TIMEZONE": "Zona horaria | Zonas horarias",
     "UNITS": {
       "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
       "LABEL": "Unidades de distancia",

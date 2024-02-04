@@ -5,7 +5,7 @@
         {{ $t('user.RELATIONSHIPS.BLOCKED') }}
       </div>
       <button @click="updateBlock(user.username, false)">
-        {{ $t('user.RELATIONSHIPS.UNBLOCK') }}
+        {{ $t('buttons.UNBLOCK') }}
       </button>
     </div>
     <div v-else-if="user.is_followed_by !== 'pending'" class="actions-buttons">
@@ -15,21 +15,15 @@
         "
         :class="{ danger: user.is_followed_by === 'true' }"
       >
-        {{
-          $t(
-            `user.RELATIONSHIPS.${
-              user.is_followed_by === 'true' ? 'UN' : ''
-            }FOLLOW`
-          )
-        }}
+        {{ $t(`buttons.${user.is_followed_by === 'true' ? 'UN' : ''}FOLLOW`) }}
       </button>
       <button @click="updateBlock(user.username, true)">
-        {{ $t('user.RELATIONSHIPS.BLOCK') }}
+        {{ $t('buttons.BLOCK') }}
       </button>
     </div>
     <div v-else>
       <button @click="updateRelationship(getUserName(user), true)">
-        {{ $t('user.RELATIONSHIPS.CANCEL_FOLLOW_REQUEST') }}
+        {{ $t('buttons.CANCEL_FOLLOW_REQUEST') }}
       </button>
     </div>
     <div

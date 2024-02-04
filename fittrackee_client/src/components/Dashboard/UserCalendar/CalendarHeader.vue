@@ -1,22 +1,22 @@
 <template>
   <div class="calendar-header">
-    <div
-      class="calendar-arrow calendar-arrow-left"
+    <button
+      class="calendar-arrow calendar-arrow-left transparent"
       @click="emit('displayPreviousMonth')"
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
-    </div>
+    </button>
     <div class="calendar-month">
       <span>
         {{ format(day, 'MMM yyyy', { locale: localeOptions }) }}
       </span>
     </div>
-    <div
-      class="calendar-arrow calendar-arrow-right"
+    <button
+      class="calendar-arrow calendar-arrow-right transparent"
       @click="emit('displayNextMonth')"
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
-    </div>
+    </button>
   </div>
 </template>
 
@@ -42,10 +42,9 @@
     display: flex;
     flex-direction: row;
 
-    .calendar-arrow,
-    .calendar-month {
+    .calendar-arrow {
       flex-grow: 1;
-      padding: $default-padding;
+      padding: $default-padding - 1 px;
     }
     .calendar-arrow-left {
       text-align: left;
@@ -56,7 +55,9 @@
       cursor: pointer;
     }
     .calendar-month {
+      flex-grow: 1;
       font-weight: bold;
+      padding: $default-padding;
       text-align: center;
       text-transform: uppercase;
     }

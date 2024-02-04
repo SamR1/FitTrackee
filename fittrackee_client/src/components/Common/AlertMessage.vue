@@ -1,11 +1,12 @@
 <template>
   <div class="alert-message">
-    <div v-if="param">
+    <span v-if="param">
       <i18n-t :keypath="message">
         <span>{{ param }}</span>
       </i18n-t>
-    </div>
-    <div v-else v-html="$t(message)" />
+    </span>
+    <span v-else v-html="$t(message)" />
+    <slot name="additionalMessage"></slot>
   </div>
 </template>
 
@@ -25,6 +26,8 @@
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
   .alert-message {
+    display: flex;
+    gap: 3px;
     background: var(--alert-background-color);
     color: var(--alert-color);
 

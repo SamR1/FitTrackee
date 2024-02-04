@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 import jwt
 from flask import current_app
@@ -35,6 +35,9 @@ from .exceptions import (
 from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
+if TYPE_CHECKING:
+    from fittrackee.administration.models import AdminAction
+
 USER_LINK_TEMPLATE = (
     '<a href="{profile_url}" target="_blank" rel="noopener noreferrer">'
     '{username}</a>'
@@ -47,6 +50,7 @@ NOTIFICATION_TYPES = [
     'follow_request',
     'mention',
     'report',
+    'suspension_appeal',
     'workout_comment',
     'workout_like',
 ]
@@ -682,6 +686,22 @@ class User(BaseModel):
             for blocked_user in self.blocked_by_users.all()
         ]
 
+    @property
+    def suspension_action(self) -> Optional['AdminAction']:
+        if self.suspended_at is None:
+            return None
+
+        from fittrackee.administration.models import AdminAction
+
+        return (
+            AdminAction.query.filter(
+                AdminAction.user_id == self.id,
+                AdminAction.action_type == "user_suspension",
+            )
+            .order_by(AdminAction.created_at.desc())
+            .first()
+        )
+
     def serialize(self, current_user: Optional['User'] = None) -> Dict:
         if current_user is None:
             role = None
@@ -1017,10 +1037,21 @@ class Notification(BaseModel):
                 user=to_user
             )
 
-        if self.event_type == "report":
+        if self.event_type in ["report", "suspension_appeal"]:
+            from fittrackee.administration.models import AdminActionAppeal
             from fittrackee.reports.models import Report
 
-            report = Report.query.filter_by(id=self.event_object_id).first()
+            if self.event_type == "suspension_appeal":
+                appeal = AdminActionAppeal.query.filter_by(
+                    id=self.event_object_id
+                ).first()
+                report = Report.query.filter_by(
+                    id=appeal.action.report_id
+                ).first()
+            else:
+                report = Report.query.filter_by(
+                    id=self.event_object_id
+                ).first()
             serialized_notification["report"] = report.serialize(
                 current_user=to_user
             )

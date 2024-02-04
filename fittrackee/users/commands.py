@@ -5,13 +5,13 @@ import click
 from humanize import naturalsize
 
 from fittrackee import db
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.cli.app import app
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
 )
-from fittrackee.users.utils.admin import UserManagerService
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
 handler = logging.StreamHandler()
@@ -40,7 +40,7 @@ def create_user(username: str, email: str, password: Optional[str]) -> None:
         try:
             user_manager_service = UserManagerService(username)
             user, user_password = user_manager_service.create_user(
-                email=email, password=password
+                email=email, password=password, check_email=True
             )
             db.session.add(user)
             db.session.commit()

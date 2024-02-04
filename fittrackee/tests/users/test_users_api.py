@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Dict
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -8,6 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
+from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.federation.models import Actor
 from fittrackee.users.models import (
     FollowRequest,
@@ -18,7 +20,7 @@ from fittrackee.users.models import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
@@ -1683,7 +1685,7 @@ class TestGetUserPicture(ApiTestCaseMixin):
         self.assert_404_with_entity(response, 'user')
 
 
-class TestUpdateUser(ApiTestCaseMixin):
+class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
     def test_it_returns_error_if_auth_user_has_no_admin_rights(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2153,6 +2155,250 @@ class TestUpdateUser(ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    def test_it_returns_error_when_report_id_is_not_provided_when_admin_suspends_user(  # noqa
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(suspend=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_400(response, "report_id is missing")
+
+    def test_admin_can_suspend_another_user_account(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(suspend=True, report_id=report.id)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['is_active'] is True
+        assert user['suspended_at'] == self.get_date_string(date=now)
+        assert user_2.is_active is True
+        assert user_2.suspended_at == now
+
+    def test_it_logs_action_when_an_admin_suspends_a_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        note = self.random_string()
+
+        with freeze_time(now):
+            client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(
+                    dict(suspend=True, report_id=report.id, note=note)
+                ),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        admin_action = AdminAction.query.filter_by(
+            admin_user_id=user_1_admin.id, user_id=user_2.id
+        ).first()
+        assert admin_action.action_type == "user_suspension"
+        assert admin_action.created_at == now
+        assert admin_action.note == note
+        assert admin_action.report_id == report.id
+
+    def test_admin_can_suspend_another_admin_account_and_remove_admin_rights(
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2_admin)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2_admin.username}',
+                content_type='application/json',
+                data=json.dumps(dict(suspend=True, report_id=report.id)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['admin'] is False
+        assert user['is_active'] is True
+        assert user['suspended_at'] == self.get_date_string(date=now)
+        assert user_2_admin.admin is False
+        assert user_2_admin.is_active is True
+        assert user_2_admin.suspended_at == now
+
+    def test_admin_can_not_suspend_his_own_account(
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
+        report = self.create_report(user_2_admin, user_1_admin)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True, report_id=report.id)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_error_when_when_user_already_suspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True, report_id=report.id)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, f"user '{user_2.username}' already suspended"
+        )
+
+    def test_it_does_not_enable_registration_on_user_suspension(
+        self,
+        app_with_3_users_max: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_3_users_max, user_1_admin.email
+        )
+
+        client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(suspend=True, report_id=report.id)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+        response = client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    password_conf=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        self.assert_403(response, 'error, registration is disabled')
+
+    def test_admin_can_unsuspend_another_user_account(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = datetime.utcnow()
+
+        response = client.patch(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            data=json.dumps(dict(unsuspend=True, report_id=report.id)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['is_active'] is True
+        assert user['suspended_at'] is None
+        assert user_2.is_active is True
+        assert user_2.suspended_at is None
+
+    def test_it_logs_action_when_an_admin_unsuspends_a_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        report = self.create_report(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = datetime.utcnow()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(unsuspend=True, report_id=report.id)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        admin_action = AdminAction.query.filter_by(
+            admin_user_id=user_1_admin.id, user_id=user_2.id
+        ).first()
+        assert admin_action.action_type == "user_unsuspension"
+        assert admin_action.created_at == now
+        assert admin_action.report_id == report.id
+
+    def test_it_returns_error_when_report_id_is_not_provided_when_admin_unsuspends_user(  # noqa
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = datetime.utcnow()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                f'/api/users/{user_2.username}',
+                content_type='application/json',
+                data=json.dumps(dict(unsuspend=True)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        self.assert_400(response, "report_id is missing")
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'users:write': True}.items(),
@@ -2181,134 +2427,6 @@ class TestUpdateUser(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
-
-    def test_admin_can_suspend_another_user_account(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(dict(suspend=True)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['is_active'] is True
-        assert user['suspended_at'] == self.get_date_string(date=now)
-        assert user_2.is_active is True
-        assert user_2.suspended_at == now
-
-    def test_admin_can_suspend_another_admin_account_and_remove_admin_rights(
-        self, app: Flask, user_1_admin: User, user_2_admin: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2_admin.username}',
-                content_type='application/json',
-                data=json.dumps(dict(suspend=True)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['admin'] is False
-        assert user['is_active'] is True
-        assert user['suspended_at'] == self.get_date_string(date=now)
-        assert user_2_admin.admin is False
-        assert user_2_admin.is_active is True
-        assert user_2_admin.suspended_at == now
-
-    def test_admin_can_not_suspend_his_own_account(
-        self, app: Flask, user_1_admin: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            f'/api/users/{user_1_admin.username}',
-            content_type='application/json',
-            data=json.dumps(dict(suspend=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_403(response)
-
-    def test_it_does_not_enable_registration_on_user_suspension(
-        self,
-        app_with_3_users_max: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app_with_3_users_max, user_1_admin.email
-        )
-
-        client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(suspend=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=self.random_string(),
-                    email=self.random_email(),
-                    password=self.random_string(),
-                    password_conf=self.random_string(),
-                    accepted_policy=True,
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_403(response, 'error, registration is disabled')
-
-    def test_admin_can_unsuspend_another_user_account(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        user_2.suspended_at = datetime.utcnow()
-
-        response = client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(unsuspend=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['is_active'] is True
-        assert user['suspended_at'] is None
-        assert user_2.is_active is True
-        assert user_2.suspended_at is None
 
 
 class TestDeleteUser(ApiTestCaseMixin):
@@ -2835,6 +2953,200 @@ class TestUnBlockUser(ApiTestCaseMixin):
         response = client.delete(
             f'/api/users/{user_2.username}',
             content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestProcessAdminActionAppeal(UserModerationMixin, ApiTestCaseMixin):
+    route = '/api/users/suspensions/appeals/{appeal_id}'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.patch(
+            self.route.format(appeal_id=self.random_short_id()),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_403_when_user_has_no_admin_rights(
+        self, app: Flask, user_1: User
+    ) -> None:
+        appeal_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_404_if_appeal_does_not_exist(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        appeal_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"appeal not found (id: {appeal_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_data", [{"approved": True}, {"reason": "foo"}, {}]
+    )
+    def test_it_returns_error_when_data_are_missing(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_user_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(appeal_id=appeal.short_id),
+                data=json.dumps(input_data),
+                content_type="application/json",
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.admin_user_id == user_1_admin.id
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+        assert appeal.updated_at == now
+
+    def test_it_unsuspends_user_when_appeal_is_approved(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": "ok"}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert user_2.suspended_at is None
+
+    def test_it_creates_unsuspension_action_when_appeal_is_approved(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": "ok"}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                report_id=suspension_action.report_id,
+                action_type="user_unsuspension",
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "users:write": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        appeal_id = self.random_short_id()
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False, reason="OK")),
+            content_type="application/json",
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 

@@ -1,144 +1,3 @@
-<script setup lang="ts">
-  import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
-  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-
-  import Comment from '@/components/Comment/Comment.vue'
-  import NotFound from '@/components/Common/NotFound.vue'
-  import UserCard from '@/components/User/UserCard.vue'
-  import Username from '@/components/User/Username.vue'
-  import UserPicture from '@/components/User/UserPicture.vue'
-  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
-  import {
-    AUTH_USER_STORE,
-    REPORTS_STORE,
-    ROOT_STORE,
-    SPORTS_STORE,
-    USERS_STORE,
-  } from '@/store/constants'
-  import type { ICustomTextareaData } from '@/types/forms'
-  import type { IReportForAdmin } from '@/types/reports'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { formatDate, getDateFormat } from '@/utils/dates'
-
-  const store = useStore()
-  const route = useRoute()
-  const router = useRouter()
-
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const report: ComputedRef<IReportForAdmin> = computed(
-    () => store.getters[REPORTS_STORE.GETTERS.REPORT]
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const appLanguage: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const isSuccess = computed(
-    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
-  )
-  const dateFormat: ComputedRef<string> = computed(() =>
-    getDateFormat(authUser.value.date_format, appLanguage.value)
-  )
-  const reportCommentText: Ref<string> = ref('')
-  const displayReportCommentTextarea: Ref<boolean> = ref(false)
-  const currentAction: Ref<string> = ref('')
-  const displayModal: Ref<string> = ref('')
-
-  function loadReport() {
-    store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
-  }
-  function displayTextArea(action = '') {
-    currentAction.value = action
-    displayReportCommentTextarea.value = true
-  }
-  function updateCommentText(textareaData: ICustomTextareaData) {
-    reportCommentText.value = textareaData.value
-  }
-  function onCancel() {
-    displayReportCommentTextarea.value = false
-    reportCommentText.value = ''
-    currentAction.value = ''
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
-  function updateReport() {
-    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, {
-      reportId: report.value.id,
-      comment: reportCommentText.value,
-      resolved: currentAction.value === 'MARK_AS_RESOLVED',
-    })
-  }
-  function getButtonLabel() {
-    switch (currentAction.value) {
-      case 'MARK_AS_RESOLVED':
-        return `admin.APP_MODERATION.ACTIONS.${currentAction.value}`
-      default:
-        return 'buttons.SUBMIT'
-    }
-  }
-  function updateUserSuspendedAt() {
-    const suspension_action =
-      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
-    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
-      username: report.value.reported_user.username,
-      [suspension_action]: true,
-      from_report: report.value.id,
-    })
-  }
-  function updateDisplayModal(value: string) {
-    displayModal.value = value
-    if (value !== '') {
-      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    }
-  }
-  function goBack() {
-    router.go(-1)
-    store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
-  }
-  function getDate(dateToFormat: string) {
-    return formatDate(
-      dateToFormat,
-      authUser.value.timezone,
-      authUser.value.date_format
-    )
-  }
-
-  onBeforeMount(async () => loadReport())
-
-  watch(
-    () => report.value.comments,
-    () => {
-      displayReportCommentTextarea.value = false
-      reportCommentText.value = ''
-    }
-  )
-  watch(
-    () => isSuccess.value,
-    (newIsSuccess) => {
-      if (newIsSuccess) {
-        updateDisplayModal('')
-      }
-    }
-  )
-
-  onUnmounted(() =>
-    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  )
-</script>
-
 <template>
   <div
     id="admin-report"
@@ -243,6 +102,15 @@
                 {{ getDate(report.resolved_at) }}
               </time>
             </dd>
+            <dt v-if="report.resolved_by">
+              {{ $t('admin.APP_MODERATION.RESOLVED_BY') }}:
+            </dt>
+            <dd v-if="report.resolved_by">
+              <div class="resolver-user">
+                <UserPicture :user="report.resolved_by" />
+                <Username :user="report.resolved_by" />
+              </div>
+            </dd>
             <dt v-if="report.updated_at">
               {{ $t('common.LAST_UPDATED_ON') }}:
             </dt>
@@ -254,36 +122,92 @@
           </dl>
         </div>
 
-        <Card class="report-comments">
+        <Card class="report-action-and-comments">
           <template #title>
             {{ $t('admin.APP_MODERATION.NOTES_AND_ACTIONS') }}
           </template>
           <template #content>
-            <div
-              class="report-comment"
-              v-for="comment in report.comments"
-              :key="comment.id"
-            >
-              <div class="report-comment-info">
-                <div class="report-comment-user">
-                  <UserPicture :user="comment.user" />
-                  <Username :user="comment.user" />
+            <div v-for="item in reportsItems" :key="item.id">
+              <div class="report-comment" v-if="'comment' in item">
+                <div class="report-comment-info">
+                  <div class="report-comment-user">
+                    <UserPicture :user="item.user" />
+                    <Username :user="item.user" />
+                  </div>
+                  <div
+                    class="report-comment-date"
+                    :title="getDate(item.created_at)"
+                  >
+                    {{
+                      formatDistance(new Date(item.created_at), new Date(), {
+                        addSuffix: true,
+                        locale,
+                      })
+                    }}
+                  </div>
                 </div>
-                <div
-                  class="report-comment-date"
-                  :title="getDate(comment.created_at)"
-                >
-                  {{
-                    formatDistance(new Date(comment.created_at), new Date(), {
-                      addSuffix: true,
-                      locale,
-                    })
-                  }}
-                </div>
+                <div class="report-comment-comment">{{ item.comment }}</div>
               </div>
-              <div class="report-comment-comment">{{ comment.comment }}</div>
+              <div class="report-action" v-if="'action_type' in item">
+                <div>
+                  •
+                  <i18n-t
+                    :keypath="`admin.APP_MODERATION.REPORT_ACTIONS.${item.action_type}`"
+                  >
+                    <router-link
+                      class="user-name"
+                      v-if="
+                        ['user_suspension', 'user_unsuspension'].includes(
+                          item.action_type
+                        ) && item.user
+                      "
+                      :to="`/admin/users/${item.user.username}`"
+                      :title="item.user.username"
+                    >
+                      {{ item.user.username }}
+                    </router-link>
+                    <router-link
+                      class="user-name"
+                      :to="`/admin/users/${item.admin_user.username}`"
+                      :title="item.admin_user.username"
+                    >
+                      {{ item.admin_user.username }}
+                    </router-link>
+                    <span
+                      class="report-action-date"
+                      :title="getDate(item.created_at)"
+                    >
+                      {{
+                        formatDistance(new Date(item.created_at), new Date(), {
+                          addSuffix: true,
+                          locale,
+                        })
+                      }}
+                    </span>
+                  </i18n-t>
+                  <button
+                    v-if="item.appeal"
+                    class="appeal-button small transparent"
+                    @click="toggleAppeal(item.appeal.id)"
+                  >
+                    {{
+                      $t(
+                        `admin.APP_MODERATION.APPEAL.${displayedAppeals.includes(item.appeal.id) ? 'HIDE' : 'SEE'}`
+                      )
+                    }}
+                  </button>
+                </div>
+                <AdminActionAppeal
+                  v-if="
+                    item.appeal && displayedAppeals.includes(item.appeal.id)
+                  "
+                  :appeal="item.appeal"
+                  :auth-user="authUser"
+                  @updateAppeal="updateAppeal"
+                />
+              </div>
             </div>
-            <div v-if="report.comments.length === 0" class="no-notes">
+            <div v-if="reportsItems.length == 0" class="no-notes">
               {{ $t('common.NO_NOTES') }}
             </div>
           </template>
@@ -294,13 +218,18 @@
           </template>
           <template #content>
             <div class="comment-textarea" v-if="displayReportCommentTextarea">
-              <form @submit.prevent="updateReport">
+              <form @submit.prevent="submit">
+                <label for="report-comment">
+                  {{ $t(`admin.APP_MODERATION.ACTIONS.${currentAction}`) }}
+                </label>
                 <CustomTextArea
                   class="report-comment-textarea"
                   name="report-comment"
-                  :required="true"
+                  :required="isNoteMandatory"
                   :placeholder="
-                    $t('admin.APP_MODERATION.REPORT_COMMENT_PLACEHOLDER')
+                    $t(
+                      `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${currentAction}`
+                    )
                   "
                   @updateValue="updateCommentText"
                 />
@@ -316,21 +245,25 @@
               </form>
             </div>
             <div v-else class="actions-buttons">
-              <button @click="displayTextArea()">
+              <button @click="displayTextArea('ADD_COMMENT')">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
-              <button>
+              <button v-if="!report.resolved">
                 {{ $t('admin.APP_MODERATION.ACTIONS.SEND_EMAIL') }}
               </button>
-              <button class="danger" v-if="report.object_type !== 'user'">
+              <button
+                class="danger"
+                v-if="!report.resolved && report.object_type !== 'user'"
+              >
                 {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
               </button>
               <button
+                v-if="!report.resolved"
                 :class="{ danger: report.reported_user.suspended_at === null }"
                 @click="
-                  report.reported_user.suspended_at === null
-                    ? updateDisplayModal('suspension')
-                    : updateUserSuspendedAt()
+                  displayTextArea(
+                    `${report.reported_user.suspended_at === null ? '' : 'UN'}SUSPEND_ACCOUNT`
+                  )
                 "
               >
                 {{
@@ -370,11 +303,226 @@
   </div>
 </template>
 
+<script setup lang="ts">
+  import { formatDistance, compareAsc } from 'date-fns'
+  import type { Locale } from 'date-fns'
+  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+
+  import AdminActionAppeal from '@/components/Administration/AdminActionAppeal.vue'
+  import Comment from '@/components/Comment/Comment.vue'
+  import NotFound from '@/components/Common/NotFound.vue'
+  import UserCard from '@/components/User/UserCard.vue'
+  import Username from '@/components/User/Username.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
+  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
+  import {
+    AUTH_USER_STORE,
+    REPORTS_STORE,
+    ROOT_STORE,
+    SPORTS_STORE,
+    USERS_STORE,
+  } from '@/store/constants'
+  import type { ICustomTextareaData } from '@/types/forms'
+  import type {
+    IAdminActionComment,
+    IReportComment,
+    IReportCommentPayload,
+    IReportForAdmin,
+    TReportAction,
+  } from '@/types/reports'
+  import type { ISport } from '@/types/sports'
+  import type { IAdminUserPayload, IAuthUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
+  import { formatDate, getDateFormat } from '@/utils/dates'
+
+  interface AppealEventData {
+    approved: boolean
+    appealId: string
+    reason: string
+  }
+
+  const store = useStore()
+  const route = useRoute()
+  const router = useRouter()
+
+  const locale: ComputedRef<Locale> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
+  const authUser: ComputedRef<IAuthUserProfile> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  )
+  const report: ComputedRef<IReportForAdmin> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT]
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const appLanguage: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  const dateFormat: ComputedRef<string> = computed(() =>
+    getDateFormat(authUser.value.date_format, appLanguage.value)
+  )
+  const reportCommentText: Ref<string> = ref('')
+  const displayReportCommentTextarea: Ref<boolean> = ref(false)
+  const currentAction: Ref<TReportAction | null> = ref(null)
+  const displayModal: Ref<string> = ref('')
+  const reportsItems: ComputedRef<(IAdminActionComment | IReportComment)[]> =
+    computed(() => getActionsAndComments())
+  const isNoteMandatory: ComputedRef<boolean> = computed(
+    () =>
+      currentAction.value !== null &&
+      ['ADD_COMMENT', 'MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(
+        currentAction.value
+      )
+  )
+  const displayedAppeals: Ref<string[]> = ref([])
+
+  function loadReport() {
+    store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, +route.params.reportId)
+  }
+  function displayTextArea(action: TReportAction | null = null) {
+    currentAction.value = action
+    displayReportCommentTextarea.value = true
+  }
+  function updateCommentText(textareaData: ICustomTextareaData) {
+    reportCommentText.value = textareaData.value
+  }
+  function onCancel() {
+    displayReportCommentTextarea.value = false
+    reportCommentText.value = ''
+    currentAction.value = null
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  }
+  function updateReport() {
+    const payload: IReportCommentPayload = {
+      reportId: report.value.id,
+      comment: reportCommentText.value,
+    }
+    if (
+      currentAction.value &&
+      ['MARK_AS_RESOLVED', 'MARK_AS_UNRESOLVED'].includes(currentAction.value)
+    ) {
+      payload.resolved = currentAction.value === 'MARK_AS_RESOLVED'
+    }
+    store.dispatch(REPORTS_STORE.ACTIONS.UPDATE_REPORT, payload)
+  }
+  function submit() {
+    switch (currentAction.value) {
+      case 'SUSPEND_ACCOUNT':
+        updateDisplayModal('suspension')
+        break
+      case 'UNSUSPEND_ACCOUNT':
+        updateUserSuspendedAt()
+        break
+      default:
+        return updateReport()
+    }
+  }
+  function getButtonLabel() {
+    switch (currentAction.value) {
+      case 'MARK_AS_RESOLVED':
+        return `admin.APP_MODERATION.ACTIONS.${currentAction.value}`
+      default:
+        return 'buttons.SUBMIT'
+    }
+  }
+  function updateUserSuspendedAt() {
+    const suspension_action =
+      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
+    const payload: IAdminUserPayload = {
+      username: report.value.reported_user.username,
+      [suspension_action]: true,
+      from_report: report.value.id,
+    }
+    if (reportCommentText.value) {
+      payload.note = reportCommentText.value
+    }
+    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
+  }
+  function updateDisplayModal(value: string) {
+    displayModal.value = value
+    if (value !== '') {
+      store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    }
+  }
+  function goBack() {
+    router.go(-1)
+    store.commit(REPORTS_STORE.MUTATIONS.EMPTY_REPORT)
+  }
+  function getDate(dateToFormat: string) {
+    return formatDate(
+      dateToFormat,
+      authUser.value.timezone,
+      authUser.value.date_format
+    )
+  }
+  function sortCreatedAt(
+    a: IAdminActionComment | IReportComment,
+    b: IAdminActionComment | IReportComment
+  ): number {
+    return compareAsc(new Date(a.created_at), new Date(b.created_at))
+  }
+  function getActionsAndComments(): (IAdminActionComment | IReportComment)[] {
+    if (!report.value.admin_actions && !report.value.comments) {
+      return []
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return [...report.value.admin_actions, ...report.value.comments].sort(
+      sortCreatedAt
+    )
+  }
+  function toggleAppeal(appealId: string) {
+    if (displayedAppeals.value.includes(appealId)) {
+      displayedAppeals.value.splice(displayedAppeals.value.indexOf(appealId), 1)
+    } else {
+      displayedAppeals.value.push(appealId)
+    }
+  }
+  function updateAppeal(data: AppealEventData) {
+    store.dispatch(REPORTS_STORE.ACTIONS.PROCESS_APPEAL, {
+      ...data,
+      reportId: report.value.id,
+    })
+  }
+  onBeforeMount(async () => loadReport())
+
+  watch(
+    () => report.value.comments,
+    () => {
+      displayReportCommentTextarea.value = false
+      reportCommentText.value = ''
+    }
+  )
+  watch(
+    () => isSuccess.value,
+    (newIsSuccess) => {
+      if (newIsSuccess) {
+        updateDisplayModal('')
+      }
+    }
+  )
+
+  onUnmounted(() =>
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+  )
+</script>
+
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
 
   #admin-report {
-    .report-comment-user {
+    .report-comment-user,
+    .resolver-user {
       display: flex;
       gap: $default-padding * 0.5;
       ::v-deep(.user-picture) {
@@ -391,7 +539,7 @@
     }
 
     .report-detail-card,
-    .report-comments {
+    .report-action-and-comments {
       margin: $default-margin 0 $default-margin * 2;
     }
 
@@ -429,25 +577,41 @@
       text-transform: lowercase;
     }
 
-    .report-comments {
-      .report-comment {
+    .report-action-and-comments {
+      ::v-deep(.card-content) {
         display: flex;
         flex-direction: column;
-        padding-bottom: $default-padding;
+        gap: $default-padding * 1.2;
 
-        .report-comment-info {
+        .report-comment {
           display: flex;
-          justify-content: space-between;
+          flex-direction: column;
 
-          .report-comment-date {
-            font-size: 0.85em;
-            font-style: italic;
-            white-space: nowrap;
+          .report-comment-info {
+            display: flex;
+            justify-content: space-between;
+
+            .report-comment-date {
+              font-size: 0.85em;
+              font-style: italic;
+              white-space: nowrap;
+            }
+          }
+
+          .report-comment-comment {
+            padding-top: $default-padding;
           }
         }
+      }
 
-        .report-comment-comment {
-          padding: $default-padding 0;
+      .report-action {
+        color: var(--app-color-light);
+        font-style: italic;
+        font-size: 0.9em;
+        margin-left: $default-padding;
+
+        .appeal-button {
+          margin-left: 3px;
         }
       }
 

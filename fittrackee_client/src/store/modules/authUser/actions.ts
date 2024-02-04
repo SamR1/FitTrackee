@@ -179,6 +179,32 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
   },
+  [AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('auth/account/suspension')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION,
+            res.data.user_suspension
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
   [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IPagePayload
@@ -262,6 +288,31 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.APPEAL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    appealText: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    authApi
+      .post('auth/account/suspension/appeal', { text: appealText })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
   [AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS](
     context: ActionContext<IAuthUserState, IRootState>,
