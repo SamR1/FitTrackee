@@ -40,7 +40,7 @@ def create_user(username: str, email: str, password: Optional[str]) -> None:
         try:
             user_manager_service = UserManagerService(username)
             user, user_password = user_manager_service.create_user(
-                email=email, password=password
+                email=email, password=password, check_email=True
             )
             db.session.add(user)
             db.session.commit()

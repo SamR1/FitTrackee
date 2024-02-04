@@ -123,7 +123,7 @@
         "LIGHT": "Claro"
       }
     },
-    "TIMEZONE": "Zona horaria",
+    "TIMEZONE": "Zona horaria | Zonas horarias",
     "UNITS": {
       "IMPERIAL": "Sistema Imperial (ft, mi, mph, ºF)",
       "LABEL": "Unidades de distancia",

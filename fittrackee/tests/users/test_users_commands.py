@@ -11,7 +11,111 @@ from fittrackee.users.models import User
 from ..utils import random_email, random_string
 
 
-class TestManageUser:
+class TestCliUserCreate:
+    def test_it_displays_error_when_user_exists_with_same_username(
+        self, app: Flask, user_1: User
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                user_1.username,
+                "--email",
+                random_email(),
+                "--password",
+                random_string(),
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert (
+            result.output
+            == 'Error(s) occurred:\nsorry, that username is already taken\n'
+        )
+
+    def test_it_displays_error_when_user_exists_with_same_email(
+        self, app: Flask, user_1: User
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                random_string(),
+                "--email",
+                user_1.email,
+                "--password",
+                random_string(),
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert result.output == (
+            'Error(s) occurred:\n'
+            'This user already exists. No action done.\n'
+        )
+
+    def test_it_creates_user(
+        self,
+        app: Flask,
+    ) -> None:
+        username = random_string()
+        email = random_email()
+        password = random_string()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                username,
+                "--email",
+                email,
+                "--password",
+                password,
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert result.output == f"User '{username}' created.\n"
+        user = User.query.filter_by(username=username).first()
+        assert user.is_active is True
+        assert user.email == email
+        assert bcrypt.check_password_hash(user.password, password)
+
+    def test_it_displays_password_when_password_is_not_provided(
+        self,
+        app: Flask,
+    ) -> None:
+        username = random_string()
+        email = random_email()
+        password = random_string()
+        runner = CliRunner()
+
+        with patch.object(secrets, 'token_urlsafe', return_value=password):
+            result = runner.invoke(
+                cli,
+                ["users", "create", username, "--email", email],
+            )
+
+        assert result.exit_code == 0
+        assert result.output == (
+            f"User '{username}' created.\n"
+            f"The user password is: {password}\n"
+        )
+        user = User.query.filter_by(username=username).first()
+        assert user.is_active is True
+        assert user.email == email
+        assert bcrypt.check_password_hash(user.password, password)
+
+
+class TestCliUserUpdate:
     def test_it_returns_error_when_missing_user_name(self, app: Flask) -> None:
         runner = CliRunner()
 
@@ -201,6 +305,29 @@ class TestManageUser:
             assert updated_user.admin is False
             assert updated_user.is_active is True
             assert updated_user.password == previous_password
+
+    def test_it_displays_error_when_email_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        runner = CliRunner()
+
+        with app.app_context():
+            result = runner.invoke(
+                cli,
+                [
+                    'users',
+                    'update',
+                    user_1.username,
+                    '--update-email',
+                    random_string(),
+                ],
+            )
+
+            assert result.exit_code == 0
+            assert (
+                result.output
+                == "An error occurred: valid email must be provided\n"
+            )
 
     def test_it_updates_user(self, app: Flask, inactive_user: User) -> None:
         runner = CliRunner()
