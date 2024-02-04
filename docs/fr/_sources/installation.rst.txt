@@ -663,7 +663,7 @@ Prod environment
 
 .. code:: bash
 
-   $ make install-dev
+   $ make install-python
 
 - Upgrade database if needed (see changelog for migrations):
 
