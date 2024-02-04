@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "masquer le mot de passe",
   "INVALID_TOKEN": "Jeton invalide, veuillez demander une nouvelle réinitialisation de mot de passe.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Je souhaite supprimer mon compte",
-  "LANGUAGE": "Langue",
+  "LANGUAGE": "Langue | Langues",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
@@ -123,7 +123,7 @@
         "LIGHT": "Clair"
       }
     },
-    "TIMEZONE": "Fuseau horaire",
+    "TIMEZONE": "Fuseau horaire | Fuseaux horaires",
     "UNITS": {
       "IMPERIAL": "Système impérial (ft, mi, mph, °F)",
       "LABEL": "Unités pour les distances",
