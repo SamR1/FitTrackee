@@ -275,7 +275,7 @@
 <li><p>Redis for task queue (if email sending is enabled and for data export requests) and API rate limits</p></li>
 <li><p>SMTP provider (if email sending is enabled)</p></li>
 <li><p>API key from a <a class="reference external" href="installation.html#weather-data">weather data provider</a></p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (for installation from sources only)</p></li>
+<li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 18+ and <a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 <li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
 </ul>
@@ -770,7 +770,7 @@ Commands:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Recommended way on production.</div>
+<div class="line">Simplest way to install FitTrackee.</div>
 </div>
 </div>
 <ul class="simple">
@@ -816,7 +816,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Start task queue workers if email sending is enabled, with flask-dramatiq CLI:</p></li>
+<li><p>Start task queue workers <strong>if email sending is enabled</strong>, with flask-dramatiq CLI:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -851,7 +851,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">To keep virtualenv in project directory, update Poetry configuration.</div>
+<div class="line">To keep virtualenv in project directory, update Poetry <a class="reference external" href="https://python-poetry.org/docs/configuration/#virtualenvsin-project">configuration</a>.</div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
 </pre></div>
@@ -1076,7 +1076,11 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
 library.
 One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong> to proxy pass to <strong>Gunicorn</strong>.</p>
-<p>Examples (to adapt depending on your instance configuration and operating system):</p>
+<p>Examples:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To adapt depending on your instance configuration and operating system</p>
+</div>
 <ul class="simple">
 <li><p>for application: <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
 </ul>

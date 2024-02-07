@@ -275,7 +275,7 @@
 <li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API</p></li>
 <li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
 <li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (pour l’installation à partir des sources uniquement)</p></li>
+<li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> (pour l’installation à partir des sources uniquement)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 18+ et <a class="reference external" href="https://yarnpkg.com">Yarn</a> (pour le développement uniquement)</p></li>
 <li><p>Docker et Docker Compose (pour le développement ou l’évaluation de l’application)</p></li>
 </ul>
@@ -761,7 +761,7 @@ Commands:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Méthode recommandée en production.</div>
+<div class="line">Façon la plus simple d’installer FitTrackee</div>
 </div>
 </div>
 <ul class="simple">
@@ -807,7 +807,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches si l’envoi des courriels est activé, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
+<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches <strong>si l’envoi des courriels est activé</strong>, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -842,7 +842,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la configuration de Poetry.</div>
+<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la <a class="reference external" href="https://python-poetry.org/docs/configuration/#virtualenvsin-project">configuration</a> de Poetry.</div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
 </pre></div>
@@ -1061,7 +1061,11 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <section id="deployment">
 <h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">#</a></h2>
 <p>Il y a plusieurs méthodes pour démarrer et servir l’application web <strong>FitTrackee</strong> et l’application de gestion de la file d’attente de tâches. Un des moyens est d’utiliser les services <strong>systemd</strong> et <strong>Nginx</strong> to proxy passer à <strong>Gunicorn</strong>.</p>
-<p>Exemples (à adapter selon la configuration de votre instance et votre système d’exploitation) :</p>
+<p>Exemples :</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>À adapter selon la configuration de votre instance et votre système d’exploitation</p>
+</div>
 <ul class="simple">
 <li><p>pour l’application : <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
 </ul>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-04 14:50+0100\n"
+"POT-Creation-Date: 2024-02-07 09:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -4917,7 +4917,7 @@ msgid "Table of contents"
 msgstr "Table des matières"
 
 #: ../source/installation.rst:2 ../source/installation.rst:384
-#: ../source/installation.rst:817
+#: ../source/installation.rst:820
 msgid "Installation"
 msgstr "Installation"
 
@@ -5048,10 +5048,10 @@ msgstr ""
 
 #: ../source/installation.rst:31
 msgid ""
-"`Poetry <https://poetry.eustace.io>`__ (for installation from sources "
+"`Poetry <https://python-poetry.org>`__ (for installation from sources "
 "only)"
 msgstr ""
-"`Poetry <https://poetry.eustace.io>`__ (pour l'installation à partir des "
+"`Poetry <https://python-poetry.org>`__ (pour l'installation à partir des "
 "sources uniquement)"
 
 #: ../source/installation.rst:32
@@ -5712,8 +5712,8 @@ msgid "From PyPI"
 msgstr "A partir de PyPI"
 
 #: ../source/installation.rst
-msgid "Recommended way on production."
-msgstr "Méthode recommandée en production."
+msgid "Simplest way to install FitTrackee."
+msgstr "Façon la plus simple d'installer FitTrackee"
 
 #: ../source/installation.rst:395
 msgid "Create and activate a virtualenv"
@@ -5765,11 +5765,11 @@ msgstr "Démarrer l'application"
 
 #: ../source/installation.rst:437
 msgid ""
-"Start task queue workers if email sending is enabled, with flask-dramatiq"
-" CLI:"
+"Start task queue workers **if email sending is enabled**, with flask-"
+"dramatiq CLI:"
 msgstr ""
-"Démarrer les *workers* de la file d'attente des tâches si l'envoi des "
-"courriels est activé, avec l'interface de ligne de commandes de flask-"
+"Démarrer les *workers* de la file d'attente des tâches **si l'envoi des "
+"courriels est activé**, avec l'interface de ligne de commandes de flask-"
 "dramatiq :"
 
 #: ../source/installation.rst
@@ -5785,7 +5785,7 @@ msgid "Open http://localhost:5000 and register"
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire"
 
 #: ../source/installation.rst:448 ../source/installation.rst:506
-#: ../source/installation.rst:557 ../source/installation.rst:842
+#: ../source/installation.rst:557 ../source/installation.rst:845
 msgid ""
 "To set admin rights to the newly created account, use the following "
 "command line:"
@@ -5794,7 +5794,7 @@ msgstr ""
 "utiliser la ligne de commande suivante :"
 
 #: ../source/installation.rst:455 ../source/installation.rst:513
-#: ../source/installation.rst:564 ../source/installation.rst:849
+#: ../source/installation.rst:564 ../source/installation.rst:852
 msgid "If the user account is inactive, it activates it."
 msgstr "Si le compte de l'utilisateur est inactif, il sera alors activée."
 
@@ -5817,10 +5817,13 @@ msgstr ""
 "://python-poetry.org/docs/#installation>`__"
 
 #: ../source/installation.rst
-msgid "To keep virtualenv in project directory, update Poetry configuration."
+msgid ""
+"To keep virtualenv in project directory, update Poetry `configuration "
+"<https://python-poetry.org/docs/configuration/#virtualenvsin-project>`__."
 msgstr ""
 "Pour conserver l'environnement virtuel dans le répertoire du projet, "
-"mettre à jour la configuration de Poetry."
+"mettre à jour la `configuration <https://python-"
+"poetry.org/docs/configuration/#virtualenvsin-project>`__ de Poetry."
 
 #: ../source/installation.rst:472 ../source/installation.rst:610
 msgid "Dev environment"
@@ -6020,18 +6023,20 @@ msgstr ""
 "**Nginx** to proxy passer à **Gunicorn**."
 
 #: ../source/installation.rst:690
-msgid ""
-"Examples (to adapt depending on your instance configuration and operating"
-" system):"
-msgstr ""
-"Exemples (à adapter selon la configuration de votre instance et votre "
-"système d'exploitation) :"
+msgid "Examples:"
+msgstr "Exemples :"
 
-#: ../source/installation.rst:692
+#: ../source/installation.rst:693
+msgid "To adapt depending on your instance configuration and operating system"
+msgstr ""
+"À adapter selon la configuration de votre instance et votre "
+"système d'exploitation"
+
+#: ../source/installation.rst:695
 msgid "for application: ``fittrackee.service``"
 msgstr "pour l'application : ``fittrackee.service``"
 
-#: ../source/installation.rst:732
+#: ../source/installation.rst:735
 msgid ""
 "To handle large files, a higher value for `timeout "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be "
@@ -6042,7 +6047,7 @@ msgstr ""
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ peut être "
 "configurée."
 
-#: ../source/installation.rst:735
+#: ../source/installation.rst:738
 msgid ""
 "More information on deployment with Gunicorn in its `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
@@ -6050,15 +6055,15 @@ msgstr ""
 "Plus d'informations sur le déploiement avec Gunicorn dans sa "
 "`documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__."
 
-#: ../source/installation.rst:737
+#: ../source/installation.rst:740
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr "pour les *workers* de la file d'attente : ``fittrackee_workers.service``"
 
-#: ../source/installation.rst:772
+#: ../source/installation.rst:775
 msgid "**Nginx** configuration:"
 msgstr "Configuration **Nginx** :"
 
-#: ../source/installation.rst:810
+#: ../source/installation.rst:813
 msgid ""
 "If needed, update configuration to handle larger files (see "
 "`client_max_body_size "
@@ -6068,11 +6073,11 @@ msgstr ""
 "importante (cf. `client_max_body_size "
 "<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
 
-#: ../source/installation.rst:814
+#: ../source/installation.rst:817
 msgid "Docker"
 msgstr ""
 
-#: ../source/installation.rst:821
+#: ../source/installation.rst:824
 msgid ""
 "For **evaluation** purposes, docker files are available, installing "
 "**FitTrackee** from **sources**."
@@ -6080,19 +6085,19 @@ msgstr ""
 "A des fins d'**évaluation**, des fichiers Docker sont disponible, "
 "installant **FitTrackee** à partir des **sources**."
 
-#: ../source/installation.rst:823
+#: ../source/installation.rst:826
 msgid "To install **FitTrackee**:"
 msgstr "Pour installer **FitTrackee** :"
 
-#: ../source/installation.rst:832
+#: ../source/installation.rst:835
 msgid "To initialise database:"
 msgstr "Pour initialiser la base de données :"
 
-#: ../source/installation.rst:838
+#: ../source/installation.rst:841
 msgid "Open http://localhost:5000 and register."
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire."
 
-#: ../source/installation.rst:840
+#: ../source/installation.rst:843
 msgid ""
 "Open http://localhost:8025 to access `MailHog interface "
 "<https://github.com/mailhog/MailHog>`_ (email testing tool)"
@@ -6100,49 +6105,49 @@ msgstr ""
 "Ouvrir l'URL http://localhost:8025 pour accéder à l'interface de `MailHog"
 " <https://github.com/mailhog/MailHog>`_ (outil de test)"
 
-#: ../source/installation.rst:851
+#: ../source/installation.rst:854
 msgid "To stop **Fittrackee**:"
 msgstr "Pour arrêter **Fittrackee** :"
 
-#: ../source/installation.rst:857
+#: ../source/installation.rst:860
 msgid "To start **Fittrackee** (application and dramatiq workers):"
 msgstr "pour démarrer **Fittrackee** (application et *workers* dramatiq) :"
 
-#: ../source/installation.rst:864
+#: ../source/installation.rst:867
 msgid "To run shell inside **Fittrackee** container:"
 msgstr "Pour lancer le shell dans le container **Fittrackee** :"
 
-#: ../source/installation.rst:872
+#: ../source/installation.rst:875
 msgid "Development"
 msgstr "Développement"
 
-#: ../source/installation.rst:876
+#: ../source/installation.rst:879
 msgid "an additional step is needed to install ``fittrackee_client``"
 msgstr "une étape additionnelle est nécessaire pour installer `fittrackee_client`"
 
-#: ../source/installation.rst:882
+#: ../source/installation.rst:885
 msgid "to start **FitTrackee** with client dev tools:"
 msgstr "pour démarrer **FitTrackee** avec les outils de développement client :"
 
-#: ../source/installation.rst:888
+#: ../source/installation.rst:891
 msgid "Open http://localhost:3000"
 msgstr "Ouvrir http://localhost:3000"
 
-#: ../source/installation.rst:891
+#: ../source/installation.rst:894
 msgid "Some environment variables need to be updated like ``UI_URL``"
 msgstr ""
 "Certaines variables d'environnement doivent être mise à jour comme "
 "``UI_URL``"
 
-#: ../source/installation.rst:893
+#: ../source/installation.rst:896
 msgid "to run lint or tests:"
 msgstr "pour lancer le *lint* et les tests :"
 
-#: ../source/installation.rst:904
+#: ../source/installation.rst:907
 msgid "Yunohost"
 msgstr ""
 
-#: ../source/installation.rst:906
+#: ../source/installation.rst:909
 msgid ""
 "A package is available, see https://github.com/YunoHost-"
 "Apps/fittrackee_ynh."
