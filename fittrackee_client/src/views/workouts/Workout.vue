@@ -96,18 +96,13 @@
   const isWorkoutOwner = computed(
     () => authUser.value.username === workoutData.value.workout.user.username
   )
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
 
   onBeforeMount(() => {
-    if (!isSuspended.value) {
-      const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
-      if (props.displaySegment) {
-        payload.segmentId = route.params.segmentId
-      }
-      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+    const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
+    if (props.displaySegment) {
+      payload.segmentId = route.params.segmentId
     }
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
     if (sports.value.length === 0) {
       store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
     }
