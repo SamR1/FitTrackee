@@ -186,7 +186,7 @@ install-client-dev:
 install-dev: install-client-dev install-python-dev
 
 install-python:
-	$(POETRY) install --no-dev
+	$(POETRY) install --only main
 
 install-python-dev:
 	$(POETRY) install
