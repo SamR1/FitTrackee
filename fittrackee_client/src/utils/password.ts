@@ -2,6 +2,7 @@ import { zxcvbnOptions } from '@zxcvbn-ts/core'
 
 export const loadLanguagePackage = async (language: string) => {
   // no package available for
+  // - Basque (Euskara)
   // - Dutch (Nederlands)
   // - Galician
   // - Norwegian bokmal

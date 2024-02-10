@@ -100,6 +100,28 @@
     ::v-deep(.card) {
       flex-grow: 1;
 
+      .card-content {
+        @media screen and (max-width: $x-small-limit) {
+          padding: $default-padding;
+
+          .stat-card {
+            .stat-content {
+              @media screen and (max-width: $x-small-limit) {
+                padding: $default-padding;
+
+                .stat-icon {
+                  .fa {
+                    @media screen and (max-width: $x-small-limit) {
+                      font-size: 1.2em;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
       .admin-menu {
         padding: 0 $default-padding;
 
