@@ -1,5 +1,38 @@
 # Change log
 
+## Version 0.7.31 (2024/02/10)
+
+Basque is now available in FitTrackee interface.  
+
+### Bugs Fixed
+
+* [PR#495](https://github.com/SamR1/FitTrackee/pull/495) - fix menu display when clicking on application name
+
+### Translations
+
+* [#490](https://github.com/SamR1/FitTrackee/issues/490) [Translation Request] EU - Basque 
+
+Translation status:
+- Basque: 100%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 99%
+- Spanish: 100%
+
+### Misc
+
+* [PR#494](https://github.com/SamR1/FitTrackee/pull/494) - Update install-python command
+
+
+Thanks to the contributors:
+- @erral
+
+
 ## Version 0.7.30 (2024/02/04)
 
 ### Features and enhancements
