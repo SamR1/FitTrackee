@@ -95,7 +95,11 @@
           <i class="fa fa-comment-o" aria-hidden="true" />
         </button>
         <button
-          v-if="!isCommentOwner(authUser, comment.user)"
+          v-if="
+            !isCommentOwner(authUser, comment.user) &&
+            !isCommentReported() &&
+            reportStatus !== `comment-${comment.id}-created`
+          "
           class="transparent icon-button"
           @click="reportComment(comment)"
           :title="$t('workouts.COMMENTS.REPORT')"

@@ -1,3 +1,39 @@
+<template>
+  <div class="report-form">
+    <form @submit.prevent="submitReport">
+      <div class="form-items">
+        <div class="form-item">
+          <label for="report">
+            {{ $t(label) }}
+          </label>
+          <CustomTextArea
+            class="report-textarea"
+            name="report"
+            :required="true"
+            :placeholder="$t('common.REPORT_PLACEHOLDER')"
+            @updateValue="updateText"
+          />
+        </div>
+      </div>
+      <div class="form-select-buttons">
+        <div class="spacer" />
+        <div v-if="reportStatus === 'loading'">
+          <Loader />
+        </div>
+        <div class="report-buttons" v-else>
+          <button class="confirm" type="submit">
+            {{ $t('buttons.SUBMIT') }}
+          </button>
+          <button class="cancel" @click.prevent="onCancel">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
+      </div>
+      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+    </form>
+  </div>
+</template>
+
 <script setup lang="ts">
   import { computed, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
@@ -57,42 +93,6 @@
     })
   }
 </script>
-
-<template>
-  <div class="report-form">
-    <form @submit.prevent="submitReport">
-      <div class="form-items">
-        <div class="form-item">
-          <label for="report">
-            {{ $t(label) }}
-          </label>
-          <CustomTextArea
-            class="report-textarea"
-            name="report"
-            :required="true"
-            :placeholder="$t('common.REPORT_PLACEHOLDER')"
-            @updateValue="updateText"
-          />
-        </div>
-      </div>
-      <div class="form-select-buttons">
-        <div class="spacer" />
-        <div v-if="reportStatus === 'loading'">
-          <Loader />
-        </div>
-        <div class="report-buttons" v-else>
-          <button class="confirm" type="submit">
-            {{ $t('buttons.SUBMIT') }}
-          </button>
-          <button class="cancel" @click.prevent="onCancel">
-            {{ $t('buttons.CANCEL') }}
-          </button>
-        </div>
-      </div>
-      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-    </form>
-  </div>
-</template>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';

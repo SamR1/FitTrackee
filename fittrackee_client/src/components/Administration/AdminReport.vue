@@ -326,7 +326,7 @@
   } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
-    IAdminActionComment,
+    IAdminAction,
     IReportComment,
     IReportCommentPayload,
     IReportForAdmin,
@@ -375,8 +375,9 @@
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
   const currentAction: Ref<TReportAction | null> = ref(null)
   const displayModal: Ref<string> = ref('')
-  const reportsItems: ComputedRef<(IAdminActionComment | IReportComment)[]> =
-    computed(() => getActionsAndComments())
+  const reportsItems: ComputedRef<(IAdminAction | IReportComment)[]> = computed(
+    () => getActionsAndComments()
+  )
   const isNoteMandatory: ComputedRef<boolean> = computed(
     () =>
       currentAction.value !== null &&
@@ -466,12 +467,12 @@
     )
   }
   function sortCreatedAt(
-    a: IAdminActionComment | IReportComment,
-    b: IAdminActionComment | IReportComment
+    a: IAdminAction | IReportComment,
+    b: IAdminAction | IReportComment
   ): number {
     return compareAsc(new Date(a.created_at), new Date(b.created_at))
   }
-  function getActionsAndComments(): (IAdminActionComment | IReportComment)[] {
+  function getActionsAndComments(): (IAdminAction | IReportComment)[] {
     if (!report.value.admin_actions && !report.value.comments) {
       return []
     }

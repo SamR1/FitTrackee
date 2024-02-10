@@ -28,7 +28,7 @@ Prerequisites
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
-    - `Poetry <https://poetry.eustace.io>`__ (for installation from sources only)
+    - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
     - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
@@ -390,7 +390,7 @@ From PyPI
 ^^^^^^^^^
 
 .. note::
-    | Recommended way on production.
+    | Simplest way to install FitTrackee.
 
 - Create and activate a virtualenv
 
@@ -434,7 +434,7 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers if email sending is enabled, with flask-dramatiq CLI:
+- Start task queue workers **if email sending is enabled**, with flask-dramatiq CLI:
 
 .. code-block:: bash
 
@@ -462,7 +462,7 @@ From sources
     | For more information, see `Poetry Documentation <https://python-poetry.org/docs/#installation>`__
 
 .. note::
-    | To keep virtualenv in project directory, update Poetry configuration.
+    | To keep virtualenv in project directory, update Poetry `configuration <https://python-poetry.org/docs/configuration/#virtualenvsin-project>`__.
 
     .. code-block:: bash
 
@@ -518,13 +518,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.30):
+-  Download the last release (for now, it is the release v0.7.31):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.30.tar.gz
-   $ tar -xzf v0.7.30.tar.gz
-   $ mv FitTrackee-0.7.30 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
+   $ tar -xzf v0.7.31.tar.gz
+   $ mv FitTrackee-0.7.31 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -648,13 +648,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.30) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.31) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.30.tar.gz
-   $ tar -xzf v0.7.30.tar.gz
-   $ cp -R FitTrackee-0.7.30/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
+   $ tar -xzf v0.7.31.tar.gz
+   $ cp -R FitTrackee-0.7.31/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -663,7 +663,7 @@ Prod environment
 
 .. code:: bash
 
-   $ make install-dev
+   $ make install-python
 
 - Upgrade database if needed (see changelog for migrations):
 
@@ -687,7 +687,10 @@ There are several ways to start **FitTrackee** web application and task queue
 library.
 One way is to use a **systemd** services and **Nginx** to proxy pass to **Gunicorn**.
 
-Examples (to adapt depending on your instance configuration and operating system):
+Examples:
+
+.. warning::
+    To adapt depending on your instance configuration and operating system
 
 - for application: ``fittrackee.service``
 

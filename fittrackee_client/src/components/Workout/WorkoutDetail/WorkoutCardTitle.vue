@@ -75,7 +75,11 @@
             <i class="fa fa-trash" aria-hidden="true" />
           </button>
           <button
-            v-if="!isWorkoutOwner"
+            v-if="
+              !isWorkoutOwner &&
+              !currentlyReporting &&
+              reportStatus !== `workout-${workoutObject.workoutId}-created`
+            "
             class="transparent icon-button"
             @click.prevent="displayReportForm"
             :title="$t('workouts.REPORT_WORKOUT')"
@@ -129,10 +133,11 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import authApi from '@/api/authApi'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -149,6 +154,12 @@
   const emit = defineEmits(['displayModal'])
 
   const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
+  const currentlyReporting: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
+  )
 
   async function downloadGpx(workoutId: string) {
     await authApi

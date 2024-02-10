@@ -16,12 +16,13 @@ export interface IReport {
   updated_at: string
 }
 
-export interface IAdminActionComment {
+export interface IAdminAction {
   action_type: string
   admin_user: IUserProfile
-  appeal: IAccountSuspensionAppeal
+  appeal: IAccountSuspensionAppeal | null
   created_at: string
   id: number
+  note: string | null
   report_id: number | null
   user: IUserProfile | null
 }
@@ -35,7 +36,7 @@ export interface IReportComment {
 }
 
 export interface IReportForAdmin extends IReport {
-  admin_actions?: IAdminActionComment[]
+  admin_actions?: IAdminAction[]
   comments?: IReportComment[]
 }
 

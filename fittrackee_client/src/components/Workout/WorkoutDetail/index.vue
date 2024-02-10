@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch } from 'vue'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -212,6 +212,13 @@
       behavior: 'smooth',
     })
   }
+  function resetReportStatus() {
+    if (reportStatus.value !== null) {
+      store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+    }
+  }
+
+  onUnmounted(() => resetReportStatus())
 
   watch(
     () => route.params.segmentId,
@@ -229,6 +236,7 @@
         displayModal.value = false
         scrollToTop()
       }
+      resetReportStatus()
     }
   )
 </script>
