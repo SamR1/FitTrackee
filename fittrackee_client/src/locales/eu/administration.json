@@ -1,1 +1,66 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "Zure erabiltzaileentzat erabilgarri izan daitekeen edozein informazioa. Markdown sintaxia erabili dezakezu.",
+    "TEXT": "Instantziaren informazio xehetua"
+  },
+  "ACTION": "Ekintza",
+  "ACTIVATE_USER_ACCOUNT": "Aktibatu kontua",
+  "ACTIVE": "Aktibo",
+  "ADMIN": "Kudeatzailea",
+  "ADMINISTRATION": "Kudeaketa",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Gehitu/kendu kudeatzaile baimenak, ezabatu erabiltzaile-kontua.",
+  "APPLICATION": "Aplikazioa",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Kontakturako kudeatzailearen eposta helbidea",
+    "MAX_FILES_IN_ZIP_LABEL": "zip fitxategiaren gehienezko fitxategi kopurua",
+    "MAX_USERS_HELP": "0 bada, ez dago izena emateko mugarik.",
+    "MAX_USERS_LABEL": "Gehieneko erabiltzaile kopurua",
+    "NO_CONTACT_EMAIL": "ez dago kontakturako eposta helbiderik",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Kargatutako fitxategien tamaina-muga (Mbtan)",
+    "TITLE": "Aplikazioaren konfigurazioa",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "zip fitxategiaren gehienezko tamaina (Mbtan)"
+  },
+  "BACK_TO_ADMIN": "Kudeaketara itzuli",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Ziur zaude {0} kontua ezabatu nahi duzula? Datu guztiak ezabatuko dira eta ekintza hau ezin da desegin.",
+  "CONFIRM_USER_PASSWORD_RESET": "Ziur zaude {0} pasahitza berrezarri nahi duzula?",
+  "CURRENT_EMAIL": "Uneko eposta",
+  "DELETE_USER": "Ezabatu erabiltzailea",
+  "EMAIL_SENDING_DISABLED": "Eposta bidalketa desaktibatuta dago.",
+  "ENABLE_DISABLE_SPORTS": "Aktibatu/desaktibatu kirolak.",
+  "NEW_EMAIL": "Eposta berria",
+  "NO_TEXT_ENTERED": "Ez duzu testurik idatzi",
+  "PASSWORD_RESET_SUCCESSFUL": "Pasahitza berrezarri egin da.",
+  "PRIVACY_POLICY_DESCRIPTION": "Gehitu zure pribatutasun politika edo utzi hutsik defektuzkoa erabiltzeko. Markdown sintaxia erabili dezakezu.",
+  "REGISTRATION_DISABLED": "Izen-ematea desaktibatuta dago.",
+  "REGISTRATION_ENABLED": "Izen-ematea aktibatuta dago.",
+  "RESET_USER_PASSWORD": "Berrezarri pasahitza",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Aktibo",
+      "HAS_WORKOUTS": "entrenamendua badago",
+      "IMAGE": "Irudia",
+      "LABEL": "Etiketa"
+    },
+    "TITLE": "Kirolen kudeaketa"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Eguneratu aplikazioaren konfigurazioa.",
+  "UPDATE_USER_EMAIL": "Eguneratu eposta",
+  "USER": "erabiltzaile | erabiltzaile",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "kudeatzailearen egoera",
+        "CREATED_AT": "izen-emate data",
+        "IS_ACTIVE": "kontuaren egoera",
+        "USERNAME": "erabiltzaile-izena",
+        "WORKOUTS_COUNT": "entrenamendu kopurua"
+      }
+    },
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Gehitu kudeatzaile baimenak",
+      "REMOVE_ADMIN_RIGHTS": "Kendu kudeatzaile baimenak"
+    },
+    "TITLE": "Kudeaketa - Erabiltzaileak"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Eposta helbidea eguneratu egin da."
+}
