@@ -28,7 +28,7 @@ Prerequisites
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
     - SMTP provider (if email sending is enabled)
     - API key from a `weather data provider <installation.html#weather-data>`__
-    - `Poetry <https://python-poetry.org>`__ (for installation from sources only)
+    - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
     - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
     -  Docker and Docker Compose (for development or evaluation purposes)
 
