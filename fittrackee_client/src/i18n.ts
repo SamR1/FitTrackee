@@ -3,6 +3,7 @@ import { createI18n } from 'vue-i18n'
 import deMessages from '@/locales/de/de'
 import enMessages from '@/locales/en/en'
 import esMessages from '@/locales/es/es'
+// import euMessages from '@/locales/eu/eu'
 import frMessages from '@/locales/fr/fr'
 import glMessages from '@/locales/gl/gl'
 import itMessages from '@/locales/it/it'
@@ -19,6 +20,7 @@ export default createI18n({
     de: deMessages,
     en: enMessages,
     es: esMessages,
+    // eu: euMessages,  // disabled for now
     fr: frMessages,
     gl: glMessages,
     it: itMessages,
