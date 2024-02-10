@@ -92,13 +92,13 @@ const availableDateFormats = [
   'MM/dd/yyyy',
   'dd/MM/yyyy',
   'yyyy-MM-dd',
-  'date_string',
+  'date_string', // depending on language
 ]
 export const dateStringFormats: Record<string, string> = {
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
   es: 'd MMM yyyy',
-  eu: 'd MMM yyyy',
+  eu: 'yyyy MMM. d',
   fr: 'd MMM yyyy',
   gl: 'd MMM yyyy',
   it: 'd MMM yyyy',
