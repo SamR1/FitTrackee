@@ -7,16 +7,8 @@ import type { TLanguage } from '@/types/locales'
 export const isLanguageSupported = (
   language: string
 ): language is TLanguage => {
-  return (
-    language === 'de' ||
-    language === 'en' ||
-    language === 'es' ||
-    language === 'fr' ||
-    language === 'gl' ||
-    language === 'it' ||
-    language === 'nb' ||
-    language === 'nl' ||
-    language === 'pl'
+  return ['de', 'en', 'es', 'fr', 'gl', 'it', 'nb', 'nl', 'pl'].includes(
+    language
   )
 }
 
@@ -24,6 +16,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   de: de,
   en: enUS,
   es: es,
+  // eu: eu,  // disabled for now
   fr: fr,
   gl: gl,
   it: it,
@@ -36,6 +29,7 @@ export const languageLabels: Record<TLanguage, string> = {
   de: 'Deutsch',
   en: 'English',
   es: 'Español',
+  // eu: 'Euskara',  // disabled for now
   fr: 'Français',
   gl: 'Galego',
   it: 'Italiano (84%)',
