@@ -1,7 +1,8 @@
 export type TLanguage =
-  | 'en'
   | 'de'
+  | 'en'
   | 'es'
+  | 'eu'
   | 'fr'
   | 'gl'
   | 'it'

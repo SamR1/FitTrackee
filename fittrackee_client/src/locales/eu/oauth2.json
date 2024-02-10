@@ -1,0 +1,36 @@
+{
+  "ADD_A_NEW_APP": "Gehitu OAuth2 aplikazio berria",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Gako sekretua",
+    "DESCRIPTION": "Aplikazioaren deskribapena",
+    "ISSUE_AT": "Noiz emana",
+    "NAME": "Aplikazioaren izena",
+    "REDIRECT_URL": "Berbideraketa URLa",
+    "SCOPE": {
+      "LABEL": "Ingurua",
+      "application:write_DESCRIPTION": "aplikazioaren konfiguraziorako idazketa baimena ematen du.",
+      "profile:read_DESCRIPTION": "<code>auth</code> zerbitzuetarako irakurketa baimena ematen du.",
+      "profile:write_DESCRIPTION": "<code>auth</code> zerbitzuetarako idazketa baimena ematen du.",
+      "users:read_DESCRIPTION": "<code>users</code> zerbitzuetarako irakurketa baimena ematen du.",
+      "users:write_DESCRIPTION": "<code>users</code> zerbitzuetarako idazketa baimena ematen du.",
+      "workouts:read_DESCRIPTION": "<code>workouts</code> zerbitzuetarako irakurketa baimena ematen du.",
+      "workouts:write_DESCRIPTION": "<code>workouts</code> zerbitzuetarako idazketa baimena ematen du."
+    },
+    "URL": "Aplikazioaren URLa"
+  },
+  "APPS_LIST": "OAuth2 aplikazioak",
+  "APP_CREATED_SUCCESSFULLY": "Aplikazioa ondo sortu du. Kopiatu gako sekretua orain ez da-eta berriz agertuko.",
+  "APP_DELETION_CONFIRMATION": "Ziur zaude aplikazio hau ezabatu nahi duzula?",
+  "APP_REQUESTING_ACCESS": "{0} aplikazioa zera eskatzen ari da:",
+  "AUTHORIZE_APP": "{0} aplikazioari zure kontua erabiltzeko baimena eman?",
+  "COPY_TO_CLIPBOARD": "kopiatu arbelera",
+  "DELETE_APP": "Ezabatu aplikazioa",
+  "NEW_APP": "Gehitu aplikazioa",
+  "NO_APP": "Aplikazioa ez da aurkitu!",
+  "NO_APPS": "ez dago aplikaziorik",
+  "NO_DESCRIPTION": "deskribapenik ez",
+  "REVOKE_ALL_TOKENS": "Baliogabetu token guztiak",
+  "TOKENS_REVOCATION_CONFIRMATION": "Ziur zaude token guztiak baliogabetu nahi dituzula?",
+  "TOKENS_REVOKED": "Lotutako token guztiak baliogabetu egin dira."
+}

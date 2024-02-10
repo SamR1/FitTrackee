@@ -1,0 +1,25 @@
+{
+  "ABOUT": "honi buruz",
+  "CONFIRMATION": "Baieztapena",
+  "CONTACT": "kontaktua",
+  "DAY": "egun | egun",
+  "DISPLAYED": "Erakutsita",
+  "DOCUMENTATION": "dokumentazioa",
+  "HERE": "hemen",
+  "HIDDEN": "Ezkutuan",
+  "HOME": "Hasiera",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "gorantz",
+      "DESC": "beherantz",
+      "LABEL": "ordenatu"
+    },
+    "ORDER_BY": {
+      "LABEL": "honen arabera ordenatu"
+    },
+    "PER_PAGE": {
+      "LABEL": "orrialdeko"
+    }
+  },
+  "TOTAL": "Guztira"
+}

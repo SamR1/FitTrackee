@@ -18,7 +18,7 @@
         </button>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
-        <div class="nav-items-close">
+        <div class="nav-items-close" @click="closeMenu">
           <router-link class="nav-item app-name" to="/">
             FitTrackee
           </router-link>
@@ -424,6 +424,7 @@
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
           padding: 0;
+          height: 0;
         }
       }
       .theme-button {

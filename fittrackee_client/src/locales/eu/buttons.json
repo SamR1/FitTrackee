@@ -1,0 +1,19 @@
+{
+  "ACCOUNT-CONFIRMATION-RESEND": "Berriz bidali baieztapen eposta",
+  "AUTHORIZE": "Baimendu",
+  "BACK": "Atzera",
+  "CANCEL": "Utzi",
+  "CLEAR_FILTER": "Garbitu filtroak",
+  "DELETE_MY_ACCOUNT": "Ezabatu nire kontua",
+  "DISABLE": "Desaktibatu",
+  "EDIT": "Editatu",
+  "ENABLE": "Aktibatu",
+  "FILTER": "Filtroa",
+  "LOGIN": "Sartu",
+  "NO": "Ez",
+  "REGISTER": "Sortu kontua",
+  "REQUEST_DATA_EXPORT": "Eskatu datuak esportatzea",
+  "RESET": "Berrezarri",
+  "SUBMIT": "Bidali",
+  "YES": "Bai"
+}

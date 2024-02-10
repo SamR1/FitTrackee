@@ -1,0 +1,9 @@
+{
+  "APP_ERROR": "Aplikazioak erroreren bat duela dirudi.<br/>Saiatu berriz beranduxeago edo jarri kontaktuan kudeatzailearekin.",
+  "NOT_FOUND": {
+    "PAGE": "Orrialdea ez da aurkitu",
+    "WORKOUT": "Entrenamendua ez da aurkitu"
+  },
+  "SOMETHING_WRONG": "Zerbait gaizki irten da",
+  "UNKNOWN": "Errorea. Saiatu berriz edo jarri kontaktuan kudeatzailearekin."
+}
