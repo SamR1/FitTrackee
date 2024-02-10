@@ -18,7 +18,7 @@
         </button>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
-        <div class="nav-items-close">
+        <div class="nav-items-close" @click="closeMenu">
           <router-link class="nav-item app-name" to="/">
             FitTrackee
           </router-link>
