@@ -424,6 +424,7 @@
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
           padding: 0;
+          height: 0;
         }
       }
       .theme-button {
