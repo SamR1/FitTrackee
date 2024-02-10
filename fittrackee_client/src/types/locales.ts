@@ -2,7 +2,7 @@ export type TLanguage =
   | 'de'
   | 'en'
   | 'es'
-  // | 'eu'  // disabled for now
+  | 'eu'
   | 'fr'
   | 'gl'
   | 'it'
