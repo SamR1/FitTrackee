@@ -1,1 +1,8 @@
-{}
+{
+  "STATISTICS": "Estatistikak",
+  "TIME_FRAMES": {
+    "month": "hilabetea",
+    "week": "astea",
+    "year": "urtea"
+  }
+}

@@ -1,1 +1,53 @@
-{}
+{
+  "Cycling (Sport)": {
+    "LABEL": "Txirrindularitza (Kirola)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Txirrindularitza (Garraioa)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Txirrindularitza (mendikoa)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Txirrindularitza (birtuala)"
+  },
+  "Hiking": {
+    "LABEL": "Mendi ibilaldia"
+  },
+  "Mountain Biking": {
+    "LABEL": "Mendiko bizikleta"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Mendiko bizikleta (elektrikoa)"
+  },
+  "Mountaineering": {
+    "LABEL": "Mendizaletasuna"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Ur irekietako igeriketa"
+  },
+  "Paragliding": {
+    "LABEL": "Parapentea"
+  },
+  "Rowing": {
+    "LABEL": "Arrauna"
+  },
+  "Running": {
+    "LABEL": "Korrika egitea"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Eskia (alpinoa)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Mendiko eskia"
+  },
+  "Snowshoes": {
+    "LABEL": "Erraketak"
+  },
+  "Trail": {
+    "LABEL": "Bidea"
+  },
+  "Walking": {
+    "LABEL": "Oinez ibiltzea"
+  }
+}
