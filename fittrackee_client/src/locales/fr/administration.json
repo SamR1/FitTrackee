@@ -44,6 +44,7 @@
       "CREATED_AT": "date de création",
       "UPDATED_AT": "date de mise à jour"
     },
+    "REASON": "Raison",
     "REPORT": "signalement | signalements",
     "REPORTED_BY": "Signalé par",
     "REPORTED_CONTENT": "Contenu signalé",

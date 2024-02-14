@@ -44,6 +44,7 @@
       "CREATED_AT": "creation date",
       "UPDATED_AT": "update date"
     },
+    "REASON": "Reason",
     "REPORT": "report | reports",
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",

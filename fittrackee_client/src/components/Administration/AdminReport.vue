@@ -197,6 +197,10 @@
                     }}
                   </button>
                 </div>
+                <div v-if="item.reason" class="report-action-note">
+                  <span>{{ $t('admin.APP_MODERATION.REASON') }}:</span>
+                  {{ item.reason }}
+                </div>
                 <AdminActionAppeal
                   v-if="
                     item.appeal && displayedAppeals.includes(item.appeal.id)
@@ -610,6 +614,14 @@
         font-style: italic;
         font-size: 0.9em;
         margin-left: $default-padding;
+
+        .report-action-note {
+          margin: 0 0 0 $default-margin;
+          font-size: 0.95em;
+          span {
+            font-weight: bold;
+          }
+        }
 
         .appeal-button {
           margin-left: 3px;
