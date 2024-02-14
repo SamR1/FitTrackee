@@ -2186,14 +2186,14 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
             app, user_1_admin.email
         )
         now = datetime.utcnow()
-        note = self.random_string()
+        reason = self.random_string()
 
         with freeze_time(now):
             client.patch(
                 f'/api/users/{user_2.username}',
                 content_type='application/json',
                 data=json.dumps(
-                    dict(suspend=True, report_id=report.id, note=note)
+                    dict(suspend=True, report_id=report.id, reason=reason)
                 ),
                 headers=dict(Authorization=f'Bearer {auth_token}'),
             )
@@ -2203,7 +2203,7 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
         ).first()
         assert admin_action.action_type == "user_suspension"
         assert admin_action.created_at == now
-        assert admin_action.note == note
+        assert admin_action.reason == reason
         assert admin_action.report_id == report.id
 
     def test_admin_can_suspend_another_admin_account_and_remove_admin_rights(

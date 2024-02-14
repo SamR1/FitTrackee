@@ -661,7 +661,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
             suspended=suspended,
             report_id=report_id,
-            action_note=user_data.get('note'),
+            reason=user_data.get('reason'),
         )
 
         if current_app.config['CAN_SEND_EMAILS']:

@@ -22,7 +22,7 @@ export interface IAdminAction {
   appeal: IAccountSuspensionAppeal | null
   created_at: string
   id: number
-  note: string | null
+  reason: string | null
   report_id: number | null
   user: IUserProfile | null
 }

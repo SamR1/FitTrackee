@@ -445,7 +445,7 @@
       from_report: report.value.id,
     }
     if (reportCommentText.value) {
-      payload.note = reportCommentText.value
+      payload.reason = reportCommentText.value
     }
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
   }

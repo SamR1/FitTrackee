@@ -61,7 +61,7 @@ class AdminAction(BaseModel):
         nullable=True,
     )
     action_type = db.Column(db.String(50), nullable=False)
-    note = db.Column(db.String(), nullable=True)
+    reason = db.Column(db.String(), nullable=True)
 
     admin_user = db.relationship(
         "User",
@@ -87,7 +87,7 @@ class AdminAction(BaseModel):
         admin_user_id: int,
         user_id: Optional[int] = None,
         report_id: Optional[int] = None,
-        note: Optional[str] = None,
+        reason: Optional[str] = None,
         created_at: Optional[datetime] = None,
     ):
         if action_type not in ADMIN_ACTION_TYPES:
@@ -100,7 +100,7 @@ class AdminAction(BaseModel):
         self.action_type = action_type
         self.admin_user_id = admin_user_id
         self.created_at = created_at if created_at else datetime.utcnow()
-        self.note = note
+        self.reason = reason
         self.report_id = report_id
         self.user_id = user_id if action_type in USER_ACTION_TYPES else None
 
@@ -118,7 +118,7 @@ class AdminAction(BaseModel):
             ),
             "created_at": self.created_at,
             "id": self.short_id,
-            "note": self.note,
+            "reason": self.reason,
         }
         if current_user.admin:
             action = {

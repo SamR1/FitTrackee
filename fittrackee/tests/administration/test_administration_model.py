@@ -74,7 +74,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
@@ -97,7 +97,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == "user_suspension"
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id == user_2.id
 
@@ -141,7 +141,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
 
@@ -165,7 +165,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == now
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
 
@@ -187,7 +187,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == now
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
@@ -211,7 +211,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id is None
         assert admin_action.created_at == now
-        assert admin_action.note is None
+        assert admin_action.reason is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
@@ -220,12 +220,12 @@ class TestAdminActionModel(AdminActionTestCase):
     ) -> None:
         action_type = "user_suspension"
         now = datetime.utcnow()
-        note = self.random_string()
+        reason = self.random_string()
         admin_action = AdminAction(
             action_type=action_type,
             admin_user_id=user_1_admin.id,
             created_at=now,
-            note=note,
+            reason=reason,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -234,7 +234,7 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == now
-        assert admin_action.note == note
+        assert admin_action.reason == reason
         assert admin_action.user_id == user_2.id
 
 
@@ -258,7 +258,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
-        assert serialized_action['note'] is None
+        assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
 
@@ -282,7 +282,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
-        assert serialized_action['note'] is None
+        assert serialized_action['reason'] is None
         assert serialized_action['report_id'] == report.id
         assert serialized_action['user'] is None
 
@@ -313,7 +313,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
-        assert serialized_action['note'] is None
+        assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
 
@@ -334,7 +334,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
             "action_type": admin_action.action_type,
             "appeal": None,
             "created_at": admin_action.created_at,
-            "note": admin_action.note,
+            "reason": admin_action.reason,
             "id": admin_action.short_id,
         }
 
@@ -362,7 +362,7 @@ class TestAdminActionSerializer(AdminActionTestCase):
             "action_type": admin_action.action_type,
             "appeal": appeal.serialize(user_2),
             "created_at": admin_action.created_at,
-            "note": admin_action.note,
+            "reason": admin_action.reason,
             "id": admin_action.short_id,
         }
 

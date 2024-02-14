@@ -360,7 +360,7 @@ class TestUserManagerServiceUserUpdate:
         input_suspended: bool,
         expected_action_action: str,
     ) -> None:
-        action_note = random_string()
+        reason = random_string()
         report = self.generate_user_report(user_1_admin, user_2)
 
         user_manager_service = UserManagerService(
@@ -372,7 +372,7 @@ class TestUserManagerServiceUserUpdate:
             user_manager_service.update(
                 suspended=input_suspended,
                 report_id=report.id,
-                action_note=action_note,
+                reason=reason,
             )
 
         admin_action = AdminAction.query.filter_by(
@@ -381,7 +381,7 @@ class TestUserManagerServiceUserUpdate:
             user_id=user_2.id,
         ).first()
         assert admin_action.created_at == now
-        assert admin_action.note == action_note
+        assert admin_action.reason == reason
         assert admin_action.report_id == report.id
 
 

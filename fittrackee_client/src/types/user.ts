@@ -85,7 +85,7 @@ export interface IAdminUserPayload {
   admin?: boolean
   from_report?: number
   new_email?: string
-  note?: string
+  reason?: string
   resetPassword?: boolean
   suspend?: boolean
   unsuspend?: boolean
