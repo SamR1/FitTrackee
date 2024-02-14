@@ -525,12 +525,7 @@ def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
 
 def get_workout(workout_short_id: str, auth_user: Optional[User]) -> Workout:
     workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter(
-        Workout.uuid == workout_uuid,
-        Workout.user_id.not_in(auth_user.get_blocked_by_user_ids())
-        if auth_user
-        else True,
-    ).first()
+    workout = Workout.query.filter(Workout.uuid == workout_uuid).first()
     if not workout or not can_view(workout, 'workout_visibility', auth_user):
         raise WorkoutForbiddenException()
     return workout

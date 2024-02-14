@@ -27,7 +27,7 @@ comments_blueprint = Blueprint('comments', __name__)
     "/workouts/<string:workout_short_id>/comments", methods=["POST"]
 )
 @require_auth(scopes=["workouts:write"])
-@check_workout(check_owner=False, as_data=False)
+@check_workout(only_owner=False, as_data=False)
 def add_workout_comment(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -83,7 +83,7 @@ def add_workout_comment(
     "/comments/<string:comment_short_id>", methods=["GET"]
 )
 @require_auth(scopes=["workouts:read"], optional_auth_user=True)
-@check_workout_comment(check_owner=False)
+@check_workout_comment(only_owner=False)
 def get_workout_comment(
     auth_user: Optional[User], comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -100,7 +100,7 @@ def get_workout_comment(
     "/workouts/<string:workout_short_id>/comments", methods=["GET"]
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
-@check_workout(check_owner=False, as_data=False)
+@check_workout(only_owner=False, as_data=False)
 def get_workout_comments(
     auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -172,7 +172,7 @@ def update_workout_comment(
     "/comments/<string:comment_short_id>/like", methods=["POST"]
 )
 @require_auth(scopes=["workouts:write"])
-@check_workout_comment(check_owner=False)
+@check_workout_comment(only_owner=False)
 def like_comment(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -193,7 +193,7 @@ def like_comment(
     methods=["POST"],
 )
 @require_auth(scopes=["workouts:write"])
-@check_workout_comment(check_owner=False)
+@check_workout_comment(only_owner=False)
 def undo_comment_like(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:

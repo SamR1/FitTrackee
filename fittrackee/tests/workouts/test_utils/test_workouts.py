@@ -1,18 +1,21 @@
 from datetime import datetime, timedelta
 from statistics import mean
-from typing import List, Union
+from typing import List, Optional, Union
 
 import pytest
 import pytz
 from flask import Flask
 from gpxpy.gpxfield import SimpleTZ
 
-from fittrackee.users.models import User
+from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.users.models import FollowRequest, User
+from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import (
     create_segment,
     get_average_speed,
     get_ordered_workouts,
+    get_workout,
     get_workout_datetime,
 )
 
@@ -193,3 +196,257 @@ class TestGetOrderedWorkouts:
             workout_running_user_1,
             workout_cycling_user_1,
         ]
+
+
+class GetWorkoutTestCase:
+    @staticmethod
+    def assert_workout_is_returned(
+        workout: Workout, user: Optional[User]
+    ) -> None:
+        workout = get_workout(
+            workout_short_id=workout.short_id, auth_user=user
+        )
+
+        assert workout.id == workout.id
+
+    @staticmethod
+    def assert_raises_forbidden_exception(
+        workout: Workout, user: Optional[User]
+    ) -> None:
+        with pytest.raises(WorkoutForbiddenException):
+            get_workout(workout_short_id=workout.short_id, auth_user=user)
+
+
+class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
+    privacy_level = PrivacyLevel.PUBLIC
+
+    def test_it_returns_workout_when_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, None)
+
+    def test_it_returns_workout_when_user_is_not_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_is_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_is_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+
+    def test_it_raises_exception_when_user_is_blocked_by_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.blocks_user(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_has_admin_right(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_2_admin)
+
+
+class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
+    privacy_level = PrivacyLevel.FOLLOWERS
+
+    def test_it_raises_exception_when_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, None)
+
+    def test_it_raises_exception_when_user_is_not_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_is_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_is_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+
+    def test_it_raises_exception_when_user_is_blocked_by_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.blocks_user(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_raises_exception_when_user_has_admin_right(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2_admin
+        )
+
+
+class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
+    privacy_level = PrivacyLevel.PRIVATE
+
+    def test_it_raises_exception_when_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, None)
+
+    def test_it_raises_exception_when_user_is_not_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_raises_exception_when_user_is_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_returns_workout_when_user_is_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+
+    def test_it_raises_exception_when_user_is_blocked_by_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.blocks_user(user_2)
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+
+    def test_it_raises_exception_when_user_has_admin_right(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2_admin
+        )

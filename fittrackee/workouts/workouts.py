@@ -305,7 +305,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
-@check_workout(check_owner=False)
+@check_workout(only_owner=False)
 def get_workout(
     auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -1426,7 +1426,7 @@ def delete_workout(
     '/workouts/<string:workout_short_id>/like', methods=['POST']
 )
 @require_auth(scopes=['workouts:write'])
-@check_workout(check_owner=False)
+@check_workout(only_owner=False)
 def like_workout(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1447,7 +1447,7 @@ def like_workout(
     '/workouts/<string:workout_short_id>/like/undo', methods=['POST']
 )
 @require_auth(scopes=['workouts:write'])
-@check_workout(check_owner=False)
+@check_workout(only_owner=False)
 def undo_workout_like(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
