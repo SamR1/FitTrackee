@@ -8,6 +8,8 @@ from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    MissingAdminIdException,
+    MissingReportIdException,
     UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
@@ -70,6 +72,11 @@ class UserManagerService:
         user_updated = False
         new_password = None
         user = self._get_user()
+        if suspended is not None:
+            if self.admin_user_id is None:
+                raise MissingAdminIdException()
+            if report_id is None:
+                raise MissingReportIdException()
 
         if is_admin is not None:
             user.admin = is_admin

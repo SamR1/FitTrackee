@@ -4,12 +4,14 @@ import pytest
 from flask import Flask
 from freezegun import freeze_time
 
-from fittrackee import bcrypt
+from fittrackee import bcrypt, db
 from fittrackee.administration.models import AdminAction
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    MissingAdminIdException,
+    MissingReportIdException,
     UserAlreadySuspendedException,
     UserCreationException,
     UserNotFoundException,
@@ -20,6 +22,18 @@ from ..utils import random_email, random_string
 
 
 class TestUserManagerServiceUserUpdate:
+    @staticmethod
+    def generate_user_report(admin: User, user: User) -> Report:
+        report = Report(
+            reported_by=admin.id,
+            note=random_string(),
+            object_type='user',
+            object_id=user.id,
+        )
+        db.session.add(report)
+        db.session.flush()
+        return report
+
     def test_it_raises_exception_if_user_does_not_exist(
         self, app: Flask
     ) -> None:
@@ -201,63 +215,134 @@ class TestUserManagerServiceUserUpdate:
         assert user_1.confirmation_token is None
         assert user_updated is True
 
-    def test_it_suspends_user(self, app: Flask, user_1: User) -> None:
-        user_manager_service = UserManagerService(username=user_1.username)
-        now = datetime.utcnow()
+    @pytest.mark.parametrize(
+        'input_suspended', ["user_suspension", "user_unsuspension"]
+    )
+    def test_it_raises_error_when_report_id_not_provided_on_suspension_status_update(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_suspended: bool,
+    ) -> None:
+        user_manager_service = UserManagerService(
+            username=user_1.username,
+            admin_user_id=user_2_admin.id,
+        )
 
-        with freeze_time(now):
-            _, user_updated, _ = user_manager_service.update(suspended=True)
+        with pytest.raises(
+            MissingReportIdException,
+        ):
+            user_manager_service.update(suspended=input_suspended)
 
-        assert user_1.is_active is True
-        assert user_1.suspended_at == now
-        assert user_updated is True
+    @pytest.mark.parametrize(
+        'input_suspended', ["user_suspension", "user_unsuspension"]
+    )
+    def test_it_raises_error_when_admin_id_not_provided_on_suspension_status_update(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_suspended: bool,
+    ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1)
+        user_manager_service = UserManagerService(
+            username=user_1.username,
+        )
+
+        with pytest.raises(
+            MissingAdminIdException,
+        ):
+            user_manager_service.update(
+                suspended=input_suspended, report_id=report.id
+            )
 
     def test_it_raises_error_when_user_is_already_suspended(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1)
         user_1.suspended_at = datetime.utcnow()
-        user_manager_service = UserManagerService(username=user_1.username)
+        user_manager_service = UserManagerService(
+            username=user_1.username,
+            admin_user_id=user_2_admin.id,
+        )
 
         with pytest.raises(
             UserAlreadySuspendedException,
             match=f"user '{user_1.username}' already suspended",
         ):
-            user_manager_service.update(suspended=True)
+            user_manager_service.update(suspended=True, report_id=report.id)
 
-    def test_it_removes_admin_right_when_user_is_suspended(
-        self, app: Flask, user_1_admin: User
+    def test_it_suspends_user(
+        self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1)
         user_manager_service = UserManagerService(
-            username=user_1_admin.username
+            username=user_1.username, admin_user_id=user_2_admin.id
         )
         now = datetime.utcnow()
 
         with freeze_time(now):
-            _, user_updated, _ = user_manager_service.update(suspended=True)
+            _, user_updated, _ = user_manager_service.update(
+                suspended=True, report_id=report.id
+            )
+
+        assert user_1.is_active is True
+        assert user_1.suspended_at == now
+        assert user_updated is True
+
+    def test_it_removes_admin_right_when_user_is_suspended(
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1_admin)
+        user_manager_service = UserManagerService(
+            username=user_1_admin.username,
+            admin_user_id=user_2_admin.id,
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            _, user_updated, _ = user_manager_service.update(
+                suspended=True, report_id=report.id
+            )
 
         assert user_1_admin.admin is False
         assert user_1_admin.is_active is True
         assert user_1_admin.suspended_at == now
         assert user_updated is True
 
-    def test_it_unsuspends_user(self, app: Flask, user_1: User) -> None:
+    def test_it_unsuspends_user(
+        self, app: Flask, user_1: User, user_2_admin: User
+    ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1)
         user_1.suspended_at = datetime.utcnow()
-        user_manager_service = UserManagerService(username=user_1.username)
+        user_manager_service = UserManagerService(
+            username=user_1.username,
+            admin_user_id=user_2_admin.id,
+        )
 
-        _, user_updated, _ = user_manager_service.update(suspended=False)
+        _, user_updated, _ = user_manager_service.update(
+            suspended=False, report_id=report.id
+        )
 
         assert user_1.is_active is True
         assert user_1.suspended_at is None
         assert user_updated is True
 
     def test_it_does_not_update_suspended_when_suspended_is_none(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
+        report = self.generate_user_report(user_2_admin, user_1)
         suspended_at = datetime.utcnow()
         user_1.suspended_at = suspended_at
-        user_manager_service = UserManagerService(username=user_1.username)
+        user_manager_service = UserManagerService(
+            username=user_1.username,
+            admin_user_id=user_2_admin.id,
+        )
 
-        _, user_updated, _ = user_manager_service.update(suspended=None)
+        _, user_updated, _ = user_manager_service.update(
+            suspended=None, report_id=report.id
+        )
 
         assert user_1.is_active is True
         assert user_1.suspended_at == suspended_at
@@ -267,7 +352,6 @@ class TestUserManagerServiceUserUpdate:
         'input_suspended, expected_action_action',
         [(True, "user_suspension"), (False, "user_unsuspension")],
     )
-    @pytest.mark.parametrize('created_report', [True, False])
     def test_it_creates_admin_action_when_updated_suspended_status(
         self,
         app: Flask,
@@ -275,17 +359,9 @@ class TestUserManagerServiceUserUpdate:
         user_2: User,
         input_suspended: bool,
         expected_action_action: str,
-        created_report: bool,
     ) -> None:
-        report_id = None
         action_note = random_string()
-        if created_report:
-            report_id = Report(
-                reported_by=user_1_admin.id,
-                note=random_string(),
-                object_type='user',
-                object_id=user_2.id,
-            ).id
+        report = self.generate_user_report(user_1_admin, user_2)
 
         user_manager_service = UserManagerService(
             admin_user_id=user_1_admin.id, username=user_2.username
@@ -295,7 +371,7 @@ class TestUserManagerServiceUserUpdate:
         with freeze_time(now):
             user_manager_service.update(
                 suspended=input_suspended,
-                report_id=report_id,
+                report_id=report.id,
                 action_note=action_note,
             )
 
@@ -306,7 +382,7 @@ class TestUserManagerServiceUserUpdate:
         ).first()
         assert admin_action.created_at == now
         assert admin_action.note == action_note
-        assert admin_action.report_id == report_id
+        assert admin_action.report_id == report.id
 
 
 class TestUserManagerServiceUserCreation:

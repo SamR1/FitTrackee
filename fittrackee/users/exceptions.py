@@ -18,6 +18,22 @@ class InvalidNotificationTypeException(Exception):
     ...
 
 
+class MissingAdminIdException(Exception):
+    ...
+
+
+class MissingReportIdException(Exception):
+    ...
+
+
+class NotExistingFollowRequestError(Exception):
+    ...
+
+
+class UserAlreadySuspendedException(Exception):
+    ...
+
+
 class UserControlsException(Exception):
     ...
 
@@ -26,13 +42,5 @@ class UserCreationException(Exception):
     ...
 
 
-class NotExistingFollowRequestError(Exception):
-    ...
-
-
 class UserNotFoundException(Exception):
-    ...
-
-
-class UserAlreadySuspendedException(Exception):
     ...
