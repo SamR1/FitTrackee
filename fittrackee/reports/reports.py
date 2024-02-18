@@ -92,26 +92,30 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         order_clauses = [nullslast(order_clauses[0])]
     if column != "created_at":
         order_clauses.append(Report.created_at.desc())
-    reporter_username = params.get("reporter")
+    reporter_username = params.get("reporter", "")
     reporter = (
         User.query.filter(User.username == reporter_username).first()
-        if params.get("reporter", "")
+        if reporter_username
         else None
     )
 
     reports_pagination = (
         Report.query.filter(
             Report.object_type == object_type if object_type else True,
-            Report.resolved == True  # noqa
-            if resolved == "true"
-            else Report.resolved == False  # noqa
-            if resolved == "false"
-            else True,
-            Report.reported_by == auth_user.id
-            if auth_user.admin is False
-            else Report.reported_by == reporter.id
-            if reporter
-            else True,
+            (
+                Report.resolved == True  # noqa
+                if resolved == "true"
+                else Report.resolved == False  # noqa
+                if resolved == "false"
+                else True
+            ),
+            (
+                Report.reported_by == auth_user.id
+                if auth_user.admin is False
+                else Report.reported_by == reporter.id
+                if reporter_username
+                else True
+            ),
         )
         .order_by(*order_clauses)
         .paginate(page=page, per_page=REPORTS_PER_PAGE, error_out=False)

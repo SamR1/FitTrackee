@@ -277,19 +277,19 @@ def upgrade():
         sa.Column('object_type', sa.String(length=50), nullable=False),
         sa.Column('note', sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
-            ['reported_by'], ['users.id'], ondelete='CASCADE'
+            ['reported_by'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_comment_id'], ['comments.id'], ondelete='CASCADE'
+            ['reported_comment_id'], ['comments.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_user_id'], ['users.id'], ondelete='CASCADE'
+            ['reported_user_id'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_workout_id'], ['workouts.id'], ondelete='CASCADE'
+            ['reported_workout_id'], ['workouts.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['resolved_by'], ['users.id'], ondelete='CASCADE'
+            ['resolved_by'], ['users.id'], ondelete='SET NULL'
         ),
         sa.PrimaryKeyConstraint('id'),
     )
@@ -313,9 +313,7 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
-            batch_op.f('ix_reports_resolved_by'),
-            ['resolved_by'],
-            unique=False,
+            batch_op.f('ix_reports_resolved_by'), ['resolved_by'], unique=False
         )
         batch_op.create_index(
             batch_op.f('ix_reports_object_type'), ['object_type'], unique=False

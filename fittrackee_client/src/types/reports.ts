@@ -6,9 +6,9 @@ export interface IReport {
   created_at: string
   note: string
   object_type: string
-  reported_by: IUserProfile
+  reported_by: IUserProfile | null
   reported_comment: IComment | null
-  reported_user: IUserProfile
+  reported_user: IUserProfile | null
   reported_workout: IWorkout | null
   resolved: boolean
   resolved_at: string

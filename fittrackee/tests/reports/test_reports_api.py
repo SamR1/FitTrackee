@@ -636,6 +636,83 @@ class TestGetReportsAsAdmin(ReportTestCase):
             "total": 1,
         }
 
+    @pytest.mark.parametrize(
+        "input_object_type, input_index",
+        [("comment", 2), ("user", 0), ("workout", 1)],
+    )
+    def test_it_returns_report_when_reported_object_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_object_type: str,
+        input_index: int,
+    ) -> None:
+        reports = self.create_reports(
+            user_2, user_3, user_4, workout_cycling_user_2
+        )
+        db.session.delete(reports[input_index].reported_object)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f"{self.route}?object_type={input_object_type}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert len(data["reports"]) == 1
+        assert data["reports"][0] == jsonify_dict(
+            reports[input_index].serialize(user_1_admin)
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_returns_report_when_reporter_is_deleted(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        db.session.delete(user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert len(data["reports"]) == 1
+        assert data["reports"][0] == jsonify_dict(
+            report.serialize(user_1_admin)
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
     def test_it_returns_only_unresolved_reports(
         self,
         app: Flask,

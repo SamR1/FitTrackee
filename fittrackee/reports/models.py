@@ -35,31 +35,31 @@ class Report(BaseModel):
     resolved_at = db.Column(db.DateTime, nullable=True)
     reported_by = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
     reported_comment_id = db.Column(
         db.Integer,
-        db.ForeignKey('comments.id', ondelete='CASCADE'),
+        db.ForeignKey('comments.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
     reported_user_id = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
     reported_workout_id = db.Column(
         db.Integer,
-        db.ForeignKey('workouts.id', ondelete='CASCADE'),
+        db.ForeignKey('workouts.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
     resolved_by = db.Column(
         db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
@@ -110,6 +110,17 @@ class Report(BaseModel):
         backref=db.backref('report', lazy='joined', single_parent=True),
         order_by='AdminAction.created_at.asc()',
     )
+
+    @property
+    def reported_object(self) -> Union[Comment, None, User, Workout]:
+        # util method, used by tests
+        if self.object_type == "comment":
+            return self.reported_comment
+        if self.object_type == "user":
+            return self.reported_user
+        if self.object_type == "workout":
+            return self.reported_workout
+        return None
 
     def __init__(
         self,
@@ -169,10 +180,18 @@ class Report(BaseModel):
             "id": self.id,
             "note": self.note,
             "object_type": self.object_type,
-            "reported_by": self.reporter.serialize(current_user),
+            "reported_by": (
+                self.reporter.serialize(current_user)
+                if self.reported_by
+                else None
+            ),
             "reported_comment": reported_comment,
-            "reported_user": self.reported_user.serialize(
-                current_user if self.object_type == 'user' else None
+            "reported_user": (
+                self.reported_user.serialize(
+                    current_user if self.object_type == 'user' else None
+                )
+                if self.reported_user_id
+                else None
             ),
             "reported_workout": reported_workout,
             "resolved": self.resolved,

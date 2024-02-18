@@ -10,8 +10,10 @@ from freezegun import freeze_time
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction, AdminActionAppeal
+from fittrackee.reports.models import Report
 from fittrackee.users.models import (
     FollowRequest,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -2407,7 +2409,7 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteUser(ApiTestCaseMixin):
+class TestDeleteUser(UserModerationMixin, ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2524,6 +2526,82 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         assert response.status_code == 204
+
+    def test_user_with_notifications_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert Notification.query.first() is None
+
+    def test_user_with_reports_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        report_from_user_3 = self.create_report(
+            reporter=user_3, reported_object=user_1
+        )
+        report_from_user_1 = self.create_report(
+            reporter=user_1, reported_object=user_4
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert set(Report.query.all()) == {
+            report_from_user_3,
+            report_from_user_1,
+        }
+        assert (
+            Notification.query.filter_by(to_user_id=user_2_admin.id).first()
+            is not None
+        )
 
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User

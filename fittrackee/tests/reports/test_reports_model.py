@@ -66,6 +66,45 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.resolved_by is None
         assert report.updated_at is None
 
+    def test_reported_comment_can_be_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        report = Report(
+            created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=comment,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        db.session.delete(comment)
+        db.session.commit()
+
+        updated_report = Report.query.first()
+        assert updated_report.created_at == report_created_at
+        assert updated_report.note == report_note
+        assert updated_report.object_type == 'comment'
+        assert updated_report.reported_by == user_1.id
+        assert updated_report.reported_comment_id is None
+        assert updated_report.reported_user_id == user_2.id
+        assert updated_report.reported_workout_id is None
+        assert updated_report.resolved is False
+        assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
+        assert updated_report.updated_at is None
+
     def test_it_creates_report_for_a_user(
         self,
         app: Flask,
@@ -93,6 +132,72 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.resolved_at is None
         assert report.resolved_by is None
         assert report.updated_at is None
+
+    def test_reported_user_can_be_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        db.session.delete(user_2)
+        db.session.commit()
+
+        updated_report = Report.query.first()
+        assert updated_report.created_at == report_created_at
+        assert updated_report.note == report_note
+        assert updated_report.object_type == 'user'
+        assert updated_report.reported_by == user_1.id
+        assert updated_report.reported_comment_id is None
+        assert updated_report.reported_user_id is None
+        assert updated_report.reported_workout_id is None
+        assert updated_report.resolved is False
+        assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
+        assert updated_report.updated_at is None
+
+    def test_reporter_can_be_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        db.session.delete(user_1)
+        db.session.commit()
+
+        updated_report = Report.query.first()
+        assert updated_report.created_at == report_created_at
+        assert updated_report.note == report_note
+        assert updated_report.object_type == 'user'
+        assert updated_report.reported_by is None
+        assert updated_report.reported_comment_id is None
+        assert updated_report.reported_user_id == user_2.id
+        assert updated_report.reported_workout_id is None
+        assert updated_report.resolved is False
+        assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
+        assert updated_report.updated_at is None
 
     def test_it_creates_report_for_a_workout(
         self,
@@ -124,6 +229,42 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.resolved_at is None
         assert report.resolved_by is None
         assert report.updated_at is None
+
+    def test_reported_workout_can_be_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report_created_at = datetime.now()
+        report_note = self.random_string()
+        report = Report(
+            created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=workout_cycling_user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        updated_report = Report.query.first()
+        assert updated_report.created_at == report_created_at
+        assert updated_report.note == report_note
+        assert updated_report.object_type == 'workout'
+        assert updated_report.reported_by == user_1.id
+        assert updated_report.reported_comment_id is None
+        assert updated_report.reported_user_id == user_2.id
+        assert updated_report.reported_workout_id is None
+        assert updated_report.resolved is False
+        assert updated_report.resolved_at is None
+        assert updated_report.resolved_by is None
+        assert updated_report.updated_at is None
 
     def test_it_creates_report_without_date(
         self, app: Flask, user_1: User, user_2: User
@@ -258,6 +399,43 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "resolved_at": None,
         }
 
+    def test_it_returns_serialized_report_when_comment_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_1.id,
+            reported_object=comment,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(comment)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "comment",
+            "reported_by": user_1.serialize(user_1),
+            "reported_comment": None,
+            "reported_user": user_2.serialize(),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+        }
+
     def test_it_returns_serialized_object_for_user_report(
         self,
         app: Flask,
@@ -282,6 +460,37 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
             "reported_user": user_2.serialize(user_1),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_user_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_1.id,
+            reported_object=user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(user_2)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "user",
+            "reported_by": user_1.serialize(user_1),
+            "reported_comment": None,
+            "reported_user": None,
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -351,6 +560,40 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "reported_comment": None,
             "reported_user": user_2.serialize(),
             "reported_workout": '_WORKOUT_UNAVAILABLE_',
+            "resolved": False,
+            "resolved_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_1.id,
+            reported_object=workout_cycling_user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "workout",
+            "reported_by": user_1.serialize(user_1),
+            "reported_comment": None,
+            "reported_user": user_2.serialize(),
+            "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
         }
@@ -438,7 +681,117 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "updated_at": None,
         }
 
-    def test_it_returns_serialized_workout_when_workout_is_not_visible(
+    def test_it_returns_serialized_report_when_reported_comment_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_2.id,
+            reported_object=comment,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(comment)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "comment",
+            "reported_by": user_2.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": user_3.serialize(),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_reported_user_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_3.id,
+            reported_object=user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(user_2)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "user",
+            "reported_by": user_3.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": None,
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_reporter_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_3.id,
+            reported_object=user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(user_3)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "user",
+            "reported_by": None,
+            "reported_comment": None,
+            "reported_user": user_2.serialize(user_1_admin),
+            "reported_workout": None,
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_workout_is_not_visible(
         self,
         app: Flask,
         user_1_admin: User,
@@ -471,6 +824,43 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_workout": workout_cycling_user_2.serialize(
                 user_1_admin, for_report=True
             ),
+            "resolved": False,
+            "resolved_at": None,
+            "resolved_by": None,
+            "updated_at": None,
+        }
+
+    def test_it_returns_serialized_report_when_reported_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = Report(
+            note=self.random_string(),
+            reported_by=user_3.id,
+            reported_object=workout_cycling_user_2,
+        )
+        db.session.add(report)
+        db.session.commit()
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        serialized_report = report.serialize(user_1_admin)
+
+        assert serialized_report == {
+            "created_at": report.created_at,
+            "id": report.id,
+            "note": report.note,
+            "object_type": "workout",
+            "reported_by": user_3.serialize(user_1_admin),
+            "reported_comment": None,
+            "reported_user": user_2.serialize(),
+            "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
             "resolved_by": None,

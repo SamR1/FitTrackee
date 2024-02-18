@@ -1,11 +1,7 @@
 <template>
-  <div
-    id="admin-report"
-    class="admin-card"
-    v-if="report && report.reported_user"
-  >
+  <div id="admin-report" class="admin-card" v-if="report?.id">
     <Modal
-      v-if="displayModal"
+      v-if="displayModal && report.reported_user"
       :title="$t('common.CONFIRMATION')"
       message="admin.CONFIRM_USER_ACCOUNT_SUSPENSION"
       :strongMessage="report.reported_user.username"
@@ -28,46 +24,71 @@
                 {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
               </template>
               <template #content>
-                <Comment
-                  v-if="report.reported_comment"
-                  :auth-user="authUser"
-                  :comment="report.reported_comment"
-                  :comments-loading="null"
-                  :for-admin="true"
-                />
-                <WorkoutCard
-                  v-if="report.reported_workout"
-                  :workout="report.reported_workout"
-                  :sport="
-                    sports.filter(
-                      (s) => s.id === report.reported_workout?.sport_id
-                    )[0]
-                  "
-                  :user="report.reported_workout.user"
-                  :useImperialUnits="authUser.imperial_units"
-                  :dateFormat="dateFormat"
-                  :timezone="authUser.timezone"
-                  :key="report.reported_workout.id"
-                />
-                <UserCard
-                  v-if="report.object_type === 'user'"
-                  :authUser="authUser"
-                  :user="report.reported_user"
-                  :hideRelationship="true"
-                />
+                <template v-if="report.object_type === 'comment'">
+                  <Comment
+                    v-if="report.reported_comment"
+                    :auth-user="authUser"
+                    :comment="report.reported_comment"
+                    :comments-loading="null"
+                    :for-admin="true"
+                  />
+                  <span class="deleted-object" v-else>
+                    {{ $t('admin.DELETED_COMMENT') }}
+                  </span>
+                  <span class="deleted-object" v-if="!report.reported_user">
+                    ({{ $t('admin.DELETED_USER').toLocaleLowerCase() }})
+                  </span>
+                </template>
+                <template v-if="report.object_type === 'workout'">
+                  <WorkoutCard
+                    v-if="report.reported_workout"
+                    :workout="report.reported_workout"
+                    :sport="
+                      sports.filter(
+                        (s) => s.id === report.reported_workout?.sport_id
+                      )[0]
+                    "
+                    :user="report.reported_workout.user"
+                    :useImperialUnits="authUser.imperial_units"
+                    :dateFormat="dateFormat"
+                    :timezone="authUser.timezone"
+                    :key="report.reported_workout.id"
+                  />
+                  <span class="deleted-object" v-else>
+                    {{ $t('admin.DELETED_WORKOUT') }}
+                  </span>
+                  <span class="deleted-object" v-if="!report.reported_user">
+                    ({{ $t('admin.DELETED_USER').toLocaleLowerCase() }})
+                  </span>
+                </template>
+                <template v-if="report.object_type === 'user'">
+                  <UserCard
+                    v-if="report.reported_user"
+                    :authUser="authUser"
+                    :user="report.reported_user"
+                    :hideRelationship="true"
+                  />
+                  <span class="deleted-object" v-else>
+                    {{ $t('admin.DELETED_USER') }}
+                  </span>
+                </template>
               </template>
             </Card>
             <Card class="report-detail-card">
               <template #title>
                 {{ $t('admin.APP_MODERATION.REPORT_NOTE') }}
-                <router-link
-                  v-if="report.reported_by"
-                  class="link-with-image"
-                  :to="`/admin/users/${report.reported_by.username}`"
-                >
-                  {{ report.reported_by.username }}
-                </router-link>
-                ({{ $t('admin.APP_MODERATION.REPORTER') }})
+                <template v-if="report.reported_by">
+                  <router-link
+                    class="link-with-image"
+                    :to="`/admin/users/${report.reported_by.username}`"
+                  >
+                    {{ report.reported_by.username }}
+                  </router-link>
+                  ({{ $t('admin.APP_MODERATION.REPORTER') }})
+                </template>
+                <span v-else class="deleted-object">
+                  {{ $t('admin.DELETED_USER').toLocaleLowerCase() }}
+                </span>
               </template>
               <template #content>
                 {{ report.note }}
@@ -79,10 +100,13 @@
             <dd>{{ getDate(report.created_at) }}</dd>
             <dt>{{ $t('admin.APP_MODERATION.REPORTED_BY') }}:</dt>
             <dd>
-              <div class="report-comment-user">
+              <div class="report-comment-user" v-if="report.reported_by">
                 <UserPicture :user="report.reported_by" />
                 <Username :user="report.reported_by" />
               </div>
+              <span class="deleted-object" v-else>
+                {{ $t('admin.DELETED_USER') }}
+              </span>
             </dd>
             <dt>{{ $t('admin.APP_MODERATION.STATUS') }}:</dt>
             <dd>
@@ -252,17 +276,20 @@
               <button @click="displayTextArea('ADD_COMMENT')">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
-              <button v-if="!report.resolved">
+              <button v-if="!report.resolved && report.reported_user">
                 {{ $t('admin.APP_MODERATION.ACTIONS.SEND_EMAIL') }}
               </button>
               <button
                 class="danger"
-                v-if="!report.resolved && report.object_type !== 'user'"
+                v-if="
+                  !report.resolved &&
+                  (report.reported_comment || report.reported_workout)
+                "
               >
                 {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
               </button>
               <button
-                v-if="!report.resolved"
+                v-if="!report.resolved && report.reported_user"
                 :class="{ danger: report.reported_user.suspended_at === null }"
                 @click="
                   displayTextArea(
@@ -441,17 +468,21 @@
     }
   }
   function updateUserSuspendedAt() {
-    const suspension_action =
-      report.value.reported_user.suspended_at === null ? 'suspend' : 'unsuspend'
-    const payload: IAdminUserPayload = {
-      username: report.value.reported_user.username,
-      [suspension_action]: true,
-      from_report: report.value.id,
+    if (report.value.reported_user) {
+      const suspension_action =
+        report.value.reported_user?.suspended_at === null
+          ? 'suspend'
+          : 'unsuspend'
+      const payload: IAdminUserPayload = {
+        username: report.value.reported_user.username,
+        [suspension_action]: true,
+        from_report: report.value.id,
+      }
+      if (reportCommentText.value) {
+        payload.reason = reportCommentText.value
+      }
+      store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
     }
-    if (reportCommentText.value) {
-      payload.reason = reportCommentText.value
-    }
-    store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
   }
   function updateDisplayModal(value: string) {
     displayModal.value = value
