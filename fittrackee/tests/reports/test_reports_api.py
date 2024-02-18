@@ -289,7 +289,7 @@ class TestPostCommentReport(ReportTestCase):
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
         assert new_report.reported_comment_id == comment.id
-        assert new_report.reported_user_id is None
+        assert new_report.reported_user_id == user_2.id
         assert new_report.reported_workout_id is None
         assert new_report.resolved is False
         assert new_report.resolved_at is None
@@ -386,7 +386,7 @@ class TestPostWorkoutReport(ReportTestCase):
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
         assert new_report.reported_comment_id is None
-        assert new_report.reported_user_id is None
+        assert new_report.reported_user_id == user_2.id
         assert new_report.reported_workout_id == workout_cycling_user_2.id
         assert new_report.resolved is False
         assert new_report.resolved_at is None

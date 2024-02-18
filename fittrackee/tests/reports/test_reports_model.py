@@ -8,6 +8,7 @@ from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
+    InvalidReporterException,
     InvalidReportException,
     ReportCommentForbiddenException,
     ReportForbiddenException,
@@ -22,14 +23,13 @@ from ..mixins import RandomMixin, UserModerationMixin
 
 class TestReportModel(CommentMixin, RandomMixin):
     def test_it_raises_exception_when_reported_object_is_invalid(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         with pytest.raises(InvalidReportException):
             Report(
-                reported_by=user_1.id,
                 note=self.random_string(),
-                object_type=self.random_string(),
-                object_id=self.random_int(),
+                reported_by=user_1.id,
+                reported_object=sport_1_cycling,
             )
 
     def test_it_creates_report_for_a_comment(
@@ -48,11 +48,10 @@ class TestReportModel(CommentMixin, RandomMixin):
         )
 
         report = Report(
-            reported_by=user_1.id,
-            note=report_note,
-            object_id=comment.id,
-            object_type='comment',
             created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=comment,
         )
 
         assert report.created_at == report_created_at
@@ -60,7 +59,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.object_type == 'comment'
         assert report.reported_by == user_1.id
         assert report.reported_comment_id == comment.id
-        assert report.reported_user_id is None
+        assert report.reported_user_id == user_2.id
         assert report.reported_workout_id is None
         assert report.resolved is False
         assert report.resolved_at is None
@@ -77,11 +76,10 @@ class TestReportModel(CommentMixin, RandomMixin):
         report_note = self.random_string()
 
         report = Report(
-            reported_by=user_1.id,
-            note=report_note,
-            object_id=user_2.id,
-            object_type='user',
             created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=user_2,
         )
 
         assert report.created_at == report_created_at
@@ -109,11 +107,10 @@ class TestReportModel(CommentMixin, RandomMixin):
         report_note = self.random_string()
 
         report = Report(
-            reported_by=user_1.id,
-            note=report_note,
-            object_id=workout_cycling_user_2.id,
-            object_type='workout',
             created_at=report_created_at,
+            note=report_note,
+            reported_by=user_1.id,
+            reported_object=workout_cycling_user_2,
         )
 
         assert report.created_at == report_created_at
@@ -121,7 +118,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.object_type == 'workout'
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
-        assert report.reported_user_id is None
+        assert report.reported_user_id == user_2.id
         assert report.reported_workout_id == workout_cycling_user_2.id
         assert report.resolved is False
         assert report.resolved_at is None
@@ -136,10 +133,9 @@ class TestReportModel(CommentMixin, RandomMixin):
 
         with freeze_time(now):
             report = Report(
-                reported_by=user_1.id,
                 note=report_note,
-                object_id=user_2.id,
-                object_type='user',
+                reported_by=user_1.id,
+                reported_object=user_2,
             )
 
         assert report.created_at == now
@@ -154,6 +150,16 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.resolved_by is None
         assert report.updated_at is None
 
+    def test_it_raises_exception_when_reported_user_is_reporter(
+        self, app: Flask, user_1: User
+    ) -> None:
+        with pytest.raises(InvalidReporterException):
+            Report(
+                note=self.random_string(),
+                reported_by=user_1.id,
+                reported_object=user_1,
+            )
+
 
 class TestReportSerializerAsUser(CommentMixin, RandomMixin):
     def test_it_raises_exception_when_user_is_not_reporter(
@@ -166,17 +172,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_3: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=comment.id,
-            object_type='comment',
-            created_at=report_created_at,
+            reported_object=comment,
         )
         db.session.add(report)
         db.session.commit()
@@ -193,17 +195,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=comment.id,
-            object_type='comment',
-            created_at=report_created_at,
+            reported_object=comment,
         )
         db.session.add(report)
         db.session.commit()
@@ -213,7 +211,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "comment",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": comment.serialize(user_1),
@@ -233,17 +231,13 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
     ) -> None:
         # in case visibility changed
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=comment.id,
-            object_type='comment',
-            created_at=report_created_at,
+            reported_object=comment,
         )
         db.session.add(report)
         comment.text_visibility = PrivacyLevel.FOLLOWERS
@@ -254,11 +248,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "comment",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": "_COMMENT_UNAVAILABLE_",
-            "reported_user": None,
+            "reported_user": user_2.serialize(),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -270,14 +264,10 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=user_2.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_2,
         )
         db.session.add(report)
         db.session.commit()
@@ -287,7 +277,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
@@ -306,14 +296,10 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=workout_cycling_user_2.id,
-            object_type='workout',
-            created_at=report_created_at,
+            reported_object=workout_cycling_user_2,
         )
         db.session.add(report)
         db.session.commit()
@@ -323,7 +309,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "workout",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
@@ -345,14 +331,10 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
     ) -> None:
         # in case visibility changed
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_1.id,
-            note=report_note,
-            object_id=workout_cycling_user_2.id,
-            object_type='workout',
-            created_at=report_created_at,
+            reported_object=workout_cycling_user_2,
         )
         db.session.add(report)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
@@ -363,11 +345,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "workout",
             "reported_by": user_1.serialize(user_1),
             "reported_comment": None,
-            "reported_user": None,
+            "reported_user": user_2.serialize(),
             "reported_workout": '_WORKOUT_UNAVAILABLE_',
             "resolved": False,
             "resolved_at": None,
@@ -380,14 +362,10 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.flush()
@@ -404,7 +382,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_2),
             "reported_comment": None,
@@ -433,14 +411,10 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=comment.id,
-            object_type='comment',
-            created_at=report_created_at,
+            reported_object=comment,
         )
         db.session.add(report)
         db.session.commit()
@@ -450,7 +424,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "comment",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": comment.serialize(
@@ -476,32 +450,27 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
     ) -> None:
         user_2.approves_follow_request_from(user_3)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_3.id,
-            note=report_note,
-            object_id=workout_cycling_user_2.id,
-            object_type='workout',
-            created_at=report_created_at,
+            reported_object=workout_cycling_user_2,
         )
         db.session.add(report)
         db.session.commit()
 
         serialized_report = report.serialize(user_1_admin)
 
-        reported_object = workout_cycling_user_2.serialize(
-            user_1_admin, for_report=True
-        )
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "workout",
             "reported_by": user_3.serialize(user_1_admin),
             "reported_comment": None,
-            "reported_user": reported_object["user"],
-            "reported_workout": reported_object,
+            "reported_user": user_2.serialize(),
+            "reported_workout": workout_cycling_user_2.serialize(
+                user_1_admin, for_report=True
+            ),
             "resolved": False,
             "resolved_at": None,
             "resolved_by": None,
@@ -515,14 +484,10 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.commit()
@@ -532,7 +497,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
@@ -551,14 +516,10 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.flush()
@@ -575,7 +536,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
@@ -587,21 +548,17 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "updated_at": None,
         }
 
-    def test_it_deso_not_return_serialized_object_with_admin_actions_when_flag_is_false(  # noqa
+    def test_it_does_not_return_serialized_object_with_admin_actions_when_flag_is_false(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.flush()
@@ -619,7 +576,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         assert serialized_report == {
             "created_at": report.created_at,
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
@@ -640,14 +597,10 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.flush()
@@ -666,7 +619,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "comments": [report_comment.serialize(user_1_admin)],
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,
@@ -685,14 +638,10 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        report_created_at = datetime.now()
-        report_note = self.random_string()
         report = Report(
+            note=self.random_string(),
             reported_by=user_2.id,
-            note=report_note,
-            object_id=user_3.id,
-            object_type='user',
-            created_at=report_created_at,
+            reported_object=user_3,
         )
         db.session.add(report)
         db.session.flush()
@@ -721,7 +670,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "created_at": report.created_at,
             "comments": [],
             "id": report.id,
-            "note": report_note,
+            "note": report.note,
             "object_type": "user",
             "reported_by": user_2.serialize(user_1_admin),
             "reported_comment": None,

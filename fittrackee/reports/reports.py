@@ -101,15 +101,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     reports_pagination = (
         Report.query.filter(
-            Report.reported_comment_id != None  # noqa
-            if object_type == "comment"
-            else True,
-            Report.reported_user_id != None  # noqa
-            if object_type == "user"
-            else True,
-            Report.reported_workout_id != None  # noqa
-            if object_type == "workout"
-            else True,
+            Report.object_type == object_type if object_type else True,
             Report.resolved == True  # noqa
             if resolved == "true"
             else Report.resolved == False  # noqa

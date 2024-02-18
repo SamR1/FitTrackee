@@ -25,10 +25,9 @@ class TestUserManagerServiceUserUpdate:
     @staticmethod
     def generate_user_report(admin: User, user: User) -> Report:
         report = Report(
-            reported_by=admin.id,
             note=random_string(),
-            object_type='user',
-            object_id=user.id,
+            reported_by=admin.id,
+            reported_object=user,
         )
         db.session.add(report)
         db.session.flush()
