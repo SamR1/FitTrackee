@@ -15,6 +15,7 @@ import type { IRootState } from '@/store/modules/root/types'
 import type { TPaginationPayload } from '@/types/api'
 import type {
   IAppealPayload,
+  IReportAdminActionPayload,
   IReportCommentPayload,
   IReportPayload,
 } from '@/types/reports'
@@ -80,6 +81,27 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
         .then((res) => {
           if (res.data.status === 'success') {
             context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, reportId)
+          } else {
+            handleError(context, null)
+          }
+        })
+        .catch((error) => {
+          handleError(context, error)
+        })
+    },
+    [REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION](
+      context: ActionContext<IReportsState, IRootState>,
+      payload: IReportAdminActionPayload
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+      const { report_id, ...data } = payload
+      authApi
+        .post(`reports/${report_id}/admin_actions`, data)
+        .then((res) => {
+          if (res.data.status === 'success') {
+            context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, report_id)
+            context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           } else {
             handleError(context, null)
           }

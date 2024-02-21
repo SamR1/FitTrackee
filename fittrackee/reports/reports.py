@@ -4,7 +4,9 @@ from flask import Blueprint, request
 from sqlalchemy import asc, desc, nullslast
 
 from fittrackee import db
+from fittrackee.administration.models import USER_ACTION_TYPES
 from fittrackee.administration.reports_service import ReportService
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -13,7 +15,10 @@ from fittrackee.responses import (
     NotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.exceptions import (
+    UserAlreadySuspendedException,
+    UserNotFoundException,
+)
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
@@ -175,3 +180,57 @@ def update_report(
         "status": "success",
         "report": report.serialize(auth_user, full=True),
     }, 200
+
+
+@reports_blueprint.route(
+    "/reports/<int:report_id>/admin_actions", methods=["POST"]
+)
+@require_auth(scopes=["reports:write"], as_admin=True)
+def create_admin_action(
+    auth_user: User, report_id: int
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    data = request.get_json()
+    action_type = data.get("action_type")
+    reason = data.get("reason")
+    if not data or not action_type:
+        return InvalidPayloadErrorResponse()
+    if action_type not in USER_ACTION_TYPES:
+        return InvalidPayloadErrorResponse("invalid 'action_type'")
+
+    report = Report.query.filter_by(id=report_id).first()
+    if not report or (
+        not auth_user.admin and report.reported_by != auth_user.id
+    ):
+        return NotFoundErrorResponse(f"report not found (id: {report_id})")
+
+    try:
+        if action_type in USER_ACTION_TYPES:
+            username = data.get("username")
+            if not username:
+                return InvalidPayloadErrorResponse("'username' is missing")
+            reported_user = report.reported_user
+            if not reported_user or username != reported_user.username:
+                return InvalidPayloadErrorResponse("invalid 'username'")
+
+            user_manager_service = UserManagerService(
+                username=username, admin_user_id=auth_user.id
+            )
+            user, _, _ = user_manager_service.update(
+                suspended=action_type == "user_suspension",
+                report_id=report_id,
+                reason=reason,
+            )
+
+        return {
+            "status": "success",
+            "report": report.serialize(auth_user, full=True),
+        }, 200
+    except UserAlreadySuspendedException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except Exception as e:
+        return handle_error_and_return_response(
+            error=e,
+            message="Error during report save.",
+            status="fail",
+            db=db,
+        )

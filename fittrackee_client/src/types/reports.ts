@@ -66,3 +66,10 @@ export interface IAppealPayload {
   reason: string
   reportId: number
 }
+
+export interface IReportAdminActionPayload {
+  action_type: string
+  reason?: string | null
+  report_id: number
+  username: string
+}

@@ -362,9 +362,10 @@
     IReportCommentPayload,
     IReportForAdmin,
     TReportAction,
+    IReportAdminActionPayload,
   } from '@/types/reports'
   import type { ISport } from '@/types/sports'
-  import type { IAdminUserPayload, IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
 
@@ -468,20 +469,17 @@
     }
   }
   function updateUserSuspendedAt() {
-    if (report.value.reported_user) {
-      const suspension_action =
-        report.value.reported_user?.suspended_at === null
-          ? 'suspend'
-          : 'unsuspend'
-      const payload: IAdminUserPayload = {
+    if (report.value.reported_user && currentAction.value) {
+      const actionType = `user_${currentAction.value === 'SUSPEND_ACCOUNT' ? '' : 'un'}suspension`
+      const payload: IReportAdminActionPayload = {
+        action_type: actionType,
+        report_id: report.value.id,
         username: report.value.reported_user.username,
-        [suspension_action]: true,
-        from_report: report.value.id,
       }
       if (reportCommentText.value) {
         payload.reason = reportCommentText.value
       }
-      store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, payload)
+      store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION, payload)
     }
   }
   function updateDisplayModal(value: string) {

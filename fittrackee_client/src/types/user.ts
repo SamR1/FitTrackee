@@ -83,12 +83,8 @@ export interface IUserAccountUpdatePayload {
 export interface IAdminUserPayload {
   activate?: boolean
   admin?: boolean
-  from_report?: number
   new_email?: string
-  reason?: string
   resetPassword?: boolean
-  suspend?: boolean
-  unsuspend?: boolean
   username: string
 }
 
