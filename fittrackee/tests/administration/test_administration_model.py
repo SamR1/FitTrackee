@@ -14,6 +14,7 @@ from fittrackee.administration.exceptions import (
 )
 from fittrackee.administration.models import (
     REPORT_ACTION_TYPES,
+    USER_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
@@ -37,73 +38,9 @@ class TestAdminActionModel(AdminActionTestCase):
                 user_id=user_1_admin.id,
             )
 
-    @pytest.mark.parametrize(
-        "input_action_type", ["user_suspension", "user_unsuspension"]
-    )
-    def test_it_raises_error_when_no_user_given_for_user_admin_action(
-        self, app: Flask, user_1_admin: User, input_action_type: str
-    ) -> None:
-        with pytest.raises(InvalidAdminActionException):
-            AdminAction(
-                action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
-            )
 
-    @pytest.mark.parametrize(
-        "input_action_type", ["user_suspension", "user_unsuspension"]
-    )
-    def test_it_creates_user_admin_action_for_a_given_type_without_report(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        input_action_type: str,
-    ) -> None:
-        created_at = datetime.now()
-
-        admin_action = AdminAction(
-            action_type=input_action_type,
-            admin_user_id=user_1_admin.id,
-            created_at=created_at,
-            user_id=user_2.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        assert admin_action.action_type == input_action_type
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == created_at
-        assert admin_action.reason is None
-        assert admin_action.report_id is None
-        assert admin_action.user_id == user_2.id
-
-    def test_it_creates_user_admin_action_for_a_given_type_with_report(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
-    ) -> None:
-        report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.now()
-
-        admin_action = AdminAction(
-            action_type="user_suspension",
-            admin_user_id=user_1_admin.id,
-            created_at=created_at,
-            report_id=report.id,
-            user_id=user_2.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        assert admin_action.action_type == "user_suspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == created_at
-        assert admin_action.reason is None
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_2.id
-
-    @pytest.mark.parametrize(
-        "input_action_type", ["report_reopening", "report_resolution"]
-    )
+class TestAdminActionForReportModel(AdminActionTestCase):
+    @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
     def test_it_raises_error_when_no_report_given_for_report_admin_action(
         self, app: Flask, user_1_admin: User, input_action_type: str
     ) -> None:
@@ -115,9 +52,7 @@ class TestAdminActionModel(AdminActionTestCase):
                 report_id=None,
             )
 
-    @pytest.mark.parametrize(
-        "input_action_type", ["report_reopening", "report_resolution"]
-    )
+    @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
     def test_it_creates_report_admin_action_for_a_given_type(
         self,
         app: Flask,
@@ -141,6 +76,33 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
         assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
+        assert admin_action.user_id is None
+
+    def test_it_creates_report_action_without_given_date(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        now = datetime.utcnow()
+        action_type = "report_resolution"
+
+        with freeze_time(now):
+            admin_action = AdminAction(
+                action_type=action_type,
+                admin_user_id=user_1_admin.id,
+                report_id=report.id,
+            )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == action_type
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
         assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
@@ -169,26 +131,87 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
 
-    def test_it_creates_report_action_without_given_date(
-        self, app: Flask, user_1_admin: User, user_2: User
+    def test_it_creates_report_action_with_given_reason(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
     ) -> None:
-        now = datetime.utcnow()
-        action_type = "user_suspension"
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        reason = self.random_short_id()
 
-        with freeze_time(now):
-            admin_action = AdminAction(
-                action_type=action_type,
-                admin_user_id=user_1_admin.id,
-                user_id=user_2.id,
-            )
+        admin_action = AdminAction(
+            action_type="report_resolution",
+            admin_user_id=user_1_admin.id,
+            report_id=report.id,
+            reason=reason,
+        )
         db.session.add(admin_action)
         db.session.commit()
 
-        assert admin_action.action_type == action_type
+        assert admin_action.reason == reason
+
+
+class TestAdminActionForUserModel(AdminActionTestCase):
+    @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
+    def test_it_raises_error_when_no_user_given_for_user_admin_action(
+        self, app: Flask, user_1_admin: User, input_action_type: str
+    ) -> None:
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                created_at=datetime.now(),
+            )
+
+    @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
+    def test_it_creates_user_admin_action_without_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_action_type: str,
+    ) -> None:
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type=input_action_type,
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
+        assert admin_action.created_at == created_at
         assert admin_action.reason is None
         assert admin_action.report_id is None
+        assert admin_action.user_id == user_2.id
+
+    def test_it_creates_user_admin_action_with_report(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type="user_suspension",
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            report_id=report.id,
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == "user_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
         assert admin_action.user_id == user_2.id
 
     def test_it_sets_null_for_admin_user_id_when_admin_user_is_deleted(
@@ -215,27 +238,24 @@ class TestAdminActionModel(AdminActionTestCase):
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
 
-    def test_it_creates_action_with_note(
+    def test_it_deletes_admin_user_id_when_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action_type = "user_suspension"
         now = datetime.utcnow()
-        reason = self.random_string()
         admin_action = AdminAction(
             action_type=action_type,
             admin_user_id=user_1_admin.id,
             created_at=now,
-            reason=reason,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
         db.session.commit()
 
-        assert admin_action.action_type == action_type
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.reason == reason
-        assert admin_action.user_id == user_2.id
+        db.session.delete(user_2)
+        db.session.commit()
+
+        assert AdminAction.query.first() is None
 
 
 class TestAdminActionSerializer(AdminActionTestCase):
@@ -481,6 +501,49 @@ class TestAdminActionAppealModel(AdminActionTestCase):
         assert appeal.reason is None
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
+
+    def test_it_deletes_appeal_on_user_deletion(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        appeal_text = self.random_string()
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id, user_id=user_2.id, text=appeal_text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+
+        db.session.delete(user_2)
+        db.session.commit()
+
+        assert AdminActionAppeal.query.first() is None
+
+    def test_it_does_not_delete_appeal_on_admin_user_deletion(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        appeal_text = self.random_string()
+        admin_action = self.create_admin_action(user_1_admin, user_2)
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id, user_id=user_2.id, text=appeal_text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+
+        db.session.delete(user_1_admin)
+        db.session.commit()
+
+        assert (
+            AdminActionAppeal.query.filter_by(
+                action_id=admin_action.id
+            ).first()
+            is not None
+        )
 
 
 class TestAdminActionAppealSerializer(AdminActionTestCase):
