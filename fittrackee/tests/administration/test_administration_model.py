@@ -13,13 +13,18 @@ from fittrackee.administration.exceptions import (
     InvalidAdminActionException,
 )
 from fittrackee.administration.models import (
+    COMMENT_ACTION_TYPES,
     REPORT_ACTION_TYPES,
     USER_ACTION_TYPES,
+    WORKOUT_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport, Workout
 
+from ..comments.utils import CommentMixin
 from ..mixins import UserModerationMixin
 
 
@@ -75,10 +80,12 @@ class TestAdminActionForReportModel(AdminActionTestCase):
 
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
+        assert admin_action.workout is None
 
     def test_it_creates_report_action_without_given_date(
         self,
@@ -102,10 +109,12 @@ class TestAdminActionForReportModel(AdminActionTestCase):
 
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
         assert admin_action.created_at == now
         assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
+        assert admin_action.workout is None
 
     def test_it_does_not_store_user_id_when_action_is_for_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -126,10 +135,12 @@ class TestAdminActionForReportModel(AdminActionTestCase):
 
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
         assert admin_action.created_at == now
         assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id is None
+        assert admin_action.workout is None
 
     def test_it_creates_report_action_with_given_reason(
         self,
@@ -186,10 +197,12 @@ class TestAdminActionForUserModel(AdminActionTestCase):
 
         assert admin_action.action_type == input_action_type
         assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
+        assert admin_action.workout is None
 
     def test_it_creates_user_admin_action_with_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -209,12 +222,14 @@ class TestAdminActionForUserModel(AdminActionTestCase):
 
         assert admin_action.action_type == "user_suspension"
         assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
         assert admin_action.report_id == report.id
         assert admin_action.user_id == user_2.id
+        assert admin_action.workout is None
 
-    def test_it_sets_null_for_admin_user_id_when_admin_user_is_deleted(
+    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action_type = "user_suspension"
@@ -233,20 +248,19 @@ class TestAdminActionForUserModel(AdminActionTestCase):
 
         assert admin_action.action_type == action_type
         assert admin_action.admin_user_id is None
+        assert admin_action.comment_id is None
         assert admin_action.created_at == now
         assert admin_action.reason is None
         assert admin_action.report_id is None
         assert admin_action.user_id == user_2.id
+        assert admin_action.workout is None
 
-    def test_it_deletes_admin_user_id_when_user_is_deleted(
+    def test_it_deletes_admin_action_when_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action_type = "user_suspension"
-        now = datetime.utcnow()
         admin_action = AdminAction(
-            action_type=action_type,
+            action_type="user_suspension",
             admin_user_id=user_1_admin.id,
-            created_at=now,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -258,8 +272,356 @@ class TestAdminActionForUserModel(AdminActionTestCase):
         assert AdminAction.query.first() is None
 
 
-class TestAdminActionSerializer(AdminActionTestCase):
-    def test_it_returns_serialized_admin_action_without_report(
+class TestAdminActionForWorkoutModel(AdminActionTestCase):
+    @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
+    def test_it_raises_error_when_no_workout_id_given_for_workout_admin_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_action_type: str,
+    ) -> None:
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                created_at=datetime.now(),
+                user_id=user_2.id,
+            )
+
+    @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
+    def test_it_raises_error_when_no_user_id_given_for_workout_admin_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_action_type: str,
+    ) -> None:
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                created_at=datetime.now(),
+                workout_id=workout_cycling_user_2.id,
+            )
+
+    @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
+    def test_it_creates_workout_admin_action_without_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_action_type: str,
+    ) -> None:
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type=input_action_type,
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == input_action_type
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id == workout_cycling_user_2.id
+
+    def test_it_creates_workout_admin_action_with_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type="workout_suspension",
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            report_id=report.id,
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == "workout_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id == workout_cycling_user_2.id
+
+    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        created_at = datetime.now()
+        admin_action = AdminAction(
+            action_type="workout_suspension",
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        db.session.delete(user_1_admin)
+        db.session.commit()
+
+        assert admin_action.action_type == "workout_suspension"
+        assert admin_action.admin_user_id is None
+        assert admin_action.comment_id is None
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id == workout_cycling_user_2.id
+
+    def test_it_sets_none_for_workout_id_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        created_at = datetime.now()
+        admin_action = AdminAction(
+            action_type="workout_suspension",
+            admin_user_id=user_1_admin.id,
+            created_at=created_at,
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        assert admin_action.action_type == "workout_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id is None
+
+
+class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
+    @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
+    def test_it_raises_error_when_no_comment_id_given_for_comment_admin_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_action_type: str,
+    ) -> None:
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                created_at=datetime.now(),
+                user_id=user_2.id,
+            )
+
+    @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
+    def test_it_raises_error_when_no_user_id_given_for_comment_admin_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_action_type: str,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                comment_id=comment.id,
+                created_at=datetime.now(),
+            )
+
+    @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
+    def test_it_creates_comment_admin_action_without_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_action_type: str,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type=input_action_type,
+            admin_user_id=user_1_admin.id,
+            comment_id=comment.id,
+            created_at=created_at,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == input_action_type
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == created_at
+        assert admin_action.comment_id == comment.id
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_creates_comment_admin_action_with_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        report = self.create_report(reporter=user_2, reported_object=comment)
+        created_at = datetime.now()
+
+        admin_action = AdminAction(
+            action_type="comment_suspension",
+            admin_user_id=user_1_admin.id,
+            comment_id=comment.id,
+            created_at=created_at,
+            report_id=report.id,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        assert admin_action.action_type == "comment_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == created_at
+        assert admin_action.comment_id == comment.id
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        created_at = datetime.now()
+        admin_action = AdminAction(
+            action_type="comment_suspension",
+            admin_user_id=user_1_admin.id,
+            comment_id=comment.id,
+            created_at=created_at,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        db.session.delete(user_1_admin)
+        db.session.commit()
+
+        assert admin_action.action_type == "comment_suspension"
+        assert admin_action.admin_user_id is None
+        assert admin_action.comment_id == comment.id
+        assert admin_action.created_at == created_at
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_sets_none_for_comment_id_when_comment_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        created_at = datetime.now()
+        admin_action = AdminAction(
+            action_type="comment_suspension",
+            admin_user_id=user_1_admin.id,
+            comment_id=comment.id,
+            created_at=created_at,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        db.session.delete(comment)
+        db.session.commit()
+
+        assert admin_action.action_type == "comment_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == created_at
+        assert admin_action.comment_id is None
+        assert admin_action.reason is None
+        assert admin_action.report_id is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+
+class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
+    def test_it_returns_serialized_user_admin_action_without_report(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         admin_action = AdminAction(
@@ -276,11 +638,13 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action['admin_user'] == user_1_admin.serialize(
             user_1_admin
         )
+        assert serialized_action['comment'] is None
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action['workout'] is None
 
     def test_it_returns_serialized_admin_action_with_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -300,11 +664,13 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action['admin_user'] == user_1_admin.serialize(
             user_1_admin
         )
+        assert serialized_action['comment'] is None
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] == report.id
         assert serialized_action['user'] is None
+        assert serialized_action['workout'] is None
 
     def test_it_returns_serialized_admin_action_with_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -332,12 +698,14 @@ class TestAdminActionSerializer(AdminActionTestCase):
         )
         assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
         assert serialized_action['created_at'] == admin_action.created_at
+        assert serialized_action['comment'] is None
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
         assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action['workout'] is None
 
-    def test_it_serialized_action_for_user(
+    def test_it_serialized_user_action_for_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         admin_action = AdminAction(
@@ -353,9 +721,11 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action == {
             "action_type": admin_action.action_type,
             "appeal": None,
+            "comment": None,
             "created_at": admin_action.created_at,
             "reason": admin_action.reason,
             "id": admin_action.short_id,
+            "workout": None,
         }
 
     def test_it_serialized_action_with_appeal_for_user(
@@ -381,9 +751,11 @@ class TestAdminActionSerializer(AdminActionTestCase):
         assert serialized_action == {
             "action_type": admin_action.action_type,
             "appeal": appeal.serialize(user_2),
+            "comment": None,
             "created_at": admin_action.created_at,
-            "reason": admin_action.reason,
             "id": admin_action.short_id,
+            "reason": admin_action.reason,
+            "workout": None,
         }
 
     def test_it_raises_error_when_user_is_not_action_user(
@@ -417,6 +789,142 @@ class TestAdminActionSerializer(AdminActionTestCase):
 
         with pytest.raises(AdminActionForbiddenException):
             admin_action.serialize(user_2)
+
+    def test_it_returns_serialized_workout_admin_action_for_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="workout_suspension",
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_2)
+
+        assert serialized_action == {
+            "action_type": admin_action.action_type,
+            "appeal": None,
+            "comment": None,
+            "created_at": admin_action.created_at,
+            "id": admin_action.short_id,
+            "reason": admin_action.reason,
+            "workout": workout_cycling_user_2.serialize(user_2),
+        }
+
+    def test_it_returns_serialized_workout_admin_action_for_admin(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="workout_suspension",
+            user_id=user_2.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_1_admin)
+
+        assert serialized_action['action_type'] == admin_action.action_type
+        assert serialized_action['admin_user'] == user_1_admin.serialize(
+            user_1_admin
+        )
+        assert serialized_action['comment'] is None
+        assert serialized_action['created_at'] == admin_action.created_at
+        assert serialized_action['id'] == admin_action.short_id
+        assert serialized_action['reason'] is None
+        assert serialized_action['report_id'] is None
+        assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action[
+            'workout'
+        ] == workout_cycling_user_2.serialize(user_1_admin, for_report=True)
+
+    def test_it_returns_serialized_comment_admin_action_for_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="comment_suspension",
+            user_id=user_3.id,
+            comment_id=comment.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_3)
+
+        assert serialized_action == {
+            "action_type": admin_action.action_type,
+            "appeal": None,
+            "comment": comment.serialize(user=user_3),
+            "created_at": admin_action.created_at,
+            "id": admin_action.short_id,
+            "reason": admin_action.reason,
+            "workout": None,
+        }
+
+    def test_it_returns_serialized_comment_admin_action_for_admin(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="comment_suspension",
+            comment_id=comment.id,
+            user_id=user_3.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_1_admin)
+
+        assert serialized_action['action_type'] == admin_action.action_type
+        assert serialized_action['admin_user'] == user_1_admin.serialize(
+            user_1_admin
+        )
+        assert serialized_action['comment'] == comment.serialize(
+            user_1_admin, for_report=True
+        )
+        assert serialized_action['created_at'] == admin_action.created_at
+        assert serialized_action['id'] == admin_action.short_id
+        assert serialized_action['reason'] is None
+        assert serialized_action['report_id'] is None
+        assert serialized_action['user'] == user_3.serialize(user_1_admin)
+        assert serialized_action['workout'] is None
 
 
 class TestAdminActionAppealModel(AdminActionTestCase):
