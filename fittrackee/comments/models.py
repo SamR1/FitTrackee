@@ -91,6 +91,7 @@ class Comment(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    moderated_at = db.Column(db.DateTime, nullable=True)
 
     parent_comment = db.relationship(
         'Comment', remote_side=[id], lazy='joined'
@@ -208,6 +209,10 @@ class Comment(BaseModel):
         except CommentForbiddenException:
             reply_to = None
 
+        moderated_at = {}
+        if user and (user.id == self.user_id or (user.admin and for_report)):
+            moderated_at["moderated_at"] = self.moderated_at
+
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
@@ -241,6 +246,7 @@ class Comment(BaseModel):
             ),
             'likes_count': self.likes.count(),
             'liked': self.liked_by(user) if user else False,
+            **moderated_at,
         }
 
 

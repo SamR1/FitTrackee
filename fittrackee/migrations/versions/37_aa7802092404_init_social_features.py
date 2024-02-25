@@ -55,6 +55,7 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('modification_date', sa.DateTime(), nullable=True),
         sa.Column('text', sa.String(), nullable=False),
+        sa.Column('moderated_at', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ['reply_to'], ['comments.id'], ondelete='SET NULL'
         ),
@@ -192,6 +193,9 @@ def upgrade():
                 server_default='PRIVATE',
                 nullable=True,
             )
+        )
+        batch_op.add_column(
+            sa.Column('moderated_at', sa.DateTime(), nullable=True)
         )
     op.execute(
         "UPDATE workouts "
@@ -474,6 +478,7 @@ def downgrade():
     with op.batch_alter_table('workouts', schema=None) as batch_op:
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workout_visibility')
+        batch_op.drop_column('moderated_at')
 
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.drop_column('suspended_at')

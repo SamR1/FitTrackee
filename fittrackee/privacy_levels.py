@@ -31,14 +31,16 @@ def can_view(
     user: Optional['User'] = None,
     for_report: bool = False,
 ) -> bool:
-    if (
-        target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC
-        and (not user or not user.is_blocked_by(target_object.user))
-    ) or user == target_object.user:
+    owner = target_object.user
+    if user and (user.id == owner.id or (user.admin and for_report)):
         return True
 
-    # allow access only if user is an admin and for report:
-    if user and user != target_object.user and user.admin and for_report:
+    if target_object.moderated_at:
+        return False
+
+    if target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC and (
+        not user or not user.is_blocked_by(owner)
+    ):
         return True
 
     if not user:
@@ -52,8 +54,9 @@ def can_view(
 
     if (
         target_object.__getattribute__(visibility) == PrivacyLevel.FOLLOWERS
-        and user in target_object.user.followers
+        and user in owner.followers.all()
     ):
         return True
 
+    # visibility level is private
     return False

@@ -38,6 +38,7 @@ class TestWorkoutCommentModel(CommentMixin):
         assert comment.created_at == created_at
         assert comment.modification_date is None
         assert comment.text_visibility == PrivacyLevel.PRIVATE
+        assert comment.moderated_at is None
 
     def test_created_date_is_initialized_on_creation_when_not_provided(
         self,
@@ -121,6 +122,7 @@ class TestWorkoutCommentModel(CommentMixin):
 
 
 class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
+    @pytest.mark.parametrize('moderated', [True, False])
     @pytest.mark.parametrize(
         'input_visibility',
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
@@ -132,6 +134,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_visibility: PrivacyLevel,
+        moderated: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         comment = self.create_comment(
@@ -139,6 +142,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             workout=workout_cycling_user_1,
             text_visibility=input_visibility,
         )
+        comment.moderated_at = datetime.utcnow() if moderated else None
 
         serialized_comment = comment.serialize(user_1)
 
@@ -151,6 +155,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
+            'moderated_at': comment.moderated_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -183,6 +188,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
+            'moderated_at': comment.moderated_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -214,6 +220,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
+            'moderated_at': comment.moderated_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -242,7 +249,7 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         with pytest.raises(CommentForbiddenException):
             comment.serialize(user_2)
 
-    def test_it_raises_error_when_privacy_does_not_allow_it(
+    def test_it_raises_error_when_comment_is_private(
         self,
         app: Flask,
         user_1: User,
@@ -519,6 +526,73 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
+            'moderated_at': comment.moderated_at,
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    @pytest.mark.parametrize(
+        "input_visibility",
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_raises_exception_when_comment_is_moderated(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+        )
+        comment.moderated_at = datetime.utcnow()
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_1_admin)
+
+    @pytest.mark.parametrize(
+        "input_visibility",
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_serializes_moderated_comment_when_report_flag_is_true(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user=user_3,
+            workout=workout_cycling_user_2,
+            text_visibility=input_visibility,
+        )
+        comment.moderated_at = datetime.utcnow()
+
+        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_3.serialize(),
+            'workout_id': workout_cycling_user_2.short_id,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'moderated_at': comment.moderated_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -648,6 +722,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
+            'moderated_at': parent_comment.moderated_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [comment.serialize(user_1)],
@@ -689,6 +764,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
+            'moderated_at': parent_comment.moderated_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [],
@@ -941,7 +1017,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'mentions': [],
             'modification_date': comment.modification_date,
             'reply_to': None,
-            'replies': [visible_reply.serialize()],
+            'replies': [visible_reply.serialize(user_3)],
             'likes_count': 0,
             'liked': False,
         }
@@ -1052,6 +1128,7 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
+            'moderated_at': parent_comment.moderated_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [],

@@ -177,6 +177,7 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    moderated_at = db.Column(db.DateTime, nullable=True)
 
     segments = db.relationship(
         'WorkoutSegment',
@@ -411,6 +412,9 @@ class Workout(BaseModel):
         workout["user"] = self.user.serialize()
         workout["map"] = self.map_id if self.map and can_see_map_data else None
         workout["with_gpx"] = self.gpx is not None and can_see_map_data
+
+        if is_owner or (user and user.admin and for_report):
+            workout["moderated_at"] = self.moderated_at
         return workout
 
     @classmethod

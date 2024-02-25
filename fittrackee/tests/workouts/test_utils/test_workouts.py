@@ -201,36 +201,47 @@ class TestGetOrderedWorkouts:
 class GetWorkoutTestCase:
     @staticmethod
     def assert_workout_is_returned(
-        workout: Workout, user: Optional[User]
+        workout: Workout, user: Optional[User], allow_admin: bool
     ) -> None:
         workout = get_workout(
-            workout_short_id=workout.short_id, auth_user=user
+            workout_short_id=workout.short_id,
+            auth_user=user,
+            allow_admin=allow_admin,
         )
 
         assert workout.id == workout.id
 
     @staticmethod
     def assert_raises_forbidden_exception(
-        workout: Workout, user: Optional[User]
+        workout: Workout, user: Optional[User], allow_admin: bool
     ) -> None:
         with pytest.raises(WorkoutForbiddenException):
-            get_workout(workout_short_id=workout.short_id, auth_user=user)
+            get_workout(
+                workout_short_id=workout.short_id,
+                auth_user=user,
+                allow_admin=allow_admin,
+            )
 
 
 class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
     privacy_level = PrivacyLevel.PUBLIC
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_not_authenticated(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, None)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, None, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -238,11 +249,15 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_a_follower(
         self,
         app: Flask,
@@ -251,23 +266,31 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
+        input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_1, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,
@@ -275,12 +298,16 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_has_admin_right(
         self,
         app: Flask,
@@ -288,26 +315,34 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         user_2_admin: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_2_admin)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2_admin, input_allow_admin
+        )
 
 
 class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
     privacy_level = PrivacyLevel.FOLLOWERS
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, None)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, None, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -315,11 +350,15 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_a_follower(
         self,
         app: Flask,
@@ -328,23 +367,31 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
+        input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_2)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_1, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,
@@ -352,13 +399,16 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
-    def test_it_raises_exception_when_user_has_admin_right(
+    def test_it_raises_exception_when_user_has_admin_right_and_flag_is_false(
         self,
         app: Flask,
         user_1: User,
@@ -369,24 +419,43 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
         self.assert_raises_forbidden_exception(
-            workout_cycling_user_1, user_2_admin
+            workout_cycling_user_1, user_2_admin, False
+        )
+
+    def test_it_returns_workout_when_user_has_admin_right_and_flag_is_true(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2_admin, True
         )
 
 
 class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
     privacy_level = PrivacyLevel.PRIVATE
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, None)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, None, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -394,11 +463,15 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_a_follower(
         self,
         app: Flask,
@@ -407,23 +480,31 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
+        input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_workout_is_returned(workout_cycling_user_1, user_1)
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_1, input_allow_admin
+        )
 
+    @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,
@@ -431,13 +512,16 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
-        self.assert_raises_forbidden_exception(workout_cycling_user_1, user_2)
+        self.assert_raises_forbidden_exception(
+            workout_cycling_user_1, user_2, input_allow_admin
+        )
 
-    def test_it_raises_exception_when_user_has_admin_right(
+    def test_it_raises_exception_when_user_has_admin_right_and_flag_is_false(
         self,
         app: Flask,
         user_1: User,
@@ -448,5 +532,19 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         workout_cycling_user_1.workout_visibility = self.privacy_level
 
         self.assert_raises_forbidden_exception(
-            workout_cycling_user_1, user_2_admin
+            workout_cycling_user_1, user_2_admin, False
+        )
+
+    def test_it_returns_workout_when_user_has_admin_right_and_flag_is_true(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = self.privacy_level
+
+        self.assert_workout_is_returned(
+            workout_cycling_user_1, user_2_admin, True
         )
