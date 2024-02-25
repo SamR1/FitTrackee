@@ -38,7 +38,7 @@ class TestWorkoutCommentModel(CommentMixin):
         assert comment.created_at == created_at
         assert comment.modification_date is None
         assert comment.text_visibility == PrivacyLevel.PRIVATE
-        assert comment.moderated_at is None
+        assert comment.suspended_at is None
 
     def test_created_date_is_initialized_on_creation_when_not_provided(
         self,
@@ -122,7 +122,7 @@ class TestWorkoutCommentModel(CommentMixin):
 
 
 class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
-    @pytest.mark.parametrize('moderated', [True, False])
+    @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
         'input_visibility',
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
@@ -134,7 +134,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_visibility: PrivacyLevel,
-        moderated: bool,
+        suspended: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         comment = self.create_comment(
@@ -142,7 +142,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             workout=workout_cycling_user_1,
             text_visibility=input_visibility,
         )
-        comment.moderated_at = datetime.utcnow() if moderated else None
+        comment.suspended_at = datetime.utcnow() if suspended else None
 
         serialized_comment = comment.serialize(user_1)
 
@@ -155,7 +155,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'moderated_at': comment.moderated_at,
+            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -188,7 +188,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'moderated_at': comment.moderated_at,
+            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -220,7 +220,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'moderated_at': comment.moderated_at,
+            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -526,7 +526,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'moderated_at': comment.moderated_at,
+            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -538,7 +538,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         "input_visibility",
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
     )
-    def test_it_raises_exception_when_comment_is_moderated(
+    def test_it_raises_exception_when_comment_is_suspended(
         self,
         app: Flask,
         user_1_admin: User,
@@ -554,7 +554,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             workout=workout_cycling_user_2,
             text_visibility=input_visibility,
         )
-        comment.moderated_at = datetime.utcnow()
+        comment.suspended_at = datetime.utcnow()
 
         with pytest.raises(CommentForbiddenException):
             comment.serialize(user_1_admin)
@@ -563,7 +563,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         "input_visibility",
         [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
     )
-    def test_it_serializes_moderated_comment_when_report_flag_is_true(
+    def test_it_serializes_suspended_comment_when_report_flag_is_true(
         self,
         app: Flask,
         user_1_admin: User,
@@ -579,7 +579,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             workout=workout_cycling_user_2,
             text_visibility=input_visibility,
         )
-        comment.moderated_at = datetime.utcnow()
+        comment.suspended_at = datetime.utcnow()
 
         serialized_comment = comment.serialize(user_1_admin, for_report=True)
 
@@ -592,7 +592,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'moderated_at': comment.moderated_at,
+            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -722,7 +722,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
-            'moderated_at': parent_comment.moderated_at,
+            'suspended_at': parent_comment.suspended_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [comment.serialize(user_1)],
@@ -764,7 +764,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
-            'moderated_at': parent_comment.moderated_at,
+            'suspended_at': parent_comment.suspended_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [],
@@ -1128,7 +1128,7 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
             'text_visibility': parent_comment.text_visibility,
             'created_at': parent_comment.created_at,
             'mentions': [],
-            'moderated_at': parent_comment.moderated_at,
+            'suspended_at': parent_comment.suspended_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
             'replies': [],

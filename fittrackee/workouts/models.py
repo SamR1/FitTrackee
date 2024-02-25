@@ -177,7 +177,7 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
-    moderated_at = db.Column(db.DateTime, nullable=True)
+    suspended_at = db.Column(db.DateTime, nullable=True)
 
     segments = db.relationship(
         'WorkoutSegment',
@@ -414,7 +414,7 @@ class Workout(BaseModel):
         workout["with_gpx"] = self.gpx is not None and can_see_map_data
 
         if is_owner or (user and user.admin and for_report):
-            workout["moderated_at"] = self.moderated_at
+            workout["suspended_at"] = self.suspended_at
         return workout
 
     @classmethod

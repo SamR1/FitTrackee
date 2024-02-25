@@ -1,10 +1,17 @@
+from datetime import datetime
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
 from sqlalchemy import asc, desc, nullslast
 
 from fittrackee import db
-from fittrackee.administration.models import USER_ACTION_TYPES
+from fittrackee.administration.models import (
+    COMMENT_ACTION_TYPES,
+    OBJECTS_ADMIN_ACTION_TYPES,
+    USER_ACTION_TYPES,
+    WORKOUT_ACTION_TYPES,
+    AdminAction,
+)
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
@@ -194,7 +201,7 @@ def create_admin_action(
     reason = data.get("reason")
     if not data or not action_type:
         return InvalidPayloadErrorResponse()
-    if action_type not in USER_ACTION_TYPES:
+    if action_type not in OBJECTS_ADMIN_ACTION_TYPES:
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
     report = Report.query.filter_by(id=report_id).first()
@@ -220,6 +227,41 @@ def create_admin_action(
                 report_id=report_id,
                 reason=reason,
             )
+
+        if action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
+            object_type = action_type.split("_")[0]
+            object_type_column = f"{object_type}_id"
+            object_id = data.get(object_type_column)
+            if not object_id:
+                return InvalidPayloadErrorResponse(
+                    f"'{object_type_column}' is missing"
+                )
+            reported_object = getattr(report, f"reported_{object_type}")
+            if not reported_object or reported_object.short_id != object_id:
+                return InvalidPayloadErrorResponse(
+                    f"invalid '{object_type_column}'"
+                )
+
+            now = datetime.utcnow()
+            if "_suspension" in action_type:
+                if reported_object.suspended_at:
+                    return InvalidPayloadErrorResponse(
+                        f"{object_type} '{object_id}' already suspended"
+                    )
+                reported_object.suspended_at = now
+            else:
+                reported_object.suspended_at = None
+            admin_action = AdminAction(
+                admin_user_id=auth_user.id,
+                action_type=action_type,
+                created_at=now,
+                report_id=report_id,
+                reason=reason,
+                user_id=reported_object.user_id,
+                **{object_type_column: reported_object.id},
+            )
+            db.session.add(admin_action)
+            db.session.commit()
 
         return {
             "status": "success",
