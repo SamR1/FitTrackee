@@ -46,12 +46,14 @@ def get_comments(
                     ),
                 ),
             ),
+            Comment.suspended_at == None,  # noqa
         )
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             Comment.text_visibility == PrivacyLevel.PUBLIC,
+            Comment.suspended_at == None,  # noqa
         )
     return comments_filter.order_by(Comment.created_at.asc()).all()
 

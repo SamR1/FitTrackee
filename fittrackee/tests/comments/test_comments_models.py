@@ -730,6 +730,47 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'liked': False,
         }
 
+    def test_it_serializes_comment_with_suspended_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user=user_1,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=parent_comment,
+        )
+        comment.suspended_at = datetime.utcnow()
+
+        serialized_comment = parent_comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'id': parent_comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': workout_cycling_user_1.short_id,
+            'text': parent_comment.text,
+            'text_html': parent_comment.text,  # no mention
+            'text_visibility': parent_comment.text_visibility,
+            'created_at': parent_comment.created_at,
+            'mentions': [],
+            'suspended_at': parent_comment.suspended_at,
+            'modification_date': parent_comment.modification_date,
+            'reply_to': None,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
     def test_it_serializes_parent_comment_without_replies(
         self,
         app: Flask,
@@ -1003,6 +1044,13 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             text_visibility=PrivacyLevel.FOLLOWERS,
             parent_comment=comment,
         )
+        suspended_reply = self.create_comment(
+            user=user_2,
+            workout=workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=comment,
+        )
+        suspended_reply.suspended_at = datetime.utcnow()
 
         serialized_comment = comment.serialize(user_3)
 

@@ -272,6 +272,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.max_speed <= float(max_speed_to)
                 if max_speed_to
                 else True,
+                Workout.suspended_at == None,  # noqa
             )
             .order_by(
                 asc(workout_column)

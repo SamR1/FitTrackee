@@ -86,6 +86,32 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
             workout_cycling_user_1.serialize(user_1)
         )
 
+    def test_it_gets_owner_suspended_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_1.serialize(user_1)
+        )
+
 
 class TestGetWorkoutAsFollower(GetWorkoutTestCase):
     def test_it_returns_404_when_workout_visibility_is_private(
@@ -98,6 +124,31 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_404_when_workout_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -191,6 +242,29 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_404_when_workout_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -315,6 +389,26 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=short_id),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_404_when_workout_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
         )
 
         data = self.assert_404(response)
