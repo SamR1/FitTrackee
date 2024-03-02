@@ -35,6 +35,7 @@ Application translations files are located:
 - on client side: `fittrackee_client/src/locales` (implemented with [Vue I18n](https://vue-i18n.intlify.dev/))
 
 Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  
+For new language requests, please open an issue in order to initialize the translation files and make the language available on Weblate.
 
 Documentation translations are located in following directory: `docsrc/locales`. 
 For now only English and French are available and translations files are not yet on Weblate.
@@ -45,7 +46,8 @@ see [Installations instructions](https://samr1.github.io/FitTrackee/en/installat
 
 ### Pull Requests
 
-**Note**: Before starting, please open an issue to discuss implementation if the feature requires major changes or involves the addition of a new sport or language.
+**Note**: Before starting, please open an issue to discuss implementation if the feature requires major changes or involves the addition of a new sport or language.    
+For new sports requests, as **FitTrackee** is built around GPX files for outdoor activities, only sports associated with a GPX file can be added for now.
 
 Please make your changes from the development branch (`dev`).
 

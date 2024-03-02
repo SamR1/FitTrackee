@@ -1,20 +1,20 @@
 {
   "CONTENT": {
     "ACCOUNT_DELETION": {
-      "TITLE": "Kontosletting",
-      "CONTENT": "Du kan forespørre sletting av kontoen din når som helst ved å gå til denne adressen (etter å ha logget inn) og klikke på «Slett kontoen min»-knappen i din kontoredigering."
-    },
-    "DATA_COLLECTED": {
-      "TITLE": "Hvilken info hentes?"
-    },
-    "YOUR_CONSENT": {
-      "TITLE": "Ditt samtykke"
+      "CONTENT": "Du kan forespørre sletting av kontoen din når som helst ved å gå til denne adressen (etter å ha logget inn) og klikke på «Slett kontoen min»-knappen i din kontoredigering.",
+      "TITLE": "Kontosletting"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
       "TITLE": "Endringer i personvernspraksisen"
     },
+    "DATA_COLLECTED": {
+      "TITLE": "Hvilken info hentes?"
+    },
     "INFORMATION_PROTECTION": {
       "TITLE": "Hvordan beskyttes din info?"
+    },
+    "YOUR_CONSENT": {
+      "TITLE": "Ditt samtykke"
     }
   },
   "TITLE": "personvernspraksis"

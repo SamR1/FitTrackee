@@ -1,19 +1,20 @@
 Features
 ########
 
-| **FitTrackee** allows you to store and display gpx files and some statistics from your outdoor activities.
+| **FitTrackee** allows you to store and display **gpx** files and some statistics from your **outdoor** activities.
 | For now, this app is kind of a single-user application. Even if several users can register, a user can only view his own workouts.
 
-Gpx files are stored in an upload directory (without encryption).
+Gpx files are stored in an upload directory (**without encryption**).
 
 With the default configuration, `Open Street Map <https://www.openstreetmap.org>`__ is used as tile server in Workout detail and for static map generation.
 
 
 Workouts
 ^^^^^^^^
-- 14 sports are supported:
+- 17 sports are supported:
      - Cycling (Sport)
      - Cycling (Transport)
+     - Cycling (Trekking)  (*new in 0.7.27*)
      - Cycling (Virtual)  (*new in 0.7.3*)
      - Hiking
      - Mountain Biking
@@ -46,11 +47,16 @@ Workouts
   Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
 
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
-- Workout creation by uploading a gpx file (related data are stored in database in metric system).
+- Workout creation by uploading manually a gpx file or a zip archive containing a limited number of gpx files (related data are stored in database in metric system).
+
+.. warning::
+  | Only **gpx** files with time and elevation are supported (otherwise, errors may occur on upload).
 
 .. note::
-  | Only gpx files with time are supported.
   | Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.
+
+.. note::
+  | For now, **FitTrackee** does not have an importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
 
 - | A workout can even be created without gpx (the user must enter date, time, duration and distance).
   | Ascent and descent can also be provided (*new in 0.7.10*).
@@ -109,6 +115,7 @@ Account & preferences
   In case email sending is not configured, a `command line <cli.html#ftcli-users-update>`__ allows to activate users account.
 
 - A user can set language, timezone and first day of week.
+- A user can set the interface theme (light, dark or according to browser preferences) (*new in 0.7.27*).
 - A user can reset his password (*new in 0.3.0*)
 - A user can change his email address (*new in 0.6.0*)
 - A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)
@@ -210,6 +217,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Spanish (*new in 0.7.15*)
 - Norwegian Bokmål (*new in 0.7.15*)
 - Polish (*new in 0.7.18*)
+- Basque (*new in 0.7.31*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 

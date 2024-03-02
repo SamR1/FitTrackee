@@ -139,7 +139,7 @@
     padding-top: $default-padding;
     .weather-img {
       height: 30px;
-      filter: var(--workout-img-color);
+      filter: var(--icon-svg-filter);
     }
     .weather-img-small {
       height: 20px;

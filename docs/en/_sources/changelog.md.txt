@@ -1,5 +1,189 @@
 # Change log
 
+## Version 0.7.31 (2024/02/10)
+
+Basque is now available in FitTrackee interface.  
+
+### Bugs Fixed
+
+* [PR#495](https://github.com/SamR1/FitTrackee/pull/495) - fix menu display when clicking on application name
+
+### Translations
+
+* [#490](https://github.com/SamR1/FitTrackee/issues/490) [Translation Request] EU - Basque 
+
+Translation status:
+- Basque: 100%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 99%
+- Spanish: 100%
+
+### Misc
+
+* [PR#494](https://github.com/SamR1/FitTrackee/pull/494) - Update install-python command
+
+
+Thanks to the contributors:
+- @erral
+
+
+## Version 0.7.30 (2024/02/04)
+
+### Features and enhancements
+
+* [b748459](https://github.com/SamR1/FitTrackee/commit/b7484598258b4891b5699e8e8512deee7977d517) - Update alert message colors on dark mode 
+
+### Bugs Fixed
+
+* [PR#481](https://github.com/SamR1/FitTrackee/pull/481) - Handle keyboard navigation on dropdowns
+* [3821e37](https://github.com/SamR1/FitTrackee/commit/3821e370228cf14cc73a9c3f17d47178e17e8842) - Make calendar arrows accessible to keyboard navigation 
+* [PR#488](https://github.com/SamR1/FitTrackee/pull/488) - CLI - fix user creation when user already exists with same email
+* [PR#489](https://github.com/SamR1/FitTrackee/pull/489) - Handle keyboard navigation on calendar
+
+### Translations
+
+* [PR#482](https://github.com/SamR1/FitTrackee/pull/482) - Translations update (Galician and Spanish)
+* [PR#484](https://github.com/SamR1/FitTrackee/pull/484) - Translations update (German)
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 99%
+- Spanish: 100%
+
+### Misc
+
+* [aff4d68](https://github.com/SamR1/FitTrackee/commit/aff4d68a913b9aee5a620c4fb7f6049410ad7724) - CI - update actions version 
+
+
+Thanks to the contributors:
+- @gallegonovato
+- @qwerty287
+- @xmgz
+
+
+## Version 0.7.29 (2024/01/06)
+
+### Features and enhancements
+
+* [8aa4cff](https://github.com/SamR1/FitTrackee/commit/8aa4cff2bb21c877e382c7498442ccef35935d5f) - Update loader color on dark theme 
+* [#478](https://github.com/SamR1/FitTrackee/issues/478) - Make application name clickable to access dashboard
+
+### Bugs Fixed
+
+* [PR#479](https://github.com/SamR1/FitTrackee/pull/479) - Minor fixes on UI
+
+### Translations
+
+* [PR#476](https://github.com/SamR1/FitTrackee/pull/476) - Translations update (Polish)
+* [PR#477](https://github.com/SamR1/FitTrackee/pull/477) - Translations update (Dutch)
+
+Translation status:
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 100%
+- Spanish: 100%
+
+### Misc
+
+* [PR#475](https://github.com/SamR1/FitTrackee/pull/475) - Build - use poetry-core instead of poetry
+
+
+Thanks to the contributors:
+- @traxys
+- Mariuz
+- Koen
+
+
+## Version 0.7.28 (2023/12/23)
+
+### Features and enhancements
+
+* [PR#474](https://github.com/SamR1/FitTrackee/pull/474) - Improve links display
+
+### Bugs Fixed
+
+* [6e215aa](https://github.com/SamR1/FitTrackee/commit/6e215aa52eba28b14f74f3484b23197f5f0ddd4d) - fix background color on dark theme when modal is displayed 
+
+### Translations
+
+* [PR#473](https://github.com/SamR1/FitTrackee/pull/473) - Translations update (Galician, Spanish and German)
+
+
+Translation status:
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 98%
+- Spanish: 100%
+
+Thanks to the contributors:
+- @gallegonovato
+- @qwerty287
+- @xmgz
+
+
+## Version 0.7.27 (2023/12/20)
+
+### Features and enhancements
+
+* [#113](https://github.com/SamR1/FitTrackee/issues/113) - add a dark mode
+* [PR#464](https://github.com/SamR1/FitTrackee/pull/464) - Update user preferences display 
+* [PR#471](https://github.com/SamR1/FitTrackee/pull/471) - add new sport: "Cycling (Trekking)"
+
+### Bugs Fixed
+
+* [PR#469](https://github.com/SamR1/FitTrackee/pull/469) - change UI display only on login ou user preferences update 
+* [PR#472](https://github.com/SamR1/FitTrackee/pull/472) - fix redirection when resetting password
+
+### Translations
+
+* [PR#468](https://github.com/SamR1/FitTrackee/pull/468) - Translations update (Galician & Spanish)
+
+### Misc
+
+* [#456](https://github.com/SamR1/FitTrackee/issues/456) - Drop PostgreSQL 11 support
+
+
+Translation status:
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 99%
+- Italian: 85%
+- Norwegian Bokmål: 61%
+- Polish: 99%
+- Spanish: 99%
+
+Thanks to the contributors:
+- @DavidHenryThoreau
+- @gallegonovato
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.7.26 (2023/11/19)
 
 ### Bugs Fixed

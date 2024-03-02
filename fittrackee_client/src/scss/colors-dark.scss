@@ -1,0 +1,117 @@
+:root [data-theme='dark'] {
+  --dark-blue: #181a1b;
+  --light-grey: #cfd0d0;
+
+  --app-background-color: var(--dark-blue);
+  --app-color: var(--light-grey);
+  --app-color-light: #6f7070;
+  --app-a-color: var(--light-grey);
+  --app-a-text-decoration-color: #494949;
+  --app-shadow-color: #383d3f;
+  --app-loading-color: #414141;
+  --app-loading-top-color: #949494;
+
+  --button-hover-color: var(--app-color);
+  --button-transparent-hover-color: #233240;
+  --button-cancel-bg-color: var(--dark-blue);
+  --button-cancel-color: var(--app-color);
+  --button-confirm-bg-color: var(--dark-blue);
+  --button-confirm-color: var(--app-color);
+  --button-danger-bg-color: var(--dark-blue);
+  --button-danger-color: #dc3545;
+  --button-danger-hover-bg-color: #dc3545;
+  --button-danger-hover-color: var(--dark-blue);
+
+  --card-border-color: #494f52;
+  --input-border-color: #494f52;
+  --input-bg-color: var(--dark-blue);
+  --input-color: var(--app-color);
+  --input-error-color: #dc3545;
+  --dropdown-hover-color: #233240;
+  --dropdown-background-color: var(--dark-blue);
+  --dropdown-border-color: var(--input-border-color);
+  --policy-border-color: #ccc;
+  --policy-link-color: var(--alert-color);
+  --box-shadow-color: lightgrey;
+  --admin-disabled-input-color: var(--dark-blue);
+
+  --custom-checkbox-border-color: #665f54;
+  --custom-checkbox-checked-bg-color: #575e62;
+  --custom-checkbox-checked-color: #e8e6e3;
+
+  --calendar-border-color: var(--input-border-color);
+  --calendar-week-end-color: #1e2021;
+  --calendar-day-color: var(--app-color);
+  --calendar-today-color: #202324;
+  --calendar-workouts-color: #233240;
+  --calendar-workouts-box-shadow-0: rgba(0, 0, 0, 0.2);
+  --calendar-workouts-box-shadow-1: rgba(0, 0, 0, 0.19);
+
+  --modal-background-color: rgba(68, 68, 68, 0.3);
+
+  --nav-bar-background-color: var(--dark-blue);
+  --nav-bar-link-active: #ffffff;
+  --nav-border-color: var(--input-border-color);
+
+  --mobile-menu-selected-color: var(--dark-blue);
+  --mobile-menu-selected-bgcolor: #9da3af;
+
+  --footer-background-color: var(--dark-blue);
+  --footer-border-color: var(--input-border-color);
+  --footer-color: #9f968a;
+
+  --form-info: var(--app-color);
+
+  --alert-background-color: #3f3f3f;
+  --alert-color: #d6dde3;
+  --info-background-color: #33353a;
+  --info-color: var(--app-color);
+  --error-background-color: #4e0000;
+  --error-color: #ea464f;
+  --success-background-color: #24391c;
+  --success-color: #97cd97;
+
+  --disabled-background-color: var(--dark-blue);
+  --disabled-border-color: transparent;
+  --disabled-color: #727272;
+  --disabled-sport-color: #616161;
+
+  --scroll-button-bg-color: var(--dark-blue);
+
+  --workout-trophy-color: #daa520;
+  --workout-img-color: invert(22%) sepia(25%) saturate(646%) hue-rotate(169deg)
+    brightness(97%) contrast(96%);
+  --workout-no-map-bg-color: #eaeaea;
+  --workout-no-map-color: #585959;
+  --map-control-color: #000000;
+  --map-control-bg-color: #ffffff;
+  --map-control-border-color: #bfc0ab;
+  --map-control-hover-bg-color: #eff0f5;
+  --map-attribution-text: #e8e8e8;
+  --map-display-hover-attribution-text: #444444;
+  --map-attribution-bg-color: none;
+  --map-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.85);
+  --map-display-hover-filter: invert(1) hue-rotate(180deg) brightness(1.5)
+    contrast(0.6);
+  --map-layers-overlays: var(--app-color);
+  --map-control-bar: var(--app-color);
+  --no-map-filter: invert(1) brightness(1.5) contrast(0.9);
+  --workout-static-map-shadow-color: #d2d2d2;
+  --workout-static-map-bg-color: #818181;
+
+  --icon-svg-filter: invert(90%) sepia(19%) saturate(0%) hue-rotate(39deg)
+    brightness(86%) contrast(102%);
+
+  --cell-heading-bg-color: #383838;
+  --cell-heading-color: #eeeeee;
+
+  --svg-filter: drop-shadow(10px 10px 10px var(--app-shadow-color));
+
+  --password-bg-color: #d7dadf;
+  --password-color-weak: #831819;
+  --password-color-medium: #9e6906;
+  --password-color-good: #4b5826;
+  --password-color-strong: #4a8c32;
+
+  --scroll-thumb-color: #949697;
+}

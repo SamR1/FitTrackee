@@ -1,7 +1,11 @@
 <template>
   <div class="calendar-days">
     <div class="calendar-day" v-for="(day, index) in days" :key="index">
-      {{ format(day, 'EEE', { locale: localeOptions }) }}
+      {{
+        format(day, localeOptions.code === 'eu' ? 'EEEEEE.' : 'EEE', {
+          locale: localeOptions,
+        })
+      }}
     </div>
   </div>
 </template>
@@ -34,7 +38,7 @@
       padding: $default-padding * 0.5;
       text-align: center;
       text-transform: uppercase;
-      color: var(--app-color-light);
+      color: var(--calendar-day-color);
     }
   }
 </style>

@@ -1,6 +1,11 @@
 @import 'colors';
+@import 'colors-dark';
 @import 'fonts';
 @import 'vars';
+
+html [data-theme='dark'] {
+  color-scheme: dark;
+}
 
 body {
   margin: 0;
@@ -42,7 +47,12 @@ body {
 
 a {
   color: var(--app-a-color);
-  text-decoration: none;
+  text-decoration-color: var(--app-a-text-decoration-color);
+
+  &:hover,
+  &:focus {
+    text-decoration-color: var(--app-a-color);
+  }
 }
 
 img {
@@ -55,6 +65,7 @@ select {
   background-color: var(--input-bg-color);
   border-radius: $border-radius;
   border: solid 1px var(--input-border-color);
+  color: var(--input-color);
   padding: $default-padding;
 
   &:disabled {
@@ -84,6 +95,7 @@ button {
   &.transparent {
     font-family: 'PT Sans', Helvetica, Arial, sans-serif;
     font-size: 1em;
+    background: transparent;
     border-color: transparent;
     box-shadow: none;
 
@@ -102,13 +114,13 @@ button {
 
     &:disabled,
     &.confirm:disabled {
-      border-color: transparent;
+      border-color: var(--disabled-border-color);
       color: var(--disabled-color);
     }
   }
 
   &:hover {
-    background: var(--app-color);
+    background: var(--button-transparent-hover-color);
     color: var(--button-hover-color);
   }
 
@@ -120,7 +132,6 @@ button {
   &:disabled,
   &.confirm:disabled {
     background: var(--disabled-background-color);
-    border-color: var(--disabled-color);
     color: var(--disabled-color);
   }
 
@@ -128,7 +139,7 @@ button {
     background: var(--button-cancel-bg-color);
     color: var(--button-cancel-color);
     &:hover {
-      background: var(--app-color);
+      background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }
   }
@@ -137,7 +148,7 @@ button {
     background: var(--button-confirm-bg-color);
     color: var(--button-confirm-color);
     &:hover {
-      background: var(--app-color);
+      background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }
   }
@@ -151,7 +162,6 @@ button {
     }
     &:disabled {
       background: var(--disabled-background-color);
-      border-color: var(--disabled-color);
       color: var(--disabled-color);
     }
   }
@@ -194,7 +204,7 @@ button {
 }
 
 .form-info {
-  color: var(--alert-color);
+  color: var(--form-info);
   font-size: 0.8em;
   margin-top: -0.2 * $default-margin;
   padding: 0 $default-padding * 1.5;
@@ -222,7 +232,7 @@ button {
 .mountains {
   margin-bottom: -3px;
   height: 16px;
-  filter: var(--workout-img-color);
+  filter: var(--icon-svg-filter);
 }
 
 .section-title {

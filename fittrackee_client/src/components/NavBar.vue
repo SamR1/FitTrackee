@@ -10,7 +10,7 @@
     />
     <div class="nav-container">
       <div class="nav-app-name">
-        <div class="nav-item app-name">FitTrackee</div>
+        <router-link class="nav-item app-name" to="/"> FitTrackee </router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <button class="menu-button transparent" @click="openMenu()">
@@ -18,8 +18,10 @@
         </button>
       </div>
       <div class="nav-items" :class="{ 'menu-open': isMenuOpen }">
-        <div class="nav-items-close">
-          <div class="app-name">FitTrackee</div>
+        <div class="nav-items-close" @click="closeMenu">
+          <router-link class="nav-item app-name" to="/">
+            FitTrackee
+          </router-link>
           <button class="menu-button transparent" @click="closeMenu()">
             <i
               class="fa fa-close close-icon nav-item"
@@ -60,12 +62,12 @@
               {{ authUser.username }}
             </router-link>
             <button
-              class="logout-button transparent"
+              class="nav-button logout-button transparent"
               @click="updateDisplayModal(true)"
-              :aria-label="$t('user.LOGOUT')"
+              :title="$t('user.LOGOUT')"
             >
-              <i class="fa fa-sign-out logout-fa" aria-hidden="true" />
-              <span class="logout-text">{{ $t('user.LOGOUT') }}</span>
+              <i class="fa fa-sign-out nav-button-fa" aria-hidden="true" />
+              <span class="nav-button-text">{{ $t('user.LOGOUT') }}</span>
             </button>
           </div>
           <div class="nav-items-group" v-else>
@@ -76,6 +78,27 @@
               {{ $t('user.REGISTER') }}
             </router-link>
           </div>
+          <div class="theme-button">
+            <button
+              class="nav-button transparent"
+              @click="toggleTheme"
+              :title="$t('user.TOGGLE_THEME')"
+            >
+              <i
+                v-if="darkTheme"
+                class="fa nav-button-fa fa-moon"
+                aria-hidden="true"
+              />
+              <img
+                v-else
+                class="clear-theme"
+                src="/img/weather/clear-day.svg"
+                alt=""
+                aria-hidden="true"
+              />
+              <span class="nav-button-text">{{ $t('user.TOGGLE_THEME') }}</span>
+            </button>
+          </div>
           <Dropdown
             v-if="availableLanguages && language"
             class="nav-item"
@@ -83,8 +106,9 @@
             :selected="language"
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
+            :listLabel="$t('user.LANGUAGE', 0)"
           >
-            <i class="fa fa-language"></i>
+            <i class="fa fa-language" aria-hidden="true"></i>
           </Dropdown>
         </div>
       </div>
@@ -93,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, capitalize } from 'vue'
+  import { computed, ref, capitalize, onBeforeMount, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -102,6 +126,7 @@
   import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getDarkTheme } from '@/utils'
   import { availableLanguages } from '@/utils/locales'
 
   const emit = defineEmits(['menuInteraction'])
@@ -119,6 +144,14 @@
   )
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
+  const darkMode: ComputedRef<boolean | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  )
+  const darkTheme: ComputedRef<boolean> = computed(() =>
+    getDarkTheme(darkMode.value)
+  )
+
+  onBeforeMount(() => setTheme())
 
   function openMenu() {
     isMenuOpen.value = true
@@ -141,6 +174,23 @@
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
   }
+  function setTheme() {
+    if (darkTheme.value) {
+      document.body.setAttribute('data-theme', 'dark')
+    } else {
+      document.body.removeAttribute('data-theme')
+    }
+  }
+  function toggleTheme() {
+    store.commit(ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE, !darkTheme.value)
+  }
+
+  watch(
+    () => darkTheme.value,
+    () => {
+      setTheme()
+    }
+  )
 </script>
 
 <style scoped lang="scss">
@@ -152,6 +202,10 @@
     background: var(--nav-bar-background-color);
     display: flex;
     padding: 15px 10px;
+
+    a {
+      text-decoration: none;
+    }
 
     .nav-container {
       display: flex;
@@ -169,10 +223,14 @@
       &.router-link-exact-active {
         color: var(--nav-bar-link-active);
         font-weight: bold;
+        &.app-name {
+          color: var(--app-color);
+        }
       }
     }
 
     .app-name {
+      color: var(--app-color);
       font-size: 1.2em;
       font-weight: bold;
       margin-right: 10px;
@@ -252,15 +310,21 @@
       .nav-separator {
         display: none;
       }
-      .logout-button {
+      .nav-button {
         padding: $default-padding * 0.5 $default-padding * 0.75;
         margin-left: 2px;
-        .logout-fa {
+        .nav-button-fa {
           display: block;
         }
-        .logout-text {
+        .nav-button-text {
           display: none;
         }
+      }
+
+      .clear-theme {
+        filter: var(--workout-img-color);
+        height: 20px;
+        margin-bottom: -5px;
       }
     }
 
@@ -323,15 +387,16 @@
           display: flex;
           flex-direction: column;
 
-          .logout-button {
+          .nav-button {
             padding: $default-padding $default-padding $default-padding
               $default-padding * 2.4;
             color: var(--app-a-color);
             text-align: left;
-            .logout-fa {
+            .nav-button-fa {
               display: none;
+              width: 36px;
             }
-            .logout-text {
+            .nav-button-text {
               display: block;
             }
           }
@@ -359,7 +424,11 @@
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
           padding: 0;
+          height: 0;
         }
+      }
+      .theme-button {
+        margin-left: $default-padding * 2;
       }
     }
   }

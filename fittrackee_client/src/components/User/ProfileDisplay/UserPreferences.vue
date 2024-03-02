@@ -4,6 +4,8 @@
     <dl>
       <dt>{{ $t('user.PROFILE.LANGUAGE') }}:</dt>
       <dd>{{ userLanguage }}</dd>
+      <dt>{{ $t('user.PROFILE.THEME_MODE.LABEL') }}:</dt>
+      <dd>{{ $t(`user.PROFILE.THEME_MODE.VALUES.${darkMode}`) }}</dd>
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
       <dt>{{ $t('user.PROFILE.DATE_FORMAT') }}:</dt>
@@ -94,6 +96,13 @@
   )
   const display_ascent = computed(() =>
     props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
+  )
+  const darkMode = computed(() =>
+    props.user.use_dark_mode === true
+      ? 'DARK'
+      : props.user.use_dark_mode === false
+        ? 'LIGHT'
+        : 'DEFAULT'
   )
 </script>
 

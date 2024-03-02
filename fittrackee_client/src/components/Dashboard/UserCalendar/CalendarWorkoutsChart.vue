@@ -1,16 +1,22 @@
 <template>
   <div class="calendar-workouts-chart">
-    <div class="workouts-chart" @click="togglePane">
+    <button
+      class="workouts-chart transparent"
+      :id="`workouts-donut-${index}`"
+      @click="togglePane"
+    >
       <div class="workouts-count">{{ workouts.length }}</div>
       <DonutChart :datasets="datasets" :colors="colors" />
-    </div>
+    </button>
     <div class="workouts-pane" v-if="!isHidden">
-      <div class="more-workouts" v-click-outside="togglePane">
-        <i
-          class="fa fa-times calendar-more"
-          aria-hidden="true"
-          @click="togglePane"
-        />
+      <div
+        class="more-workouts"
+        :id="`workouts-pane-${index}`"
+        v-click-outside="togglePane"
+      >
+        <button class="calendar-more-close transparent" @click="togglePane">
+          <i class="fa fa-times" aria-hidden="true" />
+        </button>
         <CalendarWorkout
           v-for="(workout, index) in workouts"
           :key="index"
@@ -25,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, toRefs } from 'vue'
+  import { nextTick, onMounted, onUnmounted, ref, toRefs } from 'vue'
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import DonutChart from '@/components/Dashboard/UserCalendar/DonutChart.vue'
@@ -39,16 +45,71 @@
     sports: ISport[]
     workouts: IWorkout[]
     displayHARecord: boolean
+    index: number
   }
   const props = defineProps<Props>()
+  let tabbableElementIndex = 0
 
-  const { colors, datasets, sports, workouts } = toRefs(props)
+  const { colors, datasets, index, sports, workouts } = toRefs(props)
   const isHidden = ref(true)
 
-  function togglePane(event: Event) {
+  function isWorkoutsMorePaneDisplayed() {
+    const pane = document.getElementById(`workouts-pane-${index.value}`)
+    return pane?.children && pane?.children.length > 0 ? pane : null
+  }
+
+  async function togglePane(event: Event) {
+    event.preventDefault()
     event.stopPropagation()
     isHidden.value = !isHidden.value
+    await nextTick()
+    const pane = isWorkoutsMorePaneDisplayed()
+    if (!isHidden.value) {
+      ;(pane?.children[0] as HTMLButtonElement).focus()
+    } else {
+      document.getElementById(`workouts-donut-${index.value}`)?.focus()
+    }
   }
+  function handleKey(e: KeyboardEvent) {
+    if (!isHidden.value) {
+      // focusTrap
+      if (!isHidden.value && (e.key === 'Tab' || e.keyCode === 9)) {
+        e.preventDefault()
+        e.stopPropagation()
+        const pane = isWorkoutsMorePaneDisplayed()
+        if (pane) {
+          if (e.shiftKey) {
+            tabbableElementIndex -= 1
+            if (tabbableElementIndex < 0) {
+              tabbableElementIndex = pane.children.length - 1
+            }
+          } else {
+            tabbableElementIndex += 1
+            if (tabbableElementIndex >= pane.children.length) {
+              tabbableElementIndex = 0
+            }
+          }
+          // children are only links or buttons
+          ;(
+            pane.children[tabbableElementIndex] as
+              | HTMLButtonElement
+              | HTMLLinkElement
+          ).focus()
+        }
+      }
+      // close pane on Escape
+      if (e.key === 'Escape') {
+        togglePane(e)
+      }
+    }
+  }
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleKey)
+  })
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleKey)
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +119,7 @@
 
     .workouts-chart {
       position: relative;
+      padding: 0;
       .workouts-count {
         display: flex;
         justify-content: center;
@@ -88,11 +150,11 @@
       padding-left: 40px;
 
       .more-workouts {
-        background: whitesmoke;
+        background: var(--calendar-workouts-color);
         border-radius: 4px;
         box-shadow:
-          0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          0 4px 8px 0 var(--calendar-workouts-box-shadow-0),
+          0 6px 20px 0 var(--calendar-workouts-box-shadow-1);
         position: absolute;
         top: 52px;
         left: 0;
@@ -108,11 +170,12 @@
         flex-wrap: wrap;
         z-index: 1000;
 
-        .calendar-more {
+        .calendar-more-close {
           position: absolute;
           font-size: 0.9em;
           top: 5px;
           right: 5px;
+          padding: 0;
         }
       }
     }

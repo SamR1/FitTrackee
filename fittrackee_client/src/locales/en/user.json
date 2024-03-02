@@ -24,7 +24,7 @@
   "HIDE_PASSWORD": "hide password",
   "INVALID_TOKEN": "Invalid token, please request a new password reset.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "I want to delete my account",
-  "LANGUAGE": "Language",
+  "LANGUAGE": "Language | Languages",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "The privacy policy has been updated, please {0} it before proceeding.",
   "LOGIN": "Login",
   "LOGOUT": "Logout",
@@ -115,7 +115,15 @@
       "PROFILE": "profile",
       "SPORTS": "sports"
     },
-    "TIMEZONE": "Timezone",
+    "THEME_MODE": {
+      "LABEL": "Theme mode",
+      "VALUES": {
+        "DARK": "Dark",
+        "DEFAULT": "Browser preference",
+        "LIGHT": "Light"
+      }
+    },
+    "TIMEZONE": "Timezone | Timezones",
     "UNITS": {
       "IMPERIAL": "Imperial system (ft, mi, mph, °F)",
       "LABEL": "Units for distance",
@@ -136,6 +144,7 @@
   "REVIEW": "review",
   "SHOW_PASSWORD": "show password",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
+  "TOGGLE_THEME": "Toggle theme (Light or Dark mode)",
   "USERNAME": "Username",
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
   "USER_PICTURE": "user picture",

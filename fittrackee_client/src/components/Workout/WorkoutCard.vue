@@ -216,6 +216,7 @@
           .workout-user-name {
             white-space: nowrap;
             padding-left: 5px;
+            text-decoration: none;
           }
         }
         .workout-date {
@@ -234,10 +235,11 @@
       }
 
       .workout-map {
-        background-color: var(--workout-no-map-bg-color);
+        background-color: var(--workout-static-map-bg-color);
         height: 150px;
         .no-map {
           line-height: 150px;
+          filter: var(--no-map-filter);
         }
         ::v-deep(.bg-map-image) {
           height: 150px;

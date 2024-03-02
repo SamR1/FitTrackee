@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../../fittrackee'))
 # -- Project information -----------------------------------------------------
 
 project = 'FitTrackee'
-copyright = '2018 - 2023, SamR1'
+copyright = '2018 - 2024, SamR1'
 author = 'SamR1'
 
 # The full version, including alpha/beta/rc tags.
@@ -106,4 +106,4 @@ languages = [
     ("English", "en"),  # English
     ("Français", "fr"),  # French
 ]
-html_context = { "langs": languages }
+html_context = {"langs": languages}

@@ -13,7 +13,7 @@
         {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
       </button>
     </div>
-    <form v-else @submit.prevent="onSubmit()">
+    <form v-else :class="{ errors: formErrors }" @submit.prevent="onSubmit()">
       <div class="policy-content">
         <PrivacyPolicy />
       </div>
@@ -23,6 +23,7 @@
           id="accepted_policy"
           required
           v-model="acceptedPolicy"
+          @invalid="invalidateForm"
         />
         <span>
           <i18n-t keypath="user.READ_AND_ACCEPT_PRIVACY_POLICY">
@@ -66,12 +67,16 @@
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
   const acceptedPolicy = ref(false)
+  const formErrors = ref(false)
 
   function onSubmit() {
     store.dispatch(
       AUTH_USER_STORE.ACTIONS.ACCEPT_PRIVACY_POLICY,
       acceptedPolicy.value
     )
+  }
+  function invalidateForm() {
+    formErrors.value = true
   }
 
   onUnmounted(() => {
@@ -92,7 +97,7 @@
 
       .policy-content {
         height: 500px;
-        border: 1px solid #ccc;
+        border: 1px solid var(--policy-border-color);
         overflow: auto;
         margin: $default-margin;
         border-radius: $border-radius;

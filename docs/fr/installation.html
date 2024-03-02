@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2023.09.10 -->
-        <title>Installation - Documentation FitTrackee 0.7.26</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
+        <title>Installation - Documentation FitTrackee 0.7.31</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.26
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.31
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.26
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.31
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -231,6 +231,26 @@
         <article role="main">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Lien permanent vers cette rubrique">#</a></h1>
+<div class="line-block">
+<div class="line"><strong>FitTrackee</strong> peut être installé via un seul <a class="reference external" href="https://pypi.org/project/fittrackee/">paquet Python à partir de PyPI</a> ou à partir des sources après avoir cloné le dépôt.</div>
+</div>
+<div class="line-block">
+<div class="line">Dans le cas d’une instance avec un seul utilisateur, il est possible de désactiver l’inscription. Ainsi, seuls Python et PostgreSQL sont nécessaires. Une <a class="reference external" href="cli.html#users">interface de ligne de commande</a> est disponible pour gérer le compte utilisateur.</div>
+</div>
+<div class="line-block">
+<div class="line">Les étapes suivantes décrivent l’installation sur des systèmes Linux (testées sur un système d’exploitation basé sur ArchLinux et sur Ubuntu en intégration continue).</div>
+<div class="line">Sur d’autres systèmes d’exploitations, des problèmes peuvent être rencontrés et des adaptations nécessaires.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">D’autres guides d’installation sont disponibles grâce aux contributeurs :</div>
+<div class="line">- <a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation sur l'hébergement web Uberspace</a></div>
+<div class="line">- <a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation sur Debian 12 net install (guide en allemand)</a></div>
+</div>
+</div>
+<section id="main-dependencies">
+<h2>Dépendances principales<a class="headerlink" href="#main-dependencies" title="Lien permanent vers cette rubrique">#</a></h2>
 <p>Cette application est développée en Python (API) et Typescript (client) :</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -241,6 +261,7 @@
 <li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> pour la file d’attente des tâches</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> pour le support de l’autorisation OAuth 2.0</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> pour les limitations d’accès à l’API</p></li>
+<li><p><a class="reference external" href="https://gunicorn.org/">gunicorn</a> pour servir l’application</p></li>
 </ul>
 </dd>
 </dl>
@@ -259,13 +280,14 @@
 <div class="line">Le logo, les icônes de certains sports et celles des icônes météo ont été faites par <a class="reference external" href="https://www.freepik.com/">Freepik</a> sur <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
 <div class="line">FitTrackee utilise également les icônes de <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
 </div>
+</section>
 <section id="prerequisites">
 <h2>Prérequis<a class="headerlink" href="#prerequisites" title="Lien permanent vers cette rubrique">#</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>obligatoires</dt><dd><ul>
 <li><p>Python &gt;= 3.8.1</p></li>
-<li><p>PostgreSQL 11+</p></li>
+<li><p>PostgreSQL 12+</p></li>
 </ul>
 </dd>
 </dl>
@@ -275,7 +297,7 @@
 <li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API</p></li>
 <li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
 <li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
-<li><p><a class="reference external" href="https://poetry.eustace.io">Poetry</a> (pour l’installation à partir des sources uniquement)</p></li>
+<li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> 1.2+ (pour l’installation à partir des sources uniquement)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 18+ et <a class="reference external" href="https://yarnpkg.com">Yarn</a> (pour le développement uniquement)</p></li>
 <li><p>Docker et Docker Compose (pour le développement ou l’évaluation de l’application)</p></li>
 </ul>
@@ -287,13 +309,6 @@
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">Si l’inscription des utilisateurs est activé, il est recommandé de configurer un fournisseur SMTP pour l’envoi des courriels et les demandes d’export de données.</div>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">Les étapes suivantes décrivent l’installation sur des systèmes Linux (testée sur Debian et Arch).</div>
-<div class="line">Sur d’autres systèmes d’exploitations, des problèmes peuvent être rencontrés et des adaptations nécessaires.</div>
 </div>
 </div>
 </section>
@@ -650,7 +665,7 @@
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
 </div>
-<p>Dans le cas des instance avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
+<p>Dans le cas des instances avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
 <p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.7.24.</span></p>
@@ -761,12 +776,12 @@ Commands:
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Méthode recommandée en production.</div>
+<div class="line">Façon la plus simple d’installer FitTrackee</div>
 </div>
 </div>
 <ul class="simple">
 <li><p>Créer et activer l’environnement virtuel</p></li>
-<li><p>Installer <strong>FitTrackee</strong> à partir de pip</p></li>
+<li><p>Installer <strong>FitTrackee</strong> avec pip</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>fittrackee
 </pre></div>
@@ -807,7 +822,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches si l’envoi des courriels est activé, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
+<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches <strong>si l’envoi des courriels est activé</strong>, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -842,7 +857,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la configuration de Poetry.</div>
+<div class="line">Pour conserver l’environnement virtuel dans le répertoire du projet, mettre à jour la <a class="reference external" href="https://python-poetry.org/docs/configuration/#virtualenvsin-project">configuration</a> de Poetry.</div>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>poetry<span class="w"> </span>config<span class="w"> </span>virtualenvs.in-project<span class="w"> </span><span class="nb">true</span>
 </pre></div>
@@ -898,11 +913,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.26) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.31) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.26.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.26.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.26<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.31.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.31<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -959,6 +974,12 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </div>
 <section id="id3">
 <h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Seulement si <strong>FitTrackee</strong> a été installé initialement à partir de <strong>PyPI</strong></div>
+</div>
+</div>
 <ul class="simple">
 <li><p>Stopper l’application et activer l’environnement virtuel</p></li>
 <li><p>Mettre à jour avec pip</p></li>
@@ -985,6 +1006,12 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </section>
 <section id="id4">
 <h3>A partir des sources<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Seulement si <strong>FitTrackee</strong> a été installé initialement à partir des sources.</div>
+</div>
+</div>
 <section id="id5">
 <h4>Environnements de développement<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique">#</a></h4>
 <ul class="simple">
@@ -1024,11 +1051,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.7.26) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.7.31) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.26.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.26.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.26/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.31.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.31/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1036,7 +1063,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <li><p>Mettre à jour le fichier <strong>.env</strong> si nécessaire (cf. <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>).</p></li>
 <li><p>Mettre à jour les paquets :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>install-python
 </pre></div>
 </div>
 <ul class="simple">
@@ -1061,7 +1088,11 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <section id="deployment">
 <h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">#</a></h2>
 <p>Il y a plusieurs méthodes pour démarrer et servir l’application web <strong>FitTrackee</strong> et l’application de gestion de la file d’attente de tâches. Un des moyens est d’utiliser les services <strong>systemd</strong> et <strong>Nginx</strong> to proxy passer à <strong>Gunicorn</strong>.</p>
-<p>Exemples (à adapter selon la configuration de votre instance et votre système d’exploitation) :</p>
+<p>Exemples :</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>À adapter selon la configuration de votre instance et votre système d’exploitation</p>
+</div>
 <ul class="simple">
 <li><p>pour l’application : <code class="docutils literal notranslate"><span class="pre">fittrackee.service</span></code></p></li>
 </ul>
@@ -1309,7 +1340,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018 - 2023, SamR1
+                Copyright &#169; 2018 - 2024, SamR1
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1340,6 +1371,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#main-dependencies">Dépendances principales</a></li>
 <li><a class="reference internal" href="#prerequisites">Prérequis</a></li>
 <li><a class="reference internal" href="#environment-variables">Variables d’environnement</a><ul>
 <li><a class="reference internal" href="#emails">Courriels</a></li>
@@ -1384,7 +1416,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e6666d02"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=49202d8b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>
