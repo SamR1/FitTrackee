@@ -28,6 +28,15 @@ WorkoutEquipment = db.Table(
 
 class Equipment(BaseModel):
     __tablename__ = 'equipments'
+    # a single user can only have one equipment with the same label
+    __table_args__ = (
+        UniqueConstraint(
+            'label',
+            'user_id',
+            name='equipment_user_label_unique',
+        ),
+    )
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
@@ -41,18 +50,6 @@ class Equipment(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     workouts = db.relationship(
         'Workout', secondary=WorkoutEquipment, back_populates='equipments'
-    )
-
-    # a single user can only have one equipment with the
-    # same label, description, and type
-    __table_args__ = (
-        UniqueConstraint(
-            'label',
-            'description',
-            'user_id',
-            'equipment_type_id',
-            name='_user_label_description_type_uc',
-        ),
     )
 
     def __repr__(self) -> str:
@@ -77,7 +74,7 @@ class Equipment(BaseModel):
             'id': self.id,
             'user_id': self.user_id,
             'label': self.label,
-            'equipment_type': self.equipment_type_id,
+            'equipment_type': self.equipment_type.serialize(),
             'description': self.description,
             'creation_date': self.creation_date,
             'is_active': self.is_active,
@@ -85,7 +82,7 @@ class Equipment(BaseModel):
             'total_duration': str(
                 sum([w.duration for w in self.workouts], timedelta())
             ),
-            'workouts': [w.short_id for w in self.workouts],
+            'workouts_count': len(self.workouts),
         }
         return serialized_equipment
 
@@ -97,9 +94,9 @@ class EquipmentType(BaseModel):
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     equipments = db.relationship(
         'Equipment',
-        lazy=True,
+        lazy='select',
         backref=db.backref(
-            'equipment_types', lazy='joined', single_parent=True
+            'equipment_type', lazy='joined', single_parent=True
         ),
     )
 
@@ -110,7 +107,7 @@ class EquipmentType(BaseModel):
         self.label = label
         self.is_active = is_active
 
-    def serialize(self, is_admin: bool) -> Dict:
+    def serialize(self, is_admin: bool = False) -> Dict:
         serialized_equipment_type = {
             'id': self.id,
             'label': self.label,

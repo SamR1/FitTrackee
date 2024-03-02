@@ -19,7 +19,10 @@ class TestEquipmentModel:
         assert serialized_equip['id'] == equip.id
         assert serialized_equip['user_id'] == 1
         assert serialized_equip['label'] == equip.label
-        assert serialized_equip['equipment_type'] == 2
+        assert (
+            serialized_equip['equipment_type']
+            == equip.equipment_type.serialize()
+        )
         assert serialized_equip['description'] == 'A bike for testing purposes'
         assert serialized_equip['is_active'] is True
         return serialized_equip
@@ -30,10 +33,10 @@ class TestEquipmentModel:
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
-        equipment_1_bike: Equipment,
+        equipment_bike_user_1: Equipment,
     ) -> None:
-        serialized_equip = self.assert_equipment_model(equipment_1_bike)
-        assert len(serialized_equip['workouts']) == 0
+        serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
+        assert serialized_equip['workouts_count'] == 0
         assert serialized_equip['total_distance'] == 0
         assert serialized_equip['total_duration'] == '0:00:00'
 
@@ -45,15 +48,15 @@ class TestEquipmentModel:
         equipment_type_2_bike: EquipmentType,
         user_1: User,
         workout_cycling_user_1: Workout,
-        equipment_1_bike: Equipment,
+        equipment_bike_user_1: Equipment,
     ) -> None:
-        equipment_1_bike.workouts.append(workout_cycling_user_1)
-        db.session.add(equipment_1_bike)
+        equipment_bike_user_1.workouts.append(workout_cycling_user_1)
+        db.session.add(equipment_bike_user_1)
         db.session.commit()
-        serialized_equip = self.assert_equipment_model(equipment_1_bike)
+        serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert serialized_equip['total_distance'] == 10.0
         assert serialized_equip['total_duration'] == '1:00:00'
-        assert len(serialized_equip['workouts']) == 1
+        assert serialized_equip['workouts_count'] == 1
 
 
 class TestEquipmentTypeModel:
@@ -77,7 +80,7 @@ class TestEquipmentTypeModel:
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
-        equipment_1_bike: Equipment,
+        equipment_bike_user_1: Equipment,
     ) -> None:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe
@@ -90,7 +93,7 @@ class TestEquipmentTypeModel:
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
-        equipment_1_bike: Equipment,
+        equipment_bike_user_1: Equipment,
     ) -> None:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe, is_admin=True

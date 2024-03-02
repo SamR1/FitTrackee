@@ -54,10 +54,8 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint(
             'label',
-            'description',
             'user_id',
-            'equipment_type_id',
-            name='_user_label_description_type_uc',
+            name='equipment_user_label_unique',
         ),
     )
     with op.batch_alter_table('equipments', schema=None) as batch_op:

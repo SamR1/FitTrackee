@@ -1639,7 +1639,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
-        equipment_2_shoes: Equipment,
+        equipment_shoes_user_1: Equipment,
         sport_2_running: Sport,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1652,7 +1652,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_id=equipment_2_shoes.id,
+                    default_equipment_id=equipment_shoes_user_1.id,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1664,7 +1664,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert response.status_code == 200
         assert data['data']['user_id'] == user_1.id
         assert data['data']['sport_id'] == sport_2_running.id
-        assert data['data']['default_equipment_id'] == equipment_2_shoes.id
+        assert (
+            data['data']['default_equipment_id'] == equipment_shoes_user_1.id
+        )
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 0.1
 
@@ -1674,10 +1676,10 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
         equipment_type_1_shoe: EquipmentType,
-        equipment_2_shoes: Equipment,
+        equipment_shoes_user_1: Equipment,
         sport_2_running: Sport,
     ) -> None:
-        # equipment_2_shoes is owned by user 1
+        # equipment_shoes_user_1 is owned by user 1
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -1688,7 +1690,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_id=equipment_2_shoes.id,
+                    default_equipment_id=equipment_shoes_user_1.id,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),

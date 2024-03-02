@@ -14,26 +14,24 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from ..equipments.models import Equipment
+from ..equipments.models import Equipment, EquipmentType
 
 equipments_blueprint = Blueprint('equipments', __name__)
 
 
 @equipments_blueprint.route('/equipments', methods=['GET'])
-@require_auth(scopes=['profile:read'])
-def get_equipment(auth_user: User) -> Dict:
+@require_auth(scopes=['equipments:read'])
+def get_equipments(auth_user: User) -> Dict:
     """
-    Get all equipments. If non-admin, only the user's equipment
-    will be shown. If admin, all equipment is shown unless the
-    "just_me" parameter is given.
+    Get all user equipments.
 
-    **Scope**: ``profile:read``
+    **Scope**: ``equipments:read``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/equipment HTTP/1.1
+      GET /api/equipments HTTP/1.1
       Content-Type: application/json
 
     - with some query parameters (get all equipment of type "Shoes")
@@ -55,26 +53,34 @@ def get_equipment(auth_user: User) -> Dict:
           {
             "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
             "description": "The first shoes added to FitTrackee",
-            "equipment_type": 1,
+            "equipment_type": {
+              "id": 1,
+              "is_active": true,
+              "label": "Shoe"
+            },
             "id": 8,
             "is_active": true,
             "label": "My shoes",
-            "num_workouts": 0,
             "total_distance": 0.0,
             "total_duration": "0:00:00",
-            "user_id": 1
+            "user_id": 1,
+            "workouts_count": 0
         },
         {
             "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
             "description": "The second shoes added to FitTrackee",
-            "equipment_type": 1,
+            "equipment_type": {
+              "id": 1,
+              "is_active": true,
+              "label": "Shoe"
+            },
             "id": 9,
             "is_active": true,
             "label": "My shoes 2",
-            "num_workouts": 0,
             "total_distance": 0.0,
             "total_duration": "0:00:00",
-            "user_id": 1
+            "user_id": ,
+            "workouts_count": 0
             }
           ]
         }
@@ -82,60 +88,47 @@ def get_equipment(auth_user: User) -> Dict:
       "status": "success"
     }
 
-    :query only_user: if supplied as argument (no value required),
-        will return only equipment of authorized user, even if they
-        have admin rights
     :query integer equipment_type_id: equipment type id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
 
     """
     params = request.args.copy()
     type_id = params.get('equipment_type_id', None)
-    only_user = 'only_user' in [k.lower() for k in request.args.keys()]
 
-    if not auth_user.admin or (auth_user.admin and only_user):
-        equipment = (
-            Equipment.query.filter(
-                Equipment.user_id == auth_user.id,
-                Equipment.equipment_type_id == type_id if type_id else True,
-            )
-            .order_by(Equipment.id)
-            .all()
+    equipments = (
+        Equipment.query.filter(
+            Equipment.user_id == auth_user.id,
+            Equipment.equipment_type_id == type_id if type_id else True,
         )
-    else:
-        equipment = (
-            Equipment.query.filter(
-                Equipment.equipment_type_id == type_id if type_id else True
-            )
-            .order_by(Equipment.id)
-            .all()
-        )
+        .order_by(Equipment.id)
+        .all()
+    )
 
-    equipment_data = []
-    for e in equipment:
-        equipment_data.append(e.serialize())
     return {
         'status': 'success',
-        'data': {'equipment': equipment_data},
+        'data': {
+            'equipments': [equipment.serialize() for equipment in equipments]
+        },
     }
 
 
 @equipments_blueprint.route('/equipments/<int:equipment_id>', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['equipments:read'])
 def get_equipment_by_id(
     auth_user: User, equipment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get an equipment item
 
-    **Scope**: ``profile:read``
+    **Scope**: ``equipments:read``
 
     **Example request**:
 
@@ -161,9 +154,9 @@ def get_equipment_by_id(
               "id": 3,
               "is_active": true,
               "label": "Other user Equipment",
-              "num_workouts": 0,
               "total_distance": 0.0,
-              "user_id": 2
+              "user_id": 2,
+              "workouts_count": 0
             }
           ]
         }
@@ -191,35 +184,32 @@ def get_equipment_by_id(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 404: equipment not found
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``equipment not found``
 
     """
-    filter_args = {'id': equipment_id}
-    if not auth_user.admin:
-        # only filter by user_id if user is not admin
-        filter_args['user_id'] = auth_user.id
-
+    filter_args = {'id': equipment_id, 'user_id': auth_user.id}
     equipment = Equipment.query.filter_by(**filter_args).first()
     if equipment:
         return {
             'status': 'success',
-            'data': {'equipment': [equipment.serialize()]},
+            'data': {'equipments': [equipment.serialize()]},
         }
-    return DataNotFoundErrorResponse('equipment')
+    return DataNotFoundErrorResponse('equipments')
 
 
 @equipments_blueprint.route('/equipments', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['equipments:write'])
 def post_equipment(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a new piece of equipment.
 
-    **Scope**: ``profile:write``
+    **Scope**: ``equipments:write``
 
     **Example request**:
 
@@ -243,9 +233,9 @@ def post_equipment(
                 "id": 12,
                 "is_active": true,
                 "label": "New equipment from API",
-                "num_workouts": 0,
                 "total_distance": 0.0,
-                "user_id": 1
+                "user_id": 1,
+                "workouts_count": 0
               }
             ]
           },
@@ -263,32 +253,47 @@ def post_equipment(
 
     :statuscode 201: equipment created
     :statuscode 400: invalid payload
+       - ``The 'label' and 'equipment_type_id' parameters must be provided``
+       - ``equipment already exists with the same label``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 500:
-
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``equipment not found``
+    :statuscode 500: ``Error during equipment save``
     """
     equipment_data = request.get_json()
     if (
         not equipment_data
-        or equipment_data.get('label') is None
-        or equipment_data.get('equipment_type') is None
+        or not equipment_data.get('label')
+        or equipment_data.get('equipment_type_id') is None
     ):
         return InvalidPayloadErrorResponse(
-            'The "label" and "equipment_type" parameters must be '
-            'provided in the body of the request'
+            "The 'label' and 'equipment_type_id' parameters must be "
+            "provided"
         )
-    is_active = equipment_data.get('is_active', True)
+    label = equipment_data['label']
+    equipment_type_id = equipment_data['equipment_type_id']
+
+    if (
+        Equipment.query.filter_by(user_id=auth_user.id, label=label).first()
+        is not None
+    ):
+        return InvalidPayloadErrorResponse(
+            "equipment already exists with the same label"
+        )
+
+    if not EquipmentType.query.filter_by(id=equipment_type_id).first():
+        return InvalidPayloadErrorResponse("invalid equipment type")
 
     try:
         new_equipment = Equipment(
             user_id=auth_user.id,
-            label=equipment_data.get('label'),
-            equipment_type_id=equipment_data.get('equipment_type'),
-            is_active=is_active,
-            description=equipment_data.get('description', None),
+            label=label,
+            equipment_type_id=equipment_type_id,
+            is_active=True,
+            description=equipment_data.get('description'),
         )
         db.session.add(new_equipment)
         db.session.commit()
@@ -296,7 +301,7 @@ def post_equipment(
         return (
             {
                 'status': 'created',
-                'data': {'equipment': [new_equipment.serialize()]},
+                'data': {'equipments': [new_equipment.serialize()]},
             },
             201,
         )
@@ -313,15 +318,15 @@ def post_equipment(
 @equipments_blueprint.route(
     '/equipments/<int:equipment_id>', methods=['PATCH']
 )
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['equipments:write'])
 def update_equipment(
     auth_user: User, equipment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Update a piece of equipment. Allows a user to change one of their
-    equipment's label, description, or active status.
+    equipment's label, description, type or active status.
 
-    **Scope**: ``profile:write``
+    **Scope**: ``equipments:write``
 
     **Example request**:
 
@@ -377,7 +382,7 @@ def update_equipment(
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
-    :<json int equipment_type: the ID for an equipment type
+    :<json int equipment_type_id: the ID for an equipment type
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json bool is_active: whether or not this equipment is currently
@@ -386,47 +391,64 @@ def update_equipment(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: equipment updated
-    :statuscode 400: invalid payload
+    :statuscode 400: ``invalid payload``
+        - ``no request data was supplied``
+        - ``no valid parameters supplied``
+        - ``equipment already exists with the same label``
+        - ``invalid equipment type id``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403: you do not have permissions
-    :statuscode 404: equipment not found
-    :statuscode 500:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``equipment not found``
+    :statuscode 500: ``Error during equipment update``
 
     """
     equipment_data = request.get_json()
     if not equipment_data:
-        return InvalidPayloadErrorResponse('No request data was supplied')
+        return InvalidPayloadErrorResponse('no request data was supplied')
 
     if not any(
-        e in ['label', 'description', 'equipment_type', 'is_active']
+        e in ['label', 'description', 'equipment_type_id', 'is_active']
         for e in equipment_data
     ):
-        return InvalidPayloadErrorResponse('No valid parameters supplied')
+        return InvalidPayloadErrorResponse('no valid parameters supplied')
 
     try:
         equipment = Equipment.query.filter_by(
             id=equipment_id, user_id=auth_user.id
         ).first()
         if not equipment:
-            return DataNotFoundErrorResponse('equipment')
+            return DataNotFoundErrorResponse('equipments')
 
         # set new values if they were in the request
         if 'is_active' in equipment_data:
             equipment.is_active = equipment_data.get('is_active')
         if 'label' in equipment_data:
-            equipment.label = equipment_data.get('label')
+            label = equipment_data.get('label')
+            if (
+                Equipment.query.filter_by(
+                    user_id=auth_user.id, label=label
+                ).first()
+                is not None
+            ):
+                return InvalidPayloadErrorResponse(
+                    "equipment already exists with the same label"
+                )
+            equipment.label = label
         if 'description' in equipment_data:
             equipment.description = equipment_data.get('description')
-        if 'equipment_type' in equipment_data:
-            equipment.equipment_type_id = equipment_data.get('equipment_type')
+        if 'equipment_type_id' in equipment_data:
+            equipment_type_id = equipment_data.get('equipment_type_id')
+            if not EquipmentType.query.filter_by(id=equipment_type_id).first():
+                return InvalidPayloadErrorResponse("invalid equipment type id")
+            equipment.equipment_type_id = equipment_type_id
         db.session.commit()
 
         return {
             'status': 'success',
-            'data': {'equipment': [equipment.serialize()]},
+            'data': {'equipments': [equipment.serialize()]},
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -441,23 +463,21 @@ def update_equipment(
 @equipments_blueprint.route(
     '/equipments/<int:equipment_id>', methods=['DELETE']
 )
-@require_auth(scopes=['profile:write'])
-# TODO: is it possible to have conditional scope requirment?
+@require_auth(scopes=['equipments:write'])
 def delete_equipment(
     auth_user: User, equipment_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a piece of equipment.
 
-    A user can only delete their own equipment (unless they're an admin), and
+    A user can only delete their own equipment, and
     only if there are no workouts associated with that equipment (unless
     forced). If equipment was associated with any workouts and deletion is
     forced, the association between this equipment and those workouts will
     be removed. If this equipment was a default for any sport, that default
     will be removed (set to NULL).
 
-    **Scope**: ``profile:write`` (and ``workouts:write`` if
-               deleting equipment with workouts)
+    **Scope**: ``equipments:write``
 
     **Example request**:
 
@@ -482,28 +502,25 @@ def delete_equipment(
 
     :statuscode 204: equipment deleted
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you cannot delete another user's equipment without admin rights
-        - you cannot delete equipment that has workouts associated with it
-          (and "force" parameter was not supplied)
-    :statuscode 404:
-        - equipment does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``you do not have permissions``
+        - ``you cannot delete equipment that has workouts associated with it
+          without 'force' parameter``
+    :statuscode 404: ``equipment not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     force_delete = 'force' in request.args
 
     try:
-        equipment = Equipment.query.filter_by(id=equipment_id).first()
+        equipment = Equipment.query.filter_by(
+            id=equipment_id, user_id=auth_user.id
+        ).first()
         if not equipment:
-            return DataNotFoundErrorResponse('equipment')
-        if equipment.user_id != auth_user.id and not auth_user.admin:
-            return ForbiddenErrorResponse(
-                "Cannot delete another user's equipment without admin rights"
-            )
+            return DataNotFoundErrorResponse('equipments')
         if len(equipment.workouts) > 0 and not force_delete:
             return ForbiddenErrorResponse(
                 f"Cannot delete equipment that has associated workouts. "
@@ -516,7 +533,7 @@ def delete_equipment(
         # other condition for deleting attachment to workouts
         # is handled by database cascading
 
-        # NULLing of user sport preferences handled by database cascadeing
+        # NULLing of user sport preferences handled by database cascading
 
         # delete equipment row
         db.session.query(Equipment).filter(

@@ -33,12 +33,14 @@ def equipment_type_2_bike() -> EquipmentType:
 
 
 @pytest.fixture()
-def equipment_1_bike() -> Equipment:
+def equipment_bike_user_1(
+    equipment_type_2_bike: EquipmentType, user_1: User
+) -> Equipment:
     equip = Equipment(
         label='Test bike equipment',
-        equipment_type_id=2,
+        equipment_type_id=equipment_type_2_bike.id,
         description='A bike for testing purposes',
-        user_id=1,
+        user_id=user_1.id,
         is_active=True,
     )
     db.session.add(equip)
@@ -47,12 +49,14 @@ def equipment_1_bike() -> Equipment:
 
 
 @pytest.fixture()
-def equipment_1_bike_inactive() -> Equipment:
+def equipment_bike_user_1_inactive(
+    equipment_type_2_bike: EquipmentType, user_1: User
+) -> Equipment:
     equip = Equipment(
-        label='Test bike equipment',
-        equipment_type_id=2,
+        label='Test inactive bike equipment',
+        equipment_type_id=equipment_type_2_bike.id,
         description='An inactive bike for testing purposes',
-        user_id=1,
+        user_id=user_1.id,
         is_active=False,
     )
     db.session.add(equip)
@@ -61,12 +65,14 @@ def equipment_1_bike_inactive() -> Equipment:
 
 
 @pytest.fixture()
-def equipment_2_shoes() -> Equipment:
+def equipment_shoes_user_1(
+    equipment_type_1_shoe: EquipmentType, user_1: User
+) -> Equipment:
     equip = Equipment(
         label='Test shoe equipment',
-        equipment_type_id=1,
+        equipment_type_id=equipment_type_1_shoe.id,
         description='An shoe equipment for testing purposes',
-        user_id=1,
+        user_id=user_1.id,
         is_active=True,
     )
     db.session.add(equip)
@@ -75,19 +81,35 @@ def equipment_2_shoes() -> Equipment:
 
 
 @pytest.fixture()
-def workout_w_equipment(
+def equipment_shoes_user_2(
+    equipment_type_1_shoe: EquipmentType, user_2: User
+) -> Equipment:
+    equip = Equipment(
+        label='My shoes',
+        equipment_type_id=equipment_type_1_shoe.id,
+        description='New shoes',
+        user_id=user_2.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def workout_w_shoes_equipment(
     sport_2_running: Sport,
     user_1: User,
     equipment_type_1_shoe: EquipmentType,
-    equipment_2_shoes: Equipment,
+    equipment_shoes_user_1: Equipment,
 ) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_2_running.id,
         workout_date=datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
         duration=timedelta(seconds=1024),
     )
-    workout.equipments.append(equipment_2_shoes)
+    workout.equipments.append(equipment_shoes_user_1)
     db.session.commit()
     return workout
