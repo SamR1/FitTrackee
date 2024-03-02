@@ -232,7 +232,7 @@
           <section id="features">
 <h1>Features<a class="headerlink" href="#features" title="Permalink to this heading">#</a></h1>
 <div class="line-block">
-<div class="line"><strong>FitTrackee</strong> allows you to store and display gpx files and some statistics from your outdoor activities.</div>
+<div class="line"><strong>FitTrackee</strong> allows you to store and display <strong>gpx</strong> files and some statistics from your <strong>outdoor</strong> activities.</div>
 <div class="line">For now, this app is kind of a single-user application. Even if several users can register, a user can only view his own workouts.</div>
 </div>
 <p>Gpx files are stored in an upload directory (<strong>without encryption</strong>).</p>
@@ -288,13 +288,24 @@
 </div>
 <ul class="simple">
 <li><p>Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.</p></li>
-<li><p>Workout creation by uploading a gpx file (related data are stored in database in metric system).</p></li>
+<li><p>Workout creation by uploading manually a gpx file or a zip archive containing a limited number of gpx files (related data are stored in database in metric system).</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Only <strong>gpx</strong> files with time and elevation are supported (otherwise, errors may occur on upload).</div>
+</div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Only gpx files with time are supported.</div>
 <div class="line">Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">For now, <strong>FitTrackee</strong> does not have an importer, but some <a class="reference external" href="third_party_tools.html#importers">third-party tools</a> allow you to import workouts.</div>
 </div>
 </div>
 <ul>
