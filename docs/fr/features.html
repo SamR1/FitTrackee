@@ -232,7 +232,7 @@
           <section id="features">
 <h1>Fonctionnalités<a class="headerlink" href="#features" title="Lien permanent vers cette rubrique">#</a></h1>
 <div class="line-block">
-<div class="line"><strong>Fitrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers .gpx et quelques statistiques à partir de vos activités sportives en plein air.</div>
+<div class="line"><strong>FitTrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers <strong>gpx</strong> et quelques statistiques à partir de vos activités sportives <strong>en plein air</strong>.</div>
 <div class="line">Pour le moment, l’application est plutôt de type mono-utilisateur. Même s’il est possible pour plusieurs utilisateurs de s’enregistrer, un utilisateur authentifié ne peut voir que ses propres séances.</div>
 </div>
 <p>Les fichier .gpx sont stockés dans un répertoire du serveur (<strong>sans aucun chiffrement</strong>).</p>
@@ -288,13 +288,24 @@
 </div>
 <ul class="simple">
 <li><p>Tableau de bord avec le calendrier mensuel affichant les séances et les records. La semaine peut commencer le dimanche ou le lundi (ce qui peut être modifié dans les préférences de l’utilisateur). Le calendrier affiche jusqu’à 100 séances.</p></li>
-<li><p>Création d’une séance en téléversant un fichier gpx (les données associées sont stockées dans la base de données dans le système métrique).</p></li>
+<li><p>Création d’une séance en téléversant un fichier gpx ou une archive zip contenant un nombre limité de fichiers gpx (les données associées sont stockées dans la base de données dans le système métrique).</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Seuls les fichiers <strong>gpx</strong> contenant la date et l’heure ainsi que l’altitude sont pris en charge (dans le cas contraire, des erreurs peuvent se produire lors du téléversement).</div>
+</div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Seuls les fichiers gpx avec l’heure sont pris en charge.</div>
 <div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application qui a généré les fichiers gpx à l’origine, en particulier la vitesse maximale.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Pour le moment, <strong>FitTrackee</strong> ne dispose pas d’outil d’importation, mais des <a class="reference external" href="third_party_tools.html#importers">outils tiers</a> permettent d’importer des séances.</div>
 </div>
 </div>
 <ul>
