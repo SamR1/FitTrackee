@@ -29,6 +29,11 @@
   "MAX_SIZE": "taille max. ",
   "MAX_SPEED": "vitesse max",
   "MIN_ALTITUDE": "altitude min",
+  "MULTISELECT": {
+    "selectLabel": "Appuyer sur Entrée pour sélectionner",
+    "selectedLabel": "Sélectionné",
+    "deselectLabel": "Appuyer sur Entrée pour supprimer"
+  },
   "NEXT_SEGMENT": "Segment suivant",
   "NEXT_WORKOUT": "Séance suivante",
   "NOTES": "notes",

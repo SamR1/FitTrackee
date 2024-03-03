@@ -35,6 +35,23 @@
   --box-shadow-color: lightgrey;
   --admin-disabled-input-color: var(--dark-blue);
 
+  --multiselect-tags-bg-color: var(--dark-blue);
+  --multiselect-tag-bg-color: #33353a;
+  --multiselect-tag-color: var(--app-color);
+  --multiselect-tag-icon-hover-bg-color: #cfd0d0;
+  --multiselect-tag-icon-hover-color: var(--dark-blue);
+  --multiselect-option-bg-color: #61636e;
+  --multiselect-option-color: #ffffff;
+  --multiselect-option-highlight-bg-color: #4d4e56;
+  --multiselect-option-highlight-color: #ffffff;
+  --multiselect-option-selected-highlight-bg-color: #963a41;
+  --multiselect-option-selected-highlight-color: #fff;
+  --multiselect-option-selected-highlight-after-bg-color: #963a41;
+  --multiselect-option-selected-highlight-after-color: #fff;
+  --multiselect-option-selected-bg-color: #33353a;
+  --multiselect-option-selected-color: #f3f3f3;
+  --multiselect-content-wrapper-border-color: var(--input-border-color);
+
   --custom-checkbox-border-color: #665f54;
   --custom-checkbox-checked-bg-color: #575e62;
   --custom-checkbox-checked-color: #e8e6e3;

@@ -29,6 +29,11 @@
   "MAX_SIZE": "max size",
   "MAX_SPEED": "max. speed",
   "MIN_ALTITUDE": "min. altitude",
+  "MULTISELECT": {
+    "selectLabel": "Press enter to select",
+    "selectedLabel": "Selected",
+    "deselectLabel": "Press enter to remove"
+  },
   "NEXT_SEGMENT": "No next segment",
   "NEXT_WORKOUT": "Next workout",
   "NOTES": "notes",

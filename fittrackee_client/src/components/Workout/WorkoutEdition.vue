@@ -236,6 +236,14 @@
                   </div>
                 </div>
               </div>
+              <div class="form-item" v-if="equipments">
+                <label> {{ $t('equipments.EQUIPMENT', 0) }}: </label>
+                <EquipmentsMultiSelect
+                  :equipments="equipments"
+                  name="workout-equipment"
+                  @updatedValues="updateEquipments"
+                />
+              </div>
               <div class="form-item">
                 <label> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
@@ -279,8 +287,14 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import EquipmentsMultiSelect from '@/components/User/UserEquipments/EquipmentsMultiSelect.vue'
+  import {
+    EQUIPMENTS_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -348,6 +362,10 @@
   let gpxFile: File | null = null
   const formErrors = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
+  const equipments: ComputedRef<IEquipment[]> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+  )
+  const selectedEquipmentIds: Ref<number[]> = ref([])
 
   onMounted(() => {
     let element
@@ -463,6 +481,7 @@
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
       notes: workoutForm.notes,
+      equipment_ids: selectedEquipmentIds.value,
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
@@ -518,6 +537,9 @@
   }
   function invalidateForm() {
     formErrors.value = true
+  }
+  function updateEquipments(selectedIds: number[]) {
+    selectedEquipmentIds.value = selectedIds
   }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))

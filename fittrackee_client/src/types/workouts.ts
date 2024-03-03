@@ -118,6 +118,7 @@ export interface IWorkoutForm {
   file?: Blob
   ascent?: number | null
   descent?: number | null
+  equipment_ids: number[]
 }
 
 export interface IWorkoutPayload {
