@@ -122,7 +122,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .patch(`equipment/${payload.id}`, {
+      .patch(`equipments/${payload.id}`, {
         description: payload.description,
         equipment_type_id: payload.equipmentTypeId,
         is_active: payload.isActive,
@@ -130,7 +130,13 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'success') {
-          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+          if (res.data.data.equipments.length > 0) {
+            context.commit(
+              EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT,
+              res.data.data.equipments[0]
+            )
+            router.push(`/profile/equipments/${payload.id}`)
+          }
         } else {
           handleError(context, null)
         }

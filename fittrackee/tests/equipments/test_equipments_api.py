@@ -529,6 +529,37 @@ class TestPatchEquipment(ApiTestCaseMixin):
         equipment = response.json['data']['equipments'][0]  # type: ignore
         assert equipment[input_values[0]] == input_values[1]
 
+    def test_it_updates_equipment_with_same_label(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        label = equipment_bike_user_1.label
+        new_description = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.id}',
+            json={
+                "label": label,
+                "description": new_description,
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        equipment = response.json['data']['equipments'][0]  # type: ignore
+        assert equipment["label"] == label
+        assert equipment["description"] == new_description
+        updated_equipment = Equipment.query.filter_by(
+            id=equipment_bike_user_1.id
+        ).first()
+        assert updated_equipment.label == label
+        assert updated_equipment.description == new_description
+
     def test_it_updates_equipment_type(
         self,
         app: Flask,

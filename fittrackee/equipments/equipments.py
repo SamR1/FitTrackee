@@ -428,8 +428,10 @@ def update_equipment(
         if 'label' in equipment_data:
             label = equipment_data.get('label')
             if (
-                Equipment.query.filter_by(
-                    user_id=auth_user.id, label=label
+                Equipment.query.filter(
+                    Equipment.user_id == auth_user.id,
+                    Equipment.label == label,
+                    Equipment.id != equipment.id,
                 ).first()
                 is not None
             ):

@@ -2,7 +2,7 @@
   <div id="new-equipment">
     <h1 id="new-equipment-title">{{ $t('equipments.ADD_A_NEW_EQUIPMENT') }}</h1>
     <div id="equipment-form">
-      <form @submit.prevent="createEquipment">
+      <form @submit.prevent="submit">
         <div class="form-items">
           <div class="form-item">
             <label for="equipment-label">{{ $t('common.LABEL') }}*</label>
@@ -42,14 +42,32 @@
               </option>
             </select>
           </div>
+          <div class="form-item-checkbox" v-if="equipmentForm.id">
+            <label for="equipment-active">
+              {{ capitalize($t('common.ACTIVE')) }}
+            </label>
+            <input
+              id="equipment-active"
+              type="checkbox"
+              v-model="equipmentForm.isActive"
+            />
+          </div>
         </div>
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button
             class="cancel"
-            @click.prevent="() => $router.push('/profile/equipments')"
+            @click.prevent="
+              () =>
+                $router.push(
+                  equipment?.id
+                    ? `/profile/equipments/${equipment.id}`
+                    : '/profile/equipments'
+                )
+            "
           >
             {{ $t('buttons.CANCEL') }}
           </button>
@@ -60,32 +78,89 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, reactive, toRefs } from 'vue'
+  import { capitalize, computed, onMounted, reactive, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
 
-  import { EQUIPMENTS_STORE } from '@/store/constants'
-  import type { ITranslatedEquipmentType } from '@/types/equipments'
+  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   interface Props {
+    equipments: IEquipment[]
     translatedEquipmentTypes: ITranslatedEquipmentType[]
   }
   const props = defineProps<Props>()
 
   const store = useStore()
+  const route = useRoute()
 
-  const { translatedEquipmentTypes } = toRefs(props)
+  const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const equipment: ComputedRef<IEquipment | null> = computed(() =>
+    getEquipment(equipments.value)
+  )
+  const errorMessages: ComputedRef<string | string[] | null> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
+  )
   const equipmentForm = reactive({
+    id: 0,
     label: '',
     description: '',
     equipmentTypeId: 0,
+    isActive: true,
   })
 
-  function createEquipment() {
-    store.dispatch(EQUIPMENTS_STORE.ACTIONS.ADD_EQUIPMENT, equipmentForm)
+  onMounted(() => {
+    if (!route.params.id) {
+      return
+    }
+    if (route.params.id && equipment.value?.id) {
+      formatForm(equipment.value)
+    }
+  })
+
+  function getEquipment(equipmentsList: IEquipment[]) {
+    if (!route.params.id) {
+      return null
+    }
+    const filteredEquipmentList = equipmentsList.filter((equipment) =>
+      route.params.id ? equipment.id === +route.params.id : null
+    )
+    if (filteredEquipmentList.length === 0) {
+      return null
+    }
+    return filteredEquipmentList[0]
+  }
+
+  function formatForm(equipment: IEquipment) {
+    equipmentForm.id = equipment.id
+    equipmentForm.label = equipment.label
+    equipmentForm.description = equipment.description
+      ? equipment.description
+      : ''
+    equipmentForm.equipmentTypeId = equipment.equipment_type.id
+    equipmentForm.isActive = equipment.is_active
+  }
+  function submit() {
+    store.dispatch(
+      EQUIPMENTS_STORE.ACTIONS[
+        equipmentForm.id ? 'UPDATE_EQUIPMENT' : 'ADD_EQUIPMENT'
+      ],
+      equipmentForm
+    )
   }
   function updateDescription(value: string) {
     equipmentForm.description = value
   }
+
+  watch(
+    () => equipment.value,
+    (equipment) => {
+      if (route.params.id && equipment?.id) {
+        formatForm(equipment)
+      }
+    }
+  )
 </script>
 
 <style scoped lang="scss">
@@ -106,30 +181,15 @@
         input[type='text'] {
           height: 20px;
         }
-        .form-item-scope {
-          padding: $default-padding;
-
-          .form-item-scope-label {
-            font-weight: bold;
-          }
-
-          .form-item-scope-checkboxes {
-            padding-bottom: $default-padding;
-
-            .scope-label {
-              height: inherit;
-            }
-            .scope-description {
-              font-style: italic;
-              margin: 0 $default-margin * 0.5;
-            }
-          }
-        }
-
         .form-item {
           display: flex;
           flex-direction: column;
           padding: $default-padding;
+        }
+        .form-item-checkbox {
+          display: flex;
+          padding: $default-padding;
+          gap: $default-padding * 0.5;
         }
       }
 

@@ -21,7 +21,7 @@ import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
-import AddEquipment from '@/components/User/UserEquipments/AddEquipment.vue'
+import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.vue'
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
@@ -264,7 +264,7 @@ const routes: Array<RouteRecordRaw> = [
               {
                 path: 'new',
                 name: 'AddEquipment',
-                component: AddEquipment,
+                component: EquipmentEdition,
                 meta: {
                   title: 'user.PROFILE.TABS.EQUIPMENTS',
                 },
@@ -273,6 +273,14 @@ const routes: Array<RouteRecordRaw> = [
                 path: ':id',
                 name: 'Equipment',
                 component: UserEquipment,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: ':id/edit',
+                name: 'EquipmentEdition',
+                component: EquipmentEdition,
                 meta: {
                   title: 'user.PROFILE.TABS.EQUIPMENTS',
                 },

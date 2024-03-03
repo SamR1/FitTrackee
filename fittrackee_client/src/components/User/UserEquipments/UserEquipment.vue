@@ -13,11 +13,12 @@
       <dt>{{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}</dt>
       <dd class="equipment-type">
         <EquipmentTypeImage
-          v-if="equipmentType"
-          :title="equipmentType.translatedLabel"
-          :equipment-type-label="equipmentType.label"
+          :title="$t(`equipment_types.${equipment.equipment_type.label}.LABEL`)"
+          :equipment-type-label="equipment.equipment_type.label"
         />
-        <span>{{ equipmentType?.translatedLabel }}</span>
+        <span>{{
+          $t(`equipment_types.${equipment.equipment_type.label}.LABEL`)
+        }}</span>
       </dd>
       <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
       <dd>{{ equipment.workouts_count }}</dd>
@@ -28,18 +29,26 @@
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
         <i
-          :class="`fa fa${equipment.is_active ? '-check' : ''}`"
+          :class="`fa fa-${equipment.is_active ? 'check-' : ''}square-o`"
           aria-hidden="true"
         />
       </dd>
     </dl>
+    <div class="equipment-buttons">
+      <button @click="$router.push(`/profile/equipments/${equipment.id}/edit`)">
+        {{ $t('buttons.EDIT') }}
+      </button>
+      <button @click="$router.push('/profile/equipments')">
+        {{ $t('buttons.BACK') }}
+      </button>
+    </div>
   </div>
   <div v-else>
     <p class="no-equipment">{{ $t('equipments.NO_EQUIPMENT') }}</p>
+    <button @click="$router.push('/profile/equipments')">
+      {{ $t('buttons.BACK') }}
+    </button>
   </div>
-  <button @click="$router.push('/profile/equipments')">
-    {{ $t('buttons.BACK') }}
-  </button>
 </template>
 
 <script setup lang="ts">
@@ -47,22 +56,18 @@
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
+  import type { IEquipment } from '@/types/equipments'
 
   interface Props {
     equipments: IEquipment[]
-    translatedEquipmentTypes: ITranslatedEquipmentType[]
   }
   const props = defineProps<Props>()
 
   const route = useRoute()
 
-  const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const { equipments } = toRefs(props)
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
-  )
-  const equipmentType: ComputedRef<ITranslatedEquipmentType | null> = computed(
-    () => getEquipmentType(translatedEquipmentTypes.value)
   )
 
   function getEquipment(equipmentsList: IEquipment[]) {
@@ -76,19 +81,6 @@
       return null
     }
     return filteredEquipmentList[0]
-  }
-
-  function getEquipmentType(equipmentTypesList: ITranslatedEquipmentType[]) {
-    if (!equipment.value?.id) {
-      return null
-    }
-    const filteredEquipmentTypeList = equipmentTypesList.filter(
-      (et) => et.id === equipment.value?.id
-    )
-    if (filteredEquipmentTypeList.length === 0) {
-      return null
-    }
-    return filteredEquipmentTypeList[0]
   }
 </script>
 
@@ -111,5 +103,10 @@
         margin: 0;
       }
     }
+  }
+  .equipment-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $default-padding;
   }
 </style>
