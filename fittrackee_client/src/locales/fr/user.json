@@ -77,7 +77,7 @@
       "ZERO": "0"
     },
     "EQUIPMENTS": {
-      "ACTION": "action",
+      "ACTION": "action","CONFIRM_EQUIPMENT_DELETION": "Êtes-vous sûr de vouloir supprimer cet équipement ?",
       "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",

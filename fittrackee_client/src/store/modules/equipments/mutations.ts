@@ -19,10 +19,7 @@ export const mutations: MutationTree<IEquipmentTypesState> &
     state: IEquipmentTypesState,
     equipmentId: number
   ) {
-    const equipmentIndex = state.equipments.findIndex(
-      (e) => e.id === equipmentId
-    )
-    delete state.equipments[equipmentIndex]
+    state.equipments = state.equipments.filter((e) => e.id != equipmentId)
   },
   [EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENTS](
     state: IEquipmentTypesState,

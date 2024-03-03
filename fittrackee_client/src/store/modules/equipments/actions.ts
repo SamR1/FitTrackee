@@ -55,6 +55,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
       .delete(`equipments/${equipmentId}`)
       .then(() => {
         context.commit(EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT, equipmentId)
+        router.push('/profile/equipments')
       })
       .catch((error) => handleError(context, error))
   },

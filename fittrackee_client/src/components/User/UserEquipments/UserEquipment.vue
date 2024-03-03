@@ -1,5 +1,14 @@
 <template>
   <div id="user-equipment" class="description-list" v-if="equipment">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.PROFILE.EQUIPMENTS.CONFIRM_EQUIPMENT_DELETION')"
+      :strongMessage="equipment.label"
+      @confirmAction="deleteEquipment"
+      @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
+    />
     <dl>
       <dt>{{ $t('common.LABEL') }}</dt>
       <dd>{{ equipment.label }}</dd>
@@ -38,6 +47,9 @@
       <button @click="$router.push(`/profile/equipments/${equipment.id}/edit`)">
         {{ $t('buttons.EDIT') }}
       </button>
+      <button class="danger" @click="displayModal = true">
+        {{ $t('buttons.DELETE') }}
+      </button>
       <button @click="$router.push('/profile/equipments')">
         {{ $t('buttons.BACK') }}
       </button>
@@ -52,23 +64,27 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { capitalize, computed, onUnmounted, ref, toRefs } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     equipments: IEquipment[]
   }
   const props = defineProps<Props>()
 
+  const store = useStore()
   const route = useRoute()
 
   const { equipments } = toRefs(props)
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )
+  const displayModal: Ref<boolean> = ref(false)
 
   function getEquipment(equipmentsList: IEquipment[]) {
     if (!route.params.id) {
@@ -82,6 +98,21 @@
     }
     return filteredEquipmentList[0]
   }
+  function updateDisplayModal(display: boolean) {
+    displayModal.value = display
+  }
+  function deleteEquipment() {
+    if (equipment.value?.id) {
+      store.dispatch(
+        EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT,
+        equipment.value.id
+      )
+    }
+  }
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
 <style scoped lang="scss">
