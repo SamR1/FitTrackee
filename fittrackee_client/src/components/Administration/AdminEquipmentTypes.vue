@@ -102,7 +102,7 @@
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { EQUIPMENT_TYPES_STORE, ROOT_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
   import type { ITranslatedEquipmentType } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { translateEquipmentTypes } from '@/utils/equipmentTypes'
@@ -113,7 +113,7 @@
   const translatedEquipmentTypes: ComputedRef<ITranslatedEquipmentType[]> =
     computed(() =>
       translateEquipmentTypes(
-        store.getters[EQUIPMENT_TYPES_STORE.GETTERS.EQUIPMENT_TYPES],
+        store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENT_TYPES],
         t
       )
     )
@@ -124,10 +124,10 @@
   onBeforeMount(() => loadEquipmentTypes())
 
   function loadEquipmentTypes() {
-    store.dispatch(EQUIPMENT_TYPES_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
   }
   function updateEquipmentTypeStatus(id: number, isActive: boolean) {
-    store.dispatch(EQUIPMENT_TYPES_STORE.ACTIONS.UPDATE_EQUIPMENT_TYPE, {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.UPDATE_EQUIPMENT_TYPE, {
       id,
       isActive,
     })

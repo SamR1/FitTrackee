@@ -3,7 +3,7 @@ import type { ActionContext } from 'vuex'
 
 import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
 import type { IAuthUserState } from '@/store/modules/authUser/types'
-import type { IEquipmentTypesState } from '@/store/modules/equipmentTypes/types'
+import type { IEquipmentTypesState } from '@/store/modules/equipments/types'
 import type { IOAuth2State } from '@/store/modules/oauth2/types'
 import type { IRootState } from '@/store/modules/root/types'
 import type { ISportsState } from '@/store/modules/sports/types'

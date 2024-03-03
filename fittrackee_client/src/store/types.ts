@@ -1,5 +1,5 @@
 import type { TAuthUserStoreModule } from '@/store/modules/authUser/types'
-import type { TEquipmentTypesStoreModule } from '@/store/modules/equipmentTypes/types'
+import type { TEquipmentTypesStoreModule } from '@/store/modules/equipments/types'
 import type { TOAuth2StoreModule } from '@/store/modules/oauth2/types'
 import type { TRootStoreModule } from '@/store/modules/root/types'
 import type { TSportsStoreModule } from '@/store/modules/sports/types'

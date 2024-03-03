@@ -4,10 +4,10 @@ import {
   AuthUserMutations,
 } from '@/store/modules/authUser/enums'
 import {
-  EquipmentTypesActions,
-  EquipmentTypesGetters,
-  EquipmentTypesMutation,
-} from '@/store/modules/equipmentTypes/enums'
+  EquipmentsActions,
+  EquipmentsGetters,
+  EquipmentsMutation,
+} from '@/store/modules/equipments/enums'
 import {
   OAuth2Actions,
   OAuth2Getters,
@@ -80,8 +80,8 @@ export const WORKOUTS_STORE = {
   MUTATIONS: WorkoutsMutations,
 }
 
-export const EQUIPMENT_TYPES_STORE = {
-  ACTIONS: EquipmentTypesActions,
-  GETTERS: EquipmentTypesGetters,
-  MUTATIONS: EquipmentTypesMutation,
+export const EQUIPMENTS_STORE = {
+  ACTIONS: EquipmentsActions,
+  GETTERS: EquipmentsGetters,
+  MUTATIONS: EquipmentsMutation,
 }

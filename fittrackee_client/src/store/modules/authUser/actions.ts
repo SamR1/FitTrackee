@@ -5,7 +5,7 @@ import api from '@/api/defaultApi'
 import router from '@/router'
 import {
   AUTH_USER_STORE,
-  EQUIPMENT_TYPES_STORE,
+  EQUIPMENTS_STORE,
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
@@ -150,7 +150,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             )
           }
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
-          context.dispatch(EQUIPMENT_TYPES_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
         } else {
           handleError(context, null)
           removeAuthUserData(context)

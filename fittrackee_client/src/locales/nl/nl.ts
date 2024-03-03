@@ -4,7 +4,7 @@ import ApiTranslations from './api.json'
 import ButtonsTranslations from './buttons.json'
 import CommonTranslations from './common.json'
 import DashboardTranslations from './dashboard.json'
-import EquipmentsTypesTranslations from './equipment_types.json'
+import EquipmentTypesTranslations from './equipment_types.json'
 import EquipmentsTranslations from './equipments.json'
 import ErrorTranslations from './error.json'
 import OAuth2Translations from './oauth2.json'
@@ -23,7 +23,7 @@ export default {
   dashboard: DashboardTranslations,
   error: ErrorTranslations,
   equipments: EquipmentsTranslations,
-  equipment_types: EquipmentsTypesTranslations,
+  equipment_types: EquipmentTypesTranslations,
   oauth2: OAuth2Translations,
   privacy_policy: PrivacyPolicyTranslations,
   sports: SportsTranslations,
