@@ -1,13 +1,18 @@
 {
   "ABOUT": "about",
+  "ACTION": "action",
+  "ACTIVE": "active",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "day | days",
   "DISPLAYED": "Displayed",
+  "DESCRIPTION": "Description",
   "DOCUMENTATION": "documentation",
   "HERE": "here",
   "HIDDEN": "Hidden",
   "HOME": "Home",
+  "LABEL": "label",
+  "NO_DESCRIPTION": "no description",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascending",

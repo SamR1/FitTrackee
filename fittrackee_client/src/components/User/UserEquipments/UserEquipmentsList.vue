@@ -1,0 +1,167 @@
+<template>
+  <div id="user-equipments-list">
+    <h1 class="equipments-list">
+      {{ $t('user.PROFILE.EQUIPMENTS.YOUR_GEARS') }}
+    </h1>
+    <div class="no-equipments" v-if="equipments.length === 0">
+      {{ $t('equipments.NO_EQUIPMENTS') }}
+    </div>
+    <div v-else>
+      <template
+        v-for="equipmentType in translatedEquipmentTypes"
+        :key="equipmentType.label"
+      >
+        <template v-if="equipmentByTypes[equipmentType.id]">
+          <h2>
+            <EquipmentTypeImage
+              :title="equipmentType.translatedLabel"
+              :equipment-type-label="equipmentType.label"
+            />
+            {{ equipmentType.translatedLabel }}
+          </h2>
+          <div class="responsive-table">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    {{ $t('common.LABEL') }}
+                  </th>
+                  <th class="text-left">
+                    {{ $t('workouts.WORKOUT', 0) }}
+                  </th>
+                  <th class="text-left">
+                    {{ capitalize($t('workouts.DISTANCE')) }}
+                  </th>
+                  <th class="text-left">
+                    {{ capitalize($t('workouts.DURATION')) }}
+                  </th>
+                  <th class="text-left">
+                    {{ $t('common.ACTIVE') }}
+                  </th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="equipment in equipmentByTypes[equipmentType.id]"
+                  :key="equipment.label"
+                >
+                  <td class="equipment-label">
+                    <span class="cell-heading">
+                      {{ $t('common.LABEL') }}
+                    </span>
+                    <router-link
+                      :to="{ name: 'Equipment', params: { id: equipment.id } }"
+                    >
+                      {{ equipment.label }}
+                    </router-link>
+                  </td>
+                  <td>
+                    <span class="cell-heading">
+                      {{ $t('workouts.WORKOUT', 0) }}
+                    </span>
+                    {{ equipment.workouts_count }}
+                  </td>
+                  <td>
+                    <span class="cell-heading">
+                      {{ $t('workouts.DISTANCE', 0) }}
+                    </span>
+                    {{ equipment.total_distance }}
+                  </td>
+                  <td>
+                    <span class="cell-heading">
+                      {{ $t('workouts.DURATION', 0) }}
+                    </span>
+                    {{ equipment.total_duration }}
+                  </td>
+                  <td>
+                    <span class="cell-heading">
+                      {{ $t('common.ACTIVE') }}
+                    </span>
+                    <i
+                      :class="`fa fa${equipment.is_active ? '-check' : ''}`"
+                      aria-hidden="true"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </template>
+    </div>
+    <div class="equipments-list-buttons">
+      <button @click="$router.push('/profile/equipments/new')">
+        {{ $t('equipments.NEW_EQUIPMENT') }}
+      </button>
+      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { capitalize, computed, toRefs } from 'vue'
+
+  import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
+
+  interface Props {
+    equipments: IEquipment[]
+    translatedEquipmentTypes: ITranslatedEquipmentType[]
+  }
+  const props = defineProps<Props>()
+
+  const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const equipmentByTypes = computed(() =>
+    formatEquipmentsList(equipments.value)
+  )
+  function formatEquipmentsList(equipments: IEquipment[]) {
+    const equipmentByTypes: Record<number, IEquipment[]> = {}
+    equipments.map((equipment) => {
+      if (equipment.equipment_type.id in equipmentByTypes) {
+        equipmentByTypes[equipment.equipment_type.id].push(equipment)
+      } else {
+        equipmentByTypes[equipment.equipment_type.id] = [equipment]
+      }
+    })
+    return equipmentByTypes
+  }
+</script>
+
+<style scoped lang="scss">
+  @import '~@/scss/vars.scss';
+  #user-equipments-list {
+    h1 {
+      font-size: 1.05em;
+      font-weight: bold;
+    }
+    h2 {
+      font-size: 1em;
+      font-weight: bold;
+
+      display: flex;
+      gap: $default-padding * 0.5;
+
+      .equipment-type-img {
+        height: 25px;
+        width: 25px;
+        margin: 0;
+      }
+    }
+    table {
+      th {
+        text-transform: capitalize;
+      }
+      .equipment-label {
+        width: 300px;
+      }
+    }
+    .no-equipments {
+      font-style: italic;
+      padding-bottom: $default-padding * 2;
+    }
+    .equipments-list-buttons {
+      display: flex;
+      gap: $default-padding;
+    }
+  }
+</style>

@@ -76,6 +76,14 @@
       "MIN_ALT": "Altitude minimale",
       "ZERO": "0"
     },
+    "EQUIPMENTS": {
+      "ACTION": "action",
+      "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
+      "IS_ACTIVE": "actif",
+      "LABEL": "label",
+      "DESCRIPTION": "description",
+      "YOUR_GEARS": "Vos équipements"
+    },
     "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
     "FIRST_NAME": "Prénom",
@@ -109,6 +117,7 @@
     "TABS": {
       "ACCOUNT": "compte",
       "APPS": "apps",
+      "EQUIPMENTS": "équipements",
       "PICTURE": "image",
       "PREFERENCES": "préférences",
       "PRIVACY-POLICY": "politique de confidentialité",

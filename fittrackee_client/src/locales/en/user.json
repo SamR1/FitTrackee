@@ -76,6 +76,14 @@
       "MIN_ALT": "Minimum altitude",
       "ZERO": "Zero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "action",
+      "DISABLED_BY_ADMIN": "disabled by admin",
+      "IS_ACTIVE": "active",
+      "LABEL": "label",
+      "DESCRIPTION": "description",
+      "YOUR_GEARS": "Your gears"
+    },
     "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
     "FIRST_DAY_OF_WEEK": "First day of week",
     "FIRST_NAME": "First name",
@@ -109,6 +117,7 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "EQUIPMENTS": "equipments",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
       "PRIVACY-POLICY": "privacy policy",

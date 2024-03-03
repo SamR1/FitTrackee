@@ -1,3 +1,7 @@
 {
-  "EQUIPMENT_TYPE": "type d'équipement|types d'équipement"
+  "ADD_A_NEW_EQUIPMENT": "Ajouter un nouvel équipement",
+  "EQUIPMENT_TYPE": "type d'équipement|types d'équipement",
+  "NEW_EQUIPMENT": "Nouvel équipement",
+  "NO_EQUIPMENT": "Pas d'équipement correspondant.",
+  "NO_EQUIPMENTS": "Pas d'équipements"
 }

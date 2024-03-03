@@ -1,6 +1,7 @@
 import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
+import router from '@/router'
 import {
   AUTH_USER_STORE,
   ROOT_STORE,
@@ -32,12 +33,11 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         label: payload.label,
       })
       .then((res) => {
-        if (res.data.status === 'success') {
+        if (res.data.status === 'created') {
           if (res.data.data.equipments.length > 0) {
-            context.commit(
-              EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENT,
-              res.data.data.equipments[0]
-            )
+            const equipment = res.data.data.equipments[0]
+            context.commit(EQUIPMENTS_STORE.MUTATIONS.ADD_EQUIPMENT, equipment)
+            router.push(`/profile/equipments/${equipment.id}`)
           }
           context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
         } else {
@@ -69,7 +69,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         if (res.data.status === 'success') {
           if (res.data.data.equipments.length > 0) {
             context.commit(
-              EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENT,
+              EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT,
               res.data.data.equipments[0]
             )
           }

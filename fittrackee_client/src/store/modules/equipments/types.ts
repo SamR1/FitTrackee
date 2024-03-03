@@ -63,13 +63,13 @@ export interface IEquipmentsGetters {
 }
 
 export type TEquipmentsMutations<S = IEquipmentTypesState> = {
+  [EQUIPMENTS_STORE.MUTATIONS.ADD_EQUIPMENT](
+    state: S,
+    equipment: IEquipment
+  ): void
   [EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT](
     state: S,
     equipmentId: number
-  ): void
-  [EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENT](
-    state: S,
-    equipment: IEquipment
   ): void
   [EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENTS](
     state: S,
@@ -78,6 +78,10 @@ export type TEquipmentsMutations<S = IEquipmentTypesState> = {
   [EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENT_TYPES](
     state: S,
     equipmentTypes: IEquipmentType[]
+  ): void
+  [EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT](
+    state: S,
+    equipment: IEquipment
   ): void
 }
 

@@ -150,6 +150,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             )
           }
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
           context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
         } else {
           handleError(context, null)

@@ -1,13 +1,18 @@
 {
   "ABOUT": "à propos",
+  "ACTION": "action",
+  "ACTIVE": "actif",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "jour | jours",
   "DISPLAYED": "Affiché",
+  "DESCRIPTION": "Description",
   "DOCUMENTATION": "documentation",
   "HERE": "ici",
   "HIDDEN": "Masqué",
   "HOME": "Accueil",
+  "LABEL": "Nom",
+  "NO_DESCRIPTION": "pas de description",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",

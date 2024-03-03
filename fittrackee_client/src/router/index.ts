@@ -21,6 +21,10 @@ import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
+import AddEquipment from '@/components/User/UserEquipments/AddEquipment.vue'
+import UserEquipments from '@/components/User/UserEquipments/index.vue'
+import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
+import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
 import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
@@ -240,6 +244,37 @@ const routes: Array<RouteRecordRaw> = [
                 component: AuthorizeUserApp,
                 meta: {
                   title: 'user.PROFILE.TABS.APPS',
+                },
+              },
+            ],
+          },
+          {
+            path: 'equipments',
+            name: 'UserEquipments',
+            component: UserEquipments,
+            children: [
+              {
+                path: '',
+                name: 'UserEquipmentsList',
+                component: UserEquipmentsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: 'new',
+                name: 'AddEquipment',
+                component: AddEquipment,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'Equipment',
+                component: UserEquipment,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
                 },
               },
             ],
