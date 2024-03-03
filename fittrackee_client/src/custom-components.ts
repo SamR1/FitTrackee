@@ -4,6 +4,7 @@ import CustomTextArea from '@/components/Common/CustomTextArea.vue'
 import Distance from '@/components/Common/Distance.vue'
 import Dropdown from '@/components/Common/Dropdown.vue'
 import ErrorMessage from '@/components/Common/ErrorMessage.vue'
+import EquipmentTypeImage from '@/components/Common/Images/EquipmentTypeImage/index.vue'
 import SportImage from '@/components/Common/Images/SportImage/index.vue'
 import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
@@ -18,4 +19,5 @@ export const customComponents = [
   { target: Loader, name: 'Loader' },
   { target: Modal, name: 'Modal' },
   { target: SportImage, name: 'SportImage' },
+  { target: EquipmentTypeImage, name: 'EquipmentTypeImage' },
 ]

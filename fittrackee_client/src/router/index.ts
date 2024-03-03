@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
+import AdminEquipmentTypes from '@/components/Administration/AdminEquipmentTypes.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
@@ -394,6 +395,14 @@ const routes: Array<RouteRecordRaw> = [
         props: { edition: true },
         meta: {
           title: 'admin.APPLICATION',
+        },
+      },
+      {
+        path: 'equipment-types',
+        name: 'EquipmentTypeAdministration',
+        component: AdminEquipmentTypes,
+        meta: {
+          title: 'admin.EQUIPMENT_TYPES.TITLE',
         },
       },
       {

@@ -28,8 +28,8 @@ def upgrade():
         """
         INSERT INTO equipment_types (label, is_active)
         VALUES 
-        ('Shoe', True), ('Bike', True), ('Treadmill', True), 
-        ('Bike Trainer', True), ('Kayak/Boat', True),
+        ('Shoes', True), ('Bike', True), 
+        ('Bike Trainer', True), ('Kayak_Boat', True),
         ('Skis', True), ('Snowshoes', True) 
         """
     )

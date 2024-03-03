@@ -1,6 +1,7 @@
 import type { Module, ModuleTree } from 'vuex'
 
 import authUserModule from '@/store/modules/authUser'
+import equipmentTypes from '@/store/modules/equipmentTypes'
 import oAuthModule from '@/store/modules/oauth2'
 import { actions } from '@/store/modules/root/actions'
 import { getters } from '@/store/modules/root/getters'
@@ -14,6 +15,7 @@ import workoutsModule from '@/store/modules/workouts'
 
 const modules: ModuleTree<IRootState> = {
   authUserModule,
+  equipmentTypes,
   oAuthModule,
   sportsModule,
   statsModule,

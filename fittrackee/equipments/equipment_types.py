@@ -18,7 +18,7 @@ from ..equipments.models import EquipmentType
 equipment_types_blueprint = Blueprint('equipment_types', __name__)
 
 
-@equipment_types_blueprint.route('/equipment_types', methods=['GET'])
+@equipment_types_blueprint.route('/equipment-types', methods=['GET'])
 @require_auth(scopes=['equipments:read'])
 def get_equipment_types(auth_user: User) -> Dict:
     """
@@ -30,7 +30,7 @@ def get_equipment_types(auth_user: User) -> Dict:
 
     .. sourcecode:: http
 
-      GET /api/equipment_types HTTP/1.1
+      GET /api/equipment-types HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -68,7 +68,7 @@ def get_equipment_types(auth_user: User) -> Dict:
             {
               "id": 5,
               "is_active": true,
-              "label": "Kayak/Boat"
+              "label": "Kayak_Boat"
             },
             {
               "id": 6,
@@ -123,7 +123,7 @@ def get_equipment_types(auth_user: User) -> Dict:
               "has_equipments": false,
               "id": 5,
               "is_active": true,
-              "label": "Kayak/Boat"
+              "label": "Kayak_Boat"
             },
             {
               "has_equipments": false,
@@ -175,7 +175,7 @@ def get_equipment_types(auth_user: User) -> Dict:
 
 
 @equipment_types_blueprint.route(
-    '/equipment_types/<int:equipment_type_id>', methods=['GET']
+    '/equipment-types/<int:equipment_type_id>', methods=['GET']
 )
 @require_auth(scopes=['equipments:read'])
 def get_equipment_type(
@@ -190,7 +190,7 @@ def get_equipment_type(
 
     .. sourcecode:: http
 
-      GET /api/equipment_types/2 HTTP/1.1
+      GET /api/equipment-types/2 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -283,7 +283,7 @@ def get_equipment_type(
 
 
 @equipment_types_blueprint.route(
-    '/equipment_types/<int:equipment_type_id>', methods=['PATCH']
+    '/equipment-types/<int:equipment_type_id>', methods=['PATCH']
 )
 @require_auth(scopes=['equipments:write'], as_admin=True)
 def update_equipment_type(
@@ -300,7 +300,7 @@ def update_equipment_type(
 
     .. sourcecode:: http
 
-      PATCH /api/equipment_types/2 HTTP/1.1
+      PATCH /api/equipment-types/2 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
