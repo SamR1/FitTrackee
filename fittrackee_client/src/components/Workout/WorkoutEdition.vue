@@ -240,6 +240,7 @@
                 <label> {{ $t('equipments.EQUIPMENT', 0) }}: </label>
                 <EquipmentsMultiSelect
                   :equipments="equipments"
+                  :workout-equipments="workout.equipments"
                   name="workout-equipment"
                   @updatedValues="updateEquipments"
                 />
@@ -428,6 +429,9 @@
                 ? convertDistance(workout.descent, 'm', 'ft', 2)
                 : parseFloat(workout.descent.toFixed(2))
             }`
+      selectedEquipmentIds.value = workout.equipments
+        ? workout.equipments.map((e) => e.id)
+        : []
     }
   }
   function isDistanceInvalid() {
@@ -476,6 +480,7 @@
     ) {
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
+    payload.equipment_ids = selectedEquipmentIds.value
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {

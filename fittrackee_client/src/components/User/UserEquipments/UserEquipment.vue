@@ -50,7 +50,15 @@
       <button class="danger" @click="displayModal = true">
         {{ $t('buttons.DELETE') }}
       </button>
-      <button @click="$router.push('/profile/equipments')">
+      <button
+        @click="
+          $router.push(
+            route.query.fromWorkoutId
+              ? `/workouts/${route.query.fromWorkoutId}`
+              : '/profile/equipments'
+          )
+        "
+      >
         {{ $t('buttons.BACK') }}
       </button>
     </div>

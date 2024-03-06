@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, toRefs } from 'vue'
+  import { onBeforeMount, ref, toRefs } from 'vue'
   import type { Ref } from 'vue'
   import Multiselect from 'vue-multiselect'
 
@@ -27,12 +27,21 @@
   interface Props {
     equipments: IEquipment[]
     name: string
+    workoutEquipments?: IEquipment[]
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    workoutEquipments: () => [],
+  })
   const emit = defineEmits(['updatedValues'])
 
-  const { equipments, name } = toRefs(props)
+  const { equipments, name, workoutEquipments } = toRefs(props)
   const selectedEquipments: Ref<IEquipment[]> = ref([])
+
+  onBeforeMount(() => {
+    if (workoutEquipments.value) {
+      selectedEquipments.value = workoutEquipments.value
+    }
+  })
 
   function updateSelectedEquipments(equipmentsList: IEquipment[]) {
     emit(
