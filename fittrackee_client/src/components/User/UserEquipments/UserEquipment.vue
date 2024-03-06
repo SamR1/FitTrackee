@@ -10,7 +10,7 @@
       @keydown.esc="updateDisplayModal(false)"
     />
     <dl>
-      <dt>{{ $t('common.LABEL') }}</dt>
+      <dt>{{ capitalize($t('common.LABEL')) }}</dt>
       <dd>{{ equipment.label }}</dd>
       <dt>{{ $t('common.DESCRIPTION') }}</dt>
       <dd>

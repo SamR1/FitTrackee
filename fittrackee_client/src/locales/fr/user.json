@@ -83,7 +83,7 @@
       "IS_ACTIVE": "actif",
       "LABEL": "label",
       "DESCRIPTION": "description",
-      "YOUR_GEARS": "Vos équipements"
+      "YOUR_EQUIPMENTS": "Vos équipements"
     },
     "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",

@@ -46,7 +46,7 @@
                 </option>
               </select>
             </div>
-            <div class="form-item">
+            <div class="form-item form-item-equipment">
               <label> {{ $t('equipments.EQUIPMENT', 1) }}:</label>
               <select
                 name="equipment_id"
@@ -324,7 +324,8 @@
               padding: 0 $default-padding * 0.5;
             }
           }
-          .form-item-title {
+          .form-item-title,
+          .form-item-equipment {
             padding-top: $default-padding;
             input.title {
               width: 100%;

@@ -5,7 +5,9 @@
       <form @submit.prevent="submit">
         <div class="form-items">
           <div class="form-item">
-            <label for="equipment-label">{{ $t('common.LABEL') }}*</label>
+            <label for="equipment-label">
+              {{ capitalize($t('common.LABEL')) }}*
+            </label>
             <input
               id="equipment-label"
               type="text"

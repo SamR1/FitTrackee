@@ -1,7 +1,7 @@
 <template>
   <div id="user-equipments-list">
     <h1 class="equipments-list">
-      {{ $t('user.PROFILE.EQUIPMENTS.YOUR_GEARS') }}
+      {{ $t('user.PROFILE.EQUIPMENTS.YOUR_EQUIPMENTS') }}
     </h1>
     <div class="no-equipments" v-if="equipments.length === 0">
       {{ $t('equipments.NO_EQUIPMENTS') }}
