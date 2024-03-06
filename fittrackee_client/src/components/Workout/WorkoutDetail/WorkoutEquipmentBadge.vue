@@ -1,6 +1,7 @@
 <template>
   <router-link
     class="workout-equipment"
+    :class="{ inactive: !equipment.is_active }"
     :to="{
       name: 'Equipment',
       params: { id: equipment.id },
@@ -13,6 +14,7 @@
     />
     <span>
       {{ equipment.label }}
+      {{ equipment.is_active ? '' : `(${$t('common.INACTIVE')})` }}
     </span>
   </router-link>
 </template>
@@ -40,6 +42,9 @@
     border-radius: $border-radius;
     padding: $default-padding * 0.5 $default-padding;
 
+    &.inactive {
+      font-style: italic;
+    }
     .equipment-type-img {
       height: 25px;
       width: 25px;

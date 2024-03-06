@@ -58,7 +58,7 @@ MAX_WORKOUTS_PER_PAGE = 100
 
 
 def handle_equipments(
-    workout_data: Dict, auth_user: User
+    workout_data: Dict, auth_user: User, workout: Optional[Workout] = None
 ) -> Union[List[Equipment], None]:
     equipment_ids = workout_data.get('equipment_ids')
     equipment_list = None
@@ -80,7 +80,9 @@ def handle_equipments(
                 raise InvalidEquipmentException(
                     f"equipment with id {equipment_id} does not exist"
                 )
-            if not equipment.is_active:
+            if not equipment.is_active and (
+                not workout or equipment not in workout.equipments
+            ):
                 raise InvalidEquipmentException(
                     f"equipment with id {equipment_id} is inactive"
                 )
@@ -1401,13 +1403,6 @@ def update_workout(
     if not workout_data:
         return InvalidPayloadErrorResponse()
 
-    # check equipment_ids format and access
-    try:
-        equipment_list = handle_equipments(workout_data, auth_user)
-    except InvalidEquipmentException as e:
-        return InvalidPayloadErrorResponse(str(e))
-    workout_data['equipment_list'] = equipment_list
-
     try:
         workout_uuid = decode_short_id(workout_short_id)
         workout = Workout.query.filter_by(uuid=workout_uuid).first()
@@ -1445,6 +1440,10 @@ def update_workout(
             except (TypeError, ValueError):
                 return InvalidPayloadErrorResponse()
 
+        workout_data['equipment_list'] = handle_equipments(
+            workout_data, auth_user, workout
+        )
+
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
         return {
@@ -1452,6 +1451,8 @@ def update_workout(
             'data': {'workouts': [workout.serialize()]},
         }
 
+    except InvalidEquipmentException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
 

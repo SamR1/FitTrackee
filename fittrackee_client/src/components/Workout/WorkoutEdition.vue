@@ -239,8 +239,8 @@
               <div class="form-item" v-if="equipments">
                 <label> {{ $t('equipments.EQUIPMENT', 0) }}: </label>
                 <EquipmentsMultiSelect
-                  :equipments="equipments"
-                  :workout-equipments="workout.equipments"
+                  :equipments="equipmentsForMultiSelect"
+                  :workout-equipments="workoutEquipments"
                   name="workout-equipment"
                   @updatedValues="updateEquipments"
                 />
@@ -301,6 +301,7 @@
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
@@ -365,6 +366,21 @@
   const payloadErrorMessages: Ref<string[]> = ref([])
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+  )
+  const equipmentsForMultiSelect: ComputedRef<IEquipment[]> = computed(() =>
+    equipments.value
+      ? getEquipments(
+          equipments.value,
+          t,
+          isCreation.value ? 'is_active' : 'withIncludedIds',
+          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
+        )
+      : []
+  )
+  const workoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
+    workout.value?.equipments
+      ? getEquipments(workout.value.equipments, t, 'all')
+      : []
   )
   const selectedEquipmentIds: Ref<number[]> = ref([])
 

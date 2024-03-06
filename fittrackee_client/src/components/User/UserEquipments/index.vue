@@ -18,7 +18,7 @@
     ITranslatedEquipmentType,
   } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
-  import { translateEquipmentTypes } from '@/utils/equipmentTypes'
+  import { translateEquipmentTypes } from '@/utils/equipments'
 
   const store = useStore()
   const { t } = useI18n()

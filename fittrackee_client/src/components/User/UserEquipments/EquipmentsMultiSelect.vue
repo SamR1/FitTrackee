@@ -9,7 +9,7 @@
     :options="equipments"
     :taggable="true"
     label="label"
-    track-by="label"
+    track-by="id"
     :selectLabel="$t('workouts.MULTISELECT.selectLabel')"
     :selectedLabel="$t('workouts.MULTISELECT.selectedLabel')"
     :deselectLabel="$t('workouts.MULTISELECT.deselectLabel')"

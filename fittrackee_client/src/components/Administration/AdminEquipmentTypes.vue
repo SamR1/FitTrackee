@@ -105,7 +105,7 @@
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
   import type { ITranslatedEquipmentType } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
-  import { translateEquipmentTypes } from '@/utils/equipmentTypes'
+  import { translateEquipmentTypes } from '@/utils/equipments'
 
   const { t } = useI18n()
   const store = useStore()
