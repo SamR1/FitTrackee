@@ -145,7 +145,6 @@ def user_sport_1_preference(
         user_id=user_1.id,
         sport_id=sport_1_cycling.id,
         stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
-        default_equipment_id=equipment_bike_user_1.id,
     )
     db.session.add(user_sport)
     db.session.commit()
@@ -164,7 +163,6 @@ def user_admin_sport_1_preference(
         user_id=user_1_admin.id,
         sport_id=sport_1_cycling.id,
         stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
-        default_equipment_id=equipment_bike_user_1.id,
     )
     db.session.add(user_sport)
     db.session.commit()

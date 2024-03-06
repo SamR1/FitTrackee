@@ -1,10 +1,15 @@
 from typing import Dict
 
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment, EquipmentType
-from fittrackee.users.models import User
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -57,6 +62,34 @@ class TestEquipmentModel:
         assert serialized_equip['total_distance'] == 10.0
         assert serialized_equip['total_duration'] == '1:00:00'
         assert serialized_equip['workouts_count'] == 1
+
+    def test_equipment_model_with_sport_association(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.add(equipment_bike_user_1)
+        db.session.commit()
+
+        serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
+
+        assert serialized_equip['default_for_sport_ids'] == [
+            sport_1_cycling.id
+        ]
 
 
 class TestEquipmentTypeModel:

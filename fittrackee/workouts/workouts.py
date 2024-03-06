@@ -17,7 +17,8 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
-from fittrackee.equipments.models import Equipment
+from fittrackee.equipments.exceptions import InvalidEquipmentException
+from fittrackee.equipments.utils import handle_equipments
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -32,7 +33,6 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from .exceptions import InvalidEquipmentException
 from .models import Workout, WorkoutEquipment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
@@ -55,39 +55,6 @@ workouts_blueprint = Blueprint('workouts', __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
-
-
-def handle_equipments(
-    workout_data: Dict, auth_user: User, workout: Optional[Workout] = None
-) -> Union[List[Equipment], None]:
-    equipment_ids = workout_data.get('equipment_ids')
-    equipment_list = None
-    if equipment_ids is not None:
-        equipment_list = []
-        if not isinstance(equipment_ids, list):
-            raise InvalidEquipmentException(
-                "equipment_ids must be an array of integers"
-            )
-        for equipment_id in equipment_ids:
-            if not isinstance(equipment_id, int):
-                raise InvalidEquipmentException(
-                    "equipment_ids must be an array of integers"
-                )
-            equipment = Equipment.query.filter_by(
-                id=equipment_id, user_id=auth_user.id
-            ).first()
-            if not equipment:
-                raise InvalidEquipmentException(
-                    f"equipment with id {equipment_id} does not exist"
-                )
-            if not equipment.is_active and (
-                not workout or equipment not in workout.equipments
-            ):
-                raise InvalidEquipmentException(
-                    f"equipment with id {equipment_id} is inactive"
-                )
-            equipment_list.append(equipment)
-    return equipment_list
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -1052,7 +1019,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     try:
-        equipment_list = handle_equipments(workout_data, auth_user)
+        equipment_list = handle_equipments(
+            workout_data.get('equipment_ids'), auth_user
+        )
     except InvalidEquipmentException as e:
         return InvalidPayloadErrorResponse(str(e))
     workout_data['equipment_list'] = equipment_list
@@ -1247,7 +1216,9 @@ def post_workout_no_gpx(
         return InvalidPayloadErrorResponse()
 
     try:
-        equipment_list = handle_equipments(workout_data, auth_user)
+        equipment_list = handle_equipments(
+            workout_data.get('equipment_ids'), auth_user
+        )
     except InvalidEquipmentException as e:
         return InvalidPayloadErrorResponse(str(e))
     workout_data['equipment_list'] = equipment_list
@@ -1451,7 +1422,7 @@ def update_workout(
                 return InvalidPayloadErrorResponse()
 
         workout_data['equipment_list'] = handle_equipments(
-            workout_data, auth_user, workout
+            workout_data.get('equipment_ids'), auth_user, workout.equipments
         )
 
         workout = edit_workout(workout, workout_data, auth_user)

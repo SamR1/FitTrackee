@@ -119,10 +119,10 @@ class Sport(BaseModel):
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
 
-        serialized_sport['default_equipment_id_for_user'] = (
-            None
+        serialized_sport['default_equipments'] = (
+            []
             if sport_preferences is None
-            else sport_preferences['default_equipment_id']
+            else sport_preferences['default_equipments']
         )
 
         return serialized_sport

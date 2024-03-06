@@ -1,14 +1,41 @@
-from typing import Optional
+from typing import List, Optional, Union
 
-from fittrackee.responses import ForbiddenErrorResponse, HttpResponse
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import User
+
+from .exceptions import InvalidEquipmentException
 
 
-def can_view_equipment(
-    auth_user_id: int, equipment_user_id: int
-) -> Optional[HttpResponse]:
-    """
-    Return error response if user has no right to view equipment
-    """
-    if auth_user_id != equipment_user_id:
-        return ForbiddenErrorResponse("User not authorized for that equipment")
-    return None
+def handle_equipments(
+    equipment_ids: Optional[List],
+    auth_user: User,
+    existing_equipment_ids: Optional[List[Equipment]] = None,
+) -> Union[List[Equipment], None]:
+    equipment_list = None
+    if equipment_ids is not None:
+        equipment_list = []
+        if not isinstance(equipment_ids, list):
+            raise InvalidEquipmentException(
+                "equipment_ids must be an array of integers"
+            )
+        for equipment_id in equipment_ids:
+            if not isinstance(equipment_id, int):
+                raise InvalidEquipmentException(
+                    "equipment_ids must be an array of integers"
+                )
+            equipment = Equipment.query.filter_by(
+                id=equipment_id, user_id=auth_user.id
+            ).first()
+            if not equipment:
+                raise InvalidEquipmentException(
+                    f"equipment with id {equipment_id} does not exist"
+                )
+            if not equipment.is_active and (
+                not existing_equipment_ids
+                or equipment not in existing_equipment_ids
+            ):
+                raise InvalidEquipmentException(
+                    f"equipment with id {equipment_id} is inactive"
+                )
+            equipment_list.append(equipment)
+    return equipment_list

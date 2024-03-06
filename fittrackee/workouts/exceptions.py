@@ -1,10 +1,6 @@
 from fittrackee.exceptions import GenericException
 
 
-class InvalidEquipmentException(Exception):
-    ...
-
-
 class InvalidGPXException(GenericException):
     ...
 

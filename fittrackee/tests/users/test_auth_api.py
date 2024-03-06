@@ -9,7 +9,7 @@ from flask import Flask
 from freezegun import freeze_time
 
 from fittrackee import db
-from fittrackee.equipments.models import Equipment, EquipmentType
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import (
     BlacklistedToken,
     User,
@@ -1634,11 +1634,11 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 0.1
 
-    def test_it_updates_default_equipment_for_auth_user(
+    def test_it_updates_default_equipments_for_auth_user(
         self,
         app: Flask,
         user_1: User,
-        equipment_type_1_shoe: EquipmentType,
+        equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
         sport_2_running: Sport,
     ) -> None:
@@ -1652,7 +1652,10 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_id=equipment_shoes_user_1.id,
+                    default_equipment_ids=[
+                        equipment_shoes_user_1.id,
+                        equipment_bike_user_1.id,
+                    ],
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1664,8 +1667,14 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert response.status_code == 200
         assert data['data']['user_id'] == user_1.id
         assert data['data']['sport_id'] == sport_2_running.id
+        assert len(data['data']['default_equipments']) == 2
         assert (
-            data['data']['default_equipment_id'] == equipment_shoes_user_1.id
+            jsonify_dict(equipment_bike_user_1.serialize())
+            in data['data']['default_equipments']
+        )
+        assert (
+            jsonify_dict(equipment_shoes_user_1.serialize())
+            in data['data']['default_equipments']
         )
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 0.1
@@ -1675,7 +1684,6 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         user_2: User,
-        equipment_type_1_shoe: EquipmentType,
         equipment_shoes_user_1: Equipment,
         sport_2_running: Sport,
     ) -> None:
@@ -1690,16 +1698,16 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_id=equipment_shoes_user_1.id,
+                    default_equipment_ids=[equipment_shoes_user_1.id],
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
-        assert data['status'] == 'error'
-        assert data['message'] == 'User not authorized for that equipment'
-        assert response.status_code == 403
+        self.assert_400(
+            response,
+            f'equipment with id {equipment_shoes_user_1.id} does not exist',
+        )
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

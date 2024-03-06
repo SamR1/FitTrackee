@@ -76,6 +76,10 @@ class Equipment(BaseModel):
             'label': self.label,
             'equipment_type': self.equipment_type.serialize(),
             'description': self.description,
+            'default_for_sport_ids': [
+                sport_preference.sport_id
+                for sport_preference in self.default_for_sports
+            ],
             'creation_date': self.creation_date,
             'is_active': self.is_active,
             'total_distance': float(sum([w.distance for w in self.workouts])),

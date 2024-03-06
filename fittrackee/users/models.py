@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional, Union
 
 import jwt
 from flask import current_app
-from sqlalchemy import func
+from sqlalchemy import and_, func
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
@@ -233,6 +233,29 @@ class User(BaseModel):
         return serialized_user
 
 
+UserSportPreferenceEquipment = db.Table(
+    'users_sports_preferences_equipments',
+    db.Column(
+        'user_id',
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        'sport_id',
+        db.Integer,
+        db.ForeignKey('sports.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        'equipment_id',
+        db.Integer,
+        db.ForeignKey('equipments.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)
+
+
 class UserSportPreference(BaseModel):
     __tablename__ = 'users_sports_preferences'
 
@@ -249,10 +272,17 @@ class UserSportPreference(BaseModel):
     color = db.Column(db.String(50), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
-    default_equipment_id = db.Column(
-        db.Integer,
-        db.ForeignKey('equipments.id', ondelete="SET NULL"),
-        nullable=True,
+
+    default_equipments = db.relationship(
+        'Equipment',
+        secondary=UserSportPreferenceEquipment,
+        primaryjoin=and_(
+            user_id == UserSportPreferenceEquipment.c.user_id,
+            sport_id == UserSportPreferenceEquipment.c.sport_id,
+        ),
+        lazy='dynamic',
+        viewonly=True,
+        backref=db.backref('default_for_sports', lazy='select'),
     )
 
     def __init__(
@@ -260,13 +290,11 @@ class UserSportPreference(BaseModel):
         user_id: int,
         sport_id: int,
         stopped_speed_threshold: float,
-        default_equipment_id: Optional[int] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.is_active = True
         self.stopped_speed_threshold = stopped_speed_threshold
-        self.default_equipment_id = default_equipment_id
 
     def serialize(self) -> Dict:
         return {
@@ -275,7 +303,10 @@ class UserSportPreference(BaseModel):
             'color': self.color,
             'is_active': self.is_active,
             'stopped_speed_threshold': self.stopped_speed_threshold,
-            'default_equipment_id': self.default_equipment_id,
+            'default_equipments': [
+                equipment.serialize()
+                for equipment in self.default_equipments.all()
+            ],
         }
 
 

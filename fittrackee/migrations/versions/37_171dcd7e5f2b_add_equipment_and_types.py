@@ -75,30 +75,25 @@ def upgrade():
         ),
         sa.PrimaryKeyConstraint('workout_id', 'equipment_id'),
     )
-    with op.batch_alter_table(
-        'users_sports_preferences', schema=None
-    ) as batch_op:
-        batch_op.add_column(
-            sa.Column('default_equipment_id', sa.Integer(), nullable=True)
-        )
-        batch_op.create_foreign_key(
-            'users_sports_preferences_default_equipment_id_fkey',
-            'equipments',
-            ['default_equipment_id'],
-            ['id'],
-            ondelete='SET NULL',
-        )
+
+    op.create_table(
+        'users_sports_preferences_equipments',
+        sa.Column('user_id', sa.Integer(), nullable=False),
+        sa.Column('sport_id', sa.Integer(), nullable=False),
+        sa.Column('equipment_id', sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ['equipment_id'], ['equipments.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(
+            ['sport_id'], ['sports.id'], ondelete='CASCADE'
+        ),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('user_id', 'sport_id', 'equipment_id'),
+    )
 
 
 def downgrade():
-    with op.batch_alter_table(
-        'users_sports_preferences', schema=None
-    ) as batch_op:
-        batch_op.drop_constraint(
-            'users_sports_preferences_default_equipment_id_fkey',
-            type_='foreignkey',
-        )
-        batch_op.drop_column('default_equipment_id')
+    op.drop_table('users_sports_preferences_equipments')
 
     op.drop_table('workout_equipments')
     with op.batch_alter_table('equipments', schema=None) as batch_op:

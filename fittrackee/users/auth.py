@@ -13,6 +13,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import exc, func
+from sqlalchemy.dialects.postgresql import insert
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -24,8 +25,8 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
-from fittrackee.equipments.models import Equipment
-from fittrackee.equipments.utils import can_view_equipment
+from fittrackee.equipments.exceptions import InvalidEquipmentException
+from fittrackee.equipments.utils import handle_equipments
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -43,7 +44,13 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .exceptions import UserControlsException, UserCreationException
-from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
+from .models import (
+    BlacklistedToken,
+    User,
+    UserDataExport,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from .tasks import export_data
 from .utils.admin import UserManagerService
 from .utils.controls import check_password, is_valid_email
@@ -991,7 +998,7 @@ def edit_user_sport_preferences(
       {
         "data": {
           "color": "#000000",
-          "default_equipment_id": 1,
+          "default_equipment_ids": [],
           "is_active": true,
           "sport_id": 1,
           "stopped_speed_threshold": 1,
@@ -1005,8 +1012,8 @@ def edit_user_sport_preferences(
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
-    :<json int default_equipment_id: the default equipment to use for this
-                                     sport
+    :<json array of integers default_equipment_ids: the default equipment ids
+                                                        to use for this sport
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1034,18 +1041,6 @@ def edit_user_sport_preferences(
     if not sport:
         return NotFoundErrorResponse('sport does not exist')
 
-    equipment_id = post_data.get('default_equipment_id')
-    if equipment_id is not None:
-        equipment = Equipment.query.filter_by(id=equipment_id).first()
-        if equipment is None:
-            return NotFoundErrorResponse(
-                f'equipment with id {equipment_id} does not exist'
-            )
-
-        response_object = can_view_equipment(auth_user.id, equipment.user_id)
-        if response_object:
-            return response_object
-
     color = post_data.get('color')
     is_active = post_data.get('is_active')
     stopped_speed_threshold = post_data.get('stopped_speed_threshold')
@@ -1060,7 +1055,6 @@ def edit_user_sport_preferences(
                 user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
-                default_equipment_id=equipment_id,
             )
             db.session.add(user_sport)
             db.session.flush()
@@ -1072,8 +1066,33 @@ def edit_user_sport_preferences(
             user_sport.is_active = is_active
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
-        if equipment_id is not None:
-            user_sport.default_equipment_id = equipment_id
+
+        existing_default_equipments = user_sport.default_equipments.all()
+        default_equipments = handle_equipments(
+            post_data.get('default_equipment_ids'),
+            auth_user,
+            existing_default_equipments,
+        )
+        if default_equipments:
+            db.session.execute(
+                insert(UserSportPreferenceEquipment)
+                .values(
+                    [
+                        {
+                            "equipment_id": equipment.id,
+                            "sport_id": user_sport.sport_id,
+                            "user_id": auth_user.id,
+                        }
+                        for equipment in default_equipments
+                    ]
+                )
+                .on_conflict_do_nothing()
+            )
+        elif existing_default_equipments:
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                UserSportPreferenceEquipment.c.sport_id == user_sport.sport_id,
+            ).delete()
         db.session.commit()
 
         return {
@@ -1083,6 +1102,8 @@ def edit_user_sport_preferences(
         }
 
     # handler errors
+    except InvalidEquipmentException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 

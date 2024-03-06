@@ -840,7 +840,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         # check equipment_workout table is empty
         assert Equipment.query.all() == []
 
-    def test_deleting_equipment_sets_user_sport_default_to_null(
+    def test_deleting_equipment_sets_sport_preferences_equipment_to_empty_list(
         self,
         app: Flask,
         user_1: User,
@@ -869,7 +869,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
             )
             .first()
         )
-        assert up.default_equipment_id is None
+        assert up.default_equipments.all() == []
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
