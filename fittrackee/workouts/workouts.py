@@ -32,6 +32,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
+from .exceptions import InvalidEquipmentException
 from .models import Workout
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
@@ -54,6 +55,37 @@ workouts_blueprint = Blueprint('workouts', __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
+
+
+def handle_equipments(
+    workout_data: Dict, auth_user: User
+) -> Union[List[Equipment], None]:
+    equipment_ids = workout_data.get('equipment_ids')
+    equipment_list = None
+    if equipment_ids is not None:
+        equipment_list = []
+        if not isinstance(equipment_ids, list):
+            raise InvalidEquipmentException(
+                "equipment_ids must be an array of integers"
+            )
+        for equipment_id in equipment_ids:
+            if not isinstance(equipment_id, int):
+                raise InvalidEquipmentException(
+                    "equipment_ids must be an array of integers"
+                )
+            equipment = Equipment.query.filter_by(
+                id=equipment_id, user_id=auth_user.id
+            ).first()
+            if not equipment:
+                raise InvalidEquipmentException(
+                    f"equipment with id {equipment_id} does not exist"
+                )
+            if not equipment.is_active:
+                raise InvalidEquipmentException(
+                    f"equipment with id {equipment_id} is inactive"
+                )
+            equipment_list.append(equipment)
+    return equipment_list
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -98,6 +130,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
@@ -334,6 +367,7 @@ def get_workout(
                 "descent": null,
                 "distance": 12,
                 "duration": "0:45:00",
+                "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
@@ -897,6 +931,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
@@ -961,8 +996,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id and notes (example: ``{"sport_id": 1, "notes": ""}``).
+    :form data: sport id, equipment ids and notes
+                (example: ``{"sport_id": 1, "notes": ""}``).
                 Double quotes in notes must be escaped.
+                Equipment ids are not mandatory
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1001,6 +1038,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
+
+    try:
+        equipment_list = handle_equipments(workout_data, auth_user)
+    except InvalidEquipmentException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    workout_data['equipment_list'] = equipment_list
 
     workout_file = request.files['file']
     upload_dir = os.path.join(
@@ -1074,6 +1117,7 @@ def post_workout_no_gpx(
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "equipments": [],
                 "map": null,
                 "max_alt": null,
                 "max_speed": 10.0,
@@ -1143,6 +1187,11 @@ def post_workout_no_gpx(
            must be provided with ascent)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
+    :<json array of integers equipment_ids:
+        the id numbers of one or more pieces of equipment
+        to associate with this workout (any existing equipment
+        for this workout will be replaced); if an empty array,
+        all equipment for this workout will be removed (not mandatory)
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
     :<json string title: workout title (not mandatory)
@@ -1184,6 +1233,13 @@ def post_workout_no_gpx(
             return InvalidPayloadErrorResponse()
     except ValueError:
         return InvalidPayloadErrorResponse()
+
+    try:
+        equipment_list = handle_equipments(workout_data, auth_user)
+    except InvalidEquipmentException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    workout_data['equipment_list'] = equipment_list
+
     try:
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
@@ -1243,6 +1299,7 @@ def update_workout(
                 "descent": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "equipments": [],
                 "map": null,
                 "max_alt": null,
                 "max_speed": 10.0,
@@ -1345,32 +1402,11 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     # check equipment_ids format and access
-    equipment_ids = workout_data.get('equipment_ids')
-    equipment_list = None
-    if equipment_ids is not None:
-        equipment_list = []
-        if not isinstance(equipment_ids, list):
-            return InvalidPayloadErrorResponse(
-                "equipment_ids must be an array of integers"
-            )
-        for equipment_id in equipment_ids:
-            if not isinstance(equipment_id, int):
-                return InvalidPayloadErrorResponse(
-                    "equipment_ids must be an array of integers"
-                )
-            equipment = Equipment.query.filter_by(
-                id=equipment_id, user_id=auth_user.id
-            ).first()
-            if not equipment:
-                return InvalidPayloadErrorResponse(
-                    f'equipment with id {equipment_id} does not exist'
-                )
-            if not equipment.is_active:
-                return InvalidPayloadErrorResponse(
-                    f'equipment with id {equipment_id} is inactive'
-                )
-            equipment_list.append(equipment)
-        workout_data['equipment_list'] = equipment_list
+    try:
+        equipment_list = handle_equipments(workout_data, auth_user)
+    except InvalidEquipmentException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    workout_data['equipment_list'] = equipment_list
 
     try:
         workout_uuid = decode_short_id(workout_short_id)

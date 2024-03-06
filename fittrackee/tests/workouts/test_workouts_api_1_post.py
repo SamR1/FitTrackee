@@ -9,11 +9,12 @@ import pytest
 from flask import Flask
 
 from fittrackee import VERSION
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
-from ..utils import OAUTH_SCOPES
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -601,6 +602,41 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_adds_a_workout_with_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "equipment_ids":'
+                    f' [{equipment_bike_user_1.id}]}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
 
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
@@ -1373,6 +1409,50 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+    def test_it_adds_a_workout_with_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            json={
+                "sport_id": 1,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+                "equipment_ids": [
+                    equipment_bike_user_1.id,
+                    equipment_shoes_user_1.id,
+                ],
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert len(data['data']['workouts'][0]['equipments']) == 2
+        assert (
+            jsonify_dict(equipment_bike_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
+        assert (
+            jsonify_dict(equipment_shoes_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

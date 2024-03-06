@@ -161,6 +161,8 @@ def create_workout(
         new_workout.max_speed = new_workout.ave_speed
         new_workout.ascent = workout_data.get('ascent')
         new_workout.descent = workout_data.get('descent')
+    if workout_data.get('equipment_list') is not None:
+        new_workout.equipments = workout_data.get('equipment_list')
     return new_workout
 
 
