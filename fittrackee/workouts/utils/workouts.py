@@ -220,7 +220,7 @@ def edit_workout(
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
     if workout_data.get('equipment_list') is not None:
-        workout.equipment = workout_data.get('equipment_list')
+        workout.equipments = workout_data.get('equipment_list')
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(

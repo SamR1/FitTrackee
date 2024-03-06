@@ -227,7 +227,7 @@ class Workout(BaseModel):
             'ave_speed': (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
-            'equipment': [
+            'equipments': [
                 equipment.serialize() for equipment in self.equipments
             ],
             'records': [record.serialize() for record in self.records],

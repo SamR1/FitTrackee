@@ -18,7 +18,6 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
 from fittrackee.equipments.models import Equipment
-from fittrackee.equipments.utils import can_view_equipment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -1354,21 +1353,22 @@ def update_workout(
             return InvalidPayloadErrorResponse(
                 "equipment_ids must be an array of integers"
             )
-        for i in equipment_ids:
-            if not isinstance(i, int):
+        for equipment_id in equipment_ids:
+            if not isinstance(equipment_id, int):
                 return InvalidPayloadErrorResponse(
                     "equipment_ids must be an array of integers"
                 )
-            equipment = Equipment.query.filter_by(id=i).first()
+            equipment = Equipment.query.filter_by(
+                id=equipment_id, user_id=auth_user.id
+            ).first()
             if not equipment:
-                return DataNotFoundErrorResponse(
-                    'equipment', f'equipment with id {i} does not exist'
+                return InvalidPayloadErrorResponse(
+                    f'equipment with id {equipment_id} does not exist'
                 )
-            response_object = can_view_equipment(
-                auth_user.id, equipment.user_id
-            )
-            if response_object:
-                return response_object
+            if not equipment.is_active:
+                return InvalidPayloadErrorResponse(
+                    f'equipment with id {equipment_id} is inactive'
+                )
             equipment_list.append(equipment)
         workout_data['equipment_list'] = equipment_list
 
