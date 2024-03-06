@@ -25,12 +25,16 @@
           :title="$t(`equipment_types.${equipment.equipment_type.label}.LABEL`)"
           :equipment-type-label="equipment.equipment_type.label"
         />
-        <span>{{
-          $t(`equipment_types.${equipment.equipment_type.label}.LABEL`)
-        }}</span>
+        <span>
+          {{ $t(`equipment_types.${equipment.equipment_type.label}.LABEL`) }}
+        </span>
       </dd>
       <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
-      <dd>{{ equipment.workouts_count }}</dd>
+      <dd>
+        <router-link :to="`/workouts?equipment_id=${equipment.id}`">
+          {{ equipment.workouts_count }}
+        </router-link>
+      </dd>
       <dt>{{ capitalize($t('workouts.DISTANCE', 0)) }}</dt>
       <dd>{{ equipment.total_distance }}</dd>
       <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>

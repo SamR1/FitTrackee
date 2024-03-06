@@ -46,6 +46,26 @@
                 </option>
               </select>
             </div>
+            <div class="form-item">
+              <label> {{ $t('equipments.EQUIPMENT', 1) }}:</label>
+              <select
+                name="equipment_id"
+                :value="$route.query.equipment_id"
+                @change="handleFilterChange"
+                @keyup.enter="onFilter"
+              >
+                <option value="" />
+                <option
+                  v-for="equipment in equipments.filter(
+                    (e) => e.workouts_count > 0
+                  )"
+                  :value="equipment.id"
+                  :key="equipment.id"
+                >
+                  {{ equipment.label }}
+                </option>
+              </select>
+            </div>
             <div class="form-item form-item-title">
               <label> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
@@ -191,7 +211,10 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
+  import { useStore } from 'vuex'
 
+  import { EQUIPMENTS_STORE } from '@/store/constants'
+  import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
@@ -206,6 +229,7 @@
   const emit = defineEmits(['filter'])
 
   const { t } = useI18n()
+  const store = useStore()
   const route = useRoute()
   const router = useRouter()
 
@@ -216,6 +240,9 @@
     : 'km'
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
+  )
+  const equipments: ComputedRef<IEquipment[]> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
   let params: LocationQuery = Object.assign({}, route.query)
 

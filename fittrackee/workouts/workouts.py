@@ -33,7 +33,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 
 from .exceptions import InvalidEquipmentException
-from .models import Workout
+from .models import Workout, WorkoutEquipment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -269,11 +269,14 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         title = params.get('title')
+        equipment_id = params.get('equipment_id')
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
+
         workouts_pagination = (
-            Workout.query.filter(
+            Workout.query.outerjoin(WorkoutEquipment)
+            .filter(
                 Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.title.ilike(f"%{title}%") if title else True,
@@ -305,6 +308,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.max_speed <= float(max_speed_to)
                 if max_speed_to
                 else True,
+                Workout.max_speed <= float(max_speed_to)
+                if max_speed_to
+                else True,
+                WorkoutEquipment.c.equipment_id == equipment_id
+                if equipment_id is not None
+                else True,
             )
             .order_by(
                 asc(workout_column)
@@ -313,6 +322,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             )
             .paginate(page=page, per_page=per_page, error_out=False)
         )
+
         workouts = workouts_pagination.items
         return {
             'status': 'success',
