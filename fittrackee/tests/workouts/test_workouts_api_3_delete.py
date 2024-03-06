@@ -1,8 +1,11 @@
 import pytest
 from flask import Flask
 
+from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.utils.short_id import decode_short_id
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES
@@ -27,6 +30,31 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         assert response.status_code == 204
+        assert Workout.query.first() is None
+
+    def test_it_deletes_a_workout_with_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.delete(
+            f'/api/workouts/{workout_short_id}',
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        assert response.status_code == 204
+        assert Workout.query.first() is None
 
     def test_it_returns_403_when_deleting_a_workout_from_different_user(
         self,
@@ -151,6 +179,29 @@ class TestDeleteWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         assert response.status_code == 204
+        assert Workout.query.first() is None
+
+    def test_it_deletes_a_workout_with_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert Workout.query.first() is None
 
     def test_it_returns_403_when_deleting_a_workout_from_different_user(
         self,
