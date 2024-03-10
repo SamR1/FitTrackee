@@ -123,7 +123,7 @@
         "LIGHT": "Licht"
       }
     },
-    "TIMEZONE": "Tijdzone",
+    "TIMEZONE": "Tijdzone | Tijdzones",
     "UNITS": {
       "IMPERIAL": "Imperialistisch systeem (ft, mi, mph, °F)",
       "LABEL": "Eenheid voor afstand",

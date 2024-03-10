@@ -123,7 +123,7 @@
         "LIGHT": "Jasny"
       }
     },
-    "TIMEZONE": "Strefa czasowa",
+    "TIMEZONE": "Strefa czasowa | Strefy czasowe",
     "UNITS": {
       "IMPERIAL": "System imperialny (stopy, mile, °F)",
       "LABEL": "Jednostki dystansu",
