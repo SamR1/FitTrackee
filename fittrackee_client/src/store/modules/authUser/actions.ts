@@ -29,6 +29,7 @@ import type {
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
+  IUserSportPreferencesResetPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -303,15 +304,18 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
-    sportId: number
+    payload: IUserSportPreferencesResetPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     authApi
-      .delete(`auth/profile/reset/sports/${sportId}`)
+      .delete(`auth/profile/reset/sports/${payload.sportId}`)
       .then((res) => {
         if (res.status === 204) {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          if (payload.fromSport) {
+            router.push(`/profile/sports/${payload.sportId}`)
+          }
         } else {
           handleError(context, null)
         }
@@ -327,11 +331,15 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    const { from_sport_id, ...data } = payload
     authApi
-      .post('auth/profile/edit/sports', payload)
+      .post('auth/profile/edit/sports', data)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          if (from_sport_id) {
+            router.push(`/profile/sports/${from_sport_id}`)
+          }
         } else {
           handleError(context, null)
         }

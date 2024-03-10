@@ -77,11 +77,18 @@ export interface IUserPreferencesPayload {
   use_dark_mode: boolean | null
 }
 
+export interface IUserSportPreferencesResetPayload {
+  sportId: number
+  fromSport: boolean
+}
+
 export interface IUserSportPreferencesPayload {
   sport_id: number
   color: string | null
   is_active: boolean
   stopped_speed_threshold: number
+  default_equipment_ids?: number[]
+  from_sport_id?: number | null
 }
 
 export interface IUserPicturePayload {

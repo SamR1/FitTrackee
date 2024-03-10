@@ -30,7 +30,7 @@
           />
         </div>
         <div class="workout-equipments" v-if="workoutObject.equipments">
-          <WorkoutEquipment
+          <EquipmentBadge
             v-for="equipment in workoutObject.equipments"
             :equipment="equipment"
             :workout-id="workoutObject.workoutId"
@@ -47,9 +47,9 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
-  import WorkoutEquipment from '@/components/Workout/WorkoutDetail/WorkoutEquipmentBadge.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'

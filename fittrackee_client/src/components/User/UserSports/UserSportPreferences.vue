@@ -1,6 +1,18 @@
 <template>
   <div id="user-sport-preferences">
-    <div class="responsive-table" v-if="sports.length > 0">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="
+        $t(
+          `user.PROFILE.SPORT.CONFIRM_SPORT_RESET${hasEquipments ? '_WITH_EQUIPMENTS' : ''}`
+        )
+      "
+      @confirmAction="resetSport()"
+      @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
+    />
+    <div class="responsive-table" v-if="translatedSports.length > 0">
       <div class="mobile-display">
         <div v-if="isEdition" class="profile-buttons mobile-display">
           <button
@@ -23,6 +35,7 @@
             <th>{{ $t('user.PROFILE.SPORT.COLOR') }}</th>
             <th class="text-left">{{ $t('workouts.SPORT', 0) }}</th>
             <th>{{ $t('workouts.WORKOUT', 0) }}</th>
+            <th>{{ $t('equipments.EQUIPMENT', 0) }}</th>
             <th>{{ $t('user.PROFILE.SPORT.IS_ACTIVE') }}</th>
             <th>{{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}</th>
             <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
@@ -55,7 +68,12 @@
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.LABEL') }}
               </span>
-              {{ sport.translatedLabel }}
+              <template v-if="isSportInEdition(sport.id)">
+                {{ sport.translatedLabel }}
+              </template>
+              <router-link v-else :to="`/profile/sports/${sport.id}`">
+                {{ sport.translatedLabel }}
+              </router-link>
               <span class="disabled-message" v-if="!sport.is_active">
                 ({{ $t('user.PROFILE.SPORT.DISABLED_BY_ADMIN') }})
               </span>
@@ -77,8 +95,20 @@
               </span>
               <i
                 :class="`fa fa${
-                  user.sports_list.includes(sport.id) ? '-check' : ''
+                  authUser.sports_list.includes(sport.id) ? '-check' : ''
                 }`"
+                aria-hidden="true"
+              />
+            </td>
+            <td
+              class="text-center"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
+              <span class="cell-heading">
+                {{ $t('equipments.EQUIPMENT', 0) }}
+              </span>
+              <i
+                :class="`fa fa${hasEquipments ? '-check' : ''}`"
                 aria-hidden="true"
               />
             </td>
@@ -137,7 +167,8 @@
                 </button>
                 <button
                   :disabled="loading"
-                  @click="(e) => resetSport(e, sport.id)"
+                  class="warning"
+                  @click.prevent="updateDisplayModal(true)"
                 >
                   {{ $t('buttons.RESET') }}
                 </button>
@@ -165,40 +196,34 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, inject, reactive, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { computed, inject, reactive, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { translateSports } from '@/utils/sports'
 
   interface Props {
-    user: IUserProfile
+    authUser: IUserProfile
+    translatedSports: ITranslatedSport[]
     isEdition: boolean
   }
   const props = defineProps<Props>()
 
   const store = useStore()
-  const { t } = useI18n()
 
-  const { isEdition, user } = toRefs(props)
+  const { isEdition, translatedSports, authUser } = toRefs(props)
   const defaultColor = '#838383'
   const sportColors = inject('sportColors') as Record<string, string>
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(sports.value, t, 'is_active', user.value.sports_list)
-  )
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
   const errorMessages: ComputedRef<string | string[] | null> = computed(
     () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
   )
+  const displayModal: Ref<boolean> = ref(false)
+  const hasEquipments: Ref<boolean> = ref(false)
   const sportPayload: IUserSportPreferencesPayload = reactive({
     sport_id: 0,
     color: null,
@@ -216,6 +241,7 @@
           : defaultColor
       sportPayload.is_active = sport.is_active_for_user
       sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
+      hasEquipments.value = sport.default_equipments.length > 0
     } else {
       resetSportPayload()
     }
@@ -239,6 +265,7 @@
     sportPayload.color = null
     sportPayload.is_active = true
     sportPayload.stopped_speed_threshold = 1
+    hasEquipments.value = false
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   }
   function updateSport(event: Event) {
@@ -248,12 +275,16 @@
       sportPayload
     )
   }
-  function resetSport(event: Event, sportId: number) {
-    event.preventDefault()
-    store.dispatch(
-      AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES,
-      sportId
-    )
+  function resetSport() {
+    if (sportPayload.sport_id) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES, {
+        sportId: sportPayload.sport_id,
+        fromSport: false,
+      })
+    }
+  }
+  function updateDisplayModal(value: boolean) {
+    displayModal.value = value
   }
 
   watch(
@@ -261,13 +292,14 @@
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         resetSportPayload()
+        updateDisplayModal(false)
       }
     }
   )
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @import '~@/scss/vars';
   #user-sport-preferences {
     .sport-img {
       height: 35px;

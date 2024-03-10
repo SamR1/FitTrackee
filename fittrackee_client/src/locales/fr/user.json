@@ -104,6 +104,10 @@
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
+      "CONFIRM_SPORT_RESET": "Êtes-vous sûr·e de vouloir réinitialiser ce sport ?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Êtes-vous sûr·e de vouloir réinitialiser ce sport ? Tous les équipements associés seront supprimés.",
+
+      "DEFAULT_EQUIPMENTS": "Equipements associés",
       "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",

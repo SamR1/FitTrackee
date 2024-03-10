@@ -25,7 +25,10 @@ import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
-import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
+import UserSports from '@/components/User/UserSports/index.vue'
+import UserSport from '@/components/User/UserSports/UserSport.vue'
+import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
+import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
@@ -51,8 +54,8 @@ const { t } = createI18n.global
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
-  const tag = path.replace(regex, '').toUpperCase()
-  return tag === '' ? 'PROFILE' : tag.toUpperCase()
+  const tab = path.replace(regex, '').toUpperCase()
+  return tab === '' ? 'PROFILE' : tab.split('/')[0].toUpperCase()
 }
 
 const routes: Array<RouteRecordRaw> = [
@@ -193,12 +196,30 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'sports',
-            name: 'UserSportPreferences',
-            component: UserSportPreferences,
+            name: 'UserSports',
+            component: UserSports,
             props: { isEdition: false },
             meta: {
               title: 'user.PROFILE.TABS.SPORTS',
             },
+            children: [
+              {
+                path: '',
+                name: 'UserSportPreferences',
+                component: UserSportPreferences,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'UserSport',
+                component: UserSport,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+            ],
           },
           {
             path: 'apps',
@@ -331,12 +352,30 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'sports',
-            name: 'UserSportPreferencesEdition',
-            component: UserSportPreferences,
+            name: 'UserSportsEdition',
+            component: UserSports,
             props: { isEdition: true },
             meta: {
               title: 'user.PROFILE.EDIT_SPORTS_PREFERENCES',
             },
+            children: [
+              {
+                path: '',
+                name: 'UserSportPreferencesEdition',
+                component: UserSportPreferences,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'UserSportEdition',
+                component: UserSportEdition,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+            ],
           },
           {
             path: 'privacy-policy',

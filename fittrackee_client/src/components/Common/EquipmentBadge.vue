@@ -1,11 +1,11 @@
 <template>
   <router-link
-    class="workout-equipment"
+    class="workout-badge"
     :class="{ inactive: !equipment.is_active }"
     :to="{
       name: 'Equipment',
       params: { id: equipment.id },
-      query: { fromWorkoutId: workoutId },
+      query: { fromWorkoutId: workoutId, fromSportId: sportId?.toString() },
     }"
   >
     <EquipmentTypeImage
@@ -27,15 +27,16 @@
   interface Props {
     equipment: IEquipment
     workoutId?: string | null
+    sportId?: Number | null
   }
   const props = defineProps<Props>()
 
-  const { equipment, workoutId } = toRefs(props)
+  const { equipment, sportId, workoutId } = toRefs(props)
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
-  .workout-equipment {
+  @import '~@/scss/vars';
+  .workout-badge {
     display: flex;
     gap: $default-padding;
     border: solid 1px var(--card-border-color);

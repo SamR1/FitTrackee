@@ -59,7 +59,9 @@
           $router.push(
             route.query.fromWorkoutId
               ? `/workouts/${route.query.fromWorkoutId}`
-              : '/profile/equipments'
+              : route.query.fromSportId
+                ? `/profile/sports/${route.query.fromSportId}`
+                : '/profile/equipments'
           )
         "
       >
