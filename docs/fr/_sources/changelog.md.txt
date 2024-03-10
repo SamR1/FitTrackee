@@ -1,5 +1,34 @@
 # Change log
 
+## Version 0.7.32 (2024/03/10)
+
+### Bugs Fixed
+
+* [#504](https://github.com/SamR1/FitTrackee/issues/504) - Database migrations fail
+
+### Translations
+
+* [#496](https://github.com/SamR1/FitTrackee/issues/496) Translations update (Dutch)
+* [#499](https://github.com/SamR1/FitTrackee/issues/499) Translations update (Polish)
+
+Translation status:
+- Basque: 100%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 84%
+- Norwegian Bokmål: 60%
+- Polish: 100%
+- Spanish: 100%
+
+
+Thanks to the contributors:
+- @bjornclauw
+- Mariuz
+
+
 ## Version 0.7.31 (2024/02/10)
 
 Basque is now available in FitTrackee interface.  
