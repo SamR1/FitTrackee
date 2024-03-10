@@ -87,8 +87,7 @@ export interface IUserSportPreferencesPayload {
   color: string | null
   is_active: boolean
   stopped_speed_threshold: number
-  default_equipment_ids?: number[]
-  from_sport_id?: number | null
+  fromSport: boolean
 }
 
 export interface IUserPicturePayload {

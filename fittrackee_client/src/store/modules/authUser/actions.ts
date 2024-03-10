@@ -331,14 +331,14 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
-    const { from_sport_id, ...data } = payload
+    const { fromSport, ...data } = payload
     authApi
       .post('auth/profile/edit/sports', data)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
-          if (from_sport_id) {
-            router.push(`/profile/sports/${from_sport_id}`)
+          if (fromSport) {
+            router.push(`/profile/sports/${data.sport_id}`)
           }
         } else {
           handleError(context, null)

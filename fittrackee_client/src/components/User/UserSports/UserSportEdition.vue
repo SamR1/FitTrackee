@@ -1,17 +1,5 @@
 <template>
   <div id="sport-edition" v-if="sport">
-    <Modal
-      v-if="displayModal"
-      :title="$t('common.CONFIRMATION')"
-      :message="
-        $t(
-          `user.PROFILE.SPORT.CONFIRM_SPORT_RESET${sport.default_equipments ? '_WITH_EQUIPMENTS' : ''}`
-        )
-      "
-      @confirmAction="resetSport()"
-      @cancelAction="updateDisplayModal(false)"
-      @keydown.esc="updateDisplayModal(false)"
-    />
     <form @submit.prevent="updateSport">
       <div class="form-items">
         <div class="form-item">
@@ -75,13 +63,6 @@
       </div>
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="form-buttons">
-        <button
-          :disabled="loading"
-          class="warning"
-          @click.prevent="updateDisplayModal(true)"
-        >
-          {{ $t('buttons.RESET') }}
-        </button>
         <button class="confirm" type="submit" :disabled="loading">
           {{ $t('buttons.SUBMIT') }}
         </button>
@@ -98,29 +79,17 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    capitalize,
-    computed,
-    inject,
-    onMounted,
-    reactive,
-    ref,
-    toRefs,
-    watch,
-  } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { capitalize, computed, onMounted, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import EquipmentsMultiSelect from '@/components/User/UserEquipments/EquipmentsMultiSelect.vue'
-  import {
-    AUTH_USER_STORE,
-    EQUIPMENTS_STORE,
-    ROOT_STORE,
-  } from '@/store/constants'
+  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getEquipments } from '@/utils/equipments'
 
@@ -135,9 +104,17 @@
   const route = useRoute()
 
   const { translatedSports } = toRefs(props)
+  const {
+    defaultColor,
+    defaultEquipmentIds,
+    errorMessages,
+    loading,
+    sportColors,
+    sportPayload,
+    updateIsActive,
+    updateSport,
+  } = userSportComponent()
 
-  const defaultColor = '#838383'
-  const sportColors = inject('sportColors') as Record<string, string>
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
   )
@@ -159,28 +136,13 @@
       ? getEquipments(sport.value.default_equipments, t, 'all')
       : []
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const displayModal: Ref<boolean> = ref(false)
-  const sportPayload: IUserSportPreferencesPayload = reactive({
-    sport_id: 0,
-    color: null,
-    is_active: true,
-    stopped_speed_threshold: 1,
-    default_equipment_ids: [],
-    from_sport_id: null,
-  })
 
   onMounted(() => {
     if (!route.params.id) {
       return
     }
     if (route.params.id && sport.value?.id) {
-      formatForm(sport.value)
+      formatSportForm(sport.value, true)
     }
   })
 
@@ -196,13 +158,11 @@
     }
     return filteredSportList[0]
   }
-  function updateIsActive(event: Event) {
-    sportPayload.is_active = (event.target as HTMLInputElement).checked
-  }
+
   function updateEquipments(selectedIds: number[]) {
-    sportPayload.default_equipment_ids = selectedIds
+    defaultEquipmentIds.value = selectedIds
   }
-  function formatForm(sport: ISport | null) {
+  function formatSportForm(sport: ISport | null, withEquipments = false) {
     if (sport !== null) {
       sportPayload.sport_id = sport.id
       sportPayload.color = sport.color
@@ -212,28 +172,10 @@
           : defaultColor
       sportPayload.is_active = sport.is_active_for_user
       sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
-      sportPayload.from_sport_id = sport.id
-      sportPayload.default_equipment_ids = sport.default_equipments.map(
-        (e) => e.id
-      )
-    }
-  }
-  function updateSport(event: Event) {
-    event.preventDefault()
-    store.dispatch(
-      AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES,
-      sportPayload
-    )
-  }
-  function updateDisplayModal(value: boolean) {
-    displayModal.value = value
-  }
-  function resetSport() {
-    if (sportPayload.sport_id) {
-      store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES, {
-        sportId: sportPayload.sport_id,
-        fromSport: true,
-      })
+      sportPayload.fromSport = true
+      if (withEquipments) {
+        defaultEquipmentIds.value = sport.default_equipments.map((e) => e.id)
+      }
     }
   }
 
@@ -241,7 +183,7 @@
     () => sport.value,
     (sport) => {
       if (route.params.id && sport?.id) {
-        formatForm(sport)
+        formatSportForm(sport, true)
       }
     }
   )

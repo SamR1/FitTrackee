@@ -1,5 +1,17 @@
 <template>
   <div id="user-sport" class="description-list" v-if="sport">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="
+        $t(
+          `user.PROFILE.SPORT.CONFIRM_SPORT_RESET${sport.default_equipments.length > 0 ? '_WITH_EQUIPMENTS' : ''}`
+        )
+      "
+      @confirmAction="resetSport(sport.id, true)"
+      @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
+    />
     <dl>
       <dt>{{ capitalize($t('workouts.SPORT', 1)) }}</dt>
       <dd>
@@ -47,6 +59,13 @@
       </dd>
     </dl>
     <div class="sport-buttons">
+      <button
+        :disabled="loading"
+        class="danger"
+        @click.prevent="updateDisplayModal(true)"
+      >
+        {{ $t('buttons.RESET') }}
+      </button>
       <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
         {{ $t('buttons.EDIT') }}
       </button>
@@ -64,11 +83,12 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, inject, onUnmounted, toRefs } from 'vue'
+  import { capitalize, computed, onUnmounted, toRefs, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
+  import userSportComponent from '@/components/User/UserSports/userSportComponent'
   import { ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IUserProfile } from '@/types/user'
@@ -84,8 +104,15 @@
   const route = useRoute()
 
   const { translatedSports } = toRefs(props)
+  const {
+    displayModal,
+    errorMessages,
+    loading,
+    sportColors,
+    resetSport,
+    updateDisplayModal,
+  } = userSportComponent()
 
-  const sportColors = inject('sportColors') as Record<string, string>
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
   )
@@ -106,6 +133,14 @@
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
+  watch(
+    () => loading.value,
+    (newIsLoading) => {
+      if (!newIsLoading && !errorMessages.value) {
+        updateDisplayModal(false)
+      }
+    }
+  )
 </script>
 
 <style scoped lang="scss">

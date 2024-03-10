@@ -8,7 +8,7 @@
           `user.PROFILE.SPORT.CONFIRM_SPORT_RESET${hasEquipments ? '_WITH_EQUIPMENTS' : ''}`
         )
       "
-      @confirmAction="resetSport()"
+      @confirmAction="resetSport(sportPayload.sport_id)"
       @cancelAction="updateDisplayModal(false)"
       @keydown.esc="updateDisplayModal(false)"
     />
@@ -51,8 +51,7 @@
                 v-if="isSportInEdition(sport.id)"
                 class="sport-color"
                 type="color"
-                :value="sportPayload.color"
-                @input="updateColor"
+                v-model="sportPayload.color"
               />
               <SportImage
                 v-else
@@ -108,7 +107,7 @@
                 {{ $t('equipments.EQUIPMENT', 0) }}
               </span>
               <i
-                :class="`fa fa${hasEquipments ? '-check' : ''}`"
+                :class="`fa fa${sport.default_equipments.length > 0 ? '-check' : ''}`"
                 aria-hidden="true"
               />
             </td>
@@ -144,8 +143,7 @@
                 type="number"
                 min="0"
                 step="0.1"
-                :value="sportPayload.stopped_speed_threshold"
-                @input="updateThreshold"
+                v-model="sportPayload.stopped_speed_threshold"
               />
               <span v-else>
                 {{ sport.stopped_speed_threshold }}
@@ -196,14 +194,14 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, inject, reactive, ref, toRefs, watch } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-
   interface Props {
     authUser: IUserProfile
     translatedSports: ITranslatedSport[]
@@ -213,23 +211,21 @@
 
   const store = useStore()
 
-  const { isEdition, translatedSports, authUser } = toRefs(props)
-  const defaultColor = '#838383'
-  const sportColors = inject('sportColors') as Record<string, string>
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
-  const displayModal: Ref<boolean> = ref(false)
+  const { authUser, isEdition, translatedSports } = toRefs(props)
+  const {
+    defaultColor,
+    displayModal,
+    errorMessages,
+    loading,
+    sportColors,
+    sportPayload,
+    resetSport,
+    updateDisplayModal,
+    updateIsActive,
+    updateSport,
+  } = userSportComponent()
+
   const hasEquipments: Ref<boolean> = ref(false)
-  const sportPayload: IUserSportPreferencesPayload = reactive({
-    sport_id: 0,
-    color: null,
-    is_active: true,
-    stopped_speed_threshold: 1,
-  })
 
   function updateSportInEdition(sport: ISport | null) {
     if (sport !== null) {
@@ -249,17 +245,6 @@
   function isSportInEdition(sportId: number) {
     return sportPayload.sport_id === sportId
   }
-  function updateColor(event: Event) {
-    sportPayload.color = (event.target as HTMLInputElement).value
-  }
-  function updateThreshold(event: Event) {
-    sportPayload.stopped_speed_threshold = parseFloat(
-      (event.target as HTMLInputElement).value
-    )
-  }
-  function updateIsActive(event: Event) {
-    sportPayload.is_active = (event.target as HTMLInputElement).checked
-  }
   function resetSportPayload() {
     sportPayload.sport_id = 0
     sportPayload.color = null
@@ -267,24 +252,6 @@
     sportPayload.stopped_speed_threshold = 1
     hasEquipments.value = false
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
-  function updateSport(event: Event) {
-    event.preventDefault()
-    store.dispatch(
-      AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES,
-      sportPayload
-    )
-  }
-  function resetSport() {
-    if (sportPayload.sport_id) {
-      store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES, {
-        sportId: sportPayload.sport_id,
-        fromSport: false,
-      })
-    }
-  }
-  function updateDisplayModal(value: boolean) {
-    displayModal.value = value
   }
 
   watch(
