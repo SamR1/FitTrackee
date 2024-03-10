@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.7.31"
+version = "0.7.32"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0"
@@ -32,8 +32,8 @@ dramatiq = {version = "^1.15.0", extras = ["redis"]}
 flask = "^3.0.2"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^3.5.0", extras = ["redis"]}
-flask-migrate = "^4.0.5"
+flask-limiter = {version = "^3.5.1", extras = ["redis"]}
+flask-migrate = "4.0.6"
 flask-sqlalchemy = "3.0.5"
 gpxpy = "=1.6.2"
 gunicorn = "^21.2.0"
@@ -41,20 +41,20 @@ humanize = "^4.9.0"
 nh3 = "^0.2.14"
 psycopg2-binary = "^2.9.9"
 pyjwt = "^2.8.0"
-pyopenssl = "^24.0.0"
+pyopenssl = "^24.1.0"
 pytz = "^2024.1"
-shortuuid = "^1.0.11"
+shortuuid = "^1.0.12"
 staticmap = "^0.5.7"
-sqlalchemy = "=1.4.51"
+sqlalchemy = "=1.4.52"
 ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.7.7"
+bandit = "^1.7.8"
 black = "^23.12.1"
 flake8 = "^7.0.0"  # requires Python >=3.8.1
 freezegun = "^1.4.0"
 furo = "^2024.1.29"
-mypy = "^1.8.0"
+mypy = "^1.9.0"
 pytest = "^7.4.4"
 pytest-black = "^0.3.12"
 pytest-cov = "^4.1.0"
