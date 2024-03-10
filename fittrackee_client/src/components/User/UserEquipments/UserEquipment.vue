@@ -31,12 +31,27 @@
       </dd>
       <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
       <dd>
-        <router-link :to="`/workouts?equipment_id=${equipment.id}`">
+        <router-link
+          :to="`/workouts?equipment_id=${equipment.id}`"
+          v-if="equipment.workouts_count"
+        >
           {{ equipment.workouts_count }}
         </router-link>
+        <template v-else>{{ equipment.workouts_count }}</template>
       </dd>
       <dt>{{ capitalize($t('workouts.DISTANCE', 0)) }}</dt>
-      <dd>{{ equipment.total_distance }}</dd>
+      <dd>
+        <Distance
+          :distance="equipment.total_distance"
+          unitFrom="km"
+          :digits="2"
+          :displayUnit="false"
+          :useImperialUnits="authUser.imperial_units"
+        />
+        <span>
+          {{ authUser.imperial_units ? 'miles' : 'km' }}
+        </span>
+      </dd>
       <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>
       <dd>{{ equipment.total_duration }}</dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
@@ -48,7 +63,7 @@
       </dd>
     </dl>
     <div class="equipment-buttons">
-      <button @click="$router.push(`/profile/equipments/${equipment.id}/edit`)">
+      <button @click="$router.push(`/profile/edit/equipments/${equipment.id}`)">
         {{ $t('buttons.EDIT') }}
       </button>
       <button class="danger" @click="displayModal = true">
@@ -84,9 +99,11 @@
 
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
+    authUser: IAuthUserProfile
     equipments: IEquipment[]
   }
   const props = defineProps<Props>()
@@ -94,7 +111,7 @@
   const store = useStore()
   const route = useRoute()
 
-  const { equipments } = toRefs(props)
+  const { authUser, equipments } = toRefs(props)
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )

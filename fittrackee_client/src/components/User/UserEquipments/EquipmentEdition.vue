@@ -1,6 +1,8 @@
 <template>
   <div id="new-equipment">
-    <h1 id="new-equipment-title">{{ $t('equipments.ADD_A_NEW_EQUIPMENT') }}</h1>
+    <h1 id="new-equipment-title" v-if="!equipmentForm.id">
+      {{ $t('equipments.ADD_A_NEW_EQUIPMENT') }}
+    </h1>
     <div id="equipment-form">
       <form @submit.prevent="submit">
         <div class="form-items">

@@ -1,6 +1,7 @@
 <template>
   <div id="user-equipments" v-if="translatedEquipmentTypes">
     <router-view
+      :authUser="user"
       :equipments="equipments"
       :translatedEquipmentTypes="translatedEquipmentTypes"
     />
@@ -8,7 +9,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, type ComputedRef, onUnmounted } from 'vue'
+  import { computed, toRefs, onUnmounted } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
@@ -17,11 +19,20 @@
     IEquipmentType,
     ITranslatedEquipmentType,
   } from '@/types/equipments'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { translateEquipmentTypes } from '@/utils/equipments'
 
+  interface Props {
+    user: IAuthUserProfile
+  }
+  const props = defineProps<Props>()
+
   const store = useStore()
   const { t } = useI18n()
+
+  const { user } = toRefs(props)
+
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )

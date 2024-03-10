@@ -66,7 +66,16 @@
                     <span class="cell-heading">
                       {{ $t('workouts.DISTANCE', 0) }}
                     </span>
-                    {{ equipment.total_distance }}
+                    <Distance
+                      :distance="equipment.total_distance"
+                      unitFrom="km"
+                      :digits="2"
+                      :displayUnit="false"
+                      :useImperialUnits="authUser.imperial_units"
+                    />
+                    <span>
+                      {{ authUser.imperial_units ? 'miles' : 'km' }}
+                    </span>
                   </td>
                   <td>
                     <span class="cell-heading">
@@ -103,14 +112,16 @@
   import { capitalize, computed, toRefs } from 'vue'
 
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
+  import type { IAuthUserProfile } from '@/types/user'
 
   interface Props {
     equipments: IEquipment[]
     translatedEquipmentTypes: ITranslatedEquipmentType[]
+    authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
-  const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const { authUser, equipments, translatedEquipmentTypes } = toRefs(props)
   const equipmentByTypes = computed(() =>
     formatEquipmentsList(equipments.value)
   )

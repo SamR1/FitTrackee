@@ -298,14 +298,6 @@ const routes: Array<RouteRecordRaw> = [
                   title: 'user.PROFILE.TABS.EQUIPMENTS',
                 },
               },
-              {
-                path: ':id/edit',
-                name: 'EquipmentEdition',
-                component: EquipmentEdition,
-                meta: {
-                  title: 'user.PROFILE.TABS.EQUIPMENTS',
-                },
-              },
             ],
           },
         ],
@@ -373,6 +365,21 @@ const routes: Array<RouteRecordRaw> = [
                 component: UserSportEdition,
                 meta: {
                   title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+            ],
+          },
+          {
+            path: 'equipments',
+            name: 'UserEquipmentsEdition',
+            component: UserEquipments,
+            children: [
+              {
+                path: ':id',
+                name: 'EquipmentEdition',
+                component: EquipmentEdition,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
                 },
               },
             ],
