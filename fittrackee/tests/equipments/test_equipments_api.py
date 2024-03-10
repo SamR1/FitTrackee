@@ -341,6 +341,30 @@ class TestPostEquipment(ApiTestCaseMixin):
         assert 'Test shoes' == equipment['label']
         assert equipment['description'] == description
 
+    def test_it_raises_error_when_label_exceeds_50_characters(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        label = self.random_string(100)
+        description = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/equipments',
+            json={
+                "description": description,
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": label,
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(response, "label exceeds 50 characters")
+
     @pytest.mark.parametrize('missing_arg', ["label", "equipment_type_id"])
     def test_it_returns_400_when_payload_is_invalid(
         self,
@@ -533,7 +557,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
         equipment_bike_user_1: Equipment,
     ) -> None:
         label = equipment_bike_user_1.label
@@ -559,6 +583,28 @@ class TestPatchEquipment(ApiTestCaseMixin):
         ).first()
         assert updated_equipment.label == label
         assert updated_equipment.description == new_description
+
+    def test_it_raises_error_when_label_exceeds_50_characters(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        label = self.random_string(100)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/equipments/{equipment_shoes_user_1.id}',
+            json={
+                "label": label,
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(response, "label exceeds 50 characters")
 
     def test_it_updates_equipment_type(
         self,

@@ -273,7 +273,10 @@ def post_equipment(
             "The 'label' and 'equipment_type_id' parameters must be "
             "provided"
         )
+
     label = equipment_data['label']
+    if len(label) > 50:
+        return InvalidPayloadErrorResponse("label exceeds 50 characters")
     equipment_type_id = equipment_data['equipment_type_id']
 
     if (
@@ -427,6 +430,10 @@ def update_equipment(
             equipment.is_active = equipment_data.get('is_active')
         if 'label' in equipment_data:
             label = equipment_data.get('label')
+            if len(label) > 50:
+                return InvalidPayloadErrorResponse(
+                    "label exceeds 50 characters"
+                )
             if (
                 Equipment.query.filter(
                     Equipment.user_id == auth_user.id,

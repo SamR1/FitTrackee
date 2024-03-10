@@ -12,6 +12,7 @@
             </label>
             <input
               id="equipment-label"
+              maxlength="50"
               type="text"
               required
               v-model="equipmentForm.label"
