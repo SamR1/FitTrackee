@@ -2,6 +2,7 @@ import os
 import shutil
 
 import click
+from flask import g
 from flask_migrate import upgrade
 
 from fittrackee import db
@@ -21,6 +22,7 @@ def db_cli() -> None:
 def upgrade_db() -> None:
     """Apply migrations."""
     with app.app_context():
+        g.x_arg = []
         upgrade(directory=BASEDIR)
 
 
@@ -28,6 +30,7 @@ def upgrade_db() -> None:
 def drop_db() -> None:
     """Empty database and delete uploaded files for dev environments."""
     with app.app_context():
+        g.x_arg = []
         if app_settings == 'fittrackee.config.ProductionConfig':
             click.echo(
                 click.style(
