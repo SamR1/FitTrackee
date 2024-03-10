@@ -14,18 +14,43 @@
           v-if="sport"
           :sport="sport"
           :workoutObject="workoutObject"
+          :isWorkoutOwner="isWorkoutOwner"
           @displayModal="updateDisplayModal(true)"
         />
+        <ReportForm
+          v-if="workoutData.currentReporting"
+          :object-id="workoutObject.workoutId"
+          object-type="workout"
+        />
+        <div
+          class="report-submitted"
+          v-if="reportStatus === `workout-${workoutObject.workoutId}-created`"
+        >
+          <div class="info-box">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('common.REPORT_SUBMITTED') }}
+            </span>
+          </div>
+        </div>
       </template>
       <template #content>
-        <WorkoutMap
-          :workoutData="workoutData"
-          :markerCoordinates="markerCoordinates"
-        />
-        <WorkoutData
+        <div class="workout-map-data">
+          <WorkoutMap
+            :workoutData="workoutData"
+            :markerCoordinates="markerCoordinates"
+          />
+          <WorkoutData
+            :workoutObject="workoutObject"
+            :useImperialUnits="displayOptions.useImperialUnits"
+            :displayHARecord="displayOptions.displayAscent"
+          />
+        </div>
+        <WorkoutVisibility
           :workoutObject="workoutObject"
-          :useImperialUnits="authUser.imperial_units"
-          :displayHARecord="authUser.display_ascent"
+          :useImperialUnits="displayOptions.useImperialUnits"
+          :displayHARecord="displayOptions.displayAscent"
+          v-if="workoutObject.workoutVisibility"
         />
       </template>
     </Card>
@@ -33,14 +58,17 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch } from 'vue'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import ReportForm from '@/components/Common/ReportForm.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
+  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IDisplayOptions } from '@/types/application'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -54,11 +82,12 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
-    authUser: IAuthUserProfile
+    authUser?: IAuthUserProfile
     displaySegment: boolean
     sports: ISport[]
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
+    isWorkoutOwner: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -67,7 +96,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const { authUser, markerCoordinates, workoutData } = toRefs(props)
+  const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
@@ -86,6 +115,12 @@
           (sport) => sport.id === props.workoutData.workout.sport_id
         )
       : ({} as ISport)
+  )
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
@@ -125,9 +160,9 @@
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
         props.workoutData.workout.workout_date,
-        props.authUser.timezone
+        displayOptions.value.timezone
       ),
-      props.authUser.date_format
+      displayOptions.value.dateFormat
     )
     return {
       ascent: segment ? segment.ascent : workout.ascent,
@@ -135,7 +170,10 @@
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      mapVisibility: segment ? null : workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
+      liked: workout.liked,
+      likes_count: workout.likes_count,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
@@ -152,6 +190,7 @@
       with_gpx: workout.with_gpx,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
+      workoutVisibility: segment ? null : workout.workout_visibility,
     }
   }
   function updateDisplayModal(value: boolean) {
@@ -172,6 +211,13 @@
       behavior: 'smooth',
     })
   }
+  function resetReportStatus() {
+    if (reportStatus.value !== null) {
+      store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+    }
+  }
+
+  onUnmounted(() => resetReportStatus())
 
   watch(
     () => route.params.segmentId,
@@ -189,6 +235,7 @@
         displayModal.value = false
         scrollToTop()
       }
+      resetReportStatus()
     }
   )
 </script>
@@ -198,15 +245,30 @@
   .workout-detail {
     display: flex;
     ::v-deep(.card) {
+      margin: 0 $default-margin;
       width: 100%;
       .card-title {
         padding: $default-padding $default-padding * 1.5;
+        .report-submitted {
+          display: flex;
+          .info-box {
+            padding: $default-padding $default-padding * 2;
+            margin: $default-margin * 0.5 0 0 $default-margin;
+          }
+        }
       }
       .card-content {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        .workout-map-data {
+          display: flex;
+          flex-direction: row;
+        }
         @media screen and (max-width: $medium-limit) {
-          flex-direction: column;
+          .workout-map-data {
+            display: flex;
+            flex-direction: column;
+          }
         }
       }
     }

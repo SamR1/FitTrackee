@@ -6,6 +6,8 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 from sqlalchemy.pool import NullPool
 
+from fittrackee import VERSION
+
 broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
     StubBroker
     if os.getenv("APP_SETTINGS") == "fittrackee.config.TestingConfig"
@@ -33,7 +35,7 @@ class BaseConfig:
     PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
     WORKOUT_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
     TEMPLATES_FOLDER = os.path.join(current_app.root_path, 'emails/templates')
-    UI_URL = os.environ.get('UI_URL')
+    UI_URL = os.environ['UI_URL']
     EMAIL_URL = os.environ.get('EMAIL_URL')
     SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
     CAN_SEND_EMAILS = False
@@ -75,6 +77,7 @@ class BaseConfig:
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
+    VERSION = VERSION
 
 
 class DevelopmentConfig(BaseConfig):
@@ -100,7 +103,7 @@ class TestingConfig(BaseConfig):
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 60
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 60
-    UI_URL = 'http://0.0.0.0:5000'
+    UI_URL = 'https://example.com'
     SENDER_EMAIL = 'fittrackee@example.com'
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 60,
@@ -110,6 +113,7 @@ class TestingConfig(BaseConfig):
 
 class End2EndTestingConfig(TestingConfig):
     DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
+    UI_URL = 'http://0.0.0.0:5000'
 
 
 class ProductionConfig(BaseConfig):

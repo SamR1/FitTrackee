@@ -1,10 +1,11 @@
 from typing import Union
 
 import pytest
+from flask import Flask
 
 from fittrackee.files import display_readable_file_size
 from fittrackee.request import UserAgent
-from fittrackee.utils import get_readable_duration
+from fittrackee.utils import clean_input, get_readable_duration
 
 
 class TestDisplayReadableFileSize:
@@ -67,3 +68,53 @@ class TestParseUserAgent:
     def test_it_returns_other_as_os_when_empty_string_provided(self) -> None:
         user_agent = UserAgent('')
         assert user_agent.platform == 'Other'
+
+
+class TestSanitizeInput:
+    @pytest.mark.parametrize(
+        'input_comment',
+        [
+            'just a text\nfor "test"',
+            'link: http://www.example.com',
+            'link: <a href="http://www.example.com" '
+            'rel="noopener noreferrer">example</a>',
+            '<p>just a<br><span>test</span></p>',
+        ],
+    )
+    def test_clean_input_remains_unchanged(
+        self, app: Flask, input_comment: str
+    ) -> None:
+        assert clean_input(input_comment) == input_comment
+
+    @pytest.mark.parametrize(
+        'input_comment, expected_comment',
+        [
+            ("<script>alert('evil!')</script>", ""),
+            ("<div><b>test</b></div>", "test"),
+            ("<div>test", "test"),
+            ("just a<br />test", "just a<br>test"),
+            ("<p>test", "<p>test</p>"),
+            ('<p class="active">test</p>', "<p>test</p>"),
+            ('<p style="display:none;">test</p>', "<p>test</p>"),
+            (
+                'link: <a href="http://www.example.com">example</a>',
+                'link: <a href="http://www.example.com" '
+                'rel="noopener noreferrer">example</a>',
+            ),
+            (
+                '<div><a href="http://www.example.com">example</a></div>',
+                '<a href="http://www.example.com" '
+                'rel="noopener noreferrer">example</a>',
+            ),
+            (
+                '<a href="http://example.com/user/Sam" target="_blank" '
+                'rel="noopener noreferrer">@Sam</a> nice!',
+                '<a href="http://example.com/user/Sam" target="_blank" '
+                'rel="noopener noreferrer">@Sam</a> nice!',
+            ),
+        ],
+    )
+    def test_it_removes_disallowed_tags(
+        self, app: Flask, input_comment: str, expected_comment: str
+    ) -> None:
+        assert clean_input(input_comment) == expected_comment

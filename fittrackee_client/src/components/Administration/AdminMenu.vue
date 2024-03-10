@@ -12,7 +12,7 @@
               </router-link>
             </dt>
             <dd class="application-config-details">
-              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
+              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
               <span class="registration-status">
                 {{
                   $t(
@@ -31,6 +31,14 @@
               </span>
             </dd>
             <dt>
+              <router-link id="adminLink" to="/admin/reports">
+                {{ $t('admin.APP_MODERATION.TITLE') }}
+              </router-link>
+            </dt>
+            <dd>
+              {{ $t('admin.APP_MODERATION.DESCRIPTION') }}
+            </dd>
+            <dt>
               <router-link to="/admin/sports">
                 {{ capitalize($t('workouts.SPORT', 0)) }}
               </router-link>
@@ -40,7 +48,7 @@
             </dd>
             <dt>
               <router-link to="/admin/users">
-                {{ capitalize($t('admin.USER', 0)) }}
+                {{ capitalize($t('user.USER', 0)) }}
               </router-link>
             </dt>
             <dd>
@@ -54,21 +62,23 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, onMounted, toRefs } from 'vue'
+  import { capitalize, computed, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
+  import { ROOT_STORE } from '@/store/constants'
   import type { IAppStatistics, TAppConfig } from '@/types/application'
+  import { useStore } from '@/use/useStore'
 
-  interface Props {
-    appConfig: TAppConfig
-    appStatistics?: IAppStatistics
-  }
-  const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({}) as IAppStatistics,
-  })
+  const store = useStore()
 
-  const { appConfig, appStatistics } = toRefs(props)
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
+  const appStatistics: ComputedRef<IAppStatistics> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
+  )
 
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')

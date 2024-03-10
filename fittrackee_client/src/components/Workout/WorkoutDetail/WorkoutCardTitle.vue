@@ -23,7 +23,20 @@
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
           <button
+            class="transparent icon-button likes"
+            @click="updateLike(workoutObject)"
+          >
+            <i
+              class="fa"
+              :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"
+            />
+            <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
+              workoutObject.likes_count
+            }}</span>
+          </button>
+          <button
             class="transparent icon-button"
+            v-if="isWorkoutOwner"
             @click="
               $router.push({
                 name: 'EditWorkout',
@@ -35,7 +48,7 @@
             <i class="fa fa-edit" aria-hidden="true" />
           </button>
           <button
-            v-if="workoutObject.with_gpx"
+            v-if="workoutObject.with_gpx && isWorkoutOwner"
             class="transparent icon-button"
             @click.prevent="downloadGpx(workoutObject.workoutId)"
             :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
@@ -43,12 +56,25 @@
             <i class="fa fa-download" aria-hidden="true" />
           </button>
           <button
+            v-if="isWorkoutOwner"
             id="delete-workout-button"
             class="transparent icon-button"
             @click.prevent="displayDeleteModal"
             :aria-label="$t(`workouts.DELETE_WORKOUT`)"
           >
             <i class="fa fa-trash" aria-hidden="true" />
+          </button>
+          <button
+            v-if="
+              !isWorkoutOwner &&
+              !currentlyReporting &&
+              reportStatus !== `workout-${workoutObject.workoutId}-created`
+            "
+            class="transparent icon-button"
+            @click.prevent="displayReportForm"
+            :title="$t('workouts.REPORT_WORKOUT')"
+          >
+            <i class="fa fa-flag" aria-hidden="true" />
           </button>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
@@ -97,21 +123,33 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import authApi from '@/api/authApi'
+  import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type { IWorkoutObject } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     sport: ISport
     workoutObject: IWorkoutObject
+    isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
 
+  const store = useStore()
+
   const emit = defineEmits(['displayModal'])
 
-  const { sport, workoutObject } = toRefs(props)
+  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
+  const currentlyReporting: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
+  )
 
   async function downloadGpx(workoutId: string) {
     await authApi
@@ -131,6 +169,17 @@
   }
   function displayDeleteModal() {
     emit('displayModal', true)
+  }
+  function updateLike(workout: IWorkoutObject) {
+    store.dispatch(
+      workout.liked
+        ? WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT
+        : WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT,
+      workout.workoutId
+    )
+  }
+  function displayReportForm() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING, true)
   }
 </script>
 
@@ -163,6 +212,9 @@
         }
       }
       .workout-title {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
         span {
           margin-right: $default-margin * 0.5;
         }
@@ -182,8 +234,6 @@
         padding: 0 $default-padding * 0.3;
       }
       .icon-button {
-        cursor: pointer;
-        padding: 0;
         margin-left: 2px;
       }
     }
@@ -199,6 +249,11 @@
           .fa-edit {
             padding: 0 $default-padding * 0.7;
           }
+        }
+
+        .workout-title {
+          display: flex;
+          flex-direction: column;
         }
       }
     }

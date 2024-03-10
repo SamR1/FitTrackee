@@ -13,6 +13,29 @@
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
     </dl>
+    <div class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</div>
+    <dl>
+      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
+              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.PROFILE_IN_USERS_DIRECTORY.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.PROFILE_IN_USERS_DIRECTORY.${
+              user.hide_profile_in_users_directory ? 'HIDDEN' : 'DISPLAYED'
+            }`
+          )
+        }}
+      </dd>
+    </dl>
     <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
     <dl>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
@@ -52,6 +75,16 @@
         </span>
       </div>
     </dl>
+    <dl>
+      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}
+      </dd>
+      <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`privacy.LEVELS.${user.map_visibility}`) }}
+      </dd>
+    </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
         {{ $t('user.PROFILE.EDIT_PREFERENCES') }}
@@ -62,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
@@ -71,20 +104,20 @@
   import { useStore } from '@/use/useStore'
   import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
-
   interface Props {
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
 
+  const { user } = toRefs(props)
   const store = useStore()
 
   const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const userLanguage = computed(() =>
-    props.user.language
-      ? languageLabels[props.user.language]
+    user.value.language
+      ? languageLabels[user.value.language]
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))

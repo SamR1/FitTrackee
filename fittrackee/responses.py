@@ -124,7 +124,7 @@ class PayloadTooLargeErrorResponse(GenericErrorResponse):
 class InternalServerErrorResponse(GenericErrorResponse):
     def __init__(
         self, message: Optional[str] = None, status: Optional[str] = None
-    ):
+    ) -> None:
         message = (
             'error, please try again or contact the administrator'
             if message is None

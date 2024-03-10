@@ -1,8 +1,7 @@
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import List
 from unittest.mock import patch
-from uuid import uuid4
 
 import pytest
 from flask import Flask
@@ -13,19 +12,9 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .utils import get_random_short_id
 
 
 class TestGetWorkouts(ApiTestCaseMixin):
-    def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask
-    ) -> None:
-        client = app.test_client()
-
-        response = client.get('/api/workouts')
-
-        self.assert_401(response)
-
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,
@@ -50,12 +39,29 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
-        assert data['data']['workouts'][0] == jsonify_dict(
-            workout_running_user_1.serialize()
+        assert 'creation_date' in data['data']['workouts'][0]
+        assert (
+            'Sun, 01 Apr 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][1] == jsonify_dict(
-            workout_cycling_user_1.serialize()
+        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+            user_1.serialize()
         )
+        assert 2 == data['data']['workouts'][0]['sport_id']
+        assert 12.0 == data['data']['workouts'][0]['distance']
+        assert '1:40:00' == data['data']['workouts'][0]['duration']
+
+        assert 'creation_date' in data['data']['workouts'][1]
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][1]['workout_date']
+        )
+        assert data['data']['workouts'][1]['user'] == jsonify_dict(
+            user_1.serialize()
+        )
+        assert 1 == data['data']['workouts'][1]['sport_id']
+        assert 10.0 == data['data']['workouts'][1]['distance']
+        assert '1:00:00' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -102,7 +108,67 @@ class TestGetWorkouts(ApiTestCaseMixin):
 
         response = client.get('/api/workouts')
 
-        self.assert_401(response, 'provide a valid auth token')
+        data = json.loads(response.data.decode())
+        assert response.status_code == 401
+        assert 'error' in data['status']
+        assert 'provide a valid auth token' in data['message']
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_gets_only_unsuspended_workouts_for_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['id']
+            == workout_running_user_1.short_id
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -139,7 +205,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -154,22 +220,18 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
-        assert data['data']['workouts'][0] == jsonify_dict(
-            seven_workouts_user_1[6].serialize()
+        assert 'creation_date' in data['data']['workouts'][0]
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][1] == jsonify_dict(
-            seven_workouts_user_1[5].serialize()
+        assert '0:50:00' == data['data']['workouts'][0]['duration']
+        assert 'creation_date' in data['data']['workouts'][4]
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
         )
-        assert data['data']['workouts'][2] == jsonify_dict(
-            seven_workouts_user_1[3].serialize()
-        )
-        assert data['data']['workouts'][3] == jsonify_dict(
-            seven_workouts_user_1[4].serialize()
-        )
-        assert data['data']['workouts'][4] == jsonify_dict(
-            seven_workouts_user_1[2].serialize()
-        )
-
+        assert '0:17:04' == data['data']['workouts'][4]['duration']
         assert data['pagination'] == {
             'has_next': True,
             'has_prev': False,
@@ -183,7 +245,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -198,21 +260,18 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
-        assert data['data']['workouts'][0] == jsonify_dict(
-            seven_workouts_user_1[6].serialize()
+        assert 'creation_date' in data['data']['workouts'][0]
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][1] == jsonify_dict(
-            seven_workouts_user_1[5].serialize()
+        assert '0:50:00' == data['data']['workouts'][0]['duration']
+        assert 'creation_date' in data['data']['workouts'][4]
+        assert (
+            'Mon, 01 Jan 2018 00:00:00 GMT'
+            == data['data']['workouts'][4]['workout_date']
         )
-        assert data['data']['workouts'][2] == jsonify_dict(
-            seven_workouts_user_1[3].serialize()
-        )
-        assert data['data']['workouts'][3] == jsonify_dict(
-            seven_workouts_user_1[4].serialize()
-        )
-        assert data['data']['workouts'][4] == jsonify_dict(
-            seven_workouts_user_1[2].serialize()
-        )
+        assert '0:17:04' == data['data']['workouts'][4]['duration']
         assert data['pagination'] == {
             'has_next': True,
             'has_prev': False,
@@ -226,7 +285,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -241,12 +300,18 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
-        assert data['data']['workouts'][0] == jsonify_dict(
-            seven_workouts_user_1[1].serialize()
+        assert 'creation_date' in data['data']['workouts'][0]
+        assert (
+            'Thu, 01 Jun 2017 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][1] == jsonify_dict(
-            seven_workouts_user_1[0].serialize()
+        assert '0:57:36' == data['data']['workouts'][0]['duration']
+        assert 'creation_date' in data['data']['workouts'][1]
+        assert (
+            'Mon, 20 Mar 2017 00:00:00 GMT'
+            == data['data']['workouts'][1]['workout_date']
         )
+        assert '0:17:04' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': True,
@@ -260,7 +325,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -288,7 +353,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -299,7 +364,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_500(response)
+        data = json.loads(response.data.decode())
+        assert response.status_code == 500
+        assert 'error' in data['status']
+        assert (
+            'error, please try again or contact the administrator'
+            in data['message']
+        )
 
     @patch('fittrackee.workouts.workouts.MAX_WORKOUTS_PER_PAGE', 6)
     def test_it_gets_max_workouts_per_page_if_per_page_exceeds_max(
@@ -307,7 +378,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -322,11 +393,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 6
-        assert data['data']['workouts'][0] == jsonify_dict(
-            seven_workouts_user_1[6].serialize()
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][5] == jsonify_dict(
-            seven_workouts_user_1[1].serialize()
+        assert (
+            'Thu, 01 Jun 2017 00:00:00 GMT'
+            == data['data']['workouts'][5]['workout_date']
         )
         assert data['pagination'] == {
             'has_next': True,
@@ -342,7 +415,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -357,14 +430,13 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 3
-        assert data['data']['workouts'][0] == jsonify_dict(
-            seven_workouts_user_1[6].serialize()
+        assert (
+            'Wed, 09 May 2018 00:00:00 GMT'
+            == data['data']['workouts'][0]['workout_date']
         )
-        assert data['data']['workouts'][1] == jsonify_dict(
-            seven_workouts_user_1[5].serialize()
-        )
-        assert data['data']['workouts'][2] == jsonify_dict(
-            seven_workouts_user_1[3].serialize()
+        assert (
+            'Fri, 23 Feb 2018 10:00:00 GMT'
+            == data['data']['workouts'][2]['workout_date']
         )
         assert data['pagination'] == {
             'has_next': True,
@@ -381,7 +453,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -417,7 +489,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -453,7 +525,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -491,7 +563,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -527,7 +599,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -607,7 +679,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -639,7 +711,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -659,10 +731,13 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'Fri, 23 Feb 2018 10:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
+        assert '0:10:00' == data['data']['workouts'][0]['duration']
+        assert 'creation_date' in data['data']['workouts'][1]
         assert (
             'Fri, 23 Feb 2018 00:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
+        assert '0:16:40' == data['data']['workouts'][1]['duration']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -676,7 +751,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -704,7 +779,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -741,7 +816,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -777,7 +852,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -813,7 +888,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -845,7 +920,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -913,7 +988,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
@@ -995,7 +1070,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1031,7 +1106,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: List[Workout],
+        seven_workouts_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1093,371 +1168,3 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             'pages': 2,
             'total': 7,
         }
-
-
-class TestGetWorkout(ApiTestCaseMixin):
-    def test_it_gets_a_workout(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize()
-        )
-
-    def test_it_returns_403_if_workout_belongs_to_a_different_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_2.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_403(response)
-
-    def test_it_returns_404_if_workout_does_not_exist(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{get_random_short_id()}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
-
-    def test_it_returns_404_on_getting_gpx_if_workout_does_not_exist(
-        self, app: Flask, user_1: User
-    ) -> None:
-        random_short_id = get_random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{random_short_id}/gpx',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
-        )
-        assert data['data']['gpx'] == ''
-
-    def test_it_returns_404_on_getting_chart_data_if_workout_does_not_exist(
-        self, app: Flask, user_1: User
-    ) -> None:
-        random_short_id = get_random_short_id()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{random_short_id}/chart_data',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
-        )
-        assert data['data']['chart_data'] == ''
-
-    def test_it_returns_404_on_getting_gpx_if_workout_have_no_gpx(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_short_id = workout_cycling_user_1.short_id
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_short_id}/gpx',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(
-            response, f'no gpx file for this workout (id: {workout_short_id})'
-        )
-
-    def test_it_returns_404_if_workout_have_no_chart_data(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_short_id = workout_cycling_user_1.short_id
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_short_id}/chart_data',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(
-            response, f'no gpx file for this workout (id: {workout_short_id})'
-        )
-
-    def test_it_returns_500_on_getting_gpx_if_a_workout_has_invalid_gpx_pathname(  # noqa
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.gpx = "some path"
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_1.short_id}/gpx',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = self.assert_500(response)
-        assert 'data' not in data
-
-    def test_it_returns_500_on_getting_chart_data_if_a_workout_has_invalid_gpx_pathname(  # noqa
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.gpx = 'some path'
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_1.short_id}/chart_data',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = self.assert_500(response)
-        assert 'data' not in data
-
-    def test_it_returns_404_if_workout_has_no_map(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        response = client.get(
-            f'/api/workouts/map/{uuid4().hex}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(response, 'Map does not exist')
-
-    def test_it_returns_404_if_map_file_not_found(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        map_ip = self.random_string()
-        workout_cycling_user_1.map = self.random_string()
-        workout_cycling_user_1.map_id = map_ip
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/map/{map_ip}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(response, 'Map file does not exist')
-
-    @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
-    )
-    @pytest.mark.parametrize(
-        'endpoint',
-        [
-            '/api/workouts/{workout_short_id}',
-            '/api/workouts/{workout_short_id}/gpx',
-            '/api/workouts/{workout_short_id}/chart_data',
-            '/api/workouts/{workout_short_id}/gpx/segment/1',
-            '/api/workouts/{workout_short_id}/chart_data/segment/1',
-        ],
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
-        endpoint: str,
-    ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
-        )
-
-        response = client.get(
-            endpoint.format(workout_short_id=workout_cycling_user_1.short_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
-        )
-
-        self.assert_response_scope(response, can_access)
-
-
-class TestDownloadWorkoutGpx(ApiTestCaseMixin):
-    def test_it_returns_404_if_workout_does_not_exist(
-        self,
-        app: Flask,
-        user_1: User,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{get_random_short_id()}/gpx/download',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(response, 'workout not found')
-
-    def test_it_returns_404_if_workout_does_not_have_gpx(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_1.short_id}/gpx/download',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(response, 'no gpx file for workout')
-
-    def test_it_returns_404_if_workout_belongs_to_a_different_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_2.short_id}/gpx/download',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_message(response, 'workout not found')
-
-    def test_it_calls_send_from_directory_if_workout_has_gpx(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        gpx_file_path = 'file.gpx'
-        workout_cycling_user_1.gpx = gpx_file_path
-        with patch('fittrackee.workouts.workouts.send_from_directory') as mock:
-            mock.return_value = 'file'
-            client, auth_token = self.get_test_client_and_auth_token(
-                app, user_1.email
-            )
-
-            client.get(
-                (
-                    f'/api/workouts/{workout_cycling_user_1.short_id}/'
-                    'gpx/download'
-                ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        mock.assert_called_once_with(
-            app.config['UPLOAD_FOLDER'],
-            gpx_file_path,
-            mimetype='application/gpx+xml',
-            as_attachment=True,
-        )
-
-    @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
-    ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
-        )
-
-        response = client.get(
-            f'/api/workouts/{workout_cycling_user_1.short_id}/gpx/download',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
-        )
-
-        self.assert_response_scope(response, can_access)

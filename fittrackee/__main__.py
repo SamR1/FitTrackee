@@ -9,8 +9,8 @@ from flask import Flask
 from flask_migrate import upgrade
 
 from fittrackee import create_app
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.users.exceptions import UserNotFoundException
-from fittrackee.users.utils.admin import UserManagerService
 
 HOST = os.getenv('HOST', '127.0.0.1')
 PORT = os.getenv('PORT', '5000')

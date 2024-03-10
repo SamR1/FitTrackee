@@ -12,8 +12,10 @@ import type {
   IApplication,
   IAppStatistics,
   TAppConfigForm,
+  IDisplayOptions,
 } from '@/types/application'
 import type { TLanguage } from '@/types/locales'
+import type { IAuthUserProfile } from '@/types/user'
 
 export interface IRootState {
   root: boolean
@@ -61,6 +63,7 @@ export interface IRootGetters {
   [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): TLanguage
 
   [ROOT_STORE.GETTERS.LOCALE](state: IRootState): Locale
+  [ROOT_STORE.GETTERS.DISPLAY_OPTIONS](state: IRootState): IDisplayOptions
 }
 
 export type TRootMutations<S = IRootState> = {
@@ -89,6 +92,10 @@ export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.UPDATE_DARK_MODE](
     state: S,
     darkMode: boolean | null
+  ): void
+  [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
+    state: S,
+    authUser: IAuthUserProfile
   ): void
 }
 

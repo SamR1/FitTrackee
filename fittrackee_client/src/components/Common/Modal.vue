@@ -13,7 +13,10 @@
           </div>
           <div class="modal-message" v-else>{{ message }}</div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-          <div class="modal-buttons">
+          <div v-if="loading">
+            <Loader />
+          </div>
+          <div class="modal-buttons" v-else>
             <button
               class="confirm"
               id="confirm-button"
@@ -47,9 +50,11 @@
   interface Props {
     title: string
     message: string
-    strongMessage?: string | null
+    strongMessage?: string
+    loading?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
+    loading: false,
     strongMessage: () => '',
   })
 
@@ -141,6 +146,12 @@
             }
           }
         }
+      }
+      .loader {
+        border-width: 5px;
+        height: 20px;
+        margin-left: 45%;
+        width: 20px;
       }
     }
   }

@@ -1,43 +1,34 @@
 <template>
-  <div class="timeline-workout">
+  <div class="timeline-workout workout-card">
     <div class="box">
-      <div class="workout-user-date">
-        <div class="workout-user">
-          <UserPicture :user="user" />
+      <div class="workout-card-title">
+        <div class="workout-user-date">
+          <div class="workout-user">
+            <UserPicture :user="user" />
+            <Username :user="user" />
+          </div>
           <router-link
-            v-if="user.username"
-            class="workout-user-name"
+            class="workout-title"
+            v-if="workout.id"
             :to="{
-              name: 'User',
-              params: { username: user.username },
+              name: 'Workout',
+              params: { workoutId: workout.id },
             }"
           >
-            {{ user.username }}
+            {{ workout.title }}
           </router-link>
-        </div>
-        <router-link
-          class="workout-title"
-          v-if="workout.id"
-          :to="{
-            name: 'Workout',
-            params: { workoutId: workout.id },
-          }"
-        >
-          {{ workout.title }}
-        </router-link>
-        <div
-          class="workout-date"
-          v-if="workout.workout_date && user"
-          :title="
-            formatDate(workout.workout_date, user.timezone, user.date_format)
-          "
-        >
-          {{
-            formatDistance(new Date(workout.workout_date), new Date(), {
-              addSuffix: true,
-              locale,
-            })
-          }}
+          <div
+            class="workout-date"
+            v-if="workout.workout_date && user"
+            :title="formatDate(workout.workout_date, timezone, dateFormat)"
+          >
+            {{
+              formatDistance(new Date(workout.workout_date), new Date(), {
+                addSuffix: true,
+                locale,
+              })
+            }}
+          </div>
         </div>
       </div>
       <div
@@ -144,17 +135,20 @@
   import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
+  import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IAuthUserProfile
+    user: IUserProfile
     useImperialUnits: boolean
+    dateFormat: string
+    timezone: string
     workout?: IWorkout
     sport?: ISport | null
   }
@@ -205,6 +199,7 @@
         .workout-user {
           display: flex;
           ::v-deep(.user-picture) {
+            min-width: min-content;
             img {
               height: 25px;
               width: 25px;
@@ -212,11 +207,6 @@
             .no-picture {
               font-size: 1.5em;
             }
-          }
-          .workout-user-name {
-            white-space: nowrap;
-            padding-left: 5px;
-            text-decoration: none;
           }
         }
         .workout-date {

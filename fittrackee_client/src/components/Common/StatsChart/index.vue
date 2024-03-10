@@ -85,7 +85,7 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
-  import { STATS_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, STATS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type {
     IStatisticsChartData,
@@ -145,17 +145,22 @@
   )
   const labels = computed(() => formattedStats.value.labels)
   const emptyStats = computed(() => Object.keys(statistics.value).length === 0)
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
 
   onBeforeMount(() =>
     getStatistics(getApiParams(chartParams.value, user.value))
   )
 
   function getStatistics(apiParams: IStatisticsParams) {
-    store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-      username: user.value.username,
-      filterType: 'by_time',
-      params: apiParams,
-    })
+    if (!isSuspended.value) {
+      store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+        username: user.value.username,
+        filterType: 'by_time',
+        params: apiParams,
+      })
+    }
   }
   function updateDisplayData(event: Event) {
     displayedData.value = (event.target as HTMLInputElement)

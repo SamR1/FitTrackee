@@ -2,7 +2,7 @@
   <div class="user-records-section">
     <div class="section-title">
       <i class="fa fa-trophy custom-fa-small" aria-hidden="true" />
-      {{ $t('workouts.RECORD', 2) }}
+      <span class="title">{{ $t('workouts.RECORD', 2) }}</span>
     </div>
     <div class="user-records">
       <div v-if="Object.keys(recordsBySport).length === 0" class="no-records">

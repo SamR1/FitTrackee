@@ -9,12 +9,16 @@ import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
 import type {
+  ICommentForm,
   IWorkout,
   IWorkoutApiChartData,
   TWorkoutsPayload,
   IWorkoutData,
   IWorkoutPayload,
   IWorkoutForm,
+  IComment,
+  ICommentPayload,
+  ICurrentCommentEdition,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -62,10 +66,47 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
   ): void
+  [WORKOUTS_STORE.ACTIONS.ADD_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    commentId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void
+  [WORKOUTS_STORE.ACTIONS.LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void
+  [WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
@@ -108,6 +149,26 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: S): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
+    state: S,
+    comments: IComment[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_COMMENT](
+    state: S,
+    comment: IComment
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING](
+    state: S,
+    commentId: string | null
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION](
+    state: S,
+    currentCommentEdition: ICurrentCommentEdition
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING](
+    state: S,
+    currentReporting: boolean
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

@@ -1,7 +1,7 @@
 <template>
   <div id="admin-users" class="admin-card">
     <Card>
-      <template #title>{{ capitalize($t('admin.USER', 0)) }}</template>
+      <template #title>{{ capitalize($t('user.USER', 0)) }}</template>
       <template #content>
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
@@ -32,6 +32,7 @@
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -97,11 +98,22 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
+                    {{ $t('user.SUSPENDED') }}
+                  </span>
+                  <i
+                    :class="`fa fa${
+                      user.suspended_at !== null ? '-check' : ''
+                    }-square-o`"
+                    aria-hidden="true"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
                   <button
                     :class="{ danger: user.admin }"
-                    :disabled="user.username === authUser.username"
+                    :disabled="isAdminButtonDisabled(user)"
                     @click="updateUser(user.username, !user.admin)"
                   >
                     {{
@@ -151,7 +163,11 @@
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type {
+    IAuthUserProfile,
+    IUserProfile,
+    TUsersPayload,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -186,8 +202,8 @@
 
   onBeforeMount(() => loadUsers(query))
 
-  function loadUsers(queryParams: TPaginationPayload) {
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  function loadUsers(queryParams: TUsersPayload) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
   }
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)
@@ -205,6 +221,11 @@
       query.page = 1
     }
     router.push({ path: '/admin/users', query })
+  }
+  function isAdminButtonDisabled(user: IUserProfile) {
+    return (
+      user.username === authUser.value.username || user.suspended_at !== null
+    )
   }
 
   onUnmounted(() => {

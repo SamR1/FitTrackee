@@ -17,6 +17,8 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.administration.models import AdminActionAppeal
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -26,6 +28,7 @@ from fittrackee.emails.tasks import (
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
+from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
@@ -41,9 +44,14 @@ from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .exceptions import UserControlsException, UserCreationException
-from .models import BlacklistedToken, User, UserDataExport, UserSportPreference
+from .models import (
+    BlacklistedToken,
+    BlockedUser,
+    User,
+    UserDataExport,
+    UserSportPreference,
+)
 from .tasks import export_data
-from .utils.admin import UserManagerService
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.token import decode_user_token
@@ -52,6 +60,7 @@ auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
+BLOCKED_USERS_PER_PAGE = 5
 
 
 def send_account_confirmation_email(user: User) -> None:
@@ -167,9 +176,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if new_user:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
-            db.session.add(new_user)
             db.session.commit()
-
             send_account_confirmation_email(new_user)
 
         return {'status': 'success'}, 200
@@ -261,7 +268,7 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -296,11 +303,16 @@ def get_authenticated_user_profile(
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -364,7 +376,8 @@ def get_authenticated_user_profile(
           "use_dark_mode": null,
           "use_raw_gpx_speed": false,
           "username": "sam",
-          "weekm": false
+          "weekm": false,
+          "workouts_visibility": "private"
         },
         "status": "success"
       }
@@ -381,7 +394,7 @@ def get_authenticated_user_profile(
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
@@ -414,11 +427,16 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -483,6 +501,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user profile updated",
         "status": "success"
@@ -546,7 +565,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user email and password.
@@ -587,11 +606,14 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -656,6 +678,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user account updated",
         "status": "success"
@@ -772,7 +795,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
@@ -816,11 +839,16 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
           "picture": false,
@@ -885,6 +913,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": true,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "public"
         },
         "message": "user preferences updated",
         "status": "success"
@@ -892,14 +921,22 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json boolean hide_profile_in_users_directory: if true, user does not
+                                                    appear in users directory
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
+    :<json string map_visibility: workouts map visibility
+                                  ('public', 'followers_only', 'private')
+    :<json boolean manually_approves_followers: if false, follow requests are
+                        automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean use_dark_mode: Display interface with dark mode if true.
                    If null, it uses browser preferences.
     :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
+    :<json string workouts_visibility: user workouts visibility
+                                      ('public', 'followers_only', 'private')
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -918,13 +955,17 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     user_mandatory_data = {
         'date_format',
         'display_ascent',
+        'hide_profile_in_users_directory',
         'imperial_units',
         'language',
+        'manually_approves_followers',
+        'map_visibility',
         'start_elevation_at_zero',
         'timezone',
         'use_dark_mode',
         'use_raw_gpx_speed',
         'weekm',
+        'workouts_visibility',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -938,6 +979,12 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     use_dark_mode = post_data.get('use_dark_mode')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
+    map_visibility = post_data.get('map_visibility')
+    workouts_visibility = post_data.get('workouts_visibility')
+    manually_approves_followers = post_data.get('manually_approves_followers')
+    hide_profile_in_users_directory = post_data.get(
+        'hide_profile_in_users_directory'
+    )
 
     try:
         auth_user.date_format = date_format
@@ -949,6 +996,14 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.use_dark_mode = use_dark_mode
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
+        auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
+        auth_user.map_visibility = get_map_visibility(
+            PrivacyLevel(map_visibility), auth_user.workouts_visibility
+        )
+        auth_user.manually_approves_followers = manually_approves_followers
+        auth_user.hide_profile_in_users_directory = (
+            hide_profile_in_users_directory
+        )
         db.session.commit()
 
         return {
@@ -1124,7 +1179,7 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
@@ -1213,7 +1268,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
@@ -1591,7 +1646,7 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/logout', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     User logout.
@@ -1657,7 +1712,7 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     The authenticated user accepts the privacy policy.
@@ -1708,7 +1763,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export/request', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Request a data export for authenticated user.
@@ -1781,7 +1836,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get a data export info for authenticated user if a request exists.
@@ -1850,7 +1905,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route(
     '/auth/account/export/<string:file_name>', methods=['GET']
 )
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def download_data_export(
     auth_user: User, file_name: str
 ) -> Union[Response, HttpResponse]:
@@ -1900,3 +1955,78 @@ def download_data_export(
         mimetype='application/zip',
         as_attachment=True,
     )
+
+
+@auth_blueprint.route('/auth/blocked-users', methods=['GET'])
+@require_auth(scopes=['profile:read'])
+def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    try:
+        page = int(params.get('page', 1))
+    except ValueError:
+        page = 1
+
+    paginated_relations = (
+        User.query.join(BlockedUser, User.id == BlockedUser.user_id)
+        .filter(BlockedUser.by_user_id == auth_user.id)
+        .order_by(BlockedUser.created_at.desc())
+        .paginate(page=page, per_page=BLOCKED_USERS_PER_PAGE, error_out=False)
+    )
+    return {
+        "status": "success",
+        "blocked_users": [
+            user.serialize(auth_user) for user in paginated_relations.items
+        ],
+        "pagination": {
+            "has_next": paginated_relations.has_next,
+            "has_prev": paginated_relations.has_prev,
+            "page": paginated_relations.page,
+            "pages": paginated_relations.pages,
+            "total": paginated_relations.total,
+        },
+    }
+
+
+@auth_blueprint.route("/auth/account/suspension", methods=["GET"])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+def get_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    return {
+        "status": "success",
+        "user_suspension": auth_user.suspension_action.serialize(auth_user),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+def appeal_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=auth_user.suspension_action.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

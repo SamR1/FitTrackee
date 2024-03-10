@@ -30,7 +30,7 @@
           </button>
         </div>
         <div class="nav-items-app-menu" @click="closeMenu()">
-          <div class="nav-items-group" v-if="isAuthenticated">
+          <div class="nav-items-group" v-if="isAuthenticated && !isSuspended">
             <router-link class="nav-item" to="/">
               {{ $t('dashboard.DASHBOARD') }}
             </router-link>
@@ -39,6 +39,9 @@
             </router-link>
             <router-link class="nav-item" to="/statistics">
               {{ $t('statistics.STATISTICS') }}
+            </router-link>
+            <router-link class="nav-item" to="/users">
+              {{ capitalize($t('user.USER', 0)) }}
             </router-link>
             <router-link class="nav-item" to="/workouts/add">
               {{ $t('workouts.ADD_WORKOUT') }}
@@ -55,11 +58,31 @@
         </div>
         <div class="nav-items-user-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <div class="nav-item nav-profile-img">
+            <router-link
+              class="nav-item nav-profile-img"
+              to="/profile"
+              @click="closeMenu"
+              :title="authUser.username"
+            >
               <UserPicture :user="authUser" />
-            </div>
-            <router-link class="nav-item" to="/profile" @click="closeMenu">
-              {{ authUser.username }}
+              <span class="user-name">{{ authUser.username }}</span>
+            </router-link>
+            <router-link
+              v-if="!isSuspended"
+              class="nav-item nav-profile-img notifications"
+              to="/notifications?status=unread"
+              @click="closeMenu"
+            >
+              <i
+                class="notifications-icons"
+                :class="`fa fa-bell${
+                  hasUnreadNotifications ? '-ringing' : ''
+                }-o`"
+                aria-hidden="true"
+              />
+              <span class="notifications-label">
+                {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
+              </span>
             </router-link>
             <button
               class="nav-button logout-button transparent"
@@ -121,7 +144,11 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    NOTIFICATIONS_STORE,
+    ROOT_STORE,
+  } from '@/store/constants'
   import type { IDropdownOption } from '@/types/forms'
   import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile } from '@/types/user'
@@ -149,6 +176,12 @@
   )
   const darkTheme: ComputedRef<boolean> = computed(() =>
     getDarkTheme(darkMode.value)
+  )
+  const hasUnreadNotifications: ComputedRef<boolean> = computed(
+    () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
+  )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
 
   onBeforeMount(() => setTheme())
@@ -241,6 +274,11 @@
       font-size: 1.2em;
     }
 
+    .notifications-icons {
+      font-size: 1em;
+      padding-top: 7px;
+    }
+
     .nav-icon-open {
       display: none;
     }
@@ -273,6 +311,7 @@
 
       .nav-items-group {
         display: flex;
+        align-items: flex-start;
       }
       .nav-item {
         padding: 0 10px;
@@ -286,6 +325,12 @@
             width: 180px !important;
           }
         }
+
+        &.notifications {
+          .notifications-label {
+            display: none;
+          }
+        }
       }
 
       .nav-link {
@@ -294,8 +339,12 @@
       }
 
       .nav-profile-img {
+        display: flex;
+        gap: $default-padding;
+        align-items: flex-start;
         margin-bottom: -$default-padding;
         ::v-deep(.user-picture) {
+          min-width: auto;
           img {
             height: 32px;
             width: 32px;
@@ -303,7 +352,14 @@
           }
           .no-picture {
             font-size: 1.7em;
+            padding: 0;
           }
+        }
+        .user-name {
+          max-width: 180px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 
@@ -340,7 +396,9 @@
       .nav-icon-open.menu-open {
         display: none;
       }
-
+      .notifications-icons {
+        padding: 6px 0 0 4px;
+      }
       .close-icon {
         display: block;
       }
@@ -413,23 +471,29 @@
               overflow-y: scroll;
             }
           }
-        }
-
-        .nav-profile-img {
-          display: none;
+          &.notifications {
+            padding-top: $default-padding;
+            .notifications-label {
+              display: block;
+            }
+          }
         }
 
         .nav-separator {
           display: flex;
           border-top: solid 1px var(--nav-border-color);
           margin: 0 $default-margin * 2;
-          padding: 0;
+          padding: 0 0 $default-padding;
           height: 0;
+          width: 88%;
         }
       }
       .theme-button {
         margin-left: $default-padding * 2;
       }
+    }
+    .fa-language {
+      cursor: pointer;
     }
   }
 </style>

@@ -34,6 +34,7 @@
     "the number of files in the archive exceeds the limit": "The number of files in the archive exceeds the limit.",
     "user does not exist": "User does not exist.",
     "valid email must be provided for admin contact": "A valid email must be provided for administrator contact",
+    "you can appeal only once": "You can appeal only once.",
     "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
     "you do not have permissions": "You do not have permissions."
   },

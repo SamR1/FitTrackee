@@ -1,6 +1,8 @@
 import json
 import time
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
+from unittest.mock import Mock
 from urllib.parse import parse_qs
 
 from flask import Flask
@@ -9,9 +11,17 @@ from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
+from fittrackee.administration.models import (
+    REPORT_ACTION_TYPES,
+    AdminAction,
+    AdminActionAppeal,
+)
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
+from fittrackee.reports.models import Report
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Workout
 
 from .custom_asserts import (
     assert_errored_response,
@@ -19,10 +29,42 @@ from .custom_asserts import (
 )
 from .utils import (
     TEST_OAUTH_CLIENT_METADATA,
+    get_date_string,
     random_email,
     random_int,
+    random_short_id,
     random_string,
 )
+
+
+class BaseTestMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
+    @staticmethod
+    def get_args(call_args: Tuple) -> Tuple:
+        if len(call_args) == 2:
+            args, _ = call_args
+        else:
+            _, args, _ = call_args
+        return args
+
+    @staticmethod
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs
+
+    def assert_call_args_keys_equal(
+        self, mock: Mock, expected_keys: List
+    ) -> None:
+        args_list = self.get_kwargs(mock.call_args)
+        assert list(args_list.keys()) == expected_keys
+
+    @staticmethod
+    def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
+        assert subset.items() <= container.items()
 
 
 class RandomMixin:
@@ -43,8 +85,22 @@ class RandomMixin:
         return random_email()
 
     @staticmethod
-    def random_int(min_val: int = 0, max_val: int = 999999) -> int:
-        return random_int(min_val, max_val)
+    def random_int(min_value: int = 0, max_value: int = 999999) -> int:
+        return random_int(min_value, max_value)
+
+    @staticmethod
+    def random_short_id() -> str:
+        return random_short_id()
+
+    @staticmethod
+    def get_date_string(
+        *,
+        date_format: Optional[str] = None,
+        date: Optional[datetime] = None,
+    ) -> str:
+        return get_date_string(
+            date_format if date_format else '%a, %d %b %Y %H:%M:%S GMT', date
+        )
 
 
 class OAuth2Mixin(RandomMixin):
@@ -299,22 +355,91 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         else:
             self.assert_insufficient_scope(response)
 
-
-class CallArgsMixin:
-    """call args are returned differently between Python 3.7 and 3.7+"""
-
     @staticmethod
-    def get_args(call_args: Tuple) -> Tuple:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
+    def assert_return_not_found(
+        url: str, client: FlaskClient, auth_token: str, message: str
+    ) -> None:
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
-    @staticmethod
-    def get_kwargs(call_args: Tuple) -> Dict:
-        if len(call_args) == 2:
-            _, kwargs = call_args
-        else:
-            _, _, kwargs = call_args
-        return kwargs
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == message
+
+    def assert_return_user_not_found(
+        self, url: str, client: FlaskClient, auth_token: str
+    ) -> None:
+        self.assert_return_not_found(
+            url, client, auth_token, 'user does not exist'
+        )
+
+
+class UserModerationMixin(RandomMixin):
+    def create_report(
+        self,
+        reporter: User,
+        reported_object: Union[Comment, User, Workout],
+        note: Optional[str] = None,
+    ) -> Report:
+        report = Report(
+            note=note if note else self.random_string(),
+            reported_by=reporter.id,
+            reported_object=reported_object,
+        )
+        db.session.add(report)
+        db.session.commit()
+        return report
+
+    def create_user_report(self, reporter: User, user: User) -> Report:
+        return self.create_report(reporter=reporter, reported_object=user)
+
+    def create_admin_action(
+        self,
+        admin_user: User,
+        user: User,
+        action_type: Optional[str] = None,
+        report_id: Optional[int] = None,
+    ) -> AdminAction:
+        if action_type in REPORT_ACTION_TYPES and not report_id:
+            report_id = self.create_report(admin_user, user).id
+        admin_action = AdminAction(
+            admin_user_id=admin_user.id,
+            action_type=action_type if action_type else "user_suspension",
+            report_id=report_id,
+            user_id=user.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+        return admin_action
+
+    def create_user_suspension_action(
+        self,
+        admin: User,
+        user: User,
+        report_id: Optional[int] = None,
+    ) -> AdminAction:
+        if not report_id:
+            report_id = self.create_user_report(admin, user).id
+        admin_action = self.create_admin_action(
+            admin, user, "user_suspension", report_id
+        )
+        user.suspended_at = datetime.utcnow()
+        db.session.commit()
+        return admin_action
+
+    def create_action_appeal(
+        self, action_id: int, user: User, with_commit: bool = True
+    ) -> AdminActionAppeal:
+        admin_action_appeal = AdminActionAppeal(
+            action_id=action_id,
+            user_id=user.id,
+            text=self.random_string(),
+        )
+        db.session.add(admin_action_appeal)
+        if with_commit:
+            db.session.commit()
+        return admin_action_appeal

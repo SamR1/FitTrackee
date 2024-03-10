@@ -27,7 +27,7 @@ def check_username(username: str) -> str:
     If not, it returns error messages
     """
     ret = ''
-    if not (2 < len(username) < 31):
+    if not 2 < len(username) < 31:
         ret += 'username: 3 to 30 characters required\n'
     if not re.match(r'^[a-zA-Z0-9_]+$', username):
         ret += (

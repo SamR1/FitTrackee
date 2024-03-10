@@ -1,4 +1,36 @@
+class BlockUserException(Exception):
+    ...
+
+
+class FollowRequestAlreadyProcessedError(Exception):
+    ...
+
+
+class FollowRequestAlreadyRejectedError(Exception):
+    ...
+
+
 class InvalidEmailException(Exception):
+    ...
+
+
+class InvalidNotificationTypeException(Exception):
+    ...
+
+
+class MissingAdminIdException(Exception):
+    ...
+
+
+class MissingReportIdException(Exception):
+    ...
+
+
+class NotExistingFollowRequestError(Exception):
+    ...
+
+
+class UserAlreadySuspendedException(Exception):
     ...
 
 

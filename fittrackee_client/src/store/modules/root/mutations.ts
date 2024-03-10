@@ -4,6 +4,7 @@ import { ROOT_STORE } from '@/store/constants'
 import type { IRootState, TRootMutations } from '@/store/modules/root/types'
 import type { TAppConfig, IAppStatistics } from '@/types/application'
 import type { TLanguage } from '@/types/locales'
+import type { IAuthUserProfile } from '@/types/user'
 import { localeFromLanguage } from '@/utils/locales'
 
 export const mutations: MutationTree<IRootState> & TRootMutations = {
@@ -50,5 +51,17 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
     darkMode: boolean | null
   ) {
     state.darkMode = darkMode
+  },
+  [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
+    state: IRootState,
+    authUser: IAuthUserProfile
+  ) {
+    state.application.displayOptions = {
+      ...state.application.displayOptions,
+      dateFormat: authUser.date_format,
+      displayAscent: authUser.display_ascent,
+      timezone: authUser.timezone,
+      useImperialUnits: authUser.imperial_units,
+    }
   },
 }

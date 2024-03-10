@@ -5,6 +5,8 @@
       :name="name"
       :maxLength="charLimit"
       :disabled="disabled"
+      :required="required"
+      :placeholder="placeholder"
       v-model="text"
       @input="updateText"
     />
@@ -15,26 +17,35 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, toRefs, watch } from 'vue'
 
   interface Props {
     name: string
     charLimit?: number
     disabled?: boolean
-    input?: string | null
+    input?: string
+    required?: boolean
+    placeholder?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
     disabled: false,
     input: '',
+    required: false,
+    placeholder: '',
   })
 
   const emit = defineEmits(['updateValue'])
 
-  const text = ref('')
+  const { input } = toRefs(props)
+  const text = ref(input.value)
 
   function updateText(event: Event) {
-    emit('updateValue', (event.target as HTMLInputElement).value)
+    const target = event.target as HTMLInputElement
+    emit('updateValue', {
+      value: target.value,
+      selectionStart: target.selectionStart,
+    })
   }
 
   watch(

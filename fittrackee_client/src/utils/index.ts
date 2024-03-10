@@ -3,7 +3,9 @@ import type { ActionContext } from 'vuex'
 
 import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
 import type { IAuthUserState } from '@/store/modules/authUser/types'
+import type { INotificationsState } from '@/store/modules/notifications/types'
 import type { IOAuth2State } from '@/store/modules/oauth2/types'
+import type { IReportsState } from '@/store/modules/reports/types'
 import type { IRootState } from '@/store/modules/root/types'
 import type { ISportsState } from '@/store/modules/sports/types'
 import type { IStatisticsState } from '@/store/modules/statistics/types'
@@ -21,6 +23,8 @@ export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
     | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<INotificationsState, IRootState>
+    | ActionContext<IReportsState, IRootState>
     | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
