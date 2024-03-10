@@ -181,6 +181,7 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    suspended_at = db.Column(db.DateTime, nullable=True)
     ap_id = db.Column(db.Text(), nullable=True)
     remote_url = db.Column(db.Text(), nullable=True)
 
@@ -419,6 +420,9 @@ class Workout(BaseModel):
         workout["with_gpx"] = self.gpx is not None and can_see_map_data
         if self.user.is_remote:
             workout['remote_url'] = self.remote_url
+
+        if is_owner or (user and user.admin and for_report):
+            workout["suspended_at"] = self.suspended_at
         return workout
 
     @classmethod

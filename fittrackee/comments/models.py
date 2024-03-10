@@ -66,12 +66,14 @@ def get_comments(
                     ),
                 ),
             ),
+            Comment.suspended_at == None,  # noqa
         )
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             Comment.text_visibility == PrivacyLevel.PUBLIC,
+            Comment.suspended_at == None,  # noqa
         )
     return comments_filter.order_by(Comment.created_at.asc()).all()
 
@@ -111,6 +113,7 @@ class Comment(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    suspended_at = db.Column(db.DateTime, nullable=True)
     ap_id = db.Column(db.Text(), nullable=True)
     remote_url = db.Column(db.Text(), nullable=True)
 
@@ -259,6 +262,10 @@ class Comment(BaseModel):
         except CommentForbiddenException:
             reply_to = None
 
+        suspended_at = {}
+        if user and (user.id == self.user_id or (user.admin and for_report)):
+            suspended_at["suspended_at"] = self.suspended_at
+
         return {
             'id': self.short_id,
             'user': self.user.serialize(),
@@ -292,6 +299,7 @@ class Comment(BaseModel):
             ),
             'likes_count': self.likes.count(),
             'liked': self.liked_by(user) if user else False,
+            **suspended_at,
         }
 
     def get_activity(self, activity_type: str) -> Dict:

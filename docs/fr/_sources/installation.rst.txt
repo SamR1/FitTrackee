@@ -1,6 +1,21 @@
 Installation
 ############
 
+| **FitTrackee** can be installed via a single `Python package from PyPI <https://pypi.org/project/fittrackee/>`__ or from sources after cloning the repository.
+
+| For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
+
+| The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
+| On other operating systems, some issues can be encountered and adaptations may be necessary.
+
+.. note::
+  | Other installation guides are available thanks to contributors:
+  | - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
+  | - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+
+
+Main dependencies
+~~~~~~~~~~~~~~~~~
 This application is written in Python (API) and Typescript (client):
 
 - API:
@@ -10,6 +25,7 @@ This application is written in Python (API) and Typescript (client):
     - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
+    - `gunicorn <https://gunicorn.org/>`_ to serve application
 - Client:
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
@@ -17,6 +33,7 @@ This application is written in Python (API) and Typescript (client):
 
 | Logo, some sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 | FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__.
+
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -34,12 +51,6 @@ Prerequisites
 
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
-
-.. note::
-    | The following steps describe an installation on Linux systems (tested
-      on Debian and Arch).
-    | On other OS, some issues can be encountered and adaptations may be
-      necessary.
 
 
 Environment variables
@@ -518,13 +529,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.31):
+-  Download the last release (for now, it is the release v0.7.32):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
-   $ tar -xzf v0.7.31.tar.gz
-   $ mv FitTrackee-0.7.31 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
+   $ tar -xzf v0.7.32.tar.gz
+   $ mv FitTrackee-0.7.32 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -579,6 +590,9 @@ Upgrade
 From PyPI
 ^^^^^^^^^
 
+.. warning::
+    | Only if **FitTrackee** was initially installed from **PyPI**
+
 - Stop the application and activate the virtualenv
 
 - Upgrade with pip
@@ -605,6 +619,10 @@ From PyPI
 
 From sources
 ^^^^^^^^^^^^
+
+.. warning::
+    | Only if **FitTrackee** was initially installed from sources.
+
 
 Dev environment
 """""""""""""""
@@ -648,13 +666,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.31) and overwrite existing files:
+- Download the last release (for now, it is the release v0.7.32) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
-   $ tar -xzf v0.7.31.tar.gz
-   $ cp -R FitTrackee-0.7.31/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
+   $ tar -xzf v0.7.32.tar.gz
+   $ cp -R FitTrackee-0.7.32/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

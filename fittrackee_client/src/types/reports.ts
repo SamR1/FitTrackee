@@ -6,9 +6,9 @@ export interface IReport {
   created_at: string
   note: string
   object_type: string
-  reported_by: IUserProfile
+  reported_by: IUserProfile | null
   reported_comment: IComment | null
-  reported_user: IUserProfile
+  reported_user: IUserProfile | null
   reported_workout: IWorkout | null
   resolved: boolean
   resolved_at: string
@@ -22,7 +22,7 @@ export interface IAdminAction {
   appeal: IAccountSuspensionAppeal | null
   created_at: string
   id: number
-  note: string | null
+  reason: string | null
   report_id: number | null
   user: IUserProfile | null
 }
@@ -65,4 +65,11 @@ export interface IAppealPayload {
   approved: boolean
   reason: string
   reportId: number
+}
+
+export interface IReportAdminActionPayload {
+  action_type: string
+  reason?: string | null
+  report_id: number
+  username: string
 }

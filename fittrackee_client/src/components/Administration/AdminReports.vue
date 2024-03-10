@@ -89,10 +89,14 @@
                   <router-link
                     class="link-with-image"
                     :to="`/admin/users/${report.reported_user.username}`"
+                    v-if="report.reported_user"
                   >
                     <UserPicture :user="report.reported_user" />
                     {{ report.reported_user.username }}
                   </router-link>
+                  <span class="deleted-object" v-else>
+                    {{ $t('admin.DELETED_USER') }}
+                  </span>
                 </td>
                 <td>
                   <span class="cell-heading">
@@ -110,12 +114,16 @@
                     {{ $t('admin.APP_MODERATION.REPORTED_BY') }}
                   </span>
                   <router-link
+                    v-if="report.reported_by"
                     class="link-with-image"
                     :to="`/admin/users/${report.reported_by.username}`"
                   >
                     <UserPicture :user="report.reported_by" />
                     {{ report.reported_by.username }}
                   </router-link>
+                  <span class="deleted-object" v-else>
+                    {{ $t('admin.DELETED_USER') }}
+                  </span>
                 </td>
                 <td>
                   <span class="cell-heading">

@@ -6,10 +6,7 @@ from sqlalchemy import func
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.comments.utils import get_comment
-from fittrackee.reports.exceptions import (
-    InvalidReporterException,
-    ReportNotFoundException,
-)
+from fittrackee.reports.exceptions import ReportNotFoundException
 from fittrackee.reports.models import Report, ReportComment
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
@@ -27,26 +24,19 @@ class ReportService:
     ) -> Report:
         if object_type == "comment":
             target_object = get_comment(object_id, reporter)
-            target_user_id = target_object.user_id
         elif object_type == "workout":
             target_object = get_workout(object_id, reporter)
-            target_user_id = target_object.user_id
         else:  # object_type == "user"
             target_object = User.query.filter(
                 func.lower(User.username) == func.lower(object_id),
             ).first()
             if not target_object or not target_object.is_active:
                 raise UserNotFoundException()
-            target_user_id = target_object.id
-
-        if target_user_id == reporter.id:
-            raise InvalidReporterException()
 
         new_report = Report(
-            reported_by=reporter.id,
             note=note,
-            object_id=target_object.id,
-            object_type=object_type,
+            reported_by=reporter.id,
+            reported_object=target_object,
         )
         db.session.add(new_report)
         db.session.commit()

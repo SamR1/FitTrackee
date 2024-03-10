@@ -387,10 +387,9 @@ class UserModerationMixin(RandomMixin):
         note: Optional[str] = None,
     ) -> Report:
         report = Report(
-            reported_by=reporter.id,
             note=note if note else self.random_string(),
-            object_type=reported_object.__class__.__name__.lower(),
-            object_id=reported_object.id,
+            reported_by=reporter.id,
+            reported_object=reported_object,
         )
         db.session.add(report)
         db.session.commit()

@@ -24,12 +24,22 @@ REPORT_ACTION_TYPES = [
     "report_reopening",
     "report_resolution",
 ]
-# TODO: add other users actions
 USER_ACTION_TYPES = [
     "user_suspension",
     "user_unsuspension",
 ]
-ADMIN_ACTION_TYPES = REPORT_ACTION_TYPES + USER_ACTION_TYPES
+COMMENT_ACTION_TYPES = [
+    "comment_suspension",
+    "comment_unsuspension",
+]
+WORKOUT_ACTION_TYPES = [
+    "workout_suspension",
+    "workout_unsuspension",
+]
+OBJECTS_ADMIN_ACTION_TYPES = (
+    COMMENT_ACTION_TYPES + USER_ACTION_TYPES + WORKOUT_ACTION_TYPES
+)
+ADMIN_ACTION_TYPES = REPORT_ACTION_TYPES + OBJECTS_ADMIN_ACTION_TYPES
 
 
 class AdminAction(BaseModel):
@@ -60,8 +70,20 @@ class AdminAction(BaseModel):
         index=True,
         nullable=True,
     )
+    workout_id = db.Column(
+        db.Integer,
+        db.ForeignKey('workouts.id', ondelete='SET NULL'),
+        index=True,
+        nullable=True,
+    )
+    comment_id = db.Column(
+        db.Integer,
+        db.ForeignKey('comments.id', ondelete='SET NULL'),
+        index=True,
+        nullable=True,
+    )
     action_type = db.Column(db.String(50), nullable=False)
-    note = db.Column(db.String(), nullable=True)
+    reason = db.Column(db.String(), nullable=True)
 
     admin_user = db.relationship(
         "User",
@@ -80,6 +102,16 @@ class AdminAction(BaseModel):
         uselist=False,
         backref=db.backref("action", lazy='joined', single_parent=True),
     )
+    comment = db.relationship(
+        'Comment',
+        lazy=True,
+        backref=db.backref('comment_admin_action', lazy='select'),
+    )
+    workout = db.relationship(
+        'Workout',
+        lazy=True,
+        backref=db.backref('workout_admin_action', lazy='select'),
+    )
 
     def __init__(
         self,
@@ -87,22 +119,36 @@ class AdminAction(BaseModel):
         admin_user_id: int,
         user_id: Optional[int] = None,
         report_id: Optional[int] = None,
-        note: Optional[str] = None,
+        comment_id: Optional[int] = None,
+        workout_id: Optional[int] = None,
+        reason: Optional[str] = None,
         created_at: Optional[datetime] = None,
     ):
         if action_type not in ADMIN_ACTION_TYPES:
             raise InvalidAdminActionException()
         if action_type in REPORT_ACTION_TYPES and not report_id:
             raise InvalidAdminActionException()
-        if action_type in USER_ACTION_TYPES and not user_id:
+        if action_type in OBJECTS_ADMIN_ACTION_TYPES and not user_id:
+            raise InvalidAdminActionException()
+        if action_type in WORKOUT_ACTION_TYPES and not workout_id:
+            raise InvalidAdminActionException()
+        if action_type in COMMENT_ACTION_TYPES and not comment_id:
             raise InvalidAdminActionException()
 
         self.action_type = action_type
         self.admin_user_id = admin_user_id
         self.created_at = created_at if created_at else datetime.utcnow()
-        self.note = note
+        self.comment_id = (
+            comment_id if action_type in COMMENT_ACTION_TYPES else None
+        )
+        self.reason = reason
         self.report_id = report_id
-        self.user_id = user_id if action_type in USER_ACTION_TYPES else None
+        self.user_id = (
+            user_id if action_type in OBJECTS_ADMIN_ACTION_TYPES else None
+        )
+        self.workout_id = (
+            workout_id if action_type in WORKOUT_ACTION_TYPES else None
+        )
 
     @property
     def short_id(self) -> str:
@@ -118,7 +164,7 @@ class AdminAction(BaseModel):
             ),
             "created_at": self.created_at,
             "id": self.short_id,
-            "note": self.note,
+            "reason": self.reason,
         }
         if current_user.admin:
             action = {
@@ -128,7 +174,29 @@ class AdminAction(BaseModel):
                 "user": (
                     self.user.serialize(current_user) if self.user else None
                 ),
+                "comment": (
+                    self.comment.serialize(user=current_user, for_report=True)
+                    if self.comment_id
+                    else None
+                ),
+                "workout": (
+                    self.workout.serialize(user=current_user, for_report=True)
+                    if self.workout_id
+                    else None
+                ),
             }
+        else:
+            action["comment"] = (
+                self.comment.serialize(user=current_user)
+                if self.comment_id
+                else None
+            )
+            action["workout"] = (
+                self.workout.serialize(user=current_user)
+                if self.workout_id
+                else None
+            )
+
         return action
 
 

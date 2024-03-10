@@ -55,6 +55,7 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('modification_date', sa.DateTime(), nullable=True),
         sa.Column('text', sa.String(), nullable=False),
+        sa.Column('suspended_at', sa.DateTime(), nullable=True),
         sa.ForeignKeyConstraint(
             ['reply_to'], ['comments.id'], ondelete='SET NULL'
         ),
@@ -193,6 +194,9 @@ def upgrade():
                 nullable=True,
             )
         )
+        batch_op.add_column(
+            sa.Column('suspended_at', sa.DateTime(), nullable=True)
+        )
     op.execute(
         "UPDATE workouts "
         "SET workout_visibility = 'PRIVATE', "
@@ -277,19 +281,19 @@ def upgrade():
         sa.Column('object_type', sa.String(length=50), nullable=False),
         sa.Column('note', sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
-            ['reported_by'], ['users.id'], ondelete='CASCADE'
+            ['reported_by'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_comment_id'], ['comments.id'], ondelete='CASCADE'
+            ['reported_comment_id'], ['comments.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_user_id'], ['users.id'], ondelete='CASCADE'
+            ['reported_user_id'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['reported_workout_id'], ['workouts.id'], ondelete='CASCADE'
+            ['reported_workout_id'], ['workouts.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
-            ['resolved_by'], ['users.id'], ondelete='CASCADE'
+            ['resolved_by'], ['users.id'], ondelete='SET NULL'
         ),
         sa.PrimaryKeyConstraint('id'),
     )
@@ -313,9 +317,7 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
-            batch_op.f('ix_reports_resolved_by'),
-            ['resolved_by'],
-            unique=False,
+            batch_op.f('ix_reports_resolved_by'), ['resolved_by'], unique=False
         )
         batch_op.create_index(
             batch_op.f('ix_reports_object_type'), ['object_type'], unique=False
@@ -356,16 +358,24 @@ def upgrade():
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('admin_user_id', sa.Integer(), nullable=True),
         sa.Column('report_id', sa.Integer(), nullable=True),
+        sa.Column('comment_id', sa.Integer(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=True),
+        sa.Column('workout_id', sa.Integer(), nullable=True),
         sa.Column('action_type', sa.String(length=50), nullable=False),
-        sa.Column('note', sa.String(), nullable=True),
+        sa.Column('reason', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
             ['admin_user_id'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
             ['report_id'], ['reports.id'], ondelete='CASCADE'
         ),
+        sa.ForeignKeyConstraint(
+            ['comment_id'], ['comments.id'], ondelete='SET NULL'
+        ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(
+            ['workout_id'], ['workouts.id'], ondelete='SET NULL'
+        ),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('uuid'),
     )
@@ -381,7 +391,17 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
+            batch_op.f('ix_admin_actions_comment_id'),
+            ['comment_id'],
+            unique=False,
+        )
+        batch_op.create_index(
             batch_op.f('ix_admin_actions_user_id'), ['user_id'], unique=False
+        )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_workout_id'),
+            ['workout_id'],
+            unique=False,
         )
 
     op.create_table(
@@ -476,6 +496,7 @@ def downgrade():
     with op.batch_alter_table('workouts', schema=None) as batch_op:
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workout_visibility')
+        batch_op.drop_column('suspended_at')
 
     with op.batch_alter_table('users', schema=None) as batch_op:
         batch_op.drop_column('suspended_at')

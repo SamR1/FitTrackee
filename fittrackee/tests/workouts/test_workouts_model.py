@@ -1,3 +1,4 @@
+import datetime
 from datetime import timedelta
 from typing import List, Optional
 
@@ -81,6 +82,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
         assert serialized_workout['min_alt'] is None
+        assert serialized_workout['suspended_at'] is None
         assert serialized_workout['modification_date'] is None
         assert serialized_workout['moving'] == str(workout.moving)
         assert serialized_workout['next_workout'] is None
@@ -124,6 +126,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
         assert serialized_workout['min_alt'] is None
+        assert serialized_workout['suspended_at'] is None
         assert serialized_workout['modification_date'] is not None
         assert serialized_workout['moving'] == str(workout.moving)
         assert serialized_workout['next_workout'] is None
@@ -167,6 +170,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
         assert serialized_workout['min_alt'] is None
+        assert serialized_workout['suspended_at'] is None
         assert serialized_workout['modification_date'] is not None
         assert serialized_workout['moving'] == str(workout.moving)
         assert serialized_workout['next_workout'] is None
@@ -277,6 +281,28 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert (
             serialized_workout['map_visibility']
             == expected_map_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility",
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_serializes_suspended_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.suspended_at = datetime.datetime.utcnow()
+
+        serialized_workout = workout_cycling_user_1.serialize(user_1)
+
+        assert (
+            serialized_workout["suspended_at"]
+            == workout_cycling_user_1.suspended_at
         )
 
     def test_workout_segment_model(
@@ -532,6 +558,41 @@ class TestWorkoutModelAsFollower(WorkoutModelTestCase):
 
         assert serialized_workout['previous_workout'] is None
 
+    def test_serializer_does_not_return_suspended_at(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        add_follower(user_1, user_2)
+
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
+
+        assert 'suspended_at' not in serialized_workout
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility",
+        [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_raises_exception_when_workout_is_suspended(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        add_follower(user_1, user_2)
+        workout_cycling_user_1.suspended_at = datetime.datetime.utcnow()
+
+        with pytest.raises(WorkoutForbiddenException):
+            workout_cycling_user_1.serialize(user_2)
+
 
 class TestWorkoutModelAsUser(WorkoutModelTestCase):
     @pytest.mark.parametrize(
@@ -664,6 +725,34 @@ class TestWorkoutModelAsUser(WorkoutModelTestCase):
         serialized_workout = workout_running_user_1.serialize(user_2)
 
         assert serialized_workout['previous_workout'] is None
+
+    def test_serializer_does_not_return_suspended_at(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+
+        serialized_workout = workout_cycling_user_1.serialize(user_2)
+
+        assert 'suspended_at' not in serialized_workout
+
+    def test_it_raises_exception_when_workout_is_suspended(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.suspended_at = datetime.datetime.utcnow()
+
+        with pytest.raises(WorkoutForbiddenException):
+            workout_cycling_user_1.serialize(user_2)
 
 
 class TestWorkoutModelAsUnauthenticatedUser(WorkoutModelTestCase):
@@ -812,6 +901,33 @@ class TestWorkoutModelAsUnauthenticatedUser(WorkoutModelTestCase):
         assert serialized_workout['liked'] is False
         assert serialized_workout['likes_count'] == 1
 
+    def test_serializer_does_not_return_suspended_at(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+
+        serialized_workout = workout_cycling_user_1.serialize()
+
+        assert 'suspended_at' not in serialized_workout
+
+    def test_it_raises_exception_when_workout_is_suspended(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.suspended_at = datetime.datetime.utcnow()
+
+        with pytest.raises(WorkoutForbiddenException):
+            workout_cycling_user_1.serialize()
+
 
 class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
     @pytest.mark.parametrize(
@@ -947,6 +1063,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             workout_cycling_user_2.max_speed
         )
         assert serialized_workout['min_alt'] is None
+        assert serialized_workout['suspended_at'] is None
         assert serialized_workout['modification_date'] is not None
         assert serialized_workout['moving'] == str(
             workout_cycling_user_2.moving
@@ -966,6 +1083,50 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         assert serialized_workout['weather_start'] is None
         assert serialized_workout['with_gpx'] is True
         assert str(serialized_workout['workout_date']) == '2018-01-23 00:00:00'
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility",
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_raises_exception_when_workout_is_suspended(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1_admin: User,
+        user_2: User,
+        workout_cycling_user_2: Workout,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        workout_cycling_user_2.suspended_at = datetime.datetime.utcnow()
+
+        with pytest.raises(WorkoutForbiddenException):
+            workout_cycling_user_2.serialize(user_1_admin)
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility",
+        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+    )
+    def test_it_serializes_suspended_workout_for_report(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1_admin: User,
+        user_2: User,
+        workout_cycling_user_2: Workout,
+        input_workout_visibility: PrivacyLevel,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        workout_cycling_user_2.suspended_at = datetime.datetime.utcnow()
+
+        serialized_workout = workout_cycling_user_2.serialize(
+            user_1_admin, for_report=True
+        )
+
+        assert (
+            serialized_workout["suspended_at"]
+            == workout_cycling_user_2.suspended_at
+        )
 
 
 class TestWorkoutModelGetActivity:

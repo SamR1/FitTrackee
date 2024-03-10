@@ -56,6 +56,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                         ),
                     ),
                 ),
+                Workout.suspended_at == None,  # noqa
                 User.suspended_at == None,  # noqa
             )
             .order_by(

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-def check_workout_comment(check_owner: bool = True) -> Callable:
+def check_workout_comment(only_owner: bool = True) -> Callable:
     def decorator_check_workout_comment(f: Callable) -> Callable:
         @wraps(f)
         def wrapper_check_workout_comment(
@@ -25,7 +25,7 @@ def check_workout_comment(check_owner: bool = True) -> Callable:
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )
-            if check_owner and (
+            if only_owner and (
                 not auth_user or auth_user.id != comment.user.id
             ):
                 return ForbiddenErrorResponse()

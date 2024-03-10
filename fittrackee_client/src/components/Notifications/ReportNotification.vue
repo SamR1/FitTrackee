@@ -1,12 +1,17 @@
 <template>
-  <div class="report-notification" v-if="report.reported_user">
-    <div class="reported-user">
+  <div class="report-notification">
+    <div class="reported-user" v-if="report.reported_user">
       <UserPicture :user="report.reported_user" />
       <div class="user-name">
         <router-link :to="`/users/${report.reported_user.username}`">
           {{ report.reported_user.username }}
         </router-link>
       </div>
+    </div>
+    <div class="reported-user" v-else>
+      <span class="deleted-object">
+        {{ $t('admin.DELETED_USER') }}
+      </span>
     </div>
     <div class="report-button">
       <button @click="$router.push(`/admin/reports/${report.id}`)">

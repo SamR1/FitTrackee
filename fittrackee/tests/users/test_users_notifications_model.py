@@ -961,10 +961,9 @@ class TestNotificationForReport(NotificationTestCase):
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         report = Report(
-            reported_by=user_1.id,
             note=random_string(),
-            object_id=user_2.id,
-            object_type='user',
+            reported_by=user_1.id,
+            reported_object=user_2,
         )
         db.session.add(report)
         db.session.commit()
@@ -979,10 +978,9 @@ class TestNotificationForReport(NotificationTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report = Report(
-            reported_by=user_1_admin.id,
             note=random_string(),
-            object_id=user_2.id,
-            object_type='user',
+            reported_by=user_1_admin.id,
+            reported_object=user_2,
         )
         db.session.add(report)
         db.session.commit()
@@ -997,10 +995,9 @@ class TestNotificationForReport(NotificationTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = Report(
-            reported_by=user_3.id,
             note=random_string(),
-            object_id=user_2.id,
-            object_type='user',
+            reported_by=user_3.id,
+            reported_object=user_2,
         )
         db.session.add(report)
         user_1_admin.is_active = False
@@ -1015,10 +1012,9 @@ class TestNotificationForReport(NotificationTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = Report(
-            reported_by=user_3.id,
             note=random_string(),
-            object_id=user_2.id,
-            object_type='user',
+            reported_by=user_3.id,
+            reported_object=user_2,
         )
         db.session.add(report)
         db.session.commit()
@@ -1041,10 +1037,9 @@ class TestNotificationForReport(NotificationTestCase):
         user_4: User,
     ) -> None:
         report = Report(
-            reported_by=user_3.id,
             note=random_string(),
-            object_id=user_4.id,
-            object_type='user',
+            reported_by=user_3.id,
+            reported_object=user_4,
         )
         db.session.add(report)
         db.session.commit()
@@ -1070,10 +1065,9 @@ class TestNotificationForReport(NotificationTestCase):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = Report(
-            reported_by=user_2.id,
             note=random_string(),
-            object_id=comment.id,
-            object_type='comment',
+            reported_by=user_2.id,
+            reported_object=comment,
         )
         db.session.add(report)
         db.session.commit()

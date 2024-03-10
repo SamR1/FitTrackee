@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Installation - FitTrackee 0.7.31 documentation</title>
+        <title>Installation - FitTrackee 0.7.32 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.7.31
+      <a href="index.html"><div class="brand">FitTrackee 0.7.32
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.7.31
+  <span class="sidebar-brand-text">FitTrackee 0.7.32
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -231,6 +231,26 @@
         <article role="main">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h1>
+<div class="line-block">
+<div class="line"><strong>FitTrackee</strong> can be installed via a single <a class="reference external" href="https://pypi.org/project/fittrackee/">Python package from PyPI</a> or from sources after cloning the repository.</div>
+</div>
+<div class="line-block">
+<div class="line">For a single-user instance, it’s possible to disable registration. So all you need is Python and PostgreSQL. A <a class="reference external" href="cli.html#users">CLI</a> is available to manage user account.</div>
+</div>
+<div class="line-block">
+<div class="line">The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).</div>
+<div class="line">On other operating systems, some issues can be encountered and adaptations may be necessary.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Other installation guides are available thanks to contributors:</div>
+<div class="line">- <a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation on Uberspace Web hosting</a></div>
+<div class="line">- <a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation on Debian 12 net install (guide in German)</a></div>
+</div>
+</div>
+<section id="main-dependencies">
+<h2>Main dependencies<a class="headerlink" href="#main-dependencies" title="Permalink to this heading">#</a></h2>
 <p>This application is written in Python (API) and Typescript (client):</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -241,6 +261,7 @@
 <li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> for task queue</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> for OAuth 2.0 Authorization support</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> for API rate limits</p></li>
+<li><p><a class="reference external" href="https://gunicorn.org/">gunicorn</a> to serve application</p></li>
 </ul>
 </dd>
 </dl>
@@ -259,6 +280,7 @@
 <div class="line">Logo, some sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
 <div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
 </div>
+</section>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -287,15 +309,6 @@
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.</div>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">The following steps describe an installation on Linux systems (tested
-on Debian and Arch).</div>
-<div class="line">On other OS, some issues can be encountered and adaptations may be
-necessary.</div>
 </div>
 </div>
 </section>
@@ -909,11 +922,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.31):</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.32):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.31.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.31<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.32.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.32<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -972,6 +985,12 @@ database credentials</strong>):</p></li>
 </div>
 <section id="id3">
 <h3>From PyPI<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Only if <strong>FitTrackee</strong> was initially installed from <strong>PyPI</strong></div>
+</div>
+</div>
 <ul class="simple">
 <li><p>Stop the application and activate the virtualenv</p></li>
 <li><p>Upgrade with pip</p></li>
@@ -998,6 +1017,12 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </section>
 <section id="id4">
 <h3>From sources<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Only if <strong>FitTrackee</strong> was initially installed from sources.</div>
+</div>
+</div>
 <section id="id5">
 <h4>Dev environment<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h4>
 <ul class="simple">
@@ -1037,11 +1062,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.31) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.7.32) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.31.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.31.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.31/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.32.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.32/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1359,6 +1384,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#main-dependencies">Main dependencies</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
 <li><a class="reference internal" href="#emails">Emails</a></li>
@@ -1403,7 +1429,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c1acc189"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f6544be3"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

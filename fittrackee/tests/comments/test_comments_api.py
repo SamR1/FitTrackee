@@ -890,6 +890,39 @@ class TestGetWorkoutCommentAsUser(
 
         self.assert_403(response)
 
+    def test_it_returns_404_when_comment_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment.short_id})",
+        )
+
 
 class TestGetWorkoutCommentAsFollower(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
@@ -1001,6 +1034,44 @@ class TestGetWorkoutCommentAsFollower(
 
         self.assert_403(response)
 
+    def test_it_returns_404_when_comment_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        user_2.approves_follow_request_from(user_3)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment.short_id})",
+        )
+
 
 class TestGetWorkoutCommentAsOwner(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
@@ -1075,6 +1146,41 @@ class TestGetWorkoutCommentAsOwner(
 
         self.assert_403(response)
 
+    def test_it_returns_suspended_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
@@ -1100,6 +1206,34 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
         )
+        client = app.test_client()
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment.short_id})",
+        )
+
+    def test_it_returns_404_when_comment_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
         client = app.test_client()
 
         response = client.get(
@@ -1277,6 +1411,43 @@ class TestGetWorkoutCommentWithReplies(
             parent_comment=comment,
         )
         user_3.blocks_user(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/comments/{comment.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment']['replies'] == []
+
+    def test_it_does_not_return_suspended_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        reply = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=comment,
+        )
+        reply.suspended_at = datetime.utcnow()
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

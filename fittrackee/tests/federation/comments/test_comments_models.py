@@ -49,6 +49,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'liked': False,
             'likes_count': 0,
             'mentions': [],
+            'suspended_at': None,
         }
 
 

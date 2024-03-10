@@ -116,7 +116,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         assert comment_report.reported_by == user_2.id
         assert comment_report.reported_comment_id == comment_report.id
         assert comment_report.reported_workout_id is None
-        assert comment_report.reported_user_id is None
+        assert comment_report.reported_user_id == user_1.id
         assert comment_report.resolved is False
         assert comment_report.resolved_at is None
         assert comment_report.resolved_by is None
@@ -201,7 +201,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         assert workout_report.reported_by == user_1.id
         assert workout_report.reported_comment_id is None
         assert workout_report.reported_workout_id == workout_cycling_user_2.id
-        assert workout_report.reported_user_id is None
+        assert workout_report.reported_user_id == user_2.id
         assert workout_report.resolved is False
         assert workout_report.resolved_at is None
         assert workout_report.resolved_by is None

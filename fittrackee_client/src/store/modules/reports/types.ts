@@ -12,8 +12,9 @@ import type {
   IAppealPayload,
   IReportForAdmin,
   IReport,
-  IReportPayload,
+  IReportAdminActionPayload,
   IReportCommentPayload,
+  IReportPayload,
 } from '@/types/reports'
 
 export interface IReportsState {
@@ -38,6 +39,10 @@ export interface IReportsActions {
   [REPORTS_STORE.ACTIONS.PROCESS_APPEAL](
     context: ActionContext<IReportsState, IRootState>,
     payload: IAppealPayload
+  ): void
+  [REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION](
+    context: ActionContext<IReportsState, IRootState>,
+    payload: IReportAdminActionPayload
   ): void
   [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
     context: ActionContext<IReportsState, IRootState>,

@@ -230,6 +230,8 @@ jobs:
           . .venv/bin/activate
       - name: Install previous version of fittrackee from PyPI
         run: python3 -m pip install fittrackee
+      - name: Install previous version of FlaskMigrate (to remove after the next release)
+        run: python3 -m pip install Flask-Migrate==4.0.5
       - name: Run migrations
         run: ftcli db upgrade
       - name: Build fittrackee package

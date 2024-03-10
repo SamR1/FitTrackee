@@ -10,6 +10,8 @@ from fittrackee.federation.utils.user import get_user_from_username
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     InvalidUserException,
+    MissingAdminIdException,
+    MissingReportIdException,
     UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
@@ -66,11 +68,16 @@ class UserManagerService:
         with_confirmation: bool = True,
         suspended: Optional[bool] = None,
         report_id: Optional[int] = None,
-        action_note: Optional[str] = None,
+        reason: Optional[str] = None,
     ) -> Tuple[User, bool, Optional[str]]:
         user_updated = False
         new_password = None
         user = self._get_user()
+        if suspended is not None:
+            if self.admin_user_id is None:
+                raise MissingAdminIdException()
+            if report_id is None:
+                raise MissingReportIdException()
 
         if is_admin is not None:
             user.admin = is_admin
@@ -110,7 +117,7 @@ class UserManagerService:
                 ),
                 created_at=now,
                 report_id=report_id,
-                note=action_note,
+                reason=reason,
                 user_id=user.id,
             )
             db.session.add(admin_action)

@@ -730,8 +730,6 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :<json boolean admin: does the user have administrator rights
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
-    :<json boolean suspend: suspend user if true
-    :<json boolean unsuspend: unsuspend user if true
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -753,21 +751,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     activate = user_data.get('activate')
-    suspend = user_data.get('suspend')
-    if (activate is False and user_name == auth_user.username) or (
-        suspend and user_name == auth_user.username
-    ):
+    if activate is False and user_name == auth_user.username:
         return ForbiddenErrorResponse()
-
-    suspended = None
-    if suspend is True:
-        suspended = True
-    if user_data.get('unsuspend') is True:
-        suspended = False
-
-    report_id = user_data.get('report_id')
-    if suspended is not None and report_id is None:
-        return InvalidPayloadErrorResponse('report_id is missing')
 
     try:
         reset_password = user_data.get('reset_password', False)
@@ -781,9 +766,6 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
-            suspended=suspended,
-            report_id=report_id,
-            action_note=user_data.get('note'),
         )
 
         if current_app.config['CAN_SEND_EMAILS']:

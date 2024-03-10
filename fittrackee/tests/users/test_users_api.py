@@ -11,8 +11,10 @@ from freezegun import freeze_time
 from fittrackee import db
 from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.federation.models import Actor
+from fittrackee.reports.models import Report
 from fittrackee.users.models import (
     FollowRequest,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -2155,250 +2157,6 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
 
         self.assert_403(response)
 
-    def test_it_returns_error_when_report_id_is_not_provided_when_admin_suspends_user(  # noqa
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(dict(suspend=True)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        self.assert_400(response, "report_id is missing")
-
-    def test_admin_can_suspend_another_user_account(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(dict(suspend=True, report_id=report.id)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['is_active'] is True
-        assert user['suspended_at'] == self.get_date_string(date=now)
-        assert user_2.is_active is True
-        assert user_2.suspended_at == now
-
-    def test_it_logs_action_when_an_admin_suspends_a_user(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-        note = self.random_string()
-
-        with freeze_time(now):
-            client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(
-                    dict(suspend=True, report_id=report.id, note=note)
-                ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        admin_action = AdminAction.query.filter_by(
-            admin_user_id=user_1_admin.id, user_id=user_2.id
-        ).first()
-        assert admin_action.action_type == "user_suspension"
-        assert admin_action.created_at == now
-        assert admin_action.note == note
-        assert admin_action.report_id == report.id
-
-    def test_admin_can_suspend_another_admin_account_and_remove_admin_rights(
-        self, app: Flask, user_1_admin: User, user_2_admin: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2_admin)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2_admin.username}',
-                content_type='application/json',
-                data=json.dumps(dict(suspend=True, report_id=report.id)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['admin'] is False
-        assert user['is_active'] is True
-        assert user['suspended_at'] == self.get_date_string(date=now)
-        assert user_2_admin.admin is False
-        assert user_2_admin.is_active is True
-        assert user_2_admin.suspended_at == now
-
-    def test_admin_can_not_suspend_his_own_account(
-        self, app: Flask, user_1_admin: User, user_2_admin: User
-    ) -> None:
-        report = self.create_report(user_2_admin, user_1_admin)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            f'/api/users/{user_1_admin.username}',
-            content_type='application/json',
-            data=json.dumps(dict(suspend=True, report_id=report.id)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_403(response)
-
-    def test_it_returns_error_when_when_user_already_suspended(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        user_2.suspended_at = datetime.utcnow()
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(suspend=True, report_id=report.id)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_400(
-            response, f"user '{user_2.username}' already suspended"
-        )
-
-    def test_it_does_not_enable_registration_on_user_suspension(
-        self,
-        app_with_3_users_max: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app_with_3_users_max, user_1_admin.email
-        )
-
-        client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(suspend=True, report_id=report.id)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-        response = client.post(
-            '/api/auth/register',
-            data=json.dumps(
-                dict(
-                    username=self.random_string(),
-                    email=self.random_email(),
-                    password=self.random_string(),
-                    password_conf=self.random_string(),
-                    accepted_policy=True,
-                )
-            ),
-            content_type='application/json',
-        )
-
-        self.assert_403(response, 'error, registration is disabled')
-
-    def test_admin_can_unsuspend_another_user_account(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        user_2.suspended_at = datetime.utcnow()
-
-        response = client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(unsuspend=True, report_id=report.id)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['is_active'] is True
-        assert user['suspended_at'] is None
-        assert user_2.is_active is True
-        assert user_2.suspended_at is None
-
-    def test_it_logs_action_when_an_admin_unsuspends_a_user(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        report = self.create_report(user_1_admin, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        user_2.suspended_at = datetime.utcnow()
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(dict(unsuspend=True, report_id=report.id)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        admin_action = AdminAction.query.filter_by(
-            admin_user_id=user_1_admin.id, user_id=user_2.id
-        ).first()
-        assert admin_action.action_type == "user_unsuspension"
-        assert admin_action.created_at == now
-        assert admin_action.report_id == report.id
-
-    def test_it_returns_error_when_report_id_is_not_provided_when_admin_unsuspends_user(  # noqa
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        user_2.suspended_at = datetime.utcnow()
-        now = datetime.utcnow()
-
-        with freeze_time(now):
-            response = client.patch(
-                f'/api/users/{user_2.username}',
-                content_type='application/json',
-                data=json.dumps(dict(unsuspend=True)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
-
-        self.assert_400(response, "report_id is missing")
-
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'users:write': True}.items(),
@@ -2429,7 +2187,7 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteUser(ApiTestCaseMixin):
+class TestDeleteUser(UserModerationMixin, ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2546,6 +2304,82 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         assert response.status_code == 204
+
+    def test_user_with_notifications_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert Notification.query.first() is None
+
+    def test_user_with_reports_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        report_from_user_3 = self.create_report(
+            reporter=user_3, reported_object=user_1
+        )
+        report_from_user_1 = self.create_report(
+            reporter=user_1, reported_object=user_4
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert set(Report.query.all()) == {
+            report_from_user_3,
+            report_from_user_1,
+        }
+        assert (
+            Notification.query.filter_by(to_user_id=user_2_admin.id).first()
+            is not None
+        )
 
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
