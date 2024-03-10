@@ -1044,6 +1044,7 @@ def edit_user_sport_preferences(
     color = post_data.get('color')
     is_active = post_data.get('is_active')
     stopped_speed_threshold = post_data.get('stopped_speed_threshold')
+    default_equipment_ids = post_data.get('default_equipment_ids')
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1067,32 +1068,49 @@ def edit_user_sport_preferences(
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
 
-        existing_default_equipments = user_sport.default_equipments.all()
-        default_equipments = handle_equipments(
-            post_data.get('default_equipment_ids'),
-            auth_user,
-            existing_default_equipments,
-        )
-        if default_equipments:
-            db.session.execute(
-                insert(UserSportPreferenceEquipment)
-                .values(
-                    [
-                        {
-                            "equipment_id": equipment.id,
-                            "sport_id": user_sport.sport_id,
-                            "user_id": auth_user.id,
-                        }
-                        for equipment in default_equipments
-                    ]
-                )
-                .on_conflict_do_nothing()
+        if default_equipment_ids is not None:
+            existing_default_equipments = user_sport.default_equipments.all()
+            default_equipments = handle_equipments(
+                default_equipment_ids,
+                auth_user,
+                existing_default_equipments,
             )
-        elif existing_default_equipments:
-            db.session.query(UserSportPreferenceEquipment).filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                UserSportPreferenceEquipment.c.sport_id == user_sport.sport_id,
-            ).delete()
+            if default_equipments:
+                db.session.execute(
+                    insert(UserSportPreferenceEquipment)
+                    .values(
+                        [
+                            {
+                                "equipment_id": equipment.id,
+                                "sport_id": user_sport.sport_id,
+                                "user_id": auth_user.id,
+                            }
+                            for equipment in default_equipments
+                        ]
+                    )
+                    .on_conflict_do_nothing()
+                )
+
+                equipments_to_remove = set(existing_default_equipments) - set(
+                    default_equipments
+                )
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    (
+                        UserSportPreferenceEquipment.c.sport_id
+                        == user_sport.sport_id
+                    ),
+                    UserSportPreferenceEquipment.c.equipment_id.in_(
+                        [e.id for e in equipments_to_remove]
+                    ),
+                ).delete()
+
+            elif existing_default_equipments:
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.sport_id
+                    == user_sport.sport_id,
+                ).delete()
         db.session.commit()
 
         return {
