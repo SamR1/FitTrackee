@@ -19,17 +19,6 @@
             />
           </div>
           <div class="form-item">
-            <label for="equipment-description">
-              {{ $t('common.DESCRIPTION') }}
-            </label>
-            <CustomTextArea
-              name="equipment-description"
-              :charLimit="200"
-              :input="equipmentForm.description"
-              @updateValue="updateDescription"
-            />
-          </div>
-          <div class="form-item">
             <label for="equipment-type-id">
               {{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}*
             </label>
@@ -46,6 +35,17 @@
                 {{ equipmentType.translatedLabel }}
               </option>
             </select>
+          </div>
+          <div class="form-item">
+            <label for="equipment-description">
+              {{ $t('common.DESCRIPTION') }}
+            </label>
+            <CustomTextArea
+              name="equipment-description"
+              :charLimit="200"
+              :input="equipmentForm.description"
+              @updateValue="updateDescription"
+            />
           </div>
           <div class="form-item-checkbox" v-if="equipmentForm.id">
             <label for="equipment-active">

@@ -22,7 +22,8 @@ export interface IEquipment {
   is_active: boolean
   label: string
   total_distance: number
-  total_duration: number
+  total_duration: string
+  total_moving: string
   user_id: number
   workouts_count: number
 }

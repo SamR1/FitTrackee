@@ -27,5 +27,6 @@
       "LABEL": "par page"
     }
   },
-  "TOTAL": "Total"
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses"
 }

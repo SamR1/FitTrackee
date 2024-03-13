@@ -12,13 +12,6 @@
     <dl>
       <dt>{{ capitalize($t('common.LABEL')) }}</dt>
       <dd>{{ equipment.label }}</dd>
-      <dt>{{ $t('common.DESCRIPTION') }}</dt>
-      <dd>
-        <span v-if="equipment.description">{{ equipment.description }}</span>
-        <span v-else class="no-description">
-          {{ $t('common.NO_DESCRIPTION') }}
-        </span>
-      </dd>
       <dt>{{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}</dt>
       <dd class="equipment-type">
         <EquipmentTypeImage
@@ -27,6 +20,13 @@
         />
         <span>
           {{ $t(`equipment_types.${equipment.equipment_type.label}.LABEL`) }}
+        </span>
+      </dd>
+      <dt>{{ $t('common.DESCRIPTION') }}</dt>
+      <dd>
+        <span v-if="equipment.description">{{ equipment.description }}</span>
+        <span v-else class="no-description">
+          {{ $t('common.NO_DESCRIPTION') }}
         </span>
       </dd>
       <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
@@ -53,7 +53,13 @@
         </span>
       </dd>
       <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>
-      <dd>{{ equipment.total_duration }}</dd>
+      <dd>
+        {{ equipment.total_moving }}
+        <span v-if="equipment.total_duration !== equipment.total_moving">
+          ({{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}:
+          {{ equipment.total_duration }})
+        </span>
+      </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
         <i
