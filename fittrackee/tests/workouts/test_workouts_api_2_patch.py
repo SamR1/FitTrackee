@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 from typing import Dict
 from uuid import uuid4
 
@@ -357,6 +358,15 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             jsonify_dict(equipment_shoes_user_1.serialize())
             in data['data']['workouts'][0]['equipments']
         )
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == workout.distance
+        assert equipment_shoes_user_1.total_duration == workout.duration
+        assert equipment_shoes_user_1.total_moving == workout.moving
 
     def test_it_returns_400_when_equipment_is_inactive(
         self,
@@ -431,6 +441,18 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             jsonify_dict(equipment_bike_user_1_inactive.serialize())
             in data['data']['workouts'][0]['equipments']
         )
+        assert equipment_bike_user_1_inactive.total_workouts == 1
+        assert (
+            equipment_bike_user_1_inactive.total_distance == workout.distance
+        )
+        assert (
+            equipment_bike_user_1_inactive.total_duration == workout.duration
+        )
+        assert equipment_bike_user_1_inactive.total_moving == workout.moving
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == workout.distance
+        assert equipment_shoes_user_1.total_duration == workout.duration
+        assert equipment_shoes_user_1.total_moving == workout.moving
 
     def test_it_removes_equipment(
         self,
@@ -463,6 +485,15 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_shoes_user_1.serialize())
         ]
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 0
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == workout.distance
+        assert equipment_shoes_user_1.total_duration == workout.duration
+        assert equipment_shoes_user_1.total_moving == workout.moving
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -1055,3 +1086,15 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
+        assert equipment_bike_user_1.total_workouts == 1
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_cycling_user_1.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_cycling_user_1.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )

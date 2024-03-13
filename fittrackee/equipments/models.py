@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict
 
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.schema import UniqueConstraint
+from sqlalchemy.sql.expression import text
 
 from fittrackee import db
 
@@ -48,6 +49,21 @@ class Equipment(BaseModel):
     )
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
+    total_distance = db.Column(
+        db.Numeric(6, 3),
+        nullable=True,
+        server_default=text('0.0'),  # kilometers
+    )
+    total_duration = db.Column(
+        db.Interval, nullable=False, server_default=text("'00:00:00'")
+    )
+    total_moving = db.Column(
+        db.Interval, nullable=False, server_default=text("'00:00:00'")
+    )
+    total_workouts = db.Column(
+        db.Integer, nullable=False, server_default=text('0')
+    )
+
     workouts = db.relationship(
         'Workout', secondary=WorkoutEquipment, back_populates='equipments'
     )
@@ -82,11 +98,24 @@ class Equipment(BaseModel):
             ],
             'creation_date': self.creation_date,
             'is_active': self.is_active,
-            'total_distance': float(sum([w.distance for w in self.workouts])),
-            'total_duration': str(
-                sum([w.duration for w in self.workouts], timedelta())
+            'total_distance': (
+                0.0
+                if self.total_distance is None
+                else float(self.total_distance)
             ),
-            'workouts_count': len(self.workouts),
+            'total_duration': (
+                '0:00:00'
+                if self.total_duration is None
+                else str(self.total_duration)
+            ),
+            'total_moving': (
+                '0:00:00'
+                if self.total_moving is None
+                else str(self.total_moving)
+            ),
+            'workouts_count': (
+                0 if self.total_workouts is None else self.total_workouts
+            ),
         }
         return serialized_equipment
 

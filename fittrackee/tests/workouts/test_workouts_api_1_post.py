@@ -637,6 +637,11 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
 
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
@@ -1453,6 +1458,15 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             jsonify_dict(equipment_shoes_user_1.serialize())
             in data['data']['workouts'][0]['equipments']
         )
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == workout.distance
+        assert equipment_shoes_user_1.total_duration == workout.duration
+        assert equipment_shoes_user_1.total_moving == workout.moving
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

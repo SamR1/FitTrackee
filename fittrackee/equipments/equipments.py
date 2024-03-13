@@ -530,12 +530,12 @@ def delete_equipment(
         ).first()
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
-        if len(equipment.workouts) > 0 and not force_delete:
+        if equipment.total_workouts > 0 and not force_delete:
             return ForbiddenErrorResponse(
                 f"Cannot delete equipment that has associated workouts. "
-                f"Equipment id {equipment.id} has {len(equipment.workouts)} "
+                f"Equipment id {equipment.id} has {equipment.total_workouts} "
                 f"associated "
-                f"workout{'' if len(equipment.workouts) == 1 else 's'}. "
+                f"workout{'' if equipment.total_workouts == 1 else 's'}. "
                 f"(Provide argument 'force' as a query parameter to "
                 f"override this check)"
             )

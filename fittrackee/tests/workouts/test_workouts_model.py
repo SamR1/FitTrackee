@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+import pytest
 from flask import Flask
 
 from fittrackee import db
@@ -231,3 +232,22 @@ class TestWorkoutModel:
         assert serialized_workout['equipments'] == [
             equipment_bike_user_1.serialize()
         ]
+
+    def test_it_raises_exception_when_workout_is_deleted_before_removing_equipment(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+
+        db.session.delete(workout_cycling_user_1)
+        with pytest.raises(
+            Exception, match="equipments exists, remove them first"
+        ):
+            db.session.commit()
+
+        equipment_bike_user_1.total_workouts = 1

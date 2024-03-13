@@ -1,6 +1,6 @@
 import datetime
 import os
-from typing import Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
@@ -18,6 +18,11 @@ from fittrackee.files import get_absolute_file_path
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm.attributes import AttributeEvent
+
+    from fittrackee.equipments.models import Equipment
 
 BaseModel: DeclarativeMeta = db.Model
 record_types = [
@@ -411,20 +416,47 @@ def on_workout_update(
 
 @listens_for(Workout, 'after_delete')
 def on_workout_delete(
-    mapper: Mapper, connection: Connection, old_record: 'Record'
+    mapper: Mapper, connection: Connection, old_workout: 'Workout'
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        if old_record.map:
+        # Equipments must be removed before deleting workout
+        # in order to recalculate equipments totals
+        if old_workout.equipments:
+            raise Exception("equipments exists, remove them first")
+
+        if old_workout.map:
             try:
-                os.remove(get_absolute_file_path(old_record.map))
+                os.remove(get_absolute_file_path(old_workout.map))
             except OSError:
                 appLog.error('map file not found when deleting workout')
-        if old_record.gpx:
+        if old_workout.gpx:
             try:
-                os.remove(get_absolute_file_path(old_record.gpx))
+                os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error('gpx file not found when deleting workout')
+
+
+@listens_for(Workout.equipments, 'append')
+def on_workout_equipments_append(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) + float(target.distance)
+    value.total_duration += target.duration
+    if target.moving:
+        value.total_moving += target.moving
+    value.total_workouts += 1
+
+
+@listens_for(Workout.equipments, 'remove')
+def on_workout_equipments_remove(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) - float(target.distance)
+    value.total_duration -= target.duration
+    if target.moving:
+        value.total_moving -= target.moving
+    value.total_workouts -= 1
 
 
 class WorkoutSegment(BaseModel):

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Dict
 
 from flask import Flask
@@ -40,12 +41,17 @@ class TestEquipmentModel:
         equipment_type_2_bike: EquipmentType,
         equipment_bike_user_1: Equipment,
     ) -> None:
+        equipment_bike_user_1.total_distance = 0.0
+        equipment_bike_user_1.total_duration = timedelta()
+        equipment_bike_user_1.total_moving = timedelta()
+        equipment_bike_user_1.workouts_count = 0
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert serialized_equip['workouts_count'] == 0
         assert serialized_equip['total_distance'] == 0
         assert serialized_equip['total_duration'] == '0:00:00'
+        assert serialized_equip['total_moving'] == '0:00:00'
 
-    def test_equipment_model_with_workout(
+    def test_equipment_model_with_workouts(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -53,15 +59,90 @@ class TestEquipmentModel:
         equipment_type_2_bike: EquipmentType,
         user_1: User,
         workout_cycling_user_1: Workout,
+        another_workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        equipment_bike_user_1.workouts.append(workout_cycling_user_1)
-        db.session.add(equipment_bike_user_1)
+        equipment_bike_user_1.workouts = [
+            workout_cycling_user_1,
+            another_workout_cycling_user_1,
+        ]
         db.session.commit()
+
+        equipment_bike_user_1.total_distance = (
+            workout_cycling_user_1.distance
+            + another_workout_cycling_user_1.distance
+        )
+        equipment_bike_user_1.total_duration = (
+            workout_cycling_user_1.duration
+            + another_workout_cycling_user_1.duration
+        )
+        equipment_bike_user_1.total_moving = (
+            workout_cycling_user_1.moving
+            + another_workout_cycling_user_1.moving
+        )
+        equipment_bike_user_1.workouts_count = 2
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
-        assert serialized_equip['total_distance'] == 10.0
-        assert serialized_equip['total_duration'] == '1:00:00'
-        assert serialized_equip['workouts_count'] == 1
+        assert (
+            serialized_equip['total_distance']
+            == equipment_bike_user_1.total_distance
+        )
+        assert serialized_equip['total_duration'] == str(
+            equipment_bike_user_1.total_duration
+        )
+        assert serialized_equip['total_moving'] == str(
+            equipment_bike_user_1.total_moving
+        )
+        assert (
+            serialized_equip['workouts_count']
+            == equipment_bike_user_1.workouts_count
+        )
+
+        # remove one equipment
+        equipment_bike_user_1.workouts = [workout_cycling_user_1]
+        db.session.commit()
+
+        equipment_bike_user_1.total_distance = workout_cycling_user_1.distance
+        equipment_bike_user_1.total_duration = workout_cycling_user_1.moving
+        equipment_bike_user_1.total_moving = workout_cycling_user_1.moving
+        equipment_bike_user_1.workouts_count = 1
+        serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
+        assert (
+            serialized_equip['total_distance']
+            == equipment_bike_user_1.total_distance
+        )
+        assert serialized_equip['total_duration'] == str(
+            equipment_bike_user_1.total_duration
+        )
+        assert serialized_equip['total_moving'] == str(
+            equipment_bike_user_1.total_moving
+        )
+        assert (
+            serialized_equip['workouts_count']
+            == equipment_bike_user_1.workouts_count
+        )
+
+        # remove all equipments
+        equipment_bike_user_1.workouts = []
+        db.session.commit()
+
+        equipment_bike_user_1.total_distance = 0.0
+        equipment_bike_user_1.total_duration = timedelta()
+        equipment_bike_user_1.workouts_count = 0
+        serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
+        assert (
+            serialized_equip['total_distance']
+            == equipment_bike_user_1.total_distance
+        )
+        assert serialized_equip['total_duration'] == str(
+            equipment_bike_user_1.total_duration
+        )
+        assert serialized_equip['total_moving'] == str(
+            equipment_bike_user_1.total_moving
+        )
+        assert (
+            serialized_equip['workouts_count']
+            == equipment_bike_user_1.workouts_count
+        )
 
     def test_equipment_model_with_sport_association(
         self,

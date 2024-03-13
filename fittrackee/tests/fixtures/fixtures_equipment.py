@@ -110,6 +110,8 @@ def workout_w_shoes_equipment(
         distance=5,
         duration=timedelta(seconds=1024),
     )
+    db.session.add(workout)
+    db.session.flush()
     workout.equipments.append(equipment_shoes_user_1)
     db.session.commit()
     return workout

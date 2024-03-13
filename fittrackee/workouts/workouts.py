@@ -1487,6 +1487,10 @@ def delete_workout(
         if error_response:
             return error_response
 
+        # update equipments totals
+        workout.equipments = []
+        db.session.flush()
+
         db.session.delete(workout)
         db.session.commit()
         return {'status': 'no content'}, 204

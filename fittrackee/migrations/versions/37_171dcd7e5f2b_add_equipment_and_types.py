@@ -43,6 +43,30 @@ def upgrade():
         sa.Column('equipment_type_id', sa.Integer(), nullable=True),
         sa.Column('creation_date', sa.DateTime(), nullable=True),
         sa.Column('is_active', sa.Boolean(), nullable=False),
+        sa.Column(
+            'total_distance',
+            sa.Numeric(precision=6, scale=3),
+            server_default=sa.text('0.0'),
+            nullable=True,
+        ),
+        sa.Column(
+            'total_duration',
+            sa.Interval(),
+            server_default=sa.text("'00:00:00'"),
+            nullable=False,
+        ),
+        sa.Column(
+            'total_moving',
+            sa.Interval(),
+            server_default=sa.text("'00:00:00'"),
+            nullable=False,
+        ),
+        sa.Column(
+            'total_workouts',
+            sa.Integer(),
+            server_default=sa.text('0'),
+            nullable=False,
+        ),
         sa.ForeignKeyConstraint(
             ['equipment_type_id'],
             ['equipment_types.id'],
