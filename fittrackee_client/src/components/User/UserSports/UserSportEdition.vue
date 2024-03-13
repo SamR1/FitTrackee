@@ -1,6 +1,6 @@
 <template>
   <div id="sport-edition" v-if="sport">
-    <form @submit.prevent="updateSport">
+    <form @submit.prevent="updateSportPreferences">
       <div class="form-items">
         <div class="form-item">
           <label for="sport-label">
@@ -23,7 +23,7 @@
         </div>
         <div class="form-item">
           <label for="sport-threshold">
-            {{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}*
+            {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}*
           </label>
           <input
             id="sport-threshold"
@@ -177,6 +177,10 @@
         defaultEquipmentIds.value = sport.default_equipments.map((e) => e.id)
       }
     }
+  }
+  function updateSportPreferences(event: Event) {
+    sportPayload.default_equipment_ids = defaultEquipmentIds.value
+    updateSport(event)
   }
 
   watch(
