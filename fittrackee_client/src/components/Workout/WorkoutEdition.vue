@@ -242,6 +242,7 @@
                   :equipments="equipmentsForMultiSelect"
                   :workout-equipments="workoutEquipments"
                   name="workout-equipment"
+                  :for-creation="isCreation"
                   @updatedValues="updateEquipments"
                 />
               </div>
@@ -377,10 +378,17 @@
         )
       : []
   )
+  const selectedSport: ComputedRef<ITranslatedSport | null> = computed(() =>
+    workoutForm.sport_id
+      ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
+      : null
+  )
   const workoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
     workout.value?.equipments
       ? getEquipments(workout.value.equipments, t, 'all')
-      : []
+      : isCreation.value && selectedSport.value
+        ? getEquipments(selectedSport.value?.default_equipments, t, 'is_active')
+        : []
   )
   const selectedEquipmentIds: Ref<number[]> = ref([])
 
@@ -445,10 +453,10 @@
                 ? convertDistance(workout.descent, 'm', 'ft', 2)
                 : parseFloat(workout.descent.toFixed(2))
             }`
-      selectedEquipmentIds.value = workout.equipments
-        ? workout.equipments.map((e) => e.id)
-        : []
     }
+    selectedEquipmentIds.value = workout.equipments
+      ? workout.equipments.map((e) => e.id)
+      : []
   }
   function isDistanceInvalid() {
     return payloadErrorMessages.value.includes('workouts.INVALID_DISTANCE')
@@ -496,7 +504,6 @@
     ) {
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
-    payload.equipment_ids = selectedEquipmentIds.value
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
