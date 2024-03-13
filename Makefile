@@ -136,6 +136,12 @@ docker-up:
 docker-upgrade-db:
 	docker-compose -f docker-compose-dev.yml exec fittrackee ftcli db upgrade
 
+docker-release:
+	cp .env.docker .env
+	docker-compose -f docker-compose-dev.yml build fittrackee
+	docker login -u 
+	docker-compose push
+
 downgrade-db:
 	$(FLASK) db downgrade --directory $(MIGRATIONS)
 
