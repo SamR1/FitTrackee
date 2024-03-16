@@ -4,6 +4,7 @@
       :authUser="user"
       :equipments="equipments"
       :translatedEquipmentTypes="translatedEquipmentTypes"
+      :isEdition="isEdition"
     />
   </div>
 </template>
@@ -25,6 +26,7 @@
 
   interface Props {
     user: IAuthUserProfile
+    isEdition: boolean
   }
   const props = defineProps<Props>()
 

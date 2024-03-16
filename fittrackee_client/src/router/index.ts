@@ -373,7 +373,16 @@ const routes: Array<RouteRecordRaw> = [
             path: 'equipments',
             name: 'UserEquipmentsEdition',
             component: UserEquipments,
+            props: { isEdition: true },
             children: [
+              {
+                path: '',
+                name: 'UserEquipmentsListEdition',
+                component: UserEquipmentsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
               {
                 path: ':id',
                 name: 'EquipmentEdition',

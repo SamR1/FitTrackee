@@ -1,6 +1,6 @@
 <template>
   <div id="user-equipments-list">
-    <h1 class="equipments-list">
+    <h1 v-if="!isEdition" class="equipments-list">
       {{ $t('user.PROFILE.EQUIPMENTS.YOUR_EQUIPMENTS') }}
     </h1>
     <div class="no-equipments" v-if="equipments.length === 0">
@@ -37,6 +37,9 @@
                   </th>
                   <th class="text-left">
                     {{ $t('common.ACTIVE') }}
+                  </th>
+                  <th v-if="isEdition">
+                    {{ $t('common.ACTION') }}
                   </th>
                   <th />
                 </tr>
@@ -92,6 +95,20 @@
                       aria-hidden="true"
                     />
                   </td>
+                  <td v-if="isEdition" class="action-buttons">
+                    <span class="cell-heading">
+                      {{ $t('user.PROFILE.SPORT.ACTION') }}
+                    </span>
+                    <button
+                      @click="
+                        $router.push(
+                          `/profile/edit/equipments/${equipment.id}${isEdition ? '?fromEdition=true' : ''}`
+                        )
+                      "
+                    >
+                      {{ $t('buttons.EDIT') }}
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -100,10 +117,22 @@
       </template>
     </div>
     <div class="equipments-list-buttons">
-      <button @click="$router.push('/profile/equipments/new')">
+      <button
+        v-if="!isEdition"
+        @click="$router.push('/profile/edit/equipments')"
+      >
+        {{ $t('equipments.EDIT_EQUIPMENTS') }}
+      </button>
+      <button
+        v-if="!isEdition"
+        @click="$router.push('/profile/equipments/new')"
+      >
         {{ $t('equipments.NEW_EQUIPMENT') }}
       </button>
-      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
+      <button v-if="isEdition" @click="$router.push('/profile/equipments')">
+        {{ $t('buttons.BACK') }}
+      </button>
+      <button v-else @click="$router.push('/')">{{ $t('common.HOME') }}</button>
     </div>
   </div>
 </template>
@@ -118,10 +147,12 @@
     equipments: IEquipment[]
     translatedEquipmentTypes: ITranslatedEquipmentType[]
     authUser: IAuthUserProfile
+    isEdition: boolean
   }
   const props = defineProps<Props>()
 
-  const { authUser, equipments, translatedEquipmentTypes } = toRefs(props)
+  const { authUser, isEdition, equipments, translatedEquipmentTypes } =
+    toRefs(props)
   const equipmentByTypes = computed(() =>
     formatEquipmentsList(equipments.value)
   )

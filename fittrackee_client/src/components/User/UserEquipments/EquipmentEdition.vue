@@ -69,7 +69,9 @@
               () =>
                 $router.push(
                   equipment?.id
-                    ? `/profile/equipments/${equipment.id}`
+                    ? route.query.fromEdition
+                      ? '/profile/edit/equipments'
+                      : `/profile/equipments/${equipment.id}`
                     : '/profile/equipments'
                 )
             "
