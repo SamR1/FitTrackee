@@ -448,6 +448,12 @@ def process_files(
         else sport_preferences.stopped_speed_threshold
     )
 
+    # get default equipment if sport preferences exists
+    if not "equipments_list" not in workout_data and sport_preferences:
+        workout_data[
+            'equipments_list'
+        ] = sport_preferences.default_equipments.all()
+
     common_params = {
         'auth_user': auth_user,
         'workout_data': workout_data,

@@ -31,7 +31,7 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 
 from .models import Workout, WorkoutEquipment
 from .utils.convert import convert_in_duration
@@ -978,7 +978,13 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :form data: sport id, equipment ids and notes
                 (example: ``{"sport_id": 1, "notes": ""}``).
                 Double quotes in notes must be escaped.
-                Equipment ids are not mandatory
+
+                For `equipment_ids`, the id numbers of one or more pieces of
+                equipment to associate with workouts.
+                If not provided and default equipments exist for sport, default
+                equipments will be associated.
+
+                Notes and equipment ids are not mandatory
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1170,9 +1176,9 @@ def post_workout_no_gpx(
     :<json integer duration: workout duration in seconds
     :<json array of integers equipment_ids:
         the id numbers of one or more pieces of equipment
-        to associate with this workout (any existing equipment
-        for this workout will be replaced); if an empty array,
-        all equipment for this workout will be removed (not mandatory)
+        to associate with this workout
+        if not provided and default equipments exist for sport, default
+        equipments will be associated
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
     :<json string title: workout title (not mandatory)
@@ -1219,9 +1225,19 @@ def post_workout_no_gpx(
         equipments_list = handle_equipments(
             workout_data.get('equipment_ids'), auth_user
         )
+        workout_data['equipments_list'] = equipments_list
     except InvalidEquipmentException as e:
         return InvalidPayloadErrorResponse(str(e))
-    workout_data['equipments_list'] = equipments_list
+
+    # get default equipment if sport preferences exists
+    if not "equipments_list" not in workout_data:
+        sport_preferences = UserSportPreference.query.filter_by(
+            user_id=auth_user.id, sport_id=workout_data['sport_id']
+        ).first()
+        if sport_preferences:
+            workout_data[
+                'equipments_list'
+            ] = sport_preferences.default_equipments.all()
 
     try:
         new_workout = create_workout(auth_user, workout_data)
