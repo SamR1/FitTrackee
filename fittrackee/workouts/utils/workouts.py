@@ -161,8 +161,8 @@ def create_workout(
         new_workout.max_speed = new_workout.ave_speed
         new_workout.ascent = workout_data.get('ascent')
         new_workout.descent = workout_data.get('descent')
-    if workout_data.get('equipment_list') is not None:
-        new_workout.equipments = workout_data.get('equipment_list')
+    if workout_data.get('equipments_list') is not None:
+        new_workout.equipments = workout_data.get('equipments_list')
     return new_workout
 
 
@@ -221,8 +221,8 @@ def edit_workout(
         workout.title = workout_data.get('title')
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
-    if workout_data.get('equipment_list') is not None:
-        workout.equipments = workout_data.get('equipment_list')
+    if workout_data.get('equipments_list') is not None:
+        workout.equipments = workout_data.get('equipments_list')
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(

@@ -11,9 +11,9 @@ def handle_equipments(
     auth_user: User,
     existing_equipment_ids: Optional[List[Equipment]] = None,
 ) -> Union[List[Equipment], None]:
-    equipment_list = None
+    equipments_list = None
     if equipment_ids is not None:
-        equipment_list = []
+        equipments_list = []
         if not isinstance(equipment_ids, list):
             raise InvalidEquipmentException(
                 "equipment_ids must be an array of integers"
@@ -37,5 +37,5 @@ def handle_equipments(
                 raise InvalidEquipmentException(
                     f"equipment with id {equipment_id} is inactive"
                 )
-            equipment_list.append(equipment)
-    return equipment_list
+            equipments_list.append(equipment)
+    return equipments_list

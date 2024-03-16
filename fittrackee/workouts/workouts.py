@@ -1019,12 +1019,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     try:
-        equipment_list = handle_equipments(
+        equipments_list = handle_equipments(
             workout_data.get('equipment_ids'), auth_user
         )
     except InvalidEquipmentException as e:
         return InvalidPayloadErrorResponse(str(e))
-    workout_data['equipment_list'] = equipment_list
+    workout_data['equipments_list'] = equipments_list
 
     workout_file = request.files['file']
     upload_dir = os.path.join(
@@ -1216,12 +1216,12 @@ def post_workout_no_gpx(
         return InvalidPayloadErrorResponse()
 
     try:
-        equipment_list = handle_equipments(
+        equipments_list = handle_equipments(
             workout_data.get('equipment_ids'), auth_user
         )
     except InvalidEquipmentException as e:
         return InvalidPayloadErrorResponse(str(e))
-    workout_data['equipment_list'] = equipment_list
+    workout_data['equipments_list'] = equipments_list
 
     try:
         new_workout = create_workout(auth_user, workout_data)
@@ -1421,7 +1421,7 @@ def update_workout(
             except (TypeError, ValueError):
                 return InvalidPayloadErrorResponse()
 
-        workout_data['equipment_list'] = handle_equipments(
+        workout_data['equipments_list'] = handle_equipments(
             workout_data.get('equipment_ids'), auth_user, workout.equipments
         )
 
