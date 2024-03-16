@@ -58,25 +58,20 @@ def get_equipment_types(auth_user: User) -> Dict:
             {
               "id": 3,
               "is_active": true,
-              "label": "Treadmill"
+              "label": "Bike Trainer"
             },
             {
               "id": 4,
               "is_active": true,
-              "label": "Bike Trainer"
+              "label": "Kayak_Boat"
             },
             {
               "id": 5,
               "is_active": true,
-              "label": "Kayak_Boat"
-            },
-            {
-              "id": 6,
-              "is_active": true,
               "label": "Skis"
             },
             {
-              "id": 7,
+              "id": 5,
               "is_active": true,
               "label": "Snowshoes"
             }
@@ -111,29 +106,23 @@ def get_equipment_types(auth_user: User) -> Dict:
               "has_equipments": false,
               "id": 3,
               "is_active": true,
-              "label": "Treadmill"
+              "label": "Bike Trainer"
             },
             {
               "has_equipments": false,
               "id": 4,
               "is_active": true,
-              "label": "Bike Trainer"
+              "label": "Kayak_Boat"
             },
             {
               "has_equipments": false,
               "id": 5,
               "is_active": true,
-              "label": "Kayak_Boat"
-            },
-            {
-              "has_equipments": false,
-              "id": 6,
-              "is_active": true,
               "label": "Skis"
             },
             {
               "has_equipments": false,
-              "id": 7,
+              "id": 6,
               "is_active": true,
               "label": "Snowshoes"
             }
@@ -290,7 +279,7 @@ def update_equipment_type(
     auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Update a type of equipment.
+    Update a type of equipment to (de)activate it.
 
     Authenticated user must be an admin.
 

@@ -52,6 +52,7 @@ def get_equipments(auth_user: User) -> Dict:
         "equipment": [
           {
             "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
+            "default_for_sport_ids": [],
             "description": "The first shoes added to FitTrackee",
             "equipment_type": {
               "id": 1,
@@ -63,11 +64,13 @@ def get_equipments(auth_user: User) -> Dict:
             "label": "My shoes",
             "total_distance": 0.0,
             "total_duration": "0:00:00",
+            "total_moving": "0:00:00",
             "user_id": 1,
             "workouts_count": 0
         },
         {
             "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
+            "default_for_sport_ids": [],
             "description": "The second shoes added to FitTrackee",
             "equipment_type": {
               "id": 1,
@@ -79,6 +82,7 @@ def get_equipments(auth_user: User) -> Dict:
             "label": "My shoes 2",
             "total_distance": 0.0,
             "total_duration": "0:00:00",
+            "total_moving": "0:00:00",
             "user_id": ,
             "workouts_count": 0
             }
@@ -150,18 +154,26 @@ def get_equipment_by_id(
         "data": {
           "equipment": [
             {
+              "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
+              "default_for_sport_ids": [],
               "description": "Another piece of equipment",
+              "equipment_type": {
+                "id": 1,
+                "is_active": true,
+                "label": "Shoe"
+              },
               "id": 3,
               "is_active": true,
               "label": "Other user Equipment",
               "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "total_moving": "0:00:00",
               "user_id": 2,
               "workouts_count": 0
             }
           ]
-        }
-      },
-      "status": "success"
+        },
+        "status": "success"
       }
 
     - equipment not found
@@ -172,10 +184,10 @@ def get_equipment_by_id(
       Content-Type: application/json
 
       {
-          "status": "not found",
-          "data": {
-              "equipment": []
-          }
+        "data": {
+          "equipment": []
+        },
+        "status": "not found"
       }
 
     :param integer equipment_id: equipment id
@@ -203,9 +215,7 @@ def get_equipment_by_id(
 
 @equipments_blueprint.route('/equipments', methods=['POST'])
 @require_auth(scopes=['equipments:write'])
-def post_equipment(
-    auth_user: User,
-) -> Union[Tuple[Dict, int], HttpResponse]:
+def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a new piece of equipment.
 
@@ -225,22 +235,32 @@ def post_equipment(
       HTTP/1.1 201 CREATED
       Content-Type: application/json
 
-        {
-          "data": {
-            "equipment": [
-              {
-                "description": null,
-                "id": 12,
-                "is_active": true,
-                "label": "New equipment from API",
-                "total_distance": 0.0,
-                "user_id": 1,
-                "workouts_count": 0
-              }
-            ]
-          },
-          "status": "created"
-        }
+    {
+      "data": {
+        "equipment": [
+          {
+            "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
+            "default_for_sport_ids": [],
+            "description": null,
+            "equipment_type": {
+              "id": 1,
+              "is_active": true,
+              "label": "Shoe"
+            },
+            "id": 12,
+            "is_active": true,
+            "label": "New equipment from API",
+            "total_distance": 0.0,
+            "total_duration": "0:00:00",
+            "total_moving": "0:00:00",
+            "user_id": 1,
+            "workouts_count": 0
+          }
+        ]
+      },
+      "status": "created"
+    }
+
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
     :<json int equipment_type: the ID for an equipment type
@@ -352,14 +372,20 @@ def update_equipment(
             "equipment": [
               {
                 "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
+                "default_for_sport_ids": [],
                 "description": "Change bike to shoes",
-                "equipment_type": 1,
+                "equipment_type": {
+                  "id": 1,
+                  "is_active": true,
+                  "label": "Shoe"
+                },
                 "id": 11,
                 "is_active": true,
                 "label": "Updated bike",
                 "num_workouts": 0,
                 "total_distance": 0.0,
                 "total_duration": "0:00:00",
+                "total_moving": "0:00:00",
                 "user_id": 1
               }
             ]
