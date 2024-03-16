@@ -12,10 +12,15 @@
             </i18n-t>
           </div>
           <div class="modal-message" v-else>{{ message }}</div>
+          <div class="info-box" v-if="warning">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+            {{ warning }}
+          </div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div class="modal-buttons">
             <button
               class="confirm"
+              :class="{ danger: warning }"
               id="confirm-button"
               v-if="!errorMessages"
               @click="emit('confirmAction')"
@@ -48,9 +53,11 @@
     title: string
     message: string
     strongMessage?: string | null
+    warning?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     strongMessage: () => '',
+    warning: () => '',
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
@@ -139,6 +146,10 @@
             button {
               margin: $default-padding * 0.5;
             }
+          }
+
+          .info-box {
+            margin: 0 $default-margin $default-margin;
           }
         }
       }

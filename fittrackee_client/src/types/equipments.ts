@@ -39,3 +39,8 @@ export interface IPatchEquipmentPayload extends IAddEquipmentPayload {
   id: number
   isActive: boolean
 }
+
+export interface IDeleteEquipmentPayload {
+  id: number
+  force?: true
+}

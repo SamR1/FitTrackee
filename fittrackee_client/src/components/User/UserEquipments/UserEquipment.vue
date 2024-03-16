@@ -3,8 +3,13 @@
     <Modal
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
-      :message="$t('user.PROFILE.EQUIPMENTS.CONFIRM_EQUIPMENT_DELETION')"
+      message="user.PROFILE.EQUIPMENTS.CONFIRM_EQUIPMENT_DELETION"
       :strongMessage="equipment.label"
+      :warning="
+        equipment.workouts_count > 0
+          ? $t('user.PROFILE.EQUIPMENTS.EQUIPMENT_ASSOCIATED_WITH_WORKOUTS')
+          : ''
+      "
       @confirmAction="deleteEquipment"
       @cancelAction="updateDisplayModal(false)"
       @keydown.esc="updateDisplayModal(false)"
@@ -128,7 +133,7 @@
   import { useRoute } from 'vue-router'
 
   import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import type { IEquipment } from '@/types/equipments'
+  import type { IDeleteEquipmentPayload, IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -185,10 +190,11 @@
   }
   function deleteEquipment() {
     if (equipment.value?.id) {
-      store.dispatch(
-        EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT,
-        equipment.value.id
-      )
+      const payload: IDeleteEquipmentPayload = { id: equipment.value.id }
+      if (equipment.value?.workouts_count > 0) {
+        payload.force = true
+      }
+      store.dispatch(EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT, payload)
     }
   }
 

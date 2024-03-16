@@ -14,6 +14,7 @@ import type {
 import type { IRootState } from '@/store/modules/root/types'
 import type {
   IAddEquipmentPayload,
+  IDeleteEquipmentPayload,
   IEquipmentTypePayload,
   IPatchEquipmentPayload,
 } from '@/types/equipments'
@@ -48,13 +49,13 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
   },
   [EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT](
     context: ActionContext<IEquipmentTypesState, IRootState>,
-    equipmentId: number
+    payload: IDeleteEquipmentPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .delete(`equipments/${equipmentId}`)
+      .delete(`equipments/${payload.id}${payload.force ? '?force' : ''}`)
       .then(() => {
-        context.commit(EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT, equipmentId)
+        context.commit(EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT, payload.id)
         router.push('/profile/equipments')
       })
       .catch((error) => handleError(context, error))

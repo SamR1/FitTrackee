@@ -9,6 +9,7 @@ import { EQUIPMENTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type {
   IAddEquipmentPayload,
+  IDeleteEquipmentPayload,
   IEquipment,
   IEquipmentType,
   IEquipmentTypePayload,
@@ -27,7 +28,7 @@ export interface IEquipmentsActions {
   ): void
   [EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT](
     context: ActionContext<IEquipmentTypesState, IRootState>,
-    equipmentId: number
+    payload: IDeleteEquipmentPayload
   ): void
   [EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT](
     context: ActionContext<IEquipmentTypesState, IRootState>,

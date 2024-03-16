@@ -79,8 +79,9 @@
     },
     "EQUIPMENTS": {
       "ACTION": "action",
-      "CONFIRM_EQUIPMENT_DELETION": "Are you sure you want to delete this equipment?",
+      "CONFIRM_EQUIPMENT_DELETION": "Are you sure you want to delete this equipment {0}?",
       "DISABLED_BY_ADMIN": "disabled by admin",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "This equipment is associated with workouts.",
       "IS_ACTIVE": "active",
       "LABEL": "label",
       "DESCRIPTION": "description",
