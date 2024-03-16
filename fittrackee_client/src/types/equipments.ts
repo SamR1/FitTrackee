@@ -16,6 +16,7 @@ export interface IEquipmentTypePayload {
 
 export interface IEquipment {
   creation_date: string
+  default_for_sport_ids: number[]
   description: string | null
   equipment_type: IEquipmentType
   id: number

@@ -69,14 +69,22 @@
       <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
         {{ $t('buttons.EDIT') }}
       </button>
-      <button @click="$router.push('/profile/sports')">
+      <button
+        @click="
+          $router.push(
+            route.query.fromEquipmentId
+              ? `/profile/equipments/${route.query.fromEquipmentId}`
+              : '/profile/sports'
+          )
+        "
+      >
         {{ $t('buttons.BACK') }}
       </button>
     </div>
   </div>
   <div v-else>
-    <p class="no-sport">{{ $t('equipments.NO_EQUIPMENT') }}</p>
-    <button @click="$router.push('/profile/equipments')">
+    <p class="no-sport">{{ $t('user.NO_SPORT_FOUND') }}</p>
+    <button @click="$router.push('/profile/sports')">
       {{ $t('buttons.BACK') }}
     </button>
   </div>

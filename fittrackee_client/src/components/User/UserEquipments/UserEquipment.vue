@@ -67,6 +67,29 @@
           aria-hidden="true"
         />
       </dd>
+      <template v-if="equipment.default_for_sport_ids.length > 0">
+        <dt>{{ capitalize($t('equipments.DEFAULT_FOR_SPORTS', 0)) }}</dt>
+        <dd class="sports-list">
+          <span
+            class="sport-badge"
+            :class="{ inactive: !sport.is_active_for_user }"
+            v-for="sport in equipmentTranslatedSports"
+            :key="sport.label"
+          >
+            <SportImage
+              :title="sport.translatedLabel"
+              :sport-label="sport.label"
+              :color="sport.color ? sport.color : sportColors[sport.label]"
+            />
+            <router-link
+              :to="`/profile/sports/${sport.id}?fromEquipmentId=${equipment.id}`"
+            >
+              {{ sport.translatedLabel }}
+              {{ sport.is_active_for_user ? '' : `(${$t('common.INACTIVE')})` }}
+            </router-link>
+          </span>
+        </dd>
+      </template>
     </dl>
     <div class="equipment-buttons">
       <button @click="$router.push(`/profile/edit/equipments/${equipment.id}`)">
@@ -99,14 +122,17 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onUnmounted, ref, toRefs } from 'vue'
+  import { capitalize, computed, inject, onUnmounted, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
+  import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { translateSports } from '@/utils/sports'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -116,10 +142,29 @@
 
   const store = useStore()
   const route = useRoute()
+  const { t } = useI18n()
 
   const { authUser, equipments } = toRefs(props)
+
+  const sportColors = inject('sportColors') as Record<string, string>
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
+  )
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const equipmentTranslatedSports: ComputedRef<ITranslatedSport[]> = computed(
+    () =>
+      translateSports(
+        sports.value,
+        t,
+        'all',
+        authUser.value.sports_list
+      ).filter((s) =>
+        equipment.value
+          ? equipment.value?.default_for_sport_ids.includes(s.id)
+          : false
+      )
   )
   const displayModal: Ref<boolean> = ref(false)
 
@@ -169,6 +214,27 @@
         height: 25px;
         width: 25px;
         margin: 0;
+      }
+    }
+    .sports-list {
+      display: flex;
+      gap: $default-padding;
+      flex-wrap: wrap;
+      padding-top: $default-padding * 0.5;
+      .sport-badge {
+        display: flex;
+        gap: $default-padding;
+        &.inactive {
+          font-style: italic;
+        }
+        .sport-img {
+          height: 20px;
+          width: 20px;
+          margin: 0;
+        }
+        border: solid 1px var(--card-border-color);
+        border-radius: $border-radius;
+        padding: $default-padding * 0.75 $default-padding * 1.2;
       }
     }
   }
