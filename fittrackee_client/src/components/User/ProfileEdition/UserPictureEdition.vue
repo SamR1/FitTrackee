@@ -89,6 +89,7 @@
   @import '~@/scss/vars.scss';
 
   #user-picture-edition {
+    padding: $default-padding 0;
     .user-picture-form {
       display: flex;
       flex-direction: column;

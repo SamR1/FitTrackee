@@ -342,6 +342,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences-edition {
+    padding-top: $default-padding;
     .form-items {
       padding-top: $default-padding * 0.5;
     }

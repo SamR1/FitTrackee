@@ -195,7 +195,7 @@
         }
         .form-item-checkbox {
           display: flex;
-          padding: $default-padding;
+          padding: $default-padding $default-padding $default-padding 0;
           gap: $default-padding * 0.5;
         }
       }

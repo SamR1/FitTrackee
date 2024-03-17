@@ -23,9 +23,13 @@
     <h1 v-if="!isEdition" class="equipments-list">
       {{ $t('user.PROFILE.EQUIPMENTS.YOUR_EQUIPMENTS') }}
     </h1>
-    <div class="no-equipments" v-if="equipments.length === 0">
+    <p
+      class="no-equipments"
+      :class="{ edition: isEdition }"
+      v-if="equipments.length === 0"
+    >
       {{ $t('equipments.NO_EQUIPMENTS') }}
-    </div>
+    </p>
     <div v-else>
       <template
         v-for="equipmentType in translatedEquipmentTypes"
@@ -192,6 +196,7 @@
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
   #user-equipments-list {
+    padding: $default-padding 0;
     h1 {
       font-size: 1.05em;
       font-weight: bold;
@@ -217,7 +222,10 @@
     }
     .no-equipments {
       font-style: italic;
-      padding: $default-padding 0 $default-padding * 2;
+      //padding: $default-padding 0 $default-padding * 2;
+      //&.edition {
+      //  //padding: $default-padding * 1.5 0 $default-padding * 2;
+      //}
     }
     .equipments-list-buttons {
       display: flex;

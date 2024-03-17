@@ -363,7 +363,7 @@
       }
       .mobile-display {
         display: flex;
-        margin: $default-margin * 2 0 $default-margin;
+        margin: $default-margin 0 $default-margin;
       }
     }
     @media screen and (max-width: $x-small-limit) {

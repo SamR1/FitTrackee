@@ -265,42 +265,45 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
-
-  .form-items {
-    .password-input {
-      ::v-deep(.show-password) {
-        font-weight: normal;
-        font-size: 0.8em;
-        margin-top: -4px;
-        padding-left: 0;
-      }
-      ::v-deep(.form-info) {
-        font-weight: normal;
-        padding-left: $default-padding;
-      }
-      ::v-deep(.password-strength-details) {
-        font-weight: normal;
-        margin-top: 0;
-      }
-    }
-  }
-
-  .form-buttons {
-    flex-direction: row;
-    @media screen and (max-width: $x-small-limit) {
-      flex-direction: column;
-    }
-  }
-
-  .data-export {
+  #user-infos-edition {
     padding: $default-padding 0;
-    .data-export-archive {
-      padding-top: $default-padding * 2;
-      font-size: 0.9em;
 
-      .archive-link {
-        color: var(--app-a-color);
-        cursor: pointer;
+    .form-items {
+      .password-input {
+        ::v-deep(.show-password) {
+          font-weight: normal;
+          font-size: 0.8em;
+          margin-top: -4px;
+          padding-left: 0;
+        }
+        ::v-deep(.form-info) {
+          font-weight: normal;
+          padding-left: $default-padding;
+        }
+        ::v-deep(.password-strength-details) {
+          font-weight: normal;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .form-buttons {
+      flex-direction: row;
+      @media screen and (max-width: $x-small-limit) {
+        flex-direction: column;
+      }
+    }
+
+    .data-export {
+      padding: $default-padding 0;
+      .data-export-archive {
+        padding-top: $default-padding * 2;
+        font-size: 0.9em;
+
+        .archive-link {
+          color: var(--app-a-color);
+          cursor: pointer;
+        }
       }
     }
   }

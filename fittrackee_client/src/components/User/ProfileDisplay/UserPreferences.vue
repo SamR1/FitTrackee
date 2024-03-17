@@ -109,6 +109,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences {
+    padding-top: $default-padding;
     .preferences-section {
       font-weight: bold;
       text-transform: uppercase;
