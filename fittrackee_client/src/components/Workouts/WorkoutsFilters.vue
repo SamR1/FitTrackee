@@ -56,9 +56,15 @@
               >
                 <option value="" />
                 <option
-                  v-for="equipment in equipments.filter(
-                    (e) => e.workouts_count > 0
-                  )"
+                  v-if="equipmentsWithWorkouts.length == 0"
+                  value=""
+                  disabled
+                  selected
+                >
+                  {{ $t('equipments.NO_EQUIPMENTS') }}
+                </option>
+                <option
+                  v-for="equipment in equipmentsWithWorkouts"
                   :value="equipment.id"
                   :key="equipment.id"
                 >
@@ -241,8 +247,10 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const equipments: ComputedRef<IEquipment[]> = computed(
-    () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+  const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
+    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS].filter(
+      (e) => e.workouts_count > 0
+    )
   )
   let params: LocationQuery = Object.assign({}, route.query)
 
