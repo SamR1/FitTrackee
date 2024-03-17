@@ -18,6 +18,12 @@
               @invalid="invalidateForm"
               v-model="equipmentForm.label"
             />
+            <div class="equipment-label-help">
+              <span class="info-box">
+                <i class="fa fa-info-circle" aria-hidden="true" />
+                {{ $t('equipments.50_CHARACTERS_MAX') }}
+              </span>
+            </div>
           </div>
           <div class="form-item">
             <label for="equipment-type-id">
@@ -211,6 +217,9 @@
           padding: $default-padding $default-padding $default-padding 0;
           gap: $default-padding * 0.5;
         }
+      }
+      .equipment-label-help {
+        margin-top: $default-margin * 1.5;
       }
 
       .form-buttons {
