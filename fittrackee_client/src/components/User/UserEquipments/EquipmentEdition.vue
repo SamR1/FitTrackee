@@ -191,7 +191,7 @@
         .form-item {
           display: flex;
           flex-direction: column;
-          padding: $default-padding;
+          padding: $default-padding 0;
         }
         .form-item-checkbox {
           display: flex;

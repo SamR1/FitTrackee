@@ -1,5 +1,25 @@
 <template>
   <div id="user-equipments-list">
+    <div class="mobile-display" v-if="equipments.length > 0">
+      <button
+        v-if="!isEdition"
+        @click="$router.push('/profile/edit/equipments')"
+      >
+        {{ $t('equipments.EDIT_EQUIPMENTS') }}
+      </button>
+      <button
+        v-if="!isEdition"
+        @click="$router.push('/profile/equipments/new')"
+      >
+        {{ $t('equipments.NEW_EQUIPMENT') }}
+      </button>
+      <button v-if="isEdition" @click="$router.push('/profile/equipments')">
+        {{ $t('buttons.BACK') }}
+      </button>
+      <button v-else @click="$router.push('/')">
+        {{ $t('common.HOME') }}
+      </button>
+    </div>
     <h1 v-if="!isEdition" class="equipments-list">
       {{ $t('user.PROFILE.EQUIPMENTS.YOUR_EQUIPMENTS') }}
     </h1>
@@ -189,13 +209,11 @@
         margin: 0;
       }
     }
-    table {
-      th {
-        text-transform: capitalize;
-      }
-      .equipment-label {
-        width: 300px;
-      }
+    .mobile-display {
+      display: none;
+    }
+    .equipment-label {
+      width: 300px;
     }
     .no-equipments {
       font-style: italic;
@@ -204,6 +222,29 @@
     .equipments-list-buttons {
       display: flex;
       gap: $default-padding;
+      flex-wrap: wrap;
+    }
+
+    @media screen and (max-width: $small-limit) {
+      .equipment-label,
+      .action-buttons {
+        width: 45%;
+      }
+      .edition-buttons {
+        justify-content: center;
+      }
+      .mobile-display {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $default-margin;
+        margin: $default-margin 0 $default-margin * 2;
+      }
+    }
+    @media screen and (max-width: $x-small-limit) {
+      .equipment-label,
+      .action-buttons {
+        width: 100%;
+      }
     }
   }
 </style>
