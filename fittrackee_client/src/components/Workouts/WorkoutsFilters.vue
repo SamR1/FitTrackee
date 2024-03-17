@@ -249,7 +249,7 @@
   )
   const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
     store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS].filter(
-      (e) => e.workouts_count > 0
+      (e: IEquipment) => e.workouts_count > 0
     )
   )
   let params: LocationQuery = Object.assign({}, route.query)
