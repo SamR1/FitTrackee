@@ -42,6 +42,7 @@
           :distance="sport.stopped_speed_threshold"
           unitFrom="km"
           :speed="true"
+          :useImperialUnits="authUser.imperial_units"
         />
       </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>

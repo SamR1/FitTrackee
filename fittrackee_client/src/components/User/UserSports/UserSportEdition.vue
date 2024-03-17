@@ -23,7 +23,8 @@
         </div>
         <div class="form-item">
           <label for="sport-threshold">
-            {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}*
+            {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}
+            ({{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }})*
           </label>
           <input
             id="sport-threshold"
@@ -89,12 +90,13 @@
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getEquipments } from '@/utils/equipments'
+  import { convertDistance } from '@/utils/units'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
@@ -103,7 +105,7 @@
   const store = useStore()
   const route = useRoute()
 
-  const { translatedSports } = toRefs(props)
+  const { authUser, translatedSports } = toRefs(props)
   const {
     defaultColor,
     defaultEquipmentIds,
@@ -171,16 +173,20 @@
           ? sportColors[sport.label]
           : defaultColor
       sportPayload.is_active = sport.is_active_for_user
-      sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
+      sportPayload.stopped_speed_threshold = +`${
+        authUser.value.imperial_units
+          ? convertDistance(sport.stopped_speed_threshold, 'km', 'mi', 2)
+          : parseFloat(sport.stopped_speed_threshold.toFixed(2))
+      }`
       sportPayload.fromSport = true
       if (withEquipments) {
         defaultEquipmentIds.value = sport.default_equipments.map((e) => e.id)
       }
     }
   }
-  function updateSportPreferences(event: Event) {
+  function updateSportPreferences() {
     sportPayload.default_equipment_ids = defaultEquipmentIds.value
-    updateSport(event)
+    updateSport(authUser.value)
   }
 
   watch(
@@ -211,7 +217,7 @@
       }
       .form-item-checkbox {
         display: flex;
-        padding: $default-padding;
+        padding: $default-padding $default-padding $default-padding 0;
         gap: $default-padding * 0.5;
       }
       .sport-color {

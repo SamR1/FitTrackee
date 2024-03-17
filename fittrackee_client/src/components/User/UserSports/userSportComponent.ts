@@ -2,8 +2,12 @@ import { computed, inject, reactive, ref } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 
 import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-import type { IUserSportPreferencesPayload } from '@/types/user'
+import type {
+  IAuthUserProfile,
+  IUserSportPreferencesPayload,
+} from '@/types/user'
 import { useStore } from '@/use/useStore'
+import { convertDistance } from '@/utils/units'
 
 export default function userSportComponent() {
   const store = useStore()
@@ -34,11 +38,14 @@ export default function userSportComponent() {
   function updateDisplayModal(value: boolean) {
     displayModal.value = value
   }
-  function updateSport(event: Event) {
-    event.preventDefault()
+  function updateSport(authUser: IAuthUserProfile) {
+    const payload = { ...sportPayload }
+    payload.stopped_speed_threshold = authUser.imperial_units
+      ? convertDistance(sportPayload.stopped_speed_threshold, 'mi', 'km', 2)
+      : sportPayload.stopped_speed_threshold
     store.dispatch(
       AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES,
-      sportPayload
+      payload
     )
   }
   function resetSport(sportId: number, fromSport = false) {

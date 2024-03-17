@@ -37,7 +37,16 @@
             <th>{{ $t('workouts.WORKOUT', 0) }}</th>
             <th>{{ $t('equipments.EQUIPMENT', 0) }}</th>
             <th>{{ $t('user.PROFILE.SPORT.IS_ACTIVE') }}</th>
-            <th>{{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}</th>
+            <th>
+              <div class="threshold">
+                <span>
+                  {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
+                </span>
+                <span>
+                  ({{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }})
+                </span>
+              </div>
+            </th>
             <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
           </tr>
         </thead>
@@ -136,6 +145,7 @@
             >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
+                {{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }}
               </span>
               <input
                 class="threshold-input"
@@ -146,7 +156,13 @@
                 v-model="sportPayload.stopped_speed_threshold"
               />
               <span v-else>
-                {{ sport.stopped_speed_threshold }}
+                <Distance
+                  :distance="sport.stopped_speed_threshold"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="authUser.imperial_units"
+                  :displayUnit="false"
+                />
               </span>
             </td>
             <td v-if="isEdition" class="action-buttons">
@@ -160,7 +176,10 @@
                 {{ $t('buttons.EDIT') }}
               </button>
               <div v-if="isSportInEdition(sport.id)" class="edition-buttons">
-                <button :disabled="loading" @click="updateSport">
+                <button
+                  :disabled="loading"
+                  @click.prevent="updateSport(authUser)"
+                >
                   {{ $t('buttons.SUBMIT') }}
                 </button>
                 <button
@@ -200,10 +219,11 @@
   import userSportComponent from '@/components/User/UserSports/userSportComponent'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { convertDistance } from '@/utils/units'
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
     isEdition: boolean
   }
@@ -236,7 +256,11 @@
           ? sportColors[sport.label]
           : defaultColor
       sportPayload.is_active = sport.is_active_for_user
-      sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
+      sportPayload.stopped_speed_threshold = +`${
+        authUser.value.imperial_units
+          ? convertDistance(sport.stopped_speed_threshold, 'km', 'mi', 2)
+          : parseFloat(sport.stopped_speed_threshold.toFixed(2))
+      }`
       hasEquipments.value = sport.default_equipments.length > 0
     } else {
       resetSportPayload()
@@ -268,6 +292,11 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars';
   #user-sport-preferences {
+    table {
+      th {
+        text-transform: lowercase;
+      }
+    }
     .sport-img {
       height: 35px;
       width: 35px;
@@ -306,6 +335,12 @@
         text-align: center;
         min-width: 80px;
       }
+    }
+    .threshold {
+      display: flex;
+      flex-direction: column;
+      hyphens: auto;
+      min-width: 100px;
     }
     .threshold-input {
       padding: $default-padding * 0.5;
