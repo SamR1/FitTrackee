@@ -1,6 +1,9 @@
 <template>
   <div id="sport-edition" v-if="sport">
-    <form @submit.prevent="updateSportPreferences">
+    <form
+      :class="{ errors: formErrors }"
+      @submit.prevent="updateSportPreferences"
+    >
       <div class="form-items">
         <div class="form-item">
           <label for="sport-label">
@@ -17,8 +20,10 @@
             name="sport-color"
             class="sport-color"
             type="color"
+            required
             v-model="sportPayload.color"
             :disabled="loading"
+            @invalid="invalidateForm"
           />
         </div>
         <div class="form-item">
@@ -36,6 +41,7 @@
             required
             v-model="sportPayload.stopped_speed_threshold"
             :disabled="loading"
+            @invalid="invalidateForm"
           />
         </div>
         <div class="form-item-checkbox">
@@ -80,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onMounted, toRefs, watch } from 'vue'
+  import { capitalize, computed, onMounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
@@ -138,6 +144,7 @@
       ? getEquipments(sport.value.default_equipments, t, 'all')
       : []
   )
+  const formErrors = ref(false)
 
   onMounted(() => {
     if (!route.params.id) {
@@ -160,7 +167,6 @@
     }
     return filteredSportList[0]
   }
-
   function updateEquipments(selectedIds: number[]) {
     defaultEquipmentIds.value = selectedIds
   }
@@ -187,6 +193,9 @@
   function updateSportPreferences() {
     sportPayload.default_equipment_ids = defaultEquipmentIds.value
     updateSport(authUser.value)
+  }
+  function invalidateForm() {
+    formErrors.value = true
   }
 
   watch(

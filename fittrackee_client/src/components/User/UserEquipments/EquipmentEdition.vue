@@ -4,7 +4,7 @@
       {{ $t('equipments.ADD_A_NEW_EQUIPMENT') }}
     </h1>
     <div id="equipment-form">
-      <form @submit.prevent="submit">
+      <form :class="{ errors: formErrors }" @submit.prevent="submit">
         <div class="form-items">
           <div class="form-item">
             <label for="equipment-label">
@@ -15,6 +15,7 @@
               maxlength="50"
               type="text"
               required
+              @invalid="invalidateForm"
               v-model="equipmentForm.label"
             />
           </div>
@@ -25,6 +26,7 @@
             <select
               id="equipment-type-id"
               required
+              @invalid="invalidateForm"
               v-model="equipmentForm.equipmentTypeId"
             >
               <option
@@ -85,7 +87,15 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onMounted, reactive, toRefs, watch } from 'vue'
+  import {
+    capitalize,
+    computed,
+    onMounted,
+    reactive,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -116,6 +126,7 @@
     equipmentTypeId: 0,
     isActive: true,
   })
+  const formErrors = ref(false)
 
   onMounted(() => {
     if (!route.params.id) {
@@ -138,7 +149,6 @@
     }
     return filteredEquipmentList[0]
   }
-
   function formatForm(equipment: IEquipment) {
     equipmentForm.id = equipment.id
     equipmentForm.label = equipment.label
@@ -158,6 +168,9 @@
   }
   function updateDescription(value: string) {
     equipmentForm.description = value
+  }
+  function invalidateForm() {
+    formErrors.value = true
   }
 
   watch(
