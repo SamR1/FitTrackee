@@ -273,6 +273,7 @@ const routes: Array<RouteRecordRaw> = [
             path: 'equipments',
             name: 'UserEquipments',
             component: UserEquipments,
+            props: { isEdition: false },
             children: [
               {
                 path: '',

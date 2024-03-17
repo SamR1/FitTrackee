@@ -60,10 +60,12 @@
       <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>
       <dd>
         {{ equipment.total_moving }}
-        <span v-if="equipment.total_duration !== equipment.total_moving">
-          ({{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}:
-          {{ equipment.total_duration }})
-        </span>
+        <template v-if="equipment.total_duration !== equipment.total_moving">
+          (<span class="duration-detail">
+            {{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}
+          </span>
+          : {{ equipment.total_duration }})
+        </template>
       </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
@@ -242,6 +244,9 @@
         border-radius: $border-radius;
         padding: $default-padding * 0.75 $default-padding * 1.2;
       }
+    }
+    .duration-detail {
+      font-style: italic;
     }
   }
   .equipment-buttons {

@@ -138,7 +138,7 @@
     </div>
     <div class="equipments-list-buttons">
       <button
-        v-if="!isEdition"
+        v-if="!isEdition && equipments.length > 0"
         @click="$router.push('/profile/edit/equipments')"
       >
         {{ $t('equipments.EDIT_EQUIPMENTS') }}
@@ -217,7 +217,7 @@
     }
     .no-equipments {
       font-style: italic;
-      padding-bottom: $default-padding * 2;
+      padding: $default-padding 0 $default-padding * 2;
     }
     .equipments-list-buttons {
       display: flex;
