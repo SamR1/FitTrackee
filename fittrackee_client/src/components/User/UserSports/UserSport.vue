@@ -37,7 +37,13 @@
       <dt>
         {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}
       </dt>
-      <dd>{{ sport.stopped_speed_threshold }}</dd>
+      <dd>
+        <Distance
+          :distance="sport.stopped_speed_threshold"
+          unitFrom="km"
+          :speed="true"
+        />
+      </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
         <i
@@ -99,11 +105,11 @@
   import userSportComponent from '@/components/User/UserSports/userSportComponent'
   import { ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
-    authUser: IUserProfile
+    authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
