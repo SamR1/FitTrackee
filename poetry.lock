@@ -745,13 +745,13 @@ redis = ["limits[redis]"]
 
 [[package]]
 name = "flask-migrate"
-version = "4.0.6"
+version = "4.0.7"
 description = "SQLAlchemy database migrations for Flask applications using Alembic."
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "Flask-Migrate-4.0.6.tar.gz", hash = "sha256:66ee5fbf94e815fafd5c8c07e703e981e0e7668b47c5c32ed3e5c2fd2fc8af7c"},
-    {file = "Flask_Migrate-4.0.6-py3-none-any.whl", hash = "sha256:8d37f49b047e22bb0516a74b5f3f2560c0c78d5499b0e259752b41ca41817b81"},
+    {file = "Flask-Migrate-4.0.7.tar.gz", hash = "sha256:dff7dd25113c210b069af280ea713b883f3840c1e3455274745d7355778c8622"},
+    {file = "Flask_Migrate-4.0.7-py3-none-any.whl", hash = "sha256:5c532be17e7b43a223b7500d620edae33795df27c75811ddf32560f7d48ec617"},
 ]
 
 [package.dependencies]
@@ -2725,4 +2725,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "b8e095bc88bd97547c2154ce46cfaa032c015d2d2291c52cc4fff1298642bb27"
+content-hash = "06889fb3b233959e057124f34cd01f199b0e78d1346389fb57e50301453bfaa1"
