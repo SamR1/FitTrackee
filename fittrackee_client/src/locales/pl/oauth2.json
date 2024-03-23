@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Zakres",
       "application:write_DESCRIPTION": "nadaje dostęp do zapisu konfiguracji aplikacji.",
+      "equipments:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>equipments</code>.",
+      "equipments:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>equipments</code>.",
       "profile:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>auth</code>.",
       "profile:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>auth</code>.",
       "users:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>users</code>.",
