@@ -45,7 +45,7 @@ def upgrade():
         sa.Column('is_active', sa.Boolean(), nullable=False),
         sa.Column(
             'total_distance',
-            sa.Numeric(precision=6, scale=3),
+            sa.Numeric(precision=10, scale=3),
             server_default=sa.text('0.0'),
             nullable=True,
         ),

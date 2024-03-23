@@ -50,7 +50,7 @@ class Equipment(BaseModel):
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     total_distance = db.Column(
-        db.Numeric(6, 3),
+        db.Numeric(10, 3),
         nullable=True,
         server_default=text('0.0'),  # kilometers
     )
