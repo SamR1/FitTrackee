@@ -11,5 +11,6 @@
   },
   "NEW_EQUIPMENT": "Nouvel équipement",
   "NO_EQUIPMENT": "Pas d'équipement correspondant.",
-  "NO_EQUIPMENTS": "Pas d'équipements"
+  "NO_EQUIPMENTS": "Pas d'équipements",
+  "WITHOUT_EQUIPMENTS": "sans équipements"
 }

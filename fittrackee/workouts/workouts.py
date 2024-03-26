@@ -210,6 +210,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
                             ``duration``, ``workout_date`` (default:
                             ``workout_date``)
+    :query integer equipment_id: equipment id (if 'none', only workouts without
+                            will be returned)
+
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -282,9 +285,13 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.max_speed <= float(max_speed_to)
                 if max_speed_to
                 else True,
-                WorkoutEquipment.c.equipment_id == equipment_id
-                if equipment_id is not None
-                else True,
+                (
+                    WorkoutEquipment.c.equipment_id == None  # noqa
+                    if equipment_id == 'none'
+                    else WorkoutEquipment.c.equipment_id == equipment_id
+                    if equipment_id is not None
+                    else True
+                ),
             )
             .order_by(
                 asc(workout_column)

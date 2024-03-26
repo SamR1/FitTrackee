@@ -63,6 +63,12 @@
                 >
                   {{ $t('equipments.NO_EQUIPMENTS') }}
                 </option>
+                <template v-if="equipmentsWithWorkouts.length > 0">
+                  <option value="none">
+                    {{ $t('equipments.WITHOUT_EQUIPMENTS') }}
+                  </option>
+                  <option disabled>---</option>
+                </template>
                 <option
                   v-for="equipment in equipmentsWithWorkouts"
                   :value="equipment.id"

@@ -641,7 +641,9 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         seven_workouts_user_1: List[Workout],
+        equipment_bike_user_1: Equipment,
     ) -> None:
+        seven_workouts_user_1[1].equipments = [equipment_bike_user_1]
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1026,6 +1028,50 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             'page': 1,
             'pages': 1,
             'total': 1,
+        }
+
+    def test_it_gets_workouts_without_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        sport_2_running: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        seven_workouts_user_1[3].equipments = [equipment_bike_user_1]
+        seven_workouts_user_1[5].equipments = [equipment_shoes_user_1]
+        seven_workouts_user_1[6].equipments = [equipment_shoes_user_1]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?equipment_id=none",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 4
+        assert (
+            seven_workouts_user_1[4].short_id
+            == data['data']['workouts'][0]['id']
+        )
+        assert (
+            seven_workouts_user_1[2].short_id
+            == data['data']['workouts'][1]['id']
+        )
+
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 4,
         }
 
 
