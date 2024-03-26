@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, onUnmounted } from 'vue'
+  import { computed, toRefs, onUnmounted, onBeforeMount } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
@@ -43,6 +43,11 @@
   )
   const translatedEquipmentTypes: ComputedRef<ITranslatedEquipmentType[]> =
     computed(() => translateEquipmentTypes(equipmentTypes.value, t))
+
+  onBeforeMount(() => {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
 
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)

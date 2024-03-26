@@ -83,13 +83,13 @@
                       {{ equipment.label }}
                     </router-link>
                   </td>
-                  <td>
+                  <td class="column">
                     <span class="cell-heading">
                       {{ $t('workouts.WORKOUT', 0) }}
                     </span>
                     {{ equipment.workouts_count }}
                   </td>
-                  <td>
+                  <td class="column">
                     <span class="cell-heading">
                       {{ $t('workouts.DISTANCE', 0) }}
                     </span>
@@ -104,13 +104,13 @@
                       {{ authUser.imperial_units ? 'miles' : 'km' }}
                     </span>
                   </td>
-                  <td>
+                  <td class="column">
                     <span class="cell-heading">
                       {{ $t('workouts.DURATION', 0) }}
                     </span>
                     {{ equipment.total_duration }}
                   </td>
-                  <td>
+                  <td class="active">
                     <span class="cell-heading">
                       {{ $t('common.ACTIVE') }}
                     </span>
@@ -207,6 +207,7 @@
 
       display: flex;
       gap: $default-padding * 0.5;
+      margin: $default-margin * 2 0 0;
 
       .equipment-type-img {
         height: 25px;
@@ -214,18 +215,27 @@
         margin: 0;
       }
     }
+    table {
+      th {
+        text-transform: lowercase;
+      }
+      td {
+        &.equipment-label {
+          width: 200px;
+        }
+        &.column {
+          min-width: 80px;
+        }
+        &.active {
+          width: 40px;
+        }
+      }
+    }
     .mobile-display {
       display: none;
     }
-    .equipment-label {
-      width: 300px;
-    }
     .no-equipments {
       font-style: italic;
-      //padding: $default-padding 0 $default-padding * 2;
-      //&.edition {
-      //  //padding: $default-padding * 1.5 0 $default-padding * 2;
-      //}
     }
     .equipments-list-buttons {
       display: flex;
@@ -234,10 +244,19 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .equipment-label,
-      .action-buttons {
-        width: 45%;
+      table {
+        td {
+          &.column {
+            min-width: initial;
+          }
+          &.equipment-label,
+          &.active,
+          &.action-buttons {
+            width: 45%;
+          }
+        }
       }
+
       .edition-buttons {
         justify-content: center;
       }
@@ -249,9 +268,14 @@
       }
     }
     @media screen and (max-width: $x-small-limit) {
-      .equipment-label,
-      .action-buttons {
-        width: 100%;
+      table {
+        td {
+          &.equipment-label,
+          &.active,
+          &.action-buttons {
+            width: 100%;
+          }
+        }
       }
     }
   }
