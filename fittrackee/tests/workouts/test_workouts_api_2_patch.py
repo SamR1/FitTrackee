@@ -294,10 +294,13 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        self.assert_400(
-            response,
-            f'equipment with id {equipment_id} does not exist',
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_id
+        assert data["message"] == (
+            f'equipment with id {equipment_id} does not exist'
         )
+        assert data["status"] == "not_found"
 
     def test_it_returns_400_when_equipment_belongs_to_another_user(
         self,
@@ -317,10 +320,13 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        self.assert_400(
-            response,
-            f'equipment with id {equipment_shoes_user_2.id} does not exist',
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_2.id
+        assert data["message"] == (
+            f'equipment with id {equipment_shoes_user_2.id} does not exist'
         )
+        assert data["status"] == "not_found"
 
     def test_it_adds_equipment(
         self,
@@ -392,13 +398,14 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        self.assert_400(
-            response,
-            (
-                f'equipment with id {equipment_bike_user_1_inactive.id}'
-                ' is inactive'
-            ),
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_bike_user_1_inactive.id
+        assert data["message"] == (
+            f'equipment with id {equipment_bike_user_1_inactive.id}'
+            ' is inactive'
         )
+        assert data["status"] == "inactive"
 
     def test_it_keeps_inactive_equipment(
         self,

@@ -296,7 +296,7 @@
     WORKOUTS_STORE,
   } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
-  import type { IEquipment } from '@/types/equipments'
+  import type { IEquipment, IEquipmentError } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -343,9 +343,8 @@
   const zipSizeLimit = appConfig.value.max_zip_file_size
     ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
     : ''
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const workoutForm = reactive({
     sport_id: '',
     title: '',

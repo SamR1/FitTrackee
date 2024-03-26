@@ -2,6 +2,7 @@ import { computed, inject, reactive, ref } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 
 import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+import type { IEquipmentError } from '@/types/equipments'
 import type {
   IAuthUserProfile,
   IUserSportPreferencesPayload,
@@ -12,9 +13,8 @@ import { convertDistance } from '@/utils/units'
 export default function userSportComponent() {
   const store = useStore()
 
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )

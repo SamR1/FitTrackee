@@ -17,12 +17,16 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
-from fittrackee.equipments.exceptions import InvalidEquipmentException
+from fittrackee.equipments.exceptions import (
+    InvalidEquipmentException,
+    InvalidEquipmentsException,
+)
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
+    EquipmentInvalidPayloadErrorResponse,
     HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
@@ -1028,8 +1032,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         equipments_list = handle_equipments(
             workout_data.get('equipment_ids'), auth_user
         )
-    except InvalidEquipmentException as e:
+    except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
     workout_data['equipments_list'] = equipments_list
 
     workout_file = request.files['file']
@@ -1448,8 +1456,12 @@ def update_workout(
             'data': {'workouts': [workout.serialize()]},
         }
 
-    except InvalidEquipmentException as e:
+    except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
 

@@ -11,6 +11,7 @@ import type { IStatisticsState } from '@/store/modules/statistics/types'
 import type { IUsersState } from '@/store/modules/users/types'
 import type { IWorkoutsState } from '@/store/modules/workouts/types'
 import type { IApiErrorMessage } from '@/types/api'
+import type { IEquipmentError } from '@/types/equipments'
 
 export const getApiUrl = (): string => {
   return import.meta.env.PROD
@@ -46,26 +47,47 @@ export const handleError = (
     return
   }
 
-  const errorMessages = !error
-    ? msg
-    : error.response
-      ? error.response.status === 413
-        ? 'file size is greater than the allowed size'
-        : errorInfo?.message
-          ? errorInfo.message
+  const equipmentError = getEquipmentError(error)
+  const errorMessages = equipmentError
+    ? ''
+    : !error
+      ? msg
+      : error.response
+        ? error.response.status === 413
+          ? 'file size is greater than the allowed size'
+          : errorInfo?.message
+            ? errorInfo.message
+            : msg
+        : error.message
+          ? error.message
           : msg
-      : error.message
-        ? error.message
-        : msg
+
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
-    errorMessages.includes('\n')
-      ? errorMessages
-          .split('\n')
-          .filter((m: string) => m !== '')
-          .map((m: string) => `api.ERROR.${m}`)
-      : `api.ERROR.${errorMessages}`
+    equipmentError
+      ? equipmentError
+      : errorMessages.includes('\n')
+        ? errorMessages
+            .split('\n')
+            .filter((m: string) => m !== '')
+            .map((m: string) => `api.ERROR.${m}`)
+        : `api.ERROR.${errorMessages}`
   )
+}
+
+const getEquipmentError = (error: AxiosError | null) => {
+  if (error?.response?.data) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const data: IEquipmentError = { ...error.response.data }
+    if ('equipment_id' in data) {
+      return {
+        equipment_id: data.equipment_id,
+        status: data.status,
+      }
+    }
+  }
+  return null
 }
 
 export const getDarkTheme = (darkMode: boolean | null) => {

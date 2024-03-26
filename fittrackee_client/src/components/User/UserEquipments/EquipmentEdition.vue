@@ -106,7 +106,11 @@
   import { useRoute } from 'vue-router'
 
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
+  import type {
+    IEquipment,
+    IEquipmentError,
+    ITranslatedEquipmentType,
+  } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -122,9 +126,8 @@
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const equipmentForm = reactive({
     id: 0,
     label: '',

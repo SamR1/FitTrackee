@@ -47,6 +47,7 @@
   import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -65,9 +66,8 @@
   const store = useStore()
 
   const { title, message, strongMessage } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null

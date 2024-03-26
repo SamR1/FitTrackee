@@ -5,6 +5,10 @@
   "EDIT_EQUIPMENTS": "Edit equipments",
   "EQUIPMENT": "equipment|equipments",
   "EQUIPMENT_TYPE": "equipment type|equipment types",
+  "ERRORS": {
+    "inactive": "Equipment with id {equipmentId} inactive.",
+    "not_found": "Equipment with id {equipmentId} not found."
+  },
   "NEW_EQUIPMENT": "New equipment",
   "NO_EQUIPMENT": "No equipment found.",
   "NO_EQUIPMENTS": "No equipments"

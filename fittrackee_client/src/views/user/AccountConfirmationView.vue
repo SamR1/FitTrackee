@@ -22,15 +22,15 @@
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const router = useRouter()
   const store = useStore()
 
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const token: ComputedRef<LocationQueryValue | LocationQueryValue[]> =
     computed(() => route.query.token)
 

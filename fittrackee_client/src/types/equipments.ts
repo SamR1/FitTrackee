@@ -44,3 +44,8 @@ export interface IDeleteEquipmentPayload {
   id: number
   force?: true
 }
+
+export interface IEquipmentError {
+  equipment_id: number
+  status: string
+}

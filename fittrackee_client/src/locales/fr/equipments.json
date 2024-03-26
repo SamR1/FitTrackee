@@ -5,6 +5,10 @@
   "EDIT_EQUIPMENTS": "Modifier les équipements",
   "EQUIPMENT": "équipement|équipements",
   "EQUIPMENT_TYPE": "type d'équipement|types d'équipement",
+  "ERRORS": {
+    "inactive": "Équipement (id: {equipmentId}) inactif.",
+    "not_found": "Équipement (id: {equipmentId}) introuvable."
+  },
   "NEW_EQUIPMENT": "Nouvel équipement",
   "NO_EQUIPMENT": "Pas d'équipement correspondant.",
   "NO_EQUIPMENTS": "Pas d'équipements"

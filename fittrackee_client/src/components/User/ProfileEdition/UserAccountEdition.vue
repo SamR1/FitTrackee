@@ -119,6 +119,7 @@
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type {
     IAuthUserProfile,
     IUserAccountPayload,
@@ -150,9 +151,8 @@
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
   const emailUpdate = ref(false)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const formErrors = ref(false)
   const displayModal: Ref<boolean> = ref(false)
   const exportRequest: ComputedRef<IExportRequest | null> = computed(

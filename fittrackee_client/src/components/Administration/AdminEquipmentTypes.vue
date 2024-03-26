@@ -103,7 +103,10 @@
   import { useI18n } from 'vue-i18n'
 
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
-  import type { ITranslatedEquipmentType } from '@/types/equipments'
+  import type {
+    IEquipmentError,
+    ITranslatedEquipmentType,
+  } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { translateEquipmentTypes } from '@/utils/equipments'
 
@@ -117,9 +120,8 @@
         t
       )
     )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onBeforeMount(() => loadEquipmentTypes())
 

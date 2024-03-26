@@ -1803,10 +1803,13 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(
-            response,
-            f'equipment with id {equipment_shoes_user_1.id} does not exist',
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["message"] == (
+            f'equipment with id {equipment_shoes_user_1.id} does not exist'
         )
+        assert data["status"] == "not_found"
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

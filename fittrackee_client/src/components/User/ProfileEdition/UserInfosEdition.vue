@@ -66,6 +66,7 @@
   import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type {
     IUserProfile,
     IUserPayload,
@@ -100,9 +101,8 @@
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onMounted(() => {
     if (props.user) {

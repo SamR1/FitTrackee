@@ -31,6 +31,7 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
+    EquipmentInvalidPayloadErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
@@ -1121,7 +1122,9 @@ def edit_user_sport_preferences(
 
     # handler errors
     except InvalidEquipmentException as e:
-        return InvalidPayloadErrorResponse(str(e))
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
