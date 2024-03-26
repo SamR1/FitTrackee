@@ -57,9 +57,6 @@
                     {{ capitalize($t('workouts.DISTANCE')) }}
                   </th>
                   <th class="text-left">
-                    {{ capitalize($t('workouts.DURATION')) }}
-                  </th>
-                  <th class="text-left">
                     {{ $t('common.ACTIVE') }}
                   </th>
                   <th v-if="isEdition">
@@ -103,12 +100,6 @@
                     <span>
                       {{ authUser.imperial_units ? 'miles' : 'km' }}
                     </span>
-                  </td>
-                  <td class="column">
-                    <span class="cell-heading">
-                      {{ $t('workouts.DURATION', 0) }}
-                    </span>
-                    {{ getTotalDuration(equipment.total_moving) }}
                   </td>
                   <td class="active">
                     <span class="cell-heading">
@@ -164,7 +155,6 @@
 <script setup lang="ts">
   import { capitalize, computed, toRefs } from 'vue'
 
-  import userEquipmentComponent from '@/components/User/UserEquipments/userEquipementComponent'
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
 
@@ -178,7 +168,6 @@
 
   const { authUser, isEdition, equipments, translatedEquipmentTypes } =
     toRefs(props)
-  const { getTotalDuration } = userEquipmentComponent()
 
   const equipmentByTypes = computed(() =>
     formatEquipmentsList(equipments.value)
@@ -210,7 +199,7 @@
 
       display: flex;
       gap: $default-padding * 0.5;
-      margin: $default-margin * 2 0 0;
+      margin: $default-margin * 2 0 $default-margin * 0.5;
 
       .equipment-type-img {
         height: 25px;
@@ -224,7 +213,7 @@
       }
       td {
         &.equipment-label {
-          width: 200px;
+          width: 280px;
         }
         &.column {
           min-width: 80px;

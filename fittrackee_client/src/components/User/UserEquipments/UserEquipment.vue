@@ -134,12 +134,12 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import userEquipmentComponent from '@/components/User/UserEquipments/userEquipementComponent'
   import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import type { IDeleteEquipmentPayload, IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { getDuration } from '@/utils/duration'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
@@ -153,7 +153,6 @@
   const { t } = useI18n()
 
   const { authUser, equipments } = toRefs(props)
-  const { getTotalDuration } = userEquipmentComponent()
 
   const sportColors = inject('sportColors') as Record<string, string>
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
@@ -200,6 +199,13 @@
       }
       store.dispatch(EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT, payload)
     }
+  }
+  function getTotalDuration(totalDuration: string) {
+    if (totalDuration.match(/day/g)) {
+      const durations = getDuration(totalDuration, t)
+      return `${durations.days}, ${durations.duration}`
+    }
+    return totalDuration
   }
 
   onUnmounted(() => {
