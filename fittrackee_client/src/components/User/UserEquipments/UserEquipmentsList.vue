@@ -108,7 +108,7 @@
                     <span class="cell-heading">
                       {{ $t('workouts.DURATION', 0) }}
                     </span>
-                    {{ equipment.total_duration }}
+                    {{ getTotalDuration(equipment.total_moving) }}
                   </td>
                   <td class="active">
                     <span class="cell-heading">
@@ -164,6 +164,7 @@
 <script setup lang="ts">
   import { capitalize, computed, toRefs } from 'vue'
 
+  import userEquipmentComponent from '@/components/User/UserEquipments/userEquipementComponent'
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
 
@@ -177,6 +178,8 @@
 
   const { authUser, isEdition, equipments, translatedEquipmentTypes } =
     toRefs(props)
+  const { getTotalDuration } = userEquipmentComponent()
+
   const equipmentByTypes = computed(() =>
     formatEquipmentsList(equipments.value)
   )

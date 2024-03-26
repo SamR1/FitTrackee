@@ -59,12 +59,12 @@
       </dd>
       <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>
       <dd>
-        {{ equipment.total_moving }}
+        {{ getTotalDuration(equipment.total_moving) }}
         <template v-if="equipment.total_duration !== equipment.total_moving">
           (<span class="duration-detail">
-            {{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}
+            {{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}:
           </span>
-          : {{ equipment.total_duration }})
+          {{ getTotalDuration(equipment.total_duration) }})
         </template>
       </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
@@ -134,6 +134,7 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
+  import userEquipmentComponent from '@/components/User/UserEquipments/userEquipementComponent'
   import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import type { IDeleteEquipmentPayload, IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
@@ -152,6 +153,7 @@
   const { t } = useI18n()
 
   const { authUser, equipments } = toRefs(props)
+  const { getTotalDuration } = userEquipmentComponent()
 
   const sportColors = inject('sportColors') as Record<string, string>
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
