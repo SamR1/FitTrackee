@@ -236,6 +236,16 @@
                   </div>
                 </div>
               </div>
+              <div class="form-item" v-if="equipments">
+                <label> {{ $t('equipments.EQUIPMENT', 0) }}: </label>
+                <EquipmentsMultiSelect
+                  :equipments="equipmentsForMultiSelect"
+                  :workout-equipments="workoutEquipments"
+                  name="workout-equipment"
+                  :for-creation="isCreation"
+                  @updatedValues="updateEquipments"
+                />
+              </div>
               <div class="form-item">
                 <label> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
@@ -279,13 +289,20 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import EquipmentsMultiSelect from '@/components/User/UserEquipments/EquipmentsMultiSelect.vue'
+  import {
+    EQUIPMENTS_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipment, IEquipmentError } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
@@ -326,9 +343,8 @@
   const zipSizeLimit = appConfig.value.max_zip_file_size
     ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
     : ''
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const workoutForm = reactive({
     sport_id: '',
     title: '',
@@ -348,6 +364,32 @@
   let gpxFile: File | null = null
   const formErrors = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
+  const equipments: ComputedRef<IEquipment[]> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+  )
+  const equipmentsForMultiSelect: ComputedRef<IEquipment[]> = computed(() =>
+    equipments.value
+      ? getEquipments(
+          equipments.value,
+          t,
+          isCreation.value ? 'is_active' : 'withIncludedIds',
+          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
+        )
+      : []
+  )
+  const selectedSport: ComputedRef<ITranslatedSport | null> = computed(() =>
+    workoutForm.sport_id
+      ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
+      : null
+  )
+  const workoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
+    workout.value?.equipments
+      ? getEquipments(workout.value.equipments, t, 'all')
+      : isCreation.value && selectedSport.value
+        ? getEquipments(selectedSport.value?.default_equipments, t, 'is_active')
+        : []
+  )
+  const selectedEquipmentIds: Ref<number[]> = ref([])
 
   onMounted(() => {
     let element
@@ -411,6 +453,9 @@
                 : parseFloat(workout.descent.toFixed(2))
             }`
     }
+    selectedEquipmentIds.value = workout.equipments
+      ? workout.equipments.map((e) => e.id)
+      : []
   }
   function isDistanceInvalid() {
     return payloadErrorMessages.value.includes('workouts.INVALID_DISTANCE')
@@ -463,6 +508,7 @@
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
       notes: workoutForm.notes,
+      equipment_ids: selectedEquipmentIds.value,
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
@@ -518,6 +564,9 @@
   }
   function invalidateForm() {
     formErrors.value = true
+  }
+  function updateEquipments(selectedIds: number[]) {
+    selectedEquipmentIds.value = selectedIds
   }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))

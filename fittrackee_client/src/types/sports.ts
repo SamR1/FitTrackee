@@ -1,5 +1,8 @@
+import type { IEquipment } from '@/types/equipments'
+
 export interface ISport {
   color: string | null
+  default_equipments: IEquipment[]
   has_workouts: boolean
   id: number
   img: string

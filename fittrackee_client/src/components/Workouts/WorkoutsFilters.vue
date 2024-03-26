@@ -46,6 +46,38 @@
                 </option>
               </select>
             </div>
+            <div class="form-item form-item-equipment">
+              <label> {{ $t('equipments.EQUIPMENT', 1) }}:</label>
+              <select
+                name="equipment_id"
+                :value="$route.query.equipment_id"
+                @change="handleFilterChange"
+                @keyup.enter="onFilter"
+              >
+                <option value="" />
+                <option
+                  v-if="equipmentsWithWorkouts.length == 0"
+                  value=""
+                  disabled
+                  selected
+                >
+                  {{ $t('equipments.NO_EQUIPMENTS') }}
+                </option>
+                <template v-if="equipmentsWithWorkouts.length > 0">
+                  <option value="none">
+                    {{ $t('equipments.WITHOUT_EQUIPMENTS') }}
+                  </option>
+                  <option disabled>---</option>
+                </template>
+                <option
+                  v-for="equipment in equipmentsWithWorkouts"
+                  :value="equipment.id"
+                  :key="equipment.id"
+                >
+                  {{ equipment.label }}
+                </option>
+              </select>
+            </div>
             <div class="form-item form-item-title">
               <label> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
@@ -191,7 +223,10 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
+  import { useStore } from 'vuex'
 
+  import { EQUIPMENTS_STORE } from '@/store/constants'
+  import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
@@ -206,6 +241,7 @@
   const emit = defineEmits(['filter'])
 
   const { t } = useI18n()
+  const store = useStore()
   const route = useRoute()
   const router = useRouter()
 
@@ -216,6 +252,11 @@
     : 'km'
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
+  )
+  const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
+    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS].filter(
+      (e: IEquipment) => e.workouts_count > 0
+    )
   )
   let params: LocationQuery = Object.assign({}, route.query)
 
@@ -297,7 +338,8 @@
               padding: 0 $default-padding * 0.5;
             }
           }
-          .form-item-title {
+          .form-item-title,
+          .form-item-equipment {
             padding-top: $default-padding;
             input.title {
               width: 100%;

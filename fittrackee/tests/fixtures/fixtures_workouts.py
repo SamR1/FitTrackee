@@ -75,6 +75,21 @@ def workout_cycling_user_1() -> Workout:
 
 
 @pytest.fixture()
+def another_workout_cycling_user_1() -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=1,
+        workout_date=datetime.datetime.strptime('01/01/2024', '%d/%m/%Y'),
+        distance=18,
+        duration=datetime.timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
 def workout_cycling_user_1_segment(
     workout_cycling_user_1: Workout,
 ) -> WorkoutSegment:

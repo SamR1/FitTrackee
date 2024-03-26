@@ -5,15 +5,26 @@
         {{ $t(subMessage) }}
       </li>
     </ul>
-    <div v-else>{{ $t(message) }}</div>
+    <div v-else-if="typeof message === 'string'">
+      {{ $t(message) }}
+    </div>
+    <div v-else>
+      {{
+        $t(`equipments.ERRORS.${message.status}`, {
+          equipmentId: message.equipment_id,
+        })
+      }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
+  import type { IEquipmentError } from '@/types/equipments'
+
   interface Props {
-    message: string | string[]
+    message: string | string[] | IEquipmentError
   }
   const props = defineProps<Props>()
   const { message } = toRefs(props)

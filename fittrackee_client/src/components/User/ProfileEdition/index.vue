@@ -40,6 +40,7 @@
     'PICTURE',
     'PREFERENCES',
     'SPORTS',
+    'EQUIPMENTS',
     'PRIVACY-POLICY',
   ]
   const loading = computed(

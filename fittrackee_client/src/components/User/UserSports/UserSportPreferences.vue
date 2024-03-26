@@ -1,6 +1,18 @@
 <template>
   <div id="user-sport-preferences">
-    <div class="responsive-table" v-if="sports.length > 0">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="
+        $t(
+          `user.PROFILE.SPORT.CONFIRM_SPORT_RESET${hasEquipments ? '_WITH_EQUIPMENTS' : ''}`
+        )
+      "
+      @confirmAction="resetSport(sportPayload.sport_id)"
+      @cancelAction="updateDisplayModal(false)"
+      @keydown.esc="updateDisplayModal(false)"
+    />
+    <div class="responsive-table" v-if="translatedSports.length > 0">
       <div class="mobile-display">
         <div v-if="isEdition" class="profile-buttons mobile-display">
           <button
@@ -23,8 +35,18 @@
             <th>{{ $t('user.PROFILE.SPORT.COLOR') }}</th>
             <th class="text-left">{{ $t('workouts.SPORT', 0) }}</th>
             <th>{{ $t('workouts.WORKOUT', 0) }}</th>
+            <th>{{ $t('equipments.EQUIPMENT', 0) }}</th>
             <th>{{ $t('user.PROFILE.SPORT.IS_ACTIVE') }}</th>
-            <th>{{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}</th>
+            <th>
+              <div class="threshold">
+                <span>
+                  {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
+                </span>
+                <span>
+                  ({{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }})
+                </span>
+              </div>
+            </th>
             <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
           </tr>
         </thead>
@@ -38,8 +60,7 @@
                 v-if="isSportInEdition(sport.id)"
                 class="sport-color"
                 type="color"
-                :value="sportPayload.color"
-                @input="updateColor"
+                v-model="sportPayload.color"
               />
               <SportImage
                 v-else
@@ -55,7 +76,12 @@
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.LABEL') }}
               </span>
-              {{ sport.translatedLabel }}
+              <template v-if="isSportInEdition(sport.id)">
+                {{ sport.translatedLabel }}
+              </template>
+              <router-link v-else :to="`/profile/sports/${sport.id}`">
+                {{ sport.translatedLabel }}
+              </router-link>
               <span class="disabled-message" v-if="!sport.is_active">
                 ({{ $t('user.PROFILE.SPORT.DISABLED_BY_ADMIN') }})
               </span>
@@ -77,8 +103,20 @@
               </span>
               <i
                 :class="`fa fa${
-                  user.sports_list.includes(sport.id) ? '-check' : ''
+                  authUser.sports_list.includes(sport.id) ? '-check' : ''
                 }`"
+                aria-hidden="true"
+              />
+            </td>
+            <td
+              class="text-center"
+              :class="{ 'disabled-sport': !sport.is_active }"
+            >
+              <span class="cell-heading">
+                {{ $t('equipments.EQUIPMENT', 0) }}
+              </span>
+              <i
+                :class="`fa fa${sport.default_equipments.length > 0 ? '-check' : ''}`"
                 aria-hidden="true"
               />
             </td>
@@ -107,6 +145,7 @@
             >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
+                {{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }}
               </span>
               <input
                 class="threshold-input"
@@ -114,11 +153,16 @@
                 type="number"
                 min="0"
                 step="0.1"
-                :value="sportPayload.stopped_speed_threshold"
-                @input="updateThreshold"
+                v-model="sportPayload.stopped_speed_threshold"
               />
               <span v-else>
-                {{ sport.stopped_speed_threshold }}
+                <Distance
+                  :distance="sport.stopped_speed_threshold"
+                  unitFrom="km"
+                  :speed="true"
+                  :useImperialUnits="authUser.imperial_units"
+                  :displayUnit="false"
+                />
               </span>
             </td>
             <td v-if="isEdition" class="action-buttons">
@@ -132,12 +176,16 @@
                 {{ $t('buttons.EDIT') }}
               </button>
               <div v-if="isSportInEdition(sport.id)" class="edition-buttons">
-                <button :disabled="loading" @click="updateSport">
+                <button
+                  :disabled="loading"
+                  @click.prevent="updateSport(authUser)"
+                >
                   {{ $t('buttons.SUBMIT') }}
                 </button>
                 <button
                   :disabled="loading"
-                  @click="(e) => resetSport(e, sport.id)"
+                  class="warning"
+                  @click.prevent="updateDisplayModal(true)"
                 >
                   {{ $t('buttons.RESET') }}
                 </button>
@@ -165,46 +213,39 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, inject, reactive, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { ref, toRefs, watch } from 'vue'
+  import type { Ref } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IUserProfile, IUserSportPreferencesPayload } from '@/types/user'
+  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { translateSports } from '@/utils/sports'
-
+  import { convertDistance } from '@/utils/units'
   interface Props {
-    user: IUserProfile
+    authUser: IAuthUserProfile
+    translatedSports: ITranslatedSport[]
     isEdition: boolean
   }
   const props = defineProps<Props>()
 
   const store = useStore()
-  const { t } = useI18n()
 
-  const { isEdition, user } = toRefs(props)
-  const defaultColor = '#838383'
-  const sportColors = inject('sportColors') as Record<string, string>
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(sports.value, t, 'is_active', user.value.sports_list)
-  )
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
-  const sportPayload: IUserSportPreferencesPayload = reactive({
-    sport_id: 0,
-    color: null,
-    is_active: true,
-    stopped_speed_threshold: 1,
-  })
+  const { authUser, isEdition, translatedSports } = toRefs(props)
+  const {
+    defaultColor,
+    displayModal,
+    errorMessages,
+    loading,
+    sportColors,
+    sportPayload,
+    resetSport,
+    updateDisplayModal,
+    updateIsActive,
+    updateSport,
+  } = userSportComponent()
+
+  const hasEquipments: Ref<boolean> = ref(false)
 
   function updateSportInEdition(sport: ISport | null) {
     if (sport !== null) {
@@ -215,7 +256,12 @@
           ? sportColors[sport.label]
           : defaultColor
       sportPayload.is_active = sport.is_active_for_user
-      sportPayload.stopped_speed_threshold = sport.stopped_speed_threshold
+      sportPayload.stopped_speed_threshold = +`${
+        authUser.value.imperial_units
+          ? convertDistance(sport.stopped_speed_threshold, 'km', 'mi', 2)
+          : parseFloat(sport.stopped_speed_threshold.toFixed(2))
+      }`
+      hasEquipments.value = sport.default_equipments.length > 0
     } else {
       resetSportPayload()
     }
@@ -223,37 +269,13 @@
   function isSportInEdition(sportId: number) {
     return sportPayload.sport_id === sportId
   }
-  function updateColor(event: Event) {
-    sportPayload.color = (event.target as HTMLInputElement).value
-  }
-  function updateThreshold(event: Event) {
-    sportPayload.stopped_speed_threshold = parseFloat(
-      (event.target as HTMLInputElement).value
-    )
-  }
-  function updateIsActive(event: Event) {
-    sportPayload.is_active = (event.target as HTMLInputElement).checked
-  }
   function resetSportPayload() {
     sportPayload.sport_id = 0
     sportPayload.color = null
     sportPayload.is_active = true
     sportPayload.stopped_speed_threshold = 1
+    hasEquipments.value = false
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
-  function updateSport(event: Event) {
-    event.preventDefault()
-    store.dispatch(
-      AUTH_USER_STORE.ACTIONS.UPDATE_USER_SPORT_PREFERENCES,
-      sportPayload
-    )
-  }
-  function resetSport(event: Event, sportId: number) {
-    event.preventDefault()
-    store.dispatch(
-      AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES,
-      sportId
-    )
   }
 
   watch(
@@ -261,14 +283,20 @@
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         resetSportPayload()
+        updateDisplayModal(false)
       }
     }
   )
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @import '~@/scss/vars';
   #user-sport-preferences {
+    table {
+      th {
+        text-transform: lowercase;
+      }
+    }
     .sport-img {
       height: 35px;
       width: 35px;
@@ -308,6 +336,12 @@
         min-width: 80px;
       }
     }
+    .threshold {
+      display: flex;
+      flex-direction: column;
+      hyphens: auto;
+      min-width: 100px;
+    }
     .threshold-input {
       padding: $default-padding * 0.5;
       width: 50px;
@@ -329,7 +363,7 @@
       }
       .mobile-display {
         display: flex;
-        margin: $default-margin * 2 0 $default-margin;
+        margin: $default-margin 0 $default-margin;
       }
     }
     @media screen and (max-width: $x-small-limit) {

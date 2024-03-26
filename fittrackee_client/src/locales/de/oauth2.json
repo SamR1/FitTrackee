@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Geltungsbereich",
       "application:write_DESCRIPTION": "erlaubt Schreibzugriff auf die Anwendungskonfiguration",
+      "equipments:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>equipments</code>-Endpunkte",
+      "equipments:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>equipments</code>-Endpunkte",
       "profile:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>auth</code>-Endpunkte",
       "profile:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>auth</code>-Endpunkte",
       "users:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>users</code>-Endpunkte",

@@ -89,6 +89,7 @@
   import { useI18n } from 'vue-i18n'
 
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
   import { useStore } from '@/use/useStore'
   import { translateSports } from '@/utils/sports'
@@ -99,9 +100,8 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   function updateSportStatus(id: number, isActive: boolean) {
     store.dispatch(SPORTS_STORE.ACTIONS.UPDATE_SPORTS, {

@@ -11,6 +11,7 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
+from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -661,6 +662,10 @@ def delete_user(
             UserSportPreference.user_id == user.id
         ).delete()
         db.session.query(Record).filter(Record.user_id == user.id).delete()
+        # delete all equipment associated with this user
+        db.session.query(Equipment).filter(
+            Equipment.user_id == user.id
+        ).delete()
         db.session.query(WorkoutSegment).filter(
             WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
         ).delete(synchronize_session=False)

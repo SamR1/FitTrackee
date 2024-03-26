@@ -1,0 +1,16 @@
+{
+  "50_CHARACTERS_MAX": "50 characters maximum",
+  "ADD_A_NEW_EQUIPMENT": "Add a new equipment",
+  "DEFAULT_FOR_SPORTS": "Default for sports",
+  "EDIT_EQUIPMENTS": "Edit equipments",
+  "EQUIPMENT": "equipment|equipments",
+  "EQUIPMENT_TYPE": "equipment type|equipment types",
+  "ERRORS": {
+    "inactive": "Equipment with id {equipmentId} inactive.",
+    "not_found": "Equipment with id {equipmentId} not found."
+  },
+  "NEW_EQUIPMENT": "New equipment",
+  "NO_EQUIPMENT": "No equipment found.",
+  "NO_EQUIPMENTS": "No equipments",
+  "WITHOUT_EQUIPMENTS": "without equipments"
+}

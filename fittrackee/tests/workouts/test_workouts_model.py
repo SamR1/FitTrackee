@@ -1,8 +1,10 @@
 from datetime import timedelta
 
+import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.short_id import encode_uuid
@@ -53,6 +55,7 @@ class TestWorkoutModel:
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['id'] == workout.short_id
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
@@ -94,6 +97,7 @@ class TestWorkoutModel:
         assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['id'] == workout.short_id
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
@@ -141,6 +145,7 @@ class TestWorkoutModel:
         assert serialized_workout['descent'] is None
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['id'] == workout.short_id
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
@@ -211,3 +216,38 @@ class TestWorkoutModel:
             serialized_workout['next_workout']
             == workout_running_user_1.short_id
         )
+
+    def test_it_returns_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize()
+
+        assert serialized_workout['equipments'] == [
+            equipment_bike_user_1.serialize()
+        ]
+
+    def test_it_raises_exception_when_workout_is_deleted_before_removing_equipment(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+
+        db.session.delete(workout_cycling_user_1)
+        with pytest.raises(
+            Exception, match="equipments exists, remove them first"
+        ):
+            db.session.commit()
+
+        equipment_bike_user_1.total_workouts = 1

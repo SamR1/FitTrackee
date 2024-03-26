@@ -38,6 +38,7 @@
   import StatCard from '@/components/Common/StatCard.vue'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
+  import { getDuration } from '@/utils/duration'
   import { convertDistance, units } from '@/utils/units'
   interface Props {
     user: IAuthUserProfile
@@ -47,10 +48,10 @@
   const { t } = useI18n()
 
   const { user } = toRefs(props)
-  const userTotalDuration: ComputedRef<string> = computed(
-    () => props.user.total_duration
+
+  const totalDuration = computed(() =>
+    getDuration(user.value.total_duration, t)
   )
-  const totalDuration = computed(() => get_duration(userTotalDuration))
   const distanceUnitFrom: TUnit = 'km'
   const distanceUnitTo: TUnit = user.value.imperial_units
     ? units[distanceUnitFrom].defaultTarget
@@ -79,22 +80,6 @@
         )
       : parseFloat(user.value.total_ascent.toFixed(2))
   )
-
-  function get_duration(total_duration: ComputedRef<string>) {
-    const duration = total_duration.value.match(/day/g)
-      ? total_duration.value.split(', ')[1]
-      : total_duration.value
-    return {
-      days: total_duration.value.match(/day/g)
-        ? `${total_duration.value.split(' ')[0]} ${
-            total_duration.value.match(/days/g)
-              ? t('common.DAY', 2)
-              : t('common.DAY', 1)
-          }`
-        : `0 ${t('common.DAY', 2)},`,
-      duration: `${duration.split(':')[0]}h ${duration.split(':')[1]}min`,
-    }
-  }
 </script>
 
 <style lang="scss">

@@ -31,6 +31,14 @@
               </span>
             </dd>
             <dt>
+              <router-link to="/admin/equipment-types">
+                {{ capitalize($t('equipments.EQUIPMENT_TYPE', 0)) }}
+              </router-link>
+            </dt>
+            <dd>
+              {{ $t('admin.ENABLE_DISABLE_EQUIPMENT_TYPES') }}
+            </dd>
+            <dt>
               <router-link to="/admin/sports">
                 {{ capitalize($t('workouts.SPORT', 0)) }}
               </router-link>

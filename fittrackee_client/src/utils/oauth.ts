@@ -1,4 +1,6 @@
 export const oauth2_scopes = [
+  'equipments:read',
+  'equipments:write',
   'profile:read',
   'profile:write',
   'users:read',

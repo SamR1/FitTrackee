@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Ámbito",
       "application:write_DESCRIPTION": "concede permiso de escritura a la aplicación configurada.",
+      "equipments:read_DESCRIPTION": "concede permiso de lectura a puntos de acceso <code>equipments</code>.",
+      "equipments:write_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>equipments</code>.",
       "profile:read_DESCRIPTION": "concede permiso de lectura a puntos de acceso <code>auth</code>.",
       "profile:write_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>auth</code>.",
       "users:read_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>users</code>.",

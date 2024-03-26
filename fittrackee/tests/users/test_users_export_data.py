@@ -7,6 +7,7 @@ from unittest.mock import Mock, call, patch
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.export_data import (
     UserDataExporter,
     clean_user_data_export,
@@ -79,6 +80,7 @@ class TestUserDataExporterGetData:
                 'weather_start': None,
                 'weather_end': None,
                 'notes': workout_cycling_user_1.notes,
+                'equipments': [],
             }
         ]
 
@@ -122,8 +124,36 @@ class TestUserDataExporterGetData:
                 'weather_start': None,
                 'weather_end': None,
                 'notes': workout.notes,
+                'equipments': [],
             }
         ]
+
+    def test_it_returns_empty_list_when_no_data_for_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        exporter = UserDataExporter(user_1)
+
+        equipments_data = exporter.get_user_equipments_data()
+
+        assert equipments_data == []
+
+    def test_it_returns_data_for_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_2: Equipment,
+    ) -> None:
+        exporter = UserDataExporter(user_1)
+
+        equipments_data = exporter.get_user_equipments_data()
+
+        assert equipments_data == [equipment_bike_user_1.serialize()]
 
     def test_it_stores_only_user_workouts(
         self,
@@ -200,6 +230,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
             [
                 call(exporter.get_user_info(), 'user_data'),
                 call(exporter.get_user_workouts_data(), 'workouts_data'),
+                call(exporter.get_user_equipments_data(), 'equipments_data'),
             ]
         )
 
@@ -244,7 +275,11 @@ class TestUserDataExporterArchive(CallArgsMixin):
         exporter = UserDataExporter(user_1)
         token_urlsafe = random_string()
         secrets_mock.return_value = token_urlsafe
-        export_data.side_effect = [call('user_info'), call('workouts_data')]
+        export_data.side_effect = [
+            call('user_info'),
+            call('workouts_data'),
+            call('equipments_data'),
+        ]
 
         exporter.generate_archive()
 
@@ -254,6 +289,7 @@ class TestUserDataExporterArchive(CallArgsMixin):
                 [
                     call(call('user_info'), 'user_data.json'),
                     call(call('workouts_data'), 'user_workouts_data.json'),
+                    call(call('equipments_data'), 'user_equipments_data.json'),
                 ]
             )
         # fmt: on

@@ -1,6 +1,6 @@
 import datetime
 import os
-from typing import Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
@@ -13,10 +13,16 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import appLog, db
+from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
 from .utils.short_id import encode_uuid
+
+if TYPE_CHECKING:
+    from sqlalchemy.orm.attributes import AttributeEvent
+
+    from fittrackee.equipments.models import Equipment
 
 BaseModel: DeclarativeMeta = db.Model
 record_types = [
@@ -117,6 +123,13 @@ class Sport(BaseModel):
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
+
+        serialized_sport['default_equipments'] = (
+            []
+            if sport_preferences is None
+            else sport_preferences['default_equipments']
+        )
+
         return serialized_sport
 
 
@@ -170,6 +183,9 @@ class Workout(BaseModel):
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
     )
+    equipments = db.relationship(
+        'Equipment', secondary=WorkoutEquipment, back_populates='workouts'
+    )
 
     def __str__(self) -> str:
         return f'<Workout \'{self.sport.label}\' - {self.workout_date}>'
@@ -216,6 +232,9 @@ class Workout(BaseModel):
             'ave_speed': (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
+            'equipments': [
+                equipment.serialize() for equipment in self.equipments
+            ],
             'records': [record.serialize() for record in self.records],
             'segments': [segment.serialize() for segment in self.segments],
             'weather_start': self.weather_start,
@@ -397,20 +416,47 @@ def on_workout_update(
 
 @listens_for(Workout, 'after_delete')
 def on_workout_delete(
-    mapper: Mapper, connection: Connection, old_record: 'Record'
+    mapper: Mapper, connection: Connection, old_workout: 'Workout'
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        if old_record.map:
+        # Equipments must be removed before deleting workout
+        # in order to recalculate equipments totals
+        if old_workout.equipments:
+            raise Exception("equipments exists, remove them first")
+
+        if old_workout.map:
             try:
-                os.remove(get_absolute_file_path(old_record.map))
+                os.remove(get_absolute_file_path(old_workout.map))
             except OSError:
                 appLog.error('map file not found when deleting workout')
-        if old_record.gpx:
+        if old_workout.gpx:
             try:
-                os.remove(get_absolute_file_path(old_record.gpx))
+                os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error('gpx file not found when deleting workout')
+
+
+@listens_for(Workout.equipments, 'append')
+def on_workout_equipments_append(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) + float(target.distance)
+    value.total_duration += target.duration
+    if target.moving:
+        value.total_moving += target.moving
+    value.total_workouts += 1
+
+
+@listens_for(Workout.equipments, 'remove')
+def on_workout_equipments_remove(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) - float(target.distance)
+    value.total_duration -= target.duration
+    if target.moving:
+        value.total_moving -= target.moving
+    value.total_workouts -= 1
 
 
 class WorkoutSegment(BaseModel):

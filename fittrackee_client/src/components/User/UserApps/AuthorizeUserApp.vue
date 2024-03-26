@@ -44,6 +44,7 @@
   import { useRoute } from 'vue-router'
 
   import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IOAuth2Client } from '@/types/oauth'
   import { useStore } from '@/use/useStore'
 
@@ -53,9 +54,8 @@
   const client: ComputedRef<IOAuth2Client> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENT]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onBeforeMount(() => loadApp())
 

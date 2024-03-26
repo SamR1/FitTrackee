@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Scope",
       "application:write_DESCRIPTION": "grants write access to application configuration.",
+      "equipments:read_DESCRIPTION": "grants read access to <code>equipments</code> endpoints.",
+      "equipments:write_DESCRIPTION": "grants write access to <code>equipments</code> endpoints.",
       "profile:read_DESCRIPTION": "grants read access to <code>auth</code> endpoints.",
       "profile:write_DESCRIPTION": "grants write access to <code>auth</code> endpoints.",
       "users:read_DESCRIPTION": "grants read access to <code>users</code> endpoints.",

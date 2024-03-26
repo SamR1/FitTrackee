@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Scope",
       "application:write_DESCRIPTION": "donne les droits en écriture à la configuration de l'application.",
+      "equipments:read_DESCRIPTION": "donne les droits en lecture aux routes <code>equipments</code>.",
+      "equipments:write_DESCRIPTION": "donne les droits en écriture aux routes <code>equipments</code>.",
       "profile:read_DESCRIPTION": "donne les droits en lecture aux routes <code>auth</code>.",
       "profile:write_DESCRIPTION": "donne les droits en écriture aux routes <code>auth</code>.",
       "users:read_DESCRIPTION": "donne les droits en lecture aux routes <code>users</code>.",

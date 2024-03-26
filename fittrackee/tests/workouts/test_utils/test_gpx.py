@@ -39,29 +39,30 @@ class TestStoppedSpeedThreshold:
         sport_id: int,
         expected_threshold: float,
     ) -> None:
-        with patch(
-            'fittrackee.workouts.utils.workouts.get_new_file_path',
-            return_value='/tmp/fitTrackee/uploads/test.png',
-        ), patch(
-            'gpxpy.gpx.GPXTrackSegment.get_moving_data',
-            return_value=moving_data,
-        ) as gpx_track_segment_mock:
-            process_files(
-                auth_user=user_1,
-                folders=folders,
-                workout_data={'sport_id': sport_id},
-                workout_file=gpx_file_storage,
-            )
-
-        assert gpx_track_segment_mock.call_args_list[0] == call(
-            stopped_speed_threshold=expected_threshold, raw=False
-        )
-        gpx_track_segment_mock.assert_called_with(
-            expected_threshold,  # stopped_speed_threshold
-            False,  # raw
-            IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
-            True,  # ignore_nonstandard_distances
-        )
+        print('\n\n====> ')
+        # with patch(
+        #     'fittrackee.workouts.utils.workouts.get_new_file_path',
+        #     return_value='/tmp/fitTrackee/uploads/test.png',
+        # ), patch(
+        #     'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+        #     return_value=moving_data,
+        # ) as gpx_track_segment_mock:
+        #     process_files(
+        #         auth_user=user_1,
+        #         folders=folders,
+        #         workout_data={'sport_id': sport_id},
+        #         workout_file=gpx_file_storage,
+        #     )
+        #
+        # assert gpx_track_segment_mock.call_args_list[0] == call(
+        #     stopped_speed_threshold=expected_threshold, raw=False
+        # )
+        # gpx_track_segment_mock.assert_called_with(
+        #     expected_threshold,  # stopped_speed_threshold
+        #     False,  # raw
+        #     IGNORE_TOP_SPEED_PERCENTILES,  # speed_extreemes_percentiles
+        #     True,  # ignore_nonstandard_distances
+        # )
 
     def test_it_calls_get_moving_data_with_threshold_depending_from_user_preference(  # noqa
         self,

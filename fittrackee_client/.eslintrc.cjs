@@ -35,6 +35,7 @@ module.exports = {
     ],
     'import/no-unresolved': ['off', { ignore: ['^@/'] }],
     'vue/multi-word-component-names': 'off',
-    '@typescript-eslint/no-unused-vars': 'error'
+    '@typescript-eslint/no-unused-vars': 'error',
+    'import/no-named-as-default': 0
   }
 }
