@@ -317,7 +317,7 @@ def update_equipment_type(
 
     :param integer equipment_type_id: equipment type id
 
-    :<json string is_active: equipment type active status
+    :<json boolean is_active: equipment type active status
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

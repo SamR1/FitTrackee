@@ -1727,7 +1727,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 1
 
-    def test_it_doens_not_update_equipment_when_ids_not_provided(  # noqa
+    def test_it_does_not_update_equipment_when_ids_not_provided(  # noqa
         self,
         app: Flask,
         user_1: User,

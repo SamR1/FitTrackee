@@ -49,7 +49,7 @@ def get_equipments(auth_user: User) -> Dict:
 
     {
       "data": {
-        "equipment": [
+        "equipments": [
           {
             "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
             "default_for_sport_ids": [],
@@ -130,7 +130,8 @@ def get_equipment_by_id(
     auth_user: User, equipment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get an equipment item
+    Get an equipment item.
+    Only the equipment owner can see his equipment.
 
     **Scope**: ``equipments:read``
 
@@ -138,7 +139,7 @@ def get_equipment_by_id(
 
     .. sourcecode:: http
 
-      GET /api/equipment/1 HTTP/1.1
+      GET /api/equipments/1 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -152,7 +153,7 @@ def get_equipment_by_id(
 
       {
         "data": {
-          "equipment": [
+          "equipments": [
             {
               "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
               "default_for_sport_ids": [],
@@ -185,7 +186,7 @@ def get_equipment_by_id(
 
       {
         "data": {
-          "equipment": []
+          "equipments": []
         },
         "status": "not found"
       }
@@ -225,7 +226,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     .. sourcecode:: http
 
-      POST /api/equipment HTTP/1.1
+      POST /api/equipments HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -237,7 +238,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     {
       "data": {
-        "equipment": [
+        "equipments": [
           {
             "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
             "default_for_sport_ids": [],
@@ -263,10 +264,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
-    :<json int equipment_type: the ID for an equipment type
+    :<json integer equipment_type: the ID for an equipment type
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
-    :<json bool is_active: whether or not this equipment is currently
+    :<json boolean is_active: whether or not this equipment is currently
         active (default: true)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -355,7 +356,7 @@ def update_equipment(
 
     .. sourcecode:: http
 
-      PATCH /api/equipment/1 HTTP/1.1
+      PATCH /api/equipments/1 HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -369,7 +370,7 @@ def update_equipment(
 
         {
           "data": {
-            "equipment": [
+            "equipments": [
               {
                 "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
                 "default_for_sport_ids": [],
@@ -402,7 +403,7 @@ def update_equipment(
 
       {
         "data": {
-          "equipment": []
+          "equipments": []
         },
         "status": "not found"
       }
@@ -414,7 +415,7 @@ def update_equipment(
     :<json int equipment_type_id: the ID for an equipment type
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
-    :<json bool is_active: whether or not this equipment is currently
+    :<json boolean is_active: whether or not this equipment is currently
         active (default: true)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -518,7 +519,7 @@ def delete_equipment(
 
     .. sourcecode:: http
 
-      DELETE /api/equipment/2 HTTP/1.1
+      DELETE /api/equipments/2 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
