@@ -676,7 +676,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == ''
 
-    def test_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
+    def test_it_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
         self,
         app: Flask,
         user_1: User,
@@ -1104,4 +1104,65 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         )
         assert (
             equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )
+
+    def test_it_updates_equipment_totals(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        ]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_distance = 15.0
+        new_duration = 3800
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    duration=new_duration,
+                    distance=new_distance,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            jsonify_dict(equipment_bike_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == new_distance
+        assert equipment_bike_user_1.total_duration == timedelta(
+            seconds=new_duration
+        )
+        assert equipment_bike_user_1.total_moving == timedelta(
+            seconds=new_duration
+        )
+        assert (
+            jsonify_dict(equipment_shoes_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == new_distance
+        assert equipment_shoes_user_1.total_duration == timedelta(
+            seconds=new_duration
+        )
+        assert equipment_shoes_user_1.total_moving == timedelta(
+            seconds=new_duration
         )

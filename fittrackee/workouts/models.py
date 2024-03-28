@@ -1,5 +1,6 @@
 import datetime
 import os
+from decimal import Decimal
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 from uuid import UUID, uuid4
 
@@ -71,6 +72,46 @@ def update_records(
                 .where(record_table.c.sport_id == sport_id)
                 .where(record_table.c.record_type == record_type)
             )
+
+
+def format_value(
+    value: Union[Decimal, datetime.timedelta], attribute: str
+) -> Union[float, datetime.timedelta]:
+    return float(value) if attribute == 'distance' else value  # type: ignore
+
+
+def update_equipments(workout: 'Workout', connection: Connection) -> None:
+    from fittrackee.equipments.models import Equipment
+
+    instance_state = db.inspect(workout)
+    workout_values = {}
+
+    for attribute in ["distance", "duration", "moving"]:
+        state_history = instance_state.attrs[attribute].load_history()
+        if len(state_history.added) > 0 and len(state_history.deleted) > 0:
+            workout_values[attribute] = {
+                'new': format_value(state_history.added[0], attribute),
+                'old': format_value(state_history.deleted[0], attribute),
+            }
+    if not workout_values:
+        return
+
+    equipment_table = Equipment.__table__
+    for equipment in workout.equipments:
+        equipment_values = {}
+        for attribute, value in workout_values.items():
+            column = getattr(equipment, f"total_{attribute}")
+            equipment_values[f"total_{attribute}"] = (
+                format_value(column, attribute)  # type: ignore
+                - value["old"]
+                + value["new"]
+            )
+
+        connection.execute(
+            equipment_table.update()
+            .where(equipment_table.c.id == equipment.id)
+            .values(**equipment_values)
+        )
 
 
 class Sport(BaseModel):
@@ -405,6 +446,8 @@ def on_workout_update(
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:
+            if workout.equipments:
+                update_equipments(workout, connection)
             sports_list = [workout.sport_id]
             records = Record.query.filter_by(workout_id=workout.id).all()
             for rec in records:
