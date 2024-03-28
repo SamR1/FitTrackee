@@ -54,7 +54,7 @@
                     {{ $t('workouts.WORKOUT', 0) }}
                   </th>
                   <th class="text-left">
-                    {{ capitalize($t('workouts.DISTANCE')) }}
+                    {{ capitalize($t('workouts.TOTAL_DISTANCE')) }}
                   </th>
                   <th class="text-left">
                     {{ $t('common.ACTIVE') }}
@@ -88,7 +88,7 @@
                   </td>
                   <td class="column">
                     <span class="cell-heading">
-                      {{ $t('workouts.DISTANCE', 0) }}
+                      {{ $t('workouts.TOTAL_DISTANCE', 0) }}
                     </span>
                     <Distance
                       :distance="equipment.total_distance"

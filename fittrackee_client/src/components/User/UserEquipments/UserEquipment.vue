@@ -29,7 +29,9 @@
       </dd>
       <dt>{{ $t('common.DESCRIPTION') }}</dt>
       <dd>
-        <span v-if="equipment.description">{{ equipment.description }}</span>
+        <span class="equipment-description" v-if="equipment.description">
+          {{ equipment.description }}
+        </span>
         <span v-else class="no-description">
           {{ $t('common.NO_DESCRIPTION') }}
         </span>
@@ -44,7 +46,7 @@
         </router-link>
         <template v-else>{{ equipment.workouts_count }}</template>
       </dd>
-      <dt>{{ capitalize($t('workouts.DISTANCE', 0)) }}</dt>
+      <dt>{{ capitalize($t('workouts.TOTAL_DISTANCE', 0)) }}</dt>
       <dd>
         <Distance
           :distance="equipment.total_distance"
@@ -57,7 +59,7 @@
           {{ authUser.imperial_units ? 'miles' : 'km' }}
         </span>
       </dd>
-      <dt>{{ capitalize($t('workouts.DURATION', 0)) }}</dt>
+      <dt>{{ capitalize($t('workouts.TOTAL_DURATION', 0)) }}</dt>
       <dd>
         {{ getTotalDuration(equipment.total_moving) }}
         <template v-if="equipment.total_duration !== equipment.total_moving">
@@ -223,6 +225,9 @@
     }
     .no-description {
       font-style: italic;
+    }
+    .equipment-description {
+      white-space: pre-wrap;
     }
     .equipment-type {
       display: flex;

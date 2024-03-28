@@ -30,9 +30,9 @@
   "MAX_SPEED": "max. speed",
   "MIN_ALTITUDE": "min. altitude",
   "MULTISELECT": {
+    "deselectLabel": "Press enter to remove",
     "selectLabel": "Press enter to select",
-    "selectedLabel": "Selected",
-    "deselectLabel": "Press enter to remove"
+    "selectedLabel": "Selected"
   },
   "NEXT_SEGMENT": "No next segment",
   "NEXT_WORKOUT": "Next workout",
@@ -67,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
   "TITLE": "title",
   "TO": "to",
+  "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
   "VIEW_FULLSCREEN": "View Fullscreen",
