@@ -3,6 +3,7 @@ import type {
   IEquipmentType,
   ITranslatedEquipmentType,
 } from '@/types/equipments'
+import type { ITranslatedSport } from '@/types/sports'
 
 const sortEquipmentTypes = (
   a: ITranslatedEquipmentType,
@@ -38,13 +39,37 @@ const sortEquipments = (a: IEquipment, b: IEquipment): number => {
       : 0
 }
 
+const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
+  Shoes: ['Hiking', 'Mountaineering', 'Running', 'Trail', 'Walking'],
+  Bike: [
+    'Cycling (Sport)',
+    'Cycling (Transport)',
+    'Cycling (Trekking)',
+    'Mountain Biking',
+    'Mountain Biking (Electric)',
+  ],
+  'Bike Trainer': ['Cycling (Virtual)'],
+  Kayak_Boat: ['Rowing'],
+  Skis: ['Skiing (Alpine)', 'Skiing (Cross Country)'],
+  Snowshoes: ['Snowshoes'],
+}
+
 export const getEquipments = (
   equipments: IEquipment[],
   t: CallableFunction,
   activeStatus: 'all' | 'withIncludedIds' | 'is_active' = 'all',
+  sport: ITranslatedSport | null,
   equipmentToIncludeIds: number[] = []
-): IEquipment[] =>
-  equipments
+): IEquipment[] => {
+  if (!sport) {
+    return []
+  }
+  return equipments
+    .filter((equipment) =>
+      SPORT_EQUIPMENT_TYPES[equipment.equipment_type.label].includes(
+        sport.label
+      )
+    )
     .filter((equipment) =>
       activeStatus == 'all'
         ? true
@@ -61,3 +86,4 @@ export const getEquipments = (
       }
     })
     .sort(sortEquipments)
+}

@@ -237,14 +237,22 @@
                 </div>
               </div>
               <div class="form-item" v-if="equipments">
-                <label> {{ $t('equipments.EQUIPMENT', 0) }}: </label>
-                <EquipmentsMultiSelect
-                  :equipments="equipmentsForMultiSelect"
-                  :workout-equipments="workoutEquipments"
-                  name="workout-equipment"
-                  :for-creation="isCreation"
-                  @updatedValues="updateEquipments"
-                />
+                <label> {{ $t('equipments.EQUIPMENT', 1) }}: </label>
+                <select
+                  id="workout-equipment"
+                  @invalid="invalidateForm"
+                  :disabled="loading"
+                  v-model="workoutForm.equipment_id"
+                >
+                  <option value=""></option>
+                  <option
+                    v-for="equipment in equipmentsForSelect"
+                    :value="equipment.id"
+                    :key="equipment.id"
+                  >
+                    {{ equipment.label }}
+                  </option>
+                </select>
               </div>
               <div class="form-item">
                 <label> {{ $t('workouts.NOTES') }}: </label>
@@ -289,7 +297,6 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
-  import EquipmentsMultiSelect from '@/components/User/UserEquipments/EquipmentsMultiSelect.vue'
   import {
     EQUIPMENTS_STORE,
     ROOT_STORE,
@@ -357,6 +364,7 @@
     workoutDistance: '',
     workoutAscent: '',
     workoutDescent: '',
+    equipment_id: '',
   })
   const withGpx = ref(
     workout.value.id ? workout.value.with_gpx : isCreation.value
@@ -367,29 +375,22 @@
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
-  const equipmentsForMultiSelect: ComputedRef<IEquipment[]> = computed(() =>
-    equipments.value
-      ? getEquipments(
-          equipments.value,
-          t,
-          isCreation.value ? 'is_active' : 'withIncludedIds',
-          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
-        )
-      : []
-  )
   const selectedSport: ComputedRef<ITranslatedSport | null> = computed(() =>
     workoutForm.sport_id
       ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
       : null
   )
-  const workoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
-    workout.value?.equipments
-      ? getEquipments(workout.value.equipments, t, 'all')
-      : isCreation.value && selectedSport.value
-        ? getEquipments(selectedSport.value?.default_equipments, t, 'is_active')
-        : []
+  const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
+    equipments.value
+      ? getEquipments(
+          equipments.value,
+          t,
+          isCreation.value ? 'is_active' : 'withIncludedIds',
+          selectedSport.value,
+          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
+        )
+      : []
   )
-  const selectedEquipmentIds: Ref<number[]> = ref([])
 
   onMounted(() => {
     let element
@@ -420,6 +421,8 @@
     workoutForm.sport_id = `${workout.sport_id}`
     workoutForm.title = workout.title
     workoutForm.notes = workout.notes
+    workoutForm.equipment_id =
+      workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
     if (!workout.with_gpx) {
       const workoutDateTime = formatWorkoutDate(
         getDateWithTZ(workout.workout_date, props.authUser.timezone),
@@ -453,9 +456,6 @@
                 : parseFloat(workout.descent.toFixed(2))
             }`
     }
-    selectedEquipmentIds.value = workout.equipments
-      ? workout.equipments.map((e) => e.id)
-      : []
   }
   function isDistanceInvalid() {
     return payloadErrorMessages.value.includes('workouts.INVALID_DISTANCE')
@@ -508,7 +508,9 @@
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
       notes: workoutForm.notes,
-      equipment_ids: selectedEquipmentIds.value,
+      equipment_ids: workoutForm.equipment_id
+        ? [+workoutForm.equipment_id]
+        : [],
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
@@ -565,9 +567,6 @@
   function invalidateForm() {
     formErrors.value = true
   }
-  function updateEquipments(selectedIds: number[]) {
-    selectedEquipmentIds.value = selectedIds
-  }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 
@@ -579,6 +578,18 @@
     ) => {
       if (newWorkout !== previousWorkout && newWorkout && newWorkout.id) {
         formatWorkoutForm(newWorkout)
+      }
+    }
+  )
+  watch(
+    () => selectedSport.value,
+    (newSport: ISport | null) => {
+      if (isCreation.value) {
+        workoutForm.equipment_id =
+          newSport?.default_equipments &&
+          newSport?.default_equipments.length > 0
+            ? `${newSport.default_equipments[0].id}`
+            : ''
       }
     }
   )

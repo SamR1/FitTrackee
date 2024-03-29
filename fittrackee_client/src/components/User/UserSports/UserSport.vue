@@ -52,7 +52,7 @@
           aria-hidden="true"
         />
       </dd>
-      <dt>{{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 0) }}</dt>
+      <dt>{{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}</dt>
       <dd class="sport-equipments">
         <EquipmentBadge
           v-for="equipment in sport.default_equipments"

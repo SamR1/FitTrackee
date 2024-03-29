@@ -57,15 +57,23 @@
         </div>
         <div class="form-item">
           <label for="sport-default-equipment">
-            {{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 0) }}
+            {{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}
           </label>
-          <EquipmentsMultiSelect
-            :equipments="equipmentsForMultiSelect"
-            :workout-equipments="sportEquipments"
-            name="sport-default-equipment"
-            @updatedValues="updateEquipments"
+          <select
+            id="workout-equipment"
+            @invalid="invalidateForm"
             :disabled="loading"
-          />
+            v-model="defaultEquipmentId"
+          >
+            <option value=""></option>
+            <option
+              v-for="equipment in equipmentsForSelect"
+              :value="equipment.id"
+              :key="equipment.id"
+            >
+              {{ equipment.label }}
+            </option>
+          </select>
         </div>
       </div>
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -91,7 +99,6 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import EquipmentsMultiSelect from '@/components/User/UserEquipments/EquipmentsMultiSelect.vue'
   import userSportComponent from '@/components/User/UserSports/userSportComponent'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
@@ -114,7 +121,7 @@
   const { authUser, translatedSports } = toRefs(props)
   const {
     defaultColor,
-    defaultEquipmentIds,
+    defaultEquipmentId,
     errorMessages,
     loading,
     sportColors,
@@ -129,19 +136,15 @@
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
-  const equipmentsForMultiSelect: ComputedRef<IEquipment[]> = computed(() =>
-    equipments.value
+  const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
+    equipments.value && sport.value
       ? getEquipments(
           equipments.value,
           t,
           'withIncludedIds',
-          sport.value?.default_equipments.map((e) => e.id)
+          sport.value,
+          sport.value.default_equipments.map((e) => e.id)
         )
-      : []
-  )
-  const sportEquipments: ComputedRef<IEquipment[]> = computed(() =>
-    sport.value?.default_equipments
-      ? getEquipments(sport.value.default_equipments, t, 'all')
       : []
   )
   const formErrors = ref(false)
@@ -167,9 +170,6 @@
     }
     return filteredSportList[0]
   }
-  function updateEquipments(selectedIds: number[]) {
-    defaultEquipmentIds.value = selectedIds
-  }
   function formatSportForm(sport: ISport | null, withEquipments = false) {
     if (sport !== null) {
       sportPayload.sport_id = sport.id
@@ -186,12 +186,17 @@
       }`
       sportPayload.fromSport = true
       if (withEquipments) {
-        defaultEquipmentIds.value = sport.default_equipments.map((e) => e.id)
+        defaultEquipmentId.value =
+          sport.default_equipments.length > 0
+            ? sport.default_equipments[0].id
+            : ''
       }
     }
   }
   function updateSportPreferences() {
-    sportPayload.default_equipment_ids = defaultEquipmentIds.value
+    sportPayload.default_equipment_ids = defaultEquipmentId.value
+      ? [+defaultEquipmentId.value]
+      : []
     updateSport(authUser.value)
   }
   function invalidateForm() {

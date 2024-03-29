@@ -109,7 +109,7 @@
       "COLOR": "color",
       "CONFIRM_SPORT_RESET": "Are you sure you want to reset this sport?",
       "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Are you sure you want to reset this sport? All default equipments will be removed.",
-      "DEFAULT_EQUIPMENTS": "Default equipments",
+      "DEFAULT_EQUIPMENTS": "Default equipment | Default equipments",
       "DISABLED_BY_ADMIN": "disabled by admin",
       "IS_ACTIVE": "active",
       "LABEL": "label",

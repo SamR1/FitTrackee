@@ -23,7 +23,7 @@ export default function userSportComponent() {
   const sportColors = inject('sportColors') as Record<string, string>
 
   const displayModal: Ref<boolean> = ref(false)
-  const defaultEquipmentIds: Ref<number[]> = ref([])
+  const defaultEquipmentId: Ref<string | number> = ref('')
   const sportPayload: IUserSportPreferencesPayload = reactive({
     sport_id: 0,
     color: null,
@@ -57,7 +57,7 @@ export default function userSportComponent() {
 
   return {
     defaultColor,
-    defaultEquipmentIds,
+    defaultEquipmentId,
     displayModal,
     errorMessages,
     loading,
