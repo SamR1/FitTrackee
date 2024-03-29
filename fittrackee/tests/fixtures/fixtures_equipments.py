@@ -10,7 +10,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 @pytest.fixture()
 def equipment_type_1_shoe() -> EquipmentType:
-    equip_type = EquipmentType(label='Shoe', is_active=True)
+    equip_type = EquipmentType(label='Shoes', is_active=True)
     db.session.add(equip_type)
     db.session.commit()
     return equip_type
@@ -18,7 +18,7 @@ def equipment_type_1_shoe() -> EquipmentType:
 
 @pytest.fixture()
 def equipment_type_1_shoe_inactive() -> EquipmentType:
-    equip_type = EquipmentType(label='Shoe', is_active=False)
+    equip_type = EquipmentType(label='Shoes', is_active=False)
     db.session.add(equip_type)
     db.session.commit()
     return equip_type
@@ -70,6 +70,38 @@ def equipment_shoes_user_1(
 ) -> Equipment:
     equip = Equipment(
         label='Test shoe equipment',
+        equipment_type_id=equipment_type_1_shoe.id,
+        description='An shoe equipment for testing purposes',
+        user_id=user_1.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def equipment_shoes_user_1_inactive(
+    equipment_type_1_shoe: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label='Inactive shoe equipment',
+        equipment_type_id=equipment_type_1_shoe.id,
+        description='An shoe equipment for testing purposes',
+        user_id=user_1.id,
+        is_active=False,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def equipment_another_shoes_user_1(
+    equipment_type_1_shoe: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label='Another shoe equipment',
         equipment_type_id=equipment_type_1_shoe.id,
         description='An shoe equipment for testing purposes',
         user_id=user_1.id,

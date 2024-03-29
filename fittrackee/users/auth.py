@@ -25,7 +25,10 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
-from fittrackee.equipments.exceptions import InvalidEquipmentException
+from fittrackee.equipments.exceptions import (
+    InvalidEquipmentException,
+    InvalidEquipmentsException,
+)
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
@@ -1074,6 +1077,7 @@ def edit_user_sport_preferences(
             default_equipments = handle_equipments(
                 default_equipment_ids,
                 auth_user,
+                sport_id,
                 existing_default_equipments,
             )
             if default_equipments:
@@ -1121,6 +1125,8 @@ def edit_user_sport_preferences(
         }
 
     # handler errors
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except InvalidEquipmentException as e:
         return EquipmentInvalidPayloadErrorResponse(
             equipment_id=e.equipment_id, message=e.message, status=e.status

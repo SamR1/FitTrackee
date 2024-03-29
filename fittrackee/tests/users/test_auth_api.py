@@ -1811,6 +1811,38 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         )
         assert data["status"] == "not_found"
 
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    default_equipment_ids=[equipment_shoes_user_1.id],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
+
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:

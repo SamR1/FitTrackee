@@ -1037,7 +1037,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     try:
         equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'), auth_user
+            workout_data.get('equipment_ids'),
+            auth_user,
+            workout_data['sport_id'],
         )
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -1238,11 +1240,17 @@ def post_workout_no_gpx(
 
     try:
         equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'), auth_user
+            workout_data.get('equipment_ids'),
+            auth_user,
+            workout_data['sport_id'],
         )
         workout_data['equipments_list'] = equipments_list
-    except InvalidEquipmentException as e:
+    except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
 
     # get default equipment if sport preferences exists
     if not "equipments_list" not in workout_data:
@@ -1452,8 +1460,16 @@ def update_workout(
             except (TypeError, ValueError):
                 return InvalidPayloadErrorResponse()
 
+        sport_id = (
+            workout_data["sport_id"]
+            if workout_data.get("sport_id")
+            else workout.sport_id
+        )
         workout_data['equipments_list'] = handle_equipments(
-            workout_data.get('equipment_ids'), auth_user, workout.equipments
+            workout_data.get('equipment_ids'),
+            auth_user,
+            sport_id,
+            workout.equipments,
         )
 
         workout = edit_workout(workout, workout_data, auth_user)

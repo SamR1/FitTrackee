@@ -312,7 +312,6 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1: Equipment,
-        equipment_shoes_user_1: Equipment,
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
         client = app.test_client()
@@ -320,36 +319,21 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            json={
-                "equipment_ids": [
-                    equipment_bike_user_1.id,
-                    equipment_shoes_user_1.id,
-                ]
-            },
+            json={"equipment_ids": [equipment_bike_user_1.id]},
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert len(data['data']['workouts'][0]['equipments']) == 2
-        assert (
+        assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
-            in data['data']['workouts'][0]['equipments']
-        )
-        assert (
-            jsonify_dict(equipment_shoes_user_1.serialize())
-            in data['data']['workouts'][0]['equipments']
-        )
+        ]
         workout = Workout.query.first()
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == workout.distance
         assert equipment_bike_user_1.total_duration == workout.duration
         assert equipment_bike_user_1.total_moving == workout.moving
-        assert equipment_shoes_user_1.total_workouts == 1
-        assert equipment_shoes_user_1.total_distance == workout.distance
-        assert equipment_shoes_user_1.total_duration == workout.duration
-        assert equipment_shoes_user_1.total_moving == workout.moving
 
     def test_it_returns_400_when_equipment_is_inactive(
         self,
@@ -358,7 +342,6 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1_inactive: Equipment,
-        equipment_shoes_user_1: Equipment,
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
         client = app.test_client()
@@ -368,7 +351,6 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             content_type='application/json',
             json={
                 "equipment_ids": [
-                    equipment_shoes_user_1.id,
                     equipment_bike_user_1_inactive.id,
                 ]
             },
@@ -391,7 +373,6 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1_inactive: Equipment,
-        equipment_shoes_user_1: Equipment,
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
@@ -404,27 +385,17 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            json={
-                "equipment_ids": [
-                    equipment_shoes_user_1.id,
-                    equipment_bike_user_1_inactive.id,
-                ]
-            },
+            json={"equipment_ids": [equipment_bike_user_1_inactive.id]},
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        assert len(data['data']['workouts'][0]['equipments']) == 2
-        assert (
-            jsonify_dict(equipment_shoes_user_1.serialize())
-            in data['data']['workouts'][0]['equipments']
-        )
-        assert (
+        assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1_inactive.serialize())
-            in data['data']['workouts'][0]['equipments']
-        )
+        ]
+
         assert equipment_bike_user_1_inactive.total_workouts == 1
         assert (
             equipment_bike_user_1_inactive.total_distance == workout.distance
@@ -433,10 +404,33 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             equipment_bike_user_1_inactive.total_duration == workout.duration
         )
         assert equipment_bike_user_1_inactive.total_moving == workout.moving
-        assert equipment_shoes_user_1.total_workouts == 1
-        assert equipment_shoes_user_1.total_distance == workout.distance
-        assert equipment_shoes_user_1.total_duration == workout.duration
-        assert equipment_shoes_user_1.total_moving == workout.moving
+
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            json={"equipment_ids": [equipment_shoes_user_1.id]},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
 
     def test_it_removes_equipment(
         self,
@@ -445,20 +439,19 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1: Equipment,
-        equipment_shoes_user_1: Equipment,
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
         ).first()
-        workout.equipments = [equipment_bike_user_1, equipment_shoes_user_1]
+        workout.equipments = [equipment_bike_user_1]
         db.session.commit()
         client = app.test_client()
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            json={"equipment_ids": [equipment_shoes_user_1.id]},
+            json={"equipment_ids": []},
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
@@ -466,18 +459,11 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['equipments'] == [
-            jsonify_dict(equipment_shoes_user_1.serialize())
-        ]
-        workout = Workout.query.first()
+        assert data['data']['workouts'][0]['equipments'] == []
         assert equipment_bike_user_1.total_workouts == 0
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
-        assert equipment_shoes_user_1.total_workouts == 1
-        assert equipment_shoes_user_1.total_distance == workout.distance
-        assert equipment_shoes_user_1.total_duration == workout.duration
-        assert equipment_shoes_user_1.total_moving == workout.moving
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

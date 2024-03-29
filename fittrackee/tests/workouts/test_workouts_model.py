@@ -22,8 +22,9 @@ class TestWorkoutModel:
     ) -> None:
         workout_cycling_user_1.title = 'Test'
         db.session.commit()
-        assert '<Workout \'Cycling\' - 2018-01-01 00:00:00>' == str(
-            workout_cycling_user_1
+        assert (
+            f'<Workout \'{sport_1_cycling.label}\' - 2018-01-01 00:00:00>'
+            == str(workout_cycling_user_1)
         )
 
     def test_short_id_returns_encoded_workout_uuid(

@@ -19,8 +19,8 @@ class TestSportModel:
         sport: Sport, is_admin: Optional[bool] = False
     ) -> Dict:
         assert 1 == sport.id
-        assert 'Cycling' == sport.label
-        assert '<Sport \'Cycling\'>' == str(sport)
+        assert 'Cycling (Sport)' == sport.label
+        assert f'<Sport \'{sport.label}\'>' == str(sport)
 
         serialized_sport = sport.serialize(is_admin=is_admin)
         assert serialized_sport['default_equipments'] == []
@@ -75,7 +75,7 @@ class TestSportModelWithPreferences:
 
         assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is True
         assert serialized_sport['color'] == '#00000'
@@ -97,7 +97,7 @@ class TestSportModelWithPreferences:
 
         assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is False
         assert serialized_sport['color'] is None
@@ -120,7 +120,7 @@ class TestSportModelWithPreferences:
 
         assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is False
         assert serialized_sport['is_active_for_user'] is False
         assert serialized_sport['color'] is None
@@ -143,7 +143,7 @@ class TestSportModelWithPreferences:
 
         assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is True
         assert serialized_sport['color'] is None

@@ -27,7 +27,7 @@ def static_map_get_mock() -> Generator:
 
 @pytest.fixture()
 def sport_1_cycling() -> Sport:
-    sport = Sport(label='Cycling')
+    sport = Sport(label='Cycling (Sport)')
     db.session.add(sport)
     db.session.commit()
     return sport
@@ -35,7 +35,7 @@ def sport_1_cycling() -> Sport:
 
 @pytest.fixture()
 def sport_1_cycling_inactive() -> Sport:
-    sport = Sport(label='Cycling')
+    sport = Sport(label='Cycling (Sport)')
     sport.is_active = False
     db.session.add(sport)
     db.session.commit()

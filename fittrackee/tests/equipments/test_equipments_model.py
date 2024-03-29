@@ -179,8 +179,8 @@ class TestEquipmentTypeModel:
         equip_type: EquipmentType, is_admin: bool = False
     ) -> Dict:
         assert 1 == equip_type.id
-        assert 'Shoe' == equip_type.label
-        assert '<EquipmentType \'Shoe\'>' == str(equip_type)
+        assert 'Shoes' == equip_type.label
+        assert '<EquipmentType \'Shoes\'>' == str(equip_type)
 
         serialized_equip = equip_type.serialize(is_admin=is_admin)
         assert serialized_equip['id'] == equip_type.id
