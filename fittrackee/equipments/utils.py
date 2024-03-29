@@ -7,9 +7,9 @@ from .exceptions import InvalidEquipmentException, InvalidEquipmentsException
 
 
 def handle_equipments(
-    equipment_ids: Optional[List],
+    equipment_ids: Optional[List[int]],
     auth_user: User,
-    existing_equipment_ids: Optional[List[Equipment]] = None,
+    existing_equipments: Optional[List[Equipment]] = None,
 ) -> Union[List[Equipment], None]:
     equipments_list = None
     if equipment_ids is not None:
@@ -33,8 +33,7 @@ def handle_equipments(
                     equipment_id=equipment_id,
                 )
             if not equipment.is_active and (
-                not existing_equipment_ids
-                or equipment not in existing_equipment_ids
+                not existing_equipments or equipment not in existing_equipments
             ):
                 raise InvalidEquipmentException(
                     status="inactive",

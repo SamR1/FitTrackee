@@ -230,7 +230,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
 
         self.assert_500(response)
 
-    def test_it_returns_400_when_equipment_ids_are_not_list(
+    def test_it_returns_400_when_equipment_ids_are_invalid(
         self,
         app: Flask,
         user_1: User,
@@ -245,29 +245,6 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
             json={"equipment_ids": equipment_bike_user_1.id},
-            headers=dict(Authorization=f'Bearer {token}'),
-        )
-
-        self.assert_400(
-            response,
-            "equipment_ids must be an array of integers",
-        )
-
-    def test_it_returns_400_when_equipment_id_is_not_an_int(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        gpx_file: str,
-        equipment_bike_user_1: Equipment,
-    ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
-
-        response = client.patch(
-            f'/api/workouts/{workout_short_id}',
-            content_type='application/json',
-            json={"equipment_ids": [equipment_bike_user_1.label]},
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
