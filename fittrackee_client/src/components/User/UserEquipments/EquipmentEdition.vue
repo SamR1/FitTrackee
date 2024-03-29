@@ -65,6 +65,18 @@
               v-model="equipmentForm.isActive"
             />
           </div>
+          <div class="form-item">
+            <label for="equipment-sports">
+              {{ capitalize($t('equipments.DEFAULT_FOR_SPORTS', 0)) }}
+            </label>
+            <SportsMultiSelect
+              :sports="filteredSports"
+              name="equipment-sports"
+              :for-creation="equipmentForm.id === 0"
+              :equipmentSports="equipmentTranslatedSports"
+              @updatedValues="updateSports"
+            />
+          </div>
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
@@ -103,15 +115,21 @@
     watch,
   } from 'vue'
   import type { ComputedRef } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import SportsMultiSelect from '@/components/User/UserEquipments/SportsMultiSelect.vue'
+  import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
   import type {
     IEquipment,
     IEquipmentError,
+    IEquipmentType,
     ITranslatedEquipmentType,
   } from '@/types/equipments'
+  import type { ITranslatedSport } from '@/types/sports'
   import { useStore } from '@/use/useStore'
+  import { SPORT_EQUIPMENT_TYPES } from '@/utils/equipments'
+  import { translateSports } from '@/utils/sports'
 
   interface Props {
     equipments: IEquipment[]
@@ -121,6 +139,7 @@
 
   const store = useStore()
   const route = useRoute()
+  const { t } = useI18n()
 
   const { equipments, translatedEquipmentTypes } = toRefs(props)
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
@@ -134,7 +153,34 @@
     description: '',
     equipmentTypeId: 0,
     isActive: true,
+    defaultForSportIds: [] as number[],
   })
+
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
+  )
+  const selectedEquipmentTypes: ComputedRef<IEquipmentType[]> = computed(() =>
+    translatedEquipmentTypes.value.filter(
+      (e) => e.id === equipmentForm.equipmentTypeId
+    )
+  )
+  const filteredSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    selectedEquipmentTypes.value.length > 0
+      ? translatedSports.value.filter((s) =>
+          SPORT_EQUIPMENT_TYPES[selectedEquipmentTypes.value[0].label].includes(
+            s.label
+          )
+        )
+      : []
+  )
+  const equipmentTranslatedSports: ComputedRef<ITranslatedSport[]> = computed(
+    () =>
+      translateSports(translatedSports.value, t, 'all').filter((s) =>
+        equipment.value
+          ? equipment.value?.default_for_sport_ids.includes(s.id)
+          : false
+      )
+  )
   const formErrors = ref(false)
 
   onMounted(() => {
@@ -180,6 +226,9 @@
   }
   function invalidateForm() {
     formErrors.value = true
+  }
+  function updateSports(selectedIds: number[]) {
+    equipmentForm.defaultForSportIds = selectedIds
   }
 
   watch(

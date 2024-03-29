@@ -51,6 +51,14 @@ def sport_2_running() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_3_cycling_transport() -> Sport:
+    sport = Sport(label='Cycling (Transport)')
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
 def update_workout(workout: Workout) -> None:
     workout.ave_speed = float(workout.distance) / (
         workout.duration.seconds / 3600

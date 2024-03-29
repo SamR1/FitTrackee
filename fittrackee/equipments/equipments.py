@@ -1,7 +1,8 @@
-from typing import Dict, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, request
 from sqlalchemy import exc
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.oauth2.server import require_auth
@@ -12,11 +13,43 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.models import User
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
+from fittrackee.workouts.models import Sport
 
-from ..equipments.models import Equipment, EquipmentType
+from .exceptions import InvalidEquipmentsException
+from .models import Equipment, EquipmentType
 
 equipments_blueprint = Blueprint('equipments', __name__)
+
+
+def handle_default_sports(
+    default_for_sport_ids: List[int], auth_user: User
+) -> List[UserSportPreference]:
+    user_sport_preferences = []
+    for sport_id in default_for_sport_ids:
+        sport = Sport.query.filter_by(id=sport_id).first()
+        if not sport:
+            raise InvalidEquipmentsException(
+                f"sport (id {sport_id}) does not exist"
+            )
+        user_sport_preference = UserSportPreference.query.filter_by(
+            user_id=auth_user.id,
+            sport_id=sport_id,
+        ).first()
+        if not user_sport_preference:
+            user_sport_preference = UserSportPreference(
+                user_id=auth_user.id,
+                sport_id=sport_id,
+                stopped_speed_threshold=sport.stopped_speed_threshold,
+            )
+            db.session.add(user_sport_preference)
+            db.session.flush()
+        user_sport_preferences.append(user_sport_preference)
+    return user_sport_preferences
 
 
 @equipments_blueprint.route('/equipments', methods=['GET'])
@@ -269,6 +302,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
         active (default: true)
+    :<json array of integers default_for_sport_ids: the default sport ids
+        to use for this equipment, not mandatory
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -312,6 +347,13 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse("invalid equipment type")
 
     try:
+        user_sport_preferences = handle_default_sports(
+            equipment_data.get("default_for_sport_ids", []), auth_user
+        )
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
+
+    try:
         new_equipment = Equipment(
             user_id=auth_user.id,
             label=label,
@@ -320,6 +362,20 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             description=equipment_data.get('description'),
         )
         db.session.add(new_equipment)
+        db.session.flush()
+        if user_sport_preferences:
+            db.session.execute(
+                insert(UserSportPreferenceEquipment).values(
+                    [
+                        {
+                            "equipment_id": new_equipment.id,
+                            "sport_id": sport.sport_id,
+                            "user_id": auth_user.id,
+                        }
+                        for sport in user_sport_preferences
+                    ]
+                )
+            )
         db.session.commit()
 
         return (
@@ -417,6 +473,8 @@ def update_equipment(
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
         active (default: true)
+    :<json array of integers default_for_sport_ids: the default sport ids
+        to use for this equipment
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -440,10 +498,25 @@ def update_equipment(
         return InvalidPayloadErrorResponse('no request data was supplied')
 
     if not any(
-        e in ['label', 'description', 'equipment_type_id', 'is_active']
+        e
+        in [
+            'label',
+            'description',
+            'equipment_type_id',
+            'is_active',
+            'default_for_sport_ids',
+        ]
         for e in equipment_data
     ):
         return InvalidPayloadErrorResponse('no valid parameters supplied')
+
+    default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
+    try:
+        user_sport_preferences = handle_default_sports(
+            default_for_sport_ids, auth_user
+        )
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
 
     try:
         equipment = Equipment.query.filter_by(
@@ -480,6 +553,44 @@ def update_equipment(
             if not EquipmentType.query.filter_by(id=equipment_type_id).first():
                 return InvalidPayloadErrorResponse("invalid equipment type id")
             equipment.equipment_type_id = equipment_type_id
+
+        existing_sports = (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                UserSportPreferenceEquipment.c.equipment_id == equipment.id,
+            )
+            .all()
+        )
+
+        sport_ids_to_remove = {s[1] for s in existing_sports} - set(
+            default_for_sport_ids
+        )
+
+        if sport_ids_to_remove:
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                (UserSportPreferenceEquipment.c.equipment_id == equipment.id),
+                UserSportPreferenceEquipment.c.sport_id.in_(
+                    sport_ids_to_remove
+                ),
+            ).delete()
+
+        if user_sport_preferences:
+            db.session.execute(
+                insert(UserSportPreferenceEquipment)
+                .values(
+                    [
+                        {
+                            "equipment_id": equipment.id,
+                            "sport_id": sport.sport_id,
+                            "user_id": auth_user.id,
+                        }
+                        for sport in user_sport_preferences
+                    ]
+                )
+                .on_conflict_do_nothing()
+            )
         db.session.commit()
 
         return {

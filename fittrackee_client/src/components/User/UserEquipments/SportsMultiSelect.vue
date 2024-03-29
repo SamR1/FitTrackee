@@ -1,19 +1,19 @@
 <template>
   <Multiselect
-    v-if="equipments"
+    v-if="sports"
     placeholder=""
     :id="name"
     :name="name"
-    v-model="selectedEquipments"
+    v-model="selectedSports"
     :multiple="true"
-    :options="equipments"
+    :options="sports"
     :taggable="true"
-    label="label"
+    label="translatedLabel"
     track-by="id"
     :selectLabel="$t('workouts.MULTISELECT.selectLabel')"
     :selectedLabel="$t('workouts.MULTISELECT.selectedLabel')"
     :deselectLabel="$t('workouts.MULTISELECT.deselectLabel')"
-    @update:model-value="updateSelectedEquipments"
+    @update:model-value="updateSelectedSports"
   />
 </template>
 
@@ -22,42 +22,42 @@
   import type { Ref } from 'vue'
   import Multiselect from 'vue-multiselect'
 
-  import type { IEquipment } from '@/types/equipments'
+  import type { ITranslatedSport } from '@/types/sports'
 
   interface Props {
-    equipments: IEquipment[]
+    sports: ITranslatedSport[]
     name: string
     forCreation?: boolean
-    workoutEquipments?: IEquipment[]
+    equipmentSports?: ITranslatedSport[]
   }
   const props = withDefaults(defineProps<Props>(), {
-    workoutEquipments: () => [],
+    equipmentSports: () => [],
     forCreation: false,
   })
   const emit = defineEmits(['updatedValues'])
 
-  const { equipments, forCreation, name, workoutEquipments } = toRefs(props)
-  const selectedEquipments: Ref<IEquipment[]> = ref([])
+  const { equipmentSports, forCreation, name, sports } = toRefs(props)
+  const selectedSports: Ref<ITranslatedSport[]> = ref([])
 
   onBeforeMount(() => {
-    if (workoutEquipments.value) {
-      selectedEquipments.value = workoutEquipments.value
+    if (equipmentSports.value) {
+      selectedSports.value = equipmentSports.value
     }
   })
 
-  function updateSelectedEquipments(equipmentsList: IEquipment[]) {
+  function updateSelectedSports(sportsList: ITranslatedSport[]) {
     emit(
       'updatedValues',
-      equipmentsList.map((e) => e.id)
+      sportsList.map((e) => e.id)
     )
   }
 
   watch(
-    () => workoutEquipments.value,
-    async (newWorkoutEquipments: IEquipment[]) => {
+    () => equipmentSports.value,
+    async (newEquipmentSports: ITranslatedSport[]) => {
       if (forCreation.value) {
-        selectedEquipments.value = newWorkoutEquipments
-        updateSelectedEquipments(newWorkoutEquipments)
+        selectedSports.value = newEquipmentSports
+        updateSelectedSports(newEquipmentSports)
       }
     }
   )

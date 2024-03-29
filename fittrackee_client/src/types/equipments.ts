@@ -30,6 +30,7 @@ export interface IEquipment {
 }
 
 export interface IAddEquipmentPayload {
+  defaultForSportIds: number[]
   description: string | null
   equipmentTypeId: number
   label: string

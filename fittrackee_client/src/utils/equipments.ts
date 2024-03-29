@@ -39,7 +39,7 @@ const sortEquipments = (a: IEquipment, b: IEquipment): number => {
       : 0
 }
 
-const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
+export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
   Shoes: ['Hiking', 'Mountaineering', 'Running', 'Trail', 'Walking'],
   Bike: [
     'Cycling (Sport)',

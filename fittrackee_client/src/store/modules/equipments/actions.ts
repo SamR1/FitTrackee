@@ -6,6 +6,7 @@ import {
   AUTH_USER_STORE,
   ROOT_STORE,
   EQUIPMENTS_STORE,
+  SPORTS_STORE,
 } from '@/store/constants'
 import type {
   IEquipmentsActions,
@@ -32,6 +33,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         description: payload.description,
         equipment_type_id: payload.equipmentTypeId,
         label: payload.label,
+        default_for_sport_ids: payload.defaultForSportIds,
       })
       .then((res) => {
         if (res.data.status === 'created') {
@@ -40,6 +42,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
             context.commit(EQUIPMENTS_STORE.MUTATIONS.ADD_EQUIPMENT, equipment)
             router.push(`/profile/equipments/${equipment.id}`)
           }
+          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
           context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
         } else {
           handleError(context, null)
@@ -129,6 +132,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         equipment_type_id: payload.equipmentTypeId,
         is_active: payload.isActive,
         label: payload.label,
+        default_for_sport_ids: payload.defaultForSportIds,
       })
       .then((res) => {
         if (res.data.status === 'success') {
@@ -137,6 +141,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
               EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT,
               res.data.data.equipments[0]
             )
+            context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
             router.push(`/profile/equipments/${payload.id}`)
           }
         } else {
