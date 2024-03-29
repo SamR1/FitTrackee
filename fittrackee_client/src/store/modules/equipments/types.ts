@@ -51,10 +51,6 @@ export interface IEquipmentsActions {
 }
 
 export interface IEquipmentsGetters {
-  [EQUIPMENTS_STORE.GETTERS.EQUIPMENT](
-    state: IEquipmentTypesState,
-    equipmentId: number
-  ): IEquipment
   [EQUIPMENTS_STORE.GETTERS.EQUIPMENTS](
     state: IEquipmentTypesState
   ): IEquipment[]

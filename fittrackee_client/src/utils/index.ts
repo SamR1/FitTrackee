@@ -1,7 +1,11 @@
 import { AxiosError } from 'axios'
 import type { ActionContext } from 'vuex'
 
-import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  EQUIPMENTS_STORE,
+  ROOT_STORE,
+} from '@/store/constants'
 import type { IAuthUserState } from '@/store/modules/authUser/types'
 import type { IEquipmentTypesState } from '@/store/modules/equipments/types'
 import type { IOAuth2State } from '@/store/modules/oauth2/types'
@@ -11,7 +15,7 @@ import type { IStatisticsState } from '@/store/modules/statistics/types'
 import type { IUsersState } from '@/store/modules/users/types'
 import type { IWorkoutsState } from '@/store/modules/workouts/types'
 import type { IApiErrorMessage } from '@/types/api'
-import type { IEquipmentError } from '@/types/equipments'
+import type { IEquipment, IEquipmentError } from '@/types/equipments'
 
 export const getApiUrl = (): string => {
   return import.meta.env.PROD
@@ -47,7 +51,7 @@ export const handleError = (
     return
   }
 
-  const equipmentError = getEquipmentError(error)
+  const equipmentError = getEquipmentError(error, context)
   const errorMessages = equipmentError
     ? ''
     : !error
@@ -75,14 +79,29 @@ export const handleError = (
   )
 }
 
-const getEquipmentError = (error: AxiosError | null) => {
+const getEquipmentError = (
+  error: AxiosError | null,
+  context:
+    | ActionContext<IRootState, IRootState>
+    | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IEquipmentTypesState, IRootState>
+    | ActionContext<IOAuth2State, IRootState>
+    | ActionContext<IStatisticsState, IRootState>
+    | ActionContext<ISportsState, IRootState>
+    | ActionContext<IUsersState, IRootState>
+    | ActionContext<IWorkoutsState, IRootState>
+) => {
   if (error?.response?.data) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const data: IEquipmentError = { ...error.response.data }
     if ('equipment_id' in data) {
+      const equipments: IEquipment[] = context.getters[
+        EQUIPMENTS_STORE.GETTERS.EQUIPMENTS
+      ].filter((equipment: IEquipment) => equipment.id === data.equipment_id)
       return {
-        equipment_id: data.equipment_id,
+        equipmentId: data.equipment_id,
+        equipmentLabel: equipments.length === 0 ? null : equipments[0].label,
         status: data.status,
       }
     }

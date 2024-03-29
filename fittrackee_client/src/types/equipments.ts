@@ -46,6 +46,7 @@ export interface IDeleteEquipmentPayload {
 }
 
 export interface IEquipmentError {
-  equipment_id: number
+  equipmentId: number
+  equipmentLabel: string | null
   status: string
 }

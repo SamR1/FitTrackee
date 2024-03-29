@@ -6,8 +6,9 @@
   "EQUIPMENT": "équipement|équipements",
   "EQUIPMENT_TYPE": "type d'équipement|types d'équipement",
   "ERRORS": {
-    "inactive": "Équipement (id: {equipmentId}) inactif.",
-    "not_found": "Équipement (id: {equipmentId}) introuvable."
+    "inactive": "Équipement {equipmentLabel} inactif.",
+    "invalid": "Équipement {equipmentLabel} invalide pour ce sport.",
+    "not_found": "Équipement introuvable."
   },
   "NEW_EQUIPMENT": "Nouvel équipement",
   "NO_EQUIPMENT": "Pas d'équipement correspondant.",

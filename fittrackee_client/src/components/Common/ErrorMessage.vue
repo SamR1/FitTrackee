@@ -11,7 +11,8 @@
     <div v-else>
       {{
         $t(`equipments.ERRORS.${message.status}`, {
-          equipmentId: message.equipment_id,
+          equipmentId: message.equipmentId,
+          equipmentLabel: message.equipmentLabel,
         })
       }}
     </div>
