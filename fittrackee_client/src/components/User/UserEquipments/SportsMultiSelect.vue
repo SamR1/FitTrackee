@@ -28,18 +28,16 @@
   interface Props {
     sports: ITranslatedSport[]
     name: string
-    forCreation?: boolean
     equipmentSports?: ITranslatedSport[]
     disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     equipmentSports: () => [],
-    forCreation: false,
     disabled: false,
   })
   const emit = defineEmits(['updatedValues'])
 
-  const { equipmentSports, forCreation, name, sports } = toRefs(props)
+  const { equipmentSports, name, sports } = toRefs(props)
   const selectedSports: Ref<ITranslatedSport[]> = ref([])
 
   onBeforeMount(() => {
@@ -58,10 +56,8 @@
   watch(
     () => equipmentSports.value,
     async (newEquipmentSports: ITranslatedSport[]) => {
-      if (forCreation.value) {
-        selectedSports.value = newEquipmentSports
-        updateSelectedSports(newEquipmentSports)
-      }
+      selectedSports.value = newEquipmentSports
+      updateSelectedSports(newEquipmentSports)
     }
   )
 </script>

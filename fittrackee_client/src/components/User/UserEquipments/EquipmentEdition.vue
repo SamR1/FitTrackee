@@ -72,7 +72,6 @@
             <SportsMultiSelect
               :sports="filteredSports"
               name="equipment-sports"
-              :for-creation="equipmentForm.id === 0"
               :equipmentSports="equipmentTranslatedSports"
               :disabled="!equipmentForm.equipmentTypeId"
               @updatedValues="updateSports"
@@ -115,7 +114,7 @@
     toRefs,
     watch,
   } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
@@ -156,7 +155,6 @@
     isActive: true,
     defaultForSportIds: [] as number[],
   })
-
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
   )
@@ -174,14 +172,7 @@
         )
       : []
   )
-  const equipmentTranslatedSports: ComputedRef<ITranslatedSport[]> = computed(
-    () =>
-      translateSports(translatedSports.value, t, 'all').filter((s) =>
-        equipment.value
-          ? equipment.value?.default_for_sport_ids.includes(s.id)
-          : false
-      )
-  )
+  const equipmentTranslatedSports: Ref<ITranslatedSport[]> = ref([])
   const formErrors = ref(false)
 
   onMounted(() => {
@@ -205,6 +196,13 @@
     }
     return filteredEquipmentList[0]
   }
+  function setEquipmentSports(equipment: IEquipment) {
+    equipmentTranslatedSports.value = translateSports(
+      translatedSports.value,
+      t,
+      'all'
+    ).filter((s) => equipment.default_for_sport_ids.includes(s.id))
+  }
   function formatForm(equipment: IEquipment) {
     equipmentForm.id = equipment.id
     equipmentForm.label = equipment.label
@@ -213,6 +211,7 @@
       : ''
     equipmentForm.equipmentTypeId = equipment.equipment_type.id
     equipmentForm.isActive = equipment.is_active
+    setEquipmentSports(equipment)
   }
   function submit() {
     store.dispatch(
@@ -237,6 +236,19 @@
     (equipment) => {
       if (route.params.id && equipment?.id) {
         formatForm(equipment)
+      }
+    }
+  )
+  watch(
+    () => equipmentForm.equipmentTypeId,
+    (newEquipmentTypeId: number) => {
+      if (
+        equipment.value &&
+        newEquipmentTypeId === equipment.value.equipment_type.id
+      ) {
+        setEquipmentSports(equipment.value)
+      } else {
+        equipmentTranslatedSports.value = []
       }
     }
   )
