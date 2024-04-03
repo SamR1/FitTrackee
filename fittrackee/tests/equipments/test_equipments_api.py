@@ -908,7 +908,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
             equipment
         ]
 
-    def test_it_remove_default_sports(
+    def test_it_removes_default_sports(
         self,
         app: Flask,
         user_1: User,
@@ -934,9 +934,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
         response = client.patch(
             f'/api/equipments/{equipment_bike_user_1.id}',
-            json={
-                "default_for_sport_ids": [],
-            },
+            json={"default_for_sport_ids": []},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -947,6 +945,48 @@ class TestPatchEquipment(ApiTestCaseMixin):
         equipment = data['data']['equipments'][0]
         assert equipment['default_for_sport_ids'] == []
         assert user_sport_1_preference.default_equipments.all() == []
+
+    def test_it_does_not_remove_existing_default_sport_when_modifying_another_value(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_label = self.random_string()
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.id}',
+            json={"label": new_label},
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['equipments']) == 1
+        equipment = data['data']['equipments'][0]
+        assert equipment['label'] == new_label
+        assert equipment['default_for_sport_ids'] == [equipment_bike_user_1.id]
+        assert user_sport_1_preference.default_equipments.all() == [
+            equipment_bike_user_1
+        ]
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

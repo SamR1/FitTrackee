@@ -510,13 +510,16 @@ def update_equipment(
     ):
         return InvalidPayloadErrorResponse('no valid parameters supplied')
 
-    default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
-    try:
-        user_sport_preferences = handle_default_sports(
-            default_for_sport_ids, auth_user
-        )
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
+    default_for_sport_ids = equipment_data.get("default_for_sport_ids", None)
+    user_sport_preferences = None
+    if default_for_sport_ids is not None:
+        default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
+        try:
+            user_sport_preferences = handle_default_sports(
+                default_for_sport_ids, auth_user
+            )
+        except InvalidEquipmentsException as e:
+            return InvalidPayloadErrorResponse(str(e))
 
     try:
         equipment = Equipment.query.filter_by(
@@ -554,43 +557,48 @@ def update_equipment(
                 return InvalidPayloadErrorResponse("invalid equipment type id")
             equipment.equipment_type_id = equipment_type_id
 
-        existing_sports = (
-            db.session.query(UserSportPreferenceEquipment)
-            .filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                UserSportPreferenceEquipment.c.equipment_id == equipment.id,
-            )
-            .all()
-        )
-
-        sport_ids_to_remove = {s[1] for s in existing_sports} - set(
-            default_for_sport_ids
-        )
-
-        if sport_ids_to_remove:
-            db.session.query(UserSportPreferenceEquipment).filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                (UserSportPreferenceEquipment.c.equipment_id == equipment.id),
-                UserSportPreferenceEquipment.c.sport_id.in_(
-                    sport_ids_to_remove
-                ),
-            ).delete()
-
-        if user_sport_preferences:
-            db.session.execute(
-                insert(UserSportPreferenceEquipment)
-                .values(
-                    [
-                        {
-                            "equipment_id": equipment.id,
-                            "sport_id": sport.sport_id,
-                            "user_id": auth_user.id,
-                        }
-                        for sport in user_sport_preferences
-                    ]
+        if default_for_sport_ids is not None:
+            existing_sports = (
+                db.session.query(UserSportPreferenceEquipment)
+                .filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.equipment_id
+                    == equipment.id,
                 )
-                .on_conflict_do_nothing()
+                .all()
             )
+
+            sport_ids_to_remove = {s[1] for s in existing_sports} - set(
+                default_for_sport_ids
+            )
+
+            if sport_ids_to_remove:
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    (
+                        UserSportPreferenceEquipment.c.equipment_id
+                        == equipment.id
+                    ),
+                    UserSportPreferenceEquipment.c.sport_id.in_(
+                        sport_ids_to_remove
+                    ),
+                ).delete()
+
+            if user_sport_preferences:
+                db.session.execute(
+                    insert(UserSportPreferenceEquipment)
+                    .values(
+                        [
+                            {
+                                "equipment_id": equipment.id,
+                                "sport_id": sport.sport_id,
+                                "user_id": auth_user.id,
+                            }
+                            for sport in user_sport_preferences
+                        ]
+                    )
+                    .on_conflict_do_nothing()
+                )
         db.session.commit()
 
         return {
