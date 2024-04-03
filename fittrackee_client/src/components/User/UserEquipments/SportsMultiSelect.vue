@@ -4,6 +4,7 @@
     placeholder=""
     :id="name"
     :name="name"
+    :disabled="disabled"
     v-model="selectedSports"
     :multiple="true"
     :options="sports"
@@ -29,10 +30,12 @@
     name: string
     forCreation?: boolean
     equipmentSports?: ITranslatedSport[]
+    disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     equipmentSports: () => [],
     forCreation: false,
+    disabled: false,
   })
   const emit = defineEmits(['updatedValues'])
 
@@ -121,5 +124,13 @@
 
   ::v-deep(.multiselect__content-wrapper) {
     border-color: var(--multiselect-content-wrapper-border-color);
+  }
+
+  .multiselect--disabled {
+    background-color: var(--multiselect-disabled-bg-color);
+    ::v-deep(.multiselect__select) {
+      background: var(--multiselect-select-disabled-bg-color);
+      color: var(--multiselect-select-disabled-color);
+    }
   }
 </style>

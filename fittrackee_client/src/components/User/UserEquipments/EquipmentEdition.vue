@@ -74,6 +74,7 @@
               name="equipment-sports"
               :for-creation="equipmentForm.id === 0"
               :equipmentSports="equipmentTranslatedSports"
+              :disabled="!equipmentForm.equipmentTypeId"
               @updatedValues="updateSports"
             />
           </div>
