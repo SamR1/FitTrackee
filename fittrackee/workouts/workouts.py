@@ -1258,9 +1258,11 @@ def post_workout_no_gpx(
             user_id=auth_user.id, sport_id=workout_data['sport_id']
         ).first()
         if sport_preferences:
-            workout_data[
-                'equipments_list'
-            ] = sport_preferences.default_equipments.all()
+            workout_data['equipments_list'] = [
+                equipment
+                for equipment in sport_preferences.default_equipments.all()
+                if equipment.is_active is True
+            ]
 
     try:
         new_workout = create_workout(auth_user, workout_data)

@@ -450,9 +450,11 @@ def process_files(
 
     # get default equipment if sport preferences exists
     if not "equipments_list" not in workout_data and sport_preferences:
-        workout_data[
-            'equipments_list'
-        ] = sport_preferences.default_equipments.all()
+        workout_data['equipments_list'] = [
+            equipment
+            for equipment in sport_preferences.default_equipments.all()
+            if equipment.is_active is True
+        ]
 
     common_params = {
         'auth_user': auth_user,
