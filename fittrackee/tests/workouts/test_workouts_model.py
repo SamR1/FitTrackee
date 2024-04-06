@@ -5,9 +5,9 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.short_id import encode_uuid
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import encode_uuid
 
 from ..utils import random_string
 

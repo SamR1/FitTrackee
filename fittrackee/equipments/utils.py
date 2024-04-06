@@ -1,6 +1,7 @@
 from typing import List, Optional, Union
 
 from fittrackee.equipments.models import Equipment
+from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport
 
@@ -23,36 +24,39 @@ SPORT_EQUIPMENT_TYPES = {
 
 
 def handle_equipments(
-    equipment_ids: Optional[List[int]],
+    equipment_short_ids: Optional[List[str]],
     auth_user: User,
     sport_id: int,
     existing_equipments: Optional[List[Equipment]] = None,
 ) -> Union[List[Equipment], None]:
-    equipments_list = None
+    equipments_list: Optional[List[Equipment]] = None
 
-    if equipment_ids is not None:
+    if equipment_short_ids is not None:
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             raise InvalidEquipmentsException(f"sport id {sport_id} not found")
 
         equipments_list = []
-        if not isinstance(equipment_ids, list):
+        if not isinstance(equipment_short_ids, list):
             raise InvalidEquipmentsException(
-                "equipment_ids must be an array of integers"
+                "equipment_ids must be an array of strings"
             )
-        for equipment_id in equipment_ids:
-            if not isinstance(equipment_id, int):
+        for equipment_short_id in equipment_short_ids:
+            if not isinstance(equipment_short_id, str):
                 raise InvalidEquipmentsException(
-                    "equipment_ids must be an array of integers"
+                    "equipment_ids must be an array of strings"
                 )
             equipment = Equipment.query.filter_by(
-                id=equipment_id, user_id=auth_user.id
+                uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
             ).first()
             if not equipment:
                 raise InvalidEquipmentException(
                     status="not_found",
-                    message=f"equipment with id {equipment_id} does not exist",
-                    equipment_id=equipment_id,
+                    message=(
+                        f"equipment with id {equipment_short_id} "
+                        "does not exist"
+                    ),
+                    equipment_short_id=equipment_short_id,
                 )
 
             if sport.label not in SPORT_EQUIPMENT_TYPES.get(
@@ -60,9 +64,11 @@ def handle_equipments(
             ):
                 raise InvalidEquipmentException(
                     status="invalid",
-                    message=f"invalid equipment id {equipment.id} "
-                    f"for sport {sport.label}",
-                    equipment_id=equipment_id,
+                    message=(
+                        f"invalid equipment id {equipment.short_id} "
+                        f"for sport {sport.label}"
+                    ),
+                    equipment_short_id=equipment_short_id,
                 )
 
             if not equipment.is_active and (
@@ -70,8 +76,11 @@ def handle_equipments(
             ):
                 raise InvalidEquipmentException(
                     status="inactive",
-                    message=f"equipment with id {equipment_id} is inactive",
-                    equipment_id=equipment_id,
+                    message=(
+                        f"equipment with id {equipment_short_id} "
+                        "is inactive"
+                    ),
+                    equipment_short_id=equipment_short_id,
                 )
             equipments_list.append(equipment)
     return equipments_list

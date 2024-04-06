@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment, EquipmentType
+from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import (
     User,
     UserSportPreference,
@@ -161,7 +162,9 @@ class TestGetEquipment(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get(f'/api/equipments/{equipment_shoes_user_1.id}')
+        response = client.get(
+            f'/api/equipments/{equipment_shoes_user_1.short_id}'
+        )
 
         self.assert_401(response)
 
@@ -177,7 +180,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -199,7 +202,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{self.random_int()}',
+            f'/api/equipments/{self.random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -217,7 +220,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -235,7 +238,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -263,7 +266,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
@@ -282,8 +285,8 @@ class TestPostEquipment(ApiTestCaseMixin):
             content_type='application/json',
             json={
                 "equipment_type_id": equipment_bike_user_1.id,
-                "label": self.random_string(),
-                "description": self.random_string(),
+                "label": self.random_short_id(),
+                "description": self.random_short_id(),
             },
         )
         self.assert_401(response)
@@ -323,7 +326,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
     ) -> None:
-        description = self.random_string()
+        description = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -353,7 +356,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         equipment_type_1_shoe: EquipmentType,
     ) -> None:
         label = self.random_string(100)
-        description = self.random_string()
+        description = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -417,7 +420,7 @@ class TestPostEquipment(ApiTestCaseMixin):
             '/api/equipments',
             json={
                 "equipment_type_id": self.random_int(),
-                "label": self.random_string(),
+                "label": self.random_short_id(),
             },
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -437,7 +440,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         response = client.post(
             '/api/equipments',
             json={
-                "description": self.random_string(),
+                "description": self.random_short_id(),
                 "equipment_type_id": equipment_shoes_user_1.equipment_type_id,
                 "label": equipment_shoes_user_1.label,
             },
@@ -541,7 +544,9 @@ class TestPostEquipment(ApiTestCaseMixin):
             sport_1_cycling.id,
             sport_3_cycling_transport.id,
         }
-        equipment = Equipment.query.filter_by(id=equipment['id']).first()
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment['id'])
+        ).first()
         assert user_sport_1_preference.default_equipments.all() == [equipment]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
@@ -589,7 +594,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get(f'/api/equipments/{equipment_bike_user_1.id}')
+        response = client.get(
+            f'/api/equipments/{equipment_bike_user_1.short_id}'
+        )
 
         self.assert_401(response)
 
@@ -605,7 +612,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
         equipment_bike_user_1: Equipment,
         input_values: Tuple,
     ) -> None:
@@ -614,7 +621,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={input_values[0]: input_values[1]},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -623,7 +630,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert equipment[input_values[0]] == input_values[1]
 
         response = client.get(
-            f'/api/equipments/{equipment_type_1_shoe.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -638,13 +645,13 @@ class TestPatchEquipment(ApiTestCaseMixin):
         equipment_bike_user_1: Equipment,
     ) -> None:
         label = equipment_bike_user_1.label
-        new_description = self.random_string()
+        new_description = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={
                 "label": label,
                 "description": new_description,
@@ -674,7 +681,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             json={
                 "label": label,
             },
@@ -696,7 +703,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={'equipment_type_id': equipment_type_1_shoe.id},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -705,7 +712,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -720,7 +727,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             json={},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -735,8 +742,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
-            json={self.random_string(): self.random_string()},
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            json={self.random_short_id(): self.random_short_id()},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -752,7 +759,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{self.random_int()}',
+            f'/api/equipments/{self.random_short_id()}',
             json={'is_active': False},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -772,7 +779,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             json={"label": equipment_bike_user_1_inactive.label},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -794,7 +801,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             json={'label': 'new label'},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -828,7 +835,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={
                 "default_for_sport_ids": [
                     sport_1_cycling.id,
@@ -847,13 +854,14 @@ class TestPatchEquipment(ApiTestCaseMixin):
             sport_1_cycling.id,
             sport_3_cycling_transport.id,
         }
-        equipment = Equipment.query.filter_by(id=equipment['id']).first()
-        assert user_sport_1_preference.default_equipments.all() == [equipment]
+        assert user_sport_1_preference.default_equipments.all() == [
+            equipment_bike_user_1
+        ]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
         ).first()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
-            equipment
+            equipment_bike_user_1
         ]
 
     def test_it_removes_existing_default_sport(
@@ -882,7 +890,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={
                 "default_for_sport_ids": [
                     sport_3_cycling_transport.id,
@@ -899,13 +907,12 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert equipment['default_for_sport_ids'] == [
             sport_3_cycling_transport.id,
         ]
-        equipment = Equipment.query.filter_by(id=equipment['id']).first()
         assert user_sport_1_preference.default_equipments.all() == []
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
         ).first()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
-            equipment
+            equipment_bike_user_1
         ]
 
     def test_it_removes_default_sports(
@@ -933,7 +940,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={"default_for_sport_ids": []},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -966,13 +973,14 @@ class TestPatchEquipment(ApiTestCaseMixin):
                 ]
             )
         )
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        new_label = self.random_string()
+        new_label = self.random_short_id()
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             json={"label": new_label},
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -1010,7 +1018,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             json={
                 "label": "new label",
             },
@@ -1027,7 +1035,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/equipments/{equipment_bike_user_1.id}',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
         )
 
         self.assert_401(response)
@@ -1044,7 +1052,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -1061,7 +1069,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/equipments/1',
+            f'/api/equipments/{self.random_short_id()}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -1084,7 +1092,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -1102,7 +1110,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
 
@@ -1111,7 +1119,8 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         assert 'error' in data['status']  # type: ignore
         assert (
             "Cannot delete equipment that has associated workouts. "
-            "Equipment id 1 has 1 associated workout. (Provide "
+            f"Equipment id {equipment_shoes_user_1.short_id} has 1 "
+            "associated workout. (Provide "
             "argument 'force' as a query parameter to override "
             "this check)" in data['message']  # type: ignore
         )
@@ -1131,7 +1140,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         # the workout should have no equipment
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             query_string='force',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -1154,7 +1163,20 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
     ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1162,7 +1184,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         # the workout should have no equipment
 
         response = client.delete(
-            '/api/equipments/1',
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
             query_string='force',
             headers={"Authorization": f'Bearer {auth_token}'},
         )
@@ -1202,7 +1224,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.id}',
+            f'/api/equipments/{equipment_shoes_user_1.short_id}',
             headers={"Authorization": f'Bearer {access_token}'},
         )
 

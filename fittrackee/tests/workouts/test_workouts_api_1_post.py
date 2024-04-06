@@ -627,7 +627,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
                 data=(
                     f'{{"sport_id": 1, "equipment_ids":'
-                    f' [{equipment_bike_user_1.id}]}}'
+                    f' ["{equipment_bike_user_1.short_id}"]}}'
                 ),
             ),
             headers=dict(
@@ -718,7 +718,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
                 data=(
                     f'{{"sport_id": 1, "equipment_ids":'
-                    f' [{equipment_shoes_user_1.id}]}}'
+                    f' ["{equipment_shoes_user_1.short_id}"]}}'
                 ),
             ),
             headers=dict(
@@ -729,9 +729,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
         assert data["message"] == (
-            f"invalid equipment id {equipment_shoes_user_1.id} "
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
             f"for sport {sport_1_cycling.label}"
         )
         assert data["status"] == "invalid"
@@ -756,7 +756,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
                 file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
                 data=(
                     f'{{"sport_id": 1, "equipment_ids":'
-                    f' [{equipment_bike_user_1.id}]}}'
+                    f' ["{equipment_bike_user_1.short_id}"]}}'
                 ),
             ),
             headers=dict(
@@ -767,9 +767,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_bike_user_1.id
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
         assert data["message"] == (
-            f"equipment with id {equipment_bike_user_1.id} is inactive"
+            f"equipment with id {equipment_bike_user_1.short_id} is inactive"
         )
         assert data["status"] == "inactive"
 
@@ -1613,7 +1613,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
                 "workout_date": "2018-05-15 14:05",
                 "distance": 10,
                 "equipment_ids": [
-                    equipment_bike_user_1.id,
+                    equipment_bike_user_1.short_id,
                 ],
             },
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1700,7 +1700,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
                 "workout_date": "2018-05-15 14:05",
                 "distance": 10,
                 "equipment_ids": [
-                    equipment_shoes_user_1.id,
+                    equipment_shoes_user_1.short_id,
                 ],
             },
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1708,9 +1708,9 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
         assert data["message"] == (
-            f"invalid equipment id {equipment_shoes_user_1.id} "
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
             f"for sport {sport_1_cycling.label}"
         )
         assert data["status"] == "invalid"
@@ -1735,16 +1735,16 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
                 "duration": 3600,
                 "workout_date": "2018-05-15 14:05",
                 "distance": 10,
-                "equipment_ids": [equipment_bike_user_1.id],
+                "equipment_ids": [equipment_bike_user_1.short_id],
             },
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_bike_user_1.id
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
         assert data["message"] == (
-            f"equipment with id {equipment_bike_user_1.id} is inactive"
+            f"equipment with id {equipment_bike_user_1.short_id} is inactive"
         )
         assert data["status"] == "inactive"
 
@@ -2091,7 +2091,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                     file=(zip_file, 'gpx_test.zip'),
                     data=(
                         f'{{"sport_id": 1, "equipment_ids":'
-                        f' [{equipment_bike_user_1.id}]}}'
+                        f' ["{equipment_bike_user_1.short_id}"]}}'
                     ),
                 ),
                 headers=dict(

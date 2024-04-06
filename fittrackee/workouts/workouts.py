@@ -21,6 +21,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
+from fittrackee.equipments.models import Equipment
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -35,6 +36,7 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
+from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import User, UserSportPreference
 
 from .models import Workout, WorkoutEquipment
@@ -44,7 +46,6 @@ from .utils.gpx import (
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.short_id import decode_short_id
 from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,
@@ -210,8 +211,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
                             ``duration``, ``workout_date`` (default:
                             ``workout_date``)
-    :query integer equipment_id: equipment id (if 'none', only workouts without
-                            will be returned)
+    :query string equipment_id: equipment id (if 'none', only workouts without
+                            equipments will be returned)
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -243,7 +244,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         title = params.get('title')
-        equipment_id = params.get('equipment_id')
+        if 'equipment_id' in params:
+            if params['equipment_id'] == "none":
+                equipment_id = "none"
+            else:
+                equipment_uuid = decode_short_id(params['equipment_id'])
+                equipment = Equipment.query.filter_by(
+                    uuid=equipment_uuid
+                ).first()
+                equipment_id = equipment.id if equipment else 0
+        else:
+            equipment_id = None
         per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
@@ -1191,8 +1202,8 @@ def post_workout_no_gpx(
            must be provided with ascent)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
-    :<json array of integers equipment_ids:
-        the id numbers of one or more pieces of equipment
+    :<json array of strings equipment_ids:
+        the id of one or more pieces of equipment
         to associate with this workout
         if not provided and default equipments exist for sport, default
         equipments will be associated
@@ -1400,8 +1411,8 @@ def update_workout(
     :<json string notes: notes
     :<json integer sport_id: workout sport id
     :<json string title: workout title
-    :<json array of integers equipment_ids:
-        the id numbers of one or more pieces of equipment
+    :<json array of string equipment_ids:
+        the id of one or more pieces of equipment
         to associate with this workout (any existing equipment
         for this workout will be replaced); if an empty array,
         all equipment for this workout will be removed

@@ -21,23 +21,29 @@ class TestHandleEquipments(RandomMixin):
     ) -> None:
         with pytest.raises(
             InvalidEquipmentsException,
-            match="equipment_ids must be an array of integers",
+            match="equipment_ids must be an array of strings",
         ):
             handle_equipments(
-                equipment_ids=['1'],  # type: ignore
+                equipment_short_ids=[1],  # type: ignore
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
 
     def test_it_raises_error_when_equipment_ids_are_a_list(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
     ) -> None:
         with pytest.raises(
             InvalidEquipmentsException,
-            match="equipment_ids must be an array of integers",
+            match="equipment_ids must be an array of strings",
         ):
             handle_equipments(
-                equipment_ids='1',  # type: ignore
+                equipment_short_ids=(  # type: ignore
+                    equipment_bike_user_1.short_id  # type: ignore
+                ),
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
@@ -45,13 +51,13 @@ class TestHandleEquipments(RandomMixin):
     def test_it_raises_error_when_equipment_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        equipment_id = self.random_int()
+        equipment_id = self.random_short_id()
         with pytest.raises(
             InvalidEquipmentException,
             match=f"equipment with id {equipment_id} does not exist",
         ):
             handle_equipments(
-                equipment_ids=[equipment_id],
+                equipment_short_ids=[equipment_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
@@ -66,11 +72,12 @@ class TestHandleEquipments(RandomMixin):
         with pytest.raises(
             InvalidEquipmentException,
             match=(
-                f"equipment with id {equipment_shoes_user_2.id} does not exist"
+                f"equipment with id {equipment_shoes_user_2.short_id}"
+                " does not exist"
             ),
         ):
             handle_equipments(
-                equipment_ids=[equipment_shoes_user_2.id],
+                equipment_short_ids=[equipment_shoes_user_2.short_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
@@ -85,12 +92,12 @@ class TestHandleEquipments(RandomMixin):
         with pytest.raises(
             InvalidEquipmentException,
             match=(
-                f"equipment with id {equipment_bike_user_1_inactive.id} "
+                f"equipment with id {equipment_bike_user_1_inactive.short_id} "
                 "is inactive"
             ),
         ):
             handle_equipments(
-                equipment_ids=[equipment_bike_user_1_inactive.id],
+                equipment_short_ids=[equipment_bike_user_1_inactive.short_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
@@ -99,7 +106,9 @@ class TestHandleEquipments(RandomMixin):
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         equipments_list = handle_equipments(
-            equipment_ids=[], auth_user=user_1, sport_id=sport_1_cycling.id
+            equipment_short_ids=[],
+            auth_user=user_1,
+            sport_id=sport_1_cycling.id,
         )
 
         assert equipments_list == []
@@ -108,7 +117,9 @@ class TestHandleEquipments(RandomMixin):
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         equipments_list = handle_equipments(
-            equipment_ids=None, auth_user=user_1, sport_id=sport_1_cycling.id
+            equipment_short_ids=None,
+            auth_user=user_1,
+            sport_id=sport_1_cycling.id,
         )
 
         assert equipments_list is None
@@ -126,7 +137,7 @@ class TestHandleEquipments(RandomMixin):
             match=f"sport id {sport_id} not found",
         ):
             handle_equipments(
-                equipment_ids=[equipment_bike_user_1.id],
+                equipment_short_ids=[equipment_bike_user_1.short_id],
                 auth_user=user_1,
                 sport_id=sport_id,
             )
@@ -141,12 +152,12 @@ class TestHandleEquipments(RandomMixin):
         with pytest.raises(
             InvalidEquipmentException,
             match=re.escape(
-                f"invalid equipment id {equipment_shoes_user_1.id} "
+                f"invalid equipment id {equipment_shoes_user_1.short_id} "
                 f"for sport {sport_1_cycling.label}"
             ),
         ):
             handle_equipments(
-                equipment_ids=[equipment_shoes_user_1.id],
+                equipment_short_ids=[equipment_shoes_user_1.short_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
             )
@@ -159,7 +170,7 @@ class TestHandleEquipments(RandomMixin):
         equipment_bike_user_1: Equipment,
     ) -> None:
         equipments_list = handle_equipments(
-            equipment_ids=[equipment_bike_user_1.id],
+            equipment_short_ids=[equipment_bike_user_1.short_id],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
             existing_equipments=[],
@@ -175,8 +186,8 @@ class TestHandleEquipments(RandomMixin):
         equipment_bike_user_1_inactive: Equipment,
     ) -> None:
         equipments_list = handle_equipments(
-            equipment_ids=[
-                equipment_bike_user_1_inactive.id,
+            equipment_short_ids=[
+                equipment_bike_user_1_inactive.short_id,
             ],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -195,9 +206,9 @@ class TestHandleEquipments(RandomMixin):
         equipment_shoes_user_1_inactive: Equipment,
     ) -> None:
         equipments_list = handle_equipments(
-            equipment_ids=[
-                equipment_shoes_user_1.id,
-                equipment_another_shoes_user_1.id,
+            equipment_short_ids=[
+                equipment_shoes_user_1.short_id,
+                equipment_another_shoes_user_1.short_id,
             ],
             auth_user=user_1,
             sport_id=sport_2_running.id,

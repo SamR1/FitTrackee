@@ -16,9 +16,9 @@ from sqlalchemy.types import JSON, Enum
 from fittrackee import appLog, db
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
+from fittrackee.short_id import encode_uuid
 
 from .utils.convert import convert_in_duration, convert_value_to_integer
-from .utils.short_id import encode_uuid
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent

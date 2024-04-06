@@ -5,13 +5,13 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import decode_short_id
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES
-from .utils import get_random_short_id, post_a_workout
+from .utils import post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -130,7 +130,7 @@ class TestDeleteWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

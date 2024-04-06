@@ -1654,7 +1654,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_ids=[equipment_shoes_user_1.id],
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1708,7 +1708,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
                 dict(
                     sport_id=sport_1_cycling.id,
                     default_equipment_ids=[
-                        equipment_bike_user_1.id,
+                        equipment_bike_user_1.short_id,
                     ],
                 )
             ),
@@ -1797,7 +1797,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_2_running.id,
-                    default_equipment_ids=[equipment_shoes_user_1.id],
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1805,9 +1805,10 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
         assert data["message"] == (
-            f'equipment with id {equipment_shoes_user_1.id} does not exist'
+            f'equipment with id {equipment_shoes_user_1.short_id} '
+            'does not exist'
         )
         assert data["status"] == "not_found"
 
@@ -1828,7 +1829,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     sport_id=sport_1_cycling.id,
-                    default_equipment_ids=[equipment_shoes_user_1.id],
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1836,9 +1837,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.id
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
         assert data["message"] == (
-            f"invalid equipment id {equipment_shoes_user_1.id} "
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
             f"for sport {sport_1_cycling.label}"
         )
         assert data["status"] == "invalid"

@@ -148,7 +148,7 @@
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const equipmentForm = reactive({
-    id: 0,
+    id: '',
     label: '',
     description: '',
     equipmentTypeId: 0,
@@ -189,7 +189,7 @@
       return null
     }
     const filteredEquipmentList = equipmentsList.filter((equipment) =>
-      route.params.id ? equipment.id === +route.params.id : null
+      route.params.id ? equipment.id === route.params.id : null
     )
     if (filteredEquipmentList.length === 0) {
       return null

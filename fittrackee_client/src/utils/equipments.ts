@@ -59,7 +59,7 @@ export const getEquipments = (
   t: CallableFunction,
   activeStatus: 'all' | 'withIncludedIds' | 'is_active' = 'all',
   sport: ITranslatedSport | null,
-  equipmentToIncludeIds: number[] = []
+  equipmentToIncludeIds: string[] = []
 ): IEquipment[] => {
   if (!sport) {
     return []

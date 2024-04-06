@@ -14,7 +14,6 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .utils import get_random_short_id
 
 
 class TestGetWorkouts(ApiTestCaseMixin):
@@ -1010,7 +1009,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f"/api/workouts?equipment_id={equipment_bike_user_1.id}",
+            f"/api/workouts?equipment_id={equipment_bike_user_1.short_id}",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1233,7 +1232,7 @@ class TestGetWorkout(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1243,7 +1242,7 @@ class TestGetWorkout(ApiTestCaseMixin):
     def test_it_returns_404_on_getting_gpx_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1261,7 +1260,7 @@ class TestGetWorkout(ApiTestCaseMixin):
     def test_it_returns_404_on_getting_chart_data_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        random_short_id = get_random_short_id()
+        random_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1445,7 +1444,7 @@ class TestDownloadWorkoutGpx(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/workouts/{get_random_short_id()}/gpx/download',
+            f'/api/workouts/{self.random_short_id()}/gpx/download',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

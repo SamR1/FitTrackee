@@ -22,7 +22,7 @@ class TestEquipmentModel:
         assert '<Equipment 1 \'Test bike equipment\'>' == str(equip)
 
         serialized_equip = equip.serialize()
-        assert serialized_equip['id'] == equip.id
+        assert serialized_equip['id'] == equip.short_id
         assert serialized_equip['user_id'] == 1
         assert serialized_equip['label'] == equip.label
         assert (

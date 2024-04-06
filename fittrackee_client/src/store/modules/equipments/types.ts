@@ -66,7 +66,7 @@ export type TEquipmentsMutations<S = IEquipmentTypesState> = {
   ): void
   [EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT](
     state: S,
-    equipmentId: number
+    equipmentId: string
   ): void
   [EQUIPMENTS_STORE.MUTATIONS.SET_EQUIPMENTS](
     state: S,

@@ -13,6 +13,7 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import (
     User,
     UserSportPreference,
@@ -92,7 +93,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "Shoe"
             },
-            "id": 8,
+            "id": "2UkrViYShoAkg8qSUKnUS4",
             "is_active": true,
             "label": "My shoes",
             "total_distance": 0.0,
@@ -110,7 +111,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "Shoe"
             },
-            "id": 9,
+            "id": "2UkrViYShoAkg8qSUKnUS4",
             "is_active": true,
             "label": "My shoes 2",
             "total_distance": 0.0,
@@ -157,10 +158,12 @@ def get_equipments(auth_user: User) -> Dict:
     }
 
 
-@equipments_blueprint.route('/equipments/<int:equipment_id>', methods=['GET'])
+@equipments_blueprint.route(
+    '/equipments/<string:equipment_short_id>', methods=['GET']
+)
 @require_auth(scopes=['equipments:read'])
 def get_equipment_by_id(
-    auth_user: User, equipment_id: int
+    auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get an equipment item.
@@ -172,7 +175,7 @@ def get_equipment_by_id(
 
     .. sourcecode:: http
 
-      GET /api/equipments/1 HTTP/1.1
+      GET /api/equipments/2UkrViYShoAkg8qSUKnUS4 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -196,7 +199,7 @@ def get_equipment_by_id(
                 "is_active": true,
                 "label": "Shoe"
               },
-              "id": 3,
+              "id": "2UkrViYShoAkg8qSUKnUS4",
               "is_active": true,
               "label": "Other user Equipment",
               "total_distance": 0.0,
@@ -224,7 +227,7 @@ def get_equipment_by_id(
         "status": "not found"
       }
 
-    :param integer equipment_id: equipment id
+    :param string equipment_short_id: equipment short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -237,7 +240,10 @@ def get_equipment_by_id(
     :statuscode 404: ``equipment not found``
 
     """
-    filter_args = {'id': equipment_id, 'user_id': auth_user.id}
+    filter_args = {
+        'uuid': decode_short_id(equipment_short_id),
+        'user_id': auth_user.id,
+    }
     equipment = Equipment.query.filter_by(**filter_args).first()
     if equipment:
         return {
@@ -281,7 +287,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
               "is_active": true,
               "label": "Shoe"
             },
-            "id": 12,
+            "id": "2UkrViYShoAkg8qSUKnUS4",
             "is_active": true,
             "label": "New equipment from API",
             "total_distance": 0.0,
@@ -396,11 +402,11 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @equipments_blueprint.route(
-    '/equipments/<int:equipment_id>', methods=['PATCH']
+    '/equipments/<string:equipment_short_id>', methods=['PATCH']
 )
 @require_auth(scopes=['equipments:write'])
 def update_equipment(
-    auth_user: User, equipment_id: int
+    auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update a piece of equipment. Allows a user to change one of their
@@ -412,7 +418,7 @@ def update_equipment(
 
     .. sourcecode:: http
 
-      PATCH /api/equipments/1 HTTP/1.1
+      PATCH /api/equipments/QRj7BY6H2iYjSV8sersFgV HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -436,7 +442,7 @@ def update_equipment(
                   "is_active": true,
                   "label": "Shoe"
                 },
-                "id": 11,
+                "id": "QRj7BY6H2iYjSV8sersFgV",
                 "is_active": true,
                 "label": "Updated bike",
                 "num_workouts": 0,
@@ -464,7 +470,7 @@ def update_equipment(
         "status": "not found"
       }
 
-    :param integer equipment_id: equipment id
+    :param string equipment_short_id: equipment short id
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
@@ -523,7 +529,7 @@ def update_equipment(
 
     try:
         equipment = Equipment.query.filter_by(
-            id=equipment_id, user_id=auth_user.id
+            uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
         ).first()
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
@@ -616,11 +622,11 @@ def update_equipment(
 
 
 @equipments_blueprint.route(
-    '/equipments/<int:equipment_id>', methods=['DELETE']
+    '/equipments/<string:equipment_short_id>', methods=['DELETE']
 )
 @require_auth(scopes=['equipments:write'])
 def delete_equipment(
-    auth_user: User, equipment_id: int
+    auth_user: User, equipment_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a piece of equipment.
@@ -638,7 +644,7 @@ def delete_equipment(
 
     .. sourcecode:: http
 
-      DELETE /api/equipments/2 HTTP/1.1
+      DELETE /api/equipments/QRj7BY6H2iYjSV8sersFgV HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -648,7 +654,8 @@ def delete_equipment(
       HTTP/1.1 204 NO CONTENT
       Content-Type: application/json
 
-    :param integer equipment_id: equipment id
+    :param string equipment_short_id: equipment short id
+
     :query force: if supplied as argument (no value required), will force
                   deletion of the equipment and remove that equipment
                   from associated workouts
@@ -669,18 +676,19 @@ def delete_equipment(
 
     """
     force_delete = 'force' in request.args
+    equipment_uuid = decode_short_id(equipment_short_id)
 
     try:
         equipment = Equipment.query.filter_by(
-            id=equipment_id, user_id=auth_user.id
+            uuid=equipment_uuid, user_id=auth_user.id
         ).first()
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
         if equipment.total_workouts > 0 and not force_delete:
             return ForbiddenErrorResponse(
                 f"Cannot delete equipment that has associated workouts. "
-                f"Equipment id {equipment.id} has {equipment.total_workouts} "
-                f"associated "
+                f"Equipment id {equipment.short_id} has "
+                f"{equipment.total_workouts} associated "
                 f"workout{'' if equipment.total_workouts == 1 else 's'}. "
                 f"(Provide argument 'force' as a query parameter to "
                 f"override this check)"

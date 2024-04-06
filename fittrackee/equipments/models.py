@@ -1,11 +1,14 @@
 from datetime import datetime
 from typing import Dict
+from uuid import uuid4
 
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
 from fittrackee import db
+from fittrackee.short_id import encode_uuid
 
 BaseModel: DeclarativeMeta = db.Model
 
@@ -39,6 +42,12 @@ class Equipment(BaseModel):
     )
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     user_id = db.Column(
         db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
     )
@@ -85,9 +94,13 @@ class Equipment(BaseModel):
         self.user_id = user_id
         self.is_active = is_active
 
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
     def serialize(self) -> Dict:
         serialized_equipment = {
-            'id': self.id,
+            'id': self.short_id,
             'user_id': self.user_id,
             'label': self.label,
             'equipment_type': self.equipment_type.serialize(),

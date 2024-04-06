@@ -508,9 +508,7 @@
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
       notes: workoutForm.notes,
-      equipment_ids: workoutForm.equipment_id
-        ? [+workoutForm.equipment_id]
-        : [],
+      equipment_ids: workoutForm.equipment_id ? [workoutForm.equipment_id] : [],
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {

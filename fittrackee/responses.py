@@ -70,7 +70,7 @@ class DataInvalidPayloadErrorResponse(HttpResponse):
 class EquipmentInvalidPayloadErrorResponse(HttpResponse):
     def __init__(
         self,
-        equipment_id: int,
+        equipment_id: str,
         message: str,
         status: Optional[str] = None,
     ) -> None:

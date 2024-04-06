@@ -315,7 +315,7 @@ class TestUpdateEquipment(ApiTestCaseMixin):
         self.assert_404(response)
 
     @pytest.mark.parametrize('expected_active_status', [True, False])
-    def test_it_updates_a_equipment_type(
+    def test_it_updates_an_equipment_type(
         self,
         app: Flask,
         user_1_admin: User,

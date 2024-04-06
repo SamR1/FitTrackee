@@ -195,7 +195,7 @@
   }
   function updateSportPreferences() {
     sportPayload.default_equipment_ids = defaultEquipmentId.value
-      ? [+defaultEquipmentId.value]
+      ? [defaultEquipmentId.value]
       : []
     updateSport(authUser.value)
   }
@@ -240,6 +240,10 @@
         padding: 0;
         width: 80px;
       }
+    }
+
+    .error-message {
+      margin: $default-margin 0;
     }
 
     .form-buttons {

@@ -7,6 +7,7 @@ Create Date: 2023-03-20 22:50:47.672811
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
@@ -37,6 +38,7 @@ def upgrade():
     op.create_table(
         'equipments',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('label', sa.String(length=50), nullable=False),
         sa.Column('description', sa.String(length=200), nullable=True),
@@ -80,6 +82,10 @@ def upgrade():
             'label',
             'user_id',
             name='equipment_user_label_unique',
+        ),
+        sa.UniqueConstraint(
+            'uuid',
+            name='equipments_uuid_key',
         ),
     )
     with op.batch_alter_table('equipments', schema=None) as batch_op:

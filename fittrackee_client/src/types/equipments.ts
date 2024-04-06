@@ -19,7 +19,7 @@ export interface IEquipment {
   default_for_sport_ids: number[]
   description: string | null
   equipment_type: IEquipmentType
-  id: number
+  id: string
   is_active: boolean
   label: string
   total_distance: number
@@ -37,17 +37,17 @@ export interface IAddEquipmentPayload {
 }
 
 export interface IPatchEquipmentPayload extends IAddEquipmentPayload {
-  id: number
+  id: string
   isActive: boolean
 }
 
 export interface IDeleteEquipmentPayload {
-  id: number
+  id: string
   force?: true
 }
 
 export interface IEquipmentError {
-  equipmentId: number
+  equipmentId: string
   equipmentLabel: string | null
   status: string
 }

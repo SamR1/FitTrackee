@@ -1016,7 +1016,7 @@ def edit_user_sport_preferences(
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
-    :<json array of integers default_equipment_ids: the default equipment ids
+    :<json array of strings default_equipment_ids: the default equipment ids
                                                         to use for this sport
 
     :reqheader Authorization: OAuth 2.0 Bearer Token

@@ -17,7 +17,7 @@ export const mutations: MutationTree<IEquipmentTypesState> &
   },
   [EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT](
     state: IEquipmentTypesState,
-    equipmentId: number
+    equipmentId: string
   ) {
     state.equipments = state.equipments.filter((e) => e.id != equipmentId)
   },

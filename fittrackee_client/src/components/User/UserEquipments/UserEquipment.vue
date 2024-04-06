@@ -183,7 +183,7 @@
       return null
     }
     const filteredEquipmentList = equipmentsList.filter((equipment) =>
-      route.params.id ? equipment.id === +route.params.id : null
+      route.params.id ? equipment.id === route.params.id : null
     )
     if (filteredEquipmentList.length === 0) {
       return null
