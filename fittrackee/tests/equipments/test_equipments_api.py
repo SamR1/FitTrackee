@@ -320,6 +320,48 @@ class TestPostEquipment(ApiTestCaseMixin):
         assert equipment['is_active'] is True
         assert equipment_type_1_shoe.serialize() == equipment['equipment_type']
 
+    def test_it_returns_error_when_equipment_type_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": self.random_int(),
+                "label": self.random_string(),
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "invalid equipment type id")
+
+    def test_it_returns_error_when_equipment_type_is_inactive(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe_inactive: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_1_shoe_inactive.id,
+                "label": self.random_string(),
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "equipment type is inactive")
+
     def test_it_adds_an_equipment_with_description(
         self,
         app: Flask,
@@ -356,7 +398,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         equipment_type_1_shoe: EquipmentType,
     ) -> None:
         label = self.random_string(100)
-        description = self.random_short_id()
+        description = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -718,6 +760,72 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
         equipment = response.json['data']['equipments'][0]  # type: ignore
         assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
+
+    def test_it_returns_error_when_equipment_type_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            json={'equipment_type_id': self.random_int()},
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(response, "invalid equipment type id")
+
+    def test_it_returns_error_when_equipment_type_is_inactive(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe_inactive: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            json={'equipment_type_id': equipment_type_1_shoe_inactive.id},
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(response, "equipment type is inactive")
+
+    def test_it_keeps_inactive_equipment_type(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_type_2_bike.is_active = False
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_label = self.random_string()
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            json={
+                'equipment_type_id': equipment_type_2_bike.id,
+                'label': new_label,
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        equipment = response.json['data']['equipments'][0]  # type: ignore
+        assert equipment["equipment_type"] == equipment_type_2_bike.serialize()
+        assert equipment["label"] == new_label
+        assert equipment_bike_user_1.label == new_label
 
     def test_it_returns_400_when_all_payload_is_missing(
         self, app: Flask, user_1: User, equipment_shoes_user_1: EquipmentType

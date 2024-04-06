@@ -36,11 +36,14 @@
               v-model="equipmentForm.equipmentTypeId"
             >
               <option
-                v-for="equipmentType in translatedEquipmentTypes"
+                v-for="equipmentType in filteredEquipmentTypes"
                 :value="equipmentType.id"
                 :key="equipmentType.id"
               >
                 {{ equipmentType.translatedLabel }}
+                {{
+                  equipmentType.is_active ? '' : `(${$t('common.INACTIVE')})`
+                }}
               </option>
             </select>
           </div>
@@ -109,6 +112,7 @@
     capitalize,
     computed,
     onMounted,
+    onUnmounted,
     reactive,
     ref,
     toRefs,
@@ -173,6 +177,12 @@
       : []
   )
   const equipmentTranslatedSports: Ref<ITranslatedSport[]> = ref([])
+  const filteredEquipmentTypes: ComputedRef<ITranslatedEquipmentType[]> =
+    computed(() =>
+      translatedEquipmentTypes.value.filter(
+        (et) => et.is_active || equipment.value?.equipment_type.id === et.id
+      )
+    )
   const formErrors = ref(false)
 
   onMounted(() => {
@@ -231,6 +241,10 @@
     equipmentForm.defaultForSportIds = selectedIds
   }
 
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
+
   watch(
     () => equipment.value,
     (equipment) => {
@@ -285,6 +299,9 @@
       }
       .equipment-label-help {
         margin-top: $default-margin * 1.5;
+      }
+      .error-message {
+        margin: $default-margin 0;
       }
 
       .form-buttons {

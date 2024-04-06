@@ -303,7 +303,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
-    :<json integer equipment_type: the ID for an equipment type
+    :<json integer equipment_type: the ID for an equipment type (it must be
+        active)
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
@@ -317,6 +318,9 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 400: invalid payload
        - ``The 'label' and 'equipment_type_id' parameters must be provided``
        - ``equipment already exists with the same label``
+        - ``label exceeds 50 characters``
+        - ``invalid equipment type id``
+        - ``equipment type is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -349,8 +353,13 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             "equipment already exists with the same label"
         )
 
-    if not EquipmentType.query.filter_by(id=equipment_type_id).first():
-        return InvalidPayloadErrorResponse("invalid equipment type")
+    equipment_type = EquipmentType.query.filter_by(
+        id=equipment_type_id
+    ).first()
+    if not equipment_type:
+        return InvalidPayloadErrorResponse("invalid equipment type id")
+    if not equipment_type.is_active:
+        return InvalidPayloadErrorResponse("equipment type is inactive")
 
     try:
         user_sport_preferences = handle_default_sports(
@@ -474,7 +483,8 @@ def update_equipment(
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
-    :<json int equipment_type_id: the ID for an equipment type
+    :<json int equipment_type_id: the ID for an equipment type (it must be
+        active)
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
@@ -489,7 +499,9 @@ def update_equipment(
         - ``no request data was supplied``
         - ``no valid parameters supplied``
         - ``equipment already exists with the same label``
+        - ``label exceeds 50 characters``
         - ``invalid equipment type id``
+        - ``equipment type is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -559,8 +571,18 @@ def update_equipment(
             equipment.description = equipment_data.get('description')
         if 'equipment_type_id' in equipment_data:
             equipment_type_id = equipment_data.get('equipment_type_id')
-            if not EquipmentType.query.filter_by(id=equipment_type_id).first():
+            equipment_type = EquipmentType.query.filter_by(
+                id=equipment_type_id
+            ).first()
+            if not equipment_type:
                 return InvalidPayloadErrorResponse("invalid equipment type id")
+            if (
+                not equipment_type.is_active
+                and equipment_type.id != equipment.equipment_type_id
+            ):
+                return InvalidPayloadErrorResponse(
+                    "equipment type is inactive"
+                )
             equipment.equipment_type_id = equipment_type_id
 
         if default_for_sport_ids is not None:

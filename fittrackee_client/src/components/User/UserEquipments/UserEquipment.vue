@@ -25,6 +25,11 @@
         />
         <span>
           {{ $t(`equipment_types.${equipment.equipment_type.label}.LABEL`) }}
+          {{
+            equipment.equipment_type.is_active
+              ? ''
+              : `(${$t('common.INACTIVE')})`
+          }}
         </span>
       </dd>
       <dt>{{ $t('common.DESCRIPTION') }}</dt>

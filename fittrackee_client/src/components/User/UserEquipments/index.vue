@@ -10,9 +10,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, onUnmounted, onBeforeMount } from 'vue'
+  import { computed, toRefs, onUnmounted, onBeforeMount, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useRoute } from 'vue-router'
 
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
   import type {
@@ -35,6 +36,8 @@
 
   const { user } = toRefs(props)
 
+  const route = useRoute()
+
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
@@ -52,4 +55,13 @@
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
+
+  watch(
+    () => route.name,
+    (newName) => {
+      if (newName === 'UserEquipmentsList') {
+        store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+      }
+    }
+  )
 </script>
