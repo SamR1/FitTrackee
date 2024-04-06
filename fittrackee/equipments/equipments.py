@@ -81,50 +81,50 @@ def get_equipments(auth_user: User) -> Dict:
       HTTP/1.1 200 OK
       Content-Type: application/json
 
-    {
-      "data": {
-        "equipments": [
+      {
+        "data": {
+          "equipments": [
+            {
+              "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
+              "default_for_sport_ids": [],
+              "description": "The first shoes added to FitTrackee",
+              "equipment_type": {
+                "id": 1,
+                "is_active": true,
+                "label": "Shoe"
+              },
+              "id": "2UkrViYShoAkg8qSUKnUS4",
+              "is_active": true,
+              "label": "My shoes",
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "total_moving": "0:00:00",
+              "user_id": 1,
+              "workouts_count": 0
+          },
           {
-            "creation_date": "Tue, 21 Mar 2023 06:08:06 GMT",
-            "default_for_sport_ids": [],
-            "description": "The first shoes added to FitTrackee",
-            "equipment_type": {
-              "id": 1,
+              "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
+              "default_for_sport_ids": [],
+              "description": "The second shoes added to FitTrackee",
+              "equipment_type": {
+                "id": 1,
+                "is_active": true,
+                "label": "Shoe"
+              },
+              "id": "2UkrViYShoAkg8qSUKnUS4",
               "is_active": true,
-              "label": "Shoe"
-            },
-            "id": "2UkrViYShoAkg8qSUKnUS4",
-            "is_active": true,
-            "label": "My shoes",
-            "total_distance": 0.0,
-            "total_duration": "0:00:00",
-            "total_moving": "0:00:00",
-            "user_id": 1,
-            "workouts_count": 0
+              "label": "My shoes 2",
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "total_moving": "0:00:00",
+              "user_id": ,
+              "workouts_count": 0
+              }
+            ]
+          }
         },
-        {
-            "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
-            "default_for_sport_ids": [],
-            "description": "The second shoes added to FitTrackee",
-            "equipment_type": {
-              "id": 1,
-              "is_active": true,
-              "label": "Shoe"
-            },
-            "id": "2UkrViYShoAkg8qSUKnUS4",
-            "is_active": true,
-            "label": "My shoes 2",
-            "total_distance": 0.0,
-            "total_duration": "0:00:00",
-            "total_moving": "0:00:00",
-            "user_id": ,
-            "workouts_count": 0
-            }
-          ]
-        }
-      },
-      "status": "success"
-    }
+        "status": "success"
+      }
 
     :query integer equipment_type_id: equipment type id
 
@@ -275,31 +275,31 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
       HTTP/1.1 201 CREATED
       Content-Type: application/json
 
-    {
-      "data": {
-        "equipments": [
-          {
-            "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
-            "default_for_sport_ids": [],
-            "description": null,
-            "equipment_type": {
-              "id": 1,
+      {
+        "data": {
+          "equipments": [
+            {
+              "creation_date": "Tue, 21 Mar 2023 06:08:29 GMT",
+              "default_for_sport_ids": [],
+              "description": null,
+              "equipment_type": {
+                "id": 1,
+                "is_active": true,
+                "label": "Shoe"
+              },
+              "id": "2UkrViYShoAkg8qSUKnUS4",
               "is_active": true,
-              "label": "Shoe"
-            },
-            "id": "2UkrViYShoAkg8qSUKnUS4",
-            "is_active": true,
-            "label": "New equipment from API",
-            "total_distance": 0.0,
-            "total_duration": "0:00:00",
-            "total_moving": "0:00:00",
-            "user_id": 1,
-            "workouts_count": 0
-          }
-        ]
-      },
-      "status": "created"
-    }
+              "label": "New equipment from API",
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "total_moving": "0:00:00",
+              "user_id": 1,
+              "workouts_count": 0
+            }
+          ]
+        },
+        "status": "created"
+      }
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
