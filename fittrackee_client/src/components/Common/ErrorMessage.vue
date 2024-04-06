@@ -6,7 +6,7 @@
       </li>
     </ul>
     <div v-else-if="typeof message === 'string'">
-      {{ $t(message) }}
+      {{ $t(message).replace('api.ERROR.', '') }}
     </div>
     <div v-else>
       {{
