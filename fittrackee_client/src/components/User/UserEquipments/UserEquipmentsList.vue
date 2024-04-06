@@ -67,7 +67,9 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="equipment in equipmentByTypes[equipmentType.id]"
+                  v-for="equipment in equipmentByTypes[equipmentType.id].sort(
+                    sortEquipments
+                  )"
                   :key="equipment.label"
                 >
                   <td class="equipment-label">
@@ -157,6 +159,7 @@
 
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
+  import { sortEquipments } from '@/utils/equipments'
 
   interface Props {
     equipments: IEquipment[]

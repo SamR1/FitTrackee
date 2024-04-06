@@ -29,7 +29,7 @@ export const translateEquipmentTypes = (
     }))
     .sort(sortEquipmentTypes)
 
-const sortEquipments = (a: IEquipment, b: IEquipment): number => {
+export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
   const equipmentTypeALabel = a.label.toLowerCase()
   const equipmentTypeBLabel = b.label.toLowerCase()
   return equipmentTypeALabel > equipmentTypeBLabel

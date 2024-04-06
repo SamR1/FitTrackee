@@ -229,6 +229,7 @@
   import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import { sortEquipments } from '@/utils/equipments'
   import { translateSports } from '@/utils/sports'
   import { units } from '@/utils/units'
 
@@ -254,9 +255,9 @@
     translateSports(props.sports, t)
   )
   const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
-    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS].filter(
-      (e: IEquipment) => e.workouts_count > 0
-    )
+    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+      .filter((e: IEquipment) => e.workouts_count > 0)
+      .sort(sortEquipments)
   )
   let params: LocationQuery = Object.assign({}, route.query)
 
