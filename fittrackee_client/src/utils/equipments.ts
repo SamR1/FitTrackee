@@ -30,11 +30,11 @@ export const translateEquipmentTypes = (
     .sort(sortEquipmentTypes)
 
 export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
-  const equipmentTypeALabel = a.label.toLowerCase()
-  const equipmentTypeBLabel = b.label.toLowerCase()
-  return equipmentTypeALabel > equipmentTypeBLabel
+  const equipmentALabel = a.label.toLowerCase()
+  const equipmenteBLabel = b.label.toLowerCase()
+  return equipmentALabel > equipmenteBLabel
     ? 1
-    : equipmentTypeALabel < equipmentTypeBLabel
+    : equipmentALabel < equipmenteBLabel
       ? -1
       : 0
 }

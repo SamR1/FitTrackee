@@ -112,8 +112,7 @@ describe('getDuration ', () => {
       },
     },
     {
-      description:
-        "returns 'O days' and '2h 05min' when '30:25:10' is provided",
+      description: "returns 'O days' and '2h 05min' when '2:05:01' is provided",
       inputDuration: '2:05:01',
       expectedDuration: {
         days: '0 days,',

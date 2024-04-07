@@ -5,9 +5,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
-from fittrackee.users.models import User, UserDataExport, UserSportPreference
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import (
+    User,
+    UserDataExport,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1516,6 +1523,38 @@ class TestDeleteUser(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         user_sport_1_preference: UserSportPreference,
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert User.query.first() is None
+
+    def test_user_with_default_equipment_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

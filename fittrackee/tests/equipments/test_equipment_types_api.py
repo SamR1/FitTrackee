@@ -242,7 +242,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestUpdateEquipment(ApiTestCaseMixin):
+class TestUpdateEquipmentTypes(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: Flask,

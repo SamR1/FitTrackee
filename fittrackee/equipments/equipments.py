@@ -58,6 +58,7 @@ def handle_default_sports(
 def get_equipments(auth_user: User) -> Dict:
     """
     Get all user equipments.
+    Only the equipment owner can see his equipment.
 
     **Scope**: ``equipments:read``
 
@@ -316,8 +317,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :statuscode 201: equipment created
     :statuscode 400: invalid payload
-       - ``The 'label' and 'equipment_type_id' parameters must be provided``
-       - ``equipment already exists with the same label``
+        - ``The 'label' and 'equipment_type_id' parameters must be provided``
+        - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
