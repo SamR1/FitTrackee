@@ -42,6 +42,7 @@
               :equipment-type-label="equipmentType.label"
             />
             {{ equipmentType.translatedLabel }}
+            {{ equipmentType.is_active ? '' : `(${$t('common.INACTIVE')})` }}
           </h2>
           <div class="responsive-table">
             <table>
