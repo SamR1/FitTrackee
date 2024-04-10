@@ -7,13 +7,16 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from flask import Flask
 from freezegun import freeze_time
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import (
     BlacklistedToken,
     User,
     UserDataExport,
     UserSportPreference,
+    UserSportPreferenceEquipment,
 )
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
@@ -1632,6 +1635,214 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['color'] == input_color
         assert data['data']['is_active'] is True
         assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_updates_default_equipments_for_auth_user_without_existing_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        sport_2_running: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_2_running.id
+        assert data['data']['default_equipments'] == [
+            jsonify_dict(equipment_shoes_user_1.serialize())
+        ]
+        assert data['data']['is_active'] is True
+        assert data['data']['stopped_speed_threshold'] == 0.1
+
+    def test_it_updates_default_equipments_for_auth_user_with_existing_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    },
+                    {
+                        "equipment_id": equipment_shoes_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    },
+                ]
+            )
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    default_equipment_ids=[
+                        equipment_bike_user_1.short_id,
+                    ],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['default_equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['is_active'] is True
+        assert data['data']['stopped_speed_threshold'] == 1
+
+    def test_it_does_not_update_equipment_when_ids_not_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        stopped_speed_threshold = 10
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    stopped_speed_threshold=stopped_speed_threshold,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['message'] == 'user sport preferences updated'
+        assert response.status_code == 200
+        assert data['data']['user_id'] == user_1.id
+        assert data['data']['sport_id'] == sport_1_cycling.id
+        assert data['data']['default_equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['is_active'] is True
+        assert (
+            data['data']['stopped_speed_threshold'] == stopped_speed_threshold
+        )
+
+    def test_it_cannot_update_default_equipment_for_other_user_equip(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        equipment_shoes_user_1: Equipment,
+        sport_2_running: Sport,
+    ) -> None:
+        # equipment_shoes_user_1 is owned by user 1
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["message"] == (
+            f'equipment with id {equipment_shoes_user_1.short_id} '
+            'does not exist'
+        )
+        assert data["status"] == "not_found"
+
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    default_equipment_ids=[equipment_shoes_user_1.short_id],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

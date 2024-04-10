@@ -26,7 +26,17 @@
   "CURRENT_EMAIL": "Current email",
   "DELETE_USER": "Delete user",
   "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Enable/disable equipment types.",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Active",
+      "HAS_EQUIPMENTS": "equipments exist",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Equipments administration"
+  },
   "NEW_EMAIL": "New email",
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",

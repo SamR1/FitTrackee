@@ -5,12 +5,7 @@
         {{ $t(`user.PROFILE.${tab}_EDITION`) }}
       </template>
       <template #content>
-        <UserProfileTabs
-          :tabs="tabs"
-          :selectedTab="tab"
-          :edition="true"
-          :disabled="loading"
-        />
+        <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="true" />
         <router-view :user="user"></router-view>
       </template>
     </Card>
@@ -18,20 +13,16 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs } from 'vue'
+  import { toRefs } from 'vue'
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
     tab: string
   }
   const props = defineProps<Props>()
-
-  const store = useStore()
 
   const { user, tab } = toRefs(props)
   const tabs = [
@@ -40,9 +31,7 @@
     'PICTURE',
     'PREFERENCES',
     'SPORTS',
+    'EQUIPMENTS',
     'PRIVACY-POLICY',
   ]
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
 </script>

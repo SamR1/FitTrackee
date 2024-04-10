@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
   "LOG_IN": "connecter",
   "NEW_PASSWORD": "Nouveau mot de passe",
+  "NO_SPORT_FOUND": "Aucun sport trouvé.",
   "NO_USERS_FOUND": "Aucun utilisateur trouvé.",
   "PASSWORD": "Mot de passe",
   "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Altitude minimale",
       "ZERO": "0"
     },
+    "EQUIPMENTS": {
+      "ACTION": "action",
+      "CONFIRM_EQUIPMENT_DELETION": "Êtes-vous sûr de vouloir supprimer cet équipement {0} ?",
+      "DESCRIPTION": "description",
+      "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Cet équipement est associé à des séances.",
+      "IS_ACTIVE": "actif",
+      "LABEL": "label",
+      "YOUR_EQUIPMENTS": "Vos équipements"
+    },
+    "EQUIPMENTS_EDITION": "Mise à jour des équipements",
     "ERRORED_EMAIL_UPDATE": "Veuillez vous {0} pour changer de nouveau votre adresse électronique ou contacter l'administrateur",
     "FIRST_DAY_OF_WEEK": "Premier jour de la semaine",
     "FIRST_NAME": "Prénom",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
+      "CONFIRM_SPORT_RESET": "Êtes-vous sûr·e de vouloir réinitialiser ce sport ?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Êtes-vous sûr·e de vouloir réinitialiser ce sport ? Tous les équipements associés seront supprimés.",
+      "DEFAULT_EQUIPMENTS": "Équipement associé | Équipements associés",
       "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "compte",
       "APPS": "apps",
+      "EQUIPMENTS": "équipements",
       "PICTURE": "image",
       "PREFERENCES": "préférences",
       "PRIVACY-POLICY": "politique de confidentialité",

@@ -26,6 +26,7 @@
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -39,9 +40,8 @@
   const isAuthenticated: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const token: ComputedRef<LocationQueryValue | LocationQueryValue[]> =
     computed(() => route.query.token)
 

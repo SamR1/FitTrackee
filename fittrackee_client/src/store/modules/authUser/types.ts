@@ -16,6 +16,7 @@ import type {
   IUserPayload,
   IUserPicturePayload,
   IUserPreferencesPayload,
+  IUserSportPreferencesResetPayload,
   IUserSportPreferencesPayload,
   IUserAccountPayload,
   IUserAccountUpdatePayload,
@@ -102,7 +103,7 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
-    sportId: number
+    payload: IUserSportPreferencesResetPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT](

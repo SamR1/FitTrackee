@@ -5,9 +5,16 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
-from fittrackee.users.models import User, UserDataExport, UserSportPreference
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import (
+    User,
+    UserDataExport,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1457,11 +1464,12 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.first() is None
 
     def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1482,11 +1490,31 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.first() is None
+
+    def test_user_with_equipment_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_w_shoes_equipment: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert User.query.first() is None
 
     def test_user_with_preferences_can_delete_its_own_account(
         self,
@@ -1500,11 +1528,44 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.first() is None
+
+    def test_user_with_default_equipment_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert User.query.first() is None
 
     def test_user_with_picture_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1522,11 +1583,12 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.first() is None
 
     def test_user_with_export_request_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1546,11 +1608,12 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/test',
+            f'/api/users/{user_1.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.first() is None
 
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
@@ -1560,7 +1623,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1586,13 +1649,15 @@ class TestDeleteUser(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
+        deleted_user_id = user_2.id
 
         response = client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.filter_by(id=deleted_user_id).first() is None
 
     def test_admin_can_delete_its_own_account(
         self, app: Flask, user_1_admin: User, user_2_admin: User
@@ -1600,13 +1665,15 @@ class TestDeleteUser(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
+        deleted_user_id = user_1_admin.id
 
         response = client.delete(
-            '/api/users/admin',
+            f'/api/users/{user_1_admin.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         assert response.status_code == 204
+        assert User.query.filter_by(id=deleted_user_id).first() is None
 
     def test_admin_can_not_delete_its_own_account_if_no_other_admin(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -1616,7 +1683,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            '/api/users/admin',
+            f'/api/users/{user_1_admin.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1636,7 +1703,7 @@ class TestDeleteUser(ApiTestCaseMixin):
             app_with_3_users_max, user_1_admin.email
         )
         client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1668,7 +1735,7 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         client.delete(
-            '/api/users/toto',
+            f'/api/users/{user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
         response = client.post(

@@ -1,9 +1,15 @@
 from typing import Dict, Optional
 
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 
@@ -13,10 +19,11 @@ class TestSportModel:
         sport: Sport, is_admin: Optional[bool] = False
     ) -> Dict:
         assert 1 == sport.id
-        assert 'Cycling' == sport.label
-        assert '<Sport \'Cycling\'>' == str(sport)
+        assert 'Cycling (Sport)' == sport.label
+        assert f'<Sport \'{sport.label}\'>' == str(sport)
 
         serialized_sport = sport.serialize(is_admin=is_admin)
+        assert serialized_sport['default_equipments'] == []
         assert serialized_sport['label'] == sport.label
         assert serialized_sport['id'] == sport.id
         assert serialized_sport['is_active'] is True
@@ -65,8 +72,10 @@ class TestSportModelWithPreferences:
         serialized_sport = sport_1_cycling.serialize(
             sport_preferences=user_sport_1_preference.serialize()
         )
+
+        assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is True
         assert serialized_sport['color'] == '#00000'
@@ -85,8 +94,10 @@ class TestSportModelWithPreferences:
         serialized_sport = sport_1_cycling.serialize(
             sport_preferences=user_sport_1_preference.serialize()
         )
+
+        assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is False
         assert serialized_sport['color'] is None
@@ -106,8 +117,10 @@ class TestSportModelWithPreferences:
         serialized_sport = sport_1_cycling.serialize(
             sport_preferences=user_sport_1_preference.serialize()
         )
+
+        assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is False
         assert serialized_sport['is_active_for_user'] is False
         assert serialized_sport['color'] is None
@@ -127,10 +140,52 @@ class TestSportModelWithPreferences:
         serialized_sport = sport_1_cycling.serialize(
             sport_preferences=user_sport_1_preference.serialize()
         )
+
+        assert serialized_sport['default_equipments'] == []
         assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == 'Cycling'
+        assert serialized_sport['label'] == sport_1_cycling.label
         assert serialized_sport['is_active'] is True
         assert serialized_sport['is_active_for_user'] is True
         assert serialized_sport['color'] is None
         assert serialized_sport['stopped_speed_threshold'] == 0.5
         assert 'has_workouts' not in serialized_sport
+
+    def test_sport_model_with_default_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    },
+                    {
+                        "equipment_id": equipment_shoes_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    },
+                ]
+            )
+        )
+
+        serialized_sport = sport_1_cycling.serialize(
+            sport_preferences=user_sport_1_preference.serialize()
+        )
+
+        assert len(serialized_sport['default_equipments']) == 2
+        assert (
+            equipment_bike_user_1.serialize()
+            in serialized_sport['default_equipments']
+        )
+        assert (
+            equipment_shoes_user_1.serialize()
+            in serialized_sport['default_equipments']
+        )

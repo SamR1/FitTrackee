@@ -1,5 +1,6 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
+import type { IEquipment } from '@/types/equipments'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -61,6 +62,7 @@ export interface IWorkout {
   descent: number | null
   distance: number
   duration: string
+  equipments: IEquipment[]
   id: string
   map: string | null
   max_alt: number | null
@@ -89,6 +91,7 @@ export interface IWorkoutObject {
   descent: number | null
   distance: number | null
   duration: string | null
+  equipments: IEquipment[] | null
   maxAlt: number | null
   maxSpeed: number | null
   minAlt: number | null
@@ -118,6 +121,7 @@ export interface IWorkoutForm {
   file?: Blob
   ascent?: number | null
   descent?: number | null
+  equipment_ids: string[]
 }
 
 export interface IWorkoutPayload {

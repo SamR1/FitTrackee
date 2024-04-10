@@ -1,19 +1,25 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from io import BytesIO
 from typing import Any, Dict, Optional
 from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
-from fittrackee import VERSION
-from fittrackee.users.models import User
+from fittrackee import VERSION, db
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
-from ..utils import OAUTH_SCOPES
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 def assert_workout_data_with_gpx(data: Dict) -> None:
@@ -175,7 +181,8 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert data['data']['workouts'][0]['sport_id'] == 1
     assert data['data']['workouts'][0]['duration'] == '1:00:00'
     assert (
-        data['data']['workouts'][0]['title'] == 'Cycling - 2018-05-15 14:05:00'
+        data['data']['workouts'][0]['title']
+        == 'Cycling (Sport) - 2018-05-15 14:05:00'
     )
     assert data['data']['workouts'][0]['ascent'] is None
     assert data['data']['workouts'][0]['ave_speed'] == 10.0
@@ -425,7 +432,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Cycling - 2018-03-13 12:44:45'
+            f'{sport_1_cycling.label} - 2018-03-13 12:44:45'
             == data['data']['workouts'][0]['title']
         )
         assert_workout_data_with_gpx(data)
@@ -459,7 +466,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Cycling - 2018-03-13 13:44:45'
+            f'{sport_1_cycling.label} - 2018-03-13 13:44:45'
             == data['data']['workouts'][0]['title']
         )
         assert_workout_data_with_gpx(data)
@@ -601,6 +608,218 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_adds_a_workout_with_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "equipment_ids":'
+                    f' ["{equipment_bike_user_1.short_id}"]}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
+
+    def test_it_adds_a_workout_with_default_sport_equipments_when_no_equipment_ids_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
+
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "equipment_ids":'
+                    f' ["{equipment_shoes_user_1.short_id}"]}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
+
+    def test_it_returns_error_when_equipment_is_inactive_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        gpx_file: str,
+    ) -> None:
+        equipment_bike_user_1.is_active = False
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "equipment_ids":'
+                    f' ["{equipment_bike_user_1.short_id}"]}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
+        assert data["message"] == (
+            f"equipment with id {equipment_bike_user_1.short_id} is inactive"
+        )
+        assert data["status"] == "inactive"
+
+    def test_it_does_not_add_inactive_default_equipment_when_no_equipment_ids_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        gpx_file: str,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        equipment_bike_user_1.is_active = False
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == []
+        assert equipment_bike_user_1.total_workouts == 0
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
 
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
@@ -1374,6 +1593,208 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
 
         self.assert_400(response)
 
+    def test_it_adds_a_workout_with_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+                "equipment_ids": [
+                    equipment_bike_user_1.short_id,
+                ],
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == 10
+        assert equipment_bike_user_1.total_duration == timedelta(seconds=3600)
+        assert equipment_bike_user_1.total_moving == timedelta(seconds=3600)
+
+    def test_it_adds_a_workout_with_default_sport_equipments_when_no_equipment_ids_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == 10
+        assert equipment_bike_user_1.total_duration == timedelta(seconds=3600)
+        assert equipment_bike_user_1.total_moving == timedelta(seconds=3600)
+
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+                "equipment_ids": [
+                    equipment_shoes_user_1.short_id,
+                ],
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
+
+    def test_it_returns_error_when_equipment_is_inactive_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_bike_user_1.is_active = False
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+                "equipment_ids": [equipment_bike_user_1.short_id],
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
+        assert data["message"] == (
+            f"equipment with id {equipment_bike_user_1.short_id} is inactive"
+        )
+        assert data["status"] == "inactive"
+
+    def test_it_does_not_add_inactive_default_equipment_when_no_equipment_ids_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_bike_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        equipment_bike_user_1.is_active = False
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == []
+        assert equipment_bike_user_1.total_workouts == 0
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:write': True}.items(),
@@ -1648,6 +2069,109 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             )
 
         assert_files_are_deleted(app, user_1)
+
+    def test_it_adds_a_workouts_with_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'),
+                    data=(
+                        f'{{"sport_id": 1, "equipment_ids":'
+                        f' ["{equipment_bike_user_1.short_id}"]}}'
+                    ),
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 3
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['workouts'][1]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['workouts'][2]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert equipment_bike_user_1.total_workouts == 3
+        assert float(equipment_bike_user_1.total_distance) == 0.96
+        assert equipment_bike_user_1.total_duration == timedelta(seconds=750)
+        assert equipment_bike_user_1.total_moving == timedelta(seconds=750)
+
+    def test_it_adds_a_workout_with_default_sport_equipments_when_no_equipment_ids_provided(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+        user_sport_1_preference: UserSportPreference,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, 'rb') as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 3
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['workouts'][1]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert data['data']['workouts'][2]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
 
 
 class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
@@ -2056,7 +2580,7 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
         )
         assert (
             data['data']['workouts'][0]['title']
-            == 'Cycling - 2018-05-15 14:05:00'
+            == f'{sport_1_cycling.label} - 2018-05-15 14:05:00'
         )
 
     def test_it_adds_and_gets_workouts_date_filter_with_timezone_new_york(
@@ -2093,7 +2617,7 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Cycling - 2018-01-01 00:00:00'
+            f'{sport_1_cycling.label} - 2018-01-01 00:00:00'
             == data['data']['workouts'][0]['title']
         )
 
@@ -2172,6 +2696,6 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
             == data['data']['workouts'][1]['workout_date']
         )
         assert (
-            'Cycling - 2018-01-01 00:00:00'
+            f'{sport_1_cycling.label} - 2018-01-01 00:00:00'
             == data['data']['workouts'][1]['title']
         )

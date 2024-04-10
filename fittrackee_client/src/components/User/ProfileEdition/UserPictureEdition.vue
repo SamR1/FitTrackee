@@ -39,6 +39,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getReadableFileSizeAsText } from '@/utils/files'
@@ -51,9 +52,8 @@
   const store = useStore()
 
   const { user } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
@@ -89,6 +89,7 @@
   @import '~@/scss/vars.scss';
 
   #user-picture-edition {
+    padding: $default-padding 0;
     .user-picture-form {
       display: flex;
       flex-direction: column;

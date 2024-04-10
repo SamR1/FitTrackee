@@ -161,6 +161,8 @@ def create_workout(
         new_workout.max_speed = new_workout.ave_speed
         new_workout.ascent = workout_data.get('ascent')
         new_workout.descent = workout_data.get('descent')
+    if workout_data.get('equipments_list') is not None:
+        new_workout.equipments = workout_data.get('equipments_list')
     return new_workout
 
 
@@ -219,6 +221,8 @@ def edit_workout(
         workout.title = workout_data.get('title')
     if workout_data.get('notes') is not None:
         workout.notes = workout_data.get('notes')
+    if workout_data.get('equipments_list') is not None:
+        workout.equipments = workout_data.get('equipments_list')
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(
@@ -443,6 +447,14 @@ def process_files(
         if sport_preferences is None
         else sport_preferences.stopped_speed_threshold
     )
+
+    # get default equipment if sport preferences exists
+    if not "equipments_list" not in workout_data and sport_preferences:
+        workout_data['equipments_list'] = [
+            equipment
+            for equipment in sport_preferences.default_equipments.all()
+            if equipment.is_active is True
+        ]
 
     common_params = {
         'auth_user': auth_user,

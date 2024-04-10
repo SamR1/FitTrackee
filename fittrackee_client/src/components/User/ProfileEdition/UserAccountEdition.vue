@@ -119,6 +119,7 @@
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type {
     IAuthUserProfile,
     IUserAccountPayload,
@@ -150,9 +151,8 @@
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
   const emailUpdate = ref(false)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const formErrors = ref(false)
   const displayModal: Ref<boolean> = ref(false)
   const exportRequest: ComputedRef<IExportRequest | null> = computed(
@@ -265,42 +265,45 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
-
-  .form-items {
-    .password-input {
-      ::v-deep(.show-password) {
-        font-weight: normal;
-        font-size: 0.8em;
-        margin-top: -4px;
-        padding-left: 0;
-      }
-      ::v-deep(.form-info) {
-        font-weight: normal;
-        padding-left: $default-padding;
-      }
-      ::v-deep(.password-strength-details) {
-        font-weight: normal;
-        margin-top: 0;
-      }
-    }
-  }
-
-  .form-buttons {
-    flex-direction: row;
-    @media screen and (max-width: $x-small-limit) {
-      flex-direction: column;
-    }
-  }
-
-  .data-export {
+  #user-infos-edition {
     padding: $default-padding 0;
-    .data-export-archive {
-      padding-top: $default-padding * 2;
-      font-size: 0.9em;
 
-      .archive-link {
-        color: var(--app-a-color);
-        cursor: pointer;
+    .form-items {
+      .password-input {
+        ::v-deep(.show-password) {
+          font-weight: normal;
+          font-size: 0.8em;
+          margin-top: -4px;
+          padding-left: 0;
+        }
+        ::v-deep(.form-info) {
+          font-weight: normal;
+          padding-left: $default-padding;
+        }
+        ::v-deep(.password-strength-details) {
+          font-weight: normal;
+          margin-top: 0;
+        }
+      }
+    }
+
+    .form-buttons {
+      flex-direction: row;
+      @media screen and (max-width: $x-small-limit) {
+        flex-direction: column;
+      }
+    }
+
+    .data-export {
+      padding: $default-padding 0;
+      .data-export-archive {
+        padding-top: $default-padding * 2;
+        font-size: 0.9em;
+
+        .archive-link {
+          color: var(--app-a-color);
+          cursor: pointer;
+        }
       }
     }
   }

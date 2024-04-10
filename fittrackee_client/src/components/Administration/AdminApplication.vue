@@ -157,6 +157,7 @@
 
   import { ROOT_STORE } from '@/store/constants'
   import type { TAppConfig, TAppConfigForm } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -182,9 +183,8 @@
     about: '',
     privacy_policy: '',
   })
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onBeforeMount(() => {
     if (props.appConfig) {
