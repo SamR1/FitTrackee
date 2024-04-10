@@ -186,6 +186,8 @@
   const formErrors = ref(false)
 
   onMounted(() => {
+    const colorInput = document.getElementById('equipment-label')
+    colorInput?.focus()
     if (!route.params.id) {
       return
     }

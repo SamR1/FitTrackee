@@ -150,6 +150,8 @@
   const formErrors = ref(false)
 
   onMounted(() => {
+    const labelInput = document.getElementById('sport-color')
+    labelInput?.focus()
     if (!route.params.id) {
       return
     }

@@ -66,15 +66,15 @@
       </dd>
     </dl>
     <div class="sport-buttons">
+      <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
+        {{ $t('buttons.EDIT') }}
+      </button>
       <button
         :disabled="loading"
         class="danger"
         @click.prevent="updateDisplayModal(true)"
       >
         {{ $t('buttons.RESET') }}
-      </button>
-      <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
-        {{ $t('buttons.EDIT') }}
       </button>
       <button
         @click="
