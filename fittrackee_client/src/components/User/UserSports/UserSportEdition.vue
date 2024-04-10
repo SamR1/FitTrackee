@@ -65,7 +65,7 @@
             :disabled="loading"
             v-model="defaultEquipmentId"
           >
-            <option value=""></option>
+            <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
             <option
               v-for="equipment in equipmentsForSelect"
               :value="equipment.id"

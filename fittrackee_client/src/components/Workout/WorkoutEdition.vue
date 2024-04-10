@@ -244,7 +244,7 @@
                   :disabled="loading"
                   v-model="workoutForm.equipment_id"
                 >
-                  <option value=""></option>
+                  <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
                   <option
                     v-for="equipment in equipmentsForSelect"
                     :value="equipment.id"
