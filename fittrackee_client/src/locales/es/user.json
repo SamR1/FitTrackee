@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "¿Está seguro de que deseas cerrar la sesión?",
   "LOG_IN": "iniciar sesión",
   "NEW_PASSWORD": "Nueva contraseña",
+  "NO_SPORT_FOUND": "Ningún deporte encontrado.",
   "NO_USERS_FOUND": "No hay usuarios.",
   "PASSWORD": "Contraseña",
   "PASSWORD_FORGOTTEN": "¿Has olvidado la contraseña?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Altitud mínima",
       "ZERO": "Cero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "acción",
+      "CONFIRM_EQUIPMENT_DELETION": "¿Seguro que quieres borrar esta equipación {0}?",
+      "DESCRIPTION": "descripción",
+      "DISABLED_BY_ADMIN": "desactivada por admin",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Esta equipación está asociada a los entrenamientos.",
+      "IS_ACTIVE": "activa",
+      "LABEL": "etiqueta",
+      "YOUR_EQUIPMENTS": "Tu equipación"
+    },
+    "EQUIPMENTS_EDITION": "Edición de la equipación",
     "ERRORED_EMAIL_UPDATE": "Por favor, {0} para cambiar su dirección de correo electrónico de nuevo o póngase en contacto con el administrador",
     "FIRST_DAY_OF_WEEK": "Primer día de la semana",
     "FIRST_NAME": "Nombre",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "acción",
       "COLOR": "color",
+      "CONFIRM_SPORT_RESET": "¿Estás seguro de que quieres reiniciar este deporte?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "¿Estás seguro de que quieres reiniciar este deporte? Se eliminarán todas las equipaciones predeterminados.",
+      "DEFAULT_EQUIPMENTS": "Equipación por defecto | Equipaciones por defecto",
       "DISABLED_BY_ADMIN": "desactivada por admin",
       "IS_ACTIVE": "activa",
       "LABEL": "etiqueta",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "cuenta",
       "APPS": "aplicaciones",
+      "EQUIPMENTS": "Equipaciones",
       "PICTURE": "fotografía",
       "PREFERENCES": "preferencias",
       "PRIVACY-POLICY": "política de privacidad",
