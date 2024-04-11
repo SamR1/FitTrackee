@@ -1,1 +1,17 @@
-{}
+{
+  "50_CHARACTERS_MAX": "50 caracteres como máximo",
+  "ADD_A_NEW_EQUIPMENT": "Engadir novo equipamento",
+  "DEFAULT_FOR_SPORTS": "Por defecto para deporte",
+  "EDIT_EQUIPMENTS": "Editar equipamentos",
+  "EQUIPMENT": "equipamento|equipamentos",
+  "EQUIPMENT_TYPE": "tipo de equipamento|tipos de equipamento",
+  "ERRORS": {
+    "inactive": "O equipamento '{equipmentLabel}' non está en uso.",
+    "invalid": "O equipamento '{equipmentLabel}' non é válido para este deporte.",
+    "not_found": "Non hai equipamento."
+  },
+  "NEW_EQUIPMENT": "Novo equipamento",
+  "NO_EQUIPMENT": "Non hai equipamento.",
+  "NO_EQUIPMENTS": "Sen equipamentos",
+  "WITHOUT_EQUIPMENTS": "sen equipamentos"
+}
