@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from flask import json as flask_json
 
-from fittrackee.short_id import encode_uuid
+from fittrackee.utils import encode_uuid
 
 
 def random_string(

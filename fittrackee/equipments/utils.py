@@ -1,8 +1,8 @@
 from typing import List, Optional, Union
 
 from fittrackee.equipments.models import Equipment
-from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import User
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport
 
 from .exceptions import InvalidEquipmentException, InvalidEquipmentsException

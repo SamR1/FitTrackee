@@ -13,12 +13,12 @@ from fittrackee.responses import (
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import (
     User,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport
 
 from .exceptions import InvalidEquipmentsException

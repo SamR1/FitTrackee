@@ -8,7 +8,7 @@ from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
 from fittrackee import db
-from fittrackee.short_id import encode_uuid
+from fittrackee.utils import encode_uuid
 
 BaseModel: DeclarativeMeta = db.Model
 

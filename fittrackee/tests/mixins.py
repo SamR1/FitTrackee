@@ -12,8 +12,8 @@ from werkzeug.test import TestResponse
 from fittrackee import db
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
-from fittrackee.short_id import encode_uuid
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 
 from .custom_asserts import (
     assert_errored_response,

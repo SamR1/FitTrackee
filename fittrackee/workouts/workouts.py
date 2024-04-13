@@ -36,8 +36,8 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.utils import decode_short_id
 
 from .models import Workout, WorkoutEquipment
 from .utils.convert import convert_in_duration

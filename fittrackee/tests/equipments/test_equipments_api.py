@@ -7,12 +7,12 @@ from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment, EquipmentType
-from fittrackee.short_id import decode_short_id
 from fittrackee.users.models import (
     User,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
