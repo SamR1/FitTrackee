@@ -236,6 +236,24 @@
                   </div>
                 </div>
               </div>
+              <div class="form-item" v-if="equipments">
+                <label> {{ $t('equipments.EQUIPMENT', 1) }}: </label>
+                <select
+                  id="workout-equipment"
+                  @invalid="invalidateForm"
+                  :disabled="loading"
+                  v-model="workoutForm.equipment_id"
+                >
+                  <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
+                  <option
+                    v-for="equipment in equipmentsForSelect"
+                    :value="equipment.id"
+                    :key="equipment.id"
+                  >
+                    {{ equipment.label }}
+                  </option>
+                </select>
+              </div>
               <div class="form-item">
                 <label> {{ $t('privacy.WORKOUT_VISIBILITY') }}: </label>
                 <select
@@ -312,14 +330,20 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import {
+    EQUIPMENTS_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipment, IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import {
     getPrivacyLevels,
@@ -366,9 +390,8 @@
   const zipSizeLimit = appConfig.value.max_zip_file_size
     ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
     : ''
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const workoutForm = reactive({
     sport_id: '',
     title: '',
@@ -381,6 +404,7 @@
     workoutDistance: '',
     workoutAscent: '',
     workoutDescent: '',
+    equipment_id: '',
     mapVisibility: authUser.value.map_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
   })
@@ -390,6 +414,25 @@
   let gpxFile: File | null = null
   const formErrors = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
+  const equipments: ComputedRef<IEquipment[]> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
+  )
+  const selectedSport: ComputedRef<ITranslatedSport | null> = computed(() =>
+    workoutForm.sport_id
+      ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
+      : null
+  )
+  const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
+    equipments.value
+      ? getEquipments(
+          equipments.value,
+          t,
+          isCreation.value ? 'is_active' : 'withIncludedIds',
+          selectedSport.value,
+          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
+        )
+      : []
+  )
   const mapPrivacyLevels = computed(() =>
     getMapVisibilityLevels(workoutForm.workoutVisibility)
   )
@@ -423,6 +466,8 @@
     workoutForm.sport_id = `${workout.sport_id}`
     workoutForm.title = workout.title
     workoutForm.notes = workout.notes
+    workoutForm.equipment_id =
+      workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
     workoutForm.workoutVisibility = workout.workout_visibility
       ? workout.workout_visibility
       : 'private'
@@ -515,6 +560,11 @@
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
       notes: workoutForm.notes,
+      equipment_ids:
+        workoutForm.equipment_id &&
+        equipmentsForSelect.value.find((e) => e.id === workoutForm.equipment_id)
+          ? [workoutForm.equipment_id]
+          : [],
       workout_visibility: workoutForm.workoutVisibility,
     }
     if (props.workout.id) {
@@ -591,6 +641,18 @@
     ) => {
       if (newWorkout !== previousWorkout && newWorkout && newWorkout.id) {
         formatWorkoutForm(newWorkout)
+      }
+    }
+  )
+  watch(
+    () => selectedSport.value,
+    (newSport: ISport | null) => {
+      if (isCreation.value) {
+        workoutForm.equipment_id =
+          newSport?.default_equipments &&
+          newSport?.default_equipments.length > 0
+            ? `${newSport.default_equipments[0].id}`
+            : ''
       }
     }
   )

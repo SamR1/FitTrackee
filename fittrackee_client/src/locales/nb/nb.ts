@@ -4,6 +4,8 @@ import ApiTranslations from './api.json'
 import ButtonsTranslations from './buttons.json'
 import CommonTranslations from './common.json'
 import DashboardTranslations from './dashboard.json'
+import EquipmentTypesTranslations from './equipment_types.json'
+import EquipmentsTranslations from './equipments.json'
 import ErrorTranslations from './error.json'
 import NotificationsTranslations from './notifications.json'
 import OAuth2Translations from './oauth2.json'
@@ -22,6 +24,8 @@ export default {
   common: CommonTranslations,
   dashboard: DashboardTranslations,
   error: ErrorTranslations,
+  equipments: EquipmentsTranslations,
+  equipment_types: EquipmentTypesTranslations,
   notifications: NotificationsTranslations,
   oauth2: OAuth2Translations,
   privacy: PrivacyLevelsTranslations,

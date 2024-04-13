@@ -250,6 +250,12 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref('user', lazy='joined', single_parent=True),
     )
+    equipments = db.relationship(
+        'Equipment',
+        lazy='select',
+        backref=db.backref('user', lazy='select', single_parent=True),
+    )
+
     received_follow_requests = db.relationship(
         FollowRequest,
         backref='to_user',
@@ -671,6 +677,29 @@ class User(BaseModel):
         return serialized_user
 
 
+UserSportPreferenceEquipment = db.Table(
+    'users_sports_preferences_equipments',
+    db.Column(
+        'user_id',
+        db.Integer,
+        db.ForeignKey('users.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        'sport_id',
+        db.Integer,
+        db.ForeignKey('sports.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+    db.Column(
+        'equipment_id',
+        db.Integer,
+        db.ForeignKey('equipments.id', ondelete="CASCADE"),
+        primary_key=True,
+    ),
+)
+
+
 class UserSportPreference(BaseModel):
     __tablename__ = 'users_sports_preferences'
 
@@ -687,6 +716,18 @@ class UserSportPreference(BaseModel):
     color = db.Column(db.String(50), nullable=True)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+
+    default_equipments = db.relationship(
+        'Equipment',
+        secondary=UserSportPreferenceEquipment,
+        primaryjoin=and_(
+            user_id == UserSportPreferenceEquipment.c.user_id,
+            sport_id == UserSportPreferenceEquipment.c.sport_id,
+        ),
+        lazy='dynamic',
+        viewonly=True,
+        backref=db.backref('default_for_sports', lazy='select'),
+    )
 
     def __init__(
         self,
@@ -706,6 +747,10 @@ class UserSportPreference(BaseModel):
             'color': self.color,
             'is_active': self.is_active,
             'stopped_speed_threshold': self.stopped_speed_threshold,
+            'default_equipments': [
+                equipment.serialize()
+                for equipment in self.default_equipments.all()
+            ],
         }
 
 

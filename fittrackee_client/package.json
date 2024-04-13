@@ -40,6 +40,7 @@
     "vue-chartjs": "^5.3.0",
     "vue-fullscreen": "^3.1.1",
     "vue-i18n": "^9.10.1",
+    "vue-multiselect": "^3.0.0-beta.3",
     "vue-router": "^4.3.0",
     "vuex": "^4.1.0"
   },

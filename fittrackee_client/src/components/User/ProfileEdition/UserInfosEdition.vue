@@ -66,6 +66,7 @@
   import type { ComputedRef } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IUserProfile,
@@ -101,9 +102,8 @@
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onMounted(() => {
     if (props.user) {
@@ -134,22 +134,24 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
-
-  .form-items {
-    .password-input {
-      ::v-deep(.show-password) {
-        font-weight: normal;
-        font-size: 0.8em;
-        margin-top: -4px;
-        padding-left: 0;
+  #user-infos-edition {
+    padding-top: $default-padding;
+    .form-items {
+      .password-input {
+        ::v-deep(.show-password) {
+          font-weight: normal;
+          font-size: 0.8em;
+          margin-top: -4px;
+          padding-left: 0;
+        }
       }
     }
-  }
 
-  .form-buttons {
-    flex-direction: row;
-    @media screen and (max-width: $x-small-limit) {
-      flex-direction: column;
+    .form-buttons {
+      flex-direction: row;
+      @media screen and (max-width: $x-small-limit) {
+        flex-direction: column;
+      }
     }
   }
 </style>

@@ -2,9 +2,15 @@ import json
 
 import pytest
 from flask import Flask
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.equipments.models import Equipment
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
@@ -139,6 +145,46 @@ class TestGetSports(ApiTestCaseMixin):
         )
         assert data['data']['sports'][1] == jsonify_dict(
             sport_2_running.serialize(is_admin=True)
+        )
+
+    def test_it_gets_sports_with_auth_user_preferences_and_default_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_sport_1_preference.sport_id,
+                        "user_id": user_sport_1_preference.user_id,
+                    }
+                ]
+            )
+        )
+        db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/sports',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['sports']) == 1
+        assert data['data']['sports'][0] == jsonify_dict(
+            sport_1_cycling.serialize(
+                sport_preferences=user_sport_1_preference.serialize(),
+            )
         )
 
     def test_it_gets_sports_with_auth_user_preferences(

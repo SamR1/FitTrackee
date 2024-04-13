@@ -278,6 +278,7 @@
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
@@ -397,9 +398,8 @@
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const dateFormatOptions = computed(() =>
     availableDateFormatOptions(
       new Date().toUTCString(),
@@ -468,6 +468,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences-edition {
+    padding-top: $default-padding;
     .form-items {
       padding-top: $default-padding * 0.5;
     }

@@ -12,6 +12,10 @@
             </i18n-t>
           </div>
           <div class="modal-message" v-else>{{ message }}</div>
+          <div class="info-box" v-if="warning">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+            {{ warning }}
+          </div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
           <div v-if="loading">
             <Loader />
@@ -19,6 +23,7 @@
           <div class="modal-buttons" v-else>
             <button
               class="confirm"
+              :class="{ danger: warning }"
               id="confirm-button"
               v-if="!errorMessages"
               @click="emit('confirmAction')"
@@ -45,17 +50,20 @@
   import type { ComputedRef } from 'vue'
 
   import { ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     title: string
     message: string
-    strongMessage?: string
+    strongMessage?: string | null
     loading?: boolean
+    warning?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     loading: false,
     strongMessage: () => '',
+    warning: () => '',
   })
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
@@ -63,9 +71,8 @@
   const store = useStore()
 
   const { title, message, strongMessage } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null
@@ -144,6 +151,10 @@
             button {
               margin: $default-padding * 0.5;
             }
+          }
+
+          .info-box {
+            margin: 0 $default-margin $default-margin;
           }
         }
       }

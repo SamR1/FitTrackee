@@ -52,6 +52,14 @@
           :displayHARecord="displayOptions.displayAscent"
           v-if="workoutObject.workoutVisibility"
         />
+        <div class="workout-equipments" v-if="workoutObject.equipments">
+          <EquipmentBadge
+            v-for="equipment in workoutObject.equipments"
+            :equipment="equipment"
+            :workout-id="workoutObject.workoutId"
+            :key="equipment.label"
+          />
+        </div>
       </template>
     </Card>
   </div>
@@ -62,6 +70,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
@@ -170,6 +179,7 @@
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      equipments: segment ? null : workout.equipments,
       mapVisibility: segment ? null : workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       liked: workout.liked,
@@ -263,6 +273,11 @@
         .workout-map-data {
           display: flex;
           flex-direction: row;
+        }
+        .workout-equipments {
+          display: flex;
+          flex-wrap: wrap;
+          gap: $default-padding;
         }
         @media screen and (max-width: $medium-limit) {
           .workout-map-data {

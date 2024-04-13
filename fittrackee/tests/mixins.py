@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
+from uuid import uuid4
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -21,6 +22,7 @@ from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.reports.models import Report
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Workout
 
 from .custom_asserts import (
@@ -32,7 +34,6 @@ from .utils import (
     get_date_string,
     random_email,
     random_int,
-    random_short_id,
     random_string,
 )
 
@@ -90,7 +91,7 @@ class RandomMixin:
 
     @staticmethod
     def random_short_id() -> str:
-        return random_short_id()
+        return encode_uuid(uuid4())
 
     @staticmethod
     def get_date_string(

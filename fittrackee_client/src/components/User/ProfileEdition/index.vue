@@ -5,12 +5,7 @@
         {{ $t(`user.PROFILE.${tab}_EDITION`) }}
       </template>
       <template #content>
-        <UserProfileTabs
-          :tabs="tabs"
-          :selectedTab="tab"
-          :edition="true"
-          :disabled="loading"
-        />
+        <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="true" />
         <router-view :user="user"></router-view>
       </template>
     </Card>
@@ -36,21 +31,26 @@
 
   const store = useStore()
 
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
   const isSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
   const tabs = computed(() =>
     isSuspended.value
-      ? ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'PRIVACY-POLICY']
+      ? [
+          'PROFILE',
+          'ACCOUNT',
+          'PICTURE',
+          'PREFERENCES',
+          'EQUIPMENTS',
+          'PRIVACY-POLICY',
+        ]
       : [
           'PROFILE',
           'ACCOUNT',
           'PICTURE',
           'PREFERENCES',
           'SPORTS',
+          'EQUIPMENTS',
           'PRIVACY-POLICY',
         ]
   )

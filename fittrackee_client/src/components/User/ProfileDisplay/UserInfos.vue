@@ -173,6 +173,7 @@
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { IDisplayOptions, TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -224,9 +225,8 @@
   const isSuccess = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )

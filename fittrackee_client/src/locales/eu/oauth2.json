@@ -10,6 +10,8 @@
     "SCOPE": {
       "LABEL": "Ingurua",
       "application:write_DESCRIPTION": "aplikazioaren konfiguraziorako idazketa baimena ematen du.",
+      "equipments:read_DESCRIPTION": "<code>equipments</code> zerbitzuetarako irakurketa baimena ematen du.",
+      "equipments:write_DESCRIPTION": "<code>equipments</code> zerbitzuetarako idazketa baimena ematen du.",
       "profile:read_DESCRIPTION": "<code>auth</code> zerbitzuetarako irakurketa baimena ematen du.",
       "profile:write_DESCRIPTION": "<code>auth</code> zerbitzuetarako idazketa baimena ematen du.",
       "users:read_DESCRIPTION": "<code>users</code> zerbitzuetarako irakurketa baimena ematen du.",

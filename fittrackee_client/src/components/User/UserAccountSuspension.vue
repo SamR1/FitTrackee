@@ -69,6 +69,7 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { IAccountSuspension } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -81,9 +82,8 @@
   const accountSuspension: ComputedRef<IAccountSuspension> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appealText: Ref<string> = ref('')
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]

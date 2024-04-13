@@ -1,15 +1,21 @@
 {
   "ABOUT": "à propos",
+  "ACTION": "action",
+  "ACTIVE": "actif",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "jour | jours",
+  "DESCRIPTION": "Description",
   "DISPLAYED": "Affiché",
   "DOCUMENTATION": "documentation",
   "EDITED": "édité",
   "HERE": "ici",
   "HIDDEN": "Masqué",
   "HOME": "Accueil",
+  "INACTIVE": "inactif",
+  "LABEL": "Nom",
   "LAST_UPDATED_ON": "Dernière mise à jour le",
+  "NO_DESCRIPTION": "pas de description",
   "NO_NOTES": "Pas de notes",
   "REPORT_PLACEHOLDER": "préciser la raison du signalement",
   "REPORT_SUBMITTED": "Signalement envoyé.",
@@ -27,5 +33,6 @@
     }
   },
   "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises",
   "TYPE": "type"
 }

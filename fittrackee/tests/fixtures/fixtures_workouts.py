@@ -27,7 +27,7 @@ def static_map_get_mock() -> Generator:
 
 @pytest.fixture()
 def sport_1_cycling() -> Sport:
-    sport = Sport(label='Cycling')
+    sport = Sport(label='Cycling (Sport)')
     db.session.add(sport)
     db.session.commit()
     return sport
@@ -35,7 +35,7 @@ def sport_1_cycling() -> Sport:
 
 @pytest.fixture()
 def sport_1_cycling_inactive() -> Sport:
-    sport = Sport(label='Cycling')
+    sport = Sport(label='Cycling (Sport)')
     sport.is_active = False
     db.session.add(sport)
     db.session.commit()
@@ -46,6 +46,14 @@ def sport_1_cycling_inactive() -> Sport:
 def sport_2_running() -> Sport:
     sport = Sport(label='Running')
     sport.stopped_speed_threshold = 0.1
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_3_cycling_transport() -> Sport:
+    sport = Sport(label='Cycling (Transport)')
     db.session.add(sport)
     db.session.commit()
     return sport
@@ -66,6 +74,21 @@ def workout_cycling_user_1() -> Workout:
         sport_id=1,
         workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
+        duration=datetime.timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def another_workout_cycling_user_1() -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=1,
+        workout_date=datetime.datetime.strptime('01/01/2024', '%d/%m/%Y'),
+        distance=18,
         duration=datetime.timedelta(seconds=3600),
     )
     update_workout(workout)

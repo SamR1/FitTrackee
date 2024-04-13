@@ -163,6 +163,7 @@
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
   import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IEquipmentError } from '@/types/equipments'
   import type {
     IAuthUserProfile,
     IUserProfile,
@@ -196,9 +197,8 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
   onBeforeMount(() => loadUsers(query))
 

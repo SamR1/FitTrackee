@@ -83,7 +83,17 @@
   "DELETED_WORKOUT": "Séance supprimée",
   "DELETE_USER": "Supprimer l'utilisateur",
   "EMAIL_SENDING_DISABLED": "L'envoi d'emails est désactivé.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Activer/désactiver des types d'équipement.",
   "ENABLE_DISABLE_SPORTS": "Activer/désactiver des sports.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Actif",
+      "HAS_EQUIPMENTS": "des équipements existent",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Administration - Équipements"
+  },
   "NEW_EMAIL": "Nouvelle adresse email",
   "NO_TEXT_ENTERED": "pas de texte saisi",
   "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",

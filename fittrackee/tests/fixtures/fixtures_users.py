@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import FollowRequest, User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
@@ -170,7 +171,11 @@ def suspended_user() -> User:
 
 @pytest.fixture()
 def user_sport_1_preference(
-    user_1: User, sport_1_cycling: Sport
+    user_1: User,
+    sport_1_cycling: Sport,
+    equipment_type_1_shoe: EquipmentType,
+    equipment_type_2_bike: EquipmentType,
+    equipment_bike_user_1: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1.id,
@@ -184,7 +189,11 @@ def user_sport_1_preference(
 
 @pytest.fixture()
 def user_admin_sport_1_preference(
-    user_1_admin: User, sport_1_cycling: Sport
+    user_1_admin: User,
+    sport_1_cycling: Sport,
+    equipment_type_1_shoe: EquipmentType,
+    equipment_type_2_bike: EquipmentType,
+    equipment_bike_user_1: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1_admin.id,
