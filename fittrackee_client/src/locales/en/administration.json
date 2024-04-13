@@ -86,7 +86,17 @@
   "DELETED_WORKOUT": "Deleted workout",
   "DELETE_USER": "Delete user",
   "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Enable/disable equipment types.",
   "ENABLE_DISABLE_SPORTS": "Enable/disable sports.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Active",
+      "HAS_EQUIPMENTS": "equipments exist",
+      "IMAGE": "Image",
+      "LABEL": "Label"
+    },
+    "TITLE": "Equipments administration"
+  },
   "FEDERATION_DISABLED": "Federation is currently disabled.",
   "FEDERATION_ENABLED": "Federation is currently enabled.",
   "NEW_EMAIL": "New email",

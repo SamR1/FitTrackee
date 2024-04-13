@@ -1,13 +1,19 @@
 {
   "ABOUT": "acerca de",
+  "ACTION": "acción",
+  "ACTIVE": "activo",
   "CONFIRMATION": "Confirmación",
   "CONTACT": "contacto",
   "DAY": "día | días",
+  "DESCRIPTION": "Descrición",
   "DISPLAYED": "Mostrado",
   "DOCUMENTATION": "documentación",
   "HERE": "aquí",
   "HIDDEN": "Agochado",
   "HOME": "Inicio",
+  "INACTIVE": "non activo",
+  "LABEL": "etiqueta",
+  "NO_DESCRIPTION": "sen descrición",
   "NO_NOTES": "Sen notas",
   "SELECTS": {
     "ORDER": {
@@ -22,5 +28,6 @@
       "LABEL": "por páxina"
     }
   },
-  "TOTAL": "Total"
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "duración total con pausas"
 }

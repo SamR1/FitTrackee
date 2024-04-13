@@ -48,6 +48,9 @@ class UserDataExporter:
             workouts_data.append(workout_data)
         return workouts_data
 
+    def get_user_equipments_data(self) -> List[Dict]:
+        return [equipment.serialize() for equipment in self.user.equipments]
+
     def export_data(self, data: Union[Dict, List], name: str) -> str:
         """export data in existing user upload directory"""
         json_object = json.dumps(data, indent=4, default=str)
@@ -64,12 +67,18 @@ class UserDataExporter:
             workout_data_file_name = self.export_data(
                 self.get_user_workouts_data(), "workouts_data"
             )
+            equipments_data_file_name = self.export_data(
+                self.get_user_equipments_data(), "equipments_data"
+            )
             zip_file = f"archive_{secrets.token_urlsafe(15)}.zip"
             zip_path = os.path.join(self.export_directory, zip_file)
             with ZipFile(zip_path, 'w') as zip_object:
                 zip_object.write(user_data_file_name, "user_data.json")
                 zip_object.write(
                     workout_data_file_name, "user_workouts_data.json"
+                )
+                zip_object.write(
+                    equipments_data_file_name, "user_equipments_data.json"
                 )
                 if self.user.picture:
                     picture_path = get_absolute_file_path(self.user.picture)

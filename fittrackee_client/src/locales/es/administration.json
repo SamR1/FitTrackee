@@ -26,7 +26,17 @@
   "CURRENT_EMAIL": "Email actual",
   "DELETE_USER": "Eliminar usuario",
   "EMAIL_SENDING_DISABLED": "El envío de email está desactivado.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Activar/desactivar tipos de equipaciones.",
   "ENABLE_DISABLE_SPORTS": "Activar/desactivar deportes.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Activar",
+      "HAS_EQUIPMENTS": "ya existe la equipación",
+      "IMAGE": "Imagen",
+      "LABEL": "Etiqueta"
+    },
+    "TITLE": "Administración de la equipación"
+  },
   "NEW_EMAIL": "Nuevo email",
   "NO_TEXT_ENTERED": "No hay texto",
   "PASSWORD_RESET_SUCCESSFUL": "Se ha restablecido la contraseña.",

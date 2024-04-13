@@ -1,0 +1,17 @@
+{
+  "50_CHARACTERS_MAX": "Máximo 50 caracteres",
+  "ADD_A_NEW_EQUIPMENT": "Añadir una nueva equipación",
+  "DEFAULT_FOR_SPORTS": "Por defecto para los deportes",
+  "EDIT_EQUIPMENTS": "Editar la equipación",
+  "EQUIPMENT": "equipación|equipaciones",
+  "EQUIPMENT_TYPE": "tipo de equipación|tipos de equipaciones",
+  "ERRORS": {
+    "inactive": "Equipación '{equipmentLabel}' inactiva.",
+    "invalid": "La equipación '{equipmentLabel}' no es la correcta para este deporte.",
+    "not_found": "Equipación no encontrada."
+  },
+  "NEW_EQUIPMENT": "Nueva equipación",
+  "NO_EQUIPMENT": "No se han encontrado equipaciones.",
+  "NO_EQUIPMENTS": "Sin equipaciones",
+  "WITHOUT_EQUIPMENTS": "sin equipación"
+}

@@ -81,6 +81,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { ROOT_STORE, USERS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IAuthUserProfile,
@@ -136,9 +137,8 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const isLoading = computed(() =>
     comment.value
       ? comment.value.id === commentsLoading.value

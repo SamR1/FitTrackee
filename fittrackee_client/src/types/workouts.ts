@@ -1,5 +1,6 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
+import type { IEquipment } from '@/types/equipments'
 import type { IUserProfile, TPrivacyLevels } from '@/types/user'
 
 export interface IWorkoutSegment {
@@ -62,6 +63,7 @@ export interface IWorkout {
   descent: number | null
   distance: number
   duration: string
+  equipments: IEquipment[]
   id: string
   liked: boolean
   likes_count: number
@@ -95,6 +97,7 @@ export interface IWorkoutObject {
   descent: number | null
   distance: number | null
   duration: string | null
+  equipments: IEquipment[] | null
   liked: boolean
   likes_count: number
   maxAlt: number | null
@@ -129,6 +132,7 @@ export interface IWorkoutForm {
   file?: Blob
   ascent?: number | null
   descent?: number | null
+  equipment_ids: string[]
   map_visibility?: TPrivacyLevels
   workout_visibility: TPrivacyLevels
 }

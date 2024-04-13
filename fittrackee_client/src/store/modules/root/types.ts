@@ -14,6 +14,7 @@ import type {
   TAppConfigForm,
   IDisplayOptions,
 } from '@/types/application'
+import type { IEquipmentError } from '@/types/equipments'
 import type { TLanguage } from '@/types/locales'
 import type { IAuthUserProfile } from '@/types/user'
 
@@ -21,7 +22,7 @@ export interface IRootState {
   root: boolean
   language: TLanguage
   locale: Locale
-  errorMessages: string | string[] | null
+  errorMessages: string | string[] | IEquipmentError | null
   application: IApplication
   appLoading: boolean
   darkMode: boolean | null
@@ -58,7 +59,7 @@ export interface IRootGetters {
 
   [ROOT_STORE.GETTERS.ERROR_MESSAGES](
     state: IRootState
-  ): string | string[] | null
+  ): string | string[] | IEquipmentError | null
 
   [ROOT_STORE.GETTERS.LANGUAGE](state: IRootState): TLanguage
 

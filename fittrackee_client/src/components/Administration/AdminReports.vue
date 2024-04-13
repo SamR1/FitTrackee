@@ -189,6 +189,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IReport } from '@/types/reports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -218,9 +219,8 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORTS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const maxTextLength = 20
 
   onBeforeMount(() => loadReports(query))

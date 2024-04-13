@@ -15,6 +15,7 @@ from fittrackee.emails.tasks import (
     password_change_email,
     reset_password_email,
 )
+from fittrackee.equipments.models import Equipment
 from fittrackee.federation.decorators import federation_required_for_route
 from fittrackee.federation.models import Domain
 from fittrackee.federation.utils.user import (
@@ -903,6 +904,10 @@ def delete_user(
             UserSportPreference.user_id == user.id
         ).delete()
         db.session.query(Record).filter(Record.user_id == user.id).delete()
+        # delete all equipment associated with this user
+        db.session.query(Equipment).filter(
+            Equipment.user_id == user.id
+        ).delete()
         db.session.query(WorkoutSegment).filter(
             WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
         ).delete(synchronize_session=False)

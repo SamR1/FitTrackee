@@ -1,5 +1,6 @@
 import datetime
 import os
+from decimal import Decimal
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
@@ -13,6 +14,7 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
+from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
@@ -29,8 +31,10 @@ from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
 
 if TYPE_CHECKING:
-    from fittrackee.users.models import User
+    from sqlalchemy.orm.attributes import AttributeEvent
 
+    from fittrackee.equipments.models import Equipment
+    from fittrackee.users.models import User
 
 record_types = [
     'AS',  # 'Best Average Speed'
@@ -78,6 +82,46 @@ def update_records(
                 .where(record_table.c.sport_id == sport_id)
                 .where(record_table.c.record_type == record_type)
             )
+
+
+def format_value(
+    value: Union[Decimal, datetime.timedelta], attribute: str
+) -> Union[float, datetime.timedelta]:
+    return float(value) if attribute == 'distance' else value  # type: ignore
+
+
+def update_equipments(workout: 'Workout', connection: Connection) -> None:
+    from fittrackee.equipments.models import Equipment
+
+    instance_state = db.inspect(workout)
+    workout_values = {}
+
+    for attribute in ["distance", "duration", "moving"]:
+        state_history = instance_state.attrs[attribute].load_history()
+        if len(state_history.added) > 0 and len(state_history.deleted) > 0:
+            workout_values[attribute] = {
+                'new': format_value(state_history.added[0], attribute),
+                'old': format_value(state_history.deleted[0], attribute),
+            }
+    if not workout_values:
+        return
+
+    equipment_table = Equipment.__table__
+    for equipment in workout.equipments:
+        equipment_values = {}
+        for attribute, value in workout_values.items():
+            column = getattr(equipment, f"total_{attribute}")
+            equipment_values[f"total_{attribute}"] = (
+                format_value(column, attribute)  # type: ignore
+                - value["old"]
+                + value["new"]
+            )
+
+        connection.execute(
+            equipment_table.update()
+            .where(equipment_table.c.id == equipment.id)
+            .values(**equipment_values)
+        )
 
 
 class Sport(BaseModel):
@@ -130,6 +174,13 @@ class Sport(BaseModel):
         }
         if is_admin:
             serialized_sport['has_workouts'] = len(self.workouts) > 0
+
+        serialized_sport['default_equipments'] = (
+            []
+            if sport_preferences is None
+            else sport_preferences['default_equipments']
+        )
+
         return serialized_sport
 
 
@@ -197,6 +248,9 @@ class Workout(BaseModel):
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
         order_by='Record.record_type.asc()',
+    )
+    equipments = db.relationship(
+        'Equipment', secondary=WorkoutEquipment, back_populates='workouts'
     )
     comments = db.relationship(
         Comment,
@@ -276,6 +330,9 @@ class Workout(BaseModel):
             'ave_speed': (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
+            'equipments': [
+                equipment.serialize() for equipment in self.equipments
+            ],
             'records': (
                 []
                 if for_report
@@ -495,6 +552,8 @@ def on_workout_update(
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:
+            if workout.equipments:
+                update_equipments(workout, connection)
             sports_list = [workout.sport_id]
             records = Record.query.filter_by(workout_id=workout.id).all()
             for rec in records:
@@ -506,20 +565,47 @@ def on_workout_update(
 
 @listens_for(Workout, 'after_delete')
 def on_workout_delete(
-    mapper: Mapper, connection: Connection, old_record: 'Record'
+    mapper: Mapper, connection: Connection, old_workout: 'Workout'
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        if old_record.map:
+        # Equipments must be removed before deleting workout
+        # in order to recalculate equipments totals
+        if old_workout.equipments:
+            raise Exception("equipments exists, remove them first")
+
+        if old_workout.map:
             try:
-                os.remove(get_absolute_file_path(old_record.map))
+                os.remove(get_absolute_file_path(old_workout.map))
             except OSError:
                 appLog.error('map file not found when deleting workout')
-        if old_record.gpx:
+        if old_workout.gpx:
             try:
-                os.remove(get_absolute_file_path(old_record.gpx))
+                os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error('gpx file not found when deleting workout')
+
+
+@listens_for(Workout.equipments, 'append')
+def on_workout_equipments_append(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) + float(target.distance)
+    value.total_duration += target.duration
+    if target.moving:
+        value.total_moving += target.moving
+    value.total_workouts += 1
+
+
+@listens_for(Workout.equipments, 'remove')
+def on_workout_equipments_remove(
+    target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
+) -> None:
+    value.total_distance = float(value.total_distance) - float(target.distance)
+    value.total_duration -= target.duration
+    if target.moving:
+        value.total_moving -= target.moving
+    value.total_workouts -= 1
 
 
 class WorkoutSegment(BaseModel):

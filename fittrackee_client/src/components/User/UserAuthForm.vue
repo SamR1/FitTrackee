@@ -170,6 +170,7 @@
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -194,9 +195,8 @@
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
   )
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const isRegistrationSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS]
   )

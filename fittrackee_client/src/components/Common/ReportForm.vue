@@ -44,6 +44,7 @@
     USERS_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import { useStore } from '@/use/useStore'
 
@@ -62,9 +63,8 @@
     workout: 'workouts.REPORT_WORKOUT',
   }
   const reportText: Ref<string> = ref('')
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const reportStatus: ComputedRef<string | null> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )

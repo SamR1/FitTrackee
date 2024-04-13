@@ -43,6 +43,7 @@
           'PROFILE',
           'PREFERENCES',
           'SPORTS',
+          'EQUIPMENTS',
           'FOLLOW-REQUESTS',
           'BLOCKED-USERS',
           'APPS',

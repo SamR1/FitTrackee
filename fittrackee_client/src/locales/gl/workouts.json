@@ -29,6 +29,11 @@
   "MAX_SIZE": "Tamaño máx.",
   "MAX_SPEED": "Vel. máxima",
   "MIN_ALTITUDE": "Altitude min.",
+  "MULTISELECT": {
+    "deselectLabel": "Preme Enter para eliminar",
+    "selectLabel": "Preme Enter para seleccionar",
+    "selectedLabel": "Seleccionado"
+  },
   "NEXT_SEGMENT": "Non hai tramo seguinte",
   "NEXT_WORKOUT": "Seguinte adestramento",
   "NOTES": "notas",
@@ -61,8 +66,9 @@
   "START_ELEVATION_AT_ZERO": "situar a altitude de inicio no cero da gráfica",
   "TITLE": "título",
   "TO": "a",
+  "TOTAL_DISTANCE": "distancia total",
   "TOTAL_DURATION": "duración total",
-  "UPLOAD_FIRST_WORKOUT": "Subiches un!",
+  "UPLOAD_FIRST_WORKOUT": "Sube un!",
   "VIEW_FULLSCREEN": "Ver en pantalla completa",
   "WEATHER": {
     "DARK_SKY": {

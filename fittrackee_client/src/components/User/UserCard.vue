@@ -55,6 +55,7 @@
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import { ROOT_STORE } from '@/store/constants'
+  import type { IEquipmentError } from '@/types/equipments'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
@@ -74,9 +75,8 @@
   const { from } = toRefs(props)
 
   const { authUser, updatedUser, user, hideRelationship } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES]
-  )
+  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
+    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at
       ? formatDate(

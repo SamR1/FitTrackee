@@ -19,6 +19,7 @@ os.environ['AUTHLIB_INSECURE_TRANSPORT'] = '1'
 pytest_plugins = [
     'fittrackee.tests.fixtures.fixtures_app',
     'fittrackee.tests.fixtures.fixtures_emails',
+    'fittrackee.tests.fixtures.fixtures_equipments',
     'fittrackee.tests.fixtures.fixtures_federation',
     'fittrackee.tests.fixtures.fixtures_federation_users',
     'fittrackee.tests.fixtures.fixtures_workouts',

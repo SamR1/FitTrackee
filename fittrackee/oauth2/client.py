@@ -10,6 +10,8 @@ from .models import OAuth2Client
 
 VALID_SCOPES = [
     'application:write',
+    'equipments:read',
+    'equipments:write',
     'follow:read',
     'follow:write',
     'notifications:read',

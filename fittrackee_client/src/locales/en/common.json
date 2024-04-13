@@ -1,15 +1,21 @@
 {
   "ABOUT": "about",
+  "ACTION": "action",
+  "ACTIVE": "active",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "day | days",
+  "DESCRIPTION": "Description",
   "DISPLAYED": "Displayed",
   "DOCUMENTATION": "documentation",
   "EDITED": "edited",
   "HERE": "here",
   "HIDDEN": "Hidden",
   "HOME": "Home",
+  "INACTIVE": "inactive",
+  "LABEL": "label",
   "LAST_UPDATED_ON": "Last updated on",
+  "NO_DESCRIPTION": "no description",
   "NO_NOTES": "No notes",
   "REPORT_PLACEHOLDER": "indicate the reason for reporting",
   "REPORT_SUBMITTED": "Report submitted.",
@@ -27,5 +33,6 @@
     }
   },
   "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses",
   "TYPE": "type"
 }

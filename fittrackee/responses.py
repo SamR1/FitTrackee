@@ -67,6 +67,21 @@ class DataInvalidPayloadErrorResponse(HttpResponse):
         super().__init__(response=response, status_code=400)
 
 
+class EquipmentInvalidPayloadErrorResponse(HttpResponse):
+    def __init__(
+        self,
+        equipment_id: str,
+        message: str,
+        status: Optional[str] = None,
+    ) -> None:
+        response = {
+            'status': 'error' if status is None else status,
+            'equipment_id': equipment_id,
+            'message': message,
+        }
+        super().__init__(response=response, status_code=400)
+
+
 class UnauthorizedErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
         message = (

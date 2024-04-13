@@ -34,6 +34,26 @@
   --box-shadow-color: lightgrey;
   --admin-disabled-input-color: #ffffff;
 
+  --multiselect-tags-bg-color: #ffffff;
+  --multiselect-tag-bg-color: #e5e7ea;
+  --multiselect-tag-color: var(--app-color);
+  --multiselect-tag-icon-hover-bg-color: #647088;
+  --multiselect-tag-icon-hover-color: #ffffff;
+  --multiselect-option-bg-color: #ffffff;
+  --multiselect-option-color: var(--app-color);
+  --multiselect-option-highlight-bg-color: #9fa2af;
+  --multiselect-option-highlight-color: #ffffff;
+  --multiselect-option-selected-highlight-bg-color: #ff6a6a;
+  --multiselect-option-selected-highlight-color: #fff;
+  --multiselect-option-selected-highlight-after-bg-color: #ff6a6a;
+  --multiselect-option-selected-highlight-after-color: #fff;
+  --multiselect-option-selected-bg-color: #f3f3f3;
+  --multiselect-option-selected-color: #35495e;
+  --multiselect-content-wrapper-border-color: var(--input-border-color);
+  --multiselect-disabled-bg-color: transparent;
+  --multiselect-select-disabled-bg-color: transparent;
+  --multiselect-select-disabled-color: #a6a6a6;
+
   --custom-checkbox-border-color: #6d797a;
   --custom-checkbox-checked-bg-color: #6d797a;
   --custom-checkbox-checked-color: #ffffff;

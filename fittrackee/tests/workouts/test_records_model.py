@@ -31,7 +31,9 @@ class TestRecordModel:
         )
         assert record_ld.value == workout_cycling_user_1.duration
 
-        assert '<Record Cycling - LD - 2018-01-01>' == str(record_ld)
+        assert f'<Record {sport_1_cycling.label} - LD - 2018-01-01>' == str(
+            record_ld
+        )
 
         record_serialize = record_ld.serialize()
 
