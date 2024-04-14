@@ -13,6 +13,7 @@ export type TPaginationPayload = {
   per_page: number
   page: number
   q?: string
+  notes?: string
 }
 
 export interface IQueryOptions {
