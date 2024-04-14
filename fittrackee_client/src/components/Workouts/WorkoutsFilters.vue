@@ -1,7 +1,7 @@
 <template>
   <div class="workouts-filters">
     <div class="box">
-      <form v-on:submit.prevent="onFilter" class="form">
+      <form @submit.prevent class="form">
         <div class="form-all-items">
           <div class="form-items-group">
             <div class="form-item">
