@@ -110,9 +110,9 @@ def create_workout(
     provided
     """
     workout_date, workout_date_tz = get_workout_datetime(
-        workout_date=gpx_data['start']
-        if gpx_data
-        else workout_data['workout_date'],
+        workout_date=(
+            gpx_data['start'] if gpx_data else workout_data['workout_date']
+        ),
         date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
         user_timezone=user.timezone,
         with_timezone=True,

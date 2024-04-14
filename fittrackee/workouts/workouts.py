@@ -266,48 +266,72 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.title.ilike(f"%{title}%") if title else True,
                 Workout.workout_date >= date_from if date_from else True,
-                Workout.workout_date < date_to + timedelta(seconds=1)
-                if date_to
-                else True,
-                Workout.distance >= float(distance_from)
-                if distance_from
-                else True,
-                Workout.distance <= float(distance_to)
-                if distance_to
-                else True,
-                Workout.moving >= convert_in_duration(duration_from)
-                if duration_from
-                else True,
-                Workout.moving <= convert_in_duration(duration_to)
-                if duration_to
-                else True,
-                Workout.ave_speed >= float(ave_speed_from)
-                if ave_speed_from
-                else True,
-                Workout.ave_speed <= float(ave_speed_to)
-                if ave_speed_to
-                else True,
-                Workout.max_speed >= float(max_speed_from)
-                if max_speed_from
-                else True,
-                Workout.max_speed <= float(max_speed_to)
-                if max_speed_to
-                else True,
-                Workout.max_speed <= float(max_speed_to)
-                if max_speed_to
-                else True,
+                (
+                    Workout.workout_date < date_to + timedelta(seconds=1)
+                    if date_to
+                    else True
+                ),
+                (
+                    Workout.distance >= float(distance_from)
+                    if distance_from
+                    else True
+                ),
+                (
+                    Workout.distance <= float(distance_to)
+                    if distance_to
+                    else True
+                ),
+                (
+                    Workout.moving >= convert_in_duration(duration_from)
+                    if duration_from
+                    else True
+                ),
+                (
+                    Workout.moving <= convert_in_duration(duration_to)
+                    if duration_to
+                    else True
+                ),
+                (
+                    Workout.ave_speed >= float(ave_speed_from)
+                    if ave_speed_from
+                    else True
+                ),
+                (
+                    Workout.ave_speed <= float(ave_speed_to)
+                    if ave_speed_to
+                    else True
+                ),
+                (
+                    Workout.max_speed >= float(max_speed_from)
+                    if max_speed_from
+                    else True
+                ),
+                (
+                    Workout.max_speed <= float(max_speed_to)
+                    if max_speed_to
+                    else True
+                ),
+                (
+                    Workout.max_speed <= float(max_speed_to)
+                    if max_speed_to
+                    else True
+                ),
                 (
                     WorkoutEquipment.c.equipment_id == None  # noqa
                     if equipment_id == 'none'
-                    else WorkoutEquipment.c.equipment_id == equipment_id
-                    if equipment_id is not None
-                    else True
+                    else (
+                        WorkoutEquipment.c.equipment_id == equipment_id
+                        if equipment_id is not None
+                        else True
+                    )
                 ),
             )
             .order_by(
-                asc(workout_column)
-                if order == 'asc'
-                else desc(workout_column),
+                (
+                    asc(workout_column)
+                    if order == 'asc'
+                    else desc(workout_column)
+                ),
             )
             .paginate(page=page, per_page=per_page, error_out=False)
         )
@@ -487,11 +511,15 @@ def get_workout_data(
         'message': '',
         'data': (
             {
-                data_type: chart_data_content
-                if data_type == 'chart_data'
-                else gpx_content
-                if segment_id is None
-                else gpx_segment_content
+                data_type: (
+                    chart_data_content
+                    if data_type == 'chart_data'
+                    else (
+                        gpx_content
+                        if segment_id is None
+                        else gpx_segment_content
+                    )
+                )
             }
         ),
     }

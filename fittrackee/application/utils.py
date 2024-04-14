@@ -32,9 +32,9 @@ def update_app_config_from_database(
     current_app.config['max_single_file_size'] = db_config.max_single_file_size
     current_app.config['MAX_CONTENT_LENGTH'] = db_config.max_zip_file_size
     current_app.config['max_users'] = db_config.max_users
-    current_app.config[
-        'is_registration_enabled'
-    ] = db_config.is_registration_enabled
+    current_app.config['is_registration_enabled'] = (
+        db_config.is_registration_enabled
+    )
     current_app.config['privacy_policy_date'] = db_config.privacy_policy_date
 
 
