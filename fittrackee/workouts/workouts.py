@@ -213,6 +213,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                             ``workout_date``)
     :query string equipment_id: equipment id (if 'none', only workouts without
                             equipments will be returned)
+    :query string notes: any part (or all) of the workout notes,
+                         notes matching is case-insensitive
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -244,6 +246,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         title = params.get('title')
+        notes = params.get('notes')
         if 'equipment_id' in params:
             if params['equipment_id'] == "none":
                 equipment_id = "none"
@@ -265,6 +268,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.title.ilike(f"%{title}%") if title else True,
+                Workout.notes.ilike(f"%{notes}%") if notes else True,
                 Workout.workout_date >= date_from if date_from else True,
                 (
                     Workout.workout_date < date_to + timedelta(seconds=1)
