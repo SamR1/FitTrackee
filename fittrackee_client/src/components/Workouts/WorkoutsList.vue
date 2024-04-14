@@ -384,10 +384,16 @@
           }
           .workout-title {
             max-width: initial;
-            width: 100%;
+            width: 45%;
           }
           .workout-title:hover .static-map {
             display: none;
+          }
+        }
+
+        @media screen and (max-width: $x-small-limit) {
+          .workout-title {
+            width: 100%;
           }
         }
       }
