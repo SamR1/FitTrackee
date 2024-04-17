@@ -497,6 +497,32 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
 
+    def test_it_returns_400_when_multiple_equipments_are_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        gpx_file: str,
+        equipment_shoes_user_1: Equipment,
+        equipment_another_shoes_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+
+        client = app.test_client()
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={
+                "equipment_ids": [
+                    equipment_shoes_user_1.short_id,
+                    equipment_another_shoes_user_1.short_id,
+                ]
+            },
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        self.assert_400(response, "only one equipment can be added")
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:write': True}.items(),

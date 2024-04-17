@@ -69,10 +69,10 @@ class TestStoppedSpeedThreshold:
         user_1: User,
         gpx_file_storage: FileStorage,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         expected_threshold = 0.7
-        user_sport_1_preference.stopped_speed_threshold = expected_threshold
+        user_1_sport_1_preference.stopped_speed_threshold = expected_threshold
         with patch(
             'fittrackee.workouts.utils.workouts.get_new_file_path',
             return_value='/tmp/fitTrackee/uploads/test.png',

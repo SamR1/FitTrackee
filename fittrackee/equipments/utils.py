@@ -41,6 +41,11 @@ def handle_equipments(
             raise InvalidEquipmentsException(
                 "equipment_ids must be an array of strings"
             )
+
+        # for now only one equipment par sport or workout
+        if len(equipment_short_ids) > 1:
+            raise InvalidEquipmentsException("only one equipment can be added")
+
         for equipment_short_id in equipment_short_ids:
             if not isinstance(equipment_short_id, str):
                 raise InvalidEquipmentsException(
