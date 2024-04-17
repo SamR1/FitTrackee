@@ -466,6 +466,37 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
 
+    def test_it_does_not_remove_equipment_when_equipment_ids_not_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"label": self.random_string()},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:write': True}.items(),

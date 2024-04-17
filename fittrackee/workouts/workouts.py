@@ -1078,19 +1078,20 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
-    try:
-        equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            workout_data['sport_id'],
-        )
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
-    except InvalidEquipmentException as e:
-        return EquipmentInvalidPayloadErrorResponse(
-            equipment_id=e.equipment_id, message=e.message, status=e.status
-        )
-    workout_data['equipments_list'] = equipments_list
+    if "equipment_ids" in workout_data:
+        try:
+            equipments_list = handle_equipments(
+                workout_data['equipment_ids'],
+                auth_user,
+                workout_data['sport_id'],
+            )
+        except InvalidEquipmentsException as e:
+            return InvalidPayloadErrorResponse(str(e))
+        except InvalidEquipmentException as e:
+            return EquipmentInvalidPayloadErrorResponse(
+                equipment_id=e.equipment_id, message=e.message, status=e.status
+            )
+        workout_data['equipments_list'] = equipments_list
 
     workout_file = request.files['file']
     upload_dir = os.path.join(
@@ -1281,22 +1282,9 @@ def post_workout_no_gpx(
     except ValueError:
         return InvalidPayloadErrorResponse()
 
-    try:
-        equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            workout_data['sport_id'],
-        )
-        workout_data['equipments_list'] = equipments_list
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
-    except InvalidEquipmentException as e:
-        return EquipmentInvalidPayloadErrorResponse(
-            equipment_id=e.equipment_id, message=e.message, status=e.status
-        )
-
-    # get default equipment if sport preferences exists
-    if not "equipments_list" not in workout_data:
+    # get default equipment if not equipment_ids provided and
+    # sport preferences exists
+    if "equipment_ids" not in workout_data:
         sport_preferences = UserSportPreference.query.filter_by(
             user_id=auth_user.id, sport_id=workout_data['sport_id']
         ).first()
@@ -1306,6 +1294,20 @@ def post_workout_no_gpx(
                 for equipment in sport_preferences.default_equipments.all()
                 if equipment.is_active is True
             ]
+    else:
+        try:
+            equipments_list = handle_equipments(
+                workout_data.get('equipment_ids'),
+                auth_user,
+                workout_data['sport_id'],
+            )
+            workout_data['equipments_list'] = equipments_list
+        except InvalidEquipmentsException as e:
+            return InvalidPayloadErrorResponse(str(e))
+        except InvalidEquipmentException as e:
+            return EquipmentInvalidPayloadErrorResponse(
+                equipment_id=e.equipment_id, message=e.message, status=e.status
+            )
 
     try:
         new_workout = create_workout(auth_user, workout_data)

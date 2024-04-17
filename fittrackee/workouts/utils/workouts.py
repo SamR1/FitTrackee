@@ -449,7 +449,7 @@ def process_files(
     )
 
     # get default equipment if sport preferences exists
-    if not "equipments_list" not in workout_data and sport_preferences:
+    if "equipments_list" not in workout_data and sport_preferences:
         workout_data['equipments_list'] = [
             equipment
             for equipment in sport_preferences.default_equipments.all()
