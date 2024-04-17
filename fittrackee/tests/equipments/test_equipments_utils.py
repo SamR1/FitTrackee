@@ -195,30 +195,3 @@ class TestHandleEquipments(RandomMixin):
         )
 
         assert equipments_list == [equipment_bike_user_1_inactive]
-
-    def test_it_returns_updated_equipments_list(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_2_running: Sport,
-        equipment_shoes_user_1: Equipment,
-        equipment_another_shoes_user_1: Equipment,
-        equipment_shoes_user_1_inactive: Equipment,
-    ) -> None:
-        equipments_list = handle_equipments(
-            equipment_short_ids=[
-                equipment_shoes_user_1.short_id,
-                equipment_another_shoes_user_1.short_id,
-            ],
-            auth_user=user_1,
-            sport_id=sport_2_running.id,
-            existing_equipments=[
-                equipment_shoes_user_1_inactive,
-                equipment_shoes_user_1,
-            ],
-        )
-
-        assert set(equipments_list) == {  # type: ignore
-            equipment_another_shoes_user_1,
-            equipment_shoes_user_1,
-        }

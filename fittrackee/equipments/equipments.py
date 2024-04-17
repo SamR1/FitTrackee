@@ -362,9 +362,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not equipment_type.is_active:
         return InvalidPayloadErrorResponse("equipment type is inactive")
 
+    default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
     try:
         user_sport_preferences = handle_default_sports(
-            equipment_data.get("default_for_sport_ids", []), auth_user
+            default_for_sport_ids, auth_user
         )
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -380,6 +381,15 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         db.session.add(new_equipment)
         db.session.flush()
         if user_sport_preferences:
+            # remove existing equipments for default sports
+            # (for now only one default equipment/sport)
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                UserSportPreferenceEquipment.c.sport_id.in_(
+                    default_for_sport_ids
+                ),
+            ).delete()
+
             db.session.execute(
                 insert(UserSportPreferenceEquipment).values(
                     [
@@ -614,6 +624,15 @@ def update_equipment(
                 ).delete()
 
             if user_sport_preferences:
+                # remove existing equipments for default sports
+                # (for now only one default equipment/sport)
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.sport_id.in_(
+                        default_for_sport_ids
+                    ),
+                ).delete()
+
                 db.session.execute(
                     insert(UserSportPreferenceEquipment)
                     .values(

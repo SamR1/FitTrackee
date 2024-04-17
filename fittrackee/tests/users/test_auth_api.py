@@ -1679,20 +1679,20 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                     {
                         "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                 ]
             )
@@ -1734,15 +1734,15 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -1843,6 +1843,35 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             f"for sport {sport_1_cycling.label}"
         )
         assert data["status"] == "invalid"
+
+    def test_it_returns_400_when_multiple_equipments_are_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        equipment_shoes_user_1: Equipment,
+        equipment_another_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/auth/profile/edit/sports',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    default_equipment_ids=[
+                        equipment_shoes_user_1.short_id,
+                        equipment_another_shoes_user_1.short_id,
+                    ],
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "only one equipment can be added")
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -1951,7 +1980,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1996,7 +2025,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
         client_scope: str,
         can_access: bool,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         (
             client,

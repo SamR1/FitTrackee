@@ -656,15 +656,15 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -707,15 +707,15 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -747,6 +747,37 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
+
+    def test_it_returns_400_when_multiple_equipments_are_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        gpx_file: str,
+        equipment_shoes_user_1: Equipment,
+        equipment_another_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": {sport_2_running.id}, "equipment_ids":'
+                    f' ["{equipment_shoes_user_1.short_id}",'
+                    f' "{equipment_another_shoes_user_1.short_id}"]}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_400(response, "only one equipment can be added")
 
     def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
         self,
@@ -828,15 +859,15 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
         gpx_file: str,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -1686,15 +1717,15 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -1735,15 +1766,15 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -1850,15 +1881,15 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -1890,6 +1921,36 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
+
+    def test_it_returns_400_when_multiple_equipments_are_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        equipment_shoes_user_1: Equipment,
+        equipment_another_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            json={
+                "sport_id": sport_2_running.id,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 5,
+                "equipment_ids": [
+                    equipment_shoes_user_1.short_id,
+                    equipment_another_shoes_user_1.short_id,
+                ],
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "only one equipment can be added")
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -2222,15 +2283,15 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         equipment_bike_user_1: Equipment,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         db.session.execute(
             insert(UserSportPreferenceEquipment).values(
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )

@@ -390,9 +390,9 @@ class TestUserSportModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        serialized_user_sport = user_sport_1_preference.serialize()
+        serialized_user_sport = user_1_sport_1_preference.serialize()
 
         assert serialized_user_sport['user_id'] == user_1.id
         assert serialized_user_sport['sport_id'] == sport_1_cycling.id
@@ -406,7 +406,7 @@ class TestUserSportModel:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
@@ -415,19 +415,19 @@ class TestUserSportModel:
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                     {
                         "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                 ]
             )
         )
 
-        serialized_user_sport = user_sport_1_preference.serialize()
+        serialized_user_sport = user_1_sport_1_preference.serialize()
 
         assert serialized_user_sport['user_id'] == user_1.id
         assert serialized_user_sport['sport_id'] == sport_1_cycling.id

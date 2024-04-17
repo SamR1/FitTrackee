@@ -65,12 +65,12 @@ class TestSportModelWithPreferences:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        user_sport_1_preference.color = '#00000'
+        user_1_sport_1_preference.color = '#00000'
 
         serialized_sport = sport_1_cycling.serialize(
-            sport_preferences=user_sport_1_preference.serialize()
+            sport_preferences=user_1_sport_1_preference.serialize()
         )
 
         assert serialized_sport['default_equipments'] == []
@@ -87,12 +87,12 @@ class TestSportModelWithPreferences:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        user_sport_1_preference.is_active = False
+        user_1_sport_1_preference.is_active = False
 
         serialized_sport = sport_1_cycling.serialize(
-            sport_preferences=user_sport_1_preference.serialize()
+            sport_preferences=user_1_sport_1_preference.serialize()
         )
 
         assert serialized_sport['default_equipments'] == []
@@ -109,13 +109,13 @@ class TestSportModelWithPreferences:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         sport_1_cycling.is_active = False
-        user_sport_1_preference.is_active = True
+        user_1_sport_1_preference.is_active = True
 
         serialized_sport = sport_1_cycling.serialize(
-            sport_preferences=user_sport_1_preference.serialize()
+            sport_preferences=user_1_sport_1_preference.serialize()
         )
 
         assert serialized_sport['default_equipments'] == []
@@ -132,13 +132,13 @@ class TestSportModelWithPreferences:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        user_sport_1_preference.stopped_speed_threshold = 0.5
+        user_1_sport_1_preference.stopped_speed_threshold = 0.5
         db.session.commit()
 
         serialized_sport = sport_1_cycling.serialize(
-            sport_preferences=user_sport_1_preference.serialize()
+            sport_preferences=user_1_sport_1_preference.serialize()
         )
 
         assert serialized_sport['default_equipments'] == []
@@ -155,7 +155,7 @@ class TestSportModelWithPreferences:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
@@ -164,20 +164,20 @@ class TestSportModelWithPreferences:
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                     {
                         "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     },
                 ]
             )
         )
 
         serialized_sport = sport_1_cycling.serialize(
-            sport_preferences=user_sport_1_preference.serialize()
+            sport_preferences=user_1_sport_1_preference.serialize()
         )
 
         assert len(serialized_sport['default_equipments']) == 2
