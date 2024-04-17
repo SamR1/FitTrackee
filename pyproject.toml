@@ -36,7 +36,7 @@ flask-limiter = {version = "^3.5.1", extras = ["redis"]}
 flask-migrate = "4.0.7"
 flask-sqlalchemy = "3.0.5"
 gpxpy = "=1.6.2"
-gunicorn = "^21.2.0"
+gunicorn = "^22.0.0"
 humanize = "^4.9.0"
 psycopg2-binary = "^2.9.9"
 pyjwt = "^2.8.0"
