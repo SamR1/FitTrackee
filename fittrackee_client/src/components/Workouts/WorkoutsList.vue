@@ -177,7 +177,11 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import {
+    EQUIPMENTS_STORE,
+    ROOT_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { IPagination } from '@/types/api'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -220,6 +224,7 @@
 
   onBeforeMount(() => {
     loadWorkouts(query)
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
