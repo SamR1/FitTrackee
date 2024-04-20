@@ -8,19 +8,39 @@
   "ACTIVE": "Aktiv",
   "ADMIN": "Administrator",
   "ADMINISTRATION": "Administrasjon",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "",
   "APPLICATION": "Program",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "E-post til administrator i kontaktøyemed",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. filer i ZIP-arkiv",
-    "MAX_USERS_LABEL": "Maks. antall aktive brukere"
+    "MAX_USERS_HELP": "",
+    "MAX_USERS_LABEL": "Maks. antall aktive brukere",
+    "NO_CONTACT_EMAIL": "",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "",
+    "TITLE": "",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": ""
   },
   "BACK_TO_ADMIN": "Tilbake til administrasjon",
+  "CONFIRM_USER_ACCOUNT_DELETION": "",
   "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
   "CURRENT_EMAIL": "Nåværende e-postadresse",
   "DELETE_USER": "Slett bruker",
+  "EMAIL_SENDING_DISABLED": "",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
+  "ENABLE_DISABLE_SPORTS": "",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Ny e-post",
   "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
   "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
+  "PRIVACY_POLICY_DESCRIPTION": "",
   "REGISTRATION_DISABLED": "Registrering er avskrudd.",
   "REGISTRATION_ENABLED": "Registrering er påslått.",
   "RESET_USER_PASSWORD": "Tilbakestill passord",
