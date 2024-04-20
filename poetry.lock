@@ -623,13 +623,13 @@ watch = ["watchdog", "watchdog-gevent"]
 
 [[package]]
 name = "exceptiongroup"
-version = "1.2.0"
+version = "1.2.1"
 description = "Backport of PEP 654 (exception groups)"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "exceptiongroup-1.2.0-py3-none-any.whl", hash = "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14"},
-    {file = "exceptiongroup-1.2.0.tar.gz", hash = "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"},
+    {file = "exceptiongroup-1.2.1-py3-none-any.whl", hash = "sha256:5258b9ed329c5bbdd31a309f53cbfb0b155341807f6ff7606a1e801a891b29ad"},
+    {file = "exceptiongroup-1.2.1.tar.gz", hash = "sha256:a4785e48b045528f5bfe627b6ad554ff32def154f42372786903b7abcfe1aa16"},
 ]
 
 [package.extras]
@@ -2184,13 +2184,13 @@ rtd = ["ipython", "myst-nb", "sphinx", "sphinx-book-theme", "sphinx-examples"]
 
 [[package]]
 name = "sphinx-intl"
-version = "2.1.0"
+version = "2.2.0"
 description = "Sphinx utility that make it easy to translate and to apply translation."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "sphinx-intl-2.1.0.tar.gz", hash = "sha256:9d9849ae42515b39786824e99f1e30db0404c377b01bb022690fc932b0221c02"},
-    {file = "sphinx_intl-2.1.0-py3-none-any.whl", hash = "sha256:9798946b995989de691387651d70c3fc191275b587e2e519655541edfd7bbd68"},
+    {file = "sphinx_intl-2.2.0-py3-none-any.whl", hash = "sha256:56ad5f360fae4aa1cb963448c802f141b55c87223bb32a7b29e936620bd1a381"},
+    {file = "sphinx_intl-2.2.0.tar.gz", hash = "sha256:66976a85d31624dfcb564059a6918f90b31669269bfe3f30b2d72e81f225ab20"},
 ]
 
 [package.dependencies]
@@ -2200,7 +2200,7 @@ setuptools = "*"
 sphinx = "*"
 
 [package.extras]
-test = ["mock", "pytest", "six"]
+test = ["mock", "pytest"]
 
 [[package]]
 name = "sphinxcontrib-applehelp"
