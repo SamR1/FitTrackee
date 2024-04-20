@@ -26,7 +26,17 @@
   "CURRENT_EMAIL": "Aktualny e-mail",
   "DELETE_USER": "Usuń użytkownika",
   "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
   "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Nowy e-mail",
   "NO_TEXT_ENTERED": "Nie podano tekstu",
   "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
