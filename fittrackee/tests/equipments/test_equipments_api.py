@@ -674,6 +674,38 @@ class TestPostEquipment(ApiTestCaseMixin):
             equipment_shoes_user_2
         ]
 
+    def test_it_returns_400_when_sport_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/equipments',
+            json={
+                "description": self.random_short_id(),
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": self.random_string(),
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_2_running.id,
+                ],
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(
+            response,
+            f"invalid sport '{sport_1_cycling.label}' for "
+            f"equipment type '{equipment_type_1_shoe.label}'",
+        )
+
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'equipments:write': True}.items(),
@@ -1248,6 +1280,37 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_bike_user_1
         ]
+
+    def test_it_returns_400_when_sport_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        equipment_type_2_bike: EquipmentType,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            json={
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_2_running.id,
+                ]
+            },
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        self.assert_400(
+            response,
+            f"invalid sport '{sport_2_running.label}' for "
+            f"equipment type '{equipment_type_2_bike.label}'",
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
