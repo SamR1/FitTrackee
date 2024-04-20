@@ -23,12 +23,15 @@ from fittrackee.workouts.models import Sport
 
 from .exceptions import InvalidEquipmentsException
 from .models import Equipment, EquipmentType
+from .utils import SPORT_EQUIPMENT_TYPES
 
 equipments_blueprint = Blueprint('equipments', __name__)
 
 
 def handle_default_sports(
-    default_for_sport_ids: List[int], auth_user: User
+    default_for_sport_ids: List[int],
+    auth_user: User,
+    equipment_type: EquipmentType,
 ) -> List[UserSportPreference]:
     user_sport_preferences = []
     for sport_id in default_for_sport_ids:
@@ -37,6 +40,16 @@ def handle_default_sports(
             raise InvalidEquipmentsException(
                 f"sport (id {sport_id}) does not exist"
             )
+
+        # check if sport is valid for equipment type
+        if sport.label not in SPORT_EQUIPMENT_TYPES.get(
+            equipment_type.label, []
+        ):
+            raise InvalidEquipmentsException(
+                f"invalid sport '{sport.label}' for equipment "
+                f"type '{equipment_type.label}'"
+            )
+
         user_sport_preference = UserSportPreference.query.filter_by(
             user_id=auth_user.id,
             sport_id=sport_id,
@@ -322,6 +335,9 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
+        - ``sport (id <sport_id>) does not exist``
+        - ``invalid sport '<sport_label>' for equipment type
+          '{equipment_type_label}'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -365,7 +381,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
     try:
         user_sport_preferences = handle_default_sports(
-            default_for_sport_ids, auth_user
+            default_for_sport_ids, auth_user, equipment_type
         )
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -513,6 +529,9 @@ def update_equipment(
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
+        - ``sport (id <sport_id>) does not exist``
+        - ``invalid sport '<sport_label>' for equipment type
+          '{equipment_type_label}'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -541,21 +560,23 @@ def update_equipment(
 
     default_for_sport_ids = equipment_data.get("default_for_sport_ids", None)
     user_sport_preferences = None
-    if default_for_sport_ids is not None:
-        default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
-        try:
-            user_sport_preferences = handle_default_sports(
-                default_for_sport_ids, auth_user
-            )
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-
     try:
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
         ).first()
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
+
+        if default_for_sport_ids is not None:
+            default_for_sport_ids = equipment_data.get(
+                "default_for_sport_ids", []
+            )
+            try:
+                user_sport_preferences = handle_default_sports(
+                    default_for_sport_ids, auth_user, equipment.equipment_type
+                )
+            except InvalidEquipmentsException as e:
+                return InvalidPayloadErrorResponse(str(e))
 
         # set new values if they were in the request
         if 'is_active' in equipment_data:
