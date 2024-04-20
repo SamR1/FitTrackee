@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, request
@@ -19,7 +20,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, WorkoutEquipment
 
 from .exceptions import InvalidEquipmentsException
 from .models import Equipment, EquipmentType
@@ -608,13 +609,29 @@ def update_equipment(
             ).first()
             if not equipment_type:
                 return InvalidPayloadErrorResponse("invalid equipment type id")
-            if (
-                not equipment_type.is_active
-                and equipment_type.id != equipment.equipment_type_id
-            ):
-                return InvalidPayloadErrorResponse(
-                    "equipment type is inactive"
-                )
+            if equipment_type.id != equipment.equipment_type_id:
+                if not equipment_type.is_active:
+                    return InvalidPayloadErrorResponse(
+                        "equipment type is inactive"
+                    )
+
+                # remove workouts association on type change
+                db.session.query(WorkoutEquipment).filter(
+                    WorkoutEquipment.c.equipment_id == equipment.id
+                ).delete()
+                equipment.total_distance = 0.0
+                equipment.total_duration = timedelta()
+                equipment.total_moving = timedelta()
+                equipment.total_workouts = 0
+
+                # remove default sports
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.equipment_id
+                    == equipment.id,
+                ).all()
+                default_for_sport_ids = []
+
             equipment.equipment_type_id = equipment_type_id
 
         if default_for_sport_ids is not None:
