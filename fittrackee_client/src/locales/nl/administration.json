@@ -26,7 +26,17 @@
   "CURRENT_EMAIL": "Huidige email",
   "DELETE_USER": "Verwijder gebruiker",
   "EMAIL_SENDING_DISABLED": "Emails verzenden is uitgeschakeld.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
   "ENABLE_DISABLE_SPORTS": "Aan- of uitzetten van sporten.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Nieuwe email",
   "NO_TEXT_ENTERED": "Geen tekst ingegeven",
   "PASSWORD_RESET_SUCCESSFUL": "Het wachtwoord werd gereset.",
