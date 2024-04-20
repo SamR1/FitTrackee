@@ -26,7 +26,17 @@
   "CURRENT_EMAIL": "Uneko eposta",
   "DELETE_USER": "Ezabatu erabiltzailea",
   "EMAIL_SENDING_DISABLED": "Eposta bidalketa desaktibatuta dago.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
   "ENABLE_DISABLE_SPORTS": "Aktibatu/desaktibatu kirolak.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Eposta berria",
   "NO_TEXT_ENTERED": "Ez duzu testurik idatzi",
   "PASSWORD_RESET_SUCCESSFUL": "Pasahitza berrezarri egin da.",
