@@ -215,7 +215,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_raises_500_if_sport_does_not_exists(
+    def test_it_raises_400_if_sport_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
@@ -228,7 +228,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        self.assert_500(response)
+        self.assert_400(response, "sport id 2 not found")
 
     def test_it_returns_400_when_equipment_ids_are_invalid(
         self,
@@ -522,6 +522,39 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         self.assert_400(response, "only one equipment can be added")
+
+    def test_it_removes_equipment_when_equipment_is_invalid_on_sport_change(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"sport_id": sport_2_running.id},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == []
+        assert workout.sport_id == sport_2_running.id
+        assert workout.equipments == []
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

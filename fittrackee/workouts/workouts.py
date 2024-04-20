@@ -22,7 +22,10 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment
-from fittrackee.equipments.utils import handle_equipments
+from fittrackee.equipments.utils import (
+    SPORT_EQUIPMENT_TYPES,
+    handle_equipments,
+)
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -39,7 +42,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 
-from .models import Workout, WorkoutEquipment
+from .models import Sport, Workout, WorkoutEquipment
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -1507,17 +1510,34 @@ def update_workout(
             except (TypeError, ValueError):
                 return InvalidPayloadErrorResponse()
 
-        sport_id = (
-            workout_data["sport_id"]
-            if workout_data.get("sport_id")
-            else workout.sport_id
-        )
-        workout_data['equipments_list'] = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            sport_id,
-            workout.equipments,
-        )
+        sport = None
+        if 'sport_id' in workout_data:
+            sport = Sport.query.filter_by(id=workout_data['sport_id']).first()
+            if not sport:
+                return InvalidPayloadErrorResponse(
+                    f"sport id {workout_data['sport_id']} not found"
+                )
+
+        if 'equipment_ids' in workout_data:
+            sport_id = (
+                workout_data["sport_id"]
+                if workout_data.get("sport_id")
+                else workout.sport_id
+            )
+            workout_data['equipments_list'] = handle_equipments(
+                workout_data.get('equipment_ids'),
+                auth_user,
+                sport_id,
+                workout.equipments,
+            )
+        elif sport:
+            # remove equipment if invalid for new sport
+            # Note: for now only one equipment can be added
+            for equipment in workout.equipments:
+                if sport.label not in SPORT_EQUIPMENT_TYPES.get(
+                    equipment.equipment_type.label, []
+                ):
+                    workout_data['equipments_list'] = []
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
