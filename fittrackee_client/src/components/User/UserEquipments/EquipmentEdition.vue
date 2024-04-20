@@ -47,6 +47,22 @@
               </option>
             </select>
           </div>
+          <div
+            class="equipment-warning"
+            v-if="
+              equipment?.workouts_count &&
+              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id
+            "
+          >
+            <span class="info-box">
+              <i
+                class="fa fa-exclamation-triangle warning"
+                aria-hidden="true"
+              />
+              {{ $t('equipments.ALL_WORKOUTS_ASSOCIATIONS_REMOVED') }}
+            </span>
+          </div>
+
           <div class="form-item">
             <label for="equipment-description">
               {{ $t('common.DESCRIPTION') }}
@@ -301,6 +317,10 @@
       }
       .equipment-label-help {
         margin-top: $default-margin * 1.5;
+      }
+      .equipment-warning {
+        margin-top: $default-margin * 0.5;
+        margin-bottom: $default-margin;
       }
       .error-message {
         margin: $default-margin 0;
