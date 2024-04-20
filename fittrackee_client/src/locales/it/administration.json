@@ -1,4 +1,8 @@
 {
+  "ABOUT": {
+    "DESCRIPTION": "",
+    "TEXT": ""
+  },
   "ACTION": "Azione",
   "ACTIVATE_USER_ACCOUNT": "Attiva account",
   "ACTIVE": "Attivo",
@@ -22,9 +26,21 @@
   "CURRENT_EMAIL": "Email corrente",
   "DELETE_USER": "Elimina utente",
   "EMAIL_SENDING_DISABLED": "L'invio di email è disabilitato.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
   "ENABLE_DISABLE_SPORTS": "Attiva/Disattiva sports.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Nuova email",
+  "NO_TEXT_ENTERED": "",
   "PASSWORD_RESET_SUCCESSFUL": "La password è stata reimpostata.",
+  "PRIVACY_POLICY_DESCRIPTION": "",
   "REGISTRATION_DISABLED": "La registrazione è al momento disabilitata.",
   "REGISTRATION_ENABLED": "La registrazione è al momento abilitata.",
   "RESET_USER_PASSWORD": "Reset password",
@@ -53,7 +69,8 @@
     "TABLE": {
       "ADD_ADMIN_RIGHTS": "Aggiungi permessi di amministratore",
       "REMOVE_ADMIN_RIGHTS": "Rimuovi permessi di amministratore"
-    }
+    },
+    "TITLE": ""
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "L'indirizzo email è stato aggiornato."
 }
