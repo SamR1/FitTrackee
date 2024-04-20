@@ -55,26 +55,36 @@
               >
                 <option value="" />
                 <option
-                  v-if="equipmentsWithWorkouts.length == 0"
+                  v-if="Object.keys(equipmentsWithWorkouts).length == 0"
                   value=""
                   disabled
                   selected
                 >
                   {{ $t('equipments.NO_EQUIPMENTS') }}
                 </option>
-                <template v-if="equipmentsWithWorkouts.length > 0">
+                <template v-if="Object.keys(equipmentsWithWorkouts).length > 0">
                   <option value="none">
                     {{ $t('equipments.WITHOUT_EQUIPMENTS') }}
                   </option>
                   <option disabled>---</option>
                 </template>
-                <option
-                  v-for="equipment in equipmentsWithWorkouts"
-                  :value="equipment.id"
-                  :key="equipment.id"
+                <optgroup
+                  v-for="equipmentTypeLabel in Object.keys(
+                    equipmentsWithWorkouts
+                  ).sort()"
+                  :label="equipmentTypeLabel"
+                  :key="equipmentTypeLabel"
                 >
-                  {{ equipment.label }}
-                </option>
+                  <option
+                    v-for="equipment in equipmentsWithWorkouts[
+                      equipmentTypeLabel
+                    ].sort(sortEquipments)"
+                    :value="equipment.id"
+                    :key="equipment.id"
+                  >
+                    {{ equipment.label }}
+                  </option>
+                </optgroup>
               </select>
             </div>
           </div>
@@ -266,11 +276,10 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
-    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
-      .filter((e: IEquipment) => e.workouts_count > 0)
-      .sort(sortEquipments)
-  )
+  const equipmentsWithWorkouts: ComputedRef<Record<string, IEquipment[]>> =
+    computed(() =>
+      getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
+    )
   let params: LocationQuery = Object.assign({}, route.query)
 
   onMounted(() => {
@@ -299,6 +308,22 @@
   function onClearFilter() {
     emit('filter')
     router.push({ path: '/workouts', query: {} })
+  }
+  function getEquipmentsFilters(equipments: IEquipment[]) {
+    const equipmentTypes: Record<string, IEquipment[]> = {}
+    equipments
+      .filter((e: IEquipment) => e.workouts_count > 0)
+      .map((e) => {
+        const equipmentTypeLabel = t(
+          `equipment_types.${e.equipment_type.label}.LABEL`
+        )
+        if (!(equipmentTypeLabel in equipmentTypes)) {
+          equipmentTypes[equipmentTypeLabel] = [e]
+        } else {
+          equipmentTypes[equipmentTypeLabel].push(e)
+        }
+      })
+    return equipmentTypes
   }
 
   watch(
