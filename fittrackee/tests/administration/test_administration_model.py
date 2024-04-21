@@ -28,8 +28,7 @@ from ..comments.utils import CommentMixin
 from ..mixins import UserModerationMixin
 
 
-class AdminActionTestCase(UserModerationMixin):
-    ...
+class AdminActionTestCase(UserModerationMixin): ...
 
 
 class TestAdminActionModel(AdminActionTestCase):

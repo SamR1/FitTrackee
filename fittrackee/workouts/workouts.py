@@ -24,7 +24,10 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment
-from fittrackee.equipments.utils import handle_equipments
+from fittrackee.equipments.utils import (
+    SPORT_EQUIPMENT_TYPES,
+    handle_equipments,
+)
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
@@ -45,7 +48,7 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 
 from .decorators import check_workout
-from .models import Workout, WorkoutEquipment, WorkoutLike
+from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -247,6 +250,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                             ``workout_date``)
     :query string equipment_id: equipment id (if 'none', only workouts without
                             equipments will be returned)
+    :query string notes: any part (or all) of the workout notes,
+                         notes matching is case-insensitive
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -278,6 +283,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         order = params.get('order', 'desc')
         sport_id = params.get('sport_id')
         title = params.get('title')
+        notes = params.get('notes')
         if 'equipment_id' in params:
             if params['equipment_id'] == "none":
                 equipment_id = "none"
@@ -299,50 +305,75 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.user_id == auth_user.id,
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.title.ilike(f"%{title}%") if title else True,
+                Workout.notes.ilike(f"%{notes}%") if notes else True,
                 Workout.workout_date >= date_from if date_from else True,
-                Workout.workout_date < date_to + timedelta(seconds=1)
-                if date_to
-                else True,
-                Workout.distance >= float(distance_from)
-                if distance_from
-                else True,
-                Workout.distance <= float(distance_to)
-                if distance_to
-                else True,
-                Workout.moving >= convert_in_duration(duration_from)
-                if duration_from
-                else True,
-                Workout.moving <= convert_in_duration(duration_to)
-                if duration_to
-                else True,
-                Workout.ave_speed >= float(ave_speed_from)
-                if ave_speed_from
-                else True,
-                Workout.ave_speed <= float(ave_speed_to)
-                if ave_speed_to
-                else True,
-                Workout.max_speed >= float(max_speed_from)
-                if max_speed_from
-                else True,
-                Workout.max_speed <= float(max_speed_to)
-                if max_speed_to
-                else True,
-                Workout.max_speed <= float(max_speed_to)
-                if max_speed_to
-                else True,
+                (
+                    Workout.workout_date < date_to + timedelta(seconds=1)
+                    if date_to
+                    else True
+                ),
+                (
+                    Workout.distance >= float(distance_from)
+                    if distance_from
+                    else True
+                ),
+                (
+                    Workout.distance <= float(distance_to)
+                    if distance_to
+                    else True
+                ),
+                (
+                    Workout.moving >= convert_in_duration(duration_from)
+                    if duration_from
+                    else True
+                ),
+                (
+                    Workout.moving <= convert_in_duration(duration_to)
+                    if duration_to
+                    else True
+                ),
+                (
+                    Workout.ave_speed >= float(ave_speed_from)
+                    if ave_speed_from
+                    else True
+                ),
+                (
+                    Workout.ave_speed <= float(ave_speed_to)
+                    if ave_speed_to
+                    else True
+                ),
+                (
+                    Workout.max_speed >= float(max_speed_from)
+                    if max_speed_from
+                    else True
+                ),
+                (
+                    Workout.max_speed <= float(max_speed_to)
+                    if max_speed_to
+                    else True
+                ),
+                (
+                    Workout.max_speed <= float(max_speed_to)
+                    if max_speed_to
+                    else True
+                ),
                 (
                     WorkoutEquipment.c.equipment_id == None  # noqa
                     if equipment_id == 'none'
-                    else WorkoutEquipment.c.equipment_id == equipment_id
-                    if equipment_id is not None
-                    else True
+                    else (
+                        WorkoutEquipment.c.equipment_id == equipment_id
+                        if equipment_id is not None
+                        else True
+                    )
                 ),
                 Workout.suspended_at == None,  # noqa
             )
             .order_by(
-                asc(workout_column)
-                if order == 'asc'
-                else desc(workout_column),
+                (
+                    asc(workout_column)
+                    if order == 'asc'
+                    else desc(workout_column)
+                ),
             )
             .paginate(page=page, per_page=per_page, error_out=False)
         )
@@ -516,11 +547,15 @@ def get_workout_data(
         'message': '',
         'data': (
             {
-                data_type: chart_data_content
-                if data_type == 'chart_data'
-                else gpx_content
-                if segment_id is None
-                else gpx_segment_content
+                data_type: (
+                    chart_data_content
+                    if data_type == 'chart_data'
+                    else (
+                        gpx_content
+                        if segment_id is None
+                        else gpx_segment_content
+                    )
+                )
             }
         ),
     }
@@ -1018,16 +1053,17 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment ids and notes
-                (example: ``{"sport_id": 1, "notes": ""}``).
+    :form data: sport id, equipment id and notes (example:
+                ``{"sport_id": 1, "notes": "", "equipment_ids": []}``).
                 Double quotes in notes must be escaped.
 
-                For `equipment_ids`, the id numbers of one or more pieces of
-                equipment to associate with workouts.
-                If not provided and default equipments exist for sport, default
-                equipments will be associated.
+                For `equipment_ids`, the id of the equipment to associate with
+                this workout.
+                **Note**: for now only one equipment can be associated.
+                If not provided and default equipment exists for sport,
+                default equipment will be associated.
 
-                Notes and equipment ids are not mandatory
+                Notes and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1037,6 +1073,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1075,19 +1116,20 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     ):
         return InvalidPayloadErrorResponse()
 
-    try:
-        equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            workout_data['sport_id'],
-        )
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
-    except InvalidEquipmentException as e:
-        return EquipmentInvalidPayloadErrorResponse(
-            equipment_id=e.equipment_id, message=e.message, status=e.status
-        )
-    workout_data['equipments_list'] = equipments_list
+    if "equipment_ids" in workout_data:
+        try:
+            equipments_list = handle_equipments(
+                workout_data['equipment_ids'],
+                auth_user,
+                workout_data['sport_id'],
+            )
+        except InvalidEquipmentsException as e:
+            return InvalidPayloadErrorResponse(str(e))
+        except InvalidEquipmentException as e:
+            return EquipmentInvalidPayloadErrorResponse(
+                equipment_id=e.equipment_id, message=e.message, status=e.status
+            )
+        workout_data['equipments_list'] = equipments_list
 
     workout_file = request.files['file']
     upload_dir = os.path.join(
@@ -1242,10 +1284,10 @@ def post_workout_no_gpx(
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json array of strings equipment_ids:
-        the id of one or more pieces of equipment
-        to associate with this workout
-        if not provided and default equipments exist for sport, default
-        equipments will be associated
+        the id of the equipment to associate with this workout.
+        **Note**: for now only one equipment can be associated.
+        If not provided and default equipment exists for sport,
+        default equipment will be associated.
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
     :<json string title: workout title (not mandatory)
@@ -1255,7 +1297,13 @@ def post_workout_no_gpx(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: workout created
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1295,22 +1343,9 @@ def post_workout_no_gpx(
     except ValueError:
         return InvalidPayloadErrorResponse()
 
-    try:
-        equipments_list = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            workout_data['sport_id'],
-        )
-        workout_data['equipments_list'] = equipments_list
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
-    except InvalidEquipmentException as e:
-        return EquipmentInvalidPayloadErrorResponse(
-            equipment_id=e.equipment_id, message=e.message, status=e.status
-        )
-
-    # get default equipment if sport preferences exists
-    if not "equipments_list" not in workout_data:
+    # get default equipment if not equipment_ids provided and
+    # sport preferences exists
+    if "equipment_ids" not in workout_data:
         sport_preferences = UserSportPreference.query.filter_by(
             user_id=auth_user.id, sport_id=workout_data['sport_id']
         ).first()
@@ -1320,6 +1355,20 @@ def post_workout_no_gpx(
                 for equipment in sport_preferences.default_equipments.all()
                 if equipment.is_active is True
             ]
+    else:
+        try:
+            equipments_list = handle_equipments(
+                workout_data.get('equipment_ids'),
+                auth_user,
+                workout_data['sport_id'],
+            )
+            workout_data['equipments_list'] = equipments_list
+        except InvalidEquipmentsException as e:
+            return InvalidPayloadErrorResponse(str(e))
+        except InvalidEquipmentException as e:
+            return EquipmentInvalidPayloadErrorResponse(
+                equipment_id=e.equipment_id, message=e.message, status=e.status
+            )
 
     try:
         new_workout = create_workout(auth_user, workout_data)
@@ -1461,11 +1510,11 @@ def update_workout(
     :<json string notes: notes
     :<json integer sport_id: workout sport id
     :<json string title: workout title
-    :<json array of string equipment_ids:
-        the id of one or more pieces of equipment
-        to associate with this workout (any existing equipment
-        for this workout will be replaced); if an empty array,
-        all equipment for this workout will be removed
+    :<json array of strings equipment_ids:
+        the id of the equipment to associate with this workout (any existing
+        equipment for this workout will be replaced).
+        **Note**: for now only one equipment can be associated.
+        If an empty array, equipment for this workout will be removed.
     :<json string workout_date: workout date in user timezone
         (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
@@ -1473,7 +1522,13 @@ def update_workout(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: workout updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1518,17 +1573,34 @@ def update_workout(
             except (TypeError, ValueError):
                 return InvalidPayloadErrorResponse()
 
-        sport_id = (
-            workout_data["sport_id"]
-            if workout_data.get("sport_id")
-            else workout.sport_id
-        )
-        workout_data['equipments_list'] = handle_equipments(
-            workout_data.get('equipment_ids'),
-            auth_user,
-            sport_id,
-            workout.equipments,
-        )
+        sport = None
+        if 'sport_id' in workout_data:
+            sport = Sport.query.filter_by(id=workout_data['sport_id']).first()
+            if not sport:
+                return InvalidPayloadErrorResponse(
+                    f"sport id {workout_data['sport_id']} not found"
+                )
+
+        if 'equipment_ids' in workout_data:
+            sport_id = (
+                workout_data["sport_id"]
+                if workout_data.get("sport_id")
+                else workout.sport_id
+            )
+            workout_data['equipments_list'] = handle_equipments(
+                workout_data.get('equipment_ids'),
+                auth_user,
+                sport_id,
+                workout.equipments,
+            )
+        elif sport:
+            # remove equipment if invalid for new sport
+            # Note: for now only one equipment can be added
+            for equipment in workout.equipments:
+                if sport.label not in SPORT_EQUIPMENT_TYPES.get(
+                    equipment.equipment_type.label, []
+                ):
+                    workout_data['equipments_list'] = []
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()

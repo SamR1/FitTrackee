@@ -96,9 +96,11 @@ class FollowRequestActivitiesTestCase:
                 f'{follower_actor.fullname}'
             ),
             'type': activity_type.value,
-            'actor': follower_actor.activitypub_id
-            if activity_type == ActivityType.UNDO
-            else followed_actor.activitypub_id,
+            'actor': (
+                follower_actor.activitypub_id
+                if activity_type == ActivityType.UNDO
+                else followed_actor.activitypub_id
+            ),
             'object': {
                 'id': (
                     f'{follower_actor.activitypub_id}#follows/'

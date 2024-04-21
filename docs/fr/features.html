@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.7.32</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.7.32
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.0
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.7.32
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -171,6 +171,8 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Équipements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Types d’équipement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -248,7 +250,7 @@
 <li><p>Vélo (Virtuel)  (<em>nouveau dans la version 0.7.3</em>)</p></li>
 <li><p>Randonnée</p></li>
 <li><p>VTT</p></li>
-<li><p>VTT (Electrique)  (<em>nouveau dans la version in 0.5.0</em>)</p></li>
+<li><p>VTT (Électrique)  (<em>nouveau dans la version in 0.5.0</em>)</p></li>
 <li><p>Alpinisme  (<em>nouveau dans la version 0.7.9</em>)</p></li>
 <li><p>Nage en eau libre  (<em>nouveau dans la version 0.7.20</em>)</p></li>
 <li><p>Parapente (<em>nouveau dans la version 0.7.19</em>)</p></li>
@@ -324,6 +326,7 @@
 <div class="line">La vitesse du vent est affichée, avec une flèche indiquant la direction (une infobulle peut être affichée avec la direction (provenance du vent)) (<em>nouveau dans la version 0.5.5</em>).</div>
 </div>
 </li>
+<li><p>Un <a class="reference external" href="features.html#equipments">équipement</a> peut être associé à une séance (<em>nouveau dans la version 0.8.0</em>). Pour le moment, un seul équipement peut être associé.</p></li>
 <li><p>Les segments peuvent être affichés.</p></li>
 <li><p>Le fichier gpx peut être téléchargé (<em>nouveau dans la version 0.5.1</em>)</p></li>
 <li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une note.</p></li>
@@ -361,8 +364,10 @@
 <li><dl class="simple">
 <dt>L’utilisateur peut filtrer les séances selon :</dt><dd><ul>
 <li><p>la date</p></li>
-<li><p>le sport (seuls les sports comportant des séances sont affichées dans la liste déroulante)</p></li>
+<li><p>le sport (seuls les sports comportant des séances sont affichés dans la liste déroulante)</p></li>
+<li><p>équipement (seuls les équipements associés des séances sont affichés dans la liste déroulante)</p></li>
 <li><p>le titre (<em>nouveau dans la version 0.7.15</em>)</p></li>
+<li><p>notes (<em>nouveau dans la version 0.8.0</em>)</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
 <li><p>vitesse moyenne</p></li>
@@ -404,10 +409,10 @@
 <p>Dans le cas où l’envoi des courriels n’est pas configuré, une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande</a> permet d’activer le compte des utilisateurs.</p>
 </div>
 <ul class="simple">
-<li><p>L’utilisateur peut définir la langue, le fuseau horaire et le premier jour de la semaine.</p></li>
-<li><p>L’utilisateur peut définir le theme de l’interface (clair (valeur par défaut), sombre ou selon les préférences du navigateur). (<em>nouveau dans la version 0.7.27</em>).</p></li>
 <li><p>L’utilisateur peut réinitialiser son mot de passe (<em>nouveau dans la version in 0.3.0</em>)</p></li>
 <li><p>Un utilisateur peut modifier son adresse électronique (<em>nouveau dans la version 0.6.0</em>)</p></li>
+<li><p>L’utilisateur peut définir la langue, le fuseau horaire et le premier jour de la semaine.</p></li>
+<li><p>L’utilisateur peut définir le theme de l’interface (clair (valeur par défaut), sombre ou selon les préférences du navigateur). (<em>nouveau dans la version 0.7.27</em>).</p></li>
 <li><p>L’utilisateur peut choisir entre le système métrique et le système impérial pour la distance, l’affichage de l’altitude et de la vitesse (<em>nouveau dans la version 0.5.0</em>)</p></li>
 <li><p>Un utilisateur peut choisir d’afficher ou cacher les records et le total de dénivelé positif sur le tableau de bord (<em>nouveau dans la version 0.6.11</em>)</p></li>
 <li><p>L’utilisateur peut choisir le format d’affichage des dates (<em>nouveau dans la version 0.7.3</em>)</p></li>
@@ -424,6 +429,7 @@
 <li><p>changer la couleur du sport (utilisée pour l’image du sport et les graphiques)</p></li>
 <li><p>modifier le seuil de vitesse d’arrêt (pour les prochains fichiers gpx ajoutés)</p></li>
 <li><p>désactiver/activer un sport.</p></li>
+<li><p>définir des <a class="reference external" href="features.html#equipments">équipements</a> par défaut (<em>nouveau dans la version 0.8.0</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -438,7 +444,6 @@
 </div>
 </div>
 <ul>
-<li><p>Un utilisateur peut créer des <a class="reference external" href="apps.html">clients</a> pour des applications tierces (<em>nouveau dans la version 0.7.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">Un utilisateur peut demander un export de données (<em>nouveau dans la version 0.7.13</em>).</div>
 <div class="line">Une archive zip sera générée, contenant 2 fichiers <code class="docutils literal notranslate"><span class="pre">json</span></code> (informations de l’utilisateur et données des séances) et tous les fichiers gpx ajoutée.</div>
@@ -448,6 +453,68 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Pour l’instant, il n’est pas possible d’importer ces fichiers sur une autre instance de <strong>FitTrackee</strong>.</p>
+</div>
+</section>
+<section id="oauth-apps">
+<h2>Applications OAuth<a class="headerlink" href="#oauth-apps" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>(<em>nouveau dans la version in 0.7.0</em>)</p>
+<ul class="simple">
+<li><p>Un utilisateur peut créer des <a class="reference external" href="apps.html">clients</a> pour des applications tierces.</p></li>
+</ul>
+</section>
+<section id="equipments">
+<h2>Équipements<a class="headerlink" href="#equipments" title="Lien permanent vers cette rubrique">#</a></h2>
+<p>(<em>nouveau dans la version in 0.8.0</em>)</p>
+<ul class="simple">
+<li><p>Un utilisateur peut créer des équipements qui peuvent être associés à des séances.</p></li>
+<li><dl class="simple">
+<dt>Les types d’équipement suivants sont disponibles, selon le sport :</dt><dd><ul>
+<li><p>Chaussures : Randonnées, Alpinisme, Course, Trail et Marche</p></li>
+<li><p>Vélo : Vélo (Sport, Transport, Trekking), VTT et VTT (Électrique),</p></li>
+<li><p>Vélo d’entraînement : Vélo (Virtuel),</p></li>
+<li><p>Kayak/Boat : Aviron,</p></li>
+<li><p>Skis : Ski (Alpin et Randonnée)</p></li>
+<li><p>Raquettes : Raquettes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Les équipements ne sont visibles que par leur propriétaire.</p></li>
+<li><p>Pour le moment, un seul équipement peut être associé à une séance.</p></li>
+<li><dl class="simple">
+<dt>Les totaux suivants sont affichés pour chaque équipement :</dt><dd><ul>
+<li><p>distance totale</p></li>
+<li><p>durée totale</p></li>
+<li><p>nombre total de séances</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">En cas de total incorrect (bien que cela ne doive pas se produire), il est possible de recalculer les totaux.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Il est possible de définir des sports par défaut : à l’ajout de la séance, l’équipement sera automatiquement affiché dans la liste déroulante selon le sport sélectionné.</p></li>
+<li><p>Un équipement peut être modifié (label, type d’équipement, description, status actif et sports par défaut).</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Le changement de type d’un équipement supprimera toutes les associations existantes à des séances pour cet équipement et les sports définis par défaut.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Un équipement désactivé n’apparait plus dans la liste déroulante lors de l’ajout d’une séance. Il reste affiché dans le détail de la séance, à laquelle il a été associé avant sa désactivation.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Un type d’équipement peut être désactivé par un administrateur.</div>
+</div>
 </div>
 </section>
 <section id="administration">
@@ -504,6 +571,12 @@
 <li><p>supprimer le compte d’un utilisateur</p></li>
 </ul>
 </section>
+<section id="equipment-types">
+<h3>Types d’équipement<a class="headerlink" href="#equipment-types" title="Lien permanent vers cette rubrique">#</a></h3>
+<ul class="simple">
+<li><p>activer ou désactiver un type d’équipement afin de correspondre aux sports désactivés (un type d’équipement peut être désactivé même si un équipement pour ce type existe)</p></li>
+</ul>
+</section>
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Lien permanent vers cette rubrique">#</a></h3>
 <ul class="simple">
@@ -557,7 +630,16 @@
 </figure>
 </section>
 <section id="id1">
-<h3>Administration<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>Équipements<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique">#</a></h3>
+<figure class="align-default">
+<img alt="Équipements sur FitTrackee" src="_images/fittrackee_screenshot-09.png" />
+</figure>
+<figure class="align-default">
+<img alt="Détail d'un équipements sur FitTrackee" src="_images/fittrackee_screenshot-10.png" />
+</figure>
+</section>
+<section id="id2">
+<h3>Administration<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique">#</a></h3>
 <figure class="align-default">
 <img alt="Administration de FitTrackee" src="_images/fittrackee_screenshot-05.png" />
 </figure>
@@ -630,9 +712,12 @@
 <li><a class="reference internal" href="#">Fonctionnalités</a><ul>
 <li><a class="reference internal" href="#workouts">Séances</a></li>
 <li><a class="reference internal" href="#account-preferences">Compte et préférences</a></li>
+<li><a class="reference internal" href="#oauth-apps">Applications OAuth</a></li>
+<li><a class="reference internal" href="#equipments">Équipements</a></li>
 <li><a class="reference internal" href="#administration">Administration</a><ul>
 <li><a class="reference internal" href="#application">Application</a></li>
 <li><a class="reference internal" href="#users">Utilisateurs</a></li>
+<li><a class="reference internal" href="#equipment-types">Types d’équipement</a></li>
 <li><a class="reference internal" href="#sports">Sports</a></li>
 </ul>
 </li>
@@ -642,7 +727,8 @@
 <li><a class="reference internal" href="#workout-detail">Page de détail d’une séance</a></li>
 <li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
 <li><a class="reference internal" href="#statistics">Statistiques</a></li>
-<li><a class="reference internal" href="#id1">Administration</a></li>
+<li><a class="reference internal" href="#id1">Équipements</a></li>
+<li><a class="reference internal" href="#id2">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -656,7 +742,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=7ed8a7e1"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e2986c7e"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

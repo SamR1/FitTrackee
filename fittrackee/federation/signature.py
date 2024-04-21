@@ -2,6 +2,7 @@
 inspired by bookwyrm signatures.py
 https://github.com/bookwyrm-social/bookwyrm
 """
+
 import base64
 import hashlib
 import json

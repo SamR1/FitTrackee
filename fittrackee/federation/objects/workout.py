@@ -52,9 +52,9 @@ class WorkoutObject(BaseObject):
         activity = self.activity_dict.copy()
         # for non-FitTrackee instances (like Mastodon)
         if is_note:
-            activity[
-                'id'
-            ] = f'{self.activity_id}/note/{self.type.value.lower()}'
+            activity['id'] = (
+                f'{self.activity_id}/note/{self.type.value.lower()}'
+            )
             activity['object']['type'] = 'Note'
             activity['object']['content'] = self._get_note_content()
         # for FitTrackee instances

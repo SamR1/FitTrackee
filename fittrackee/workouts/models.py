@@ -384,38 +384,58 @@ class Workout(BaseModel):
                     Workout.user_id == self.user_id,
                     Workout.sport_id == sport_id if sport_id else True,
                     Workout.workout_date <= self.workout_date,
-                    Workout.workout_date
-                    >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                    if date_from
-                    else True,
-                    Workout.workout_date
-                    <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                    if date_to
-                    else True,
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True,
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True,
-                    Workout.duration >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True,
-                    Workout.duration <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True,
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True,
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True,
-                    Workout.max_speed >= float(max_speed_from)
-                    if max_speed_from
-                    else True,
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True,
+                    (
+                        Workout.workout_date
+                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                        if date_from
+                        else True
+                    ),
+                    (
+                        Workout.workout_date
+                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                        if date_to
+                        else True
+                    ),
+                    (
+                        Workout.distance >= float(distance_from)
+                        if distance_from
+                        else True
+                    ),
+                    (
+                        Workout.distance <= float(distance_to)
+                        if distance_to
+                        else True
+                    ),
+                    (
+                        Workout.duration >= convert_in_duration(duration_from)
+                        if duration_from
+                        else True
+                    ),
+                    (
+                        Workout.duration <= convert_in_duration(duration_to)
+                        if duration_to
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed >= float(ave_speed_from)
+                        if ave_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed <= float(ave_speed_to)
+                        if ave_speed_to
+                        else True
+                    ),
+                    (
+                        Workout.max_speed >= float(max_speed_from)
+                        if max_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.max_speed <= float(max_speed_to)
+                        if max_speed_to
+                        else True
+                    ),
                 )
                 .order_by(Workout.workout_date.desc())
                 .first()
@@ -426,32 +446,48 @@ class Workout(BaseModel):
                     Workout.user_id == self.user_id,
                     Workout.sport_id == sport_id if sport_id else True,
                     Workout.workout_date >= self.workout_date,
-                    Workout.workout_date
-                    >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                    if date_from
-                    else True,
-                    Workout.workout_date
-                    <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                    if date_to
-                    else True,
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True,
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True,
-                    Workout.duration >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True,
-                    Workout.duration <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True,
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True,
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True,
+                    (
+                        Workout.workout_date
+                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                        if date_from
+                        else True
+                    ),
+                    (
+                        Workout.workout_date
+                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                        if date_to
+                        else True
+                    ),
+                    (
+                        Workout.distance >= float(distance_from)
+                        if distance_from
+                        else True
+                    ),
+                    (
+                        Workout.distance <= float(distance_to)
+                        if distance_to
+                        else True
+                    ),
+                    (
+                        Workout.duration >= convert_in_duration(duration_from)
+                        if duration_from
+                        else True
+                    ),
+                    (
+                        Workout.duration <= convert_in_duration(duration_to)
+                        if duration_to
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed >= float(ave_speed_from)
+                        if ave_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed <= float(ave_speed_to)
+                        if ave_speed_to
+                        else True
+                    ),
                 )
                 .order_by(Workout.workout_date.asc())
                 .first()

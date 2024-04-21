@@ -1073,8 +1073,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         }
 
 
-class ReportCommentTestCase(CommentMixin, UserModerationMixin):
-    ...
+class ReportCommentTestCase(CommentMixin, UserModerationMixin): ...
 
 
 class TestReportCommentModel(ReportCommentTestCase):

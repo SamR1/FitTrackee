@@ -1,11 +1,11 @@
 <template>
   <div class="workouts-filters">
     <div class="box">
-      <form v-on:submit.prevent="onFilter" class="form">
+      <form @submit.prevent class="form">
         <div class="form-all-items">
           <div class="form-items-group">
             <div class="form-item">
-              <label> {{ $t('workouts.FROM') }}: </label>
+              <label for="from"> {{ $t('workouts.FROM') }}: </label>
               <input
                 id="from"
                 name="from"
@@ -15,20 +15,19 @@
               />
             </div>
             <div class="form-item">
-              <label> {{ $t('workouts.TO') }}: </label>
+              <label for="to"> {{ $t('workouts.TO') }}: </label>
               <input
+                id="to"
                 name="to"
                 type="date"
                 :value="$route.query.to"
                 @change="handleFilterChange"
               />
             </div>
-          </div>
-
-          <div class="form-items-group">
             <div class="form-item">
-              <label> {{ $t('workouts.SPORT', 1) }}:</label>
+              <label for="sport_id"> {{ $t('workouts.SPORT', 1) }}:</label>
               <select
+                id="sport_id"
                 name="sport_id"
                 :value="$route.query.sport_id"
                 @change="handleFilterChange"
@@ -56,35 +55,64 @@
               >
                 <option value="" />
                 <option
-                  v-if="equipmentsWithWorkouts.length == 0"
+                  v-if="Object.keys(equipmentsWithWorkouts).length == 0"
                   value=""
                   disabled
                   selected
                 >
                   {{ $t('equipments.NO_EQUIPMENTS') }}
                 </option>
-                <template v-if="equipmentsWithWorkouts.length > 0">
+                <template v-if="Object.keys(equipmentsWithWorkouts).length > 0">
                   <option value="none">
                     {{ $t('equipments.WITHOUT_EQUIPMENTS') }}
                   </option>
                   <option disabled>---</option>
                 </template>
-                <option
-                  v-for="equipment in equipmentsWithWorkouts"
-                  :value="equipment.id"
-                  :key="equipment.id"
+                <optgroup
+                  v-for="equipmentTypeLabel in Object.keys(
+                    equipmentsWithWorkouts
+                  ).sort()"
+                  :label="equipmentTypeLabel"
+                  :key="equipmentTypeLabel"
                 >
-                  {{ equipment.label }}
-                </option>
+                  <option
+                    v-for="equipment in equipmentsWithWorkouts[
+                      equipmentTypeLabel
+                    ].sort(sortEquipments)"
+                    :value="equipment.id"
+                    :key="equipment.id"
+                  >
+                    {{ equipment.label }}
+                  </option>
+                </optgroup>
               </select>
             </div>
-            <div class="form-item form-item-title">
-              <label> {{ $t('workouts.TITLE', 1) }}:</label>
+          </div>
+
+          <div class="form-items-group">
+            <div class="form-item form-item-text">
+              <label for="title"> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
                 <input
-                  class="title"
+                  id="title"
+                  class="text"
                   name="title"
                   :value="$route.query.title"
+                  @change="handleFilterChange"
+                  placeholder=""
+                  type="text"
+                  @keyup.enter="onFilter"
+                />
+              </div>
+            </div>
+            <div class="form-item form-item-text">
+              <label for="notes"> {{ $t('workouts.NOTES') }}:</label>
+              <div class="form-inputs-group">
+                <input
+                  id="notes"
+                  class="text"
+                  name="notes"
+                  :value="$route.query.notes"
                   @change="handleFilterChange"
                   placeholder=""
                   type="text"
@@ -119,9 +147,6 @@
                 />
               </div>
             </div>
-          </div>
-
-          <div class="form-items-group">
             <div class="form-item">
               <label> {{ $t('workouts.DURATION') }}: </label>
               <div class="form-inputs-group">
@@ -173,9 +198,6 @@
                 />
               </div>
             </div>
-          </div>
-
-          <div class="form-items-group">
             <div class="form-item">
               <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
 
@@ -254,11 +276,10 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const equipmentsWithWorkouts: ComputedRef<IEquipment[]> = computed(() =>
-    store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
-      .filter((e: IEquipment) => e.workouts_count > 0)
-      .sort(sortEquipments)
-  )
+  const equipmentsWithWorkouts: ComputedRef<Record<string, IEquipment[]>> =
+    computed(() =>
+      getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
+    )
   let params: LocationQuery = Object.assign({}, route.query)
 
   onMounted(() => {
@@ -288,6 +309,22 @@
     emit('filter')
     router.push({ path: '/workouts', query: {} })
   }
+  function getEquipmentsFilters(equipments: IEquipment[]) {
+    const equipmentTypes: Record<string, IEquipment[]> = {}
+    equipments
+      .filter((e: IEquipment) => e.workouts_count > 0)
+      .map((e) => {
+        const equipmentTypeLabel = t(
+          `equipment_types.${e.equipment_type.label}.LABEL`
+        )
+        if (!(equipmentTypeLabel in equipmentTypes)) {
+          equipmentTypes[equipmentTypeLabel] = [e]
+        } else {
+          equipmentTypes[equipmentTypeLabel].push(e)
+        }
+      })
+    return equipmentTypes
+  }
 
   watch(
     () => route.query,
@@ -310,7 +347,7 @@
         .form-items-group {
           display: flex;
           flex-direction: column;
-          padding: $default-padding * 0.5;
+          padding: $default-padding * 0.25 $default-padding * 0.5;
 
           .form-item {
             display: flex;
@@ -339,10 +376,8 @@
               padding: 0 $default-padding * 0.5;
             }
           }
-          .form-item-title,
-          .form-item-equipment {
-            padding-top: $default-padding;
-            input.title {
+          .form-item-text {
+            input.text {
               width: 100%;
             }
           }
@@ -367,8 +402,10 @@
         .form-all-items {
           flex-direction: row;
           padding-top: $default-padding * 0.5;
+          justify-content: center;
 
           .form-items-group {
+            flex-grow: 1;
             padding: 0 $default-padding * 0.5;
             height: 100%;
 
@@ -392,7 +429,7 @@
               }
             }
 
-            .form-item-title {
+            .form-item-text {
               padding-top: 0;
             }
           }
@@ -414,8 +451,6 @@
           padding-top: 0;
 
           .form-items-group {
-            padding: $default-padding * 0.5;
-
             .form-item {
               label {
                 font-size: 1em;
@@ -435,6 +470,11 @@
                 }
               }
             }
+            .form-item-text {
+              input.text {
+                width: 100%;
+              }
+            }
           }
         }
       }
@@ -449,19 +489,6 @@
     @media screen and (max-width: $x-small-limit) {
       .form-button {
         flex-wrap: wrap;
-      }
-      .form {
-        .form-all-items {
-          .form-items-group {
-            .form-item-title {
-              padding-top: $default-padding;
-
-              input.title {
-                width: 100%;
-              }
-            }
-          }
-        }
       }
     }
   }

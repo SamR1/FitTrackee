@@ -1,7 +1,8 @@
+from datetime import timedelta
 from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, request
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
@@ -19,16 +20,19 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout, WorkoutEquipment
 
 from .exceptions import InvalidEquipmentsException
 from .models import Equipment, EquipmentType
+from .utils import SPORT_EQUIPMENT_TYPES
 
 equipments_blueprint = Blueprint('equipments', __name__)
 
 
 def handle_default_sports(
-    default_for_sport_ids: List[int], auth_user: User
+    default_for_sport_ids: List[int],
+    auth_user: User,
+    equipment_type: EquipmentType,
 ) -> List[UserSportPreference]:
     user_sport_preferences = []
     for sport_id in default_for_sport_ids:
@@ -37,6 +41,16 @@ def handle_default_sports(
             raise InvalidEquipmentsException(
                 f"sport (id {sport_id}) does not exist"
             )
+
+        # check if sport is valid for equipment type
+        if sport.label not in SPORT_EQUIPMENT_TYPES.get(
+            equipment_type.label, []
+        ):
+            raise InvalidEquipmentsException(
+                f"invalid sport '{sport.label}' for equipment "
+                f"type '{equipment_type.label}'"
+            )
+
         user_sport_preference = UserSportPreference.query.filter_by(
             user_id=auth_user.id,
             sport_id=sport_id,
@@ -309,19 +323,22 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
-        active (default: true)
+        active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment, not mandatory
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: equipment created
-    :statuscode 400: invalid payload
-        - ``The 'label' and 'equipment_type_id' parameters must be provided``
+    :statuscode 400:
+        - ``the 'label' and 'equipment_type_id' parameters must be provided``
         - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
+        - ``sport (id <sport_id>) does not exist``
+        - ``invalid sport '<sport_label>' for equipment
+          type '<equipment_type_label>'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -337,7 +354,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         or equipment_data.get('equipment_type_id') is None
     ):
         return InvalidPayloadErrorResponse(
-            "The 'label' and 'equipment_type_id' parameters must be "
+            "the 'label' and 'equipment_type_id' parameters must be "
             "provided"
         )
 
@@ -362,9 +379,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not equipment_type.is_active:
         return InvalidPayloadErrorResponse("equipment type is inactive")
 
+    default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
     try:
         user_sport_preferences = handle_default_sports(
-            equipment_data.get("default_for_sport_ids", []), auth_user
+            default_for_sport_ids, auth_user, equipment_type
         )
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -380,6 +398,15 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         db.session.add(new_equipment)
         db.session.flush()
         if user_sport_preferences:
+            # remove existing equipments for default sports
+            # (for now only one default equipment/sport)
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                UserSportPreferenceEquipment.c.sport_id.in_(
+                    default_for_sport_ids
+                ),
+            ).delete()
+
             db.session.execute(
                 insert(UserSportPreferenceEquipment).values(
                     [
@@ -422,6 +449,9 @@ def update_equipment(
     Update a piece of equipment. Allows a user to change one of their
     equipment's label, description, type or active status.
 
+    Changing equipment type will remove all existing workouts associations
+    for that piece of equipment and default sports.
+
     **Scope**: ``equipments:write``
 
     **Example request**:
@@ -455,11 +485,11 @@ def update_equipment(
                 "id": "QRj7BY6H2iYjSV8sersFgV",
                 "is_active": true,
                 "label": "Updated bike",
-                "num_workouts": 0,
                 "total_distance": 0.0,
                 "total_duration": "0:00:00",
                 "total_moving": "0:00:00",
-                "user_id": 1
+                "user_id": 1,
+                "workouts_count": 0
               }
             ]
           },
@@ -489,20 +519,23 @@ def update_equipment(
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
-        active (default: true)
+        active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: equipment updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
         - ``no request data was supplied``
         - ``no valid parameters supplied``
         - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
+        - ``sport (id <sport_id>) does not exist``
+        - ``invalid sport '<sport_label>' for equipment
+          type '<equipment_type_label>'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -529,23 +562,19 @@ def update_equipment(
     ):
         return InvalidPayloadErrorResponse('no valid parameters supplied')
 
-    default_for_sport_ids = equipment_data.get("default_for_sport_ids", None)
+    new_default_for_sport_ids = equipment_data.get(
+        "default_for_sport_ids", None
+    )
     user_sport_preferences = None
-    if default_for_sport_ids is not None:
-        default_for_sport_ids = equipment_data.get("default_for_sport_ids", [])
-        try:
-            user_sport_preferences = handle_default_sports(
-                default_for_sport_ids, auth_user
-            )
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-
     try:
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
         ).first()
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
+
+        check_default_sports = True
+        equipment_type = equipment.equipment_type
 
         # set new values if they were in the request
         if 'is_active' in equipment_data:
@@ -577,16 +606,53 @@ def update_equipment(
             ).first()
             if not equipment_type:
                 return InvalidPayloadErrorResponse("invalid equipment type id")
-            if (
-                not equipment_type.is_active
-                and equipment_type.id != equipment.equipment_type_id
-            ):
-                return InvalidPayloadErrorResponse(
-                    "equipment type is inactive"
-                )
+            if equipment_type.id != equipment.equipment_type_id:
+                if not equipment_type.is_active:
+                    return InvalidPayloadErrorResponse(
+                        "equipment type is inactive"
+                    )
+
+                # remove workouts association on type change
+                db.session.query(WorkoutEquipment).filter(
+                    WorkoutEquipment.c.equipment_id == equipment.id
+                ).delete()
+                equipment.total_distance = 0.0
+                equipment.total_duration = timedelta()
+                equipment.total_moving = timedelta()
+                equipment.total_workouts = 0
+
+                # remove default sports
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.equipment_id
+                    == equipment.id,
+                ).all()
+
+                # with changes on equipments but no changes on default sports,
+                # the default sports are removed.
+                if new_default_for_sport_ids is None or (
+                    new_default_for_sport_ids
+                    == [
+                        sport_preference.sport_id
+                        for sport_preference in equipment.default_for_sports
+                    ]
+                ):
+                    new_default_for_sport_ids = []
+                    check_default_sports = False
+
             equipment.equipment_type_id = equipment_type_id
 
-        if default_for_sport_ids is not None:
+        if check_default_sports and new_default_for_sport_ids is not None:
+            try:
+                user_sport_preferences = handle_default_sports(
+                    new_default_for_sport_ids,
+                    auth_user,
+                    equipment_type,
+                )
+            except InvalidEquipmentsException as e:
+                return InvalidPayloadErrorResponse(str(e))
+
+        if new_default_for_sport_ids is not None:
             existing_sports = (
                 db.session.query(UserSportPreferenceEquipment)
                 .filter(
@@ -598,7 +664,7 @@ def update_equipment(
             )
 
             sport_ids_to_remove = {s[1] for s in existing_sports} - set(
-                default_for_sport_ids
+                new_default_for_sport_ids
             )
 
             if sport_ids_to_remove:
@@ -614,6 +680,15 @@ def update_equipment(
                 ).delete()
 
             if user_sport_preferences:
+                # remove existing equipments for default sports
+                # (for now only one default equipment/sport)
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.sport_id.in_(
+                        new_default_for_sport_ids
+                    ),
+                ).delete()
+
                 db.session.execute(
                     insert(UserSportPreferenceEquipment)
                     .values(
@@ -628,6 +703,120 @@ def update_equipment(
                     )
                     .on_conflict_do_nothing()
                 )
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'data': {'equipments': [equipment.serialize()]},
+        }
+
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(
+            error=e,
+            db=db,
+            message='Error during equipment update',
+            status='fail',
+        )
+
+
+@equipments_blueprint.route(
+    '/equipments/<string:equipment_short_id>/refresh', methods=['POST']
+)
+@require_auth(scopes=['equipments:write'])
+def refresh_equipment(
+    auth_user: User, equipment_short_id: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Refresh equipment totals (in case values are incorrect).
+
+    **Scope**: ``equipments:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/equipments/QRj7BY6H2iYjSV8sersFgV/refresh HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "equipments": [
+              {
+                "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
+                "default_for_sport_ids": [],
+                "description": "My Shoes",
+                "equipment_type": {
+                  "id": 1,
+                  "is_active": true,
+                  "label": "Shoe"
+                },
+                "id": "QRj7BY6H2iYjSV8sersFgV",
+                "is_active": true,
+                "label": "Updated bike",
+                "total_distance": 6.0,
+                "total_duration": "1:10:00",
+                "total_moving": "1:00:00",
+                "user_id": 1,
+                "workouts_count": 1
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: equipment updated
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``equipment not found``
+    :statuscode 500: ``Error during equipment save``
+    """
+    equipment = Equipment.query.filter_by(
+        uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
+    ).first()
+    if not equipment:
+        return DataNotFoundErrorResponse('equipments')
+
+    try:
+        totals = dict(
+            db.session.query(
+                func.sum(Workout.distance).label('total_distance'),
+                func.sum(Workout.duration).label('total_duration'),
+                func.sum(Workout.moving).label('total_moving'),
+                func.count(Workout.id).label('total_workouts'),
+            )
+            .join(WorkoutEquipment)
+            .filter(WorkoutEquipment.c.equipment_id == equipment.id)
+            .first()
+        )
+        equipment.total_distance = (
+            0.0
+            if totals["total_distance"] is None
+            else totals["total_distance"]
+        )
+        equipment.total_duration = (
+            timedelta()
+            if totals["total_duration"] is None
+            else totals["total_duration"]
+        )
+        equipment.total_moving = (
+            timedelta()
+            if totals["total_moving"] is None
+            else totals["total_moving"]
+        )
+        equipment.total_workouts = totals["total_workouts"]
+
         db.session.commit()
 
         return {

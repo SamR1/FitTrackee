@@ -122,15 +122,21 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
             User.is_remote == remote,
-            True
-            if with_inactive == 'true'
-            else User.is_active == True,  # noqa
-            True
-            if with_hidden_users == 'true' or remote
-            else User.hide_profile_in_users_directory == False,  # noqa
-            True
-            if with_suspended_users == 'true'
-            else User.suspended_at == None,  # noqa
+            (
+                True
+                if with_inactive == 'true'
+                else User.is_active == True  # noqa
+            ),
+            (
+                True
+                if with_hidden_users == 'true' or remote
+                else User.hide_profile_in_users_directory == False  # noqa
+            ),
+            (
+                True
+                if with_suspended_users == 'true'
+                else User.suspended_at == None  # noqa
+            ),
         )
         .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)

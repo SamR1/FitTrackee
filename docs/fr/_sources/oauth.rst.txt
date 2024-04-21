@@ -26,6 +26,8 @@ Scopes
 The following scopes are available:
 
 - ``application:write``: grants write access to application configuration (only for users with administration rights),
+- ``equipments:read``: grants read access to equipments endpoints (*new in 0.8.0*),
+- ``equipments:write``: grants write access to equipments endpoints (*new in 0.8.0*),
 - ``profile:read``: grants read access to auth endpoints,
 - ``profile:write``: grants write access to auth endpoints,
 - ``users:read``: grants read access to users endpoints,

@@ -117,16 +117,20 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             (
                 Report.resolved == True  # noqa
                 if resolved == "true"
-                else Report.resolved == False  # noqa
-                if resolved == "false"
-                else True
+                else (
+                    Report.resolved == False  # noqa
+                    if resolved == "false"
+                    else True
+                )
             ),
             (
                 Report.reported_by == auth_user.id
                 if auth_user.admin is False
-                else Report.reported_by == reporter.id
-                if reporter_username
-                else True
+                else (
+                    Report.reported_by == reporter.id
+                    if reporter_username
+                    else True
+                )
             ),
         )
         .order_by(*order_clauses)

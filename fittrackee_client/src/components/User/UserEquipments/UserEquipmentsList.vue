@@ -87,7 +87,13 @@
                     <span class="cell-heading">
                       {{ $t('workouts.WORKOUT', 0) }}
                     </span>
-                    {{ equipment.workouts_count }}
+                    <router-link
+                      :to="`/workouts?equipment_id=${equipment.id}`"
+                      v-if="equipment.workouts_count"
+                    >
+                      {{ equipment.workouts_count }}
+                    </router-link>
+                    <template v-else>{{ equipment.workouts_count }}</template>
                   </td>
                   <td class="column">
                     <span class="cell-heading">

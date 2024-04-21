@@ -3,23 +3,15 @@
 import os
 from typing import Dict, Optional
 
-import click
 import gunicorn.app.base
 from flask import Flask
-from flask_migrate import upgrade
 
 from fittrackee import create_app
-from fittrackee.administration.users_service import UserManagerService
-from fittrackee.users.exceptions import UserNotFoundException
 
 HOST = os.getenv('HOST', '127.0.0.1')
 PORT = os.getenv('PORT', '5000')
 WORKERS = os.getenv('APP_WORKERS', 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
-WARNING_MESSAGE = (
-    "\nThis command is deprecated, it will be removed in a next version.\n"
-    "Please use ftcli instead.\n"
-)
 app = create_app()
 
 
@@ -42,51 +34,6 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 
     def load(self) -> Flask:
         return self.application
-
-
-# DEPRECATED COMMANDS
-@click.group()
-def users_cli() -> None:
-    pass
-
-
-@users_cli.command('set_admin')
-@click.argument('username')
-def set_admin(username: str) -> None:
-    """
-    [deprecated] Set admin rights for given user.
-
-    It will be removed in a next version.
-    """
-    print(WARNING_MESSAGE)
-    with app.app_context():
-        try:
-            user_manager_service = UserManagerService(username)
-            user_manager_service.update(
-                is_admin=True,
-            )
-            print(f"User '{username}' updated.")
-        except UserNotFoundException:
-            print(f"User '{username}' not found.")
-
-
-def upgrade_db() -> None:
-    """
-    [deprecated] Apply migrations.
-
-    It will be removed in a next version.
-    """
-    print(WARNING_MESSAGE)
-    with app.app_context():
-        upgrade(directory=BASEDIR + '/migrations')
-
-
-def worker() -> None:
-    raise SystemExit(
-        "Error: this command is disabled, "
-        "it will be removed in a next version.\n"
-        "Please use flask-dramatiq CLI instead ('flask worker')."
-    )
 
 
 def main() -> None:

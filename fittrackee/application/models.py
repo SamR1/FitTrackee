@@ -72,9 +72,9 @@ class AppConfig(BaseModel):
 def update_app_config() -> None:
     config = AppConfig.query.first()
     if config:
-        current_app.config[
-            'is_registration_enabled'
-        ] = config.is_registration_enabled
+        current_app.config['is_registration_enabled'] = (
+            config.is_registration_enabled
+        )
 
 
 @listens_for(User, 'after_insert')

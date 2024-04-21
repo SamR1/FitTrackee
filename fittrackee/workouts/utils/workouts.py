@@ -121,9 +121,9 @@ def create_workout(
     provided
     """
     workout_date, workout_date_tz = get_workout_datetime(
-        workout_date=gpx_data['start']
-        if gpx_data
-        else workout_data['workout_date'],
+        workout_date=(
+            gpx_data['start'] if gpx_data else workout_data['workout_date']
+        ),
         date_str_format=None if gpx_data else WORKOUT_DATE_FORMAT,
         user_timezone=user.timezone,
         with_timezone=True,
@@ -485,7 +485,7 @@ def process_files(
     )
 
     # get default equipment if sport preferences exists
-    if not "equipments_list" not in workout_data and sport_preferences:
+    if "equipments_list" not in workout_data and sport_preferences:
         workout_data['equipments_list'] = [
             equipment
             for equipment in sport_preferences.default_equipments.all()

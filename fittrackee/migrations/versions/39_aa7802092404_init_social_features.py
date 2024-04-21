@@ -5,13 +5,14 @@ Revises: 4d51a4ca8001
 Create Date: 2023-04-13 11:28:53.769936
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = 'aa7802092404'
-down_revision = '171dcd7e5f2b'
+down_revision = '0ea28f1e6c60'
 branch_labels = None
 depends_on = None
 
