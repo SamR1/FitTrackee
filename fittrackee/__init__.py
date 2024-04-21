@@ -25,7 +25,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.7.32'
+VERSION = __version__ = '0.8.0'
 REDIS_URL = os.getenv('REDIS_URL', 'redis://')
 API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
     ','
@@ -126,6 +126,8 @@ def create_app(init_email: bool = True) -> Flask:
                 pass
 
     from .application.app_config import config_blueprint  # noqa
+    from .equipments.equipment_types import equipment_types_blueprint
+    from .equipments.equipments import equipments_blueprint
     from .oauth2.routes import oauth2_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
@@ -135,6 +137,8 @@ def create_app(init_email: bool = True) -> Flask:
     from .workouts.workouts import workouts_blueprint  # noqa
 
     app.register_blueprint(auth_blueprint, url_prefix='/api')
+    app.register_blueprint(equipment_types_blueprint, url_prefix='/api')
+    app.register_blueprint(equipments_blueprint, url_prefix='/api')
     app.register_blueprint(oauth2_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')

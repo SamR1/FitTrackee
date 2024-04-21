@@ -1,13 +1,19 @@
 {
   "ABOUT": "à propos",
+  "ACTION": "action",
+  "ACTIVE": "actif",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "jour | jours",
+  "DESCRIPTION": "Description",
   "DISPLAYED": "Affiché",
   "DOCUMENTATION": "documentation",
   "HERE": "ici",
   "HIDDEN": "Masqué",
   "HOME": "Accueil",
+  "INACTIVE": "inactif",
+  "LABEL": "Nom",
+  "NO_DESCRIPTION": "pas de description",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",
@@ -21,5 +27,6 @@
       "LABEL": "par page"
     }
   },
-  "TOTAL": "Total"
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises"
 }

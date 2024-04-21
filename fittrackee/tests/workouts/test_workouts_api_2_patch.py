@@ -1,16 +1,20 @@
 import json
+from datetime import timedelta
 from typing import Dict
 from uuid import uuid4
 
 import pytest
 from flask import Flask
 
+from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES
-from .utils import get_random_short_id, post_a_workout
+from ..utils import OAUTH_SCOPES, jsonify_dict
+from .utils import post_a_workout
 
 
 def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
@@ -211,7 +215,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_raises_500_if_sport_does_not_exists(
+    def test_it_raises_400_if_sport_does_not_exists(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
@@ -224,7 +228,333 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {token}'),
         )
 
-        self.assert_500(response)
+        self.assert_400(response, "sport id 2 not found")
+
+    def test_it_returns_400_when_equipment_ids_are_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": equipment_bike_user_1.short_id},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        self.assert_400(
+            response,
+            "equipment_ids must be an array of strings",
+        )
+
+    def test_it_returns_400_when_equipment_id_not_found(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+        equipment_short_id = self.random_short_id()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": [equipment_short_id]},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_short_id
+        assert data["message"] == (
+            f'equipment with id {equipment_short_id} does not exist'
+        )
+        assert data["status"] == "not_found"
+
+    def test_it_returns_400_when_equipment_belongs_to_another_user(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_shoes_user_2: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": [equipment_shoes_user_2.short_id]},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_2.short_id
+        assert data["message"] == (
+            f'equipment with id {equipment_shoes_user_2.short_id} '
+            'does not exist'
+        )
+        assert data["status"] == "not_found"
+
+    def test_it_adds_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": [equipment_bike_user_1.short_id]},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        workout = Workout.query.first()
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == workout.distance
+        assert equipment_bike_user_1.total_duration == workout.duration
+        assert equipment_bike_user_1.total_moving == workout.moving
+
+    def test_it_returns_400_when_equipment_is_inactive(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1_inactive: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={
+                "equipment_ids": [
+                    equipment_bike_user_1_inactive.short_id,
+                ]
+            },
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_bike_user_1_inactive.short_id
+        assert data["message"] == (
+            f'equipment with id {equipment_bike_user_1_inactive.short_id}'
+            ' is inactive'
+        )
+        assert data["status"] == "inactive"
+
+    def test_it_keeps_inactive_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1_inactive: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1_inactive]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": [equipment_bike_user_1_inactive.short_id]},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1_inactive.serialize())
+        ]
+
+        assert equipment_bike_user_1_inactive.total_workouts == 1
+        assert (
+            equipment_bike_user_1_inactive.total_distance == workout.distance
+        )
+        assert (
+            equipment_bike_user_1_inactive.total_duration == workout.duration
+        )
+        assert equipment_bike_user_1_inactive.total_moving == workout.moving
+
+    def test_it_returns_error_when_equipment_is_invalid_for_given_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            json={"equipment_ids": [equipment_shoes_user_1.short_id]},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 400
+        data = json.loads(response.data.decode())
+        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["message"] == (
+            f"invalid equipment id {equipment_shoes_user_1.short_id} "
+            f"for sport {sport_1_cycling.label}"
+        )
+        assert data["status"] == "invalid"
+
+    def test_it_removes_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"equipment_ids": []},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == []
+        assert equipment_bike_user_1.total_workouts == 0
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+
+    def test_it_does_not_remove_equipment_when_equipment_ids_not_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"label": self.random_string()},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+
+    def test_it_returns_400_when_multiple_equipments_are_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        gpx_file: str,
+        equipment_shoes_user_1: Equipment,
+        equipment_another_shoes_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+
+        client = app.test_client()
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={
+                "equipment_ids": [
+                    equipment_shoes_user_1.short_id,
+                    equipment_another_shoes_user_1.short_id,
+                ]
+            },
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        self.assert_400(response, "only one equipment can be added")
+
+    def test_it_removes_equipment_when_equipment_is_invalid_on_sport_change(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = Workout.query.filter_by(
+            uuid=decode_short_id(workout_short_id)
+        ).first()
+        workout.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"sport_id": sport_2_running.id},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == []
+        assert workout.sport_id == sport_2_running.id
+        assert workout.equipments == []
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -400,7 +730,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == ''
 
-    def test_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
+    def test_it_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
         self,
         app: Flask,
         user_1: User,
@@ -711,7 +1041,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
             app, user_1.email
         )
         response = client.patch(
-            f'/api/workouts/{get_random_short_id()}',
+            f'/api/workouts/{self.random_short_id()}',
             content_type='application/json',
             data=json.dumps(
                 dict(
@@ -787,3 +1117,106 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+    def test_it_updates_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_shoes_user_1]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            json={"equipment_ids": [equipment_bike_user_1.short_id]},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+        assert equipment_bike_user_1.total_workouts == 1
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_cycling_user_1.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_cycling_user_1.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )
+
+    def test_it_updates_equipment_totals(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        ]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        new_distance = 15.0
+        new_duration = 3800
+
+        response = client.patch(
+            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    duration=new_duration,
+                    distance=new_distance,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            jsonify_dict(equipment_bike_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_bike_user_1.total_distance == new_distance
+        assert equipment_bike_user_1.total_duration == timedelta(
+            seconds=new_duration
+        )
+        assert equipment_bike_user_1.total_moving == timedelta(
+            seconds=new_duration
+        )
+        assert (
+            jsonify_dict(equipment_shoes_user_1.serialize())
+            in data['data']['workouts'][0]['equipments']
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == new_distance
+        assert equipment_shoes_user_1.total_duration == timedelta(
+            seconds=new_duration
+        )
+        assert equipment_shoes_user_1.total_moving == timedelta(
+            seconds=new_duration
+        )

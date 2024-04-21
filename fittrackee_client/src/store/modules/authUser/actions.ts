@@ -5,6 +5,7 @@ import api from '@/api/defaultApi'
 import router from '@/router'
 import {
   AUTH_USER_STORE,
+  EQUIPMENTS_STORE,
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
@@ -28,6 +29,7 @@ import type {
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
+  IUserSportPreferencesResetPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -149,6 +151,8 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             )
           }
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
         } else {
           handleError(context, null)
           removeAuthUserData(context)
@@ -300,15 +304,18 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.RESET_USER_SPORT_PREFERENCES](
     context: ActionContext<IAuthUserState, IRootState>,
-    sportId: number
+    payload: IUserSportPreferencesResetPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     authApi
-      .delete(`auth/profile/reset/sports/${sportId}`)
+      .delete(`auth/profile/reset/sports/${payload.sportId}`)
       .then((res) => {
         if (res.status === 204) {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          if (payload.fromSport) {
+            router.push(`/profile/sports/${payload.sportId}`)
+          }
         } else {
           handleError(context, null)
         }
@@ -324,11 +331,15 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    const { fromSport, ...data } = payload
     authApi
-      .post('auth/profile/edit/sports', payload)
+      .post('auth/profile/edit/sports', data)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          if (fromSport) {
+            router.push(`/profile/sports/${data.sport_id}`)
+          }
         } else {
           handleError(context, null)
         }

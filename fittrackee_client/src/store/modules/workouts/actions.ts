@@ -190,7 +190,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     form.append('file', payload.file)
     form.append(
       'data',
-      `{"sport_id": ${payload.sport_id}, "notes": "${notes}"}`
+      `{"sport_id": ${payload.sport_id}, "notes": "${notes}",` +
+        ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}]}`
     )
     authApi
       .post('workouts', form, {

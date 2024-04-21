@@ -1,26 +1,15 @@
 <template>
-  <div class="profile-tabs custom-checkboxes-group">
-    <div class="profile-tabs-checkboxes custom-checkboxes">
-      <div v-for="tab in tabs" class="profile-tab custom-checkbox" :key="tab">
-        <label>
-          <input
-            type="radio"
-            :id="tab"
-            :name="tab"
-            :checked="selectedTab.split('/')[0] === tab"
-            :disabled="disabled"
-            @input="$router.push(getPath(tab))"
-          />
-          <span
-            :id="`tab-${tab}`"
-            :tabindex="0"
-            role="button"
-            @keydown.enter="$router.push(getPath(tab))"
-          >
-            {{ $t(`user.PROFILE.TABS.${tab}`) }}
-          </span>
-        </label>
-      </div>
+  <div class="profile-tabs">
+    <div class="profile-tabs-links">
+      <router-link
+        class="profile-tab"
+        :class="{ selected: tab === selectedTab }"
+        v-for="tab in tabs"
+        :to="getPath(tab)"
+        :key="tab"
+      >
+        {{ $t(`user.PROFILE.TABS.${tab}`) }}
+      </router-link>
     </div>
   </div>
 </template>
@@ -32,13 +21,10 @@
     tabs: string[]
     selectedTab: string
     edition: boolean
-    disabled?: boolean
   }
-  const props = withDefaults(defineProps<Props>(), {
-    disabled: false,
-  })
+  const props = defineProps<Props>()
 
-  const { tabs, selectedTab, disabled } = toRefs(props)
+  const { tabs, selectedTab } = toRefs(props)
 
   onMounted(() => {
     const input = document.getElementById(`tab-${tabs.value[0]}`)
@@ -54,6 +40,7 @@
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
+      case 'EQUIPMENTS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
@@ -69,11 +56,27 @@
 <style lang="scss">
   @import '~@/scss/vars.scss';
 
-  .profile-tabs-checkboxes {
+  .profile-tabs-links {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: $default-margin * 0.5;
+    gap: $default-margin * 1.5;
     margin-bottom: $default-margin;
+
+    a {
+      border: solid 1px var(--custom-checkbox-border-color);
+      border-radius: 5px;
+      color: var(--app-color);
+      display: block;
+      font-size: 0.9em;
+      padding: 2px 6px;
+      text-align: center;
+      text-decoration: none;
+
+      &.selected {
+        background-color: var(--custom-checkbox-checked-bg-color);
+        color: var(--custom-checkbox-checked-color);
+      }
+    }
   }
 </style>

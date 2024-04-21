@@ -6,7 +6,7 @@ from uuid import uuid4
 
 from flask import json as flask_json
 
-from fittrackee.workouts.utils.short_id import encode_uuid
+from fittrackee.utils import encode_uuid
 
 
 def random_string(
@@ -56,6 +56,8 @@ TEST_OAUTH_CLIENT_METADATA = {
 
 OAUTH_SCOPES = {
     "application:write": False,
+    "equipments:read": False,
+    "equipments:write": False,
     "profile:read": False,
     "profile:write": False,
     "users:read": False,

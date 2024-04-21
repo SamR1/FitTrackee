@@ -18,15 +18,25 @@
         />
       </template>
       <template #content>
-        <WorkoutMap
-          :workoutData="workoutData"
-          :markerCoordinates="markerCoordinates"
-        />
-        <WorkoutData
-          :workoutObject="workoutObject"
-          :useImperialUnits="authUser.imperial_units"
-          :displayHARecord="authUser.display_ascent"
-        />
+        <div class="workout-map-data">
+          <WorkoutMap
+            :workoutData="workoutData"
+            :markerCoordinates="markerCoordinates"
+          />
+          <WorkoutData
+            :workoutObject="workoutObject"
+            :useImperialUnits="authUser.imperial_units"
+            :displayHARecord="authUser.display_ascent"
+          />
+        </div>
+        <div class="workout-equipments" v-if="workoutObject.equipments">
+          <EquipmentBadge
+            v-for="equipment in workoutObject.equipments"
+            :equipment="equipment"
+            :workout-id="workoutObject.workoutId"
+            :key="equipment.label"
+          />
+        </div>
       </template>
     </Card>
   </div>
@@ -37,6 +47,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
@@ -135,6 +146,7 @@
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      equipments: segment ? null : workout.equipments,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
@@ -204,9 +216,21 @@
       }
       .card-content {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
+        .workout-map-data {
+          display: flex;
+          flex-direction: row;
+        }
+        .workout-equipments {
+          display: flex;
+          flex-wrap: wrap;
+          gap: $default-padding;
+        }
         @media screen and (max-width: $medium-limit) {
-          flex-direction: column;
+          .workout-map-data {
+            display: flex;
+            flex-direction: column;
+          }
         }
       }
     }

@@ -1,13 +1,19 @@
 {
   "ABOUT": "about",
+  "ACTION": "action",
+  "ACTIVE": "active",
   "CONFIRMATION": "Confirmation",
   "CONTACT": "contact",
   "DAY": "day | days",
+  "DESCRIPTION": "Description",
   "DISPLAYED": "Displayed",
   "DOCUMENTATION": "documentation",
   "HERE": "here",
   "HIDDEN": "Hidden",
   "HOME": "Home",
+  "INACTIVE": "inactive",
+  "LABEL": "label",
+  "NO_DESCRIPTION": "no description",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascending",
@@ -21,5 +27,6 @@
       "LABEL": "par page"
     }
   },
-  "TOTAL": "Total"
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses"
 }

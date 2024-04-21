@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 
-import { formatDuration } from '@/utils/duration'
+import createI18n from '@/i18n'
+import { formatDuration, getDuration } from '@/utils/duration'
+
+const { t } = createI18n.global
 
 describe('formatDuration (without days)', () => {
   const testsParams = [
@@ -92,6 +95,44 @@ describe('formatDuration (with days)', () => {
   testsParams.map((testParams) => {
     it(testParams.description, () => {
       expect(formatDuration(testParams.inputDuration, true)).toStrictEqual(
+        testParams.expectedDuration
+      )
+    })
+  })
+})
+
+describe('getDuration ', () => {
+  const testsParams = [
+    {
+      description: "returns 'O days' and '0h 00min' when '0:00:00' is provided",
+      inputDuration: '0:00:00',
+      expectedDuration: {
+        days: '0 days,',
+        duration: '0h 00min',
+      },
+    },
+    {
+      description: "returns 'O days' and '2h 05min' when '2:05:01' is provided",
+      inputDuration: '2:05:01',
+      expectedDuration: {
+        days: '0 days,',
+        duration: '2h 05min',
+      },
+    },
+    {
+      description:
+        "returns '7 days' and '21h 30min' when '30:25:10' is provided",
+      inputDuration: '7 days, 21:30:19',
+      expectedDuration: {
+        days: '7 days',
+        duration: '21h 30min',
+      },
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      expect(getDuration(testParams.inputDuration, t)).toStrictEqual(
         testParams.expectedDuration
       )
     })

@@ -49,9 +49,11 @@ def get_workouts(
             Workout.query.filter(
                 Workout.user_id == user.id,
                 Workout.workout_date >= date_from if date_from else True,
-                Workout.workout_date < date_to + timedelta(seconds=1)
-                if date_to
-                else True,
+                (
+                    Workout.workout_date < date_to + timedelta(seconds=1)
+                    if date_to
+                    else True
+                ),
                 Workout.sport_id == sport_id if sport_id else True,
             )
             .order_by(Workout.workout_date.asc())
@@ -73,12 +75,12 @@ def get_workouts(
                         'total_descent': 0.0,
                     }
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
-                workouts_list_by_sport[sport_id][
-                    'average_speed'
-                ] = get_average_speed(
-                    workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore  # noqa
-                    workouts_list_by_sport[sport_id]['average_speed'],
-                    workout.ave_speed,
+                workouts_list_by_sport[sport_id]['average_speed'] = (
+                    get_average_speed(
+                        workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore  # noqa
+                        workouts_list_by_sport[sport_id]['average_speed'],
+                        workout.ave_speed,
+                    )
                 )
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
                     workout.distance
@@ -164,9 +166,11 @@ def get_workouts(
         return {
             'status': 'success',
             'data': {
-                'statistics': workouts_list_by_sport
-                if filter_type == 'by_sport'
-                else workouts_list_by_time
+                'statistics': (
+                    workouts_list_by_sport
+                    if filter_type == 'by_sport'
+                    else workouts_list_by_time
+                )
             },
         }
     except Exception as e:

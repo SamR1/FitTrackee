@@ -29,6 +29,11 @@
   "MAX_SIZE": "tamaño máximo",
   "MAX_SPEED": "velocidad máxima",
   "MIN_ALTITUDE": "altitud mínima",
+  "MULTISELECT": {
+    "deselectLabel": "Pulsa intro para eliminar",
+    "selectLabel": "Pulsa intro para seleccionar",
+    "selectedLabel": "Seleccionado"
+  },
   "NEXT_SEGMENT": "Sin tramo siguiente",
   "NEXT_WORKOUT": "Siguiente entrenamiento",
   "NOTES": "notas",
@@ -62,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "poner la altitud de inicio en el cero del gráfico",
   "TITLE": "título",
   "TO": "para",
+  "TOTAL_DISTANCE": "distancia total",
   "TOTAL_DURATION": "duración total",
   "UPLOAD_FIRST_WORKOUT": "Una subida!",
   "VIEW_FULLSCREEN": "Ver a pantalla completa",

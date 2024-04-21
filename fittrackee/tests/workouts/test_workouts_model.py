@@ -1,11 +1,13 @@
 from datetime import timedelta
 
+import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Sport, Workout
-from fittrackee.workouts.utils.short_id import encode_uuid
 
 from ..utils import random_string
 
@@ -20,8 +22,9 @@ class TestWorkoutModel:
     ) -> None:
         workout_cycling_user_1.title = 'Test'
         db.session.commit()
-        assert '<Workout \'Cycling\' - 2018-01-01 00:00:00>' == str(
-            workout_cycling_user_1
+        assert (
+            f'<Workout \'{sport_1_cycling.label}\' - 2018-01-01 00:00:00>'
+            == str(workout_cycling_user_1)
         )
 
     def test_short_id_returns_encoded_workout_uuid(
@@ -53,6 +56,7 @@ class TestWorkoutModel:
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['id'] == workout.short_id
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
         assert serialized_workout['max_speed'] == float(workout.max_speed)
@@ -94,6 +98,7 @@ class TestWorkoutModel:
         assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['id'] == workout.short_id
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
@@ -141,6 +146,7 @@ class TestWorkoutModel:
         assert serialized_workout['descent'] is None
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
+        assert serialized_workout['equipments'] == []
         assert serialized_workout['id'] == workout.short_id
         assert serialized_workout['map'] is None
         assert serialized_workout['max_alt'] is None
@@ -211,3 +217,115 @@ class TestWorkoutModel:
             serialized_workout['next_workout']
             == workout_running_user_1.short_id
         )
+
+    def test_it_returns_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize()
+
+        assert serialized_workout['equipments'] == [
+            equipment_bike_user_1.serialize()
+        ]
+
+    def test_it_raises_exception_when_workout_is_deleted_before_removing_equipment(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+
+        db.session.delete(workout_cycling_user_1)
+        with pytest.raises(
+            Exception, match="equipments exists, remove them first"
+        ):
+            db.session.commit()
+
+        equipment_bike_user_1.total_workouts = 1
+
+    def test_it_updates_equipments_totals(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        workout_running_user_1.equipments = [equipment_shoes_user_1]
+        db.session.commit()
+
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+        assert equipment_bike_user_1.total_workouts == 0
+        assert (
+            equipment_shoes_user_1.total_distance
+            == workout_running_user_1.distance
+        )
+        assert (
+            equipment_shoes_user_1.total_duration
+            == workout_running_user_1.duration
+        )
+        assert (
+            equipment_shoes_user_1.total_moving
+            == workout_running_user_1.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+
+        all_equipments = [equipment_bike_user_1, equipment_shoes_user_1]
+        workout_cycling_user_1.equipments = all_equipments
+        db.session.commit()
+
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_cycling_user_1.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_cycling_user_1.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+        assert equipment_shoes_user_1.total_distance == (
+            workout_running_user_1.distance + workout_cycling_user_1.distance
+        )
+        assert equipment_shoes_user_1.total_duration == (
+            workout_running_user_1.duration + workout_cycling_user_1.duration
+        )
+        assert equipment_shoes_user_1.total_moving == (
+            workout_running_user_1.moving + workout_cycling_user_1.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 2
+
+        workout_running_user_1.equipments = []
+        db.session.commit()
+
+        for equipment in all_equipments:
+            assert equipment.total_distance == workout_cycling_user_1.distance
+            assert equipment.total_duration == workout_cycling_user_1.duration
+            assert equipment.total_moving == workout_cycling_user_1.moving
+            assert equipment.total_workouts == 1
+
+        workout_cycling_user_1.equipments = []
+        db.session.commit()
+
+        for equipment in all_equipments:
+            assert equipment.total_distance == 0.0
+            assert equipment.total_duration == timedelta()
+            assert equipment.total_moving == timedelta()
+            assert equipment.total_workouts == 0

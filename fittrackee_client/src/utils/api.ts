@@ -50,11 +50,17 @@ export const getQuery = (
   } else {
     delete query.q
   }
+  if (typeof locationQuery.notes === 'string') {
+    query.notes = locationQuery.notes
+  } else {
+    delete query.notes
+  }
 
   return query
 }
 
 export const workoutsPayloadKeys = [
+  'equipment_id',
   'from',
   'to',
   'ave_speed_from',

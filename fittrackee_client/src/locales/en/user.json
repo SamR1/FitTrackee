@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
   "LOG_IN": "log in",
   "NEW_PASSWORD": "New password",
+  "NO_SPORT_FOUND": "No sport found.",
   "NO_USERS_FOUND": "No users found.",
   "PASSWORD": "Password",
   "PASSWORD_FORGOTTEN": "Forgot password?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Minimum altitude",
       "ZERO": "Zero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "action",
+      "CONFIRM_EQUIPMENT_DELETION": "Are you sure you want to delete this equipment {0}?",
+      "DESCRIPTION": "description",
+      "DISABLED_BY_ADMIN": "disabled by admin",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "This equipment is associated with workouts.",
+      "IS_ACTIVE": "active",
+      "LABEL": "label",
+      "YOUR_EQUIPMENTS": "Your equipments"
+    },
+    "EQUIPMENTS_EDITION": "Equipments edition",
     "ERRORED_EMAIL_UPDATE": "Please {0} to change your email address again or contact the administrator",
     "FIRST_DAY_OF_WEEK": "First day of week",
     "FIRST_NAME": "First name",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "action",
       "COLOR": "color",
+      "CONFIRM_SPORT_RESET": "Are you sure you want to reset this sport?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Are you sure you want to reset this sport? All default equipments will be removed.",
+      "DEFAULT_EQUIPMENTS": "Default equipment | Default equipments",
       "DISABLED_BY_ADMIN": "disabled by admin",
       "IS_ACTIVE": "active",
       "LABEL": "label",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "EQUIPMENTS": "equipments",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
       "PRIVACY-POLICY": "privacy policy",

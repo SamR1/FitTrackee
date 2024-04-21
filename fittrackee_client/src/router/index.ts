@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
+import AdminEquipmentTypes from '@/components/Administration/AdminEquipmentTypes.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
@@ -20,7 +21,14 @@ import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
-import UserSportPreferences from '@/components/User/UserSportPreferences.vue'
+import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.vue'
+import UserEquipments from '@/components/User/UserEquipments/index.vue'
+import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
+import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
+import UserSports from '@/components/User/UserSports/index.vue'
+import UserSport from '@/components/User/UserSports/UserSport.vue'
+import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
+import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
 import { AUTH_USER_STORE } from '@/store/constants'
@@ -46,8 +54,8 @@ const { t } = createI18n.global
 
 const getTabFromPath = (path: string): string => {
   const regex = /(\/profile)(\/edit)*(\/*)/
-  const tag = path.replace(regex, '').toUpperCase()
-  return tag === '' ? 'PROFILE' : tag.toUpperCase()
+  const tab = path.replace(regex, '').toUpperCase()
+  return tab === '' ? 'PROFILE' : tab.split('/')[0].toUpperCase()
 }
 
 const routes: Array<RouteRecordRaw> = [
@@ -188,12 +196,30 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'sports',
-            name: 'UserSportPreferences',
-            component: UserSportPreferences,
+            name: 'UserSports',
+            component: UserSports,
             props: { isEdition: false },
             meta: {
               title: 'user.PROFILE.TABS.SPORTS',
             },
+            children: [
+              {
+                path: '',
+                name: 'UserSportPreferences',
+                component: UserSportPreferences,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'UserSport',
+                component: UserSport,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+            ],
           },
           {
             path: 'apps',
@@ -243,6 +269,38 @@ const routes: Array<RouteRecordRaw> = [
               },
             ],
           },
+          {
+            path: 'equipments',
+            name: 'UserEquipments',
+            component: UserEquipments,
+            props: { isEdition: false },
+            children: [
+              {
+                path: '',
+                name: 'UserEquipmentsList',
+                component: UserEquipmentsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: 'new',
+                name: 'AddEquipment',
+                component: EquipmentEdition,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'Equipment',
+                component: UserEquipment,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+            ],
+          },
         ],
       },
       {
@@ -287,12 +345,54 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: 'sports',
-            name: 'UserSportPreferencesEdition',
-            component: UserSportPreferences,
+            name: 'UserSportsEdition',
+            component: UserSports,
             props: { isEdition: true },
             meta: {
               title: 'user.PROFILE.EDIT_SPORTS_PREFERENCES',
             },
+            children: [
+              {
+                path: '',
+                name: 'UserSportPreferencesEdition',
+                component: UserSportPreferences,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'UserSportEdition',
+                component: UserSportEdition,
+                meta: {
+                  title: 'user.PROFILE.TABS.SPORTS',
+                },
+              },
+            ],
+          },
+          {
+            path: 'equipments',
+            name: 'UserEquipmentsEdition',
+            component: UserEquipments,
+            props: { isEdition: true },
+            children: [
+              {
+                path: '',
+                name: 'UserEquipmentsListEdition',
+                component: UserEquipmentsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+              {
+                path: ':id',
+                name: 'EquipmentEdition',
+                component: EquipmentEdition,
+                meta: {
+                  title: 'user.PROFILE.TABS.EQUIPMENTS',
+                },
+              },
+            ],
           },
           {
             path: 'privacy-policy',
@@ -394,6 +494,14 @@ const routes: Array<RouteRecordRaw> = [
         props: { edition: true },
         meta: {
           title: 'admin.APPLICATION',
+        },
+      },
+      {
+        path: 'equipment-types',
+        name: 'EquipmentTypeAdministration',
+        component: AdminEquipmentTypes,
+        meta: {
+          title: 'admin.EQUIPMENT_TYPES.TITLE',
         },
       },
       {

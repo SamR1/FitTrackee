@@ -2,6 +2,7 @@ import json
 import time
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import parse_qs
+from uuid import uuid4
 
 from flask import Flask
 from flask.testing import FlaskClient
@@ -12,6 +13,7 @@ from fittrackee import db
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 
 from .custom_asserts import (
     assert_errored_response,
@@ -45,6 +47,10 @@ class RandomMixin:
     @staticmethod
     def random_int(min_val: int = 0, max_val: int = 999999) -> int:
         return random_int(min_val, max_val)
+
+    @staticmethod
+    def random_short_id() -> str:
+        return encode_uuid(uuid4())
 
 
 class OAuth2Mixin(RandomMixin):

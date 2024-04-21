@@ -4,8 +4,10 @@ from typing import Dict
 import pytest
 from flask import Flask
 from freezegun import freeze_time
+from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.equipments.models import Equipment
 from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import (
@@ -13,6 +15,7 @@ from fittrackee.users.models import (
     User,
     UserDataExport,
     UserSportPreference,
+    UserSportPreferenceEquipment,
 )
 from fittrackee.workouts.models import Sport, Workout
 
@@ -382,19 +385,64 @@ class TestUserModelToken:
 
 
 class TestUserSportModel:
-    def test_user_model(
+    def test_user_sport_preferences_model(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        serialized_user_sport = user_sport_1_preference.serialize()
+        serialized_user_sport = user_1_sport_1_preference.serialize()
+
         assert serialized_user_sport['user_id'] == user_1.id
         assert serialized_user_sport['sport_id'] == sport_1_cycling.id
         assert serialized_user_sport['color'] is None
         assert serialized_user_sport['is_active']
         assert serialized_user_sport['stopped_speed_threshold'] == 1
+        assert serialized_user_sport['default_equipments'] == []
+
+    def test_user_sport_preferences_model_with_default_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment).values(
+                [
+                    {
+                        "equipment_id": equipment_bike_user_1.id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
+                    },
+                    {
+                        "equipment_id": equipment_shoes_user_1.id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
+                    },
+                ]
+            )
+        )
+
+        serialized_user_sport = user_1_sport_1_preference.serialize()
+
+        assert serialized_user_sport['user_id'] == user_1.id
+        assert serialized_user_sport['sport_id'] == sport_1_cycling.id
+        assert serialized_user_sport['color'] is None
+        assert serialized_user_sport['is_active']
+        assert serialized_user_sport['stopped_speed_threshold'] == 1
+        assert len(serialized_user_sport['default_equipments']) == 2
+        assert (
+            equipment_bike_user_1.serialize()
+            in serialized_user_sport['default_equipments']
+        )
+        assert (
+            equipment_shoes_user_1.serialize()
+            in serialized_user_sport['default_equipments']
+        )
 
 
 class TestUserDataExportSerializer:

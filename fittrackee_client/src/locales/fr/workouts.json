@@ -29,6 +29,11 @@
   "MAX_SIZE": "taille max. ",
   "MAX_SPEED": "vitesse max",
   "MIN_ALTITUDE": "altitude min",
+  "MULTISELECT": {
+    "deselectLabel": "Appuyer sur Entrée pour supprimer",
+    "selectLabel": "Appuyer sur Entrée pour sélectionner",
+    "selectedLabel": "Sélectionné"
+  },
   "NEXT_SEGMENT": "Segment suivant",
   "NEXT_WORKOUT": "Séance suivante",
   "NOTES": "notes",
@@ -62,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
   "TITLE": "titre",
   "TO": "jusqu'au",
+  "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",

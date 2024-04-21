@@ -18,12 +18,6 @@ A command line interface (CLI) is available to manage database, OAuth2 tokens an
       oauth2  Manage OAuth2 tokens.
       users   Manage users.
 
-.. warning::
-    | The following commands are now deprecated and will be removed in a next version:
-    | - ``fittrackee_set_admin``
-    | - ``fittrackee_upgrade_db``
-    | - ``fittrackee_worker`` (disabled)
-
 
 Database
 ~~~~~~~~

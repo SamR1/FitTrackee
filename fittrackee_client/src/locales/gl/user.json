@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Tes certeza de querer pechar a sesión?",
   "LOG_IN": "acceder",
   "NEW_PASSWORD": "Novo contrasinal",
+  "NO_SPORT_FOUND": "Non se atopan deportes.",
   "NO_USERS_FOUND": "Non hai usuarias.",
   "PASSWORD": "Contrasinal",
   "PASSWORD_FORGOTTEN": "Esqueciches o contrasinal?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Altitude mínima",
       "ZERO": "Cero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "acción",
+      "CONFIRM_EQUIPMENT_DELETION": "Tes certeza de querer eliminar o equipamento {0}?",
+      "DESCRIPTION": "descrición",
+      "DISABLED_BY_ADMIN": "desactivado por Admin",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Este equipamento está asociado a adestramentos.",
+      "IS_ACTIVE": "activo",
+      "LABEL": "etiqueta",
+      "YOUR_EQUIPMENTS": "Os teus equipamentos"
+    },
+    "EQUIPMENTS_EDITION": "Edición de equipamentos",
     "ERRORED_EMAIL_UPDATE": "{0} para cambiar o enderezo de correo electrónico ou contacta coa administración",
     "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
     "FIRST_NAME": "Nome",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "acción",
       "COLOR": "cor",
+      "CONFIRM_SPORT_RESET": "Tes certeza de querer restablecer este deporte?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Tes a certeza de querer restablecer este deporte? Os equipamentos por defecto serán eleminados.",
+      "DEFAULT_EQUIPMENTS": "Equipamento por defecto|Equipamentos por defecto",
       "DISABLED_BY_ADMIN": "desactivado por admin",
       "IS_ACTIVE": "activa",
       "LABEL": "etiqueta",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "conta",
       "APPS": "apps",
+      "EQUIPMENTS": "equipamentos",
       "PICTURE": "imaxe",
       "PREFERENCES": "preferencias",
       "PRIVACY-POLICY": "política de privacidade",
