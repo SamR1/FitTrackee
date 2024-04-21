@@ -323,22 +323,22 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
-        active (default: true)
+        active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment, not mandatory
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: equipment created
-    :statuscode 400: invalid payload
-        - ``The 'label' and 'equipment_type_id' parameters must be provided``
+    :statuscode 400:
+        - ``the 'label' and 'equipment_type_id' parameters must be provided``
         - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
         - ``sport (id <sport_id>) does not exist``
-        - ``invalid sport '<sport_label>' for equipment type
-          '{equipment_type_label}'``
+        - ``invalid sport '<sport_label>' for equipment
+          type '<equipment_type_label>'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -354,7 +354,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         or equipment_data.get('equipment_type_id') is None
     ):
         return InvalidPayloadErrorResponse(
-            "The 'label' and 'equipment_type_id' parameters must be "
+            "the 'label' and 'equipment_type_id' parameters must be "
             "provided"
         )
 
@@ -449,6 +449,9 @@ def update_equipment(
     Update a piece of equipment. Allows a user to change one of their
     equipment's label, description, type or active status.
 
+    Changing equipment type will remove all existing workouts associations
+    for that piece of equipment and default sports.
+
     **Scope**: ``equipments:write``
 
     **Example request**:
@@ -482,11 +485,11 @@ def update_equipment(
                 "id": "QRj7BY6H2iYjSV8sersFgV",
                 "is_active": true,
                 "label": "Updated bike",
-                "num_workouts": 0,
                 "total_distance": 0.0,
                 "total_duration": "0:00:00",
                 "total_moving": "0:00:00",
-                "user_id": 1
+                "user_id": 1,
+                "workouts_count": 0
               }
             ]
           },
@@ -516,14 +519,14 @@ def update_equipment(
     :<json string description: a (perhaps longer) description of the
         equipment (limited to 200 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
-        active (default: true)
+        active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: equipment updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
         - ``no request data was supplied``
         - ``no valid parameters supplied``
         - ``equipment already exists with the same label``
@@ -531,8 +534,8 @@ def update_equipment(
         - ``invalid equipment type id``
         - ``equipment type is inactive``
         - ``sport (id <sport_id>) does not exist``
-        - ``invalid sport '<sport_label>' for equipment type
-          '{equipment_type_label}'``
+        - ``invalid sport '<sport_label>' for equipment
+          type '<equipment_type_label>'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -757,11 +760,11 @@ def refresh_equipment(
                 "id": "QRj7BY6H2iYjSV8sersFgV",
                 "is_active": true,
                 "label": "Updated bike",
-                "num_workouts": 1,
                 "total_distance": 6.0,
                 "total_duration": "1:10:00",
                 "total_moving": "1:00:00",
-                "user_id": 1
+                "user_id": 1,
+                "workouts_count": 1
               }
             ]
           },

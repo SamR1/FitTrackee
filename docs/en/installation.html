@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Installation - FitTrackee 0.7.32 documentation</title>
+        <title>Installation - FitTrackee 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.7.32
+      <a href="index.html"><div class="brand">FitTrackee 0.8.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.7.32
+  <span class="sidebar-brand-text">FitTrackee 0.8.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -171,6 +171,8 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Equipments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Equipment Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -787,7 +789,7 @@ Commands:
 </div>
 </div>
 <ul class="simple">
-<li><p>Create and activate a virtualenv</p></li>
+<li><p>Create and activate a <a class="reference external" href="https://docs.python.org/3/library/venv.html">virtualenv</a></p></li>
 <li><p>Install <strong>FitTrackee</strong> with pip</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>fittrackee
@@ -922,11 +924,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.7.32):</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.0):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.32.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.7.32<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.0.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.0<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -992,7 +994,7 @@ database credentials</strong>):</p></li>
 </div>
 </div>
 <ul class="simple">
-<li><p>Stop the application and activate the virtualenv</p></li>
+<li><p>Stop the application and activate the <a class="reference external" href="https://docs.python.org/3/library/venv.html">virtualenv</a></p></li>
 <li><p>Upgrade with pip</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>fittrackee
@@ -1062,11 +1064,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.7.32) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.0) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.7.32.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.7.32/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.0.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.0/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1320,7 +1322,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </section>
 <section id="yunohost">
 <h2>Yunohost<a class="headerlink" href="#yunohost" title="Permalink to this heading">#</a></h2>
-<p>A package is available, see <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
+<p>Thanks to contributors, a package is available, see <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
 </section>
 </section>
 
@@ -1429,7 +1431,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f6544be3"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6a14807c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

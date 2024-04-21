@@ -403,7 +403,7 @@ From PyPI
 .. note::
     | Simplest way to install FitTrackee.
 
-- Create and activate a virtualenv
+- Create and activate a `virtualenv <https://docs.python.org/3/library/venv.html>`__
 
 - Install **FitTrackee** with pip
 
@@ -529,13 +529,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.7.32):
+-  Download the last release (for now, it is the release v0.8.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
-   $ tar -xzf v0.7.32.tar.gz
-   $ mv FitTrackee-0.7.32 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.0.tar.gz
+   $ tar -xzf v0.8.0.tar.gz
+   $ mv FitTrackee-0.8.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -593,7 +593,7 @@ From PyPI
 .. warning::
     | Only if **FitTrackee** was initially installed from **PyPI**
 
-- Stop the application and activate the virtualenv
+- Stop the application and activate the `virtualenv <https://docs.python.org/3/library/venv.html>`__
 
 - Upgrade with pip
 
@@ -666,13 +666,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.7.32) and overwrite existing files:
+- Download the last release (for now, it is the release v0.8.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.7.32.tar.gz
-   $ tar -xzf v0.7.32.tar.gz
-   $ cp -R FitTrackee-0.7.32/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.0.tar.gz
+   $ tar -xzf v0.8.0.tar.gz
+   $ cp -R FitTrackee-0.8.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -924,4 +924,4 @@ Open http://localhost:3000
 Yunohost
 ~~~~~~~~
 
-A package is available, see https://github.com/YunoHost-Apps/fittrackee_ynh.
+Thanks to contributors, a package is available, see https://github.com/YunoHost-Apps/fittrackee_ynh.

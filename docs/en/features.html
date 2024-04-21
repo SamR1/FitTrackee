@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Features - FitTrackee 0.7.32 documentation</title>
+        <title>Features - FitTrackee 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -126,7 +126,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.7.32
+      <a href="index.html"><div class="brand">FitTrackee 0.8.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +153,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.7.32
+  <span class="sidebar-brand-text">FitTrackee 0.8.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -171,6 +171,8 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Equipments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Equipment Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -305,7 +307,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">For now, <strong>FitTrackee</strong> does not have an importer, but some <a class="reference external" href="third_party_tools.html#importers">third-party tools</a> allow you to import workouts.</div>
+<div class="line">For now, <strong>FitTrackee</strong> has no importer, but some <a class="reference external" href="third_party_tools.html#importers">third-party tools</a> allow you to import workouts.</div>
 </div>
 </div>
 <ul>
@@ -324,6 +326,7 @@
 <div class="line">Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<em>new in 0.5.5</em>).</div>
 </div>
 </li>
+<li><p>An <a class="reference external" href="features.html#equipments">equipment</a> can be associated with a workout (<em>new in 0.8.0</em>). For now, only one equipment can be associated.</p></li>
 <li><p>Segments can be displayed.</p></li>
 <li><p>Workout gpx file can be downloaded (<em>new in 0.5.1</em>)</p></li>
 <li><p>Workout edition and deletion. User can add a note.</p></li>
@@ -362,7 +365,9 @@
 <dt>The user can filter workouts on:</dt><dd><ul>
 <li><p>date</p></li>
 <li><p>sports (only sports with workouts are displayed in sport dropdown)</p></li>
+<li><p>equipment (only equipments with workouts are displayed in equipment dropdown) (<em>new in 0.8.0</em>)</p></li>
 <li><p>title (<em>new in 0.7.15</em>)</p></li>
+<li><p>notes (<em>new in 0.8.0</em>)</p></li>
 <li><p>distance</p></li>
 <li><p>duration</p></li>
 <li><p>average speed</p></li>
@@ -405,10 +410,10 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <p>In case email sending is not configured, a <a class="reference external" href="cli.html#ftcli-users-update">command line</a> allows to activate users account.</p>
 </div>
 <ul class="simple">
-<li><p>A user can set language, timezone and first day of week.</p></li>
-<li><p>A user can set the interface theme (light, dark or according to browser preferences) (<em>new in 0.7.27</em>).</p></li>
 <li><p>A user can reset his password (<em>new in 0.3.0</em>)</p></li>
 <li><p>A user can change his email address (<em>new in 0.6.0</em>)</p></li>
+<li><p>A user can set language, timezone and first day of week.</p></li>
+<li><p>A user can set the interface theme (light, dark or according to browser preferences) (<em>new in 0.7.27</em>).</p></li>
 <li><p>A user can choose between metric system and imperial system for distance, elevation and speed display (<em>new in 0.5.0</em>)</p></li>
 <li><p>A user can choose to display or hide ascent records and total on Dashboard (<em>new in 0.6.11</em>)</p></li>
 <li><p>A user can choose format used to display dates (<em>new in 0.7.3</em>)</p></li>
@@ -424,7 +429,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <dt>A user can set sport preferences (<em>new in 0.5.0</em>):</dt><dd><ul>
 <li><p>change sport color (used for sport image and charts)</p></li>
 <li><p>can override stopped speed threshold (for next uploaded gpx files)</p></li>
-<li><p>disable/enable a sport.</p></li>
+<li><p>disable/enable a sport</p></li>
+<li><p>define default <a class="reference external" href="features.html#equipments">equipments</a> (<em>new in 0.8.0</em>).</p></li>
 </ul>
 </dd>
 </dl>
@@ -439,7 +445,6 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </div>
 </div>
 <ul>
-<li><p>A user can create <a class="reference external" href="apps.html">clients</a> for third-party applications (<em>new in 0.7.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">A user can request a data export (<em>new in 0.7.13</em>).</div>
 <div class="line">It generates a zip archive containing 2 <code class="docutils literal notranslate"><span class="pre">json</span></code> files (user info and workouts data) and all uploaded gpx files.</div>
@@ -449,6 +454,68 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For now, it’s not possible to import these files into another <strong>FitTrackee</strong> instance.</p>
+</div>
+</section>
+<section id="oauth-apps">
+<h2>OAuth Apps<a class="headerlink" href="#oauth-apps" title="Permalink to this heading">#</a></h2>
+<p>(<em>new in 0.7.0</em>)</p>
+<ul class="simple">
+<li><p>A user can create <a class="reference external" href="apps.html">clients</a> for third-party applications.</p></li>
+</ul>
+</section>
+<section id="equipments">
+<h2>Equipments<a class="headerlink" href="#equipments" title="Permalink to this heading">#</a></h2>
+<p>(<em>new in 0.8.0</em>)</p>
+<ul class="simple">
+<li><p>A user can create equipments that can be associated with workouts.</p></li>
+<li><dl class="simple">
+<dt>The following equipment types are available, depending on the sport:</dt><dd><ul>
+<li><p>Shoes: Hiking, Mountaineering, Running, Trail and Walking,</p></li>
+<li><p>Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain Biking (Electric),</p></li>
+<li><p>Bike Trainer: Cycling (Virtual),</p></li>
+<li><p>Kayak/Boat: Rowing,</p></li>
+<li><p>Skis: Skiing (Alpine and Cross Country),</p></li>
+<li><p>Snowshoes: Snowshoes.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Equipment is visible only to its owner.</p></li>
+<li><p>For now only, only one piece of equipment can be associated with a workout.</p></li>
+<li><dl class="simple">
+<dt>Following totals are displayed for each piece of equipment:</dt><dd><ul>
+<li><p>total distance</p></li>
+<li><p>total duration</p></li>
+<li><p>total workouts</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">In case of an incorrect total (although this should not happen), it is possible to recalculate totals.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>It is possible to define default equipments for sports: when adding a workout, the equipment will automatically be displayed in the dropdown list depending on selected sport.</p></li>
+<li><p>An equipment can be edited (label, equipment type, description, active status and default sports).</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Changing equipment type will remove all existing workouts associations for that piece of equipment and default sports.</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>Deactivated equipment will not appear in dropdown when <strong>a workout is added</strong>. It remains displayed in the details of the workout, to which it was associated before being deactivated.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">An equipment type can be deactivated by an administrator.</div>
+</div>
 </div>
 </section>
 <section id="administration">
@@ -505,6 +572,12 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>delete a user</p></li>
 </ul>
 </section>
+<section id="equipment-types">
+<h3>Equipment Types<a class="headerlink" href="#equipment-types" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>enable or disable an equipment type in order to match disabled sports (a equipment type can be disabled even if equipment with this type exists)  (<em>new in 0.8.0</em>)</p></li>
+</ul>
+</section>
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
@@ -558,7 +631,16 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </figure>
 </section>
 <section id="id1">
-<h3>Administration<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3>Equipments<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<figure class="align-default">
+<img alt="FitTrackee Equipments" src="_images/fittrackee_screenshot-09.png" />
+</figure>
+<figure class="align-default">
+<img alt="FitTrackee Equipment detail" src="_images/fittrackee_screenshot-10.png" />
+</figure>
+</section>
+<section id="id2">
+<h3>Administration<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Administration" src="_images/fittrackee_screenshot-05.png" />
 </figure>
@@ -631,9 +713,12 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><a class="reference internal" href="#">Features</a><ul>
 <li><a class="reference internal" href="#workouts">Workouts</a></li>
 <li><a class="reference internal" href="#account-preferences">Account &amp; preferences</a></li>
+<li><a class="reference internal" href="#oauth-apps">OAuth Apps</a></li>
+<li><a class="reference internal" href="#equipments">Equipments</a></li>
 <li><a class="reference internal" href="#administration">Administration</a><ul>
 <li><a class="reference internal" href="#application">Application</a></li>
 <li><a class="reference internal" href="#users">Users</a></li>
+<li><a class="reference internal" href="#equipment-types">Equipment Types</a></li>
 <li><a class="reference internal" href="#sports">Sports</a></li>
 </ul>
 </li>
@@ -643,7 +728,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><a class="reference internal" href="#workout-detail">Workout detail</a></li>
 <li><a class="reference internal" href="#workouts-list">Workouts list</a></li>
 <li><a class="reference internal" href="#statistics">Statistics</a></li>
-<li><a class="reference internal" href="#id1">Administration</a></li>
+<li><a class="reference internal" href="#id1">Equipments</a></li>
+<li><a class="reference internal" href="#id2">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -657,7 +743,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f6544be3"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6a14807c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

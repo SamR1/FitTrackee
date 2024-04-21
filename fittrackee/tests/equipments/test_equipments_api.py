@@ -444,7 +444,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         self.assert_400(
             response,
             (
-                "The 'label' and 'equipment_type_id' parameters must be "
+                "the 'label' and 'equipment_type_id' parameters must be "
                 "provided"
             ),
         )

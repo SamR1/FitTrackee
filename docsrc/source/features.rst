@@ -56,7 +56,7 @@ Workouts
   | Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.
 
 .. note::
-  | For now, **FitTrackee** does not have an importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
+  | For now, **FitTrackee** has no importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
 
 - | A workout can even be created without gpx (the user must enter date, time, duration and distance).
   | Ascent and descent can also be provided (*new in 0.7.10*).
@@ -64,6 +64,7 @@ Workouts
   | Controls allow full screen view and position reset (*new in 0.5.5*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
+- An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
 - Segments can be displayed.
 - Workout gpx file can be downloaded (*new in 0.5.1*)
 - Workout edition and deletion. User can add a note.
@@ -88,7 +89,9 @@ Workouts
     - The user can filter workouts on:
         - date
         - sports (only sports with workouts are displayed in sport dropdown)
+        - equipment (only equipments with workouts are displayed in equipment dropdown) (*new in 0.8.0*)
         - title (*new in 0.7.15*)
+        - notes (*new in 0.8.0*)
         - distance
         - duration
         - average speed
@@ -114,10 +117,10 @@ Account & preferences
 .. note::
   In case email sending is not configured, a `command line <cli.html#ftcli-users-update>`__ allows to activate users account.
 
-- A user can set language, timezone and first day of week.
-- A user can set the interface theme (light, dark or according to browser preferences) (*new in 0.7.27*).
 - A user can reset his password (*new in 0.3.0*)
 - A user can change his email address (*new in 0.6.0*)
+- A user can set language, timezone and first day of week.
+- A user can set the interface theme (light, dark or according to browser preferences) (*new in 0.7.27*).
 - A user can choose between metric system and imperial system for distance, elevation and speed display (*new in 0.5.0*)
 - A user can choose to display or hide ascent records and total on Dashboard (*new in 0.6.11*)
 - A user can choose format used to display dates (*new in 0.7.3*)
@@ -130,20 +133,58 @@ Account & preferences
 - A user can set sport preferences (*new in 0.5.0*):
      - change sport color (used for sport image and charts)
      - can override stopped speed threshold (for next uploaded gpx files)
-     - disable/enable a sport.
+     - disable/enable a sport
+     - define default `equipments <features.html#equipments>`__ (*new in 0.8.0*).
 
 .. note::
   | If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if the user has workouts and only sport color can be changed.
   | A disabled sport (by admin or user) will not appear in dropdown when **adding a workout**.
   | A workout with a disabled sport will still be displayed in the application.
 
-- A user can create `clients <apps.html>`__ for third-party applications (*new in 0.7.0*).
 - | A user can request a data export (*new in 0.7.13*).
   | It generates a zip archive containing 2 ``json`` files (user info and workouts data) and all uploaded gpx files.
 
 .. note::
   For now, it's not possible to import these files into another **FitTrackee** instance.
 
+OAuth Apps
+^^^^^^^^^^
+(*new in 0.7.0*)
+
+- A user can create `clients <apps.html>`__ for third-party applications.
+
+Equipments
+^^^^^^^^^^
+(*new in 0.8.0*)
+
+- A user can create equipments that can be associated with workouts.
+- The following equipment types are available, depending on the sport:
+    - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
+    - Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain Biking (Electric),
+    - Bike Trainer: Cycling (Virtual),
+    - Kayak/Boat: Rowing,
+    - Skis: Skiing (Alpine and Cross Country),
+    - Snowshoes: Snowshoes.
+- Equipment is visible only to its owner.
+- For now only, only one piece of equipment can be associated with a workout.
+- Following totals are displayed for each piece of equipment:
+    - total distance
+    - total duration
+    - total workouts
+
+.. note::
+  | In case of an incorrect total (although this should not happen), it is possible to recalculate totals.
+
+- It is possible to define default equipments for sports: when adding a workout, the equipment will automatically be displayed in the dropdown list depending on selected sport.
+- An equipment can be edited (label, equipment type, description, active status and default sports).
+
+.. warning::
+  | Changing equipment type will remove all existing workouts associations for that piece of equipment and default sports.
+
+- Deactivated equipment will not appear in dropdown when **a workout is added**. It remains displayed in the details of the workout, to which it was associated before being deactivated.
+
+.. note::
+  | An equipment type can be deactivated by an administrator.
 
 Administration
 ^^^^^^^^^^^^^^
@@ -199,6 +240,11 @@ Users
 - delete a user
 
 
+Equipment Types
+"""""""""""""""
+- enable or disable an equipment type in order to match disabled sports (a equipment type can be disabled even if equipment with this type exists)  (*new in 0.8.0*)
+
+
 Sports
 """"""
 - enable or disable a sport (a sport can be disabled even if workout with this sport exists)
@@ -250,6 +296,16 @@ Statistics
 """"""""""
 .. figure:: _images/fittrackee_screenshot-04.png
    :alt: FitTrackee Statistics
+
+
+Equipments
+""""""""""
+.. figure:: _images/fittrackee_screenshot-09.png
+   :alt: FitTrackee Equipments
+
+.. figure:: _images/fittrackee_screenshot-10.png
+   :alt: FitTrackee Equipment detail
+
 
 Administration
 """"""""""""""

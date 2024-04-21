@@ -1,5 +1,54 @@
 # Change log
 
+## Version 0.8.0 (2024/04/21)
+
+**FitTrackee** now lets you associate [equipment](https://samr1.github.io/FitTrackee/en/features.html#equipments) with workouts and filter workouts on notes.
+
+### Features and enhancements
+
+* [#259](https://github.com/SamR1/FitTrackee/issues/259) - Feature request: "Equipment" that can be associated with workouts
+* [#512](https://github.com/SamR1/FitTrackee/issues/512) - Add ability to filter on notes in Workouts List
+
+### Bugs Fixed
+
+* [#508](https://github.com/SamR1/FitTrackee/issues/508) - Stopped speed threshold unit is missing on sports list
+* [3b6fa25](https://github.com/SamR1/FitTrackee/commit/3b6fa25e72375b5790a10761cdf7772ebfc02fbb) - fix workouts table display on small resolutions
+* [51758b4](https://github.com/SamR1/FitTrackee/commit/51758b45cd9e343b07409a55618879e4a8c534eb) - fix on filters hiding on small resolutions
+
+### Translations
+
+* [PR#507](https://github.com/SamR1/FitTrackee/pull/507) Translations update (Galician)
+* [PR#510](https://github.com/SamR1/FitTrackee/pull/510) Translations update (Spanish)
+* [PR#511](https://github.com/SamR1/FitTrackee/pull/511) Translations update (Galician)
+* [PR#521](https://github.com/SamR1/FitTrackee/pull/521) Translations update (Spanish)
+* [PR#524](https://github.com/SamR1/FitTrackee/pull/524) Translations update (Spanish)
+
+Translation status:
+- Basque: 89%
+- Dutch: 89%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 89%
+- Italian: 75%
+- Norwegian Bokmål: 53%
+- Polish: 89%
+- Spanish: 100%
+
+### Misc
+
+* [#502](https://github.com/SamR1/FitTrackee/issues/502) - Remove deprecated commands
+* [PR#506](https://github.com/SamR1/FitTrackee/pull/506) - CLI - update database commands
+
+
+Thanks to the contributors:
+- @jat255
+- @gallegonovato
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.7.32 (2024/03/10)
 
 ### Bugs Fixed
