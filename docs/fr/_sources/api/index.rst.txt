@@ -7,6 +7,8 @@ API documentation
 
    auth
    configuration
+   equipments
+   equipment_types
    oauth2
    records
    sports

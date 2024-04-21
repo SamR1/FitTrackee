@@ -1032,16 +1032,17 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment ids and notes
-                (example: ``{"sport_id": 1, "notes": ""}``).
+    :form data: sport id, equipment id and notes (example:
+                ``{"sport_id": 1, "notes": "", "equipment_ids": []}``).
                 Double quotes in notes must be escaped.
 
-                For `equipment_ids`, the id numbers of one or more pieces of
-                equipment to associate with workouts.
-                If not provided and default equipments exist for sport, default
-                equipments will be associated.
+                For `equipment_ids`, the id of the equipment to associate with
+                this workout.
+                **Note**: for now only one equipment can be associated.
+                If not provided and default equipment exists for sport,
+                default equipment will be associated.
 
-                Notes and equipment ids are not mandatory
+                Notes and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1051,6 +1052,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1239,10 +1245,10 @@ def post_workout_no_gpx(
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json array of strings equipment_ids:
-        the id of one or more pieces of equipment
-        to associate with this workout
-        if not provided and default equipments exist for sport, default
-        equipments will be associated
+        the id of the equipment to associate with this workout.
+        **Note**: for now only one equipment can be associated.
+        If not provided and default equipment exists for sport,
+        default equipment will be associated.
     :<json string notes: notes (not mandatory)
     :<json integer sport_id: workout sport id
     :<json string title: workout title (not mandatory)
@@ -1252,7 +1258,13 @@ def post_workout_no_gpx(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: workout created
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1448,11 +1460,11 @@ def update_workout(
     :<json string notes: notes
     :<json integer sport_id: workout sport id
     :<json string title: workout title
-    :<json array of string equipment_ids:
-        the id of one or more pieces of equipment
-        to associate with this workout (any existing equipment
-        for this workout will be replaced); if an empty array,
-        all equipment for this workout will be removed
+    :<json array of strings equipment_ids:
+        the id of the equipment to associate with this workout (any existing
+        equipment for this workout will be replaced).
+        **Note**: for now only one equipment can be associated.
+        If an empty array, equipment for this workout will be removed.
     :<json string workout_date: workout date in user timezone
         (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
@@ -1460,7 +1472,13 @@ def update_workout(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: workout updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
