@@ -559,7 +559,9 @@ def update_equipment(
     ):
         return InvalidPayloadErrorResponse('no valid parameters supplied')
 
-    default_for_sport_ids = equipment_data.get("default_for_sport_ids", None)
+    new_default_for_sport_ids = equipment_data.get(
+        "default_for_sport_ids", None
+    )
     user_sport_preferences = None
     try:
         equipment = Equipment.query.filter_by(
@@ -568,16 +570,8 @@ def update_equipment(
         if not equipment:
             return DataNotFoundErrorResponse('equipments')
 
-        if default_for_sport_ids is not None:
-            default_for_sport_ids = equipment_data.get(
-                "default_for_sport_ids", []
-            )
-            try:
-                user_sport_preferences = handle_default_sports(
-                    default_for_sport_ids, auth_user, equipment.equipment_type
-                )
-            except InvalidEquipmentsException as e:
-                return InvalidPayloadErrorResponse(str(e))
+        check_default_sports = True
+        equipment_type = equipment.equipment_type
 
         # set new values if they were in the request
         if 'is_active' in equipment_data:
@@ -630,11 +624,32 @@ def update_equipment(
                     UserSportPreferenceEquipment.c.equipment_id
                     == equipment.id,
                 ).all()
-                default_for_sport_ids = []
+
+                # with changes on equipments but no changes on default sports,
+                # the default sports are removed.
+                if new_default_for_sport_ids is None or (
+                    new_default_for_sport_ids
+                    == [
+                        sport_preference.sport_id
+                        for sport_preference in equipment.default_for_sports
+                    ]
+                ):
+                    new_default_for_sport_ids = []
+                    check_default_sports = False
 
             equipment.equipment_type_id = equipment_type_id
 
-        if default_for_sport_ids is not None:
+        if check_default_sports and new_default_for_sport_ids is not None:
+            try:
+                user_sport_preferences = handle_default_sports(
+                    new_default_for_sport_ids,
+                    auth_user,
+                    equipment_type,
+                )
+            except InvalidEquipmentsException as e:
+                return InvalidPayloadErrorResponse(str(e))
+
+        if new_default_for_sport_ids is not None:
             existing_sports = (
                 db.session.query(UserSportPreferenceEquipment)
                 .filter(
@@ -646,7 +661,7 @@ def update_equipment(
             )
 
             sport_ids_to_remove = {s[1] for s in existing_sports} - set(
-                default_for_sport_ids
+                new_default_for_sport_ids
             )
 
             if sport_ids_to_remove:
@@ -667,7 +682,7 @@ def update_equipment(
                 db.session.query(UserSportPreferenceEquipment).filter(
                     UserSportPreferenceEquipment.c.user_id == auth_user.id,
                     UserSportPreferenceEquipment.c.sport_id.in_(
-                        default_for_sport_ids
+                        new_default_for_sport_ids
                     ),
                 ).delete()
 
