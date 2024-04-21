@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Dict, List, Tuple, Union
 
 from flask import Blueprint, request
-from sqlalchemy import exc
+from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
@@ -20,7 +20,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport, WorkoutEquipment
+from fittrackee.workouts.models import Sport, Workout, WorkoutEquipment
 
 from .exceptions import InvalidEquipmentsException
 from .models import Equipment, EquipmentType
@@ -700,6 +700,120 @@ def update_equipment(
                     )
                     .on_conflict_do_nothing()
                 )
+        db.session.commit()
+
+        return {
+            'status': 'success',
+            'data': {'equipments': [equipment.serialize()]},
+        }
+
+    except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(
+            error=e,
+            db=db,
+            message='Error during equipment update',
+            status='fail',
+        )
+
+
+@equipments_blueprint.route(
+    '/equipments/<string:equipment_short_id>/refresh', methods=['POST']
+)
+@require_auth(scopes=['equipments:write'])
+def refresh_equipment(
+    auth_user: User, equipment_short_id: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Refresh equipment totals (in case values are incorrect).
+
+    **Scope**: ``equipments:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/equipments/QRj7BY6H2iYjSV8sersFgV/refresh HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "equipments": [
+              {
+                "creation_date": "Tue, 21 Mar 2023 06:28:10 GMT",
+                "default_for_sport_ids": [],
+                "description": "My Shoes",
+                "equipment_type": {
+                  "id": 1,
+                  "is_active": true,
+                  "label": "Shoe"
+                },
+                "id": "QRj7BY6H2iYjSV8sersFgV",
+                "is_active": true,
+                "label": "Updated bike",
+                "num_workouts": 1,
+                "total_distance": 6.0,
+                "total_duration": "1:10:00",
+                "total_moving": "1:00:00",
+                "user_id": 1
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: equipment updated
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``equipment not found``
+    :statuscode 500: ``Error during equipment save``
+    """
+    equipment = Equipment.query.filter_by(
+        uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
+    ).first()
+    if not equipment:
+        return DataNotFoundErrorResponse('equipments')
+
+    try:
+        totals = dict(
+            db.session.query(
+                func.sum(Workout.distance).label('total_distance'),
+                func.sum(Workout.duration).label('total_duration'),
+                func.sum(Workout.moving).label('total_moving'),
+                func.count(Workout.id).label('total_workouts'),
+            )
+            .join(WorkoutEquipment)
+            .filter(WorkoutEquipment.c.equipment_id == equipment.id)
+            .first()
+        )
+        equipment.total_distance = (
+            0.0
+            if totals["total_distance"] is None
+            else totals["total_distance"]
+        )
+        equipment.total_duration = (
+            timedelta()
+            if totals["total_duration"] is None
+            else totals["total_duration"]
+        )
+        equipment.total_moving = (
+            timedelta()
+            if totals["total_moving"] is None
+            else totals["total_moving"]
+        )
+        equipment.total_workouts = totals["total_workouts"]
+
         db.session.commit()
 
         return {
