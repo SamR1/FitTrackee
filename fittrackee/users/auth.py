@@ -1062,12 +1062,14 @@ def edit_user_sport_preferences(
         "status": "success"
       }
 
-    :<json int sport_id: the sport preference to add/change
+    :<json int sport_id: id of the sport for which preferences are
+           created/modified
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
-    :<json array of strings default_equipment_ids: the default equipment ids
-                                                        to use for this sport
+    :<json array of strings default_equipment_ids: the default equipment id
+           to use for this sport.
+           **Note**: for now only one equipment can be associated.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1079,6 +1081,11 @@ def edit_user_sport_preferences(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+        - ``equipment_ids must be an array of strings``
+        - ``only one equipment can be added``
+        - ``equipment with id <equipment_id> does not exist``
+        - ``invalid equipment id <equipment_id> for sport``
+        - ``equipment with id <equipment_id> is inactive``
     :statuscode 404: ``sport does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """

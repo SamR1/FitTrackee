@@ -106,13 +106,20 @@
       </template>
     </dl>
     <div class="equipment-buttons">
-      <button @click="$router.push(`/profile/edit/equipments/${equipment.id}`)">
+      <button
+        @click="$router.push(`/profile/edit/equipments/${equipment.id}`)"
+        :disabled="loading"
+      >
         {{ $t('buttons.EDIT') }}
       </button>
-      <button class="danger" @click="displayModal = true">
+      <button :disabled="loading" @click="refreshTotals(equipment.id)">
+        {{ $t('buttons.REFRESH_TOTALS') }}
+      </button>
+      <button class="danger" @click="displayModal = true" :disabled="loading">
         {{ $t('buttons.DELETE') }}
       </button>
       <button
+        :disabled="loading"
         @click="
           $router.push(
             route.query.fromWorkoutId
@@ -129,14 +136,22 @@
   </div>
   <div v-else>
     <p class="no-equipment">{{ $t('equipments.NO_EQUIPMENT') }}</p>
-    <button @click="$router.push('/profile/equipments')">
+    <button @click="$router.push('/profile/equipments')" :disabled="loading">
       {{ $t('buttons.BACK') }}
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, inject, onUnmounted, ref, toRefs } from 'vue'
+  import {
+    capitalize,
+    computed,
+    inject,
+    onBeforeMount,
+    onUnmounted,
+    ref,
+    toRefs,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
@@ -162,6 +177,9 @@
   const { authUser, equipments } = toRefs(props)
 
   const sportColors = inject('sportColors') as Record<string, string>
+  const loading: ComputedRef<boolean> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.LOADING]
+  )
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )
@@ -182,6 +200,10 @@
       )
   )
   const displayModal: Ref<boolean> = ref(false)
+
+  onBeforeMount(() => {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
 
   function getEquipment(equipmentsList: IEquipment[]) {
     if (!route.params.id) {
@@ -213,6 +235,9 @@
       return `${durations.days}, ${durations.duration}`
     }
     return totalDuration
+  }
+  function refreshTotals(equipmentId: string) {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.REFRESH_EQUIPMENT, equipmentId)
   }
 
   onUnmounted(() => {

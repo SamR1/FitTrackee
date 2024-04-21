@@ -26,6 +26,7 @@ WorkoutEquipment = db.Table(
         db.Integer,
         db.ForeignKey('equipments.id', ondelete="CASCADE"),
         primary_key=True,
+        index=True,
     ),
 )
 

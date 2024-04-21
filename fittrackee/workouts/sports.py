@@ -193,9 +193,11 @@ def get_sports(auth_user: User) -> Dict:
         sports_data.append(
             sport.serialize(
                 is_admin=auth_user.admin if auth_user else False,
-                sport_preferences=sport_preferences.serialize()
-                if sport_preferences
-                else None,
+                sport_preferences=(
+                    sport_preferences.serialize()
+                    if sport_preferences
+                    else None
+                ),
             )
         )
     return {
@@ -305,9 +307,11 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
                 'sports': [
                     sport.serialize(
                         is_admin=auth_user.admin,
-                        sport_preferences=sport_preferences.serialize()
-                        if sport_preferences
-                        else None,
+                        sport_preferences=(
+                            sport_preferences.serialize()
+                            if sport_preferences
+                            else None
+                        ),
                     )
                 ]
             },
@@ -409,9 +413,11 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
                 'sports': [
                     sport.serialize(
                         is_admin=auth_user.admin,
-                        sport_preferences=sport_preferences.serialize()
-                        if sport_preferences
-                        else None,
+                        sport_preferences=(
+                            sport_preferences.serialize()
+                            if sport_preferences
+                            else None
+                        ),
                     )
                 ]
             },

@@ -1,6 +1,6 @@
 <template>
   <router-link
-    class="workout-badge"
+    class="equipment-badge"
     :class="{ inactive: !equipment.is_active }"
     :to="{
       name: 'Equipment',
@@ -36,8 +36,9 @@
 
 <style scoped lang="scss">
   @import '~@/scss/vars';
-  .workout-badge {
+  .equipment-badge {
     display: flex;
+    align-items: center;
     gap: $default-padding;
     border: solid 1px var(--card-border-color);
     border-radius: $border-radius;
@@ -48,7 +49,7 @@
     }
     .equipment-type-img {
       height: 25px;
-      width: 25px;
+      min-width: 25px;
       margin: 0;
     }
   }

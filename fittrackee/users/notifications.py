@@ -198,9 +198,11 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
         Notification.query.filter(
             Notification.to_user_id == auth_user.id,
             Notification.marked_as_read == False,  # noqa
-            (Notification.event_type == event_type)
-            if event_type is not None
-            else True,
+            (
+                (Notification.event_type == event_type)
+                if event_type is not None
+                else True
+            ),
         ).update(
             {Notification.marked_as_read: True}, synchronize_session=False
         )

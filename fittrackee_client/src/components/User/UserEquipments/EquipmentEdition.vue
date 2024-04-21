@@ -47,6 +47,22 @@
               </option>
             </select>
           </div>
+          <div
+            class="equipment-warning"
+            v-if="
+              equipment?.workouts_count &&
+              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id
+            "
+          >
+            <span class="info-box">
+              <i
+                class="fa fa-exclamation-triangle warning"
+                aria-hidden="true"
+              />
+              {{ $t('equipments.ALL_WORKOUTS_ASSOCIATIONS_REMOVED') }}
+            </span>
+          </div>
+
           <div class="form-item">
             <label for="equipment-description">
               {{ $t('common.DESCRIPTION') }}
@@ -83,11 +99,12 @@
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
-          <button class="confirm" type="submit">
+          <button class="confirm" type="submit" :disabled="loading">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button
             class="cancel"
+            :disabled="loading"
             @click.prevent="
               () =>
                 $router.push(
@@ -146,6 +163,9 @@
   const { t } = useI18n()
 
   const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const loading: ComputedRef<boolean> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.LOADING]
+  )
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )
@@ -301,6 +321,10 @@
       }
       .equipment-label-help {
         margin-top: $default-margin * 1.5;
+      }
+      .equipment-warning {
+        margin-top: $default-margin * 0.5;
+        margin-bottom: $default-margin;
       }
       .error-message {
         margin: $default-margin 0;

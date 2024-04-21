@@ -573,9 +573,7 @@ class User(BaseModel):
             role = (
                 UserRole.AUTH_USER
                 if current_user.id == self.id
-                else UserRole.ADMIN
-                if current_user.admin
-                else UserRole.USER
+                else UserRole.ADMIN if current_user.admin else UserRole.USER
             )
         sports = []
         if self.workouts_count > 0:  # type: ignore

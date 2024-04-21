@@ -152,7 +152,7 @@ class TestGetSports(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
         db.session.execute(
@@ -160,8 +160,8 @@ class TestGetSports(ApiTestCaseMixin):
                 [
                     {
                         "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_sport_1_preference.sport_id,
-                        "user_id": user_sport_1_preference.user_id,
+                        "sport_id": user_1_sport_1_preference.sport_id,
+                        "user_id": user_1_sport_1_preference.user_id,
                     }
                 ]
             )
@@ -183,7 +183,7 @@ class TestGetSports(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling.serialize(
-                sport_preferences=user_sport_1_preference.serialize(),
+                sport_preferences=user_1_sport_1_preference.serialize(),
             )
         )
 
@@ -293,7 +293,7 @@ class TestGetSport(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        user_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -310,7 +310,7 @@ class TestGetSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling.serialize(
-                sport_preferences=user_sport_1_preference.serialize()
+                sport_preferences=user_1_sport_1_preference.serialize()
             )
         )
 

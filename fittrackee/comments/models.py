@@ -204,9 +204,11 @@ class Comment(BaseModel):
             reply_to = (
                 None
                 if self.reply_to is None
-                else self.parent_comment.serialize(user, with_replies=False)
-                if get_parent_comment
-                else self.parent_comment.short_id
+                else (
+                    self.parent_comment.serialize(user, with_replies=False)
+                    if get_parent_comment
+                    else self.parent_comment.short_id
+                )
             )
         except CommentForbiddenException:
             reply_to = None

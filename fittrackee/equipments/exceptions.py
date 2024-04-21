@@ -8,5 +8,4 @@ class InvalidEquipmentException(Exception):
         self.equipment_id = equipment_short_id
 
 
-class InvalidEquipmentsException(Exception):
-    ...
+class InvalidEquipmentsException(Exception): ...

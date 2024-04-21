@@ -3,7 +3,6 @@ import datetime
 import pytest
 
 from fittrackee import db
-from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import FollowRequest, User, UserSportPreference
 from fittrackee.workouts.models import Sport
 
@@ -170,12 +169,9 @@ def suspended_user() -> User:
 
 
 @pytest.fixture()
-def user_sport_1_preference(
+def user_1_sport_1_preference(
     user_1: User,
     sport_1_cycling: Sport,
-    equipment_type_1_shoe: EquipmentType,
-    equipment_type_2_bike: EquipmentType,
-    equipment_bike_user_1: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1.id,
@@ -191,14 +187,42 @@ def user_sport_1_preference(
 def user_admin_sport_1_preference(
     user_1_admin: User,
     sport_1_cycling: Sport,
-    equipment_type_1_shoe: EquipmentType,
-    equipment_type_2_bike: EquipmentType,
-    equipment_bike_user_1: Equipment,
 ) -> UserSportPreference:
     user_sport = UserSportPreference(
         user_id=user_1_admin.id,
         sport_id=sport_1_cycling.id,
         stopped_speed_threshold=sport_1_cycling.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport
+
+
+@pytest.fixture()
+def user_1_sport_2_preference(
+    user_1: User,
+    sport_2_running: Sport,
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_1.id,
+        sport_id=sport_2_running.id,
+        stopped_speed_threshold=sport_2_running.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport
+
+
+@pytest.fixture()
+def user_2_sport_2_preference(
+    user_1: User,
+    user_2: User,
+    sport_2_running: Sport,
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_2.id,
+        sport_id=sport_2_running.id,
+        stopped_speed_threshold=sport_2_running.stopped_speed_threshold,
     )
     db.session.add(user_sport)
     db.session.commit()

@@ -19,6 +19,7 @@ import type {
 export interface IEquipmentTypesState {
   equipmentTypes: IEquipmentType[]
   equipments: IEquipment[]
+  loading: boolean
 }
 
 export interface IEquipmentsActions {
@@ -44,6 +45,10 @@ export interface IEquipmentsActions {
     context: ActionContext<IEquipmentTypesState, IRootState>,
     payload: IPatchEquipmentPayload
   ): void
+  [EQUIPMENTS_STORE.ACTIONS.REFRESH_EQUIPMENT](
+    context: ActionContext<IEquipmentTypesState, IRootState>,
+    equipmentId: string
+  ): void
   [EQUIPMENTS_STORE.ACTIONS.UPDATE_EQUIPMENT_TYPE](
     context: ActionContext<IEquipmentTypesState, IRootState>,
     payload: IEquipmentTypePayload
@@ -57,6 +62,7 @@ export interface IEquipmentsGetters {
   [EQUIPMENTS_STORE.GETTERS.EQUIPMENT_TYPES](
     state: IEquipmentTypesState
   ): IEquipmentType[]
+  [EQUIPMENTS_STORE.GETTERS.LOADING](state: IEquipmentTypesState): boolean
 }
 
 export type TEquipmentsMutations<S = IEquipmentTypesState> = {
@@ -76,6 +82,7 @@ export type TEquipmentsMutations<S = IEquipmentTypesState> = {
     state: S,
     equipmentTypes: IEquipmentType[]
   ): void
+  [EQUIPMENTS_STORE.MUTATIONS.SET_LOADING](state: S, loading: boolean): void
   [EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT](
     state: S,
     equipment: IEquipment

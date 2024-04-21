@@ -179,6 +179,7 @@
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import {
     AUTH_USER_STORE,
+    EQUIPMENTS_STORE,
     ROOT_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
@@ -227,6 +228,7 @@
 
   onBeforeMount(() => {
     loadWorkouts(query)
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
@@ -393,10 +395,16 @@
           }
           .workout-title {
             max-width: initial;
-            width: 100%;
+            width: 45%;
           }
           .workout-title:hover .static-map {
             display: none;
+          }
+        }
+
+        @media screen and (max-width: $x-small-limit) {
+          .workout-title {
+            width: 100%;
           }
         }
       }

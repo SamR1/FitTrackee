@@ -91,15 +91,21 @@ def get_users_list(auth_user: User) -> Dict:
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
-            True
-            if with_inactive == 'true'
-            else User.is_active == True,  # noqa
-            True
-            if with_hidden_users == 'true'
-            else User.hide_profile_in_users_directory == False,  # noqa
-            True
-            if with_suspended_users == 'true'
-            else User.suspended_at == None,  # noqa
+            (
+                True
+                if with_inactive == 'true'
+                else User.is_active == True  # noqa
+            ),
+            (
+                True
+                if with_hidden_users == 'true'
+                else User.hide_profile_in_users_directory == False  # noqa
+            ),
+            (
+                True
+                if with_suspended_users == 'true'
+                else User.suspended_at == None  # noqa
+            ),
         )
         .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
