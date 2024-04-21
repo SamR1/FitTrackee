@@ -59,6 +59,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
       .delete(`equipments/${payload.id}${payload.force ? '?force' : ''}`)
       .then(() => {
         context.commit(EQUIPMENTS_STORE.MUTATIONS.REMOVE_EQUIPMENT, payload.id)
+        context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
         router.push('/profile/equipments')
       })
       .catch((error) => handleError(context, error))

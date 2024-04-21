@@ -136,7 +136,15 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, inject, onUnmounted, ref, toRefs } from 'vue'
+  import {
+    capitalize,
+    computed,
+    inject,
+    onBeforeMount,
+    onUnmounted,
+    ref,
+    toRefs,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
@@ -182,6 +190,10 @@
       )
   )
   const displayModal: Ref<boolean> = ref(false)
+
+  onBeforeMount(() => {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
 
   function getEquipment(equipmentsList: IEquipment[]) {
     if (!route.params.id) {
