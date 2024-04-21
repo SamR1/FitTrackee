@@ -122,11 +122,38 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
       })
       .catch((error) => handleError(context, error))
   },
+  [EQUIPMENTS_STORE.ACTIONS.REFRESH_EQUIPMENT](
+    context: ActionContext<IEquipmentTypesState, IRootState>,
+    equipmentId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, true)
+    authApi
+      .post(`equipments/${equipmentId}/refresh`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          if (res.data.data.equipments.length > 0) {
+            context.commit(
+              EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT,
+              res.data.data.equipments[0]
+            )
+            router.push(`/profile/equipments/${equipmentId}`)
+          }
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, false)
+      )
+  },
   [EQUIPMENTS_STORE.ACTIONS.UPDATE_EQUIPMENT](
     context: ActionContext<IEquipmentTypesState, IRootState>,
     payload: IPatchEquipmentPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, true)
     authApi
       .patch(`equipments/${payload.id}`, {
         description: payload.description,
@@ -150,12 +177,16 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, false)
+      )
   },
   [EQUIPMENTS_STORE.ACTIONS.UPDATE_EQUIPMENT_TYPE](
     context: ActionContext<IEquipmentTypesState, IRootState>,
     payload: IEquipmentTypePayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, true)
     authApi
       .patch(`equipment-types/${payload.id}`, { is_active: payload.isActive })
       .then((res) => {
@@ -166,5 +197,8 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(EQUIPMENTS_STORE.MUTATIONS.SET_LOADING, false)
+      )
   },
 }

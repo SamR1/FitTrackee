@@ -13,4 +13,6 @@ export const getters: GetterTree<IEquipmentTypesState, IRootState> &
     state.equipments,
   [EQUIPMENTS_STORE.GETTERS.EQUIPMENT_TYPES]: (state: IEquipmentTypesState) =>
     state.equipmentTypes,
+  [EQUIPMENTS_STORE.GETTERS.LOADING]: (state: IEquipmentTypesState) =>
+    state.loading,
 }

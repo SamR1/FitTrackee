@@ -1574,6 +1574,177 @@ class TestPatchEquipment(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
+class TestRefreshEquipment(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, equipment_bike_user_1: EquipmentType
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_when_equipment_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/equipments/{self.random_short_id()}/refresh',
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['equipments']) == 0
+
+    def test_it_returns_404_when_equipment_belongs_to_another_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        equipment_shoes_user_2: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/equipments/{equipment_shoes_user_2.short_id}/refresh',
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['equipments']) == 0
+
+    def test_it_returns_null_total_when_no_associated_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.equipments = [equipment_shoes_user_1]
+        # invalid values
+        equipment_bike_user_1.total_distance = self.random_int()
+        equipment_bike_user_1.total_duration = timedelta(
+            seconds=self.random_int()
+        )
+        equipment_bike_user_1.total_moving = timedelta(
+            seconds=self.random_int()
+        )
+        equipment_bike_user_1.total_workouts = self.random_int()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        assert response.status_code == 200
+        assert equipment_bike_user_1.total_distance == 0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+        assert equipment_bike_user_1.total_workouts == 0
+        data = json.loads(response.data.decode())
+        assert data['data']['equipments'][0] == (
+            jsonify_dict(equipment_bike_user_1.serialize())
+        )
+        # other equipment remains unchanged
+        assert (
+            equipment_shoes_user_1.total_distance
+            == workout_running_user_1.distance
+        )
+        assert (
+            equipment_shoes_user_1.total_duration
+            == workout_running_user_1.duration
+        )
+        assert (
+            equipment_shoes_user_1.total_moving
+            == workout_running_user_1.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+
+    def test_it_recalculates_when_workouts_are_associated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+        another_workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.equipments = [equipment_shoes_user_1]
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        another_workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+        # invalid values
+        equipment_bike_user_1.total_distance = self.random_int()
+        equipment_bike_user_1.total_duration = timedelta(
+            seconds=self.random_int()
+        )
+        equipment_bike_user_1.total_moving = timedelta(
+            seconds=self.random_int()
+        )
+        equipment_bike_user_1.total_workouts = self.random_int()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
+            headers={"Authorization": f'Bearer {auth_token}'},
+        )
+
+        assert response.status_code == 200
+        assert equipment_bike_user_1.total_distance == (
+            workout_cycling_user_1.distance
+            + another_workout_cycling_user_1.distance
+        )
+        assert equipment_bike_user_1.total_duration == (
+            workout_cycling_user_1.duration
+            + another_workout_cycling_user_1.duration
+        )
+        assert equipment_bike_user_1.total_moving == (
+            workout_cycling_user_1.moving
+            + another_workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 2
+        data = json.loads(response.data.decode())
+        assert data['data']['equipments'][0] == (
+            jsonify_dict(equipment_bike_user_1.serialize())
+        )
+        # other equipment remains unchanged
+        assert (
+            equipment_shoes_user_1.total_distance
+            == workout_running_user_1.distance
+        )
+        assert (
+            equipment_shoes_user_1.total_duration
+            == workout_running_user_1.duration
+        )
+        assert (
+            equipment_shoes_user_1.total_moving
+            == workout_running_user_1.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+
+
 class TestDeleteEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, equipment_bike_user_1: EquipmentType

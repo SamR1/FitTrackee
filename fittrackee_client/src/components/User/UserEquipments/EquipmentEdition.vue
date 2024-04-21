@@ -99,11 +99,12 @@
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
-          <button class="confirm" type="submit">
+          <button class="confirm" type="submit" :disabled="loading">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button
             class="cancel"
+            :disabled="loading"
             @click.prevent="
               () =>
                 $router.push(
@@ -162,6 +163,9 @@
   const { t } = useI18n()
 
   const { equipments, translatedEquipmentTypes } = toRefs(props)
+  const loading: ComputedRef<boolean> = computed(
+    () => store.getters[EQUIPMENTS_STORE.GETTERS.LOADING]
+  )
   const equipment: ComputedRef<IEquipment | null> = computed(() =>
     getEquipment(equipments.value)
   )

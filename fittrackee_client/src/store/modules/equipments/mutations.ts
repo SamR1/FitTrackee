@@ -33,6 +33,12 @@ export const mutations: MutationTree<IEquipmentTypesState> &
   ) {
     state.equipmentTypes = equipmentTypes
   },
+  [EQUIPMENTS_STORE.MUTATIONS.SET_LOADING](
+    state: IEquipmentTypesState,
+    loading: boolean
+  ) {
+    state.loading = loading
+  },
   [EQUIPMENTS_STORE.MUTATIONS.UPDATE_EQUIPMENT](
     state: IEquipmentTypesState,
     equipment: IEquipment
