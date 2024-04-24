@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, onBeforeMount } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
@@ -102,6 +102,8 @@
   )
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+
+  onBeforeMount(() => store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS, true))
 
   function updateSportStatus(id: number, isActive: boolean) {
     store.dispatch(SPORTS_STORE.ACTIONS.UPDATE_SPORTS, {
