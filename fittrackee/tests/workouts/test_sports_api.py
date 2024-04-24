@@ -163,18 +163,23 @@ class TestGetSports(ApiTestCaseMixin):
     def test_it_gets_sports_with_auth_user_preferences(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        user_admin_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
+        user_2_sport_2_preference: UserSportPreference,
     ) -> None:
-        user_admin_sport_1_preference.color = '#000000'
-        user_admin_sport_1_preference.stopped_speed_threshold = 0.5
-        user_admin_sport_1_preference.is_active = False
+        user_1_sport_1_preference.color = '#000000'
+        user_1_sport_1_preference.stopped_speed_threshold = 0.5
+        user_1_sport_1_preference.is_active = False
+        user_2_sport_2_preference.color = '##0b5394'
+        user_2_sport_2_preference.stopped_speed_threshold = 1.5
+        user_2_sport_2_preference.is_active = True
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1.email
         )
 
         response = client.get(
@@ -188,7 +193,7 @@ class TestGetSports(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 2
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling.serialize(
-                sport_preferences=user_admin_sport_1_preference.serialize(),
+                sport_preferences=user_1_sport_1_preference.serialize(),
             )
         )
         assert data['data']['sports'][1] == jsonify_dict(
@@ -250,8 +255,10 @@ class TestGetSport(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        sport_1_cycling: Sport,
-        user_1_sport_1_preference: UserSportPreference,
+        user_2: User,
+        sport_2_running: Sport,
+        user_1_sport_2_preference: UserSportPreference,
+        user_2_sport_2_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -267,8 +274,8 @@ class TestGetSport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == jsonify_dict(
-            sport_1_cycling.serialize(
-                sport_preferences=user_1_sport_1_preference.serialize()
+            sport_2_running.serialize(
+                sport_preferences=user_1_sport_2_preference.serialize()
             )
         )
 
