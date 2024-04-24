@@ -1,1 +1,18 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Maximaal 50 tekens",
+  "ADD_A_NEW_EQUIPMENT": "Voeg nieuw materiaal toe",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Alle koppelingen met trainingen zullen worden verwijderd.",
+  "DEFAULT_FOR_SPORTS": "Standaard voor sporten",
+  "EDIT_EQUIPMENTS": "Bewerk materialen",
+  "EQUIPMENT": "materiaal|materialen",
+  "EQUIPMENT_TYPE": "materiaaltype|materiaaltypes",
+  "ERRORS": {
+    "inactive": "Materiaal '{equipmentLabel}' inactief.",
+    "invalid": "Materiaal '{equipmentLabel}' is ongeldig voor deze sport.",
+    "not_found": "Materiaal niet gevonden."
+  },
+  "NEW_EQUIPMENT": "Nieuw materiaal",
+  "NO_EQUIPMENT": "Geen materiaal gevonden.",
+  "NO_EQUIPMENTS": "Geen materialen",
+  "WITHOUT_EQUIPMENTS": "zonder materiaal"
+}
