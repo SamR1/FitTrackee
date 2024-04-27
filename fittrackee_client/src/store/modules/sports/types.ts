@@ -15,7 +15,8 @@ export interface ISportsState {
 
 export interface ISportsActions {
   [SPORTS_STORE.ACTIONS.GET_SPORTS](
-    context: ActionContext<ISportsState, IRootState>
+    context: ActionContext<ISportsState, IRootState>,
+    checkWorkouts: boolean
   ): void
   [SPORTS_STORE.ACTIONS.UPDATE_SPORTS](
     context: ActionContext<ISportsState, IRootState>,

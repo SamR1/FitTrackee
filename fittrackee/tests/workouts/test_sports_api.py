@@ -28,19 +28,24 @@ class TestGetSports(ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    @pytest.mark.parametrize(
+        'input_check_workouts',
+        ["", "?check_workouts=false", "?check_workouts=true"],
+    )
     def test_it_gets_all_sports(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
+        input_check_workouts: bool,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            '/api/sports',
+            f'/api/sports{input_check_workouts}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -82,31 +87,37 @@ class TestGetSports(ApiTestCaseMixin):
             sport_2_running.serialize()
         )
 
+    @pytest.mark.parametrize(
+        'input_check_workouts',
+        ["", "?check_workouts=false", "?check_workouts=true"],
+    )
     def test_it_gets_all_sports_with_admin_rights(
         self,
         app: Flask,
         user_1_admin: User,
         sport_1_cycling_inactive: Sport,
         sport_2_running: Sport,
+        input_check_workouts: bool,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
 
         response = client.get(
-            '/api/sports',
+            f'/api/sports{input_check_workouts}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        check_workouts = input_check_workouts == "?check_workouts=true"
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 2
         assert data['data']['sports'][0] == jsonify_dict(
-            sport_1_cycling_inactive.serialize(is_admin=True)
+            sport_1_cycling_inactive.serialize(check_workouts=check_workouts)
         )
         assert data['data']['sports'][1] == jsonify_dict(
-            sport_2_running.serialize(is_admin=True)
+            sport_2_running.serialize(check_workouts=check_workouts)
         )
 
     def test_it_gets_sports_with_auth_user_preferences_and_default_equipment(
@@ -152,18 +163,23 @@ class TestGetSports(ApiTestCaseMixin):
     def test_it_gets_sports_with_auth_user_preferences(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        user_admin_sport_1_preference: UserSportPreference,
+        user_1_sport_1_preference: UserSportPreference,
+        user_2_sport_2_preference: UserSportPreference,
     ) -> None:
-        user_admin_sport_1_preference.color = '#000000'
-        user_admin_sport_1_preference.stopped_speed_threshold = 0.5
-        user_admin_sport_1_preference.is_active = False
+        user_1_sport_1_preference.color = '#000000'
+        user_1_sport_1_preference.stopped_speed_threshold = 0.5
+        user_1_sport_1_preference.is_active = False
+        user_2_sport_2_preference.color = '##0b5394'
+        user_2_sport_2_preference.stopped_speed_threshold = 1.5
+        user_2_sport_2_preference.is_active = True
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1.email
         )
 
         response = client.get(
@@ -177,12 +193,11 @@ class TestGetSports(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 2
         assert data['data']['sports'][0] == jsonify_dict(
             sport_1_cycling.serialize(
-                is_admin=True,
-                sport_preferences=user_admin_sport_1_preference.serialize(),
+                sport_preferences=user_1_sport_1_preference.serialize(),
             )
         )
         assert data['data']['sports'][1] == jsonify_dict(
-            sport_2_running.serialize(is_admin=True)
+            sport_2_running.serialize()
         )
 
     @pytest.mark.parametrize(
@@ -240,8 +255,10 @@ class TestGetSport(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        sport_1_cycling: Sport,
-        user_1_sport_1_preference: UserSportPreference,
+        user_2: User,
+        sport_2_running: Sport,
+        user_1_sport_2_preference: UserSportPreference,
+        user_2_sport_2_preference: UserSportPreference,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -257,8 +274,8 @@ class TestGetSport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == jsonify_dict(
-            sport_1_cycling.serialize(
-                sport_preferences=user_1_sport_1_preference.serialize()
+            sport_2_running.serialize(
+                sport_preferences=user_1_sport_2_preference.serialize()
             )
         )
 
@@ -314,7 +331,7 @@ class TestGetSport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0] == jsonify_dict(
-            sport_1_cycling_inactive.serialize(is_admin=True)
+            sport_1_cycling_inactive.serialize()
         )
 
     @pytest.mark.parametrize(
@@ -368,7 +385,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
         assert data['data']['sports'][0]['is_active_for_user'] is False
-        assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_it_enables_a_sport(
         self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
@@ -391,7 +407,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is True
         assert data['data']['sports'][0]['is_active_for_user'] is True
-        assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_it_disables_a_sport_with_workouts(
         self,
@@ -417,7 +432,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
         assert data['data']['sports'][0]['is_active_for_user'] is False
-        assert data['data']['sports'][0]['has_workouts'] is True
 
     def test_it_enables_a_sport_with_workouts(
         self,
@@ -444,7 +458,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is True
         assert data['data']['sports'][0]['is_active_for_user'] is True
-        assert data['data']['sports'][0]['has_workouts'] is True
 
     def test_it_disables_a_sport_with_preferences(
         self,
@@ -470,7 +483,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is False
         assert data['data']['sports'][0]['is_active_for_user'] is False
-        assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_it_enables_a_sport_with_preferences(
         self,
@@ -497,7 +509,6 @@ class TestUpdateSport(ApiTestCaseMixin):
         assert len(data['data']['sports']) == 1
         assert data['data']['sports'][0]['is_active'] is True
         assert data['data']['sports'][0]['is_active_for_user'] is True
-        assert data['data']['sports'][0]['has_workouts'] is False
 
     def test_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

@@ -6,6 +6,8 @@
     "at least one file in zip archive exceeds size limit, please check the archive": "Ten minste 1 bestand in het zip archief is groter dan toegelaten, gelieve de bestanden te controleren.",
     "completed request already exists": "Er bestaat al een voltooide export aanvraag.",
     "email: valid email must be provided": "Email: een geldige email is vereist.",
+    "equipment already exists with the same label": "Materiaal met hetzelfde label bestaat al.",
+    "equipment type is inactive": "Materiaaltype is inactief.",
     "error during gpx file parsing": "Fout bij het verwerken van het gpx bestand.",
     "error during gpx processing": "Fout bij verwerken van gpx.",
     "error on getting configuration": "Fout bij ophalen van configuratie.",
