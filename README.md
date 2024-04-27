@@ -15,17 +15,24 @@
 
 ---
 
-This web application allows you to track your outdoor activities (workouts) from gpx files and keep your data on your own server.  
-No mobile app has been developed yet, but several existing mobile apps can store workouts data locally and export them into a gpx file.  
+Web application allowing tracking of outdoor activities (workouts) from GPX files, \
+with data on your own server.  
+
+Also works with other mobile apps to store workouts data locally, for export into a GPX file.  
 Examples for Android (non-exhaustive list):  
-* [Runner Up](https://github.com/jonasoreland/runnerup) (GPL v3)  
+* [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
 * [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
-* [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPL v3)  
+* [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
 
-Maps are displayed using [Open Street Map](https://www.openstreetmap.org).  
-It is also possible to add a workout without a gpx file.
+It is also possible to add a workout without a GPX file.
 
-**Still under heavy development (some features may be unstable).**  
-(see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more information)  
+Map data from [OpenStreetMap](https://www.openstreetmap.org).  
+
+**Under heavy development (some features may be unstable).**  
+(see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more info.)  
 
 ![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/en/_images/fittrackee_screenshot-01.png)
+
+<a href="https://hosted.weblate.org/engage/fittrackee/">
+<img src="https://hosted.weblate.org/widget/fittrackee/horizontal-auto.svg" alt="Translation status" />
+</a>
