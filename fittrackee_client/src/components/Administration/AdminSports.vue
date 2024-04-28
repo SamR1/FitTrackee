@@ -19,7 +19,6 @@
                 <th class="text-left sport-action">
                   {{ $t('admin.ACTION') }}
                 </th>
-                <th />
               </tr>
             </thead>
             <tbody>
