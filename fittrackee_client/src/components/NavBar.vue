@@ -408,10 +408,18 @@
           &.dropdown-wrapper {
             padding-left: $default-padding * 2;
             ::v-deep(.dropdown-list) {
-              margin-left: initial !important;
               width: auto !important;
               height: 200px;
               overflow-y: scroll;
+
+              @media screen and (orientation: portrait) {
+                margin-left: initial !important;
+              }
+
+              @media screen and (orientation: landscape) {
+                margin-top: -35px;
+                margin-left: 35px !important;
+              }
             }
           }
         }
