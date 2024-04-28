@@ -25,12 +25,11 @@
         >
           {{ workout.title }}
         </router-link>
-        <div
+        <time
           class="workout-date"
           v-if="workout.workout_date && user"
-          :title="
-            formatDate(workout.workout_date, user.timezone, user.date_format)
-          "
+          :datetime="workoutDateWithTZ"
+          :title="workoutDateWithTZ"
         >
           {{
             formatDistance(new Date(workout.workout_date), new Date(), {
@@ -38,7 +37,7 @@
               locale,
             })
           }}
-        </div>
+        </time>
       </div>
       <div class="workout-map">
         <StaticMap v-if="workout.with_gpx" :workout="workout" />
@@ -163,6 +162,13 @@
   const { user, workout, sport, useImperialUnits } = toRefs(props)
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
+  )
+  const workoutDateWithTZ = computed(() =>
+    formatDate(
+      workout.value.workout_date,
+      user.value.timezone,
+      user.value.date_format
+    )
   )
 
   function hasElevation(workout: IWorkout): boolean {

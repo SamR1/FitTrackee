@@ -61,7 +61,7 @@
           </span>
         </div>
         <div class="workout-date">
-          <time>
+          <time :datetime="workoutObject.workoutFullDate">
             {{ workoutObject.workoutDate }} - {{ workoutObject.workoutTime }}
           </time>
           <span class="workout-link">
