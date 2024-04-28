@@ -1,1 +1,13 @@
-{}
+{
+  "ASCENT": "vzestupně",
+  "AVERAGE_SPEED": "průměrná rychlost",
+  "AVE_SPEED": "prům. rychl.",
+  "DATE": "datum",
+  "DESCENT": "sestupně",
+  "DISTANCE": "vzdálenost",
+  "ELEVATION": "převýšení",
+  "MAX_ALTITUDE": "max. výška",
+  "MAX_SPEED": "max. rychlost",
+  "MIN_ALTITUDE": "min. výška",
+  "NOTES": "poznámky"
+}
