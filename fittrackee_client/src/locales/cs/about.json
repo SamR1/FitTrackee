@@ -1,1 +1,7 @@
-{}
+{
+  "ABOUT_THIS_INSTANCE": "O této instanci",
+  "CONTACT_ADMIN": "Kontaktujte správce",
+  "FITTRACKEE_LICENSE": "pod licencí {0} ",
+  "SOURCE_CODE": "Zdrojový kód",
+  "WEATHER_DATA_FROM": "Data o počasí z:"
+}
