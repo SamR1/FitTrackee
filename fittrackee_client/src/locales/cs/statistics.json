@@ -1,1 +1,8 @@
-{}
+{
+  "STATISTICS": "Statistiky",
+  "TIME_FRAMES": {
+    "month": "měsíc",
+    "week": "týden",
+    "year": "rok"
+  }
+}
