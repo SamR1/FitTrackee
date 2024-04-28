@@ -11,9 +11,14 @@
   "HERE": "ici",
   "HIDDEN": "Masqué",
   "HOME": "Accueil",
+  "HOURS": "heure|heures",
   "INACTIVE": "inactif",
   "LABEL": "Nom",
+  "MINUTES": "minute|minutes",
+  "NEXT": "suivant",
   "NO_DESCRIPTION": "pas de description",
+  "PREVIOUS": "prédédent",
+  "SECONDS": "seconde|secondes",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",

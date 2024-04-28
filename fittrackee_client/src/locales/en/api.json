@@ -38,9 +38,5 @@
     "valid email must be provided for admin contact": "A valid email must be provided for administrator contact",
     "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
     "you do not have permissions": "You do not have permissions."
-  },
-  "PAGINATION": {
-    "NEXT": "next",
-    "PREVIOUS": "previous"
   }
 }

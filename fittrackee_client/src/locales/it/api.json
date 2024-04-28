@@ -30,9 +30,5 @@
     "valid email must be provided for admin contact": "Dev'essere inserita un'email valida",
     "you can not delete your account, no other user has admin rights": "Non puoi eliminare questo account, nessun'altro account ha permessi di amministratore.",
     "you do not have permissions": "Non hai i permessi necessari."
-  },
-  "PAGINATION": {
-    "NEXT": "avanti",
-    "PREVIOUS": "precedente"
   }
 }

@@ -13,7 +13,9 @@
   "HOME": "Inicio",
   "INACTIVE": "non activo",
   "LABEL": "etiqueta",
+  "NEXT": "seguinte",
   "NO_DESCRIPTION": "sen descrición",
+  "PREVIOUS": "anterior",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascenso",
