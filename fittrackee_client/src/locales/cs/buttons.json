@@ -1,1 +1,18 @@
-{}
+{
+  "ACCOUNT-CONFIRMATION-RESEND": "Znovu odeslat potvrzovací email",
+  "BACK": "Zpět",
+  "CANCEL": "Zrušit",
+  "CLEAR_FILTER": "Vyčistit filtry",
+  "DELETE": "Smazat",
+  "DELETE_MY_ACCOUNT": "Smazat můj účet",
+  "DISABLE": "Zakázat",
+  "EDIT": "Upravit",
+  "ENABLE": "Povolit",
+  "FILTER": "Filtr",
+  "LOGIN": "Přihlášení",
+  "NO": "Ne",
+  "REGISTER": "Registrace",
+  "RESET": "Resetovat",
+  "SUBMIT": "Odeslat",
+  "YES": "Ano"
+}
