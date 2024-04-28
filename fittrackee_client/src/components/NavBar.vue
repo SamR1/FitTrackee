@@ -107,6 +107,7 @@
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
             :listLabel="$t('user.LANGUAGE', 0)"
+            :isMenuOpen="isMenuOpen"
           >
             <i class="fa fa-language" aria-hidden="true"></i>
           </Dropdown>
@@ -370,6 +371,7 @@
         .nav-items-user-menu {
           display: flex;
           flex-direction: column;
+          background: var(--nav-bar-background-color);
         }
 
         .nav-items-close {
@@ -407,10 +409,18 @@
           &.dropdown-wrapper {
             padding-left: $default-padding * 2;
             ::v-deep(.dropdown-list) {
-              margin-left: initial !important;
               width: auto !important;
               height: 200px;
               overflow-y: scroll;
+
+              @media screen and (orientation: portrait) {
+                margin-left: initial !important;
+              }
+
+              @media screen and (orientation: landscape) {
+                margin-top: -35px;
+                margin-left: 35px !important;
+              }
             }
           }
         }
