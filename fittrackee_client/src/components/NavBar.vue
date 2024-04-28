@@ -29,24 +29,29 @@
             />
           </button>
         </div>
-        <div class="nav-items-app-menu" @click="closeMenu()">
+        <div class="nav-items-app-menu">
           <div class="nav-items-group" v-if="isAuthenticated">
-            <router-link class="nav-item" to="/">
+            <router-link class="nav-item" to="/" @click="closeMenu()">
               {{ $t('dashboard.DASHBOARD') }}
             </router-link>
-            <router-link class="nav-item" to="/workouts">
+            <router-link class="nav-item" to="/workouts" @click="closeMenu()">
               {{ capitalize($t('workouts.WORKOUT', 2)) }}
             </router-link>
-            <router-link class="nav-item" to="/statistics">
+            <router-link class="nav-item" to="/statistics" @click="closeMenu()">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
-            <router-link class="nav-item" to="/workouts/add">
+            <router-link
+              class="nav-item"
+              to="/workouts/add"
+              @click="closeMenu()"
+            >
               {{ $t('workouts.ADD_WORKOUT') }}
             </router-link>
             <router-link
               class="nav-item"
               v-if="isAuthenticated && authUser.admin"
               to="/admin"
+              @click="closeMenu()"
             >
               {{ $t('admin.ADMIN') }}
             </router-link>

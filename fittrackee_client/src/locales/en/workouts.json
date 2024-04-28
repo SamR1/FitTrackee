@@ -109,8 +109,10 @@
   "WITHOUT_GPX": "without .gpx file",
   "WITH_GPX": "with .gpx file",
   "WORKOUT": "workout | workouts",
+  "WORKOUT_CHART": "workout speed and elevation chart",
   "WORKOUT_DATE": "workout date",
   "WORKOUT_DELETION_CONFIRMATION": "Are you sure you want to delete this workout?",
+  "WORKOUT_MAP": "workout map",
   "ZIP_ARCHIVE": ".zip file",
   "ZIP_ARCHIVE_DESCRIPTION": "or .zip file containing .gpx files"
 }

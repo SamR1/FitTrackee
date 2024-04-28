@@ -74,6 +74,10 @@
         :displayedSportIds="displayedSportIds"
         :fullStats="fullStats"
         :useImperialUnits="user.imperial_units"
+        :label="
+          $t(`statistics.STATISTICS_CHARTS.${chartParams.duration}`) +
+          ` (${chartStart} - ${chartEnd})`
+        "
       />
     </div>
   </div>
@@ -96,7 +100,7 @@
   } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { formatStats } from '@/utils/statistics'
+  import { dateFormats, formatStats, formatDateLabel } from '@/utils/statistics'
 
   interface Props {
     sports: ISport[]
@@ -128,6 +132,25 @@
   const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
   const statistics: ComputedRef<TStatisticsFromApi> = computed(
     () => store.getters[STATS_STORE.GETTERS.USER_STATS]
+  )
+  const dateFormat = computed(
+    () => dateFormats[chartParams.value.duration].chart
+  )
+  const chartStart = computed(() =>
+    formatDateLabel(
+      chartParams.value.start,
+      chartParams.value.duration,
+      user.value.date_format,
+      dateFormat.value
+    )
+  )
+  const chartEnd = computed(() =>
+    formatDateLabel(
+      chartParams.value.end,
+      chartParams.value.duration,
+      user.value.date_format,
+      dateFormat.value
+    )
   )
   const formattedStats: ComputedRef<IStatisticsChartData> = computed(() =>
     formatStats(

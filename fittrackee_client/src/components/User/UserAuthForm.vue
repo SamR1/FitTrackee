@@ -41,6 +41,9 @@
           @submit.prevent="onSubmit(action)"
         >
           <div class="form-items">
+            <label for="username" class="visually-hidden">
+              {{ $t('user.USERNAME', 0) }}
+            </label>
             <input
               v-if="action === 'register'"
               id="username"
@@ -57,6 +60,9 @@
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.USERNAME_INFO') }}
             </div>
+            <label for="email" class="visually-hidden">
+              {{ $t('user.EMAIL', 0) }}
+            </label>
             <input
               v-if="action !== 'reset'"
               id="email"
@@ -80,12 +86,18 @@
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.EMAIL_INFO') }}
             </div>
+            <label for="password" class="visually-hidden">
+              {{
+                $t(`user.${action === 'reset' ? 'ENTER_PASSWORD' : 'PASSWORD'}`)
+              }}
+            </label>
             <PasswordInput
               v-if="
                 !['account-confirmation-resend', 'reset-request'].includes(
                   action
                 )
               "
+              id="password"
               :disabled="registration_disabled"
               :required="true"
               :placeholder="

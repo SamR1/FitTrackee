@@ -19,7 +19,6 @@
                 <th class="text-left equipment-type-action">
                   {{ $t('admin.ACTION') }}
                 </th>
-                <th />
               </tr>
             </thead>
             <tbody>

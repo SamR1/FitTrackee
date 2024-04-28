@@ -31,7 +31,7 @@ import { convertStatsDistance } from '@/utils/units'
 
 const { locale } = createI18n.global
 
-const dateFormats: Record<string, Record<string, string>> = {
+export const dateFormats: Record<string, Record<string, string>> = {
   week: {
     api: 'yyyy-MM-dd',
     chart: 'MM/dd/yyyy',
@@ -135,6 +135,20 @@ export const convertStatsValue = (
   }
 }
 
+export const formatDateLabel = (
+  date: Date,
+  duration: string,
+  userDateFormat: string,
+  dateFormat: string
+) =>
+  format(
+    date,
+    duration === 'week'
+      ? getDateFormat(userDateFormat, locale.value)
+      : dateFormat,
+    { locale: localeFromLanguage[locale.value] }
+  )
+
 export const formatStats = (
   params: IStatisticsDateParams,
   weekStartingMonday: boolean,
@@ -158,7 +172,13 @@ export const formatStats = (
 
   dayKeys.map((key) => {
     const date: string = format(key, dateFormat.api)
-    const label: string = format(
+    const label: string = formatDateLabel(
+      key,
+      params.duration,
+      userDateFormat,
+      dateFormat.chart
+    )
+    format(
       key,
       params.duration === 'week'
         ? getDateFormat(userDateFormat, locale.value)

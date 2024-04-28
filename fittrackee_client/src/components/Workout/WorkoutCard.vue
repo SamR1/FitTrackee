@@ -25,12 +25,11 @@
         >
           {{ workout.title }}
         </router-link>
-        <div
+        <time
           class="workout-date"
           v-if="workout.workout_date && user"
-          :title="
-            formatDate(workout.workout_date, user.timezone, user.date_format)
-          "
+          :datetime="workoutDateWithTZ"
+          :title="workoutDateWithTZ"
         >
           {{
             formatDistance(new Date(workout.workout_date), new Date(), {
@@ -38,26 +37,21 @@
               locale,
             })
           }}
-        </div>
+        </time>
       </div>
-      <div
-        class="workout-map"
-        :class="{ 'no-cursor': !workout }"
-        @click="
-          workout.id
-            ? $router.push({
-                name: 'Workout',
-                params: { workoutId: workout.id },
-              })
-            : null
-        "
-      >
-        <div v-if="workout">
-          <StaticMap v-if="workout.with_gpx" :workout="workout" />
-          <div v-else class="no-map">
+      <div class="workout-map">
+        <StaticMap v-if="workout.with_gpx" :workout="workout" />
+        <router-link
+          v-else-if="workout.id"
+          :to="{
+            name: 'Workout',
+            params: { workoutId: workout.id },
+          }"
+        >
+          <div class="no-map">
             {{ $t('workouts.NO_MAP') }}
           </div>
-        </div>
+        </router-link>
       </div>
       <div
         class="workout-data"
@@ -169,6 +163,13 @@
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
   )
+  const workoutDateWithTZ = computed(() =>
+    formatDate(
+      workout.value.workout_date,
+      user.value.timezone,
+      user.value.date_format
+    )
+  )
 
   function hasElevation(workout: IWorkout): boolean {
     return (
@@ -215,7 +216,8 @@
           }
           .workout-user-name {
             white-space: nowrap;
-            padding-left: 5px;
+            margin-left: 3px;
+            padding: 0 5px;
             text-decoration: none;
           }
         }
@@ -235,14 +237,16 @@
       }
 
       .workout-map {
-        background-color: var(--workout-static-map-bg-color);
         height: 150px;
         .no-map {
           line-height: 150px;
           filter: var(--no-map-filter);
         }
-        ::v-deep(.bg-map-image) {
-          height: 150px;
+        ::v-deep(.static-map) {
+          background-color: var(--workout-static-map-bg-color);
+          .bg-map-image {
+            height: 150px;
+          }
         }
       }
 

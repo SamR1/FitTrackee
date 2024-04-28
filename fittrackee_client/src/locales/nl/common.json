@@ -13,7 +13,9 @@
   "HOME": "Startscherm",
   "INACTIVE": "inactief",
   "LABEL": "label",
+  "NEXT": "volgende",
   "NO_DESCRIPTION": "geen beschrijving",
+  "PREVIOUS": "vorige",
   "SELECTS": {
     "ORDER": {
       "ASC": "oplopend",

@@ -49,6 +49,8 @@
             {{ capitalize($t('common.ACTIVE')) }}
           </label>
           <input
+            id="equipment-active"
+            name="equipment-active"
             type="checkbox"
             :checked="sport.is_active_for_user"
             @change="updateIsActive"
@@ -60,7 +62,7 @@
             {{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}
           </label>
           <select
-            id="workout-equipment"
+            id="sport-default-equipment"
             @invalid="invalidateForm"
             :disabled="loading"
             v-model="defaultEquipmentId"

@@ -10,7 +10,7 @@
           :tabindex="pagination.has_prev ? 0 : -1"
         >
           <slot @click="pagination.has_next ? navigate : null">
-            {{ $t('api.PAGINATION.PREVIOUS') }}
+            {{ $t('common.PREVIOUS') }}
             <i class="fa fa-chevron-left" aria-hidden="true" />
           </slot>
         </router-link>
@@ -39,7 +39,7 @@
           :tabindex="pagination.has_next ? 0 : -1"
         >
           <slot @click="pagination.has_next ? navigate : null">
-            {{ $t('api.PAGINATION.NEXT') }}
+            {{ $t('common.NEXT') }}
             <i class="fa fa-chevron-right" aria-hidden="true" />
           </slot>
         </router-link>

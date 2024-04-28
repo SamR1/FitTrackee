@@ -36,9 +36,5 @@
     "valid email must be provided for admin contact": "Poprawny adres e-mail musi być podany do kontaktu z administratorem",
     "you can not delete your account, no other user has admin rights": "Nie możesz skasować swojego konta, bo żaden inny użytkownik nie ma praw administratora.",
     "you do not have permissions": "Nie masz uprawnień."
-  },
-  "PAGINATION": {
-    "NEXT": "następna",
-    "PREVIOUS": "poprzednia"
   }
 }
