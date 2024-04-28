@@ -68,6 +68,7 @@ class BaseConfig:
         'gl',
         'pl',
         'eu',
+        # 'cs',  # disabled for now
     ]
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days
