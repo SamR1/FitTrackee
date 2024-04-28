@@ -49,9 +49,10 @@
     selected: string
     buttonLabel: string
     listLabel: string
+    isMenuOpen: boolean
   }
   const props = defineProps<Props>()
-  const { options, selected } = toRefs(props)
+  const { isMenuOpen, options, selected } = toRefs(props)
 
   const emit = defineEmits({
     selected: (option: IDropdownOption) => option,
@@ -138,6 +139,14 @@
   watch(
     () => selected.value,
     (value) => (focusOptionIndex.value = getIndexFromOptionValue(value))
+  )
+  watch(
+    () => isMenuOpen.value,
+    (value) => {
+      if (!value) {
+        closeDropdown()
+      }
+    }
   )
 
   onMounted(() => {

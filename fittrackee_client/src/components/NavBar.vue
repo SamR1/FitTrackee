@@ -107,6 +107,7 @@
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
             :listLabel="$t('user.LANGUAGE', 0)"
+            :isMenuOpen="isMenuOpen"
           >
             <i class="fa fa-language" aria-hidden="true"></i>
           </Dropdown>
