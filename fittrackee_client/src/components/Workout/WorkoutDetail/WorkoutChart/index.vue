@@ -30,6 +30,7 @@
             :options="options"
             :plugins="plugins"
             @mouseleave="emitEmptyCoordinates"
+            :aria-label="$t('workouts.WORKOUT_CHART')"
           />
         </div>
         <div class="chart-info">
