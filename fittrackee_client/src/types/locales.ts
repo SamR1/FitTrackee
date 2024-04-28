@@ -1,11 +1,3 @@
 export type TLanguage =
-  | 'de'
-  | 'en'
-  | 'es'
-  | 'eu'
-  | 'fr'
-  | 'gl'
-  | 'it'
-  | 'nb'
-  | 'nl'
-  | 'pl'
+  // | 'cs'  // disabled for now
+  'de' | 'en' | 'es' | 'eu' | 'fr' | 'gl' | 'it' | 'nb' | 'nl' | 'pl'

@@ -13,6 +13,7 @@ export const isLanguageSupported = (
 }
 
 export const localeFromLanguage: Record<TLanguage, Locale> = {
+  // cs: cs,
   de: de,
   en: enUS,
   es: es,
@@ -26,6 +27,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
+  // cs: 'Česky',
   de: 'Deutsch (89%)',
   en: 'English',
   es: 'Español',
