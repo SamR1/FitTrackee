@@ -11,6 +11,7 @@ body {
   margin: 0;
   overflow-y: scroll;
   scrollbar-gutter: stable both-edges;
+  background-color: var(--app-background-color);
 
   &::-webkit-scrollbar {
     width: $scrollbar-width;

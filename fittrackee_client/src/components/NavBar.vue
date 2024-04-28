@@ -370,6 +370,7 @@
         .nav-items-user-menu {
           display: flex;
           flex-direction: column;
+          background: var(--nav-bar-background-color);
         }
 
         .nav-items-close {
