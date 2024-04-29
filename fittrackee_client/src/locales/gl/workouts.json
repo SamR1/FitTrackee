@@ -109,8 +109,10 @@
   "WITHOUT_GPX": "sen ficheiro .gpx",
   "WITH_GPX": "con ficheiro .gpx",
   "WORKOUT": "adestramento | adestramentos",
+  "WORKOUT_CHART": "gráfico de velocidade e altitude do adestramento",
   "WORKOUT_DATE": "data do adestramento",
   "WORKOUT_DELETION_CONFIRMATION": "Tes certeza de querer borrar este adestramento?",
+  "WORKOUT_MAP": "mapa do adestramento",
   "ZIP_ARCHIVE": "ficheiro .zip",
   "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros .gpx"
 }
