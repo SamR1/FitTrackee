@@ -1,15 +1,24 @@
 {
   "ABOUT": "Über",
+  "ACTION": "Aktion",
+  "ACTIVE": "aktiv",
   "CONFIRMATION": "Bestätigung",
   "CONTACT": "Kontakt",
   "DAY": "Tag | Tage",
+  "DESCRIPTION": "Beschreibung",
   "DISPLAYED": "Angezeigt",
   "DOCUMENTATION": "Dokumentation (en)",
   "HERE": "hier",
   "HIDDEN": "Versteckt",
   "HOME": "Startseite",
+  "HOURS": "Stunde|Stunden",
+  "INACTIVE": "inaktiv",
+  "LABEL": "Bezeichnung",
+  "MINUTES": "Minute|Minuten",
   "NEXT": "Nächste",
+  "NO_DESCRIPTION": "keine Beschreibung",
   "PREVIOUS": "Vorhergehende",
+  "SECONDS": "Sekunde|Sekunden",
   "SELECTS": {
     "ORDER": {
       "ASC": "aufsteigend",
@@ -23,5 +32,6 @@
       "LABEL": "pro Seite"
     }
   },
-  "TOTAL": "Insgesamt"
+  "TOTAL": "Insgesamt",
+  "TOTAL_DURATION_WITH_PAUSES": "Gesamtdauer mit Pause"
 }
