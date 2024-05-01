@@ -22,60 +22,62 @@
       <div class="workout-title-date">
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
-          <button
-            class="transparent icon-button likes"
-            @click="updateLike(workoutObject)"
-          >
-            <i
-              class="fa"
-              :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"
-            />
-            <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
-              workoutObject.likes_count
-            }}</span>
-          </button>
-          <button
-            class="transparent icon-button"
-            v-if="isWorkoutOwner"
-            @click="
-              $router.push({
-                name: 'EditWorkout',
-                params: { workoutId: workoutObject.workoutId },
-              })
-            "
-            :aria-label="$t(`workouts.EDIT_WORKOUT`)"
-          >
-            <i class="fa fa-edit" aria-hidden="true" />
-          </button>
-          <button
-            v-if="workoutObject.with_gpx && isWorkoutOwner"
-            class="transparent icon-button"
-            @click.prevent="downloadGpx(workoutObject.workoutId)"
-            :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
-          >
-            <i class="fa fa-download" aria-hidden="true" />
-          </button>
-          <button
-            v-if="isWorkoutOwner"
-            id="delete-workout-button"
-            class="transparent icon-button"
-            @click.prevent="displayDeleteModal"
-            :aria-label="$t(`workouts.DELETE_WORKOUT`)"
-          >
-            <i class="fa fa-trash" aria-hidden="true" />
-          </button>
-          <button
-            v-if="
-              !isWorkoutOwner &&
-              !currentlyReporting &&
-              reportStatus !== `workout-${workoutObject.workoutId}-created`
-            "
-            class="transparent icon-button"
-            @click.prevent="displayReportForm"
-            :title="$t('workouts.REPORT_WORKOUT')"
-          >
-            <i class="fa fa-flag" aria-hidden="true" />
-          </button>
+          <div>
+            <button
+              class="transparent icon-button likes"
+              @click="updateLike(workoutObject)"
+            >
+              <i
+                class="fa"
+                :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"
+              />
+              <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
+                workoutObject.likes_count
+              }}</span>
+            </button>
+            <button
+              class="transparent icon-button"
+              v-if="isWorkoutOwner"
+              @click="
+                $router.push({
+                  name: 'EditWorkout',
+                  params: { workoutId: workoutObject.workoutId },
+                })
+              "
+              :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+            >
+              <i class="fa fa-edit" aria-hidden="true" />
+            </button>
+            <button
+              v-if="workoutObject.with_gpx && isWorkoutOwner"
+              class="transparent icon-button"
+              @click.prevent="downloadGpx(workoutObject.workoutId)"
+              :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
+            >
+              <i class="fa fa-download" aria-hidden="true" />
+            </button>
+            <button
+              v-if="isWorkoutOwner"
+              id="delete-workout-button"
+              class="transparent icon-button"
+              @click.prevent="displayDeleteModal"
+              :aria-label="$t(`workouts.DELETE_WORKOUT`)"
+            >
+              <i class="fa fa-trash" aria-hidden="true" />
+            </button>
+            <button
+              v-if="
+                !isWorkoutOwner &&
+                !currentlyReporting &&
+                reportStatus !== `workout-${workoutObject.workoutId}-created`
+              "
+              class="transparent icon-button"
+              @click.prevent="displayReportForm"
+              :title="$t('workouts.REPORT_WORKOUT')"
+            >
+              <i class="fa fa-flag" aria-hidden="true" />
+            </button>
+          </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
           {{ workoutObject.title }}

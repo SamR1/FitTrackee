@@ -13,7 +13,6 @@
       <span class="visibility-label">
         ({{ $t(`privacy.LEVELS.${workoutObject.workoutVisibility}`) }})
       </span>
-      <span v-if="workoutObject.with_gpx">-</span>
     </div>
     <div class="visibility" v-if="workoutObject.with_gpx">
       {{ $t('workouts.MAP') }}
@@ -65,6 +64,10 @@
 
     .visibility {
       padding-left: $default-padding * 0.5;
+      &:not(:first-child)::before {
+        content: '- ';
+      }
+
       .workout-visibility {
         padding-right: $default-padding * 0.5;
       }
