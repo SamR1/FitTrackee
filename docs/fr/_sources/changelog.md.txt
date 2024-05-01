@@ -1,5 +1,52 @@
 # Change log
 
+## Version 0.8.1 (2024/05/01)
+
+### Features and enhancements
+
+* [PR#527](https://github.com/SamR1/FitTrackee/pull/527) - improve Sports endpoints response time
+
+### Bugs Fixed
+
+* [PR#531](https://github.com/SamR1/FitTrackee/pull/531) - Minor navigation fixes on mobile
+* [PR#532](https://github.com/SamR1/FitTrackee/pull/532) - Fix footer color on dark mode
+* [PR#536](https://github.com/SamR1/FitTrackee/pull/536) - Accessibility fixes
+
+### Translations
+
+* [PR#526](https://github.com/SamR1/FitTrackee/pull/526) - Translations update (Dutch, Galician, Norwegian Bokmål)
+* [PR#533](https://github.com/SamR1/FitTrackee/pull/533) - Translations update (Czech)
+* [#534](https://github.com/SamR1/FitTrackee/issues/534) - [translations request] Czech
+* [PR#537](https://github.com/SamR1/FitTrackee/pull/537) - Translations update (Spanish)
+* [PR#538](https://github.com/SamR1/FitTrackee/pull/538) - Translations update (Galician)
+
+Translation status:
+- Basque: 88%
+- Czech: 15%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 88%
+- Italian: 74%
+- Norwegian Bokmål: 53%
+- Polish: 88%
+- Spanish: 100%
+
+### Misc
+
+* [PR#528](https://github.com/SamR1/FitTrackee/pull/528) - README reworked
+* [PR#530](https://github.com/SamR1/FitTrackee/pull/530) - specify AGPLv3 license
+
+
+Thanks to the contributors:
+- @comradekingu
+- @gallegonovato
+- @jderuiter
+- @jmlich
+- @xmgz
+
+
 ## Version 0.8.0 (2024/04/21)
 
 **FitTrackee** now lets you associate [equipment](https://samr1.github.io/FitTrackee/en/features.html#equipments) with workouts and filter workouts on notes.

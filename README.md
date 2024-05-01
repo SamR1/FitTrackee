@@ -28,10 +28,18 @@ It is also possible to add a workout without a GPX file.
 
 Map data from [OpenStreetMap](https://www.openstreetmap.org).  
 
+## Documentation
+
+- [List of features](https://samr1.github.io/FitTrackee/en/features.html)
+- [Installation instructions](https://samr1.github.io/FitTrackee/en/installation.html)
+- [Changelog](https://samr1.github.io/FitTrackee/en/changelog.html)
+
 **Under heavy development (some features may be unstable).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more info.)  
 
 ![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/en/_images/fittrackee_screenshot-01.png)
+
+## Translations
 
 <a href="https://hosted.weblate.org/engage/fittrackee/">
 <img src="https://hosted.weblate.org/widget/fittrackee/horizontal-auto.svg" alt="Translation status" />
