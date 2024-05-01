@@ -53,7 +53,7 @@
     "REPORTED_USER": "Utilisateur signalé",
     "REPORTER": "rapporteur",
     "REPORT_ACTIONS": {
-      "comment_suspension": "La commentaire a été suspendu par {1} {2}.",
+      "comment_suspension": "Le commentaire a été suspendu par {1} {2}.",
       "comment_unsuspension": "La suspension du commentaire a été levée par {1} {2}.",
       "report_reopening": "Le signalement a été réouvert par {1} {2}.",
       "report_resolution": "Le signalement a été marqué comme résolu par {1} {2}.",
