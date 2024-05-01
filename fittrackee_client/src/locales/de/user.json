@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Bist du sicher, dass du dich abmelden möchtest?",
   "LOG_IN": "Anmelden",
   "NEW_PASSWORD": "Neues Passwort",
+  "NO_SPORT_FOUND": "Keinen Sport gefunden.",
   "NO_USERS_FOUND": "Keine Nutzer gefunden.",
   "PASSWORD": "Passwort",
   "PASSWORD_FORGOTTEN": "Passwort vergessen?",
@@ -76,6 +77,16 @@
       "MIN_ALT": "Minimale Höhe",
       "ZERO": "Null"
     },
+    "EQUIPMENTS": {
+      "ACTION": "Aktion",
+      "CONFIRM_EQUIPMENT_DELETION": "Bist du sicher, dass du das Equipment {0} löschen möchtest?",
+      "DESCRIPTION": "Beschreibung",
+      "DISABLED_BY_ADMIN": "vom Admin deaktiviert",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Dieses Equipment ist mit Workouts assoziiert.",
+      "IS_ACTIVE": "aktiv",
+      "LABEL": "Bezeichnung",
+      "YOUR_EQUIPMENTS": "Deine Equipments"
+    },
     "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
     "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
     "FIRST_NAME": "Vorname",
@@ -95,6 +106,9 @@
     "SPORT": {
       "ACTION": "Aktion",
       "COLOR": "Farbe",
+      "CONFIRM_SPORT_RESET": "Bist du sicher, dass du diesen Sport zurücksetzen möchtest?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Bist du sicher, dass du diesen Sport zurücksetzen möchtest? Alle Standard-Equipments werden gelöscht.",
+      "DEFAULT_EQUIPMENTS": "Standard-Equipments | Standard-Equipments",
       "DISABLED_BY_ADMIN": "vom Admin deaktiviert",
       "IS_ACTIVE": "aktiv",
       "LABEL": "Titel",
@@ -109,6 +123,7 @@
     "TABS": {
       "ACCOUNT": "Konto",
       "APPS": "Anwendungen",
+      "EQUIPMENTS": "Equipments",
       "PICTURE": "Bild",
       "PREFERENCES": "Einstellungen",
       "PRIVACY-POLICY": "Datenschutzrichtlinie",
