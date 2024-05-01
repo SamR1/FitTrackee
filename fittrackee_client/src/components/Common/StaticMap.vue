@@ -1,22 +1,30 @@
 <template>
   <div class="static-map" :class="{ 'display-hover': displayHover }">
-    <img v-if="displayHover" :src="imageUrl" alt="" />
-    <div
+    <img
+      v-if="displayHover"
+      :src="imageUrl"
+      :alt="$t('workouts.WORKOUT_MAP')"
+    />
+    <router-link
       v-else
       class="bg-map-image"
+      :to="{
+        name: 'Workout',
+        params: { workoutId: workout.id },
+      }"
       :style="{
         backgroundImage: `url(${imageUrl})`,
       }"
+      :aria-label="$t('workouts.WORKOUT_MAP')"
     />
     <div class="map-attribution">
-      <span class="map-attribution-text">©</span>
       <a
         class="map-attribution-text"
         href="https://www.openstreetmap.org/copyright"
         target="_blank"
         rel="noopener noreferrer"
       >
-        OpenStreetMap
+        © OpenStreetMap
       </a>
     </div>
   </div>

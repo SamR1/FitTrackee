@@ -5,6 +5,7 @@
       @click="emit('arrowClick', true)"
       @keydown.enter="emit('arrowClick', true)"
       :disabled="isDisabled"
+      :aria-label="$t('common.PREVIOUS')"
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </button>
@@ -41,6 +42,7 @@
       @click="emit('arrowClick', false)"
       @keydown.enter="emit('arrowClick', false)"
       :disabled="isDisabled"
+      :aria-label="$t('common.NEXT')"
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </button>

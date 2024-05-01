@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Zeker dat u wilt uitloggen?",
   "LOG_IN": "inloggen",
   "NEW_PASSWORD": "Nieuw wachtwoord",
+  "NO_SPORT_FOUND": "Geen sport gevonden.",
   "NO_USERS_FOUND": "Geen gebruikers gevonden.",
   "PASSWORD": "Wachtwoord",
   "PASSWORD_FORGOTTEN": "Wachtwoord vergeten?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Minimum hoogte",
       "ZERO": "Nul"
     },
+    "EQUIPMENTS": {
+      "ACTION": "actie",
+      "CONFIRM_EQUIPMENT_DELETION": "Weet je zeker dat je dit materiaal {0} wilt verwijderen?",
+      "DESCRIPTION": "beschrijving",
+      "DISABLED_BY_ADMIN": "uitgeschakeld door de beheerder",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Dit materiaal is gekoppeld aan trainingen.",
+      "IS_ACTIVE": "actief",
+      "LABEL": "label",
+      "YOUR_EQUIPMENTS": "Jouw materialen"
+    },
+    "EQUIPMENTS_EDITION": "Materialen aanpassen",
     "ERRORED_EMAIL_UPDATE": "Gelieve {0} om uw email adres opnieuw te wijzigen of contacteer uw administrator",
     "FIRST_DAY_OF_WEEK": "Eerste dag van de week",
     "FIRST_NAME": "Voornaam",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "actie",
       "COLOR": "kleur",
+      "CONFIRM_SPORT_RESET": "Weet je zeker dat je deze sport wilt resetten?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Weet je zeker dat je deze sport wilt resetten? Alle standaard materialen worden verwijderd.",
+      "DEFAULT_EQUIPMENTS": "Standaard materiaal | Standaard materialen",
       "DISABLED_BY_ADMIN": "uitgeschakeld door admin",
       "IS_ACTIVE": "actief",
       "LABEL": "label",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "EQUIPMENTS": "materialen",
       "PICTURE": "afbeelding",
       "PREFERENCES": "voorkeuren",
       "PRIVACY-POLICY": "Privacybeleid",

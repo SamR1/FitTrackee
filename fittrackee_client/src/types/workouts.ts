@@ -113,6 +113,7 @@ export interface IWorkoutObject {
   type: string
   workoutDate: string
   weatherEnd: IWeather | null
+  workoutFullDate: string
   weatherStart: IWeather | null
   with_gpx: boolean
   workoutId: string

@@ -88,7 +88,7 @@
     TCoordinates,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
     authUser?: IAuthUserProfile
@@ -196,6 +196,11 @@
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
+      workoutFullDate: formatDate(
+        workout.workout_date,
+        displayOptions.value.timezone,
+        displayOptions.value.dateFormat
+      ),
       weatherStart: segment ? null : workout.weather_start,
       with_gpx: workout.with_gpx,
       workoutId: workout.id,

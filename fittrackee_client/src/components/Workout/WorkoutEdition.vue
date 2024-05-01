@@ -37,7 +37,7 @@
                 </div>
               </div>
               <div class="form-item">
-                <label> {{ $t('workouts.SPORT', 1) }}*: </label>
+                <label for="sport"> {{ $t('workouts.SPORT', 1) }}*: </label>
                 <select
                   id="sport"
                   required
@@ -131,6 +131,12 @@
                   <div class="form-item">
                     <label>{{ $t('workouts.DURATION') }}*:</label>
                     <div>
+                      <label
+                        for="workout-duration-hour"
+                        class="visually-hidden"
+                      >
+                        {{ $t('common.HOURS', 0) }}
+                      </label>
                       <input
                         id="workout-duration-hour"
                         name="workout-duration-hour"
@@ -147,6 +153,12 @@
                         v-model="workoutForm.workoutDurationHour"
                       />
                       :
+                      <label
+                        for="workout-duration-minutes"
+                        class="visually-hidden"
+                      >
+                        {{ $t('common.MINUTES', 0) }}
+                      </label>
                       <input
                         id="workout-duration-minutes"
                         name="workout-duration-minutes"
@@ -163,6 +175,12 @@
                         v-model="workoutForm.workoutDurationMinutes"
                       />
                       :
+                      <label
+                        for="workout-duration-seconds"
+                        class="visually-hidden"
+                      >
+                        {{ $t('common.SECONDS', 0) }}
+                      </label>
                       <input
                         id="workout-duration-seconds"
                         name="workout-duration-seconds"
@@ -237,7 +255,9 @@
                 </div>
               </div>
               <div class="form-item" v-if="equipments">
-                <label> {{ $t('equipments.EQUIPMENT', 1) }}: </label>
+                <label for="workout-equipment">
+                  {{ $t('equipments.EQUIPMENT', 1) }}:
+                </label>
                 <select
                   id="workout-equipment"
                   @invalid="invalidateForm"
@@ -255,7 +275,9 @@
                 </select>
               </div>
               <div class="form-item">
-                <label> {{ $t('privacy.WORKOUT_VISIBILITY') }}: </label>
+                <label for="workout_visibility">
+                  {{ $t('privacy.WORKOUT_VISIBILITY') }}:
+                </label>
                 <select
                   id="workout_visibility"
                   v-model="workoutForm.workoutVisibility"
@@ -272,7 +294,9 @@
                 </select>
               </div>
               <div class="form-item" v-if="withGpx">
-                <label> {{ $t('privacy.MAP_VISIBILITY') }}: </label>
+                <label for="map_visibility">
+                  {{ $t('privacy.MAP_VISIBILITY') }}:
+                </label>
                 <select
                   id="map_visibility"
                   v-model="workoutForm.mapVisibility"
@@ -288,7 +312,7 @@
                 </select>
               </div>
               <div class="form-item">
-                <label> {{ $t('workouts.NOTES') }}: </label>
+                <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
                   :input="workoutForm.notes"

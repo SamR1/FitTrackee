@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Installation - Documentation FitTrackee 0.8.0</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.04.27 -->
+        <title>Installation - Documentation FitTrackee 0.8.1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css?v=876feb3b" />
@@ -115,6 +115,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -126,7 +128,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.0
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.1
 </div></a>
     </div>
     <div class="header-right">
@@ -153,7 +155,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.0
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -230,9 +232,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Lien permanent vers cette rubrique">#</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Lien permanent vers cette rubrique">¶</a></h1>
 <div class="line-block">
 <div class="line"><strong>FitTrackee</strong> peut être installé via un seul <a class="reference external" href="https://pypi.org/project/fittrackee/">paquet Python à partir de PyPI</a> ou à partir des sources après avoir cloné le dépôt.</div>
 </div>
@@ -252,7 +254,7 @@
 </div>
 </div>
 <section id="main-dependencies">
-<h2>Dépendances principales<a class="headerlink" href="#main-dependencies" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Dépendances principales<a class="headerlink" href="#main-dependencies" title="Lien permanent vers cette rubrique">¶</a></h2>
 <p>Cette application est développée en Python (API) et Typescript (client) :</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -284,7 +286,7 @@
 </div>
 </section>
 <section id="prerequisites">
-<h2>Prérequis<a class="headerlink" href="#prerequisites" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Prérequis<a class="headerlink" href="#prerequisites" title="Lien permanent vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>obligatoires</dt><dd><ul>
@@ -315,7 +317,7 @@
 </div>
 </section>
 <section id="environment-variables">
-<h2>Variables d’environnement<a class="headerlink" href="#environment-variables" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Variables d’environnement<a class="headerlink" href="#environment-variables" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -325,7 +327,7 @@
 <p>Les variables d’environnements suivantes sont utilisées par l’application web de <strong>FitTrackee</strong> ou la librairie de gestion de la file d’attente des tâches. Elles ne sont pas toutes obligatoires selon la méthode de déploiement.</p>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FLASK_APP">
-<span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">Nom du module à importer au démarrage de Flask.</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">FLASK_APP</span></code> doit contenir <code class="docutils literal notranslate"><span class="pre">$(PWD)/fittrackee/__main__.py</span></code> dans le cas de l’installation à partir des sources, sinon <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code>.</div>
@@ -334,7 +336,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-HOST">
-<span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Hôte <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
@@ -345,7 +347,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-PORT">
-<span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Port de l’application web <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
@@ -356,7 +358,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_SETTINGS">
-<span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Configuration de <strong>FitTrackee</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
@@ -367,7 +369,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_SECRET_KEY">
-<span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>clé secrète de <strong>FitTrackee</strong>, doit être initialisé sur un environnement de production.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -377,7 +379,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_WORKERS">
-<span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>Nombre de _workers_ lancés par <strong>Gunicorn</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
@@ -388,7 +390,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_LOG">
-<span class="sig-name descname"><span class="pre">APP_LOG</span></span><a class="headerlink" href="#envvar-APP_LOG" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">APP_LOG</span></span><a class="headerlink" href="#envvar-APP_LOG" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -397,7 +399,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UPLOAD_FOLDER">
-<span class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></span><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></span><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -417,7 +419,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DATABASE_URL">
-<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><a class="headerlink" href="#envvar-DATABASE_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><a class="headerlink" href="#envvar-DATABASE_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">URL de la base de données avec le nom et le mot de passe de l’utilisateur, doit être initialisée sur les environnements de production.</div>
 <div class="line">Exemple pour un environnement de développement : <code class="docutils literal notranslate"><span class="pre">postgresql://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
@@ -432,7 +434,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DATABASE_DISABLE_POOLING">
-<span class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></span><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></span><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -446,13 +448,13 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UI_URL">
-<span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><p>URL de <strong>FitTrackee</strong>, nécessaire pour les liens dans les courriels.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-EMAIL_URL">
-<span class="sig-name descname"><span class="pre">EMAIL_URL</span></span><a class="headerlink" href="#envvar-EMAIL_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">EMAIL_URL</span></span><a class="headerlink" href="#envvar-EMAIL_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
 </div>
@@ -477,7 +479,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-SENDER_EMAIL">
-<span class="sig-name descname"><span class="pre">SENDER_EMAIL</span></span><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">SENDER_EMAIL</span></span><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
 </div>
@@ -486,7 +488,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-REDIS_URL">
-<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
 </div>
@@ -500,7 +502,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WORKERS_PROCESSES">
-<span class="sig-name descname"><span class="pre">WORKERS_PROCESSES</span></span><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">WORKERS_PROCESSES</span></span><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
 </div>
@@ -509,7 +511,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
-<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
 </div>
@@ -523,7 +525,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-TILE_SERVER_URL">
-<span class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></span><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></span><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -546,7 +548,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
-<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.6.10.</span></p>
 </div>
@@ -563,7 +565,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-MAP_ATTRIBUTION">
-<span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -577,7 +579,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
-<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.9.</span></p>
 </div>
@@ -601,7 +603,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WEATHER_API_KEY">
-<span class="sig-name descname"><span class="pre">WEATHER_API_KEY</span></span><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">WEATHER_API_KEY</span></span><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.4.0: </span>⚠️ remplace <code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p>
 </div>
@@ -610,7 +612,7 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WEATHER_API_PROVIDER">
-<span class="sig-name descname"><span class="pre">WEATHER_API_PROVIDER</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-WEATHER_API_PROVIDER" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">WEATHER_API_PROVIDER</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-WEATHER_API_PROVIDER" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.11.</span></p>
 </div>
@@ -619,14 +621,15 @@
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-VITE_APP_API_URL">
-<span class="sig-name descname"><span class="pre">VITE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VITE_APP_API_URL" title="Lien permanent vers cette définition">#</a></dt>
+<span class="sig-name descname"><span class="pre">VITE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VITE_APP_API_URL" title="Lien permanent vers cette définition">¶</a></dt>
 <dd><div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.7.26: </span>⚠️ remplace <code class="docutils literal notranslate"><span class="pre">VUE_APP_API_URL</span></code></p>
 </div>
 </dd></dl>
 
+</section>
 <section id="emails">
-<h3>Courriels<a class="headerlink" href="#emails" title="Lien permanent vers cette rubrique">#</a></h3>
+<h2>Courriels<a class="headerlink" href="#emails" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.3.0.</span></p>
 </div>
@@ -675,7 +678,7 @@
 <p>Le mot de passe peut être encodé s’il contient des caractères spéciaux. Par exemple avec le mot de passe <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, le mot de passe encodé sera <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 </section>
 <section id="map-tile-server">
-<h3>Serveur de tuiles<a class="headerlink" href="#map-tile-server" title="Lien permanent vers cette rubrique">#</a></h3>
+<h2>Serveur de tuiles<a class="headerlink" href="#map-tile-server" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.0.</span></p>
 </div>
@@ -708,7 +711,7 @@
 <p>L’URL par défaut a été mise à jour : le serveur de tuiles <strong>OpenStreetMap</strong> ne nécessite plus de sous-domaines.</p>
 </section>
 <section id="api-rate-limits">
-<h3>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien permanent vers cette rubrique">#</a></h3>
+<h2>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
 </div>
@@ -747,7 +750,7 @@ Commands:
 </div>
 </section>
 <section id="weather-data">
-<h3>Données météo<a class="headerlink" href="#weather-data" title="Lien permanent vers cette rubrique">#</a></h3>
+<h2>Données météo<a class="headerlink" href="#weather-data" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.7.11.</span></p>
 </div>
@@ -764,9 +767,8 @@ Commands:
 </div>
 <p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
 </section>
-</section>
 <section id="id2">
-<h2>Installation<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Installation<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -774,7 +776,7 @@ Commands:
 </div>
 </div>
 <section id="from-pypi">
-<h3>A partir de PyPI<a class="headerlink" href="#from-pypi" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>A partir de PyPI<a class="headerlink" href="#from-pypi" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -848,7 +850,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </section>
 <section id="from-sources">
-<h3>A partir des sources<a class="headerlink" href="#from-sources" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>A partir des sources<a class="headerlink" href="#from-sources" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -866,7 +868,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <section id="dev-environment">
-<h4>Environnements de développement<a class="headerlink" href="#dev-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<h4>Environnements de développement<a class="headerlink" href="#dev-environment" title="Lien permanent vers cette rubrique">¶</a></h4>
 <ul class="simple">
 <li><p>Cloner ce dépôt :</p></li>
 </ul>
@@ -907,7 +909,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </section>
 <section id="production-environment">
-<h4>Environnements de production<a class="headerlink" href="#production-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<h4>Environnements de production<a class="headerlink" href="#production-environment" title="Lien permanent vers cette rubrique">¶</a></h4>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -961,7 +963,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </section>
 </section>
 <section id="upgrade">
-<h2>Mise à jour<a class="headerlink" href="#upgrade" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Mise à jour<a class="headerlink" href="#upgrade" title="Lien permanent vers cette rubrique">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -975,7 +977,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <p>Les versions publiées ne suivent pas la <a class="reference external" href="https://semver.org/lang/fr/">gestion sémantique de version</a>. Toute version peut contenir des changements non rétro-compatibles.</p>
 </div>
 <section id="id3">
-<h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -1007,7 +1009,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </ul>
 </section>
 <section id="id4">
-<h3>A partir des sources<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>A partir des sources<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -1015,7 +1017,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <section id="id5">
-<h4>Environnements de développement<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique">#</a></h4>
+<h4>Environnements de développement<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique">¶</a></h4>
 <ul class="simple">
 <li><p>Arrêter l’application et récupérer les derniers changements du dépôt :</p></li>
 </ul>
@@ -1049,7 +1051,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </section>
 <section id="prod-environment">
-<h4>Environnement de production<a class="headerlink" href="#prod-environment" title="Lien permanent vers cette rubrique">#</a></h4>
+<h4>Environnement de production<a class="headerlink" href="#prod-environment" title="Lien permanent vers cette rubrique">¶</a></h4>
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
@@ -1088,7 +1090,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </section>
 </section>
 <section id="deployment">
-<h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Déploiement<a class="headerlink" href="#deployment" title="Lien permanent vers cette rubrique">¶</a></h2>
 <p>Il y a plusieurs méthodes pour démarrer et servir l’application web <strong>FitTrackee</strong> et l’application de gestion de la file d’attente de tâches. Un des moyens est d’utiliser les services <strong>systemd</strong> et <strong>Nginx</strong> to proxy passer à <strong>Gunicorn</strong>.</p>
 <p>Exemples :</p>
 <div class="admonition warning">
@@ -1219,9 +1221,9 @@ server {
 </div>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Lien permanent vers cette rubrique">¶</a></h2>
 <section id="id6">
-<h3>Installation<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>Installation<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.4.4.</span></p>
 </div>
@@ -1275,7 +1277,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-build
 </div>
 </section>
 <section id="development">
-<h3>Développement<a class="headerlink" href="#development" title="Lien permanent vers cette rubrique">#</a></h3>
+<h3>Développement<a class="headerlink" href="#development" title="Lien permanent vers cette rubrique">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Nouveau dans la version 0.5.0.</span></p>
 </div>
@@ -1308,7 +1310,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </section>
 </section>
 <section id="yunohost">
-<h2>Yunohost<a class="headerlink" href="#yunohost" title="Lien permanent vers cette rubrique">#</a></h2>
+<h2>Yunohost<a class="headerlink" href="#yunohost" title="Lien permanent vers cette rubrique">¶</a></h2>
 <p>Grâce aux contributeurs, un paquet est disponible, cf. <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
 </section>
 </section>
@@ -1375,13 +1377,11 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#main-dependencies">Dépendances principales</a></li>
 <li><a class="reference internal" href="#prerequisites">Prérequis</a></li>
-<li><a class="reference internal" href="#environment-variables">Variables d’environnement</a><ul>
+<li><a class="reference internal" href="#environment-variables">Variables d’environnement</a></li>
 <li><a class="reference internal" href="#emails">Courriels</a></li>
 <li><a class="reference internal" href="#map-tile-server">Serveur de tuiles</a></li>
 <li><a class="reference internal" href="#api-rate-limits">Limitation d’accès à l’API</a></li>
 <li><a class="reference internal" href="#weather-data">Données météo</a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#id2">Installation</a><ul>
 <li><a class="reference internal" href="#from-pypi">A partir de PyPI</a></li>
 <li><a class="reference internal" href="#from-sources">A partir des sources</a><ul>
@@ -1418,10 +1418,10 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e2986c7e"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=46e0e867"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
-    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/translations.js?v=d99ca74e"></script>

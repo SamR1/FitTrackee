@@ -11,10 +11,15 @@
   "HERE": "aquí",
   "HIDDEN": "Agochado",
   "HOME": "Inicio",
+  "HOURS": "hora|horas",
   "INACTIVE": "non activo",
   "LABEL": "etiqueta",
+  "MINUTES": "minuto|minutos",
+  "NEXT": "seguinte",
   "NO_DESCRIPTION": "sen descrición",
   "NO_NOTES": "Sen notas",
+  "PREVIOUS": "anterior",
+  "SECONDS": "segundo|segundos",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascenso",

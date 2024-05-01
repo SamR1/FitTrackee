@@ -12,13 +12,18 @@
   "HERE": "ici",
   "HIDDEN": "Masqué",
   "HOME": "Accueil",
+  "HOURS": "heure|heures",
   "INACTIVE": "inactif",
   "LABEL": "Nom",
   "LAST_UPDATED_ON": "Dernière mise à jour le",
+  "MINUTES": "minute|minutes",
+  "NEXT": "suivant",
   "NO_DESCRIPTION": "pas de description",
   "NO_NOTES": "Pas de notes",
+  "PREVIOUS": "prédédent",
   "REPORT_PLACEHOLDER": "préciser la raison du signalement",
   "REPORT_SUBMITTED": "Signalement envoyé.",
+  "SECONDS": "seconde|secondes",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",

@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict
 
 from flask import Flask
 from sqlalchemy.dialects.postgresql import insert
@@ -15,14 +15,12 @@ from fittrackee.workouts.models import Sport, Workout
 
 class TestSportModel:
     @staticmethod
-    def assert_sport_model(
-        sport: Sport, is_admin: Optional[bool] = False
-    ) -> Dict:
+    def assert_sport_model(sport: Sport, check_workouts: bool = False) -> Dict:
         assert 1 == sport.id
         assert 'Cycling (Sport)' == sport.label
         assert f'<Sport \'{sport.label}\'>' == str(sport)
 
-        serialized_sport = sport.serialize(is_admin=is_admin)
+        serialized_sport = sport.serialize(check_workouts=check_workouts)
         assert serialized_sport['default_equipments'] == []
         assert serialized_sport['label'] == sport.label
         assert serialized_sport['id'] == sport.id
@@ -35,26 +33,32 @@ class TestSportModel:
     def test_sport_model_without_workout(
         self, app: Flask, sport_1_cycling: Sport
     ) -> None:
+        assert sport_1_cycling.has_workouts is False
+
         serialized_sport = self.assert_sport_model(sport_1_cycling)
         assert 'has_workouts' not in serialized_sport
 
-    def test_sport_model_with_workout(
+    def test_sport_model_with_workouts_and_check_workouts_as_false(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
+        assert sport_1_cycling.has_workouts is True
+
         serialized_sport = self.assert_sport_model(sport_1_cycling)
         assert 'has_workouts' not in serialized_sport
 
-    def test_sport_model_with_workout_as_admin(
+    def test_sport_model_with_workouts_and_check_workouts_as_true(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
+        assert sport_1_cycling.has_workouts is True
+
         serialized_sport = self.assert_sport_model(sport_1_cycling, True)
         assert serialized_sport['has_workouts'] is True
 

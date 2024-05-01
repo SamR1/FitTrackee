@@ -1,4 +1,5 @@
 export type TLanguage =
+  | 'cs'
   | 'de'
   | 'en'
   | 'es'

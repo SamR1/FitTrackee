@@ -39,9 +39,5 @@
     "you can appeal only once": "Vous ne pouvez faire appel qu'une seule fois.",
     "you can not delete your account, no other user has admin rights": "Vous ne pouvez pas supprimer votre compte, aucun autre utilisateur n'a des droits d'administration.",
     "you do not have permissions": "Vous n'avez pas les permissions nécessaires."
-  },
-  "PAGINATION": {
-    "NEXT": "suivant",
-    "PREVIOUS": "précédent"
   }
 }

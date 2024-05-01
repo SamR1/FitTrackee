@@ -36,9 +36,5 @@
     "valid email must be provided for admin contact": "Kudeatzailearekin kontaktatzeko eposta helbide zuzen bat eman behar duzu",
     "you can not delete your account, no other user has admin rights": "Ezin duzu zure kontua ezabatu, kudeaketa baimena duen kontu bakarra da.",
     "you do not have permissions": "Ez duzu baimenik."
-  },
-  "PAGINATION": {
-    "NEXT": "hurrengoa",
-    "PREVIOUS": "aurrekoa"
   }
 }
