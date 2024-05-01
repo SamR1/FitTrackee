@@ -11,6 +11,7 @@ body {
   margin: 0;
   overflow-y: scroll;
   scrollbar-gutter: stable both-edges;
+  background-color: var(--app-background-color);
 
   &::-webkit-scrollbar {
     width: $scrollbar-width;
@@ -516,11 +517,13 @@ button {
 }
 
 .visually-hidden {
-  clip: rect(1px, 1px, 1px, 1px);
+  border: 0;
+  clip: rect(0 0 0 0);
   height: 1px;
+  margin: -1px;
   overflow: hidden;
+  padding: 0;
   position: absolute;
-  white-space: nowrap;
   width: 1px;
 }
 

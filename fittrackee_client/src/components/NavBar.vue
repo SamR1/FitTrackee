@@ -29,27 +29,32 @@
             />
           </button>
         </div>
-        <div class="nav-items-app-menu" @click="closeMenu()">
+        <div class="nav-items-app-menu">
           <div class="nav-items-group" v-if="isAuthenticated && !isSuspended">
-            <router-link class="nav-item" to="/">
+            <router-link class="nav-item" to="/" @click="closeMenu()">
               {{ $t('dashboard.DASHBOARD') }}
             </router-link>
-            <router-link class="nav-item" to="/workouts">
+            <router-link class="nav-item" to="/workouts" @click="closeMenu()">
               {{ capitalize($t('workouts.WORKOUT', 2)) }}
             </router-link>
-            <router-link class="nav-item" to="/statistics">
+            <router-link class="nav-item" to="/statistics" @click="closeMenu()">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
-            <router-link class="nav-item" to="/users">
+            <router-link class="nav-item" to="/users" @click="closeMenu()">
               {{ capitalize($t('user.USER', 0)) }}
             </router-link>
-            <router-link class="nav-item" to="/workouts/add">
+            <router-link
+              class="nav-item"
+              to="/workouts/add"
+              @click="closeMenu()"
+            >
               {{ $t('workouts.ADD_WORKOUT') }}
             </router-link>
             <router-link
               class="nav-item"
               v-if="isAuthenticated && authUser.admin"
               to="/admin"
+              @click="closeMenu()"
             >
               {{ $t('admin.ADMIN') }}
             </router-link>
@@ -130,6 +135,7 @@
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
             :listLabel="$t('user.LANGUAGE', 0)"
+            :isMenuOpen="isMenuOpen"
           >
             <i class="fa fa-language" aria-hidden="true"></i>
           </Dropdown>
@@ -428,6 +434,7 @@
         .nav-items-user-menu {
           display: flex;
           flex-direction: column;
+          background: var(--nav-bar-background-color);
         }
 
         .nav-items-close {
@@ -465,10 +472,18 @@
           &.dropdown-wrapper {
             padding-left: $default-padding * 2;
             ::v-deep(.dropdown-list) {
-              margin-left: initial !important;
               width: auto !important;
               height: 200px;
               overflow-y: scroll;
+
+              @media screen and (orientation: portrait) {
+                margin-left: initial !important;
+              }
+
+              @media screen and (orientation: landscape) {
+                margin-top: -35px;
+                margin-left: 35px !important;
+              }
             }
           }
           &.notifications {

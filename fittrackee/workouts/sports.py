@@ -102,7 +102,7 @@ def get_sports(auth_user: User) -> Dict:
         "status": "success"
       }
 
-    - for admin user:
+    - for admin user and check_workouts=true:
 
     .. sourcecode:: http
 
@@ -171,6 +171,8 @@ def get_sports(auth_user: User) -> Dict:
         "status": "success"
       }
 
+    :query boolean check_workouts: check if sport has workouts
+
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
@@ -180,22 +182,30 @@ def get_sports(auth_user: User) -> Dict:
         - ``invalid token, please log in again``
 
     """
+    params = request.args.copy()
+    check_workouts = params.get('check_workouts', 'false').lower() == 'true'
+
+    sport_preferences = (
+        {
+            p.sport_id: p
+            for p in UserSportPreference.query.filter_by(
+                user_id=auth_user.id
+            ).all()
+        }
+        if auth_user
+        else {}
+    )
     sports = Sport.query.order_by(Sport.id).all()
     sports_data = []
     for sport in sports:
-        sport_preferences = (
-            UserSportPreference.query.filter_by(
-                user_id=auth_user.id, sport_id=sport.id
-            ).first()
-            if auth_user
-            else None
-        )
         sports_data.append(
             sport.serialize(
-                is_admin=auth_user.admin if auth_user else False,
+                check_workouts=(
+                    auth_user and auth_user.admin and check_workouts
+                ),
                 sport_preferences=(
-                    sport_preferences.serialize()
-                    if sport_preferences
+                    sport_preferences[sport.id].serialize()
+                    if sport.id in sport_preferences
                     else None
                 ),
             )
@@ -246,30 +256,6 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    - success for admin user:
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "data": {
-          "sports": [
-            {
-              "color": null,
-              "has_workouts": false,
-              "id": 1,
-              "is_active": true,
-              "is_active_for_user": true,
-              "label": "Cycling (Sport)",
-              "stopped_speed_threshold": 1
-            }
-          ]
-        },
-        "status": "success"
-      }
-
     - sport not found:
 
     .. sourcecode:: http
@@ -306,7 +292,6 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
             'data': {
                 'sports': [
                     sport.serialize(
-                        is_admin=auth_user.admin,
                         sport_preferences=(
                             sport_preferences.serialize()
                             if sport_preferences
@@ -412,7 +397,6 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
             'data': {
                 'sports': [
                     sport.serialize(
-                        is_admin=auth_user.admin,
                         sport_preferences=(
                             sport_preferences.serialize()
                             if sport_preferences

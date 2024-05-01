@@ -1,0 +1,53 @@
+{
+  "Cycling (Sport)": {
+    "LABEL": "Cyklistika (Sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Jízda na kole (Přeprava)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Jízda na kole (Trekking)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Jízda na kole (Virtuální)"
+  },
+  "Hiking": {
+    "LABEL": "Turistika"
+  },
+  "Mountain Biking": {
+    "LABEL": "Horská cyklistika"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Horská cyklistika (Elektrická)"
+  },
+  "Mountaineering": {
+    "LABEL": "Horolezectví"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Plavání na otevřené vodě"
+  },
+  "Paragliding": {
+    "LABEL": "Paragliding"
+  },
+  "Rowing": {
+    "LABEL": "Veslování"
+  },
+  "Running": {
+    "LABEL": "Běhání"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Lyžování (Alpské)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Lyžování (Běžky)"
+  },
+  "Snowshoes": {
+    "LABEL": "Sněžnice"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Chůze"
+  }
+}

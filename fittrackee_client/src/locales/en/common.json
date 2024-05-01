@@ -12,13 +12,17 @@
   "HERE": "here",
   "HIDDEN": "Hidden",
   "HOME": "Home",
+  "HOURS": "hour|hours",
   "INACTIVE": "inactive",
   "LABEL": "label",
   "LAST_UPDATED_ON": "Last updated on",
+  "MINUTES": "minute|minutes",
+  "NEXT": "next",
   "NO_DESCRIPTION": "no description",
   "NO_NOTES": "No notes",
-  "REPORT_PLACEHOLDER": "indicate the reason for reporting",
+  "PREVIOUS": "previous",
   "REPORT_SUBMITTED": "Report submitted.",
+  "SECONDS": "second|seconds",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascending",

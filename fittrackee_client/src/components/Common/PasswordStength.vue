@@ -1,6 +1,10 @@
 <template>
   <div class="password-strength">
+    <label for="password-strength" class="visually-hidden">
+      {{ $t('user.PASSWORD_STRENGTH.LABEL') }}
+    </label>
     <input
+      id="password-strength"
       class="password-slider"
       :class="`strength-${passwordScore}`"
       :style="{ backgroundSize: backgroundSize }"

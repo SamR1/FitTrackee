@@ -9,11 +9,12 @@ import { handleError } from '@/utils'
 
 export const actions: ActionTree<ISportsState, IRootState> & ISportsActions = {
   [SPORTS_STORE.ACTIONS.GET_SPORTS](
-    context: ActionContext<ISportsState, IRootState>
+    context: ActionContext<ISportsState, IRootState>,
+    checkWorkouts: boolean
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
-      .get('sports')
+      .get(`sports${checkWorkouts ? '?check_workouts=true' : ''}`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(

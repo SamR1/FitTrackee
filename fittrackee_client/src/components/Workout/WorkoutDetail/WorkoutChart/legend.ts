@@ -55,7 +55,10 @@ export const htmlLegendPlugin = {
         checkBox.checked = !item.hidden
       }
 
-      const text = document.createTextNode(item.text)
+      const label = document.createElement('label')
+      label.htmlFor = checkBox.id
+      const labeltext = document.createTextNode(item.text)
+      label.appendChild(labeltext)
 
       const boxSpan = document.createElement('span')
       if (boxSpan) {
@@ -63,9 +66,9 @@ export const htmlLegendPlugin = {
         boxSpan.style.borderColor = String(item.strokeStyle)
       }
 
+      label.appendChild(boxSpan)
       li.appendChild(checkBox)
-      li.appendChild(text)
-      li.appendChild(boxSpan)
+      li.appendChild(label)
       ul.appendChild(li)
     })
   },

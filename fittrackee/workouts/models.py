@@ -147,9 +147,20 @@ class Sport(BaseModel):
     def __init__(self, label: str) -> None:
         self.label = label
 
+    @property
+    def has_workouts(self) -> bool:
+        return (
+            db.session.query(Workout.id)
+            .filter_by(sport_id=self.id)
+            .limit(1)
+            .count()
+            > 0
+        )
+
     def serialize(
         self,
-        is_admin: Optional[bool] = False,
+        *,
+        check_workouts: bool = False,
         sport_preferences: Optional[Dict] = None,
     ) -> Dict:
         serialized_sport = {
@@ -172,8 +183,8 @@ class Sport(BaseModel):
                 else sport_preferences['stopped_speed_threshold']
             ),
         }
-        if is_admin:
-            serialized_sport['has_workouts'] = len(self.workouts) > 0
+        if check_workouts:
+            serialized_sport['has_workouts'] = self.has_workouts
 
         serialized_sport['default_equipments'] = (
             []

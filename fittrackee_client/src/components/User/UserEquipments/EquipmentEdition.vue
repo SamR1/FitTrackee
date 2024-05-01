@@ -80,6 +80,7 @@
             </label>
             <input
               id="equipment-active"
+              name="equipment-active"
               type="checkbox"
               v-model="equipmentForm.isActive"
             />

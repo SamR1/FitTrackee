@@ -39,9 +39,5 @@
     "you can appeal only once": "You can appeal only once.",
     "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
     "you do not have permissions": "You do not have permissions."
-  },
-  "PAGINATION": {
-    "NEXT": "next",
-    "PREVIOUS": "previous"
   }
 }

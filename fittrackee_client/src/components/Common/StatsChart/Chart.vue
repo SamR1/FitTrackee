@@ -1,6 +1,6 @@
 <template>
   <div class="bar-chart" :class="{ minimal: !fullStats }">
-    <Bar :data="chartData" :options="options" />
+    <Bar :data="chartData" :options="options" :aria-label="label" />
   </div>
 </template>
 
@@ -25,6 +25,7 @@
     displayedSportIds: number[]
     fullStats: boolean
     useImperialUnits: boolean
+    label: string
   }
   const props = defineProps<Props>()
   const {
