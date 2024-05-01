@@ -1,13 +1,21 @@
 {
   "ABOUT": "over",
+  "ACTION": "Actie",
+  "ACTIVE": "Actief",
   "CONFIRMATION": "Bevestiging",
   "CONTACT": "contacteer",
   "DAY": "dag | dagen",
+  "DESCRIPTION": "Beschrijving",
   "DISPLAYED": "Weergegeven",
   "DOCUMENTATION": "documentatie",
   "HERE": "hier",
   "HIDDEN": "Verborgen",
   "HOME": "Startscherm",
+  "INACTIVE": "inactief",
+  "LABEL": "label",
+  "NEXT": "volgende",
+  "NO_DESCRIPTION": "geen beschrijving",
+  "PREVIOUS": "vorige",
   "SELECTS": {
     "ORDER": {
       "ASC": "oplopend",
@@ -21,5 +29,6 @@
       "LABEL": "per pagina"
     }
   },
-  "TOTAL": "Totaal"
+  "TOTAL": "Totaal",
+  "TOTAL_DURATION_WITH_PAUSES": "totale duur inclusief pauzes"
 }

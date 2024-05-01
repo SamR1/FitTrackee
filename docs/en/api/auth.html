@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="API documentation" href="index.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.01.29 -->
-        <title>Authentication and account - FitTrackee 0.8.0 documentation</title>
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.04.27 -->
+        <title>Authentication and account - FitTrackee 0.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=437aa6ec" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
     <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
@@ -115,6 +115,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -126,7 +128,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.8.0
+      <a href="../index.html"><div class="brand">FitTrackee 0.8.1
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -153,7 +155,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.0
+  <span class="sidebar-brand-text">FitTrackee 0.8.1
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -230,12 +232,12 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="authentication-and-account">
-<h1>Authentication and account<a class="headerlink" href="#authentication-and-account" title="Permalink to this heading">#</a></h1>
+<h1>Authentication and account<a class="headerlink" href="#authentication-and-account" title="Permalink to this heading">¶</a></h1>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-register">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a user and send confirmation email.</p>
 <p>The newly created account is inactive. The user must confirm his email
 to activate it.</p>
@@ -302,7 +304,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-confirm">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Activate user account after registration.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/confirm</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -338,7 +340,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-resend-confirmation">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resend email with instructions to confirm account.</p>
 <p>If email sending is disabled, this endpoint is not available.</p>
 <p><strong>Example request</strong>:</p>
@@ -375,7 +377,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-login">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Permalink to this definition">¶</a></dt>
 <dd><p>User login.</p>
 <p>Only user with an active account can log in.</p>
 <p><strong>Example request</strong>:</p>
@@ -429,7 +431,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-profile">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get authenticated user info (profile, account, preferences).</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:read</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -549,7 +551,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edit authenticated user profile.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -681,7 +683,7 @@ fallback to ‘en’ (english))</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-preferences">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edit authenticated user preferences.</p>
 <p>Supported date formats:</p>
 <ul class="simple">
@@ -835,7 +837,7 @@ If null, it uses browser preferences.</p></li>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-sports">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Permalink to this definition">¶</a></dt>
 <dd><p>Edit authenticated user sport preferences.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -907,7 +909,7 @@ to use for this sport.
 
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-profile-reset-sports-(sport_id)">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset authenticated user preferences for a given sport.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -949,7 +951,7 @@ to use for this sport.
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-picture">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update authenticated user picture.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -1003,7 +1005,7 @@ to use for this sport.
 
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-picture">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete authenticated user picture.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Example request</strong>:</p>
@@ -1039,7 +1041,7 @@ to use for this sport.
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-reset-request">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle password reset request.</p>
 <p>If email sending is disabled, this endpoint is not available.</p>
 <p><strong>Example request</strong>:</p>
@@ -1075,7 +1077,7 @@ to use for this sport.
 
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-auth-profile-edit-account">
-<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/account</span></span><a class="headerlink" href="#patch--api-auth-profile-edit-account" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/account</span></span><a class="headerlink" href="#patch--api-auth-profile-edit-account" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update authenticated user email and password.</p>
 <p>It sends emails if sending is enabled:</p>
 <ul class="simple">
@@ -1223,7 +1225,7 @@ to use for this sport.
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-update">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update user password after password reset request.</p>
 <p>It sends emails if sending is enabled.</p>
 <p><strong>Example request</strong>:</p>
@@ -1261,7 +1263,7 @@ to use for this sport.
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-email-update">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update user email after confirmation.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/email/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1296,7 +1298,7 @@ to use for this sport.
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-logout">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/logout</span></span><a class="headerlink" href="#post--api-auth-logout" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/logout</span></span><a class="headerlink" href="#post--api-auth-logout" title="Permalink to this definition">¶</a></dt>
 <dd><p>User logout.
 If a valid token is provided, it will be blacklisted.</p>
 <p><strong>Example request</strong>:</p>
@@ -1352,7 +1354,7 @@ If a valid token is provided, it will be blacklisted.</p>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-privacy-policy">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/privacy-policy</span></span><a class="headerlink" href="#post--api-auth-account-privacy-policy" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/privacy-policy</span></span><a class="headerlink" href="#post--api-auth-account-privacy-policy" title="Permalink to this definition">¶</a></dt>
 <dd><p>The authenticated user accepts the privacy policy.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/privacy-policy</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1397,7 +1399,7 @@ If a valid token is provided, it will be blacklisted.</p>
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-account-export">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export</span></span><a class="headerlink" href="#get--api-auth-account-export" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export</span></span><a class="headerlink" href="#get--api-auth-account-export" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a data export info for authenticated user if a request exists.</p>
 <p>It returns:</p>
 <ul class="simple">
@@ -1462,7 +1464,7 @@ If a valid token is provided, it will be blacklisted.</p>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-export-request">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/request</span></span><a class="headerlink" href="#post--api-auth-account-export-request" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/request</span></span><a class="headerlink" href="#post--api-auth-account-export-request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request a data export for authenticated user.</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/export/request</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1512,7 +1514,7 @@ If a valid token is provided, it will be blacklisted.</p>
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-account-export-(string-file_name)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-auth-account-export-(string-file_name)" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-auth-account-export-(string-file_name)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a data export archive</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/account/export/download/archive_rgjsR3fHr5Yp.zip</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1605,10 +1607,10 @@ If a valid token is provided, it will be blacklisted.</p>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=6a14807c"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=ce6c0465"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
-    <script src="../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     </body>

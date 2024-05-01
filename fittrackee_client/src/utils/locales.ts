@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns'
-import { de, enUS, es, eu, fr, gl, it, nb, nl, pl } from 'date-fns/locale'
+import { cs, de, enUS, es, eu, fr, gl, it, nb, nl, pl } from 'date-fns/locale'
 
 import createI18n from '@/i18n'
 import type { TLanguage } from '@/types/locales'
@@ -7,12 +7,23 @@ import type { TLanguage } from '@/types/locales'
 export const isLanguageSupported = (
   language: string
 ): language is TLanguage => {
-  return ['de', 'en', 'es', 'eu', 'fr', 'gl', 'it', 'nb', 'nl', 'pl'].includes(
-    language
-  )
+  return [
+    'cs',
+    'de',
+    'en',
+    'es',
+    'eu',
+    'fr',
+    'gl',
+    'it',
+    'nb',
+    'nl',
+    'pl',
+  ].includes(language)
 }
 
 export const localeFromLanguage: Record<TLanguage, Locale> = {
+  cs: cs,
   de: de,
   en: enUS,
   es: es,
@@ -26,16 +37,17 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  de: 'Deutsch (89%)',
+  cs: 'Česky (15%)',
+  de: 'Deutsch (88%)',
   en: 'English',
   es: 'Español',
-  eu: 'Euskara (89%)',
+  eu: 'Euskara (88%)',
   fr: 'Français',
-  gl: 'Galego (99%)',
-  it: 'Italiano (75%)',
+  gl: 'Galego',
+  it: 'Italiano (74%)',
   nb: 'Norsk bokmål (53%)',
-  nl: 'Nederlands (89%)',
-  pl: 'Polski (89%)',
+  nl: 'Nederlands (98%)',
+  pl: 'Polski (88%)',
 }
 
 const { availableLocales } = createI18n.global

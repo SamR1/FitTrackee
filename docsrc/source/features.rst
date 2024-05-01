@@ -147,12 +147,6 @@ Account & preferences
 .. note::
   For now, it's not possible to import these files into another **FitTrackee** instance.
 
-OAuth Apps
-^^^^^^^^^^
-(*new in 0.7.0*)
-
-- A user can create `clients <apps.html>`__ for third-party applications.
-
 Equipments
 ^^^^^^^^^^
 (*new in 0.8.0*)
@@ -185,6 +179,12 @@ Equipments
 
 .. note::
   | An equipment type can be deactivated by an administrator.
+
+OAuth Apps
+^^^^^^^^^^
+(*new in 0.7.0*)
+
+- A user can create `clients <apps.html>`__ for third-party applications.
 
 Administration
 ^^^^^^^^^^^^^^
@@ -264,6 +264,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Norwegian Bokmål (*new in 0.7.15*)
 - Polish (*new in 0.7.18*)
 - Basque (*new in 0.7.31*)
+- Czech (*new in 0.8.1*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 

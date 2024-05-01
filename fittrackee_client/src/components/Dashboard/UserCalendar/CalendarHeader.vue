@@ -3,6 +3,7 @@
     <button
       class="calendar-arrow calendar-arrow-left transparent"
       @click="emit('displayPreviousMonth')"
+      :aria-label="$t('common.PREVIOUS')"
     >
       <i class="fa fa-chevron-left" aria-hidden="true" />
     </button>
@@ -14,6 +15,7 @@
     <button
       class="calendar-arrow calendar-arrow-right transparent"
       @click="emit('displayNextMonth')"
+      :aria-label="$t('common.NEXT')"
     >
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </button>

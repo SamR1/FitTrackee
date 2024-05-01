@@ -27,9 +27,5 @@
     "user does not exist": "Brukeren finnes ikke.",
     "valid email must be provided for admin contact": "En gyldig e-postadresse må angis for administratorkontakt",
     "you do not have permissions": "Du har ikke tilganger."
-  },
-  "PAGINATION": {
-    "NEXT": "neste",
-    "PREVIOUS": "forrige"
   }
 }

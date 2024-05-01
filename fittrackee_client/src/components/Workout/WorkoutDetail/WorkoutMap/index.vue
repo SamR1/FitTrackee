@@ -18,6 +18,7 @@
             @ready="fitBounds(bounds)"
             :use-global-leaflet="false"
             class="map"
+            :aria-label="$t('workouts.WORKOUT_MAP')"
           >
             <LControlLayers />
             <LControl

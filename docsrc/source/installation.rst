@@ -263,7 +263,7 @@ deployment method.
 
 
 Emails
-^^^^^^
+~~~~~~
 .. versionadded:: 0.3.0
 
 To send emails, a valid ``EMAIL_URL`` must be provided:
@@ -305,7 +305,7 @@ For instance with password ``passwordwith@and&and?``, the encoded password will 
 
 
 Map tile server
-^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~
 .. versionadded:: 0.4.0
 
 Default tile server is now **OpenStreetMap**'s standard tile layer (if environment variables are not initialized).
@@ -338,7 +338,7 @@ The default URL is updated: **OpenStreetMap**'s tile server no longer requires s
 
 
 API rate limits
-^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~
 .. versionadded:: 0.7.0
 
 | API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
@@ -374,7 +374,7 @@ API rate limits
 
 
 Weather data
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 .. versionchanged:: 0.7.11
 
 The following weather data providers are supported by **FitTrackee**:

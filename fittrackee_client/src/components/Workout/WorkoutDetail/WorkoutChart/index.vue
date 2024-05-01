@@ -30,6 +30,7 @@
             :options="options"
             :plugins="plugins"
             @mouseleave="emitEmptyCoordinates"
+            :aria-label="$t('workouts.WORKOUT_CHART')"
           />
         </div>
         <div class="chart-info">
@@ -315,14 +316,18 @@
               font-size: 0.85em;
               padding: 0 $default-padding * 0.5;
 
-              span {
-                border-radius: 5%;
-                border-style: solid;
-                border-width: 1.5px;
-                height: 10px;
-                margin-top: 4px;
-                margin-left: 2px;
-                width: 20px;
+              label {
+                display: flex;
+                font-weight: normal;
+                span {
+                  border-radius: 5%;
+                  border-style: solid;
+                  border-width: 1.5px;
+                  height: 10px;
+                  margin-top: 4px;
+                  margin-left: 2px;
+                  width: 20px;
+                }
               }
             }
           }

@@ -109,8 +109,10 @@
   "WITHOUT_GPX": "sans fichier .gpx",
   "WITH_GPX": "avec un fichier .gpx",
   "WORKOUT": "séance | séances",
+  "WORKOUT_CHART": "graphe de vitesse et d'altitude de la séance",
   "WORKOUT_DATE": "date de la séance",
   "WORKOUT_DELETION_CONFIRMATION": "Etes-vous sûr de vouloir supprimer cette séance ?",
+  "WORKOUT_MAP": "carte de la séance",
   "ZIP_ARCHIVE": "archive .zip",
   "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
 }
