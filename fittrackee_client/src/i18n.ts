@@ -1,6 +1,6 @@
 import { createI18n } from 'vue-i18n'
 
-// import csMessages from '@/locales/cs/cs'
+import csMessages from '@/locales/cs/cs'
 import deMessages from '@/locales/de/de'
 import enMessages from '@/locales/en/en'
 import esMessages from '@/locales/es/es'
@@ -18,7 +18,7 @@ export default createI18n({
   fallbackLocale: 'en',
   globalInjection: true,
   messages: {
-    // cs: csMessages,  // disabled for now
+    cs: csMessages,
     de: deMessages,
     en: enMessages,
     es: esMessages,
