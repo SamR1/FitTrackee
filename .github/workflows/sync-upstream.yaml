@@ -1,0 +1,21 @@
+name: Scheduled Merge Remote Action
+on: 
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:                # trigger manually
+
+jobs:
+  merge-upstream:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0 
+      - name: Merge Upstream
+        uses: exions/merge-upstream@v1.1.0
+        with:
+          upstream: SamR1/FitTrackee
+          upstream-branch: master   # set the upstream branch to merge from
+          branch: master
