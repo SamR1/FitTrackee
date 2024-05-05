@@ -177,7 +177,7 @@ jobs:
       - name: Run migrations
         run: ftcli db upgrade
       - name: Install pytest and selenium
-        run: python3 -m pip install pytest==7.4.0 pytest-selenium==4.0.1 selenium==4.9.0 pytest-html==3.2.0
+        run: python3 -m pip install pytest==8.2.0 pytest-selenium==4.1.0 selenium==4.20.0 pytest-html==4.1.1
       - name: Start application and run tests with Selenium
         run: |
           setsid nohup fittrackee >> nohup.out 2>&1 &
@@ -235,7 +235,7 @@ jobs:
       - name: Run migrations to update database
         run: ftcli db upgrade
       - name: Install pytest and selenium
-        run: python3 -m pip install pytest==7.4.0 pytest-selenium==4.0.1 selenium==4.9.0 pytest-html==3.2.0
+        run: python3 -m pip install pytest==8.2.0 pytest-selenium==4.1.0 selenium==4.20.0 pytest-html==4.1.1
       - name: Start application and run tests with Selenium
         run: |
           setsid nohup fittrackee >> nohup.out 2>&1 &
