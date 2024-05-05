@@ -5,8 +5,14 @@ from fittrackee.emails.email import EmailTemplate
 
 from .template_results.email_update_to_current_email import (
     expected_en_html_body as expected_en_current_email_html_body,
+)
+from .template_results.email_update_to_current_email import (
     expected_en_text_body as expected_en_current_email_text_body,
+)
+from .template_results.email_update_to_current_email import (
     expected_fr_html_body as expected_fr_current_email_html_body,
+)
+from .template_results.email_update_to_current_email import (
     expected_fr_text_body as expected_fr_current_email_text_body,
 )
 

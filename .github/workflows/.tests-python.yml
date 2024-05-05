@@ -46,12 +46,9 @@ jobs:
       - name: Bandit
         if: matrix.python-version == '3.11'
         run: bandit -r fittrackee -c pyproject.toml
-      - name: Lint (isort & black)
+      - name: Lint
         if: matrix.python-version == '3.11'
-        run: pytest --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations -p no:warnings
-      - name: Lint (flake8)
-        if: matrix.python-version == '3.11'
-        run: flake8 fittrackee e2e
+        run: ruff check fittrackee e2e
       - name: Mypy
         if: matrix.python-version == '3.11'
         run: mypy fittrackee
