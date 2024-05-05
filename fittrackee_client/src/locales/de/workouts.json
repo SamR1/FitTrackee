@@ -29,6 +29,11 @@
   "MAX_SIZE": "Maximalgröße",
   "MAX_SPEED": "Max. Geschwindigkeit",
   "MIN_ALTITUDE": "minimale Höhe",
+  "MULTISELECT": {
+    "deselectLabel": "Enger zum Entfernen drücken",
+    "selectLabel": "Enger zum Auswählen drücken",
+    "selectedLabel": "Ausgewählt"
+  },
   "NEXT_SEGMENT": "Nächstes Segment",
   "NEXT_WORKOUT": "Nächstes Training",
   "NOTES": "Anmerkungen",
@@ -62,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "Höhenachse bei Null starten",
   "TITLE": "Titel",
   "TO": "bis",
+  "TOTAL_DISTANCE": "Gesamtentfernung",
   "TOTAL_DURATION": "Gesamtdauer",
   "UPLOAD_FIRST_WORKOUT": "Füge erstes Training hinzu!",
   "VIEW_FULLSCREEN": "Vollbild anzeigen",
@@ -103,8 +109,10 @@
   "WITHOUT_GPX": "ohne .gpx Datei",
   "WITH_GPX": "mit .gpx Datei",
   "WORKOUT": "Training | Trainings",
+  "WORKOUT_CHART": "Geschwindigkeit und -Höhen-Diagramm des Workouts",
   "WORKOUT_DATE": "Trainingsdatum",
   "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
+  "WORKOUT_MAP": "Workout-Karte",
   "ZIP_ARCHIVE": ".zip Datei",
   "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
 }

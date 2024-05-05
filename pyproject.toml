@@ -50,21 +50,18 @@ ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.8"
-black = "^24.4.2"
-flake8 = "^7.0.0"  # requires Python >=3.8.1
 freezegun = "^1.5.0"
 furo = "^2024.4.27"
 mypy = "^1.10.0"
 pytest = "^8.2.0"
-pytest-black = "^0.3.12"
 pytest-cov = "^5.0.0"
 pytest-html = "^4.1.1"
-pytest-isort = "^4.0.0"
 pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-selenium = "4.19.0"
+ruff = "^0.4.3"
+selenium = "4.20.0"
 sphinx = "^7.1"
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.1.0"
@@ -78,18 +75,28 @@ types-requests = "^2.31"
 fittrackee = 'fittrackee.__main__:main'
 ftcli = 'fittrackee.cli:cli'
 
-[tool.black]
+[tool.ruff]
 line-length = 79
-skip-string-normalization = true
-target-version = ["py38"]
-include = ".py$"
-exclude = "migrations"
+exclude = ["fittrackee/migrations/*"]
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-combine_as_imports = true
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # isort
+    "I",
+]
+
+[tool.ruff.format]
+quote-style = "preserve"
+
+[tool.ruff.lint.per-file-ignores]
+"fittrackee/activities/stats.py" = ["E501"]
+"fittrackee/application/app_config.py" = ["E501"]
+"fittrackee/tests/test_email.py" = ["E501"]
+"fittrackee/tests/test_email_template_password_request.py" = ["E501"]
 
 [tool.pytest.ini_options]
 markers = [

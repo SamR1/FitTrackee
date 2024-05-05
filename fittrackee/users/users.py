@@ -92,9 +92,7 @@ def get_users_list(auth_user: User) -> Dict:
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
             (
-                True
-                if with_inactive == 'true'
-                else User.is_active == True  # noqa
+                True if with_inactive == 'true' else User.is_active == True  # noqa
             ),
             (
                 True
