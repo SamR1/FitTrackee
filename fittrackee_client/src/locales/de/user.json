@@ -87,6 +87,7 @@
       "LABEL": "Bezeichnung",
       "YOUR_EQUIPMENTS": "Deine Equipments"
     },
+    "EQUIPMENTS_EDITION": "Equipment-Ausführungen",
     "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
     "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
     "FIRST_NAME": "Vorname",
