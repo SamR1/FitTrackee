@@ -1,1 +1,32 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "Libovolné další informace, které mohou být užitečné pro uživatele. Lze použít Markdown syntaxi.",
+    "TEXT": "Detailní informace o instanci"
+  },
+  "ACTION": "Akce",
+  "ACTIVATE_USER_ACCOUNT": "Aktivovat účet",
+  "ACTIVE": "Aktivní",
+  "ADMIN": "Správce",
+  "ADMINISTRATION": "Správa",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Přidat/odebrat oprávnění pro správu, smazat uživatelský účet.",
+  "APPLICATION": "Aplikace",
+  "APP_CONFIG": {
+    "MAX_FILES_IN_ZIP_LABEL": "Max. počet souborů v zip archivu",
+    "MAX_USERS_HELP": "Pokud zadáte 0, tak nebudou registrace omezeny.",
+    "MAX_USERS_LABEL": "Max. počet aktivních uživatelů",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. velikost nahrávaných souborů (v MB)",
+    "TITLE": "Nastavení aplikace",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. velikost zip archivu (v MB)"
+  },
+  "BACK_TO_ADMIN": "Zpět na správu",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat účet {0}? Všechna data budou smazána, toto nelze vrátit.",
+  "CONFIRM_USER_PASSWORD_RESET": "Jste si jistý, že chcete resetovat {0} heslo?",
+  "CURRENT_EMAIL": "Současný email",
+  "DELETE_USER": "Smazat uživatele",
+  "EMAIL_SENDING_DISABLED": "Odesílání emailů je zakázáno.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Aktivní"
+    }
+  }
+}
