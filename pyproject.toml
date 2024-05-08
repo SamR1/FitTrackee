@@ -50,7 +50,7 @@ ua-parser = "^0.18.0"
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.8"
 freezegun = "^1.5.0"
-furo = "^2024.4.27"
+furo = "^2024.5.6"
 mypy = "^1.10.0"
 pytest = "^8.2.0"
 pytest-cov = "^5.0.0"
