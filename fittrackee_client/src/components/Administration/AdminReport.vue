@@ -3,9 +3,9 @@
     <Modal
       v-if="displayModal && report.reported_user"
       :title="$t('common.CONFIRMATION')"
-      message="admin.CONFIRM_USER_ACCOUNT_SUSPENSION"
+      :message="`admin.CONFIRM_${currentAction}`"
       :strongMessage="report.reported_user.username"
-      @confirmAction="updateUserSuspendedAt"
+      @confirmAction="confirmSuspension"
       @cancelAction="updateDisplayModal('')"
       @keydown.esc="updateDisplayModal('')"
     />
@@ -152,7 +152,10 @@
           </template>
           <template #content>
             <div v-for="item in reportsItems" :key="item.id">
-              <div class="report-comment" v-if="'comment' in item">
+              <div
+                class="report-comment"
+                v-if="'comment' in item && !('action_type' in item)"
+              >
                 <div class="report-comment-info">
                   <div class="report-comment-user">
                     <UserPicture :user="item.user" />
@@ -254,11 +257,7 @@
                   class="report-comment-textarea"
                   name="report-comment"
                   :required="isNoteMandatory"
-                  :placeholder="
-                    $t(
-                      `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${currentAction}`
-                    )
-                  "
+                  :placeholder="$t(getTextAreaPlaceholder())"
                   @updateValue="updateCommentText"
                 />
                 <div class="comment-buttons">
@@ -281,12 +280,20 @@
               </button>
               <button
                 class="danger"
-                v-if="
-                  !report.resolved &&
-                  (report.reported_comment || report.reported_workout)
+                v-if="!report.resolved && reportedContent"
+                @click="
+                  displayTextArea(
+                    `${reportedContent.suspended_at === null ? '' : 'UN'}SUSPEND_CONTENT`
+                  )
                 "
               >
-                {{ $t('admin.APP_MODERATION.ACTIONS.DELETE_CONTENT') }}
+                {{
+                  $t(
+                    `admin.APP_MODERATION.ACTIONS.${
+                      reportedContent.suspended_at === null ? '' : 'UN'
+                    }SUSPEND_CONTENT`
+                  )
+                }}
               </button>
               <button
                 v-if="!report.resolved && report.reported_user"
@@ -367,6 +374,7 @@
   } from '@/types/reports'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import type { IComment, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
 
@@ -390,6 +398,9 @@
   )
   const report: ComputedRef<IReportForAdmin> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT]
+  )
+  const reportedContent: ComputedRef<IComment | IWorkout | null> = computed(
+    () => report.value.reported_comment || report.value.reported_workout
   )
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
@@ -451,10 +462,14 @@
   function submit() {
     switch (currentAction.value) {
       case 'SUSPEND_ACCOUNT':
+      case 'SUSPEND_CONTENT':
         updateDisplayModal('suspension')
         break
       case 'UNSUSPEND_ACCOUNT':
         updateUserSuspendedAt()
+        break
+      case 'UNSUSPEND_CONTENT':
+        updateContentSuspendedAt()
         break
       default:
         return updateReport()
@@ -480,6 +495,34 @@
         payload.reason = reportCommentText.value
       }
       store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION, payload)
+    }
+  }
+  function updateContentSuspendedAt() {
+    if (reportedContent.value && currentAction.value) {
+      const actionType =
+        `${report.value.reported_comment ? 'comment' : 'workout'}_` +
+        `${currentAction.value?.startsWith('SUSPEND') ? '' : 'un'}suspension`
+      const payload: IReportAdminActionPayload = {
+        action_type: actionType,
+        report_id: report.value.id,
+      }
+      if (report.value.reported_comment) {
+        payload.comment_id = report.value.reported_comment.id
+      } else if (report.value.reported_workout) {
+        payload.workout_id = report.value.reported_workout.id
+      }
+
+      if (reportCommentText.value) {
+        payload.reason = reportCommentText.value
+      }
+      store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION, payload)
+    }
+  }
+  function confirmSuspension() {
+    if (currentAction.value === 'SUSPEND_CONTENT') {
+      updateContentSuspendedAt()
+    } else {
+      updateUserSuspendedAt()
     }
   }
   function updateDisplayModal(value: string) {
@@ -528,6 +571,13 @@
       reportId: report.value.id,
     })
   }
+  function getTextAreaPlaceholder() {
+    const placeholder_action = currentAction.value?.includes('SUSPEND')
+      ? currentAction.value?.split('_')[0]
+      : currentAction.value
+    return `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${placeholder_action}`
+  }
+
   onBeforeMount(async () => loadReport())
 
   watch(

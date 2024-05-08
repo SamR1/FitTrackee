@@ -24,12 +24,13 @@
   "APP_MODERATION": {
     "ACTIONS": {
       "ADD_COMMENT": "Add a comment",
-      "DELETE_CONTENT": "Delete content",
       "MARK_AS_RESOLVED": "Mark as resolved",
       "MARK_AS_UNRESOLVED": "Mark as unresolved",
       "SEND_EMAIL": "Send an email",
       "SUSPEND_ACCOUNT": "Suspend user account",
-      "UNSUSPEND_ACCOUNT": "Unsuspend user account"
+      "SUSPEND_CONTENT": "Suspend content",
+      "UNSUSPEND_ACCOUNT": "Unsuspend user account",
+      "UNSUSPEND_CONTENT": "Unsuspend content"
     },
     "APPEAL": {
       "APPROVED": "This appeal has been approved {0}.",
@@ -55,10 +56,14 @@
     "REPORTED_USER": "Reported user",
     "REPORTER": "reporter",
     "REPORT_ACTIONS": {
+      "comment_suspension": "The comment has been suspended by {1} {2}.",
+      "comment_unsuspension": "The comment suspension has been lifted by {1} {2}.",
       "report_reopening": "The report has been reopened by {1} {2}.",
       "report_resolution": "The report has been marked as resolved by {1} {2}.",
       "user_suspension": "{0} has been suspended by {1} {2}.",
-      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}."
+      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
+      "workout_suspension": "The workout has been suspended by {1} {2}.",
+      "workout_unsuspension": "The workout suspension has been lifted by {1} {2}."
     },
     "REPORT_NOTE": "Note by",
     "RESOLVED": {
@@ -70,15 +75,16 @@
     "STATUS": "status",
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Add comment, action taken or any other useful information.",
-      "SUSPEND_ACCOUNT": "Indicate the reason for suspension (not mandatory). This information will be visible to the user.",
-      "UNSUSPEND_ACCOUNT": "Add a comment (not mandatory). This information will be visible to the user.",
+      "SUSPEND": "Indicate the reason for suspension (not mandatory). This information will be visible to the user.",
+      "UNSUSPEND": "Add a comment (not mandatory). This information will be visible to the user.",
       "UPDATE_APPEAL": "Indicate the reason for this appeal processing. This information will be visible to the user."
     },
     "TITLE": "Moderation"
   },
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
-  "CONFIRM_USER_ACCOUNT_SUSPENSION": "Are you sure you want to suspend {0} account?",
+  "CONFIRM_SUSPEND_ACCOUNT": "Are you sure you want to suspend {0} account?",
+  "CONFIRM_SUSPEND_CONTENT": "Are you sure you want to suspend reported content?",
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "CURRENT_EMAIL": "Current email",
   "DELETED_COMMENT": "Deleted comment",

@@ -123,9 +123,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             User.username.ilike('%' + query + '%') if query else True,
             User.is_remote == remote,
             (
-                True
-                if with_inactive == 'true'
-                else User.is_active == True  # noqa
+                True if with_inactive == 'true' else User.is_active == True  # noqa
             ),
             (
                 True

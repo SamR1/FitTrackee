@@ -216,9 +216,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         follow_request = FollowRequest.query.filter_by(
@@ -1275,9 +1273,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().first()
@@ -1320,9 +1316,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().first()
@@ -1493,9 +1487,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().first()
@@ -1525,9 +1517,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().first()
@@ -1635,9 +1625,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             return_value=random_actor.get_remote_user_object(),
         ), patch(
             'fittrackee.federation.utils.user.store_or_delete_user_picture'
-        ), patch(
-            'fittrackee.federation.utils.user.update_remote_actor_stats'
-        ):
+        ), patch('fittrackee.federation.utils.user.update_remote_actor_stats'):
             activity.process_activity()
 
         new_user = User.query.filter_by(username=random_actor.name).first()

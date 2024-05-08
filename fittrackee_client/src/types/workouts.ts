@@ -82,6 +82,7 @@ export interface IWorkout {
   remote_url?: string
   segments: IWorkoutSegment[]
   sport_id: number
+  suspended_at: string | null
   title: string
   user: IUserProfile
   weather_end: IWeather | null
@@ -212,6 +213,7 @@ export interface IComment {
   modification_date: string | null
   replies: IComment[]
   reply_to: string | null
+  suspended_at: string | null
   text: string
   text_html: string
   text_visibility: TPrivacyLevels

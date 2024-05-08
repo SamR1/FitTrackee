@@ -284,6 +284,7 @@
           display: flex;
           flex-wrap: wrap;
           gap: $default-padding;
+          margin-top: $default-margin * 0.5;
         }
         @media screen and (max-width: $medium-limit) {
           .workout-map-data {

@@ -53,7 +53,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
-          "version": "0.8.1",
+          "version": "0.8.2",
           "weather_provider": null
         },
         "status": "success"
@@ -110,7 +110,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
-          "version": "0.8.1",
+          "version": "0.8.2",
           "weather_provider": null
         },
         "status": "success"

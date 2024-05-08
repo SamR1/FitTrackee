@@ -1,5 +1,9 @@
 {
   "STATISTICS": "Statistiky",
+  "STATISTICS_CHARTS": {
+    "month": "Měsíční statistika",
+    "week": "Týdenní statistika"
+  },
   "TIME_FRAMES": {
     "month": "měsíc",
     "week": "týden",

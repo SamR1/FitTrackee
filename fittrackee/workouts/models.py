@@ -593,9 +593,7 @@ def on_workout_insert(
 def on_workout_update(
     mapper: Mapper, connection: Connection, workout: Workout
 ) -> None:
-    if object_session(workout).is_modified(
-        workout, include_collections=True
-    ):  # noqa
+    if object_session(workout).is_modified(workout, include_collections=True):
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:

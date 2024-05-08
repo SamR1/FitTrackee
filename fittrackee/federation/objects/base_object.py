@@ -55,7 +55,7 @@ class BaseObject(ABC):
 
     @staticmethod
     def _get_modification_date(
-        activity_object: Union['Workout', 'Comment']
+        activity_object: Union['Workout', 'Comment'],
     ) -> str:
         return activity_object.modification_date.strftime(DATE_FORMAT)
 

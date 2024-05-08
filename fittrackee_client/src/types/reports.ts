@@ -58,7 +58,9 @@ export type TReportAction =
   | 'MARK_AS_RESOLVED'
   | 'MARK_AS_UNRESOLVED'
   | 'SUSPEND_ACCOUNT'
+  | 'SUSPEND_CONTENT'
   | 'UNSUSPEND_ACCOUNT'
+  | 'UNSUSPEND_CONTENT'
 
 export interface IAppealPayload {
   appealId: string
@@ -71,5 +73,7 @@ export interface IReportAdminActionPayload {
   action_type: string
   reason?: string | null
   report_id: number
-  username: string
+  username?: string
+  comment_id?: string
+  workout_id?: string
 }

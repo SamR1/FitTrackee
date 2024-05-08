@@ -1,5 +1,10 @@
 {
   "STATISTICS": "Statistik",
+  "STATISTICS_CHARTS": {
+    "month": "Monatliche Statistiken",
+    "week": "Wöchentliche Statistiken",
+    "year": "Jährliche Statistiken"
+  },
   "TIME_FRAMES": {
     "month": "Monat",
     "week": "Woche",
