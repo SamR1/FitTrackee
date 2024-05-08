@@ -1,15 +1,24 @@
 {
   "ABOUT": "honi buruz",
+  "ACTION": "ekintza",
+  "ACTIVE": "aktibo",
   "CONFIRMATION": "Baieztapena",
   "CONTACT": "kontaktua",
   "DAY": "egun | egun",
+  "DESCRIPTION": "Deskribapena",
   "DISPLAYED": "Erakutsita",
   "DOCUMENTATION": "dokumentazioa",
   "HERE": "hemen",
   "HIDDEN": "Ezkutuan",
   "HOME": "Hasiera",
+  "HOURS": "ordu|ordu",
+  "INACTIVE": "inaktibo",
+  "LABEL": "etiketa",
+  "MINUTES": "minutu|minutu",
   "NEXT": "hurrengoa",
+  "NO_DESCRIPTION": "deskribapenik gabe",
   "PREVIOUS": "aurrekoa",
+  "SECONDS": "segundu|segundu",
   "SELECTS": {
     "ORDER": {
       "ASC": "gorantz",
@@ -23,5 +32,6 @@
       "LABEL": "orrialdeko"
     }
   },
-  "TOTAL": "Guztira"
+  "TOTAL": "Guztira",
+  "TOTAL_DURATION_WITH_PAUSES": "iraupena guztira atsedenekin"
 }
