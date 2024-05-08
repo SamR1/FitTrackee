@@ -41,6 +41,6 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 ## Translations
 
-<a href="https://hosted.weblate.org/engage/fittrackee/">
-<img src="https://hosted.weblate.org/widget/fittrackee/horizontal-auto.svg" alt="Translation status" />
-</a>
+FitTrackee uses [Weblate](https://hosted.weblate.org/engage/fittrackee/) for translation management.
+
+[![Translation status](https://hosted.weblate.org/widget/fittrackee/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)

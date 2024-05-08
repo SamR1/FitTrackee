@@ -20,7 +20,7 @@ article figure img {
   background-color: var(--color-sidebar-item-background);
   border-top: solid 1px var(--color-sidebar-background-border);
   width: 100%;
-  z-index: 1;
+  z-index: 10;
   left: 0;
   bottom: 0;
 }
