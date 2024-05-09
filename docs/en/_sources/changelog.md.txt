@@ -1,5 +1,34 @@
 # Change log
 
+## Version 0.8.3 (2024/05/09)
+
+### Bugs Fixed
+
+* [#546](https://github.com/SamR1/FitTrackee/issues/546) - workout data are not refreshed after displaying segment
+
+### Translations
+
+* [PR#545](https://github.com/SamR1/FitTrackee/pull/545) - Translations update (Basque, Czech)
+
+Translation status:
+- Basque: 100%
+- Czech: 25%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 74%
+- Norwegian Bokmål: 53%
+- Polish: 88%
+- Spanish: 100%
+
+
+Thanks to the contributors:
+- @jmlich
+- @urtzai
+
+
 ## Version 0.8.2 (2024/05/08)
 
 ### Translations
