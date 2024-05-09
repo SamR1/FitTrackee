@@ -193,10 +193,8 @@
   watch(
     () => route.params.segmentId,
     async (newSegmentId) => {
-      if (newSegmentId) {
-        segmentId.value = +newSegmentId
-        scrollToTop()
-      }
+      segmentId.value = newSegmentId ? +newSegmentId : null
+      scrollToTop()
     }
   )
   watch(
