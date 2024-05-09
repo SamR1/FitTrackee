@@ -184,7 +184,7 @@ OAuth Apps
 ^^^^^^^^^^
 (*new in 0.7.0*)
 
-- A user can create `clients <apps.html>`__ for third-party applications.
+- A user can create `clients <oauth.html>`__ for third-party applications.
 
 Administration
 ^^^^^^^^^^^^^^
