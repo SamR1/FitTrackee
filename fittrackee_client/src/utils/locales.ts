@@ -41,7 +41,7 @@ export const languageLabels: Record<TLanguage, string> = {
   de: 'Deutsch',
   en: 'English',
   es: 'Español',
-  eu: 'Euskara (88%)',
+  eu: 'Euskara',
   fr: 'Français',
   gl: 'Galego',
   it: 'Italiano (74%)',
