@@ -6,6 +6,8 @@
     "at least one file in zip archive exceeds size limit, please check the archive": "zip fitxategian dagoen fitxategietako batek gutxienez tamaina muga gainditzen du, egiaztatu fitxategia.",
     "completed request already exists": "Guztia esportatzeko beste eskaera bat eginda dago.",
     "email: valid email must be provided": "Eposta: emandako helbidea zuzena izan behar da.",
+    "equipment already exists with the same label": "Ekipamendua dagoeneko existitzen da etiketa berarekin.",
+    "equipment type is inactive": "Ekipamendu mota inaktibo.",
     "error during gpx file parsing": "Errorea gpx fitxategia irakurtzean.",
     "error during gpx processing": "Errorea gpx fitxategia prozesatzean.",
     "error on getting configuration": "Errorea konfigurazioa lortzean.",
