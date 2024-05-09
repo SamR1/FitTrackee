@@ -1,1 +1,35 @@
-{}
+{
+  "ACCOUNT_CONFIRMATION": "Potvrzení účtu",
+  "ADMIN": "Správce",
+  "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
+  "CONFIRM_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat Váš účet? Všechna data budou smazána, toto nejde vrátit.",
+  "CURRENT_PASSWORD": "Současné heslo",
+  "EMAIL": "Email",
+  "EMAIL_INFO": "Zadejte platnou emailovou adresu.",
+  "ENTER_PASSWORD": "Zadejte heslo",
+  "EXPORT_REQUEST": {
+    "DATA_EXPORT": "Export dat",
+    "DOWNLOAD_ARCHIVE": "Stáhnout archiv"
+  },
+  "HIDE_PASSWORD": "skrýt heslo",
+  "I_WANT_TO_DELETE_MY_ACCOUNT": "Chci smazat svůj účet",
+  "LANGUAGE": "Jazyk | Jazyky",
+  "LOGIN": "Přihlášení",
+  "LOGOUT": "Odhlášení",
+  "LOG_IN": "přihlásit",
+  "NEW_PASSWORD": "Nové heslo",
+  "PASSWORD": "Heslo",
+  "PASSWORD_FORGOTTEN": "Zapoměl jste heslo?",
+  "PASSWORD_INFO": "Je požadováno alespoň 8 znaků.",
+  "PASSWORD_RESET": "Reset hesla",
+  "PASSWORD_STRENGTH": {
+    "AVERAGE": "průměr",
+    "GOOD": "dobré",
+    "LABEL": "síla hesla",
+    "STRONG": "silné",
+    "SUGGESTIONS": {
+      "allUppercase": "Napište některé písmena velké, ale ne všechny.",
+      "capitalization": "Udělejte víc velkých písmen, nejen první."
+    }
+  }
+}

@@ -1,5 +1,10 @@
 {
   "STATISTICS": "Estatistikak",
+  "STATISTICS_CHARTS": {
+    "month": "Hileroko estatistikak",
+    "week": "Asteroko estatistikak",
+    "year": "Urteroko estatistikak"
+  },
   "TIME_FRAMES": {
     "month": "hilabetea",
     "week": "astea",

@@ -29,6 +29,11 @@
   "MAX_SIZE": "tamaina maximoa",
   "MAX_SPEED": "abiadura maximoa",
   "MIN_ALTITUDE": "altuera minimoa",
+  "MULTISELECT": {
+    "deselectLabel": "Sakatu enter ezabatzeko",
+    "selectLabel": "Sakatu enter aukeratzeko",
+    "selectedLabel": "Hautatua"
+  },
   "NEXT_SEGMENT": "Ez dago hurrengo segmentorik",
   "NEXT_WORKOUT": "Hurrengo entrenamendua",
   "NOTES": "oharrak",
@@ -62,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "hasierako altuera zeroan dago",
   "TITLE": "izenburua",
   "TO": "nora",
+  "TOTAL_DISTANCE": "distantzia guztira",
   "TOTAL_DURATION": "iraupen totala",
   "UPLOAD_FIRST_WORKOUT": "Bat kargatuta!",
   "VIEW_FULLSCREEN": "Ikusi pantaila osoan",
@@ -103,8 +109,10 @@
   "WITHOUT_GPX": ".gpx fitxategi gabe",
   "WITH_GPX": ".gpx fitxategiarekin",
   "WORKOUT": "entrenamendu | entrenamendu",
+  "WORKOUT_CHART": "entrenamenduaren abiadura eta altuera grafikoa",
   "WORKOUT_DATE": "entrenamenduaren data",
   "WORKOUT_DELETION_CONFIRMATION": "Ziur zaude entrenamendu hau ezabatu nahi duzula?",
+  "WORKOUT_MAP": "entrenamenduaren mapa",
   "ZIP_ARCHIVE": ".zip fitxategia",
   "ZIP_ARCHIVE_DESCRIPTION": "edo .gpx fitxategiak dituen .zip fitxategia"
 }
