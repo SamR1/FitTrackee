@@ -11,9 +11,11 @@
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Přidat/odebrat oprávnění pro správu, smazat uživatelský účet.",
   "APPLICATION": "Aplikace",
   "APP_CONFIG": {
+    "ADMIN_CONTACT": "Kontaktní e-mail správce",
     "MAX_FILES_IN_ZIP_LABEL": "Max. počet souborů v zip archivu",
     "MAX_USERS_HELP": "Pokud zadáte 0, tak nebudou registrace omezeny.",
     "MAX_USERS_LABEL": "Max. počet aktivních uživatelů",
+    "NO_CONTACT_EMAIL": "žádný kontaktní e-mail",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. velikost nahrávaných souborů (v MB)",
     "TITLE": "Nastavení aplikace",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. velikost zip archivu (v MB)"
@@ -24,9 +26,46 @@
   "CURRENT_EMAIL": "Současný email",
   "DELETE_USER": "Smazat uživatele",
   "EMAIL_SENDING_DISABLED": "Odesílání emailů je zakázáno.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Povolit/zakázat typy vybavení.",
+  "ENABLE_DISABLE_SPORTS": "Povolit/zakázat sporty.",
   "EQUIPMENT_TYPES": {
     "TABLE": {
-      "ACTIVE": "Aktivní"
+      "ACTIVE": "Aktivní",
+      "HAS_EQUIPMENTS": "vybavení existuje",
+      "IMAGE": "Obrázek",
+      "LABEL": "Popisek"
+    },
+    "TITLE": "Správa vybavení"
+  },
+  "NEW_EMAIL": "Nový email",
+  "NO_TEXT_ENTERED": "Nebyl zadaný text",
+  "PASSWORD_RESET_SUCCESSFUL": "Heslo bylo obnoveno.",
+  "REGISTRATION_DISABLED": "Registrace je momentálně zakázaná.",
+  "REGISTRATION_ENABLED": "Registrace je momentálně povolná.",
+  "RESET_USER_PASSWORD": "Obnova hesla",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Aktivní",
+      "IMAGE": "Obrázek",
+      "LABEL": "Popisek"
+    },
+    "TITLE": "Správa sportů"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Upravit nastavení aplikace.",
+  "UPDATE_USER_EMAIL": "Upravit e-mail",
+  "USER": "uživatel | uživatelé",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "CREATED_AT": "datum registrace",
+        "IS_ACTIVE": "stav účtu",
+        "USERNAME": "uživatelské jméno"
+      }
+    },
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Přidat oprávnění správce",
+      "REMOVE_ADMIN_RIGHTS": "Odstranit oprávnění správce"
     }
-  }
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "E-mailová adresa byla upravena."
 }
