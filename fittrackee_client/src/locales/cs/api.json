@@ -1,1 +1,7 @@
-{}
+{
+  "ERROR": {
+    "<time> is missing in gpx file": "Prvek <time> (čas) chybí v .gpx souboru.",
+    "Network Error": "Chyba sítě.",
+    "UNKNOWN": "Chyba. Prosím zkuste to znovu nebo kontaktujte správce."
+  }
+}
