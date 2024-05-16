@@ -133,9 +133,7 @@ class EmailService:
         if parsed_url.scheme != 'smtp':
             raise InvalidEmailUrlScheme()
         username, password = (
-            parsed_url.auth.split(':')
-            if parsed_url.auth
-            else [None, None]  # type: ignore
+            parsed_url.auth.split(':') if parsed_url.auth else [None, None]  # type: ignore
         )
         return {
             'host': parsed_url.host,
@@ -166,7 +164,9 @@ class EmailService:
         if self.use_ssl:
             connection_params.update({'context': context})
         with self.smtp(
-            self.host, self.port, **connection_params  # type: ignore
+            self.host,
+            self.port,
+            **connection_params,  # type: ignore
         ) as smtp:
             if self.use_tls:
                 smtp.ehlo()

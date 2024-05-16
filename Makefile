@@ -202,12 +202,11 @@ lint-client-fix:
 	cd fittrackee_client && $(NPM) format
 
 lint-python:
-	$(PYTEST) --isort --black -m "isort or black" fittrackee e2e --ignore=fittrackee/migrations
-	echo 'Running flake8...'
-	$(FLAKE8) fittrackee e2e
+	$(RUFF) check fittrackee e2e
 
 lint-python-fix:
-	$(BLACK) fittrackee e2e
+	$(RUFF) check --fix fittrackee e2e
+	$(RUFF) format fittrackee e2e
 
 mail:
 	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog

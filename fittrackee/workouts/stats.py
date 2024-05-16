@@ -77,7 +77,7 @@ def get_workouts(
                 workouts_list_by_sport[sport_id]['nb_workouts'] += 1
                 workouts_list_by_sport[sport_id]['average_speed'] = (
                     get_average_speed(
-                        workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore  # noqa
+                        workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore
                         workouts_list_by_sport[sport_id]['average_speed'],
                         workout.ave_speed,
                     )
@@ -85,9 +85,9 @@ def get_workouts(
                 workouts_list_by_sport[sport_id]['total_distance'] += float(
                     workout.distance
                 )
-                workouts_list_by_sport[sport_id][
-                    'total_duration'
-                ] += convert_timedelta_to_integer(workout.moving)
+                workouts_list_by_sport[sport_id]['total_duration'] += (
+                    convert_timedelta_to_integer(workout.moving)
+                )
                 if workout.ascent:
                     workouts_list_by_sport[sport_id]['total_ascent'] += float(
                         workout.ascent

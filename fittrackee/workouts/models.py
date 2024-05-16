@@ -478,18 +478,14 @@ def on_workout_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        update_records(
-            workout.user_id, workout.sport_id, connection, session
-        )  # noqa
+        update_records(workout.user_id, workout.sport_id, connection, session)
 
 
 @listens_for(Workout, 'after_update')
 def on_workout_update(
     mapper: Mapper, connection: Connection, workout: Workout
 ) -> None:
-    if object_session(workout).is_modified(
-        workout, include_collections=True
-    ):  # noqa
+    if object_session(workout).is_modified(workout, include_collections=True):
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:

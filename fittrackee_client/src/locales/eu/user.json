@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Ziur zaude irten egin nahi duzula?",
   "LOG_IN": "sartu",
   "NEW_PASSWORD": "Pasahitz berria",
+  "NO_SPORT_FOUND": "Ez da kirolik aurkitu.",
   "NO_USERS_FOUND": "Ez da erabiltzailerik aurkitu.",
   "PASSWORD": "Pasahitza",
   "PASSWORD_FORGOTTEN": "Pasahitza ahaztu duzu?",
@@ -76,6 +77,17 @@
       "MIN_ALT": "Altuera minimoa",
       "ZERO": "Zero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "ekintza",
+      "CONFIRM_EQUIPMENT_DELETION": "Ziur zaude {0} ekipamendua ezabatu nahi duzula?",
+      "DESCRIPTION": "deskribapena",
+      "DISABLED_BY_ADMIN": "adminak desaktibatuta",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Ekipamendu hau entrenamenduetara lotuta dago.",
+      "IS_ACTIVE": "aktibo",
+      "LABEL": "etiketa",
+      "YOUR_EQUIPMENTS": "Zure ekipamenduak"
+    },
+    "EQUIPMENTS_EDITION": "Ekipamenduen edizioa",
     "ERRORED_EMAIL_UPDATE": "Mesedez {0} zure eposta helbidea berriz aldatzeko edo jarri kontaktuan kudeatzailearekin",
     "FIRST_DAY_OF_WEEK": "Asteko lehen eguna",
     "FIRST_NAME": "Izena",
@@ -95,6 +107,9 @@
     "SPORT": {
       "ACTION": "akzioa",
       "COLOR": "kolorea",
+      "CONFIRM_SPORT_RESET": "Ziur zaude kirol hau berrabiarazi nahi duzula?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Ziur zaude kirol hau berrabiarazi nahi duzula? Lehenetsitako ekipamendu guztiak ezabatuak izango dira.",
+      "DEFAULT_EQUIPMENTS": "Ekipamendu lehenetsi | Ekipamendu lehenetsi",
       "DISABLED_BY_ADMIN": "kudeatzaileak desaktibatuta",
       "IS_ACTIVE": "aktibo",
       "LABEL": "etiketa",
@@ -109,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "kontua",
       "APPS": "aplikazioak",
+      "EQUIPMENTS": "ekipamenduak",
       "PICTURE": "argazkia",
       "PREFERENCES": "ezarpenak",
       "PRIVACY-POLICY": "pribatutasun politika",

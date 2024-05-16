@@ -37,11 +37,11 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  cs: 'Česky (15%)',
-  de: 'Deutsch (88%)',
+  cs: 'Česky (25%)',
+  de: 'Deutsch',
   en: 'English',
   es: 'Español',
-  eu: 'Euskara (88%)',
+  eu: 'Euskara',
   fr: 'Français',
   gl: 'Galego',
   it: 'Italiano (74%)',

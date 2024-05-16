@@ -1,5 +1,66 @@
 # Change log
 
+## Version 0.8.3 (2024/05/09)
+
+### Bugs Fixed
+
+* [#546](https://github.com/SamR1/FitTrackee/issues/546) - workout data are not refreshed after displaying segment
+
+### Translations
+
+* [PR#545](https://github.com/SamR1/FitTrackee/pull/545) - Translations update (Basque, Czech)
+
+Translation status:
+- Basque: 100%
+- Czech: 25%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 74%
+- Norwegian Bokmål: 53%
+- Polish: 88%
+- Spanish: 100%
+
+
+Thanks to the contributors:
+- @jmlich
+- @urtzai
+
+
+## Version 0.8.2 (2024/05/08)
+
+### Translations
+
+* [PR#540](https://github.com/SamR1/FitTrackee/pull/540) - Translations update (German)
+* [PR#542](https://github.com/SamR1/FitTrackee/pull/542) - Translations update (Czech)
+* [PR#544](https://github.com/SamR1/FitTrackee/pull/544) - Translations update (German, Czech)
+
+Translation status:
+- Basque: 88%
+- Czech: 25%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 74%
+- Norwegian Bokmål: 53%
+- Polish: 88%
+- Spanish: 100%
+
+### Misc
+
+* [PR#543](https://github.com/SamR1/FitTrackee/pull/543) - tools - replace black, flake8 and isort with ruff
+
+
+Thanks to the contributors:
+- @jmlich
+- @OndrejZivny
+- @qwerty287
+
+
 ## Version 0.8.1 (2024/05/01)
 
 ### Features and enhancements

@@ -1,1 +1,18 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Gehienez 50 karaktere",
+  "ADD_A_NEW_EQUIPMENT": "Gehitu ekipamendua berria",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Entrenamenduen lotura guztiak ezabatuko dira.",
+  "DEFAULT_FOR_SPORTS": "Kirolentzat lehenetsia",
+  "EDIT_EQUIPMENTS": "Editatu ekipamendua",
+  "EQUIPMENT": "ekipamendu|ekipamendu",
+  "EQUIPMENT_TYPE": "ekipamendu mota|ekipamendu mota",
+  "ERRORS": {
+    "inactive": "'{equipmentLabel}' ekipamendu inaktibo.",
+    "invalid": "'{equipmentLabel}' ekipamendua ez da baliozkoa kirol honetarako.",
+    "not_found": "Ekipamendua ez da aurkitu."
+  },
+  "NEW_EQUIPMENT": "Ekipamendu berria",
+  "NO_EQUIPMENT": "Ez da ekipamendurik aurkitu.",
+  "NO_EQUIPMENTS": "Ekipamendurik gabe",
+  "WITHOUT_EQUIPMENTS": "ekipamendurik gabe"
+}
