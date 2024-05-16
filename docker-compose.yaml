@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   fittrackee-db:
-    image: ghcr.io/davidhenrythoreau/fittrackee-db:main
+    image: postgres:13
     container_name: fittrackee-db
     environment:
       - PUID=1000
