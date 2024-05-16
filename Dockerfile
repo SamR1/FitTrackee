@@ -10,7 +10,7 @@ COPY . /usr/src/app
 
 # install gcc
 #RUN apt update && apt install gcc python3-dev -y
-RUN apk add linux-headers gcc musl-dev libffi-dev py-pip bash
+RUN apk add --no-cache linux-headers gcc musl-dev libffi-dev py-pip bash
 
 # install requirements
 ENV VIRTUAL_ENV=/opt/venv
