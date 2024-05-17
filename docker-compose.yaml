@@ -18,12 +18,6 @@ services:
       - DATABASE_URL=postgresql://fittrackee:fittrackee@fittrackee-db:5432/fittrackee
       - DATABASE_TEST_URL=postgresql://fittrackee:fittrackee@fittrackee-db:5432/fittrackee_test
       - REDIS_URL=redis://fittrackee-redis:6379
-      - TILE_SERVER_URL=
-      - STATICMAP_SUBDOMAINS=
-      - MAP_ATTRIBUTION=
-      - DEFAULT_STATICMAP=False
-      - WEATHER_API_PROVIDER=
-      - WEATHER_API_KEY=
     ports:
       - 8230:5000
     depends_on:
