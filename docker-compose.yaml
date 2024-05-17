@@ -46,6 +46,7 @@ services:
       - ./fittrackee-db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    restart: unless-stopped
 
   fittrackee-redis:
     image: redis:latest
@@ -56,3 +57,4 @@ services:
       - TZ=Europe/Paris
     ports:
       - 6379:6379
+    restart: unless-stopped
