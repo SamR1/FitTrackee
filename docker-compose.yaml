@@ -23,6 +23,8 @@ services:
     depends_on:
       fittrackee-db:
         condition: service_started
+      fittrackee-redis:
+        condition: service_started
     command: bash -c "cd /usr/src/app && ftcli db upgrade && flask run --with-threads -h 0.0.0.0"
     restart: unless-stopped
 
