@@ -55,6 +55,6 @@ def clean_blacklisted_tokens(days: int) -> int:
     """
     sql = """
         DELETE FROM blacklisted_tokens
-        WHERE blacklisted_tokens.expired_at < %(limit)s;
+        WHERE blacklisted_tokens.expired_at < :limit;
     """
     return clean(sql, days)

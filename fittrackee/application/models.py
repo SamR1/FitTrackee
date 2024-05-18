@@ -7,6 +7,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import text
 
 from fittrackee import VERSION, db
 from fittrackee.users.models import User
@@ -30,7 +31,7 @@ class AppConfig(BaseModel):
 
     @property
     def is_registration_enabled(self) -> bool:
-        result = db.session.execute("SELECT COUNT(*) FROM users;")
+        result = db.session.execute(text("SELECT COUNT(*) FROM users;"))
         nb_users = result.fetchone()[0]
         return self.max_users == 0 or nb_users < self.max_users
 
