@@ -1,1 +1,18 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Ne více než 50 znaků",
+  "ADD_A_NEW_EQUIPMENT": "Přidat nové vybavení",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Všechny spojení na cvičení budou odstraněny.",
+  "DEFAULT_FOR_SPORTS": "Výchozí pro sporty",
+  "EDIT_EQUIPMENTS": "Upravit vybavení",
+  "EQUIPMENT": "vybavení|vybavení",
+  "EQUIPMENT_TYPE": "typ vybavení|typy vybavení",
+  "ERRORS": {
+    "inactive": "Vybavení '{equipmentLabel}' není aktivní.",
+    "invalid": "Vybavení '{equipmentLabel}' není platné pro tento sport.",
+    "not_found": "Vybavení nebylo nalezeno."
+  },
+  "NEW_EQUIPMENT": "Nové vybavení",
+  "NO_EQUIPMENT": "Žádné vybavení nebylo nalezeno.",
+  "NO_EQUIPMENTS": "Žádné vybavení",
+  "WITHOUT_EQUIPMENTS": "bez vybavení"
+}

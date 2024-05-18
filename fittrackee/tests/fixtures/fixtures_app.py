@@ -13,39 +13,34 @@ from fittrackee.workouts.utils.gpx import weather_service
 
 
 @pytest.fixture(autouse=True)
-def default_weather_service(monkeypatch: pytest.MonkeyPatch) -> Iterator[None]:
+def default_weather_service() -> Iterator[None]:
     with patch.object(weather_service, 'get_weather', return_value=None):
         yield
 
 
 def get_app_config(
-    with_config: Optional[bool] = False,
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
-) -> Optional[AppConfig]:
-    if with_config:
-        config = AppConfig.query.one_or_none()
-        if not config:
-            config = AppConfig()
-            db.session.add(config)
-            db.session.flush()
-        config.gpx_limit_import = 10 if max_workouts is None else max_workouts
-        config.max_single_file_size = (
-            (1 if max_single_file_size is None else max_single_file_size)
-            * 1024
-            * 1024
-        )
-        config.max_zip_file_size = (
-            (10 if max_zip_file_size is None else max_zip_file_size)
-            * 1024
-            * 1024
-        )
-        config.max_users = 100 if max_users is None else max_users
-        db.session.commit()
-        return config
-    return None
+) -> AppConfig:
+    config = AppConfig.query.one_or_none()
+    if not config:
+        config = AppConfig()
+        db.session.add(config)
+        db.session.flush()
+    config.gpx_limit_import = 10 if max_workouts is None else max_workouts
+    config.max_single_file_size = (
+        (1 if max_single_file_size is None else max_single_file_size)
+        * 1024
+        * 1024
+    )
+    config.max_zip_file_size = (
+        (10 if max_zip_file_size is None else max_zip_file_size) * 1024 * 1024
+    )
+    config.max_users = 100 if max_users is None else max_users
+    db.session.commit()
+    return config
 
 
 def get_app(
@@ -60,14 +55,13 @@ def get_app(
     with app.app_context():
         try:
             db.create_all()
-            app_db_config = get_app_config(
-                with_config,
-                max_workouts,
-                max_single_file_size,
-                max_zip_file_size,
-                max_users,
-            )
-            if app_db_config:
+            if with_config:
+                app_db_config = get_app_config(
+                    max_workouts,
+                    max_single_file_size,
+                    max_zip_file_size,
+                    max_users,
+                )
                 update_app_config_from_database(app, app_db_config)
             yield app
         except Exception as e:

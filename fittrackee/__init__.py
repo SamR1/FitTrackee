@@ -39,7 +39,9 @@ logging.basicConfig(
 )
 appLog = logging.getLogger('fittrackee')
 
-db = SQLAlchemy()
+db = SQLAlchemy(
+    engine_options={"future": True}, session_options={"future": True}
+)
 BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
 migrate = Migrate()
