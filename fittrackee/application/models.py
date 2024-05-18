@@ -2,7 +2,6 @@ import os
 from typing import Dict
 
 from flask import current_app
-from sqlalchemy import exc
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
@@ -31,15 +30,8 @@ class AppConfig(BaseModel):
 
     @property
     def is_registration_enabled(self) -> bool:
-        try:
-            nb_users = User.query.count()
-        except exc.ProgrammingError as e:
-            # workaround for user model related migrations
-            if 'psycopg2.errors.UndefinedColumn' in str(e):
-                result = db.engine.execute("SELECT COUNT(*) FROM users;")
-                nb_users = result.fetchone()[0]
-            else:
-                raise e
+        result = db.session.execute("SELECT COUNT(*) FROM users;")
+        nb_users = result.fetchone()[0]
         return self.max_users == 0 or nb_users < self.max_users
 
     @property
