@@ -1,4 +1,6 @@
 {
+  "ACTION": "akce",
+  "ACTIVE": "aktivní",
   "CONFIRMATION": "Potvrzení",
   "CONTACT": "kontakt",
   "DAY": "den | dny",
@@ -8,6 +10,8 @@
   "HIDDEN": "Skryto",
   "HOME": "Domů",
   "HOURS": "hodina|hodiny",
+  "INACTIVE": "neaktivní",
+  "LABEL": "popisek",
   "MINUTES": "minuta|minuty",
   "NEXT": "další",
   "NO_DESCRIPTION": "bez popisu",
@@ -21,7 +25,11 @@
     },
     "ORDER_BY": {
       "LABEL": "řazení podle"
+    },
+    "PER_PAGE": {
+      "LABEL": "na stránku"
     }
   },
+  "TOTAL": "Celkem",
   "TOTAL_DURATION_WITH_PAUSES": "Celková doba včetně přestávek"
 }
