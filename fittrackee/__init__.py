@@ -38,7 +38,7 @@ logging.basicConfig(
 )
 appLog = logging.getLogger('fittrackee')
 
-db = SQLAlchemy()
+db = SQLAlchemy(engine_options={"future": True})
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
