@@ -1,1 +1,21 @@
-{}
+{
+  "ACCOUNT-CONFIRMATION-RESEND": "Re-enviar email de confirmação",
+  "AUTHORIZE": "Autorizar",
+  "BACK": "Retornar",
+  "CANCEL": "Cancelar",
+  "CLEAR_FILTER": "Remover filtros",
+  "DELETE": "Excluir",
+  "DELETE_MY_ACCOUNT": "Apagar minha conta",
+  "DISABLE": "Desativar",
+  "EDIT": "Editar",
+  "ENABLE": "Ativar",
+  "FILTER": "Filtro",
+  "LOGIN": "Fazer login",
+  "NO": "Não",
+  "REFRESH_TOTALS": "Atualizar totais",
+  "REGISTER": "Criar uma conta",
+  "REQUEST_DATA_EXPORT": "Solicitar exportação de dados",
+  "RESET": "Restaurar",
+  "SUBMIT": "Enviar",
+  "YES": "Sim"
+}
