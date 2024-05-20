@@ -205,8 +205,8 @@ lint-python:
 	$(RUFF) check fittrackee e2e
 
 lint-python-fix:
-	$(RUFF) check --fix fittrackee e2e
 	$(RUFF) format fittrackee e2e
+	$(RUFF) check --fix fittrackee e2e
 
 mail:
 	docker run -d -e "MH_STORAGE=maildir" -v /tmp/maildir:/maildir -p 1025:1025 -p 8025:8025 mailhog/mailhog
