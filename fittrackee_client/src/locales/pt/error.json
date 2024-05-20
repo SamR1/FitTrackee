@@ -1,1 +1,9 @@
-{}
+{
+  "APP_ERROR": "Parece haver algo errado com o aplicativo.<br />Tente novamente mais tarde ou entre em contato com o administrador.",
+  "NOT_FOUND": {
+    "PAGE": "página não encontrada",
+    "WORKOUT": "Treino não encontrado"
+  },
+  "SOMETHING_WRONG": "Ocorreu um erro",
+  "UNKNOWN": "Erro. Tente novamente ou entre em contato com a o administrador."
+}
