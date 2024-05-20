@@ -123,11 +123,11 @@
     "SUNDAY": "Domingo",
     "TABS": {
       "ACCOUNT": "conta",
-      "APPS": "Aplicações",
-      "EQUIPMENTS": "Equipamento",
-      "PICTURE": "Fotografia",
+      "APPS": "aplicações",
+      "EQUIPMENTS": "equipamento",
+      "PICTURE": "fotografia",
       "PREFERENCES": "preferências",
-      "PRIVACY-POLICY": "Política de privacidade",
+      "PRIVACY-POLICY": "política de privacidade",
       "PROFILE": "perfil",
       "SPORTS": "desportos"
     },
