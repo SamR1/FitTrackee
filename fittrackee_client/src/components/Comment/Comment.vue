@@ -64,6 +64,7 @@
       </div>
       <div class="comment-actions" v-if="!forAdmin">
         <button
+          v-if="!comment.suspended"
           class="transparent icon-button likes"
           @click="forNotification ? null : updateLike(comment)"
           :disabled="forNotification"
@@ -98,6 +99,7 @@
         </button>
         <button
           v-if="
+            !comment.suspended &&
             !isCommentOwner(authUser, comment.user) &&
             !isCommentReported() &&
             reportStatus !== `comment-${comment.id}-created`
@@ -265,6 +267,7 @@
   function displayCommentIcon() {
     return (
       authUser.value.username &&
+      !comment.value.suspended &&
       comment.value.workout_id &&
       !forNotification.value
     )

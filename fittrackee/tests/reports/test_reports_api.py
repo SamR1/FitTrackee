@@ -256,6 +256,40 @@ class TestPostCommentReport(ReportTestCase):
 
         self.assert_400(response, "users can not report their own comments")
 
+    def test_it_returns_400_when_comment_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "users can not report suspended comment")
+
     def test_it_creates_report_for_comment(
         self,
         app: Flask,

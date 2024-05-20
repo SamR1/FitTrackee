@@ -8,6 +8,7 @@ from fittrackee import db
 from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.responses import (
+    ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
@@ -46,8 +47,10 @@ def add_workout_comment(
                 Comment.uuid == decode_short_id(reply_to),
                 Comment.user_id.not_in(auth_user.get_blocked_by_user_ids()),
             ).first()
-            if not comment or not can_view(
-                comment, "text_visibility", auth_user
+            if (
+                not comment
+                or comment.suspended_at
+                or not can_view(comment, "text_visibility", auth_user)
             ):
                 return InvalidPayloadErrorResponse("'reply_to' is invalid")
 
@@ -176,6 +179,8 @@ def update_workout_comment(
 def like_comment(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    if comment.suspended_at:
+        return ForbiddenErrorResponse()
     try:
         like = CommentLike(user_id=auth_user.id, comment_id=comment.id)
         db.session.add(like)

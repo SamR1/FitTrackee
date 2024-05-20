@@ -29,7 +29,11 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
-from .exceptions import InvalidReporterException, ReportNotFoundException
+from .exceptions import (
+    InvalidReporterException,
+    ReportNotFoundException,
+    SuspendedObjectException,
+)
 from .models import REPORT_OBJECT_TYPES, Report
 
 reports_blueprint = Blueprint('reports', __name__)
@@ -75,6 +79,10 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             "users can not report their own profile"
             if object_type == "user"
             else f"users can not report their own {object_type}s"
+        )
+    except SuspendedObjectException as e:
+        return InvalidPayloadErrorResponse(
+            f"users can not report suspended {e}"
         )
     except Exception as e:
         return handle_error_and_return_response(
