@@ -1,1 +1,13 @@
-{}
+{
+  "STATISTICS": "Estatisticas",
+  "STATISTICS_CHARTS": {
+    "month": "Estatistica do mês",
+    "week": "Estatistica da semana",
+    "year": "Estatistica do anual"
+  },
+  "TIME_FRAMES": {
+    "month": "mês",
+    "week": "semana",
+    "year": "ano"
+  }
+}
