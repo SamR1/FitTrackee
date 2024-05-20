@@ -211,9 +211,10 @@ export interface IComment {
   modification_date: string | null
   replies: IComment[]
   reply_to: string | null
-  suspended_at: string | null
-  text: string
-  text_html: string
+  suspended?: boolean
+  suspended_at?: string | null
+  text: string | null
+  text_html: string | null
   text_visibility: TPrivacyLevels
   user: IUserProfile
   workout_id: string

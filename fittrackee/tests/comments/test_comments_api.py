@@ -855,7 +855,7 @@ class TestGetWorkoutCommentAsUser(
 
         self.assert_403(response)
 
-    def test_it_returns_404_when_comment_is_suspended(
+    def test_it_returns_suspended_comment(
         self,
         app: Flask,
         user_1: User,
@@ -883,10 +883,11 @@ class TestGetWorkoutCommentAsUser(
                 Authorization=f"Bearer {auth_token}",
             ),
         )
-        self.assert_404_with_message(
-            response,
-            f"workout comment not found (id: {comment.short_id})",
-        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment'] == jsonify_dict(comment.serialize())
 
 
 class TestGetWorkoutCommentAsFollower(
@@ -1183,7 +1184,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             f"workout comment not found (id: {comment.short_id})",
         )
 
-    def test_it_returns_404_when_comment_is_suspended(
+    def test_it_returns_suspended_comment(
         self,
         app: Flask,
         user_1: User,
@@ -1206,10 +1207,10 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             content_type="application/json",
         )
 
-        self.assert_404_with_message(
-            response,
-            f"workout comment not found (id: {comment.short_id})",
-        )
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert data['comment'] == jsonify_dict(comment.serialize())
 
     def test_it_returns_comment_when_visibility_is_public(
         self,
@@ -1391,7 +1392,7 @@ class TestGetWorkoutCommentWithReplies(
         assert data['status'] == 'success'
         assert data['comment']['replies'] == []
 
-    def test_it_does_not_return_suspended_reply(
+    def test_it_returns_suspended_reply(
         self,
         app: Flask,
         user_1: User,
@@ -1426,7 +1427,9 @@ class TestGetWorkoutCommentWithReplies(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['comment']['replies'] == []
+        assert data['comment']['replies'] == [
+            jsonify_dict(reply.serialize(user_1))
+        ]
 
     def test_it_gets_comment_when_reply_is_not_visible(
         self,

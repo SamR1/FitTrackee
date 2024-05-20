@@ -138,7 +138,7 @@
   function getText(): string {
     // comment edition
     if (comment?.value) {
-      return comment.value.text
+      return comment.value.text || ''
     }
     // reply w/ mention
     if (mentions.value.length > 0) {

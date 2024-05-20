@@ -33,27 +33,27 @@ def get_comments(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             or_(
-                and_(
-                    Comment.text_visibility == PrivacyLevel.PUBLIC,
-                    Comment.user_id.not_in(blocked_users + blocked_by_users),
-                ),
-                or_(user.id == Mention.user_id),
+                Comment.user_id == user.id,
                 or_(
-                    Comment.user_id == user.id,
+                    Mention.user_id == user.id,
+                    and_(
+                        Comment.text_visibility == PrivacyLevel.PUBLIC,
+                        Comment.user_id.not_in(
+                            blocked_users + blocked_by_users
+                        ),
+                    ),
                     and_(
                         Comment.user_id.in_(following_ids),
                         Comment.text_visibility == PrivacyLevel.FOLLOWERS,
                     ),
                 ),
             ),
-            Comment.suspended_at == None,  # noqa
         )
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             Comment.text_visibility == PrivacyLevel.PUBLIC,
-            Comment.suspended_at == None,  # noqa
         )
     return comments_filter.order_by(Comment.created_at.asc()).all()
 
@@ -213,9 +213,29 @@ class Comment(BaseModel):
         except CommentForbiddenException:
             reply_to = None
 
-        suspended_at = {}
+        # suspended comment content is only visible to its owner or
+        # to admin in report only
+        suspension = {}
+        if self.suspended_at:
+            suspension["suspended"] = True
         if user and (user.id == self.user_id or (user.admin and for_report)):
-            suspended_at["suspended_at"] = self.suspended_at
+            suspension["suspended_at"] = self.suspended_at
+
+        display_content = (
+            False
+            if (
+                self.suspended_at
+                and (
+                    not user
+                    or (user.admin and not for_report)
+                    or (
+                        not (user.admin and for_report)
+                        and user.id != self.user_id
+                    )
+                )
+            )
+            else True
+        )
 
         return {
             'id': self.short_id,
@@ -226,15 +246,21 @@ class Comment(BaseModel):
                 and can_view(self.workout, 'workout_visibility', user)
                 else None
             ),
-            'text': self.text,
-            'text_html': self.handle_mentions()[0],
+            'text': self.text if display_content else None,
+            'text_html': (
+                self.handle_mentions()[0] if display_content else None
+            ),
             'text_visibility': self.text_visibility,
             'created_at': self.created_at,
             'modification_date': self.modification_date,
-            'mentions': [
-                mentioned_user.serialize()
-                for mentioned_user in self.mentioned_users
-            ],
+            'mentions': (
+                [
+                    mentioned_user.serialize()
+                    for mentioned_user in self.mentioned_users
+                ]
+                if display_content
+                else []
+            ),
             'reply_to': reply_to,
             'replies': (
                 [
@@ -248,9 +274,9 @@ class Comment(BaseModel):
                 if with_replies and not for_report
                 else []
             ),
-            'likes_count': self.likes.count(),
+            'likes_count': self.likes.count() if display_content else 0,
             'liked': self.liked_by(user) if user else False,
-            **suspended_at,
+            **suspension,
         }
 
 

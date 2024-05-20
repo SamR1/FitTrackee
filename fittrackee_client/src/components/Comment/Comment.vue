@@ -43,20 +43,25 @@
           :is-comment="true"
         />
       </div>
-      <span
-        v-if="!isCommentEdited()"
-        class="comment-text"
-        :class="{ highlight: highlighted }"
-        v-html="linkifyAndClean(comment.text_html)"
-      />
-      <WorkoutCommentEdition
-        v-else
-        :workout="workout"
-        :comment="comment"
-        :comments-loading="commentsLoading"
-        :name="`text-${comment.id}`"
-        :authUser="authUser"
-      />
+      <template v-if="comment.text_html">
+        <span
+          v-if="!isCommentEdited()"
+          class="comment-text"
+          :class="{ highlight: highlighted }"
+          v-html="linkifyAndClean(comment.text_html)"
+        />
+        <WorkoutCommentEdition
+          v-else
+          :workout="workout"
+          :comment="comment"
+          :comments-loading="commentsLoading"
+          :name="`text-${comment.id}`"
+          :authUser="authUser"
+        />
+      </template>
+      <div v-if="comment.suspended" class="suspended-comment">
+        {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
+      </div>
       <div class="comment-actions" v-if="!forAdmin">
         <button
           class="transparent icon-button likes"
@@ -395,6 +400,13 @@
           background-image: var(--comment-background-highlight);
         }
       }
+
+      .suspended-comment {
+        font-style: italic;
+        font-weight: bold;
+        padding: $default-padding 0 0 $default-padding;
+      }
+
       .add-comment-reply {
         margin: 0 0 40px;
       }
