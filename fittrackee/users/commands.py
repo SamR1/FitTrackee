@@ -7,11 +7,13 @@ from humanize import naturalsize
 from fittrackee import db
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.cli.app import app
+from fittrackee.config import SUPPORTED_LANGUAGES
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
 )
+from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
 handler = logging.StreamHandler()
@@ -34,7 +36,18 @@ def users_cli() -> None:
     type=str,
     help='User password. If not provided, a random password is generated.',
 )
-def create_user(username: str, email: str, password: Optional[str]) -> None:
+@click.option(
+    '--lang',
+    type=str,
+    help=(
+        'User preference for interface language (two-letter code, ISO 639-1).'
+        ' If not provided or not supported, it falls back to English (\'en\').'
+        f' Supported languages: {", ".join(SUPPORTED_LANGUAGES)}.'
+    ),
+)
+def create_user(
+    username: str, email: str, password: Optional[str], lang: Optional[str]
+) -> None:
     """Create an active user account."""
     with app.app_context():
         try:
@@ -42,12 +55,20 @@ def create_user(username: str, email: str, password: Optional[str]) -> None:
             user, user_password = user_manager_service.create_user(
                 email=email, password=password, check_email=True
             )
-            db.session.add(user)
-            db.session.commit()
-            user_manager_service.update(activate=True)
-            click.echo(f"User '{username}' created.")
-            if not password:
-                click.echo(f"The user password is: {user_password}")
+            if user:
+                db.session.add(user)
+                user_language = get_language(lang)
+                user.language = user_language
+                db.session.commit()
+                user_manager_service.update(activate=True)
+                click.echo(f"User '{username}' created.")
+                if lang != user_language:
+                    click.echo(
+                        "The user preference for interface language "
+                        f"is: {user_language}"
+                    )
+                if not password:
+                    click.echo(f"The user password is: {user_password}")
         except Exception as e:
             click.echo(f'Error(s) occurred:\n{e}', err=True)
 

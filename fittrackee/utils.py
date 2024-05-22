@@ -31,6 +31,7 @@ def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:
 def clean(sql: str, days: int) -> int:
     limit = int(time.time()) - (days * 86400)
     result = db.session.execute(text(sql), {'limit': limit})
+    db.session.commit()
     return result.rowcount
 
 

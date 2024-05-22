@@ -90,6 +90,7 @@
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import type { TLanguage } from '@/types/locales'
   import type { INotification, TNotificationType } from '@/types/notifications'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -109,7 +110,7 @@
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
-  const appLanguage: ComputedRef<string> = computed(
+  const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const sport: ComputedRef<ISport | null> = computed(() => getSport())

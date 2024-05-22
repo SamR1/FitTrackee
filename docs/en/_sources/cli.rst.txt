@@ -104,6 +104,9 @@ Create a user account.
   - the newly created account is already active.
   - the CLI allows to create users when registration is disabled.
 
+.. versionchanged:: 0.8.4
+
+User preference for interface language is added.
 
 .. cssclass:: table-bordered
 .. list-table::
@@ -118,6 +121,8 @@ Create a user account.
      - User email (mandatory).
    * - ``--password PASSWORD``
      - User password (if not provided, a random password is generated).
+   * - ``--lang LANGUAGE``
+     - User preference for interface language (two-letter code, ISO 639-1). If not provided or not supported, it falls back to English ('en').
 
 
 

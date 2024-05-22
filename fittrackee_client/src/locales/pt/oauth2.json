@@ -1,1 +1,38 @@
-{}
+{
+  "ADD_A_NEW_APP": "Adicionar aplicativo OAuth2",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Senha secreta",
+    "DESCRIPTION": "Descrição do aplicativo",
+    "ISSUE_AT": "Edição em",
+    "NAME": "Nome da Aplicação",
+    "REDIRECT_URL": "URL de redirecionamento",
+    "SCOPE": {
+      "LABEL": "Âmbito",
+      "application:write_DESCRIPTION": "concede permissão de gravação ao aplicativo configurado.",
+      "equipments:read_DESCRIPTION": "concede permissão de leitura aos pontos de acesso de <code>equipamentos</code>.",
+      "equipments:write_DESCRIPTION": "concede permissão de leitura aos pontos de acesso de <code>equipamentos</code>.",
+      "profile:read_DESCRIPTION": "concede permissão de leitura aos pontos de acesso <code>auth</code>.",
+      "profile:write_DESCRIPTION": "concede permissão de leitura aos pontos de acesso <code>auth</code>.",
+      "users:read_DESCRIPTION": "Concede permissão de leitura aos <code>usuários</code> dos pontos de acesso.",
+      "users:write_DESCRIPTION": "Concede permissão de gravação aos pontos de acesso de <code>usuários</code>.",
+      "workouts:read_DESCRIPTION": "Concede permissão de leitura aos pontos de acesso de <code>exercícios</code>.",
+      "workouts:write_DESCRIPTION": "Concede permissão de gravação aos pontos de acesso de <code>exercícios</code>."
+    },
+    "URL": "URL do aplicativo"
+  },
+  "APPS_LIST": "Aplicativos OAuth2",
+  "APP_CREATED_SUCCESSFULLY": "Aplicativo criado com sucesso. Certifique-se de copiar a chave secreta, ela não será mostrada novamente.",
+  "APP_DELETION_CONFIRMATION": "Tem certeza de que deseja excluir este aplicativo?",
+  "APP_REQUESTING_ACCESS": "Solicitações do aplicativo {0}:",
+  "AUTHORIZE_APP": "Autorizar {0} a usar sua conta?",
+  "COPY_TO_CLIPBOARD": "copiar para área de transferência",
+  "DELETE_APP": "Excluir aplicativo",
+  "NEW_APP": "Adicionar um aplicativo",
+  "NO_APP": "Aplicação não encontrada!",
+  "NO_APPS": "sem aplicativos",
+  "NO_DESCRIPTION": "sem descrição",
+  "REVOKE_ALL_TOKENS": "Revogar todas as chaves",
+  "TOKENS_REVOCATION_CONFIRMATION": "Tem certeza de revogar todas as chaves?",
+  "TOKENS_REVOKED": "Todas as chaves associadas foram revogadas."
+}

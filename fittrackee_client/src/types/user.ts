@@ -147,7 +147,7 @@ export interface ILoginRegisterFormData {
   username: string
   email: string
   password: string
-  language?: string
+  language?: TLanguage
   accepted_policy?: boolean
 }
 

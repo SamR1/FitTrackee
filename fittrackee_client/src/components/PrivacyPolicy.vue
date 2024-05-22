@@ -30,6 +30,7 @@
 
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
+  import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { dateStringFormats, formatDate } from '@/utils/dates'
@@ -40,7 +41,7 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  const language: ComputedRef<string> = computed(
+  const language: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const authUser: ComputedRef<IAuthUserProfile> = computed(
