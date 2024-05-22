@@ -1,5 +1,45 @@
 # Change log
 
+## Version 0.8.4 (2024/05/22)
+
+**FitTrackee** is now available in Portuguese.
+
+### Features and enhancements
+
+* [f2aec30](https://github.com/SamR1/FitTrackee/commit/f2aec301e18bdf0ae506db6eb013f76d5c99eff1) - add password strength estimation for Czech
+* [#563](https://github.com/SamR1/FitTrackee/issues/563) - CLI - init language preference on user creation
+
+### Translations
+
+* [#550](https://github.com/SamR1/FitTrackee/issues/550) - Typo: par page instead of per page
+* [PR#551](https://github.com/SamR1/FitTrackee/pull/551) - Translations update (Czech)
+* [PR#555](https://github.com/SamR1/FitTrackee/pull/555) - Translations update (Czech)
+* [#558](https://github.com/SamR1/FitTrackee/issues/558) - [translations request] Portuguese
+ 
+Translation status:
+- Basque: 100%
+- Czech: 74%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 74%
+- Norwegian Bokmål: 53%
+- Polish: 88%
+- Portuguese: 100%
+- Spanish: 100%
+
+### Misc
+
+* [PR#556](https://github.com/SamR1/FitTrackee/pull/556) - API - minor refacto
+* [PR#557](https://github.com/SamR1/FitTrackee/pull/557) - API - prepare SQLAlchemy migration
+
+Thanks to the contributors:
+- @jmlich
+- @voodoopt
+
+
 ## Version 0.8.3 (2024/05/09)
 
 ### Bugs Fixed
