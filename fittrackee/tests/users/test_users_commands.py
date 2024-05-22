@@ -74,7 +74,7 @@ class TestCliUserCreate:
             ],
         )
 
-        assert result.output == f"User '{username}' created.\n"
+        assert f"User '{username}' created.\n" in result.output
 
     def test_it_displays_password_when_password_is_not_provided(
         self,
@@ -90,9 +90,75 @@ class TestCliUserCreate:
                 ["create", username, "--email", random_email()],
             )
 
-        assert result.output == (
-            f"User '{username}' created.\n"
-            f"The user password is: {password}\n"
+        assert f"The user password is: {password}\n" in result.output
+
+    def test_it_creates_user_with_default_language(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            users_cli,
+            ["create", username, "--email", random_email()],
+        )
+
+        user = User.query.filter_by(username=username).first()
+        assert user.language == "en"
+        assert (
+            'The user preference for interface language is: en'
+            in result.output
+        )
+
+    def test_it_creates_user_with_provided_language(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        language = "fr"
+        runner = CliRunner()
+
+        result = runner.invoke(
+            users_cli,
+            [
+                "create",
+                username,
+                "--email",
+                random_email(),
+                "--lang",
+                language,
+            ],
+        )
+
+        user = User.query.filter_by(username=username).first()
+        assert user.language == language
+        assert (
+            f'The user preference for interface language is: {language}'
+            not in result.output
+        )
+
+    def test_it_creates_user_with_default_language_when_not_supported(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            users_cli,
+            [
+                "create",
+                username,
+                "--email",
+                random_email(),
+                "--lang",
+                "invalid",
+            ],
+        )
+
+        user = User.query.filter_by(username=username).first()
+        assert user.language == "en"
+        assert (
+            'The user preference for interface language is: en'
+            in result.output
         )
 
 
