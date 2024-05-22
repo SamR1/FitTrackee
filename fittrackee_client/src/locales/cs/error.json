@@ -1,7 +1,8 @@
 {
   "APP_ERROR": "Zda se, že v aplikaci došlo k nějakému problému.<br />Prosíme, zkuste to znovu později nebo kontaktujte správce.",
   "NOT_FOUND": {
-    "PAGE": "Stránka nenalezena"
+    "PAGE": "Stránka nenalezena",
+    "WORKOUT": "Cvičení nenalezeno"
   },
   "SOMETHING_WRONG": "Něco se pokazilo",
   "UNKNOWN": "Chyba. Prosím zkuste znovu nebo kontaktujte správce."

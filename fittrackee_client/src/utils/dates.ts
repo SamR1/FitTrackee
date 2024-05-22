@@ -94,7 +94,7 @@ const availableDateFormats = [
   'yyyy-MM-dd',
   'date_string', // depending on language
 ]
-export const dateStringFormats: Record<string, string> = {
+export const dateStringFormats: Record<TLanguage, string> = {
   cs: 'd. MMM yyyy',
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
@@ -103,12 +103,16 @@ export const dateStringFormats: Record<string, string> = {
   fr: 'd MMM yyyy',
   gl: 'd MMM yyyy',
   it: 'd MMM yyyy',
-  pl: 'd MMM yyyy',
   nb: 'do MMM yyyy',
   nl: 'd MMM yyyy',
+  pl: 'd MMM yyyy',
+  pt: 'd MMM yyyy',
 }
 
-export const getDateFormat = (dateFormat: string, language: string): string => {
+export const getDateFormat = (
+  dateFormat: string,
+  language: TLanguage
+): string => {
   return dateFormat === 'date_string' ? dateStringFormats[language] : dateFormat
 }
 
