@@ -18,6 +18,7 @@
     "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@zxcvbn-ts/core": "^3.0.4",
     "@zxcvbn-ts/language-common": "^3.0.4",
+    "@zxcvbn-ts/language-cs": "^3.0.1",
     "@zxcvbn-ts/language-de": "^3.0.2",
     "@zxcvbn-ts/language-en": "^3.0.2",
     "@zxcvbn-ts/language-es-es": "^3.0.2",
