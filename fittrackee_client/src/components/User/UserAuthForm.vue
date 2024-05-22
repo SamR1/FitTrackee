@@ -183,6 +183,7 @@
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
   import type { IEquipmentError } from '@/types/equipments'
+  import type { TLanguage } from '@/types/locales'
   import type { ILoginRegisterFormData } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -218,7 +219,7 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  const language: ComputedRef<string> = computed(
+  const language: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const registration_disabled: ComputedRef<boolean> = computed(
