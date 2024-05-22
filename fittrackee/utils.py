@@ -6,6 +6,7 @@ from uuid import UUID
 import humanize
 import nh3
 import shortuuid
+from sqlalchemy.sql import text
 
 from fittrackee import db
 
@@ -29,7 +30,8 @@ def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:
 
 def clean(sql: str, days: int) -> int:
     limit = int(time.time()) - (days * 86400)
-    result = db.engine.execute(sql, {'limit': limit})
+    result = db.session.execute(text(sql), {'limit': limit})
+    db.session.commit()
     return result.rowcount
 
 

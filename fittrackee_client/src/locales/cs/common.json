@@ -1,4 +1,35 @@
 {
+  "ACTION": "akce",
+  "ACTIVE": "aktivní",
+  "CONFIRMATION": "Potvrzení",
+  "CONTACT": "kontakt",
   "DAY": "den | dny",
-  "DESCRIPTION": "Popis"
+  "DESCRIPTION": "Popis",
+  "DISPLAYED": "Zobrazeno",
+  "DOCUMENTATION": "dokumentace",
+  "HIDDEN": "Skryto",
+  "HOME": "Domů",
+  "HOURS": "hodina|hodiny",
+  "INACTIVE": "neaktivní",
+  "LABEL": "popisek",
+  "MINUTES": "minuta|minuty",
+  "NEXT": "další",
+  "NO_DESCRIPTION": "bez popisu",
+  "PREVIOUS": "předchozí",
+  "SECONDS": "sekunda|sekundy",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "vzsestupně",
+      "DESC": "sestupně",
+      "LABEL": "seřadit"
+    },
+    "ORDER_BY": {
+      "LABEL": "řazení podle"
+    },
+    "PER_PAGE": {
+      "LABEL": "na stránku"
+    }
+  },
+  "TOTAL": "Celkem",
+  "TOTAL_DURATION_WITH_PAUSES": "Celková doba včetně přestávek"
 }

@@ -15,7 +15,8 @@
     "LIKE": "liker le commentaire",
     "LIKES": "like | likes",
     "NO_COMMENTS": "Pas de commentaires",
-    "REPORT": "signaler le commentaire"
+    "REPORT": "signaler le commentaire",
+    "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",

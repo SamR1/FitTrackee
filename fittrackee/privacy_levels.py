@@ -44,7 +44,10 @@ def can_view(
     if user and (user.id == owner.id or (user.admin and for_report)):
         return True
 
-    if target_object.suspended_at:
+    if (
+        target_object.__class__.__name__ == "Workout"
+        and target_object.suspended_at
+    ):
         return False
 
     if target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC and (

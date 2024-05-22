@@ -267,7 +267,8 @@
         text = report.reported_workout?.title
         break
       case 'comment':
-        text = report.reported_comment?.text
+        // in reports, comment is always returned by the API
+        text = report.reported_comment?.text || ''
         break
       default:
         text = ''

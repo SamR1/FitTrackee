@@ -364,6 +364,7 @@
   } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
+  import type { TLanguage } from '@/types/locales'
   import type {
     IAdminAction,
     IReportComment,
@@ -405,7 +406,7 @@
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
   )
-  const appLanguage: ComputedRef<string> = computed(
+  const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const isSuccess = computed(

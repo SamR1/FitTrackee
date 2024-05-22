@@ -10,3 +10,4 @@ export type TLanguage =
   | 'nb'
   | 'nl'
   | 'pl'
+  | 'pt'

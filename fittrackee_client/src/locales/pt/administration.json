@@ -1,0 +1,76 @@
+{
+  "ABOUT": {
+    "DESCRIPTION": "Qualquer tipo de informação adicional que possa ser útil aos seus usuários. Você pode usar o Markdown.",
+    "TEXT": "Informações detalhadas sobre a instância"
+  },
+  "ACTION": "Ação",
+  "ACTIVATE_USER_ACCOUNT": "Ativar conta",
+  "ACTIVE": "Ativo",
+  "ADMIN": "Administrador",
+  "ADMINISTRATION": "Administração",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Adicionar/remover direitos de administração, excluir conta de usuário.",
+  "APPLICATION": "Aplicativo",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "Contato por e-mail com a administração",
+    "MAX_FILES_IN_ZIP_LABEL": "Número máximo de arquivos zip",
+    "MAX_USERS_HELP": "Se for 0, não há limite de registros.",
+    "MAX_USERS_LABEL": "Número máximo de usuários ativos",
+    "NO_CONTACT_EMAIL": "sem e-mail de contato",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamanho máximo de arquivos enviados (em Mb)",
+    "TITLE": "Configurações do aplicativo",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamanho máximo do arquivo zip (em Mb)"
+  },
+  "BACK_TO_ADMIN": "Voltar ao administrador",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Tem certeza de que deseja excluir a conta {0}? Todos os dados serão apagados e não serão reversíveis.",
+  "CONFIRM_USER_PASSWORD_RESET": "Tem certeza de que deseja redefinir a senha de {0}?",
+  "CURRENT_EMAIL": "Email atual",
+  "DELETE_USER": "Apagar utilizador",
+  "EMAIL_SENDING_DISABLED": "O envio de e-mail está desativado.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Ativar/desativar tipos de equipamentos.",
+  "ENABLE_DISABLE_SPORTS": "Ativar/desativar desportos.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Ativar",
+      "HAS_EQUIPMENTS": "o equipamento já existe",
+      "IMAGE": "Imagem",
+      "LABEL": "Rótulo"
+    },
+    "TITLE": "Administração de equipamentos"
+  },
+  "NEW_EMAIL": "Novo Email",
+  "NO_TEXT_ENTERED": "Não há texto",
+  "PASSWORD_RESET_SUCCESSFUL": "A senha foi redefinida.",
+  "PRIVACY_POLICY_DESCRIPTION": "Adicione sua própria política de privacidade ou deixe em branco para usar uma política padrão. Você pode usar o Markdown.",
+  "REGISTRATION_DISABLED": "A criação de conta está atualmente desativada.",
+  "REGISTRATION_ENABLED": "A criação de conta está ativa.",
+  "RESET_USER_PASSWORD": "Restaurar senha",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Ativo",
+      "HAS_WORKOUTS": "já existe treino",
+      "IMAGE": "Imagem",
+      "LABEL": "Rótulo"
+    },
+    "TITLE": "Gerenciar desportos"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Atualize as configurações do aplicativo.",
+  "UPDATE_USER_EMAIL": "Atualizar e-mail",
+  "USER": "usuário | Usuários",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "status de administrador",
+        "CREATED_AT": "data de registro",
+        "IS_ACTIVE": "tipo de conta",
+        "USERNAME": "utilizador",
+        "WORKOUTS_COUNT": "número de treinos"
+      }
+    },
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Conceda permissão de administrador",
+      "REMOVE_ADMIN_RIGHTS": "Remover permissão de administrador"
+    },
+    "TITLE": "Administração - Usuários"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "O endereço de e-mail foi atualizado."
+}

@@ -26,7 +26,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.8.3'
+VERSION = __version__ = '0.8.4'
 REDIS_URL = os.getenv('REDIS_URL', 'redis://')
 API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
     ','
@@ -39,7 +39,9 @@ logging.basicConfig(
 )
 appLog = logging.getLogger('fittrackee')
 
-db = SQLAlchemy()
+db = SQLAlchemy(
+    engine_options={"future": True}, session_options={"future": True}
+)
 BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
 migrate = Migrate()

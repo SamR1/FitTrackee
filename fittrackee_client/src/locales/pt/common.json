@@ -1,0 +1,37 @@
+{
+  "ABOUT": "sobre",
+  "ACTION": "Ação",
+  "ACTIVE": "ativo",
+  "CONFIRMATION": "Confirmação",
+  "CONTACT": "contato",
+  "DAY": "dia | dias",
+  "DESCRIPTION": "Descrição",
+  "DISPLAYED": "Mostrando",
+  "DOCUMENTATION": "documentação",
+  "HERE": "aqui",
+  "HIDDEN": "Escondido",
+  "HOME": "Inicio",
+  "HOURS": "hora | horas",
+  "INACTIVE": "inativo",
+  "LABEL": "etiqueta",
+  "MINUTES": "minuto | minutos",
+  "NEXT": "seguinte",
+  "NO_DESCRIPTION": "sem descrição",
+  "PREVIOUS": "retroceder",
+  "SECONDS": "segundo | segundos",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "subida",
+      "DESC": "descida",
+      "LABEL": "ordenar"
+    },
+    "ORDER_BY": {
+      "LABEL": "organizar por"
+    },
+    "PER_PAGE": {
+      "LABEL": "por página"
+    }
+  },
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "duração total com pausas"
+}

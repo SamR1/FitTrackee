@@ -2,6 +2,7 @@ Features
 ########
 
 | **FitTrackee** allows you to store and display **gpx** files and some statistics from your **outdoor** activities.
+| Equipments can be associated with workouts.
 | For now, this app is kind of a single-user application. Even if several users can register, a user can only view his own workouts.
 
 Gpx files are stored in an upload directory (**without encryption**).
@@ -265,6 +266,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Polish (*new in 0.7.18*)
 - Basque (*new in 0.7.31*)
 - Czech (*new in 0.8.1*)
+- Portuguese (*new in 0.8.4*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 

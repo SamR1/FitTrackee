@@ -1,5 +1,18 @@
 import type { Locale } from 'date-fns'
-import { cs, de, enUS, es, eu, fr, gl, it, nb, nl, pl } from 'date-fns/locale'
+import {
+  cs,
+  de,
+  enUS,
+  es,
+  eu,
+  fr,
+  gl,
+  it,
+  nb,
+  nl,
+  pl,
+  pt,
+} from 'date-fns/locale'
 
 import createI18n from '@/i18n'
 import type { TLanguage } from '@/types/locales'
@@ -19,6 +32,7 @@ export const isLanguageSupported = (
     'nb',
     'nl',
     'pl',
+    'pt',
   ].includes(language)
 }
 
@@ -34,10 +48,11 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   nb: nb,
   nl: nl,
   pl: pl,
+  pt: pt,
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  cs: 'Česky (25%)',
+  cs: 'Česky (74%)',
   de: 'Deutsch',
   en: 'English',
   es: 'Español',
@@ -48,6 +63,7 @@ export const languageLabels: Record<TLanguage, string> = {
   nb: 'Norsk bokmål (53%)',
   nl: 'Nederlands (98%)',
   pl: 'Polski (88%)',
+  pt: 'Português',
 }
 
 const { availableLocales } = createI18n.global

@@ -167,7 +167,14 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             workout=workout_cycling_user_1,
             text_visibility=input_visibility,
         )
-        comment.suspended_at = datetime.utcnow() if suspended else None
+        if suspended:
+            comment.suspended_at = datetime.utcnow()
+            suspended_at = {
+                "suspended": True,
+                "suspended_at": comment.suspended_at,
+            }
+        else:
+            suspended_at = {"suspended_at": None}
 
         serialized_comment = comment.serialize(user_1)
 
@@ -180,12 +187,12 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
             'likes_count': 0,
             'liked': False,
+            **suspended_at,
         }
 
     def test_it_serializes_owner_comment_when_workout_is_deleted(
@@ -520,6 +527,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         with pytest.raises(CommentForbiddenException):
             comment.serialize(user_1_admin)
 
+    @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
     )
@@ -532,13 +540,24 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_visibility: PrivacyLevel,
+        suspended: bool,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user=user_3,
             workout=workout_cycling_user_2,
+            text=f"@{user_2.username}",
             text_visibility=input_visibility,
+            with_mentions=True,
         )
+        if suspended:
+            comment.suspended_at = datetime.utcnow()
+            suspended_at = {
+                "suspended": True,
+                "suspended_at": comment.suspended_at,
+            }
+        else:
+            suspended_at = {"suspended_at": None}
 
         serialized_comment = comment.serialize(user_1_admin, for_report=True)
 
@@ -547,23 +566,19 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'user': user_3.serialize(),
             'workout_id': workout_cycling_user_2.short_id,
             'text': comment.text,
-            'text_html': comment.text,  # no mention
+            'text_html': comment.handle_mentions()[0],
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
-            'mentions': [],
-            'suspended_at': comment.suspended_at,
+            'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
             'likes_count': 0,
             'liked': False,
+            **suspended_at,
         }
 
-    @pytest.mark.parametrize(
-        "input_visibility",
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
-    )
-    def test_it_raises_exception_when_comment_is_suspended(
+    def test_it_does_not_return_content_when_comment_is_suspended(
         self,
         app: Flask,
         user_1_admin: User,
@@ -571,53 +586,29 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user=user_3,
             workout=workout_cycling_user_2,
-            text_visibility=input_visibility,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
         )
         comment.suspended_at = datetime.utcnow()
 
-        with pytest.raises(CommentForbiddenException):
-            comment.serialize(user_1_admin)
-
-    @pytest.mark.parametrize(
-        "input_visibility",
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
-    )
-    def test_it_serializes_suspended_comment_when_report_flag_is_true(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user=user_3,
-            workout=workout_cycling_user_2,
-            text_visibility=input_visibility,
-        )
-        comment.suspended_at = datetime.utcnow()
-
-        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+        serialized_comment = comment.serialize(user_1_admin)
 
         assert serialized_comment == {
             'id': comment.short_id,
             'user': user_3.serialize(),
             'workout_id': workout_cycling_user_2.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
+            'text': None,
+            'text_html': None,
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
             'mentions': [],
-            'suspended_at': comment.suspended_at,
+            'suspended': True,
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -769,13 +760,13 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             workout=workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        comment = self.create_comment(
+        suspended_comment = self.create_comment(
             user=user_2,
             workout=workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
             parent_comment=parent_comment,
         )
-        comment.suspended_at = datetime.utcnow()
+        suspended_comment.suspended_at = datetime.utcnow()
 
         serialized_comment = parent_comment.serialize(user_1)
 
@@ -791,7 +782,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'suspended_at': parent_comment.suspended_at,
             'modification_date': parent_comment.modification_date,
             'reply_to': None,
-            'replies': [],
+            'replies': [suspended_comment.serialize(user_1)],
             'likes_count': 0,
             'liked': False,
         }
@@ -1090,7 +1081,10 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
             'mentions': [],
             'modification_date': comment.modification_date,
             'reply_to': None,
-            'replies': [visible_reply.serialize(user_3)],
+            'replies': [
+                visible_reply.serialize(user_3),
+                suspended_reply.serialize(user_3),
+            ],
             'likes_count': 0,
             'liked': False,
         }

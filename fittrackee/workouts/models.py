@@ -10,6 +10,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
+from sqlalchemy.sql.expression import nulls_last
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
@@ -547,11 +548,9 @@ class Workout(BaseModel):
             column_sorted = getattr(getattr(Workout, column), 'desc')()
             record_workout = (
                 Workout.query.filter(
-                    Workout.user_id == user_id,
-                    Workout.sport_id == sport_id,
-                    getattr(Workout, column) != None,  # noqa
+                    Workout.user_id == user_id, Workout.sport_id == sport_id
                 )
-                .order_by(column_sorted, Workout.workout_date)
+                .order_by(nulls_last(column_sorted), Workout.workout_date)
                 .first()
             )
             records[record_type] = dict(

@@ -47,6 +47,7 @@
     ROOT_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
+  import type { TLanguage } from '@/types/locales'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
@@ -77,7 +78,7 @@
       ? workouts.value[workouts.value.length - 1].previous_workout !== null
       : false
   )
-  const appLanguage: ComputedRef<string> = computed(
+  const appLanguage: ComputedRef<TLanguage> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const dateFormat: ComputedRef<string> = computed(() =>

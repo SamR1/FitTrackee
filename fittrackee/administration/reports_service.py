@@ -6,7 +6,10 @@ from sqlalchemy import func
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.comments.utils import get_comment
-from fittrackee.reports.exceptions import ReportNotFoundException
+from fittrackee.reports.exceptions import (
+    ReportNotFoundException,
+    SuspendedObjectException,
+)
 from fittrackee.reports.models import Report, ReportComment
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
@@ -24,6 +27,8 @@ class ReportService:
     ) -> Report:
         if object_type == "comment":
             target_object = get_comment(object_id, reporter)
+            if target_object and target_object.suspended_at:
+                raise SuspendedObjectException('comment')
         elif object_type == "workout":
             target_object = get_workout(object_id, reporter)
         else:  # object_type == "user"

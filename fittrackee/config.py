@@ -20,6 +20,20 @@ XDIST_WORKER = (
     if os.getenv('PYTEST_XDIST_WORKER')
     else ''
 )
+SUPPORTED_LANGUAGES = [
+    'cs',  # Czech
+    'de',  # German
+    'en',  # English
+    'es',  # Spanish
+    'eu',  # Basque
+    'fr',  # French
+    'gl',  # Galician
+    'it',  # Italian
+    'nb',  # Norwegian Bokmål
+    'nl',  # Dutch
+    'pl',  # Polish
+    'pt',  # Portuguese
+]
 
 
 class BaseConfig:
@@ -60,19 +74,7 @@ class BaseConfig:
     TRANSLATIONS_FOLDER = os.path.join(
         current_app.root_path, 'emails/translations'
     )
-    LANGUAGES = [
-        'en',
-        'fr',
-        'de',
-        'it',
-        'nb',
-        'nl',
-        'es',
-        'gl',
-        'pl',
-        'eu',
-        'cs',
-    ]
+    LANGUAGES = SUPPORTED_LANGUAGES
     OAUTH2_TOKEN_EXPIRES_IN = {
         'authorization_code': 864000,  # 10 days
         'refresh_token': 864000,  # 10 days

@@ -1,0 +1,18 @@
+{
+  "50_CHARACTERS_MAX": "Máximo de 50 caracteres",
+  "ADD_A_NEW_EQUIPMENT": "Adicionar um novo equipamento",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Todas as associações serão removidas dos treinos.",
+  "DEFAULT_FOR_SPORTS": "Padrão para desporto",
+  "EDIT_EQUIPMENTS": "Editar equipamento",
+  "EQUIPMENT": "equipamento | equipamentos",
+  "EQUIPMENT_TYPE": "tipo de equipamento | tipos de equipamentos",
+  "ERRORS": {
+    "inactive": "Equipamento '{equipmentLabel}' inativo.",
+    "invalid": "O equipamento '{equipmentLabel}' não é correto para este desporto.",
+    "not_found": "Equipamento não encontrado."
+  },
+  "NEW_EQUIPMENT": "Equipamento novo",
+  "NO_EQUIPMENT": "Nenhum equipamento encontrado.",
+  "NO_EQUIPMENTS": "Sem equipamento",
+  "WITHOUT_EQUIPMENTS": "sem equipamento"
+}

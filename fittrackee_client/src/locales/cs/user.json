@@ -1,27 +1,41 @@
 {
   "ACCOUNT_CONFIRMATION": "Potvrzení účtu",
+  "ACCOUNT_CONFIRMATION_SENT": "Zkontrolujte Váš e-mail. Byl odeslán nový e-mail pro potvrzení zadané adresy.",
   "ADMIN": "Správce",
   "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
   "CONFIRM_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat Váš účet? Všechna data budou smazána, toto nejde vrátit.",
   "CURRENT_PASSWORD": "Současné heslo",
   "EMAIL": "Email",
   "EMAIL_INFO": "Zadejte platnou emailovou adresu.",
+  "EMAIL_UPDATE": "Aktualizace e-mailu",
   "ENTER_PASSWORD": "Zadejte heslo",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Export dat",
-    "DOWNLOAD_ARCHIVE": "Stáhnout archiv"
+    "DOWNLOAD_ARCHIVE": "Stáhnout archiv",
+    "GENERATING_LINK": "generování odkazu...",
+    "ONLY_ONE_EXPORT_PER_DAY": "Archiv lze požadovat po 24 hodinách",
+    "STATUS": {
+      "errored": "selhalo (prosím vyžádejte si další export)",
+      "in_progress": "probíhá..."
+    }
   },
+  "FILTER_ON_USERNAME": "Filtr na uživatelské jméno",
   "HIDE_PASSWORD": "skrýt heslo",
+  "INVALID_TOKEN": "Neplatný token, prosím vyžádejte si nové obnovení hesla.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Chci smazat svůj účet",
   "LANGUAGE": "Jazyk | Jazyky",
   "LOGIN": "Přihlášení",
   "LOGOUT": "Odhlášení",
+  "LOGOUT_CONFIRMATION": "Jste si jistý, že se chcete odhlásit?",
   "LOG_IN": "přihlásit",
   "NEW_PASSWORD": "Nové heslo",
+  "NO_SPORT_FOUND": "Nebyl nalezen sport.",
+  "NO_USERS_FOUND": "Nebyli nalezeni uživatelé.",
   "PASSWORD": "Heslo",
   "PASSWORD_FORGOTTEN": "Zapoměl jste heslo?",
   "PASSWORD_INFO": "Je požadováno alespoň 8 znaků.",
   "PASSWORD_RESET": "Reset hesla",
+  "PASSWORD_SENT_EMAIL_TEXT": "Zkontrolujte si svůj e-mail. Pokud je Vaše adresa v naší databázi, dostanete e-amil s odkazem pro obnovení hesla.",
   "PASSWORD_STRENGTH": {
     "AVERAGE": "průměr",
     "GOOD": "dobré",
@@ -29,7 +43,38 @@
     "STRONG": "silné",
     "SUGGESTIONS": {
       "allUppercase": "Napište některé písmena velké, ale ne všechny.",
-      "capitalization": "Udělejte víc velkých písmen, nejen první."
+      "anotherWord": "Přidejte více slov, které jsou méně obvyklá.",
+      "associatedYears": "Vyhněte se letopočtům spojeným s Vámi.",
+      "capitalization": "Udělejte víc velkých písmen, nejen první.",
+      "dates": "Vyhněte se datům a rokům spojeným s Vámi.",
+      "l33t": "Vyhněte se předvídatelným nahrazením jako {'@'} za a.",
+      "longerKeyboardPattern": "Použijte delší klávesové vzory a několikrát změňte směr psaní.",
+      "noNeed": "Silné heslo můžete vytvořit bez použití symbolů, čísel nebo velkých písmen.",
+      "pwned": "Pokud používáte toto heslo i jinde, tak byste ho měli změnit.",
+      "recentYears": "Vyhněte se nedávným rokům.",
+      "repeated": "Vyhněte se opakování slov a písmen.",
+      "reverseWords": "Vyhněte se obvyklým slovům napsaným pozpátku.",
+      "sequences": "Vyhněte se obvyklým sekvencím znaků.",
+      "useWords": "Použijte několik slov, ale vyhněte se obvyklým frázím."
+    },
+    "WEAK": "týden"
+  },
+  "PASSWORD_UPDATED": "Vaše heslo bylo změněno. Klikněte {0} pro přihlášení.",
+  "PROFILE": {
+    "BACK_TO_PROFILE": "Zpět na profil",
+    "BIRTH_DATE": "Datum narození",
+    "DATE_FORMAT": "Formát zobrazení datumu",
+    "EDIT": "Upravit profil",
+    "ELEVATION_CHART_START": {
+      "MIN_ALT": "Minimální nadmořská výška",
+      "ZERO": "Nula"
+    },
+    "EQUIPMENTS": {
+      "ACTION": "akce",
+      "DESCRIPTION": "popis",
+      "DISABLED_BY_ADMIN": "zakázáno správcem",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Vybavení spojené s cvičením.",
+      "IS_ACTIVE": "aktivní"
     }
   }
 }

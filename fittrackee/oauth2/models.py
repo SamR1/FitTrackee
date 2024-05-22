@@ -11,6 +11,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import text
 
 from fittrackee import db
 
@@ -98,10 +99,10 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
     def revoke_client_tokens(cls, client_id: str) -> None:
         sql = """
             UPDATE oauth2_token
-            SET access_token_revoked_at = %(revoked_at)s
-            WHERE client_id = %(client_id)s;
+            SET access_token_revoked_at = :revoked_at
+            WHERE client_id = :client_id;
         """
-        db.engine.execute(
-            sql, {'client_id': client_id, 'revoked_at': int(time.time())}
+        db.session.execute(
+            text(sql), {'client_id': client_id, 'revoked_at': int(time.time())}
         )
         db.session.commit()
