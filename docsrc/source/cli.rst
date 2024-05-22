@@ -118,6 +118,8 @@ Create a user account.
      - User email (mandatory).
    * - ``--password PASSWORD``
      - User password (if not provided, a random password is generated).
+   * - ``--lang LANGUAGE``
+     - User preference for interface language (two-letter codes, ISO 639-1). If not provided or not supported, it falls back to English ('en').
 
 
 
