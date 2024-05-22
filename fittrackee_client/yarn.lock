@@ -848,6 +848,11 @@
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-common/-/language-common-3.0.4.tgz#fa1d2a42f8c8a589555859795da90d6b8027b7c4"
   integrity sha512-viSNNnRYtc7ULXzxrQIVUNwHAPSXRtoIwy/Tq4XQQdIknBzw4vz36lQLF6mvhMlTIlpjoN/Z1GFu/fwiAlUSsw==
 
+"@zxcvbn-ts/language-cs@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-cs/-/language-cs-3.0.1.tgz#e6518d62f662eee96fd3a0a9b445f6085e1e3744"
+  integrity sha512-GXUFxEAwYUCFzYdArP5MpEGX7NftmwIWNZxiRwanUa/ZiLWCML9l2zlTDb+BIUqCwfAfEue1Ar5iru4iWWBXaQ==
+
 "@zxcvbn-ts/language-de@^3.0.2":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@zxcvbn-ts/language-de/-/language-de-3.0.2.tgz#fbd0d1be9454e308bbd63bf5487d4c17670094f0"
