@@ -40,7 +40,7 @@ def users_cli() -> None:
     '--lang',
     type=str,
     help=(
-        'User preference for interface language (two-letter codes, ISO 639-1).'
+        'User preference for interface language (two-letter code, ISO 639-1).'
         ' If not provided or not supported, it falls back to English (\'en\').'
         f' Supported languages: {", ".join(SUPPORTED_LANGUAGES)}.'
     ),
