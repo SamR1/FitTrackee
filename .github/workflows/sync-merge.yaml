@@ -12,11 +12,11 @@ env:
   # Optional, defaults to UPSTREAM_BRANCH
   DOWNSTREAM_BRANCH: ""
   # Optional fetch arguments
-  FETCH_ARGS: "--all"
+  FETCH_ARGS: "--tags"
   # Optional merge arguments
   MERGE_ARGS: ""
   # Optional push arguments
-  PUSH_ARGS: ""
+  PUSH_ARGS: "--tags"
   # Optional toggle to spawn time logs (keeps action active) 
   SPAWN_LOGS: "false" # "true" or "false"
 
