@@ -12,7 +12,7 @@ env:
   # Optional, defaults to UPSTREAM_BRANCH
   DOWNSTREAM_BRANCH: ""
   # Optional fetch arguments
-  FETCH_ARGS: ""
+  FETCH_ARGS: "--tags"
   # Optional merge arguments
   MERGE_ARGS: ""
   # Optional push arguments
