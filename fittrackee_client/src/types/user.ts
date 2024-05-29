@@ -180,7 +180,7 @@ export interface IFollowRequestsActionPayload {
   getFollowRequests?: boolean
 }
 
-export interface IAccountSuspensionAppeal {
+export interface ISuspensionAppeal {
   approved: boolean | null
   created_at: string
   id: string
@@ -189,11 +189,11 @@ export interface IAccountSuspensionAppeal {
   updated_at: string
 }
 
-export interface IAccountSuspension {
+export interface ISuspension {
   action_type: string
-  appeal: IAccountSuspensionAppeal
+  appeal: ISuspensionAppeal
   created_at: string
   id: string
-  note: string
-  user: IUserProfile
+  reason: string
+  user?: IUserProfile
 }
