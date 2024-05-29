@@ -620,6 +620,27 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
 
 
 class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
+    def test_it_returns_minimal_serialized_admin_action(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        admin_action = AdminAction(
+            admin_user_id=user_1_admin.id,
+            action_type="user_suspension",
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        db.session.commit()
+
+        serialized_action = admin_action.serialize(user_1_admin, full=False)
+
+        assert serialized_action == {
+            'appeal': None,
+            'action_type': admin_action.action_type,
+            'created_at': admin_action.created_at,
+            'id': admin_action.short_id,
+            'reason': None,
+        }
+
     def test_it_returns_serialized_user_admin_action_without_report(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
