@@ -19,6 +19,7 @@ import type {
   IComment,
   ICommentPayload,
   ICurrentCommentEdition,
+  IAppealPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -27,6 +28,7 @@ export interface IWorkoutsState {
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
   pagination: IPagination
+  success: boolean
 }
 
 export interface IWorkoutsActions {
@@ -94,6 +96,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.MAKE_COMMENT_APPEAL](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IAppealPayload
+  ): void
   [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
     comment: IComment
@@ -107,6 +113,7 @@ export interface IWorkoutsActions {
 export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
@@ -169,6 +176,7 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     currentReporting: boolean
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_SUCCESS](state: S, success: boolean): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

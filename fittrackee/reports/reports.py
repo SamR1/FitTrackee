@@ -30,6 +30,7 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
+from fittrackee.workouts.models import Comment
 
 from .exceptions import (
     InvalidReporterException,
@@ -318,13 +319,26 @@ def process_appeal(
         appeal.updated_at = datetime.utcnow()
 
         if data["approved"]:
-            user_manager_service = UserManagerService(
-                username=appeal.user.username, admin_user_id=auth_user.id
-            )
-            user, _, _ = user_manager_service.update(
-                suspended=False,
-                report_id=appeal.action.report_id,
-            )
+            action = appeal.action
+            if action.action_type == "user_suspension":
+                user_manager_service = UserManagerService(
+                    username=appeal.user.username, admin_user_id=auth_user.id
+                )
+                user, _, _ = user_manager_service.update(
+                    suspended=False, report_id=appeal.action.report_id
+                )
+            if action.action_type == "comment_suspension":
+                admin_action = AdminAction(
+                    admin_user_id=auth_user.id,
+                    action_type="comment_unsuspension",
+                    comment_id=action.comment_id,
+                    created_at=datetime.now(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                )
+                db.session.add(admin_action)
+                comment = Comment.query.filter_by(id=action.comment_id).first()
+                comment.suspended_at = None
         db.session.commit()
         return {
             "status": "success",

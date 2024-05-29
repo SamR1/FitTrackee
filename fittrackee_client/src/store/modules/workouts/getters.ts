@@ -15,6 +15,9 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]: (state: IWorkoutsState) => {
     return state.workoutData.currentReporting
   },
+  [WORKOUTS_STORE.GETTERS.SUCCESS]: (state: IWorkoutsState) => {
+    return state.success
+  },
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]: (state: IWorkoutsState) => {
     return state.timeline_workouts
   },

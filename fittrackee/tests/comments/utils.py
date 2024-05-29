@@ -39,6 +39,20 @@ class CommentMixin(RandomMixin):
         return comment
 
     @staticmethod
+    def create_admin_comment_suspension_action(
+        admin: User, user: User, comment: Comment
+    ) -> AdminAction:
+        admin_action = AdminAction(
+            action_type="comment_suspension",
+            admin_user_id=admin.id,
+            comment_id=comment.id,
+            user_id=user.id,
+        )
+        db.session.add(admin_action)
+        comment.suspended_at = datetime.utcnow()
+        return admin_action
+
+    @staticmethod
     def create_admin_comment_actions(
         admin: User, user: User, comment: Comment
     ) -> AdminAction:

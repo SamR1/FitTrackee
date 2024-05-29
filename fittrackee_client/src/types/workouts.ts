@@ -1,7 +1,7 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
-import type { IUserProfile, TPrivacyLevels } from '@/types/user'
+import type { ISuspension, IUserProfile, TPrivacyLevels } from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -213,6 +213,7 @@ export interface IComment {
   reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
+  suspension?: ISuspension
   text: string | null
   text_html: string | null
   text_visibility: TPrivacyLevels
@@ -230,6 +231,10 @@ export interface ICommentForm {
 
 export interface ICommentPayload {
   workoutId: string
-
   commentId: string
+}
+
+export interface IAppealPayload {
+  objectId: string
+  text: string
 }

@@ -2559,7 +2559,9 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
 
 
-class TestProcessAdminActionAppeal(UserModerationMixin, ApiTestCaseMixin):
+class TestProcessAdminActionAppeal(
+    CommentMixin, UserModerationMixin, ApiTestCaseMixin
+):
     route = '/api/suspensions/appeals/{appeal_id}'
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -2693,7 +2695,7 @@ class TestProcessAdminActionAppeal(UserModerationMixin, ApiTestCaseMixin):
 
         assert user_2.suspended_at is None
 
-    def test_it_creates_unsuspension_action_when_appeal_is_approved(
+    def test_it_creates_unsuspended_user_action_when_appeal_is_approved(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         suspension_action = self.create_user_suspension_action(
@@ -2717,6 +2719,109 @@ class TestProcessAdminActionAppeal(UserModerationMixin, ApiTestCaseMixin):
                 action_type="user_unsuspension",
                 admin_user_id=user_1_admin.id,
                 user_id=user_2.id,
+                reason=None,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_comment_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        comment_suspended_at = comment.suspended_at
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(appeal_id=appeal.short_id),
+                data=json.dumps(input_data),
+                content_type="application/json",
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.admin_user_id == user_1_admin.id
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+        assert appeal.updated_at == now
+        assert comment.suspended_at == (
+            None if input_data["approved"] else comment_suspended_at
+        )
+
+    def test_it_creates_unsuspended_comment_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        reason = self.random_string()
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": reason}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                action_type="comment_unsuspension",
+                admin_user_id=user_1_admin.id,
+                comment_id=comment.id,
+                reason=None,
+                report_id=suspension_action.report_id,
+                user_id=user_3.id,
             ).first()
             is not None
         )

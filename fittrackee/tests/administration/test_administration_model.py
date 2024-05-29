@@ -947,7 +947,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['workout'] is None
 
 
-class TestAdminActionAppealModel(AdminActionTestCase):
+class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
     def test_it_raises_error_when_user_is_not_admin_action_user(
         self,
         app: Flask,
@@ -964,7 +964,7 @@ class TestAdminActionAppealModel(AdminActionTestCase):
                 text=self.random_string(),
             )
 
-    def test_it_raises_error_when_action_is_not_user_suspension(
+    def test_it_raises_error_when_action_is_invalid(
         self,
         app: Flask,
         user_1_admin: User,
@@ -982,7 +982,7 @@ class TestAdminActionAppealModel(AdminActionTestCase):
                 text=self.random_string(),
             )
 
-    def test_it_creates_appeal_for_a_given_action(
+    def test_it_creates_appeal_for_user_suspension_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -991,6 +991,46 @@ class TestAdminActionAppealModel(AdminActionTestCase):
         appeal_text = self.random_string()
         admin_action = self.create_admin_action(user_1_admin, user_2)
         created_at = datetime.now()
+
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=appeal_text,
+            created_at=created_at,
+        )
+
+        assert appeal.action_id == admin_action.id
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == created_at
+        assert appeal.reason is None
+        assert appeal.updated_at is None
+        assert appeal.user_id == user_2.id
+
+    def test_it_creates_appeal_for_comment_suspension_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        admin_action = AdminAction(
+            action_type="comment_suspension",
+            admin_user_id=user_1_admin.id,
+            comment_id=comment.id,
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        appeal_text = self.random_string()
+        created_at = datetime.now()
+        db.session.flush()
 
         appeal = AdminActionAppeal(
             action_id=admin_action.id,

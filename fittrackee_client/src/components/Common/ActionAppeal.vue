@@ -1,5 +1,5 @@
 <template>
-  <div v-if="suspension.id" class="description-list">
+  <div v-if="suspension.id" class="appeal description-list">
     <dl v-if="suspension.reason">
       <dt>{{ $t('user.SUSPENSION_REASON') }}:</dt>
       <dd>{{ suspension.reason }}</dd>
@@ -14,7 +14,9 @@
           {{ $t(`user.APPEAL_${success ? 'SUBMITTED' : 'IN_PROGRESS'}`) }}
         </span>
       </div>
-      <div><slot name="cancelButton"></slot></div>
+      <div v-if="suspension.action_type === 'user_suspension'">
+        <slot name="cancelButton"></slot>
+      </div>
     </div>
     <form v-else @submit.prevent="submit">
       <div class="form-items">

@@ -1,12 +1,14 @@
 import json
 from datetime import datetime
-from typing import List
+from typing import Dict, List
 
 import pytest
 from flask import Flask
+from freezegun import freeze_time
 from werkzeug import Response
 
 from fittrackee import db
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.comments.models import Comment, Mention
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
@@ -2863,6 +2865,292 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.patch(
             f"/api/comments/{comment.short_id}",
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestPostWorkoutCommentSuspensionAppeal(
+    ApiTestCaseMixin, BaseTestMixin, CommentMixin
+):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        client = app.test_client()
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_if_comment_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        comment_short_id = self.random_short_id()
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment_short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout comment not found (id: {comment_short_id})",
+        )
+
+    def test_it_returns_403_if_user_is_not_comment_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_400_if_comment_is_not_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, error_message="workout comment is not suspended"
+        )
+
+    def test_it_returns_400_if_suspended_comment_has_no_admin_action(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, error_message="workout comment has no suspension"
+        )
+
+    @pytest.mark.parametrize(
+        'input_data', [{}, {"text": ""}, {"comment": "some text"}]
+    )
+    def test_it_returns_400_when_appeal_text_is_missing(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        self.create_admin_comment_suspension_action(
+            user_2_admin, user_1, comment
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(input_data),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'no text provided')
+
+    def test_user_can_appeal_comment_suspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        action = self.create_admin_comment_suspension_action(
+            user_2_admin, user_1, comment
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        text = self.random_string()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.post(
+                f"/api/comments/{comment.short_id}/suspension/appeal",
+                content_type='application/json',
+                data=json.dumps(dict(text=text)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "success"}
+        appeal = AdminActionAppeal.query.filter_by(action_id=action.id).first()
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == now
+        assert appeal.user_id == user_1.id
+        assert appeal.updated_at is None
+
+    def test_user_can_appeal_comment_suspension_only_once(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        action = self.create_admin_comment_suspension_action(
+            user_2_admin, user_1, comment
+        )
+        db.session.flush()
+        appeal = AdminActionAppeal(
+            action_id=action.id,
+            user_id=user_1.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='you can appeal only once')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PRIVATE,
+        )
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            f"/api/comments/{comment.short_id}/suspension/appeal",
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
 
