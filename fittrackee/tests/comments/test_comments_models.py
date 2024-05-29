@@ -145,7 +145,7 @@ class TestWorkoutCommentModel(CommentMixin):
         comment = self.create_comment(
             user=user_2, workout=workout_cycling_user_1
         )
-        expected_admin_action = self.create_admin_actions(
+        expected_admin_action = self.create_admin_comment_actions(
             user_1_admin, user_2, comment
         )
         comment.suspended_at = datetime.utcnow()
@@ -163,7 +163,7 @@ class TestWorkoutCommentModel(CommentMixin):
         comment = self.create_comment(
             user=user_2, workout=workout_cycling_user_1
         )
-        self.create_admin_actions(user_1_admin, user_2, comment)
+        self.create_admin_comment_actions(user_1_admin, user_2, comment)
 
         assert comment.suspension_action is None
 
@@ -294,7 +294,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
         comment = self.create_comment(
             user=user_1, workout=workout_cycling_user_2
         )
-        expected_admin_action = self.create_admin_actions(
+        expected_admin_action = self.create_admin_comment_actions(
             user_2_admin, user_1, comment
         )
         comment.suspended_at = datetime.utcnow()

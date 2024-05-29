@@ -39,7 +39,7 @@ class CommentMixin(RandomMixin):
         return comment
 
     @staticmethod
-    def create_admin_actions(
+    def create_admin_comment_actions(
         admin: User, user: User, comment: Comment
     ) -> AdminAction:
         for n in range(2):
