@@ -96,6 +96,7 @@
     "SPORT": {
       "ACTION": "akcja",
       "COLOR": "kolor",
+      "DEFAULT_EQUIPMENTS": "Domyślny sprzęt | Domyślne sprzęty",
       "DISABLED_BY_ADMIN": "wyłączone przez administratora",
       "IS_ACTIVE": "aktywny",
       "LABEL": "etykieta",
