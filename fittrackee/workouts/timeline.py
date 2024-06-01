@@ -33,17 +33,27 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 or_(
                     Workout.user_id == auth_user.id,
                     and_(
-                        Workout.user_id.in_(following_ids),
-                        Workout.workout_visibility == PrivacyLevel.FOLLOWERS,
-                    ),
-                    and_(
-                        Workout.workout_visibility == PrivacyLevel.PUBLIC,
-                        Workout.user_id.not_in(
-                            blocked_users + blocked_by_users
+                        Workout.suspended_at == None,  # noqa
+                        or_(
+                            and_(
+                                Workout.user_id.in_(following_ids),
+                                (
+                                    Workout.workout_visibility
+                                    == PrivacyLevel.FOLLOWERS
+                                ),
+                            ),
+                            and_(
+                                (
+                                    Workout.workout_visibility
+                                    == PrivacyLevel.PUBLIC
+                                ),
+                                Workout.user_id.not_in(
+                                    blocked_users + blocked_by_users
+                                ),
+                            ),
                         ),
                     ),
                 ),
-                Workout.suspended_at == None,  # noqa
                 User.suspended_at == None,  # noqa
             )
             .order_by(

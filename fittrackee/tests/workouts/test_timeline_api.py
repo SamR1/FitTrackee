@@ -218,17 +218,13 @@ class TestGetUserTimeline(ApiTestCaseMixin):
 
         self.assert_no_workout_returned(response)
 
-    def test_it_does_not_return_suspended_workouts(
+    def test_it_returns_authenticated_user_suspended_workout(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
         workout_cycling_user_1.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -240,7 +236,30 @@ class TestGetUserTimeline(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_no_workout_returned(response)
+        self.assert_workout_returned(response, workout_cycling_user_1)
+
+    def test_it_does_not_return_other_users_suspended_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_workout_returned(response, workout_cycling_user_1)
 
     def test_blocked_user_can_not_get_workout_in_timeline(
         self,
