@@ -27,6 +27,14 @@
   "DELETE_USER": "Usuń użytkownika",
   "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
   "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "HAS_EQUIPMENTS": "sprzęt istnieje",
+      "IMAGE": "Obraz",
+      "LABEL": "Nazwa"
+    },
+    "TITLE": "Zarządzanie sprzętem"
+  },
   "NEW_EMAIL": "Nowy e-mail",
   "NO_TEXT_ENTERED": "Nie podano tekstu",
   "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
