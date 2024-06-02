@@ -72,10 +72,11 @@
     "STATUS": "status",
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Add comment, action taken or any other useful information.",
-      "MARK_AS_RESOLVED": "Indicate the reason for resolution. This information will be visible to the user.",
-      "SUSPEND": "Indicate the reason for suspension (not mandatory). This information will be visible to the user.",
-      "UNSUSPEND": "Add a comment (not mandatory). This information will be visible to the user.",
-      "UPDATE_APPEAL": "Indicate the reason for this appeal processing. This information will be visible to the user."
+      "INFORMATION_VISIBLE_TO_USER": "This information will be visible to the user.",
+      "MARK_AS_RESOLVED": "Indicate the reason for resolution.",
+      "SUSPEND": "Indicate the reason for suspension (not mandatory).",
+      "UNSUSPEND": "Add a comment (not mandatory).",
+      "UPDATE_APPEAL": "Indicate the reason for this appeal processing."
     },
     "TITLE": "Moderation"
   },
