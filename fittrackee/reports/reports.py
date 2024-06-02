@@ -16,6 +16,7 @@ from fittrackee.administration.models import (
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -30,7 +31,7 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Comment
+from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     InvalidReporterException,
@@ -339,6 +340,18 @@ def process_appeal(
                 db.session.add(admin_action)
                 comment = Comment.query.filter_by(id=action.comment_id).first()
                 comment.suspended_at = None
+            if action.action_type == "workout_suspension":
+                admin_action = AdminAction(
+                    admin_user_id=auth_user.id,
+                    action_type="workout_unsuspension",
+                    created_at=datetime.now(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                    workout_id=action.workout_id,
+                )
+                db.session.add(admin_action)
+                workout = Workout.query.filter_by(id=action.workout_id).first()
+                workout.suspended_at = None
         db.session.commit()
         return {
             "status": "success",
