@@ -12,6 +12,13 @@
         <span>
           <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t(`user.APPEAL_${success ? 'SUBMITTED' : 'IN_PROGRESS'}`) }}
+          <button
+            v-if="!success"
+            class="transparent hide-button"
+            @click="emit('hideMessage')"
+          >
+            {{ $t('common.HIDE') }}
+          </button>
         </span>
       </div>
       <div v-if="suspension.action_type === 'user_suspension'">
@@ -76,7 +83,7 @@
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appealText: Ref<string> = ref('')
 
-  const emit = defineEmits(['submitForm'])
+  const emit = defineEmits(['submitForm', 'hideMessage'])
 
   function updateText(textareaData: ICustomTextareaData) {
     appealText.value = textareaData.value
@@ -105,5 +112,9 @@
   .report-buttons {
     display: flex;
     gap: $default-padding;
+  }
+  .hide-button {
+    font-style: italic;
+    padding: 0 $default-padding;
   }
 </style>

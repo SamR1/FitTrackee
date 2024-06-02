@@ -35,11 +35,12 @@
         </div>
       </template>
       <template #content>
-        <div v-if="workoutObject.suspended" class="suspended">
+        <div v-if="workoutObject.suspended" class="suspended info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
           <button
-            v-if="displayMakeAppeal && !success"
-            class="transparent"
+            v-if="displayMakeAppeal && !success && !displayAppealForm"
+            class="transparent appeal-button"
             @click="displayAppealForm = true"
           >
             {{ $t('user.APPEAL') }}
@@ -51,6 +52,7 @@
           :success="success"
           :loading="appealLoading"
           @submitForm="submitAppeal"
+          @hideMessage="displayAppealForm = false"
         >
           <template #cancelButton>
             <button @click="cancelAppeal()">
@@ -335,7 +337,15 @@
           margin-top: $default-margin * 0.5;
         }
         .suspended {
-          padding: 0;
+          font-size: 0.9em;
+        }
+        .appeal {
+          margin-top: $default-padding;
+        }
+
+        .appeal-button {
+          padding: 0 $default-padding;
+          font-size: 0.95em;
         }
         @media screen and (max-width: $medium-limit) {
           .workout-map-data {

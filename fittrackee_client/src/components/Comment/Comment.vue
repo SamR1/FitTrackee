@@ -63,7 +63,7 @@
         {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
         <button
           v-if="displayMakeAppeal"
-          class="transparent"
+          class="transparent appeal-button"
           @click="displayAppealForm = comment.id"
         >
           {{ $t('user.APPEAL') }}
@@ -75,6 +75,7 @@
         :success="success"
         :loading="commentsLoading === comment.id"
         @submitForm="submitAppeal"
+        @hideMessage="displayAppealForm = null"
       >
         <template #cancelButton>
           <button @click="cancelAppeal()">
@@ -452,6 +453,10 @@
 
       .suspended {
         padding: $default-padding 0 0 $default-padding;
+        .appeal-button {
+          padding: 0 $default-padding;
+          font-size: 0.9em;
+        }
       }
 
       .add-comment-reply {
