@@ -72,6 +72,7 @@
     "STATUS": "état",
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile.",
+      "MARK_AS_RESOLVED": "Indiquer le motif de la résolution. Cette information sera visible de l'utilisateur.",
       "SUSPEND": "Indiquer le motif de la suspension (non obligatoire). Cette information sera visible de l'utilisateur.",
       "UNSUSPEND": "Ajouter un commentaire (non obligatoire). Cette information sera visible de l'utilisateur.",
       "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours. Cette information sera visible de l'utilisateur."
