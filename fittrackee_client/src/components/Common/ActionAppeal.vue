@@ -98,7 +98,7 @@
     flex-direction: column;
     gap: $default-padding;
     .appeal-success {
-      margin: 0;
+      margin: $default-margin 0 0;
     }
   }
 

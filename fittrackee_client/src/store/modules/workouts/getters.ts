@@ -9,6 +9,9 @@ import type {
 
 export const getters: GetterTree<IWorkoutsState, IRootState> &
   IWorkoutsGetters = {
+  [WORKOUTS_STORE.GETTERS.APPEAL_LOADING]: (state: IWorkoutsState) => {
+    return state.appealLoading
+  },
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS]: (state: IWorkoutsState) => {
     return state.calendar_workouts
   },

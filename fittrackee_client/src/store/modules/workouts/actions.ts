@@ -475,4 +475,27 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
       })
   },
+  [WORKOUTS_STORE.ACTIONS.MAKE_WORKOUT_APPEAL](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IAppealPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, true)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, false)
+    authApi
+      .post(`workouts/${payload.objectId}/suspension/appeal`, {
+        text: payload.text,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, true)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, false)
+      )
+  },
 }

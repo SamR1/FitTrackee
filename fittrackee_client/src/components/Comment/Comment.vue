@@ -59,7 +59,7 @@
           :authUser="authUser"
         />
       </template>
-      <div v-if="comment.suspended" class="suspended-comment">
+      <div v-if="comment.suspended" class="suspended">
         {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
         <button
           v-if="displayMakeAppeal"
@@ -77,7 +77,7 @@
         @submitForm="submitAppeal"
       >
         <template #cancelButton>
-          <button @click="displayAppealForm = null">
+          <button @click="cancelAppeal()">
             {{ $t('buttons.CANCEL') }}
           </button>
         </template>
@@ -343,6 +343,10 @@
       text: appealText,
     })
   }
+  function cancelAppeal() {
+    displayAppealForm.value = null
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  }
 
   onUnmounted(() =>
     store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
@@ -446,9 +450,7 @@
         }
       }
 
-      .suspended-comment {
-        font-style: italic;
-        font-weight: bold;
+      .suspended {
         padding: $default-padding 0 0 $default-padding;
       }
 

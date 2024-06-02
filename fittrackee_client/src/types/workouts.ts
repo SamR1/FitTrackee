@@ -59,10 +59,10 @@ export interface IWorkout {
   ascent: number | null
   ave_speed: number | null
   bounds: number[]
-  creation_date: string
+  creation_date: string | null
   descent: number | null
-  distance: number
-  duration: string
+  distance: number | null
+  duration: string | null
   equipments: IEquipment[]
   id: string
   liked: boolean
@@ -81,7 +81,9 @@ export interface IWorkout {
   records: IRecord[]
   segments: IWorkoutSegment[]
   sport_id: number
-  suspended_at: string | null
+  suspended?: boolean
+  suspended_at?: string | null
+  suspension?: ISuspension
   title: string
   user: IUserProfile
   weather_end: IWeather | null
@@ -110,6 +112,7 @@ export interface IWorkoutObject {
   previousUrl: string | null
   records: IRecord[]
   segmentId: number | null
+  suspended: boolean
   title: string
   type: string
   workoutDate: string

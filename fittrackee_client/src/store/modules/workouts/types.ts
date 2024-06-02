@@ -29,6 +29,7 @@ export interface IWorkoutsState {
   workoutData: IWorkoutData
   pagination: IPagination
   success: boolean
+  appealLoading: boolean
 }
 
 export interface IWorkoutsActions {
@@ -100,6 +101,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IAppealPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.MAKE_WORKOUT_APPEAL](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IAppealPayload
+  ): void
   [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
     comment: IComment
@@ -111,6 +116,7 @@ export interface IWorkoutsActions {
 }
 
 export interface IWorkoutsGetters {
+  [WORKOUTS_STORE.GETTERS.APPEAL_LOADING](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): boolean
@@ -126,6 +132,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.ADD_TIMELINE_WORKOUTS](
     state: S,
     workouts: IWorkout[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING](
+    state: S,
+    loading: boolean
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: S,

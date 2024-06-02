@@ -19,7 +19,10 @@
     </button>
     <div class="workout-card-title">
       <SportImage :sport-label="sport.label" :color="sport.color" />
-      <div class="workout-title-date">
+      <div
+        class="workout-title-date"
+        v-if="isWorkoutOwner || !workoutObject.suspended"
+      >
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
           <div>

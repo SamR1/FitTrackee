@@ -265,7 +265,11 @@ class AdminActionAppeal(BaseModel):
         created_at: Optional[datetime] = None,
     ):
         action = AdminAction.query.filter_by(id=action_id).first()
-        if action.action_type not in ["user_suspension", "comment_suspension"]:
+        if action.action_type not in [
+            "user_suspension",
+            "comment_suspension",
+            "workout_suspension",
+        ]:
             raise InvalidAdminActionAppealException()
         if action.user_id != user_id:
             raise InvalidAdminActionAppealUserException()

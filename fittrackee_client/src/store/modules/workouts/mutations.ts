@@ -20,6 +20,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.timeline_workouts = state.timeline_workouts.concat(workouts)
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING](
+    state: IWorkoutsState,
+    loading: boolean
+  ) {
+    state.appealLoading = loading
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: IWorkoutsState,
     workouts: IWorkout[]

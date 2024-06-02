@@ -18,4 +18,5 @@ export const workoutsState: IWorkoutsState = {
     currentReporting: false,
   },
   success: false,
+  appealLoading: false,
 }

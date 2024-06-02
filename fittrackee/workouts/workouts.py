@@ -18,6 +18,7 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -1655,3 +1656,36 @@ def undo_workout_like(
         'status': 'success',
         'data': {'workouts': [workout.serialize(auth_user)]},
     }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=["workouts:write"])
+@check_workout(only_owner=True)
+def appeal_comment_suspension(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if not workout.suspended_at:
+        return InvalidPayloadErrorResponse("workout is not suspended")
+    suspension_action = workout.suspension_action
+    if not suspension_action:
+        return InvalidPayloadErrorResponse("workout has no suspension")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=suspension_action.id, user_id=auth_user.id, text=text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
