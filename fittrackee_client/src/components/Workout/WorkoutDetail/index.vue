@@ -322,6 +322,12 @@
             margin: $default-margin * 0.5 0 0 $default-margin;
           }
         }
+        .report-form {
+          .error-message {
+            font-weight: normal;
+            margin: $default-margin 0;
+          }
+        }
       }
       .card-content {
         display: flex;

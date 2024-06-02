@@ -290,7 +290,42 @@ class TestPostCommentReport(ReportTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, "users can not report suspended comment")
+        self.assert_400(response, "comment already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(user_1, comment)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
 
     def test_it_creates_report_for_comment(
         self,
@@ -395,6 +430,72 @@ class TestPostWorkoutReport(ReportTestCase):
 
         self.assert_400(response, "users can not report their own workouts")
 
+    def test_it_returns_400_when_workout_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "workout already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_report(user_1, workout_cycling_user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
+
     def test_it_creates_report_for_workout(
         self,
         app: Flask,
@@ -487,6 +588,63 @@ class TestPostUserReport(ReportTestCase):
         )
 
         self.assert_400(response, "users can not report their own profile")
+
+    def test_it_returns_400_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "user already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        self.create_report(user_1, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
 
     def test_it_creates_report_for_user(
         self,

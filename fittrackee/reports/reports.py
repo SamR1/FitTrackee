@@ -35,6 +35,7 @@ from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     InvalidReporterException,
+    InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
 )
@@ -84,10 +85,8 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             if object_type == "user"
             else f"users can not report their own {object_type}s"
         )
-    except SuspendedObjectException as e:
-        return InvalidPayloadErrorResponse(
-            f"users can not report suspended {e}"
-        )
+    except (SuspendedObjectException, InvalidReportException) as e:
+        return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(
             error=e,

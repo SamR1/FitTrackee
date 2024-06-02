@@ -7,6 +7,7 @@ from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.comments.utils import get_comment
 from fittrackee.reports.exceptions import (
+    InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
 )
@@ -27,8 +28,6 @@ class ReportService:
     ) -> Report:
         if object_type == "comment":
             target_object = get_comment(object_id, reporter)
-            if target_object and target_object.suspended_at:
-                raise SuspendedObjectException('comment')
         elif object_type == "workout":
             target_object = get_workout(object_id, reporter)
         else:  # object_type == "user"
@@ -37,6 +36,17 @@ class ReportService:
             ).first()
             if not target_object or not target_object.is_active:
                 raise UserNotFoundException()
+
+        if target_object and target_object.suspended_at:
+            raise SuspendedObjectException(object_type)
+
+        existing_unresolved_report = Report.query.filter_by(
+            reported_by=reporter.id,
+            resolved=False,
+            **{f"reported_{object_type}_id": target_object.id},
+        ).first()
+        if existing_unresolved_report:
+            raise InvalidReportException("a report already exists")
 
         new_report = Report(
             note=note,
