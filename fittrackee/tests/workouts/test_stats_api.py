@@ -800,6 +800,8 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
+            },
+            '2018-04-02': {
                 '2': {
                     'average_speed': 7.2,
                     'nb_workouts': 1,
@@ -852,6 +854,8 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_distance': 8.0,
                     'total_duration': 6000,
                 },
+            },
+            '2018-04-02': {
                 '2': {
                     'average_speed': 7.2,
                     'nb_workouts': 1,
@@ -860,7 +864,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_distance': 12.0,
                     'total_duration': 6000,
                 },
-            }
+            },
         }
 
     @pytest.mark.parametrize(
