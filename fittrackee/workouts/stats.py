@@ -22,15 +22,21 @@ from .utils.workouts import get_average_speed, get_datetime_from_request_args
 stats_blueprint = Blueprint('stats', __name__)
 
 
-def get_stats_from_row(row: List) -> Dict:
-    return {
-        'average_speed': round(float(row[1]), 2),
+def get_stats_from_row(row: List, stats_type: str) -> Dict:
+    row_stats = {
         'nb_workouts': row[2],
-        'total_distance': round(float(row[3]), 2),
-        'total_duration': int(row[4].total_seconds()),
-        'total_ascent': 0.0 if row[5] is None else round(float(row[5]), 2),
-        'total_descent': 0.0 if row[6] is None else round(float(row[6]), 2),
+        f'{stats_type}_distance': round(float(row[3]), 2),
+        f'{stats_type}_duration': int(row[4].total_seconds()),
+        f'{stats_type}_ascent': (
+            0.0 if row[5] is None else round(float(row[5]), 2)
+        ),
+        f'{stats_type}_descent': (
+            0.0 if row[6] is None else round(float(row[6]), 2)
+        ),
     }
+    if stats_type == "average":
+        row_stats['average_speed'] = round(float(row[1]), 2)
+    return row_stats
 
 
 def get_workouts(
@@ -48,6 +54,9 @@ def get_workouts(
         date_from, date_to = get_datetime_from_request_args(params, user)
         sport_id = params.get('sport_id')
         time = params.get('time')
+        stats_type = params.get('type', 'total')
+        if stats_type not in ['total', 'average']:
+            return InvalidPayloadErrorResponse('invalid stats type', 'fail')
 
         time_format = 'yyyy'
         if filter_type == 'by_sport':
@@ -68,21 +77,23 @@ def get_workouts(
                 time_format = 'YYYY-WW'
             else:
                 return InvalidPayloadErrorResponse(
-                    'Invalid time period.', 'fail'
+                    'invalid time period', 'fail'
                 )
 
         # On PostgreSQL, week starts on Monday
         # For 'week' timeframe, the workaround is to add 1 day
         delta = timedelta(days=1 if time and time == "week" else 0)
 
+        calculation_method = func.avg if stats_type == "average" else func.sum
+
         query = db.session.query(
             Workout.sport_id,
-            func.avg(Workout.ave_speed),
+            func.avg(Workout.ave_speed) if stats_type == "average" else True,
             func.count(Workout.id),
-            func.sum(Workout.distance),
-            func.sum(Workout.moving),
-            func.sum(Workout.ascent),
-            func.sum(Workout.descent),
+            calculation_method(Workout.distance),
+            calculation_method(Workout.moving),
+            calculation_method(Workout.ascent),
+            calculation_method(Workout.descent),
             (
                 func.to_char(Workout.workout_date + delta, time_format)
                 if filter_type == 'by_time'
@@ -109,7 +120,7 @@ def get_workouts(
         statistics = {}
         if filter_type == "by_sport":
             for row in results:
-                statistics[row[0]] = get_stats_from_row(row)
+                statistics[row[0]] = get_stats_from_row(row, stats_type)
         else:
             for row in results:
                 date_key = row[7]
@@ -119,32 +130,39 @@ def get_workouts(
                     ).strftime('%Y-%m-%d')
                 sport_key = row[0]
                 if date_key not in statistics:
-                    statistics[date_key] = {sport_key: get_stats_from_row(row)}
+                    statistics[date_key] = {
+                        sport_key: get_stats_from_row(row, stats_type)
+                    }
                 elif sport_key not in statistics[date_key]:
-                    statistics[date_key][sport_key] = get_stats_from_row(row)
+                    statistics[date_key][sport_key] = get_stats_from_row(
+                        row, stats_type
+                    )
                 else:
                     statistics[date_key][sport_key]['nb_workouts'] += row[2]
-                    statistics[date_key][sport_key]['average_speed'] = (
-                        get_average_speed(
-                            statistics[date_key][sport_key]['nb_workouts'],
-                            statistics[date_key][sport_key]['average_speed'],
-                            row[1],
+                    if stats_type == "average":
+                        statistics[date_key][sport_key]['average_speed'] = (
+                            get_average_speed(
+                                statistics[date_key][sport_key]['nb_workouts'],
+                                statistics[date_key][sport_key][
+                                    'average_speed'
+                                ],
+                                row[1],
+                            )
                         )
-                    )
-                    statistics[date_key][sport_key]['total_distance'] += round(
-                        float(row[3]), 2
-                    )
-                    statistics[date_key][sport_key]['total_duration'] += int(
-                        row[4].total_seconds()
-                    )
+                    statistics[date_key][sport_key][
+                        f'{stats_type}_distance'
+                    ] += round(float(row[3]), 2)
+                    statistics[date_key][sport_key][
+                        f'{stats_type}_duration'
+                    ] += int(row[4].total_seconds())
                     if row[5]:
-                        statistics[date_key][sport_key]['total_ascent'] += (
-                            round(float(row[5]), 2)
-                        )
+                        statistics[date_key][sport_key][
+                            f'{stats_type}_ascent'
+                        ] += round(float(row[5]), 2)
                     if row[6]:
-                        statistics[date_key][sport_key]['total_ascent'] += (
-                            round(float(row[6]), 2)
-                        )
+                        statistics[date_key][sport_key][
+                            f'{stats_type}_ascent'
+                        ] += round(float(row[6]), 2)
 
         return {
             'status': 'success',
@@ -181,7 +199,7 @@ def get_workouts_by_time(
 
     **Example responses**:
 
-    - success:
+    - success for total:
 
     .. sourcecode:: http
 
@@ -193,7 +211,6 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
-                "average_speed": 4.48,
                 "nb_workouts": 2,
                 "total_ascent": 203.0,
                 "total_ascent": 156.0,
@@ -203,7 +220,6 @@ def get_workouts_by_time(
             },
             "2019": {
               "1": {
-                "average_speed": 16.99,
                 "nb_workouts": 3,
                 "total_ascent": 150.0,
                 "total_ascent": 178.0,
@@ -211,12 +227,54 @@ def get_workouts_by_time(
                 "total_duration": 9960
               },
               "2": {
-                "average_speed": 15.95,
                 "nb_workouts": 1,
                 "total_ascent": 46.0,
                 "total_ascent": 78.0,
                 "total_distance": 5.613,
                 "total_duration": 1267
+              }
+            }
+          }
+        },
+        "status": "success"
+      }
+
+    - success for average:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "statistics": {
+            "2017": {
+              "3": {
+                "average_ascent": 101.5,
+                "average_ascent": 78.0,
+                "average_distance": 15.282,
+                "average_duration": 7641,
+                "average_speed": 4.48,
+                "nb_workouts": 2
+              }
+            },
+            "2019": {
+              "1": {
+                "average_ascent": 50.0,
+                "average_descent": 59.33,
+                "average_distance": 15.67,
+                "average_duration": 3320,
+                "average_speed": 16.99,
+                "nb_workouts": 3
+              },
+              "2": {
+                "average_ascent": 46.0,
+                "average_descent": 78.0,
+                "average_distance": 5.613,
+                "average_duration": 1267,
+                "average_speed": 15.95,
+                "nb_workouts": 1
               }
             }
           }
@@ -248,10 +306,17 @@ def get_workouts_by_time(
       - ``weekm``: week starting Monday
       - ``month``: month
       - ``year``: year (default)
+    :query string time: stats type:
+
+      - ``total``: calculating totals
+      - ``average``: calculating averages
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid stats type``
+        - ``invalid time period``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -288,7 +353,7 @@ def get_workouts_by_sport(
 
     **Example responses**:
 
-    - success:
+    - success for total:
 
     .. sourcecode:: http
 
@@ -299,7 +364,6 @@ def get_workouts_by_sport(
         "data": {
           "statistics": {
             "1": {
-              "average_speed": 16.99,
               "nb_workouts": 3,
               "total_ascent": 150.0,
               "total_ascent": 178.0,
@@ -307,7 +371,6 @@ def get_workouts_by_sport(
               "total_duration": 9960
             },
             "2": {
-              "average_speed": 15.95,
               "nb_workouts": 1,
               "total_ascent": 46.0,
               "total_ascent": 78.0,
@@ -315,12 +378,50 @@ def get_workouts_by_sport(
               "total_duration": 1267
             },
             "3": {
-              "average_speed": 4.46,
               "nb_workouts": 2,
               "total_ascent": 203.0,
               "total_ascent": 156.0,
               "total_distance": 15.282,
               "total_duration": 12341
+            }
+          }
+        },
+        "status": "success"
+      }
+
+    - success for average:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "statistics": {
+            "1": {
+              "average_ascent": 50.0,
+              "average_descent": 59.33,
+              "average_distance": 15.67,
+              "average_duration": 3320,
+              "average_speed": 16.99,
+              "nb_workouts": 3
+            },
+            "2": {
+              "average_ascent": 46.0,
+              "average_descent": 78.0,
+              "average_distance": 5.613,
+              "average_duration": 1267,
+              "average_speed": 15.95,
+              "nb_workouts": 1
+            },
+            "3": {
+              "average_ascent": 101.5,
+              "average_ascent": 78.0,
+              "average_distance": 15.282,
+              "average_duration": 7641,
+              "average_speed": 4.48,
+              "nb_workouts": 2
             }
           }
         },
@@ -344,10 +445,16 @@ def get_workouts_by_sport(
     :param integer user_name: username
 
     :query integer sport_id: sport id
+    :query string time: stats type:
+
+      - ``total``: calculating totals
+      - ``average``: calculating averages
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid stats type``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
