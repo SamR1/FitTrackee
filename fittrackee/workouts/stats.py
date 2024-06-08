@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 from flask import Blueprint, request
 from sqlalchemy import func
@@ -16,11 +16,21 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 
 from .models import Sport, Workout
-from .utils.convert import convert_timedelta_to_integer
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
 
 stats_blueprint = Blueprint('stats', __name__)
+
+
+def get_stats_from_row(row: List) -> Dict:
+    return {
+        'average_speed': round(float(row[1]), 2),
+        'nb_workouts': row[2],
+        'total_distance': round(float(row[3]), 2),
+        'total_duration': int(row[4].total_seconds()),
+        'total_ascent': 0.0 if row[5] is None else round(float(row[5]), 2),
+        'total_descent': 0.0 if row[6] is None else round(float(row[6]), 2),
+    }
 
 
 def get_workouts(
@@ -39,139 +49,106 @@ def get_workouts(
         sport_id = params.get('sport_id')
         time = params.get('time')
 
+        time_format = 'yyyy'
         if filter_type == 'by_sport':
             if sport_id:
                 sport = Sport.query.filter_by(id=sport_id).first()
                 if not sport:
                     return NotFoundErrorResponse('sport does not exist')
-
-        workouts = (
-            Workout.query.filter(
-                Workout.user_id == user.id,
-                Workout.workout_date >= date_from if date_from else True,
-                (
-                    Workout.workout_date < date_to + timedelta(seconds=1)
-                    if date_to
-                    else True
-                ),
-                Workout.sport_id == sport_id if sport_id else True,
-            )
-            .order_by(Workout.workout_date.asc())
-            .all()
-        )
-
-        workouts_list_by_sport = {}
-        workouts_list_by_time = {}  # type: ignore
-        for workout in workouts:
-            if filter_type == 'by_sport':
-                sport_id = workout.sport_id
-                if sport_id not in workouts_list_by_sport:
-                    workouts_list_by_sport[sport_id] = {
-                        'average_speed': 0.0,
-                        'nb_workouts': 0,
-                        'total_distance': 0.0,
-                        'total_duration': 0,
-                        'total_ascent': 0.0,
-                        'total_descent': 0.0,
-                    }
-                workouts_list_by_sport[sport_id]['nb_workouts'] += 1
-                workouts_list_by_sport[sport_id]['average_speed'] = (
-                    get_average_speed(
-                        workouts_list_by_sport[sport_id]['nb_workouts'],  # type: ignore
-                        workouts_list_by_sport[sport_id]['average_speed'],
-                        workout.ave_speed,
-                    )
-                )
-                workouts_list_by_sport[sport_id]['total_distance'] += float(
-                    workout.distance
-                )
-                workouts_list_by_sport[sport_id]['total_duration'] += (
-                    convert_timedelta_to_integer(workout.moving)
-                )
-                if workout.ascent:
-                    workouts_list_by_sport[sport_id]['total_ascent'] += float(
-                        workout.ascent
-                    )
-                if workout.descent:
-                    workouts_list_by_sport[sport_id]['total_descent'] += float(
-                        workout.descent
-                    )
-
-            # filter_type == 'by_time'
+        else:
+            if not time or time == 'year':
+                time_format = 'yyyy'
+            elif time == 'month':
+                time_format = 'yyyy-mm'
+            elif time.startswith('week'):
+                # 'week' => week starts on Sunday
+                # 'weekm' => week starts on Monday
+                #
+                # Note: on PostgreSQL, week starts on Monday
+                time_format = 'YYYY-WW'
             else:
-                if time == 'week':
-                    workout_date = workout.workout_date - timedelta(
-                        days=(
-                            workout.workout_date.isoweekday()
-                            if workout.workout_date.isoweekday() < 7
-                            else 0
+                return InvalidPayloadErrorResponse(
+                    'Invalid time period.', 'fail'
+                )
+
+        # On PostgreSQL, week starts on Monday
+        # For 'week' timeframe, the workaround is to add 1 day
+        delta = timedelta(days=1 if time and time == "week" else 0)
+
+        query = db.session.query(
+            Workout.sport_id,
+            func.avg(Workout.ave_speed),
+            func.count(Workout.id),
+            func.sum(Workout.distance),
+            func.sum(Workout.moving),
+            func.sum(Workout.ascent),
+            func.sum(Workout.descent),
+            (
+                func.to_char(Workout.workout_date + delta, time_format)
+                if filter_type == 'by_time'
+                else True
+            ),
+        ).filter(
+            Workout.user_id == user.id,
+            Workout.workout_date >= date_from if date_from else True,
+            (
+                Workout.workout_date < date_to + timedelta(seconds=1)
+                if date_to
+                else True
+            ),
+            Workout.sport_id == sport_id if sport_id else True,
+        )
+        if filter_type == 'by_sport':
+            results = query.group_by(Workout.sport_id).all()
+        else:
+            results = query.group_by(
+                func.to_char(Workout.workout_date + delta, time_format),
+                Workout.sport_id,
+            ).all()
+
+        statistics = {}
+        if filter_type == "by_sport":
+            for row in results:
+                statistics[row[0]] = get_stats_from_row(row)
+        else:
+            for row in results:
+                date_key = row[7]
+                if time and time.startswith("week"):
+                    date_key = (
+                        datetime.strptime(date_key + '-1', "%Y-%W-%w") - delta
+                    ).strftime('%Y-%m-%d')
+                sport_key = row[0]
+                if date_key not in statistics:
+                    statistics[date_key] = {sport_key: get_stats_from_row(row)}
+                elif sport_key not in statistics[date_key]:
+                    statistics[date_key][sport_key] = get_stats_from_row(row)
+                else:
+                    statistics[date_key][sport_key]['nb_workouts'] += row[2]
+                    statistics[date_key][sport_key]['average_speed'] = (
+                        get_average_speed(
+                            statistics[date_key][sport_key]['nb_workouts'],
+                            statistics[date_key][sport_key]['average_speed'],
+                            row[1],
                         )
                     )
-                    time_period = datetime.strftime(workout_date, "%Y-%m-%d")
-                elif time == 'weekm':  # week start Monday
-                    workout_date = workout.workout_date - timedelta(
-                        days=workout.workout_date.weekday()
+                    statistics[date_key][sport_key]['total_distance'] += round(
+                        float(row[3]), 2
                     )
-                    time_period = datetime.strftime(workout_date, "%Y-%m-%d")
-                elif time == 'month':
-                    time_period = datetime.strftime(
-                        workout.workout_date, "%Y-%m"
+                    statistics[date_key][sport_key]['total_duration'] += int(
+                        row[4].total_seconds()
                     )
-                elif time == 'year' or not time:
-                    time_period = datetime.strftime(workout.workout_date, "%Y")
-                else:
-                    return InvalidPayloadErrorResponse(
-                        'Invalid time period.', 'fail'
-                    )
-                sport_id = workout.sport_id
-                if time_period not in workouts_list_by_time:
-                    workouts_list_by_time[time_period] = {}
-                if sport_id not in workouts_list_by_time[time_period]:
-                    workouts_list_by_time[time_period][sport_id] = {
-                        'average_speed': 0.0,
-                        'nb_workouts': 0,
-                        'total_distance': 0.0,
-                        'total_duration': 0,
-                        'total_ascent': 0.0,
-                        'total_descent': 0.0,
-                    }
-                workouts_list_by_time[time_period][sport_id][
-                    'nb_workouts'
-                ] += 1
-                workouts_list_by_time[time_period][sport_id][
-                    'average_speed'
-                ] = get_average_speed(
-                    workouts_list_by_time[time_period][sport_id][
-                        'nb_workouts'
-                    ],
-                    workouts_list_by_time[time_period][sport_id][
-                        'average_speed'
-                    ],
-                    workout.ave_speed,
-                )
-                workouts_list_by_time[time_period][sport_id][
-                    'total_distance'
-                ] += float(workout.distance)
-                workouts_list_by_time[time_period][sport_id][
-                    'total_duration'
-                ] += convert_timedelta_to_integer(workout.moving)
-                if workout.ascent:
-                    workouts_list_by_time[time_period][sport_id][
-                        'total_ascent'
-                    ] += float(workout.ascent)
-                if workout.descent:
-                    workouts_list_by_time[time_period][sport_id][
-                        'total_descent'
-                    ] += float(workout.descent)
+                    if row[5]:
+                        statistics[date_key][sport_key]['total_ascent'] += (
+                            round(float(row[5]), 2)
+                        )
+                    if row[6]:
+                        statistics[date_key][sport_key]['total_ascent'] += (
+                            round(float(row[6]), 2)
+                        )
+
         return {
             'status': 'success',
-            'data': {
-                'statistics': (
-                    workouts_list_by_sport
-                    if filter_type == 'by_sport'
-                    else workouts_list_by_time
-                )
-            },
+            'data': {'statistics': statistics},
         }
     except Exception as e:
         return handle_error_and_return_response(e)
