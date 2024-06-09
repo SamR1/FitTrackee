@@ -24,7 +24,7 @@ stats_blueprint = Blueprint('stats', __name__)
 
 def get_stats_from_row(row: List, stats_type: str) -> Dict:
     row_stats = {
-        'nb_workouts': row[2],
+        'total_workouts': row[2],
         f'{stats_type}_distance': round(float(row[3]), 2),
         f'{stats_type}_duration': int(row[4].total_seconds()),
         f'{stats_type}_ascent': (
@@ -138,11 +138,13 @@ def get_workouts(
                         row, stats_type
                     )
                 else:
-                    statistics[date_key][sport_key]['nb_workouts'] += row[2]
+                    statistics[date_key][sport_key]['total_workouts'] += row[2]
                     if stats_type == "average":
                         statistics[date_key][sport_key]['average_speed'] = (
                             get_average_speed(
-                                statistics[date_key][sport_key]['nb_workouts'],
+                                statistics[date_key][sport_key][
+                                    'total_workouts'
+                                ],
                                 statistics[date_key][sport_key][
                                     'average_speed'
                                 ],
@@ -211,7 +213,7 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
-                "nb_workouts": 2,
+                "total_workouts": 2,
                 "total_ascent": 203.0,
                 "total_ascent": 156.0,
                 "total_distance": 15.282,
@@ -220,14 +222,14 @@ def get_workouts_by_time(
             },
             "2019": {
               "1": {
-                "nb_workouts": 3,
+                "total_workouts": 3,
                 "total_ascent": 150.0,
                 "total_ascent": 178.0,
                 "total_distance": 47,
                 "total_duration": 9960
               },
               "2": {
-                "nb_workouts": 1,
+                "total_workouts": 1,
                 "total_ascent": 46.0,
                 "total_ascent": 78.0,
                 "total_distance": 5.613,
@@ -256,7 +258,7 @@ def get_workouts_by_time(
                 "average_distance": 15.282,
                 "average_duration": 7641,
                 "average_speed": 4.48,
-                "nb_workouts": 2
+                "total_workouts": 2
               }
             },
             "2019": {
@@ -266,7 +268,7 @@ def get_workouts_by_time(
                 "average_distance": 15.67,
                 "average_duration": 3320,
                 "average_speed": 16.99,
-                "nb_workouts": 3
+                "total_workouts": 3
               },
               "2": {
                 "average_ascent": 46.0,
@@ -274,7 +276,7 @@ def get_workouts_by_time(
                 "average_distance": 5.613,
                 "average_duration": 1267,
                 "average_speed": 15.95,
-                "nb_workouts": 1
+                "total_workouts": 1
               }
             }
           }
@@ -364,21 +366,21 @@ def get_workouts_by_sport(
         "data": {
           "statistics": {
             "1": {
-              "nb_workouts": 3,
+              "total_workouts": 3,
               "total_ascent": 150.0,
               "total_ascent": 178.0,
               "total_distance": 47,
               "total_duration": 9960
             },
             "2": {
-              "nb_workouts": 1,
+              "total_workouts": 1,
               "total_ascent": 46.0,
               "total_ascent": 78.0,
               "total_distance": 5.613,
               "total_duration": 1267
             },
             "3": {
-              "nb_workouts": 2,
+              "total_workouts": 2,
               "total_ascent": 203.0,
               "total_ascent": 156.0,
               "total_distance": 15.282,
@@ -405,7 +407,7 @@ def get_workouts_by_sport(
               "average_distance": 15.67,
               "average_duration": 3320,
               "average_speed": 16.99,
-              "nb_workouts": 3
+              "total_workouts": 3
             },
             "2": {
               "average_ascent": 46.0,
@@ -413,7 +415,7 @@ def get_workouts_by_sport(
               "average_distance": 5.613,
               "average_duration": 1267,
               "average_speed": 15.95,
-              "nb_workouts": 1
+              "total_workouts": 1
             },
             "3": {
               "average_ascent": 101.5,
@@ -421,7 +423,7 @@ def get_workouts_by_sport(
               "average_distance": 15.282,
               "average_duration": 7641,
               "average_speed": 4.48,
-              "nb_workouts": 2
+              "total_workouts": 2
             }
           }
         },
@@ -509,7 +511,7 @@ def get_application_stats(auth_user: User) -> Dict:
     :statuscode 403: ``you do not have permissions``
     """
 
-    nb_workouts = Workout.query.filter().count()
+    total_workouts = Workout.query.filter().count()
     nb_users = User.query.filter().count()
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
@@ -519,7 +521,7 @@ def get_application_stats(auth_user: User) -> Dict:
     return {
         'status': 'success',
         'data': {
-            'workouts': nb_workouts,
+            'workouts': total_workouts,
             'sports': nb_sports,
             'users': nb_users,
             'uploads_dir_size': get_upload_dir_size(),

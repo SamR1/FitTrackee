@@ -148,27 +148,27 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
                     'total_distance': 15.0,
                     'total_duration': 4480,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
                 '1': {
-                    'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
                     'total_distance': 39.0,
                     'total_duration': 11624,
+                    'total_workouts': 5,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -200,18 +200,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -241,18 +241,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -281,27 +281,27 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
                     'total_distance': 15.0,
                     'total_duration': 4480,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
                 '1': {
-                    'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
                     'total_distance': 39.0,
                     'total_duration': 11624,
+                    'total_workouts': 5,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -333,18 +333,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -376,18 +376,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -416,63 +416,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-06': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -501,63 +501,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-06': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -589,18 +589,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -629,63 +629,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-19': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-05-28': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2017-12-31': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02-18': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04-01': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05-06': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -717,18 +717,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04-01': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -757,65 +757,65 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-20': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-05-29': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01-01': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02-19': {
                 '1': {
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-03-26': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-04-02': {
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05-07': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -847,20 +847,20 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-03-26': {
                 '1': {
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-04-02': {
                 '2': {
-                    'nb_workouts': 1,
                     'total_ascent': 0.0,
                     'total_descent': 0.0,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -894,7 +894,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 7.5,
                     'average_duration': 2240,
                     'average_speed': 14.0,
-                    'nb_workouts': 2,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
@@ -904,7 +904,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 7.8,
                     'average_duration': 2324,
                     'average_speed': 18.79,
-                    'nb_workouts': 5,
+                    'total_workouts': 5,
                 },
                 '2': {
                     'average_ascent': 0.0,
@@ -912,7 +912,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 12.0,
                     'average_duration': 6000,
                     'average_speed': 7.2,
-                    'nb_workouts': 1,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -938,7 +938,6 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert 'success' in data['status']
-        print(data['data']['statistics'])
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
@@ -947,7 +946,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 7.5,
                     'average_duration': 2240,
                     'average_speed': 14.0,
-                    'nb_workouts': 2,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
@@ -957,7 +956,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 7.8,
                     'average_duration': 2324,
                     'average_speed': 18.79,
-                    'nb_workouts': 5,
+                    'total_workouts': 5,
                 },
                 '2': {
                     'average_ascent': 0.0,
@@ -965,7 +964,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'average_distance': 12.0,
                     'average_duration': 6000,
                     'average_speed': 7.2,
-                    'nb_workouts': 1,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -1048,18 +1047,18 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
                 'total_duration': 16104,
+                'total_workouts': 7,
             },
             '2': {
-                'nb_workouts': 1,
                 'total_ascent': 0.0,
                 'total_descent': 0.0,
                 'total_distance': 12.0,
                 'total_duration': 6000,
+                'total_workouts': 1,
             },
         }
 
@@ -1086,11 +1085,11 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
                 'total_duration': 16104,
+                'total_workouts': 7,
             }
         }
 
@@ -1182,7 +1181,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 'average_distance': 7.71,
                 'average_duration': 2300,
                 'average_speed': 17.42,
-                'nb_workouts': 7,
+                'total_workouts': 7,
             },
             '2': {
                 'average_ascent': 0.0,
@@ -1190,7 +1189,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 'average_distance': 12.0,
                 'average_duration': 6000,
                 'average_speed': 7.2,
-                'nb_workouts': 1,
+                'total_workouts': 1,
             },
         }
 
@@ -1222,7 +1221,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 'average_distance': 7.71,
                 'average_duration': 2300,
                 'average_speed': 17.42,
-                'nb_workouts': 7,
+                'total_workouts': 7,
             }
         }
 

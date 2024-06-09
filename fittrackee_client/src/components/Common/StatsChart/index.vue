@@ -29,7 +29,7 @@
           <input
             type="radio"
             name="nb_workouts"
-            :checked="displayedData === 'nb_workouts'"
+            :checked="displayedData === 'total_workouts'"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />

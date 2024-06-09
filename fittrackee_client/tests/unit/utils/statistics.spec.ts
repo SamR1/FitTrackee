@@ -196,7 +196,7 @@ describe('getDatasets', () => {
           spanGaps: true,
         },
       ],
-      nb_workouts: [
+      total_workouts: [
         {
           label: 'Cycling (Sport)',
           backgroundColor: ['#4c9792'],
@@ -312,7 +312,7 @@ describe('getDatasets', () => {
           spanGaps: true,
         },
       ],
-      nb_workouts: [
+      total_workouts: [
         {
           label: 'Cycling (Transport)',
           backgroundColor: ['#000000'],
@@ -369,7 +369,7 @@ describe('formatStats', () => {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         average_speed: [],
-        nb_workouts: [],
+        total_workouts: [],
         total_distance: [],
         total_duration: [],
         total_ascent: [],
@@ -409,7 +409,7 @@ describe('formatStats', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Transport)',
             backgroundColor: ['#000000'],
@@ -469,7 +469,7 @@ describe('formatStats', () => {
       '2021-05': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -479,7 +479,7 @@ describe('formatStats', () => {
       '2021-06': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -487,7 +487,7 @@ describe('formatStats', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -497,7 +497,7 @@ describe('formatStats', () => {
       '2021-07': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 12,
           total_duration: 5000,
           total_ascent: 100,
@@ -514,7 +514,7 @@ describe('formatStats', () => {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         average_speed: [],
-        nb_workouts: [],
+        total_workouts: [],
         total_distance: [],
         total_duration: [],
         total_ascent: [],
@@ -539,7 +539,7 @@ describe('formatStats', () => {
       '2021-05': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -549,7 +549,7 @@ describe('formatStats', () => {
       '2021-06': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -557,7 +557,7 @@ describe('formatStats', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -593,7 +593,7 @@ describe('formatStats', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -655,7 +655,7 @@ describe('formatStats (duration)', () => {
       '2020': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -665,7 +665,7 @@ describe('formatStats (duration)', () => {
       '2021': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -683,7 +683,7 @@ describe('formatStats (duration)', () => {
       '2022': {
         3: {
           average_speed: 14,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -709,7 +709,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -768,7 +768,7 @@ describe('formatStats (duration)', () => {
       '2021-10': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -778,7 +778,7 @@ describe('formatStats (duration)', () => {
       '2021-11': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -786,7 +786,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -796,7 +796,7 @@ describe('formatStats (duration)', () => {
       '2021-12': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -822,7 +822,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -882,7 +882,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -892,7 +892,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -900,7 +900,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -910,7 +910,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -936,7 +936,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -996,7 +996,7 @@ describe('formatStats (duration)', () => {
       '2021-10-04': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -1006,7 +1006,7 @@ describe('formatStats (duration)', () => {
       '2021-10-11': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -1014,7 +1014,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -1024,7 +1024,7 @@ describe('formatStats (duration)', () => {
       '2021-10-18': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -1050,7 +1050,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -1110,7 +1110,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -1120,7 +1120,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -1128,7 +1128,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -1138,7 +1138,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -1164,7 +1164,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -1225,7 +1225,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -1235,7 +1235,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -1243,7 +1243,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -1253,7 +1253,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -1279,7 +1279,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
@@ -1339,7 +1339,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_speed: 12,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 10,
           total_duration: 3000,
           total_ascent: 150,
@@ -1349,7 +1349,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_speed: 18,
-          nb_workouts: 1,
+          total_workouts: 1,
           total_distance: 15,
           total_duration: 3500,
           total_ascent: 250,
@@ -1357,7 +1357,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_speed: 24,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 150,
@@ -1367,7 +1367,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_speed: 8.64,
-          nb_workouts: 2,
+          total_workouts: 2,
           total_distance: 20,
           total_duration: 3000,
           total_ascent: 100,
@@ -1393,7 +1393,7 @@ describe('formatStats (duration)', () => {
             spanGaps: true,
           },
         ],
-        nb_workouts: [
+        total_workouts: [
           {
             label: 'Cycling (Sport)',
             backgroundColor: ['#4c9792'],
