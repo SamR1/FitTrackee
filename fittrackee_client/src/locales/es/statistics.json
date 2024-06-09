@@ -1,4 +1,6 @@
 {
+  "AVERAGE": "Media",
+  "DATES": "Fechas",
   "STATISTICS": "Estadísticas",
   "STATISTICS_CHARTS": {
     "month": "Estadísticas mensuales",
@@ -9,5 +11,6 @@
     "month": "mes",
     "week": "semana",
     "year": "año"
-  }
+  },
+  "WORKOUTS_AVERAGE": "número medio de entrenamientos"
 }
