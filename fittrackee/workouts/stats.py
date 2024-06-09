@@ -28,10 +28,10 @@ def get_stats_from_row(row: List, stats_type: str) -> Dict:
         f'{stats_type}_distance': round(float(row[3]), 2),
         f'{stats_type}_duration': int(row[4].total_seconds()),
         f'{stats_type}_ascent': (
-            0.0 if row[5] is None else round(float(row[5]), 2)
+            None if row[5] is None else round(float(row[5]), 2)
         ),
         f'{stats_type}_descent': (
-            0.0 if row[6] is None else round(float(row[6]), 2)
+            None if row[6] is None else round(float(row[6]), 2)
         ),
     }
     if stats_type == "average":
