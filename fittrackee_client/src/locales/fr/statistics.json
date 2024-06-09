@@ -1,4 +1,6 @@
 {
+  "AVERAGE": "Moyenne",
+  "DATES": "Dates",
   "STATISTICS": "Statistiques",
   "STATISTICS_CHARTS": {
     "month": "Statistiques mensuelles",
@@ -9,5 +11,6 @@
     "month": "mois",
     "week": "semaine",
     "year": "année"
-  }
+  },
+  "WORKOUTS_AVERAGE": "nombre moyen de séances"
 }

@@ -56,6 +56,11 @@
       ? chartsColors.darkMode.text
       : chartsColors.ligthMode.text,
   }))
+  const isLineChart = computed(
+    () =>
+      displayedData.value !== 'average_workouts' &&
+      displayedData.value.startsWith('average')
+  )
 
   const chartData = computed(() => ({
     labels: labels.value,
@@ -86,7 +91,7 @@
         },
       },
       y: {
-        stacked: displayedData.value !== 'average_speed',
+        stacked: !displayedData.value.startsWith('average'),
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -117,8 +122,7 @@
         anchor: 'end',
         align: 'end',
         color: function (context) {
-          return displayedData.value === 'average_speed' &&
-            context.dataset.backgroundColor
+          return isLineChart.value && context.dataset.backgroundColor
             ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               context.dataset.backgroundColor[0]
@@ -132,14 +136,14 @@
         display: function (context) {
           return fullStats.value && context.chart.chartArea.width < 300
             ? false
-            : displayedData.value === 'average_speed'
+            : isLineChart.value
               ? displayedSportIds.value.length == 1
                 ? 'auto'
                 : false
               : true
         },
         formatter: function (value, context) {
-          if (displayedData.value === 'average_speed') {
+          if (displayedData.value.startsWith('average')) {
             return formatTooltipValue(
               displayedData.value,
               value,
@@ -172,15 +176,17 @@
         interaction: {
           intersect: true,
           mode: 'index',
-          position:
-            displayedData.value === 'average_speed' ? 'nearest' : 'average',
+          position: isLineChart.value ? 'nearest' : 'average',
         },
         filter: function (tooltipItem) {
           return tooltipItem.formattedValue !== '0'
         },
         callbacks: {
           label: function (context) {
-            let label = t(`sports.${context.dataset.label}.LABEL`) || ''
+            let label =
+              displayedData.value === 'average_workouts'
+                ? t('workouts.WORKOUT', 0)
+                : t(`sports.${context.dataset.label}.LABEL`) || ''
             if (label) {
               label += ': '
             }
@@ -196,7 +202,7 @@
             return label
           },
           footer: function (tooltipItems) {
-            if (displayedData.value === 'average_speed') {
+            if (displayedData.value.startsWith('average')) {
               return ''
             }
             let sum = 0

@@ -21,6 +21,7 @@
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import type { ISport } from '@/types/sports'
+  import type { IStatisticsDateParams } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
 
   interface Props {
@@ -31,10 +32,11 @@
 
   const { sports, user } = toRefs(props)
   const date = new Date()
-  const chartParams = {
+  const chartParams: IStatisticsDateParams = {
     duration: 'week',
     start: startOfMonth(date),
     end: endOfMonth(date),
+    statsType: 'total',
   }
   const selectedSportIds = sports.value.map((sport) => sport.id)
 </script>

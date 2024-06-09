@@ -90,13 +90,16 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=day',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=day'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response, 'Invalid time period.', 'fail')
+        self.assert_400(response, 'invalid time period', 'fail')
 
-    def test_it_gets_stats_by_time_all_workouts(
+    def test_it_returns_error_if_stats_type_is_invalid(
         self,
         app: Flask,
         user_1: User,
@@ -110,7 +113,32 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time',
+            (
+                f'/api/stats/{user_1.username}/by_time?from=2018-04-01'
+                f'&to=2018-04-30&type={self.random_string()}'
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'invalid stats type', 'fail')
+
+    @pytest.mark.parametrize('input_type', ['', '?type=total'])
+    def test_it_gets_stats_by_time_all_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
+        input_type: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time{input_type}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -120,30 +148,27 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'average_speed': 14.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
                     'total_distance': 15.0,
                     'total_duration': 4480,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
                 '1': {
-                    'average_speed': 18.79,
-                    'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
                     'total_distance': 39.0,
                     'total_duration': 11624,
+                    'total_workouts': 5,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -162,7 +187,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -172,20 +200,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -215,20 +241,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -257,30 +281,27 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017': {
                 '1': {
-                    'average_speed': 14.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 280.0,
                     'total_distance': 15.0,
                     'total_duration': 4480,
+                    'total_workouts': 2,
                 }
             },
             '2018': {
                 '1': {
-                    'average_speed': 18.79,
-                    'nb_workouts': 5,
                     'total_ascent': 340.0,
                     'total_descent': 500.0,
                     'total_distance': 39.0,
                     'total_duration': 11624,
+                    'total_workouts': 5,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
         }
@@ -299,7 +320,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=year'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -309,20 +333,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -341,7 +363,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_paris.username}/by_time?from=2018-04-01&to=2018-04-30&time=year',  # noqa
+            (
+                f'/api/stats/{user_1_paris.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=year'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -351,20 +376,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -393,70 +416,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'average_speed': 17.58,
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-06': {
                 '1': {
-                    'average_speed': 10.42,
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01': {
                 '1': {
-                    'average_speed': 35.16,
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02': {
                 '1': {
-                    'average_speed': 21.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05': {
                 '1': {
-                    'average_speed': 12.0,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -485,70 +501,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03': {
                 '1': {
-                    'average_speed': 17.58,
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-06': {
                 '1': {
-                    'average_speed': 10.42,
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01': {
                 '1': {
-                    'average_speed': 35.16,
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02': {
                 '1': {
-                    'average_speed': 21.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05': {
                 '1': {
-                    'average_speed': 12.0,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -567,7 +576,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=month',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=month'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -577,20 +589,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -619,70 +629,63 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-19': {
                 '1': {
-                    'average_speed': 17.58,
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-05-28': {
                 '1': {
-                    'average_speed': 10.42,
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2017-12-31': {
                 '1': {
-                    'average_speed': 35.16,
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02-18': {
                 '1': {
-                    'average_speed': 21.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-04-01': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05-06': {
                 '1': {
-                    'average_speed': 12.0,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -701,7 +704,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=week',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=week'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -711,20 +717,18 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-04-01': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             }
         }
@@ -753,70 +757,65 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2017-03-20': {
                 '1': {
-                    'average_speed': 17.58,
-                    'nb_workouts': 1,
                     'total_ascent': 120.0,
                     'total_descent': 200.0,
                     'total_distance': 5.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2017-05-29': {
                 '1': {
-                    'average_speed': 10.42,
-                    'nb_workouts': 1,
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
                     'total_distance': 10.0,
                     'total_duration': 3456,
+                    'total_workouts': 1,
                 }
             },
             '2018-01-01': {
                 '1': {
-                    'average_speed': 35.16,
-                    'nb_workouts': 1,
                     'total_ascent': 80.0,
                     'total_descent': 100.0,
                     'total_distance': 10.0,
                     'total_duration': 1024,
+                    'total_workouts': 1,
                 }
             },
             '2018-02-19': {
                 '1': {
-                    'average_speed': 21.0,
-                    'nb_workouts': 2,
                     'total_ascent': 220.0,
                     'total_descent': 380.0,
                     'total_distance': 11.0,
                     'total_duration': 1600,
+                    'total_workouts': 2,
                 }
             },
             '2018-03-26': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
+            },
+            '2018-04-02': {
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
             },
             '2018-05-07': {
                 '1': {
-                    'average_speed': 12.0,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
                 }
             },
         }
@@ -835,7 +834,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?from=2018-04-01&to=2018-04-30&time=weekm',  # noqa
+            (
+                f'/api/stats/{user_1.username}/by_time'
+                f'?from=2018-04-01&to=2018-04-30&time=weekm'
+            ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -845,22 +847,126 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data['data']['statistics'] == {
             '2018-03-26': {
                 '1': {
-                    'average_speed': 4.8,
-                    'nb_workouts': 1,
                     'total_ascent': 40.0,
                     'total_descent': 20.0,
                     'total_distance': 8.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
+            },
+            '2018-04-02': {
                 '2': {
-                    'average_speed': 7.2,
-                    'nb_workouts': 1,
-                    'total_ascent': 0.0,
-                    'total_descent': 0.0,
+                    'total_ascent': None,
+                    'total_descent': None,
                     'total_distance': 12.0,
                     'total_duration': 6000,
+                    'total_workouts': 1,
                 },
-            }
+            },
+        }
+
+    def test_it_gets_average_stats_by_time_all_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time?type=average',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '2017': {
+                '1': {
+                    'average_ascent': 110.0,
+                    'average_descent': 140.0,
+                    'average_distance': 7.5,
+                    'average_duration': 2240,
+                    'average_speed': 14.0,
+                    'total_workouts': 2,
+                }
+            },
+            '2018': {
+                '1': {
+                    'average_ascent': 85.0,
+                    'average_descent': 125.0,
+                    'average_distance': 7.8,
+                    'average_duration': 2324,
+                    'average_speed': 18.79,
+                    'total_workouts': 5,
+                },
+                '2': {
+                    'average_ascent': None,
+                    'average_descent': None,
+                    'average_distance': 12.0,
+                    'average_duration': 6000,
+                    'average_speed': 7.2,
+                    'total_workouts': 1,
+                },
+            },
+        }
+
+    def test_it_gets_average_stats_by_year(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_time?time=year&type=average',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '2017': {
+                '1': {
+                    'average_ascent': 110.0,
+                    'average_descent': 140.0,
+                    'average_distance': 7.5,
+                    'average_duration': 2240,
+                    'average_speed': 14.0,
+                    'total_workouts': 2,
+                }
+            },
+            '2018': {
+                '1': {
+                    'average_ascent': 85.0,
+                    'average_descent': 125.0,
+                    'average_distance': 7.8,
+                    'average_duration': 2324,
+                    'average_speed': 18.79,
+                    'total_workouts': 5,
+                },
+                '2': {
+                    'average_ascent': None,
+                    'average_descent': None,
+                    'average_distance': 12.0,
+                    'average_duration': 6000,
+                    'average_speed': 7.2,
+                    'total_workouts': 1,
+                },
+            },
         }
 
     @pytest.mark.parametrize(
@@ -904,6 +1010,20 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_401(response)
 
+    def test_it_returns_error_if_stats_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport?type={self.random_string()}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'invalid stats type', 'fail')
+
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -927,20 +1047,18 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'average_speed': 17.42,
-                'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
                 'total_duration': 16104,
+                'total_workouts': 7,
             },
             '2': {
-                'average_speed': 7.2,
-                'nb_workouts': 1,
-                'total_ascent': 0.0,
-                'total_descent': 0.0,
+                'total_ascent': None,
+                'total_descent': None,
                 'total_distance': 12.0,
                 'total_duration': 6000,
+                'total_workouts': 1,
             },
         }
 
@@ -967,12 +1085,11 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
-                'average_speed': 17.42,
-                'nb_workouts': 7,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
                 'total_duration': 16104,
+                'total_workouts': 7,
             }
         }
 
@@ -1035,6 +1152,78 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         self.assert_500(response)
+
+    def test_it_gets_average_stats_by_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport?type=average',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '1': {
+                'average_ascent': 93.33,
+                'average_descent': 130.0,
+                'average_distance': 7.71,
+                'average_duration': 2300,
+                'average_speed': 17.42,
+                'total_workouts': 7,
+            },
+            '2': {
+                'average_ascent': None,
+                'average_descent': None,
+                'average_distance': 12.0,
+                'average_duration': 6000,
+                'average_speed': 7.2,
+                'total_workouts': 1,
+            },
+        }
+
+    def test_it_gets_average_stats_for_sport_1(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport?sport_id=1&type=average',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '1': {
+                'average_ascent': 93.33,
+                'average_descent': 130.0,
+                'average_distance': 7.71,
+                'average_duration': 2300,
+                'average_speed': 17.42,
+                'total_workouts': 7,
+            }
+        }
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
