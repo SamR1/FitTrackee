@@ -1,4 +1,6 @@
 {
+  "AVERAGE": "Average",
+  "DATES": "Dates",
   "STATISTICS": "Statistics",
   "STATISTICS_CHARTS": {
     "month": "Monthly statistics",
@@ -9,5 +11,6 @@
     "month": "month",
     "week": "week",
     "year": "year"
-  }
+  },
+  "WORKOUTS_AVERAGE": "average number of workouts"
 }
