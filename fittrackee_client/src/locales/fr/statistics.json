@@ -7,6 +7,10 @@
     "week": "Statistiques hebdomadaires",
     "year": "Statistiques annuelles"
   },
+  "STATISTICS_TYPES": {
+    "by_time": "par période de temps",
+    "by_sport": "par sport"
+  },
   "TIME_FRAMES": {
     "month": "mois",
     "week": "semaine",

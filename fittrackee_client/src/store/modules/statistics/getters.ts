@@ -9,7 +9,13 @@ import type {
 
 export const getters: GetterTree<IStatisticsState, IRootState> &
   IStatisticsGetters = {
+  [STATS_STORE.GETTERS.USER_SPORT_STATS]: (state: IStatisticsState) => {
+    return state.sportStatistics
+  },
   [STATS_STORE.GETTERS.USER_STATS]: (state: IStatisticsState) => {
     return state.statistics
+  },
+  [STATS_STORE.GETTERS.STATS_LOADING]: (state: IStatisticsState) => {
+    return state.loading
   },
 }

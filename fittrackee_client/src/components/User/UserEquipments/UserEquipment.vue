@@ -66,12 +66,12 @@
       </dd>
       <dt>{{ capitalize($t('workouts.TOTAL_DURATION', 0)) }}</dt>
       <dd>
-        {{ getTotalDuration(equipment.total_moving) }}
+        {{ getTotalDuration(equipment.total_moving, $t) }}
         <template v-if="equipment.total_duration !== equipment.total_moving">
           (<span class="duration-detail">
             {{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}:
           </span>
-          {{ getTotalDuration(equipment.total_duration) }})
+          {{ getTotalDuration(equipment.total_duration, $t) }})
         </template>
       </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
@@ -161,7 +161,7 @@
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getDuration } from '@/utils/duration'
+  import { getTotalDuration } from '@/utils/duration'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
@@ -228,13 +228,6 @@
       }
       store.dispatch(EQUIPMENTS_STORE.ACTIONS.DELETE_EQUIPMENT, payload)
     }
-  }
-  function getTotalDuration(totalDuration: string) {
-    if (totalDuration.match(/day/g)) {
-      const durations = getDuration(totalDuration, t)
-      return `${durations.days}, ${durations.duration}`
-    }
-    return totalDuration
   }
   function refreshTotals(equipmentId: string) {
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.REFRESH_EQUIPMENT, equipmentId)

@@ -13,8 +13,12 @@ export interface IStatisticsParams {
 
 export interface IUserStatisticsPayload {
   username: string
-  filterType: string
   params: IStatisticsParams
+}
+
+export interface IUserSportStatisticsPayload {
+  username: string
+  sportId: number
 }
 
 export interface IStatisticsDateParams {
@@ -37,6 +41,8 @@ export type TStatisticsDatasetKeys =
   | 'total_ascent'
   | 'total_descent'
 
+export type TStatisticsTypes = 'by_time' | 'by_sport'
+
 export type TStatistics = {
   [key in TStatisticsDatasetKeys]: number
 }
@@ -47,6 +53,23 @@ export type TSportStatistics = {
 
 export type TStatisticsFromApi = {
   [key in string]: TSportStatistics
+}
+
+export type TStatisticsForSport = {
+  average_ascent: number
+  average_descent: number
+  average_distance: number
+  average_duration: string
+  average_speed: number
+  average_workouts: number
+  total_workouts: number
+  total_duration: string
+  total_distance: number
+  total_ascent: number
+  total_descent: number
+}
+export type TSportStatisticsFromApi = {
+  [key in string]: TStatisticsForSport
 }
 
 export type TStatisticsDatasets = {

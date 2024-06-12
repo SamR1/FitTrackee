@@ -451,6 +451,99 @@ describe('getRecordsBySports', () => {
   )
 })
 
+describe('getRecordsBySports for a sport', () => {
+  const testsParams = [
+    {
+      description: 'returns empty object if no records',
+      input: {
+        records: [],
+        tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+        sportId: 1,
+      },
+      expected: {},
+    },
+    {
+      description: 'returns record for given sport',
+      input: {
+        records: [
+          {
+            id: 9,
+            record_type: 'AS',
+            sport_id: 1,
+            user: 'admin',
+            value: 18,
+            workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+            workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+          },
+          {
+            id: 10,
+            record_type: 'FD',
+            sport_id: 2,
+            user: 'admin',
+            value: 18,
+            workout_date: 'Sun, 07 Jul 2019 22:00:00 GMT',
+            workout_id: 'n6JcLPQt3QtZWFfiSnYm4C',
+          },
+          {
+            id: 12,
+            record_type: 'MS',
+            sport_id: 1,
+            user: 'admin',
+            value: 18,
+            workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+            workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+          },
+        ],
+        tz: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+        sportId: 1,
+      },
+      expected: {
+        'Cycling (Sport)': {
+          color: null,
+          label: 'Cycling (Sport)',
+          records: [
+            {
+              id: 9,
+              record_type: 'AS',
+              sport_id: 1,
+              user: 'admin',
+              value: '18 km/h',
+              workout_date: '2019/07/07',
+              workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+            },
+            {
+              id: 12,
+              record_type: 'MS',
+              sport_id: 1,
+              user: 'admin',
+              value: '18 km/h',
+              workout_date: '2019/07/07',
+              workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+            },
+          ],
+        },
+      },
+    },
+  ]
+  testsParams.map((testParams) =>
+    it(testParams.description, () => {
+      expect(
+        getRecordsBySports(
+          testParams.input.records,
+          translatedSports,
+          testParams.input.tz,
+          false,
+          true,
+          testParams.input.date_format,
+          testParams.input.sportId
+        )
+      ).toStrictEqual(testParams.expected)
+    })
+  )
+})
+
 describe('getRecordsBySports after conversion', () => {
   const testsParams = [
     {
