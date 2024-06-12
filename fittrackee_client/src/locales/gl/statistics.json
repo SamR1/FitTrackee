@@ -1,4 +1,6 @@
 {
+  "AVERAGE": "Media",
+  "DATES": "Datas",
   "STATISTICS": "Estatísticas",
   "STATISTICS_CHARTS": {
     "month": "Estatísticas mensuais",
@@ -9,5 +11,6 @@
     "month": "mes",
     "week": "semana",
     "year": "ano"
-  }
+  },
+  "WORKOUTS_AVERAGE": "a media de adestramentos"
 }
