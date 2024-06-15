@@ -34,7 +34,7 @@
             icon="road"
             :loading="loading"
             :total-value="sportStatistics ? sportStatistics.total_distance : ''"
-            :text="distanceUnitTo === 'mi' ? 'miles' : distanceUnitTo"
+            :text="distanceUnitTo"
             :label="$t('workouts.DISTANCE')"
           >
             <template #average>
@@ -66,11 +66,35 @@
             </template>
           </SportStatCard>
           <SportStatCard
+            icon="tachometer"
+            :loading="loading"
+            :total-value="sportStatistics ? sportStatistics.average_speed : ''"
+            :text="`${distanceUnitTo}/h`"
+            :label="$t('workouts.AVE_SPEED')"
+          />
+          <SportStatCard
             icon="location-arrow"
             :loading="loading"
             :total-value="sportStatistics ? sportStatistics.total_ascent : ''"
-            :text="ascentUnitTo === 'ft' ? 'feet' : ascentUnitTo"
+            :text="ascentUnitTo"
             :label="$t('workouts.ASCENT')"
+          >
+            <template #average>
+              <div>{{ $t('statistics.AVERAGE') }}:</div>
+              <Distance
+                v-if="sportStatistics"
+                :distance="sportStatistics.average_ascent"
+                unitFrom="m"
+                :useImperialUnits="authUser.imperial_units"
+              />
+            </template>
+          </SportStatCard>
+          <SportStatCard
+            icon="location-arrow fa-rotate-90"
+            :loading="loading"
+            :total-value="sportStatistics ? sportStatistics.total_descent : ''"
+            :text="ascentUnitTo"
+            :label="$t('workouts.DESCENT')"
           >
             <template #average>
               <div>{{ $t('statistics.AVERAGE') }}:</div>
@@ -150,14 +174,12 @@
   const sportStatistics: ComputedRef<TStatisticsForSport | null> = computed(
     () => store.getters.USER_SPORT_STATS[sportId.value]
   )
-  const distanceUnitFrom: TUnit = 'km'
   const distanceUnitTo: TUnit = authUser.value.imperial_units
-    ? units[distanceUnitFrom].defaultTarget
-    : distanceUnitFrom
-  const ascentUnitFrom: TUnit = 'm'
+    ? units['km'].defaultTarget
+    : 'km'
   const ascentUnitTo: TUnit = authUser.value.imperial_units
-    ? units[ascentUnitFrom].defaultTarget
-    : ascentUnitFrom
+    ? units['m'].defaultTarget
+    : 'm'
   const loading: ComputedRef<boolean> = computed(
     () => store.getters.STATS_LOADING
   )
@@ -223,7 +245,6 @@
         display: flex;
         justify-content: space-around;
         flex-wrap: wrap;
-        flex: 1 0 25%;
       }
     }
     .records {

@@ -13,7 +13,10 @@
           </span>
           <span class="stat" v-if="text">{{ text }}</span>
         </div>
-        <div class="stat-average" v-if="icon !== 'calendar'">
+        <div
+          class="stat-average"
+          v-if="!['calendar', 'tachometer'].includes(icon)"
+        >
           <i class="fa fa-refresh fa-spin fa-fw" v-if="loading"></i>
           <slot v-else name="average"></slot>
         </div>
@@ -41,16 +44,12 @@
 <style lang="scss">
   @import '~@/scss/vars.scss';
   .sport-stat-card {
-    flex: 1;
-    max-width: 25%;
+    flex: 1 0 33%;
     @media screen and (max-width: $small-limit) {
       flex: 1 0 50%;
-      max-width: 49%;
     }
-
     @media screen and (max-width: $x-small-limit) {
       flex: 1 0 100%;
-      max-width: 99%;
     }
 
     .stat-content {
