@@ -45,21 +45,17 @@ def verify_app_config(config_data: Dict) -> List:
     If not, it returns not empty string
     """
     ret = []
-    if (
-        'gpx_limit_import' in config_data
-        and config_data['gpx_limit_import'] <= 0
-    ):
-        ret.append('Max. files in a zip archive must be greater than 0')
 
-    if (
-        'max_single_file_size' in config_data
-        and config_data['max_single_file_size'] <= 0
-    ):
-        ret.append('Max. size of uploaded files must be greater than 0')
+    params = [
+        ('gpx_limit_import', 'max files in a zip archive'),
+        ('max_single_file_size', 'max size of uploaded files'),
+        ('max_zip_file_size', 'max size of zip archive'),
+    ]
+    for param, label in params:
+        if param in config_data and config_data[param] <= 0:
+            ret.append(f'{label} must be greater than 0')
 
-    if (
-        'max_zip_file_size' in config_data
-        and config_data['max_zip_file_size'] <= 0
-    ):
-        ret.append('Max. size of zip archive must be greater than 0')
+    if 'max_users' in config_data and config_data['max_users'] < 0:
+        ret.append('max users must be greater than or equal to 0')
+
     return ret

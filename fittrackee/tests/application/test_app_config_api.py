@@ -203,8 +203,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
         self.assert_400(
             response,
             (
-                'Max. size of zip archive must be equal or greater than max.'
-                ' size of uploaded files'
+                'max size of zip archive must be equal or greater than max '
+                'size of uploaded files'
             ),
         )
 
@@ -227,7 +227,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         )
 
         self.assert_400(
-            response, 'Max. size of zip archive must be greater than 0'
+            response, 'max size of zip archive must be greater than 0'
         )
 
     def test_it_raises_error_if_files_max_size_equals_0(
@@ -249,7 +249,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         )
 
         self.assert_400(
-            response, 'Max. size of uploaded files must be greater than 0'
+            response, 'max size of uploaded files must be greater than 0'
         )
 
     def test_it_raises_error_if_gpx_limit_import_equals_0(
@@ -271,7 +271,25 @@ class TestUpdateConfig(ApiTestCaseMixin):
         )
 
         self.assert_400(
-            response, 'Max. files in a zip archive must be greater than 0'
+            response, 'max files in a zip archive must be greater than 0'
+        )
+
+    def test_it_raises_error_when_max_users_below_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            json={"max_users": -1},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, 'max users must be greater than or equal to 0'
         )
 
     def test_it_raises_error_if_admin_contact_is_invalid(

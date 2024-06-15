@@ -126,7 +126,14 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``max size of zip archive must be greater than 0``
+        - ``max size of zip archive must be equal or greater than max size of uploaded files``
+        - ``max size of uploaded files must be greater than 0``
+        - ``max files in a zip archive must be greater than 0``
+        - ``max users must be greater than or equal to 0``
+        - ``valid email must be provided for admin contact``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -148,16 +155,15 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
     try:
         config = AppConfig.query.one()
-        if 'gpx_limit_import' in config_data:
-            config.gpx_limit_import = config_data.get('gpx_limit_import')
-        if 'max_single_file_size' in config_data:
-            config.max_single_file_size = config_data.get(
-                'max_single_file_size'
-            )
-        if 'max_zip_file_size' in config_data:
-            config.max_zip_file_size = config_data.get('max_zip_file_size')
-        if 'max_users' in config_data:
-            config.max_users = config_data.get('max_users')
+
+        for param in [
+            'gpx_limit_import',
+            'max_single_file_size',
+            'max_zip_file_size',
+            'max_users',
+        ]:
+            if param in config_data:
+                setattr(config, param, config_data[param])
         if 'admin_contact' in config_data:
             config.admin_contact = admin_contact if admin_contact else None
         if 'about' in config_data:
@@ -173,8 +179,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
         if config.max_zip_file_size < config.max_single_file_size:
             return InvalidPayloadErrorResponse(
-                'Max. size of zip archive must be equal or greater than '
-                'max. size of uploaded files'
+                'max size of zip archive must be equal or greater than '
+                'max size of uploaded files'
             )
         db.session.commit()
         update_app_config_from_database(current_app, config)
