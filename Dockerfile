@@ -5,6 +5,10 @@ RUN apk add --no-cache linux-headers gcc musl-dev libffi-dev \
     --virtual=build-dependencies
 RUN apk add --no-cache py-pip bash curl
 
+# create user fittrackee
+RUN addgroup -g 1000 -S fittrackee
+RUN adduser -u 1000 -S -D -G fittrackee -H -h /usr/src/app -s /bin/bash fittrackee
+
 # copy source files
 RUN LATEST=$(curl -s \
     "https://api.github.com/repos/SamR1/FitTrackee/releases/latest" | \
@@ -25,9 +29,13 @@ RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir poetry
 RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction
 
+# change owner
+RUN chown -R fittrackee:fittrackee /usr/src/app
+
 # delete build packages
 RUN apk del --purge build-dependencies
 RUN rm -r /root/.cache
 
 # run fittrackee server
+USER fittrackee
 CMD flask run --with-threads -h 0.0.0.0
