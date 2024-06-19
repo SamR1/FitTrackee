@@ -34,3 +34,14 @@ export const getDuration = (total_duration: string, t: CallableFunction) => {
     duration: `${duration.split(':')[0]}h ${duration.split(':')[1]}min`,
   }
 }
+
+export const getTotalDuration = (
+  totalDuration: string,
+  t: CallableFunction
+) => {
+  if (totalDuration.match(/day/g)) {
+    const durations = getDuration(totalDuration, t)
+    return `${durations.days}, ${durations.duration}`
+  }
+  return totalDuration
+}

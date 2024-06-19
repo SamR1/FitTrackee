@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 import pytest
 from flask import Flask
@@ -21,6 +22,20 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_authenticated_authenticated(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_2.username}/by_time',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_gets_no_stats_when_user_has_no_workouts(
         self, app: Flask, user_1: User
@@ -1010,28 +1025,30 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_401(response)
 
-    def test_it_returns_error_if_stats_type_is_invalid(
-        self, app: Flask, user_1: User
+    def test_it_returns_error_if_user_is_authenticated_authenticated(
+        self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?type={self.random_string()}',
+            f'/api/stats/{user_2.username}/by_sport',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response, 'invalid stats type', 'fail')
+        self.assert_403(response)
 
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1047,20 +1064,154 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
+                'average_ascent': 93.33,
+                'average_descent': 130.0,
+                'average_distance': 7.71,
+                'average_duration': '0:38:20',
+                'average_speed': 17.42,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
-                'total_duration': 16104,
+                'total_duration': '4:28:24',
                 'total_workouts': 7,
             },
             '2': {
+                'average_ascent': None,
+                'average_descent': None,
+                'average_distance': 12.0,
+                'average_duration': '1:40:00',
+                'average_speed': 7.2,
                 'total_ascent': None,
                 'total_descent': None,
                 'total_distance': 12.0,
-                'total_duration': 6000,
+                'total_duration': '1:40:00',
                 'total_workouts': 1,
             },
         }
+        assert data['data']['total_workouts'] == 8
+
+    def test_it_gets_stats_by_sport_when_total_workouts_exceed_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        app.config["stats_workouts_limit"] = 2
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '1': {
+                'average_ascent': seven_workouts_user_1[6].ascent,
+                'average_descent': seven_workouts_user_1[6].descent,
+                'average_distance': float(seven_workouts_user_1[6].distance),
+                'average_duration': str(seven_workouts_user_1[6].moving),
+                'average_speed': float(seven_workouts_user_1[6].ave_speed),
+                'total_ascent': seven_workouts_user_1[6].ascent,
+                'total_descent': seven_workouts_user_1[6].descent,
+                'total_distance': float(seven_workouts_user_1[6].distance),
+                'total_duration': str(seven_workouts_user_1[6].moving),
+                'total_workouts': 1,
+            },
+            '2': {
+                'average_ascent': workout_running_user_1.ascent,
+                'average_descent': workout_running_user_1.descent,
+                'average_distance': float(workout_running_user_1.distance),
+                'average_duration': str(workout_running_user_1.moving),
+                'average_speed': float(workout_running_user_1.ave_speed),
+                'total_ascent': workout_running_user_1.ascent,
+                'total_descent': workout_running_user_1.descent,
+                'total_distance': float(workout_running_user_1.distance),
+                'total_duration': str(workout_running_user_1.moving),
+                'total_workouts': 1,
+            },
+        }
+        assert data['data']['total_workouts'] == 8
+
+    def test_it_gets_stats_by_sport_when_total_workouts_is_zero(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        app.config["stats_workouts_limit"] = 0
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '1': {
+                'average_ascent': 93.33,
+                'average_descent': 130.0,
+                'average_distance': 7.71,
+                'average_duration': '0:38:20',
+                'average_speed': 17.42,
+                'total_ascent': 560.0,
+                'total_descent': 780.0,
+                'total_distance': 54.0,
+                'total_duration': '4:28:24',
+                'total_workouts': 7,
+            },
+            '2': {
+                'average_ascent': None,
+                'average_descent': None,
+                'average_distance': 12.0,
+                'average_duration': '1:40:00',
+                'average_speed': 7.2,
+                'total_ascent': None,
+                'total_descent': None,
+                'total_distance': 12.0,
+                'total_duration': '1:40:00',
+                'total_workouts': 1,
+            },
+        }
+        assert data['data']['total_workouts'] == 8
+
+    def test_it_gets_stats_by_sport_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {}
+        assert data['data']['total_workouts'] == 0
 
     def test_it_get_stats_for_sport_1(
         self,
@@ -1085,33 +1236,78 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert data['data']['statistics'] == {
             '1': {
+                'average_ascent': 93.33,
+                'average_descent': 130.0,
+                'average_distance': 7.71,
+                'average_duration': '0:38:20',
+                'average_speed': 17.42,
                 'total_ascent': 560.0,
                 'total_descent': 780.0,
                 'total_distance': 54.0,
-                'total_duration': 16104,
+                'total_duration': '4:28:24',
                 'total_workouts': 7,
             }
         }
+        assert data['data']['total_workouts'] == 7
 
-    def test_it_returns_errors_if_user_does_not_exist(
+    def test_it_get_stats_for_sport_1_when_total_workouts_exceed_limit(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+    ) -> None:
+        app.config["stats_workouts_limit"] = 2
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/stats/{user_1.username}/by_sport?sport_id=1',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {
+            '1': {
+                'average_ascent': 40.0,
+                'average_descent': 20.0,
+                'average_distance': 9.0,
+                'average_duration': '1:15:00',
+                'average_speed': 8.4,
+                'total_ascent': 40.0,
+                'total_descent': 20.0,
+                'total_distance': 18,
+                'total_duration': '2:30:00',
+                'total_workouts': 2,
+            }
+        }
+        assert data['data']['total_workouts'] == 7
+
+    def test_it_get_stats_for_sport_1_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            '/api/stats/1000/by_sport?sport_id=1',
+            f'/api/stats/{user_1.username}/by_sport?sport_id=1',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['statistics'] == {}
+        assert data['data']['total_workouts'] == 0
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
@@ -1152,78 +1348,6 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         self.assert_500(response)
-
-    def test_it_gets_average_stats_by_sport(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?type=average',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 93.33,
-                'average_descent': 130.0,
-                'average_distance': 7.71,
-                'average_duration': 2300,
-                'average_speed': 17.42,
-                'total_workouts': 7,
-            },
-            '2': {
-                'average_ascent': None,
-                'average_descent': None,
-                'average_distance': 12.0,
-                'average_duration': 6000,
-                'average_speed': 7.2,
-                'total_workouts': 1,
-            },
-        }
-
-    def test_it_gets_average_stats_for_sport_1(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?sport_id=1&type=average',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 93.33,
-                'average_descent': 130.0,
-                'average_distance': 7.71,
-                'average_duration': 2300,
-                'average_speed': 17.42,
-                'total_workouts': 7,
-            }
-        }
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

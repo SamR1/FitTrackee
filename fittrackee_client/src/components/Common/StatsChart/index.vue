@@ -218,7 +218,6 @@
   function getStatistics(apiParams: IStatisticsParams) {
     store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
       username: user.value.username,
-      filterType: 'by_time',
       params: apiParams,
     })
   }

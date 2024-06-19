@@ -234,9 +234,8 @@
     return getNumber(total) + getNumber(value)
   }
   function getUnit(displayedData: string) {
-    return ['total_ascent', 'total_descent'].includes(displayedData)
-      ? 'm'
-      : 'km'
+    // returns meters for ascent and descent
+    return displayedData.includes('scent') ? 'm' : 'km'
   }
 </script>
 
