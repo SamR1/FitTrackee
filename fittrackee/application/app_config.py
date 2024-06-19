@@ -52,6 +52,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
+          "stats_workouts_limit": 10000,
           "version": "0.8.4",
           "weather_provider": null
         },
@@ -108,6 +109,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_attribution": "&copy; <a href=http://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors",
           "privacy_policy": null,
           "privacy_policy_date": null,
+          "stats_workouts_limit": 10000,
           "version": "0.8.4",
           "weather_provider": null
         },
@@ -122,6 +124,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json integer max_users: max users allowed to register on instance
     :<json integer max_zip_file_size: max size of a zip archive
     :<json string privacy_policy: instance privacy policy
+    :<json integer stats_workouts_limit: max number of workouts for sport
+                   statistics
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -133,6 +137,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``max size of uploaded files must be greater than 0``
         - ``max files in a zip archive must be greater than 0``
         - ``max users must be greater than or equal to 0``
+        - ``max number of workouts for statistics must be greater than or equal to 0``
         - ``valid email must be provided for admin contact``
     :statuscode 401:
         - ``provide a valid auth token``
@@ -161,6 +166,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             'max_single_file_size',
             'max_zip_file_size',
             'max_users',
+            'stats_workouts_limit',
         ]:
             if param in config_data:
                 setattr(config, param, config_data[param])

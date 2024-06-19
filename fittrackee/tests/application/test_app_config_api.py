@@ -116,6 +116,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
                     max_users=50,
+                    stats_workouts_limit=5000,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -130,6 +131,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data['data']['max_single_file_size'] == 10000
         assert data['data']['max_zip_file_size'] == 25000
         assert data['data']['max_users'] == 50
+        assert data['data']['stats_workouts_limit'] == 5000
 
     def test_it_returns_403_when_user_is_not_an_admin(
         self, app: Flask, user_1: User
@@ -290,6 +292,28 @@ class TestUpdateConfig(ApiTestCaseMixin):
 
         self.assert_400(
             response, 'max users must be greater than or equal to 0'
+        )
+
+    def test_it_raises_error_when_stats_workouts_limit_below_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            '/api/config',
+            content_type='application/json',
+            json={"stats_workouts_limit": -1},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response,
+            (
+                'max number of workouts for statistics must be '
+                'greater than or equal to 0'
+            ),
         )
 
     def test_it_raises_error_if_admin_contact_is_invalid(

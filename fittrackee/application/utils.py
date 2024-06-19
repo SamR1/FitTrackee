@@ -36,6 +36,7 @@ def update_app_config_from_database(
         db_config.is_registration_enabled
     )
     current_app.config['privacy_policy_date'] = db_config.privacy_policy_date
+    current_app.config['stats_workouts_limit'] = db_config.stats_workouts_limit
 
 
 def verify_app_config(config_data: Dict) -> List:
@@ -55,7 +56,12 @@ def verify_app_config(config_data: Dict) -> List:
         if param in config_data and config_data[param] <= 0:
             ret.append(f'{label} must be greater than 0')
 
-    if 'max_users' in config_data and config_data['max_users'] < 0:
-        ret.append('max users must be greater than or equal to 0')
+    params = [
+        ('max_users', 'max users'),
+        ('stats_workouts_limit', 'max number of workouts for statistics'),
+    ]
+    for param, label in params:
+        if param in config_data and config_data[param] < 0:
+            ret.append(f'{label} must be greater than or equal to 0')
 
     return ret

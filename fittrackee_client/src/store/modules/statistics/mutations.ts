@@ -23,6 +23,7 @@ export const mutations: MutationTree<IStatisticsState> & TStatisticsMutations =
     },
     [STATS_STORE.MUTATIONS.EMPTY_USER_SPORT_STATS](state: IStatisticsState) {
       state.sportStatistics = {}
+      state.totalWorkouts = 0
     },
     [STATS_STORE.MUTATIONS.UPDATE_USER_SPORT_STATS](
       state: IStatisticsState,
@@ -35,5 +36,11 @@ export const mutations: MutationTree<IStatisticsState> & TStatisticsMutations =
       loading: boolean
     ) {
       state.loading = loading
+    },
+    [STATS_STORE.MUTATIONS.UPDATE_TOTAL_WORKOUTS](
+      state: IStatisticsState,
+      totalWorkouts: number
+    ) {
+      state.totalWorkouts = totalWorkouts
     },
   }

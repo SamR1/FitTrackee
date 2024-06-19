@@ -18,4 +18,7 @@ export const getters: GetterTree<IStatisticsState, IRootState> &
   [STATS_STORE.GETTERS.STATS_LOADING]: (state: IStatisticsState) => {
     return state.loading
   },
+  [STATS_STORE.GETTERS.TOTAL_WORKOUTS]: (state: IStatisticsState) => {
+    return state.totalWorkouts
+  },
 }

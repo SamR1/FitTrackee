@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Dict, List, Union
 
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 from sqlalchemy import func
 
 from fittrackee import db
@@ -427,25 +427,35 @@ def get_workouts_by_sport(
             if not sport:
                 return NotFoundErrorResponse('sport does not exist')
 
+        workouts_query = Workout.query.filter(
+            Workout.user_id == user.id,
+            Workout.sport_id == sport_id if sport_id else True,
+        )
+        total_workouts = workouts_query.count()
+
+        workouts_subquery = workouts_query.order_by(
+            Workout.workout_date.desc()
+        )
+        if current_app.config['stats_workouts_limit']:
+            workouts_subquery = workouts_subquery.limit(
+                current_app.config['stats_workouts_limit']
+            )
+        workouts_subquery = workouts_subquery.subquery()
         results = (
             db.session.query(
-                Workout.sport_id,
-                func.avg(Workout.ave_speed),
-                func.avg(Workout.ascent),
-                func.avg(Workout.descent),
-                func.avg(Workout.distance),
-                func.avg(Workout.moving),
-                func.sum(Workout.ascent),
-                func.sum(Workout.descent),
-                func.sum(Workout.distance),
-                func.sum(Workout.moving),
-                func.count(Workout.id),
+                workouts_subquery.c.sport_id,
+                func.avg(workouts_subquery.c.ave_speed),
+                func.avg(workouts_subquery.c.ascent),
+                func.avg(workouts_subquery.c.descent),
+                func.avg(workouts_subquery.c.distance),
+                func.avg(workouts_subquery.c.moving),
+                func.sum(workouts_subquery.c.ascent),
+                func.sum(workouts_subquery.c.descent),
+                func.sum(workouts_subquery.c.distance),
+                func.sum(workouts_subquery.c.moving),
+                func.count(workouts_subquery.c.id),
             )
-            .filter(
-                Workout.user_id == user.id,
-                Workout.sport_id == sport_id if sport_id else True,
-            )
-            .group_by(Workout.sport_id)
+            .group_by(workouts_subquery.c.sport_id)
             .all()
         )
 
@@ -474,7 +484,10 @@ def get_workouts_by_sport(
 
         return {
             'status': 'success',
-            'data': {'statistics': statistics},
+            'data': {
+                'statistics': statistics,
+                'total_workouts': total_workouts,
+            },
         }
     except Exception as e:
         return handle_error_and_return_response(e)

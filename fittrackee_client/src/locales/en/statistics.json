@@ -7,9 +7,11 @@
     "week": "Weekly statistics",
     "year": "Annual statistics"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistics on all workouts:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statistics on the last {count} workouts:",
   "STATISTICS_TYPES": {
-    "by_time": "by time period",
-    "by_sport": "by sport"
+    "by_sport": "by sport",
+    "by_time": "by time period"
   },
   "TIME_FRAMES": {
     "month": "month",

@@ -17,6 +17,7 @@ import type {
 export interface IStatisticsState {
   statistics: TStatisticsFromApi
   sportStatistics: TSportStatisticsFromApi
+  totalWorkouts: number
   loading: boolean
 }
 
@@ -37,6 +38,7 @@ export interface IStatisticsGetters {
   ): TSportStatisticsFromApi
   [STATS_STORE.GETTERS.USER_STATS](state: IStatisticsState): TStatisticsFromApi
   [STATS_STORE.GETTERS.STATS_LOADING](state: IStatisticsState): boolean
+  [STATS_STORE.GETTERS.TOTAL_WORKOUTS](state: IStatisticsState): number
 }
 
 export type TStatisticsMutations<S = IStatisticsState> = {
@@ -51,6 +53,10 @@ export type TStatisticsMutations<S = IStatisticsState> = {
   [STATS_STORE.MUTATIONS.EMPTY_USER_SPORT_STATS](state: S): void
   [STATS_STORE.MUTATIONS.EMPTY_USER_STATS](state: S): void
   [STATS_STORE.MUTATIONS.UPDATE_STATS_LOADING](state: S, loading: boolean): void
+  [STATS_STORE.MUTATIONS.UPDATE_TOTAL_WORKOUTS](
+    state: S,
+    totalWorkouts: number
+  ): void
 }
 
 export type TStatisticsStoreModule<S = IStatisticsState> = Omit<

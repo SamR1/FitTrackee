@@ -44,7 +44,7 @@
 <style lang="scss">
   @import '~@/scss/vars.scss';
   .sport-stat-card {
-    flex: 1 0 33%;
+    flex: 0 0 33%;
     @media screen and (max-width: $small-limit) {
       flex: 1 0 50%;
     }
@@ -57,13 +57,13 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: $default-padding $default-padding * 2;
+      padding: $default-padding * 0.5;
 
       .stat-icon {
         .fa {
-          font-size: 3em;
+          font-size: 2em;
           @media screen and (max-width: $medium-limit) {
-            font-size: 2em;
+            font-size: 1.5em;
           }
         }
       }
@@ -77,7 +77,6 @@
         }
 
         .stat-label {
-          padding: $default-padding 0 $default-padding * 0.5;
           text-transform: capitalize;
         }
 
@@ -85,15 +84,15 @@
           display: flex;
           gap: $default-padding * 0.5;
           align-items: baseline;
-          min-height: 37px;
+          min-height: 30px;
           .stat-huge {
-            font-size: 1.7em;
+            font-size: 1.3em;
             font-weight: bold;
             @media screen and (max-width: $medium-limit) {
-              font-size: 1.3em;
+              font-size: 1.2em;
             }
             @media screen and (max-width: $x-small-limit) {
-              font-size: 1.2em;
+              font-size: 1em;
             }
           }
           .fa-refresh {
@@ -115,7 +114,6 @@
           gap: $default-padding * 0.5;
           font-style: italic;
           font-size: 0.9em;
-          margin: $default-margin * 0.5 0;
           text-transform: lowercase;
           min-height: 25px;
         }

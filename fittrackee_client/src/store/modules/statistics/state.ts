@@ -7,5 +7,6 @@ import type {
 export const statisticsState: IStatisticsState = {
   statistics: <TStatisticsFromApi>{},
   sportStatistics: <TSportStatisticsFromApi>{},
+  totalWorkouts: 0,
   loading: false,
 }

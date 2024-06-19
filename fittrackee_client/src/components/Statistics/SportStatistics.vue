@@ -27,9 +27,26 @@
           <SportStatCard
             icon="calendar"
             :loading="loading"
-            :total-value="sportStatistics ? sportStatistics.total_workouts : ''"
+            :total-value="totalWorkouts"
             :label="$t('workouts.WORKOUT', 0)"
           />
+        </div>
+        <div
+          class="statistics-workouts-count"
+          v-if="
+            sportStatistics && sportStatistics.total_workouts < totalWorkouts
+          "
+        >
+          {{
+            $t('statistics.STATISTICS_ON_LAST_WORKOUTS', {
+              count: sportStatistics.total_workouts,
+            })
+          }}
+        </div>
+        <div v-else class="statistics-workouts-count">
+          {{ $t('statistics.STATISTICS_ON_ALL_WORKOUTS') }}
+        </div>
+        <div class="statistics">
           <SportStatCard
             icon="road"
             :loading="loading"
@@ -184,6 +201,9 @@
   const sportStatistics: ComputedRef<TStatisticsForSport | null> = computed(
     () => store.getters.USER_SPORT_STATS[sportId.value]
   )
+  const totalWorkouts: ComputedRef<number> = computed(
+    () => store.getters.TOTAL_WORKOUTS
+  )
   const distanceUnitTo: TUnit = authUser.value.imperial_units
     ? units['km'].defaultTarget
     : 'km'
@@ -267,18 +287,21 @@
     .label {
       font-weight: bold;
       text-transform: capitalize;
-      margin: $default-margin * 3 0 $default-margin * 1.5;
+      margin: $default-margin * 2 0 $default-margin;
     }
 
+    .statistics-workouts-count {
+      font-style: italic;
+    }
     .sport-statistics {
       .sport-img-label {
         display: flex;
         gap: $default-padding;
         align-items: flex-end;
-        margin-top: $default-margin * 2;
+        margin-top: $default-margin * 1.5;
         .sport-img {
-          height: 120px;
-          width: 120px;
+          height: 50px;
+          width: 50px;
         }
         .sport-label {
           font-size: 25px;
@@ -287,7 +310,7 @@
       }
       .statistics {
         display: flex;
-        justify-content: space-around;
+        justify-content: flex-start;
         flex-wrap: wrap;
       }
     }
@@ -299,8 +322,8 @@
       .sport-statistics {
         .sport-img-label {
           .sport-img {
-            height: 80px;
-            width: 80px;
+            height: 50px;
+            width: 50px;
           }
           .sport-label {
             font-size: 20px;

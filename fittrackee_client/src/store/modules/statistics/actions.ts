@@ -52,6 +52,10 @@ export const actions: ActionTree<IStatisticsState, IRootState> &
             STATS_STORE.MUTATIONS.UPDATE_USER_SPORT_STATS,
             res.data.data.statistics
           )
+          context.commit(
+            STATS_STORE.MUTATIONS.UPDATE_TOTAL_WORKOUTS,
+            res.data.data.total_workouts
+          )
         } else {
           handleError(context, null)
         }
