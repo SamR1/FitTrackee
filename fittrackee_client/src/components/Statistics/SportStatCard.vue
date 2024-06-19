@@ -17,7 +17,7 @@
           class="stat-average"
           v-if="!['calendar', 'tachometer'].includes(icon)"
         >
-          <i class="fa fa-refresh fa-spin fa-fw" v-if="loading"></i>
+          <div v-if="loading"><i class="fa fa-refresh fa-spin fa-fw"></i></div>
           <slot v-else name="average"></slot>
         </div>
       </div>

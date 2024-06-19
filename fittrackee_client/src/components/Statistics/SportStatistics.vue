@@ -33,7 +33,9 @@
           <SportStatCard
             icon="road"
             :loading="loading"
-            :total-value="sportStatistics ? sportStatistics.total_distance : ''"
+            :total-value="
+              convertedDistance(sportStatistics?.total_distance, 'km')
+            "
             :text="distanceUnitTo"
             :label="$t('workouts.DISTANCE')"
           >
@@ -68,14 +70,16 @@
           <SportStatCard
             icon="tachometer"
             :loading="loading"
-            :total-value="sportStatistics ? sportStatistics.average_speed : ''"
+            :total-value="
+              convertedDistance(sportStatistics?.average_speed, 'km')
+            "
             :text="`${distanceUnitTo}/h`"
             :label="$t('workouts.AVE_SPEED')"
           />
           <SportStatCard
             icon="location-arrow"
             :loading="loading"
-            :total-value="sportStatistics ? sportStatistics.total_ascent : ''"
+            :total-value="convertedDistance(sportStatistics?.total_ascent, 'm')"
             :text="ascentUnitTo"
             :label="$t('workouts.ASCENT')"
           >
@@ -92,7 +96,9 @@
           <SportStatCard
             icon="location-arrow fa-rotate-90"
             :loading="loading"
-            :total-value="sportStatistics ? sportStatistics.total_descent : ''"
+            :total-value="
+              convertedDistance(sportStatistics?.total_descent, 'm')
+            "
             :text="ascentUnitTo"
             :label="$t('workouts.DESCENT')"
           >
@@ -142,7 +148,7 @@
   import { getDuration, getTotalDuration } from '@/utils/duration'
   import { getRecordsBySports, sortRecords } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
-  import { units } from '@/utils/units'
+  import { convertDistance, units } from '@/utils/units'
   interface Props {
     sports: ISport[]
     authUser: IAuthUserProfile
@@ -191,6 +197,20 @@
 
   onBeforeMount(() => getSportsStatistics())
 
+  function convertedDistance(
+    value: number | undefined,
+    unitFrom: TUnit
+  ): number | string {
+    if (value === undefined) {
+      return ''
+    }
+    const unitTo = authUser.value.imperial_units
+      ? units[unitFrom].defaultTarget
+      : unitFrom
+    return authUser.value.imperial_units
+      ? convertDistance(value, unitFrom, unitTo, 2)
+      : value
+  }
   function getSportsStatistics() {
     store.dispatch(STATS_STORE.ACTIONS.GET_USER_SPORT_STATS, {
       username: authUser.value.username,
