@@ -74,7 +74,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -97,7 +97,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -120,7 +120,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -144,7 +144,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
         input_type: str,
     ) -> None:
@@ -194,7 +194,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -237,7 +237,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1_paris: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -278,7 +278,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -327,7 +327,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -370,7 +370,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1_paris: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -413,7 +413,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -498,7 +498,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1_full: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -583,7 +583,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -626,7 +626,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1_full: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -711,7 +711,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -754,7 +754,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -841,7 +841,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -886,7 +886,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -938,7 +938,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1219,7 +1219,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1315,7 +1315,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1335,7 +1335,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
