@@ -10,6 +10,7 @@
             name="stats-type"
             id="stats-type"
             v-model="selectedStatType"
+            @change="updateParams"
           >
             <option
               v-for="statsType in statsTypes"
@@ -22,7 +23,7 @@
         </template>
         <template #content>
           <Statistics
-            v-if="selectedStatType === 'by_time'"
+            v-if="$route.query.chart !== 'by_sport'"
             :class="{ 'stats-disabled': isDisabled }"
             :user="authUser"
             :sports="sports"
@@ -41,8 +42,9 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+  import { computed, onBeforeMount, ref } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
 
   import Statistics from '@/components/Statistics/index.vue'
   import SportStatistics from '@/components/Statistics/SportStatistics.vue'
@@ -53,6 +55,8 @@
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
+  const route = useRoute()
+  const router = useRouter()
   const store = useStore()
 
   const authUser: ComputedRef<IAuthUserProfile> = computed(
@@ -68,6 +72,21 @@
   )
   const statsTypes: TStatisticsTypes[] = ['by_time', 'by_sport']
   const selectedStatType: Ref<TStatisticsTypes> = ref('by_time')
+
+  onBeforeMount(() => {
+    selectedStatType.value =
+      route.query.chart &&
+      statsTypes.includes(route.query.chart as TStatisticsTypes)
+        ? (route.query.chart as TStatisticsTypes)
+        : 'by_time'
+  })
+
+  function updateParams(e: Event) {
+    router.push({
+      path: '/statistics',
+      query: { chart: (e.target as HTMLSelectElement).value },
+    })
+  }
 </script>
 
 <style lang="scss" scoped>

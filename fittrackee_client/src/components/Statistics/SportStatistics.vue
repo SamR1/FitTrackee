@@ -1,7 +1,7 @@
 <template>
   <div id="sport-statistics">
     <label for="sport"> {{ $t('workouts.SPORT', 1) }}: </label>
-    <select id="sport" v-model="sportId" @change="getSportsStatistics()">
+    <select id="sport" v-model="sportId" @change="updateParams">
       <option
         v-for="selectedSport in translatedSports"
         :value="selectedSport.id"
@@ -132,9 +132,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, ref, toRefs } from 'vue'
+  import { computed, onBeforeMount, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+  import { useRoute, useRouter } from 'vue-router'
 
   import SportRecordsTable from '@/components/Common/SportRecordsTable.vue'
   import SportStatCard from '@/components/Statistics/SportStatCard.vue'
@@ -155,6 +156,8 @@
   }
   const props = defineProps<Props>()
 
+  const route = useRoute()
+  const router = useRouter()
   const store = useStore()
   const { t } = useI18n()
 
@@ -162,7 +165,8 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(sports.value, t, 'all')
   )
-  const sportId: Ref<number> = ref(sports.value[0].id)
+  const sportIds: number[] = translatedSports.value.map((s) => s.id)
+  const sportId: Ref<number> = ref(sportIds[0])
   const sportRecords: ComputedRef<IRecordsBySports> = computed(() =>
     getRecordsBySports(
       authUser.value.records,
@@ -212,6 +216,10 @@
       : value
   }
   function getSportsStatistics() {
+    sportId.value =
+      route.query.sport_id && sportIds.includes(+route.query.sport_id as number)
+        ? +route.query.sport_id
+        : sportIds[0]
     store.dispatch(STATS_STORE.ACTIONS.GET_USER_SPORT_STATS, {
       username: authUser.value.username,
       sportId: sportId.value,
@@ -229,6 +237,22 @@
     }
     return translatedRecords.sort(sortRecords)
   }
+  function updateParams(e: Event) {
+    router.push({
+      path: '/statistics',
+      query: {
+        chart: 'by_sport',
+        sport_id: (e.target as HTMLSelectElement).value,
+      },
+    })
+  }
+
+  watch(
+    () => route.query,
+    () => {
+      getSportsStatistics()
+    }
+  )
 </script>
 
 <style scoped lang="scss">
