@@ -7,6 +7,12 @@
     "week": "Estadísticas semanales",
     "year": "Estadísticas anuales"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Estadísticas de todos los entrenamientos:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Estadísticas de los últimos {count} entrenamientos:",
+  "STATISTICS_TYPES": {
+    "by_sport": "por deporte",
+    "by_time": "por periodo de tiempo"
+  },
   "TIME_FRAMES": {
     "month": "mes",
     "week": "semana",
