@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, ref } from 'vue'
+  import { computed, onBeforeMount, onMounted, ref } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
@@ -79,6 +79,12 @@
       statsTypes.includes(route.query.chart as TStatisticsTypes)
         ? (route.query.chart as TStatisticsTypes)
         : 'by_time'
+  })
+  onMounted(() => {
+    if (!isDisabled.value) {
+      const select = document.getElementById('stats-type')
+      select?.focus()
+    }
   })
 
   function updateParams(e: Event) {

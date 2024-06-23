@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref, toRefs } from 'vue'
+  import { ref, toRefs } from 'vue'
   import type { Ref } from 'vue'
 
   import type {
@@ -105,15 +105,6 @@
       .value as TStatisticsType
     emit('statsTypeUpdate', selectedStatsType.value)
   }
-
-  onMounted(() => {
-    if (!isDisabled.value) {
-      const input = document.getElementById('frame-month')
-      if (input) {
-        input.focus()
-      }
-    }
-  })
 </script>
 
 <style lang="scss" scoped>

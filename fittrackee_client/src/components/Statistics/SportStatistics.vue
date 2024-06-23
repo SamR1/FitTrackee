@@ -94,6 +94,7 @@
             :label="$t('workouts.AVE_SPEED')"
           />
           <SportStatCard
+            v-if="sportStatistics?.total_ascent !== null"
             icon="location-arrow"
             :loading="loading"
             :total-value="convertedDistance(sportStatistics?.total_ascent, 'm')"
@@ -111,6 +112,7 @@
             </template>
           </SportStatCard>
           <SportStatCard
+            v-if="sportStatistics?.total_descent !== null"
             icon="location-arrow fa-rotate-90"
             :loading="loading"
             :total-value="

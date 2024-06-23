@@ -56,8 +56,8 @@ export type TStatisticsFromApi = {
 }
 
 export type TStatisticsForSport = {
-  average_ascent: number
-  average_descent: number
+  average_ascent: number | null
+  average_descent: number | null
   average_distance: number
   average_duration: string
   average_speed: number
@@ -65,8 +65,8 @@ export type TStatisticsForSport = {
   total_workouts: number
   total_duration: string
   total_distance: number
-  total_ascent: number
-  total_descent: number
+  total_ascent: number | null
+  total_descent: number | null
 }
 export type TSportStatisticsFromApi = {
   [key in string]: TStatisticsForSport
