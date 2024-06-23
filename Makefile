@@ -54,17 +54,12 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker compose -f docker-compose-dev.yml build fittrackee_client
 
-docker-check-all: docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
+docker-check-all: docker-run docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
 
 docker-downgrade-db:
 	docker compose -f docker-compose-dev.yml exec fittrackee flask db downgrade --directory $(DOCKER_MIGRATIONS)
 
-docker-init: docker-run docker-init-db docker-restart docker-run-workers
-
-docker-init-db:
-	docker compose -f docker-compose-dev.yml exec fittrackee docker/init-database.sh
-
-docker-lint-all: docker-lint-client docker-lint-python
+docker-lint-all: docker-run docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
@@ -85,25 +80,19 @@ docker-rebuild:
 
 docker-restart:
 	docker compose -f docker-compose-dev.yml restart fittrackee
-	docker compose -f docker-compose-dev.yml exec -d fittrackee docker/run-workers.sh
 
 docker-revision:
 	docker compose -f docker-compose-dev.yml exec fittrackee flask db revision --directory $(DOCKER_MIGRATIONS) --message $(MIGRATION_MESSAGE)
 
-docker-run-all: docker-run docker-run-workers
-
 docker-run:
 	docker compose -f docker-compose-dev.yml up -d fittrackee
-
-docker-run-workers:
-	docker compose -f docker-compose-dev.yml exec -d fittrackee docker/run-workers.sh
 
 docker-serve-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
 	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
 
 docker-set-admin:
-	docker compose -f docker-compose-dev.yml exec fittrackee docker/set-admin.sh $(USERNAME)
+	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-admin true
 
 docker-shell:
 	docker compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
