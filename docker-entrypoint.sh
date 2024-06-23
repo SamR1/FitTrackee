@@ -12,9 +12,6 @@ else
     exit 1
 fi
 
-# Wait for postgres
-#sleep 20
-
 # Init database
 echo "Initializing database..."
 ftcli db upgrade || { echo "Failed to upgrade database!"; exit 1; }
@@ -22,6 +19,9 @@ ftcli db upgrade || { echo "Failed to upgrade database!"; exit 1; }
 # Run workers
 echo "Initializing workers..."
 flask worker --processes="${WORKERS_PROCESSES:-1}" >> dramatiq.log 2>&1 &
+
+# Wait for workers to start
+sleep 3
 
 # Run app
 echo "Initializing app..."
