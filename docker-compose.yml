@@ -1,0 +1,73 @@
+services:
+  fittrackee-db:
+    container_name: fittrackee-db
+    image: postgres:13
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+      - ./db/create.sql:/docker-entrypoint-initdb.d/create.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 15s
+      retries: 3
+
+  fittrackee:
+    container_name: fittrackee
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      fittrackee-db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      mail:
+        condition: service_started
+    volumes:
+      - .:/usr/src/app
+      - ./data/uploads:/usr/src/app/uploads
+
+  fittrackee_client:
+    container_name: fittrackee_client
+    environment:
+      - NODE_ENV=development
+      - VITE_APP_API_URL=http://localhost:5000
+    build:
+      context: ./fittrackee_client
+    volumes:
+      - ./fittrackee_client:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - fittrackee
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    command: /bin/sh
+
+  redis:
+    container_name: fittrackee-redis
+    image: "redis:latest"
+    hostname: redis
+    ports:
+      - "6379:6379"
+
+  mail:
+    container_name: fittrackee-mailhog
+    image: "mailhog/mailhog"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  selenium:
+    image: selenium/standalone-firefox:latest
+    hostname: selenium
+    privileged: true
+    shm_size: 2g
