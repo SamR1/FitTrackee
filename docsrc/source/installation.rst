@@ -844,20 +844,14 @@ For **evaluation** purposes, docker files are available, installing **FitTrackee
 .. warning::
     Docker files are not suitable for production installation.
 
-- To install **FitTrackee**:
+- To install and run **FitTrackee**:
 
 .. code-block:: bash
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
     $ cp .env.docker .env
-    $ make docker-build
-
-- To initialise database:
-
-.. code-block:: bash
-
-    $ make docker-init
+    $ make docker-run
 
 - Open http://localhost:5000 and register.
 
@@ -877,13 +871,6 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-stop
-
-- To start **Fittrackee** (application and dramatiq workers):
-
-.. code-block:: bash
-
-    $ make docker-run-all
-
 
 - To run shell inside **Fittrackee** container:
 
