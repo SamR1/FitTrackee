@@ -10,6 +10,7 @@
       minlength="8"
       @input="updatePassword"
       @invalid="invalidPassword"
+      :autocomplete="autocomplete"
     />
     <div class="show-password">
       <button class="transparent" @click.prevent="togglePassword" type="button">
@@ -42,6 +43,7 @@
     password?: string
     placeholder?: string
     required?: boolean
+    autocomplete: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -51,8 +53,15 @@
     password: '',
     required: false,
   })
-  const { checkStrength, disabled, id, password, placeholder, required } =
-    toRefs(props)
+  const {
+    autocomplete,
+    checkStrength,
+    disabled,
+    id,
+    password,
+    placeholder,
+    required,
+  } = toRefs(props)
 
   const showPassword: Ref<boolean> = ref(false)
   const passwordValue: Ref<string> = ref('')

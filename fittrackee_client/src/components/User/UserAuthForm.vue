@@ -41,7 +41,7 @@
           @submit.prevent="onSubmit(action)"
         >
           <div class="form-items">
-            <label for="username" class="visually-hidden">
+            <label for="username" v-if="action === 'register'">
               {{ $t('user.USERNAME', 0) }}
             </label>
             <input
@@ -54,13 +54,13 @@
               maxlength="30"
               @invalid="invalidateForm"
               v-model="formData.username"
-              :placeholder="$t('user.USERNAME')"
+              autocomplete="username"
             />
             <div v-if="action === 'register'" class="form-info">
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.USERNAME_INFO') }}
             </div>
-            <label for="email" class="visually-hidden">
+            <label for="email" v-if="action !== 'reset'">
               {{ $t('user.EMAIL', 0) }}
             </label>
             <input
@@ -71,7 +71,7 @@
               @invalid="invalidateForm"
               type="email"
               v-model="formData.email"
-              :placeholder="$t('user.EMAIL')"
+              autocomplete="email"
             />
             <div
               v-if="
@@ -86,7 +86,14 @@
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.EMAIL_INFO') }}
             </div>
-            <label for="password" class="visually-hidden">
+            <label
+              for="password"
+              v-if="
+                !['account-confirmation-resend', 'reset-request'].includes(
+                  action
+                )
+              "
+            >
               {{
                 $t(`user.${action === 'reset' ? 'ENTER_PASSWORD' : 'PASSWORD'}`)
               }}
@@ -100,15 +107,11 @@
               id="password"
               :disabled="registration_disabled"
               :required="true"
-              :placeholder="
-                action === 'reset'
-                  ? $t('user.ENTER_PASSWORD')
-                  : $t('user.PASSWORD')
-              "
               :password="formData.password"
               :checkStrength="['reset', 'register'].includes(action)"
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
+              autocomplete="current-password"
             />
             <label
               v-if="action === 'register'"
@@ -343,6 +346,29 @@
         align-items: center;
         font-size: 0.85em;
         font-weight: normal;
+      }
+      .form-items {
+        label {
+          padding-left: $default-padding;
+          &.accepted_policy {
+            padding-left: 0;
+            input {
+              margin-top: $default-margin;
+            }
+          }
+        }
+        ::v-deep(input) {
+          margin-top: 0;
+        }
+        ::v-deep(.password-strength) {
+          input {
+            margin-top: $default-margin;
+          }
+        }
+      }
+
+      .form-info {
+        margin-bottom: $default-padding * 0.5;
       }
     }
 
