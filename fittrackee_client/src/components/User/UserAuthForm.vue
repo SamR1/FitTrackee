@@ -54,6 +54,7 @@
               maxlength="30"
               @invalid="invalidateForm"
               v-model="formData.username"
+              autocomplete="username"
             />
             <div v-if="action === 'register'" class="form-info">
               <i class="fa fa-info-circle" aria-hidden="true" />
@@ -70,6 +71,7 @@
               @invalid="invalidateForm"
               type="email"
               v-model="formData.email"
+              autocomplete="email"
             />
             <div
               v-if="
@@ -109,6 +111,7 @@
               :checkStrength="['reset', 'register'].includes(action)"
               @updatePassword="updatePassword"
               @passwordError="invalidateForm"
+              autocomplete="current-password"
             />
             <label
               v-if="action === 'register'"
