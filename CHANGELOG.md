@@ -1,5 +1,53 @@
 # Change log
 
+## Version 0.8.5 (2024/06/29)
+
+### Features and enhancements
+
+* [#566](https://github.com/SamR1/FitTrackee/issues/566) - [Feature] Improved statistics section with average calculation
+* [PR#575](https://github.com/SamR1/FitTrackee/pull/575) - Add page to display sport statistics
+* [PR#587](https://github.com/SamR1/FitTrackee/pull/587) - Improve user forms
+
+### Bugs Fixed
+
+* [PR#588](https://github.com/SamR1/FitTrackee/pull/588) - Fix click on workout chart checkbox labels
+
+### Translations
+
+* [PR#564](https://github.com/SamR1/FitTrackee/pull/564) - Translations update (Dutch)
+* [PR#565](https://github.com/SamR1/FitTrackee/pull/565) - Translations update (Polish)
+* [PR#571](https://github.com/SamR1/FitTrackee/pull/571) - Translations update (Galician, Spanish)
+* [PR#582](https://github.com/SamR1/FitTrackee/pull/582) - Translations update (Galician, Spanish)
+ 
+Translation status:
+- Basque: 98%
+- Czech: 73%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 98%
+- Italian: 73%
+- Norwegian Bokmål: 52%
+- Polish: 92%
+- Portuguese: 98%
+- Spanish: 100%
+
+### Misc
+
+* [PR#583](https://github.com/SamR1/FitTrackee/pull/583) - Simplify docker deployment
+
+
+Thanks to the contributors:
+- @byakurau
+- @gallegonovato
+- @jderuiter
+- @pluja
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.8.4 (2024/05/22)
 
 **FitTrackee** is now available in Portuguese.

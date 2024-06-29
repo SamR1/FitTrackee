@@ -7,7 +7,7 @@ from fittrackee import VERSION
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
-from ..utils import random_string
+from ..utils import random_int, random_string
 
 
 class TestConfigModel:
@@ -116,3 +116,15 @@ class TestConfigModel:
         serialized_app_config = app_config.serialize()
 
         assert serialized_app_config["about"] == about
+
+    def test_it_returns_stats_workouts_limit(self, app: Flask) -> None:
+        app_config = AppConfig.query.first()
+        stats_workouts_limit = random_int()
+        app_config.stats_workouts_limit = stats_workouts_limit
+
+        serialized_app_config = app_config.serialize()
+
+        assert (
+            serialized_app_config["stats_workouts_limit"]
+            == stats_workouts_limit
+        )

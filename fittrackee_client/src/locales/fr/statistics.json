@@ -1,13 +1,22 @@
 {
+  "AVERAGE": "Moyenne",
+  "DATES": "Dates",
   "STATISTICS": "Statistiques",
   "STATISTICS_CHARTS": {
     "month": "Statistiques mensuelles",
     "week": "Statistiques hebdomadaires",
     "year": "Statistiques annuelles"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistiques sur toutes les séances :",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statistiques sur les {count} dernières séances :",
+  "STATISTICS_TYPES": {
+    "by_sport": "par sport",
+    "by_time": "par période de temps"
+  },
   "TIME_FRAMES": {
     "month": "mois",
     "week": "semaine",
     "year": "année"
-  }
+  },
+  "WORKOUTS_AVERAGE": "nombre moyen de séances"
 }

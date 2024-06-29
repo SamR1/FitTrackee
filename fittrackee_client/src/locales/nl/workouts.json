@@ -108,8 +108,10 @@
   "WITHOUT_GPX": "zonder .gpx bestand",
   "WITH_GPX": "met .gpx bestand",
   "WORKOUT": "training | trainingen",
+  "WORKOUT_CHART": "grafiek snelheid en hoogte training",
   "WORKOUT_DATE": "datum training",
   "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze training wilt verwijderen?",
+  "WORKOUT_MAP": "kaart training",
   "ZIP_ARCHIVE": ".zip bestand",
   "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden"
 }

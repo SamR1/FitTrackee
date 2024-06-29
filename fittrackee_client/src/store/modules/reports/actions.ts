@@ -77,7 +77,7 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
       const { appealId, reportId, ...data } = payload
       authApi
-        .patch(`users/suspensions/appeals/${appealId}`, data)
+        .patch(`suspensions/appeals/${appealId}`, data)
         .then((res) => {
           if (res.data.status === 'success') {
             context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, reportId)

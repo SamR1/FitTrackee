@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.05.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.8.4</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.8.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -182,7 +182,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.4
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.5
 </div></a>
     </div>
     <div class="header-right">
@@ -210,7 +210,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.4
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.5
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -396,18 +396,58 @@
 <li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une note.</p></li>
 <li><dl class="simple">
 <dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>totaux :</dt><dd><ul>
 <li><p>distance totale</p></li>
 <li><p>durée totale</p></li>
 <li><p>nombre total de séances</p></li>
 <li><p>dénivelé positif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
 <li><p>dénivelé négatif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
-<li><p>vitesse moyenne (<em>nouveau dans la version 0.5.1</em>)</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Records de l’utilisateur par sports :</dt><dd><ul class="simple">
+<dt>moyennes :</dt><dd><ul>
+<li><p>vitesse moyenne (<em>nouveau dans la version 0.5.1</em>)</p></li>
+<li><p>distance moyenne (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>durée moyenne (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>nombre moyen de séances (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>dénivelé positif moyen (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>dénivelé négatif moyen (<em>nouveau dans la version 0.8.5</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Statistiques de l’utilisateur pour un sport (<em>nouveau dans la version in 0.8.5</em>)</dt><dd><ul class="simple">
+<li><p>nombre total de séances</p></li>
+<li><p>distance (total et moyenne)</p></li>
+<li><p>durée (total et moyenne)</p></li>
+<li><p>vitesse moyenne</p></li>
+<li><p>dénivelé positif (total et moyenne)</p></li>
+<li><p>dénivelé négatif (total et moyenne)</p></li>
+<li><p>records</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Il existe une limite au nombre de séances utilisées pour calculer les statistiques afin d’éviter les problèmes de performances. La valeur peut être modifiée dans l’administration.</div>
+<div class="line">Si la limite est atteinte, le nombre des séances utilisées est affiché.</div>
+<div class="line">Le nombre total des séances pour un sport donné n’est pas affecté par cette limite.</div>
+</div>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Records de l’utilisateur par sports :</dt><dd><ul>
 <li><p>vitesse moyenne</p></li>
 <li><p>la plus grande distance</p></li>
 <li><p>dénivelé positif le plus élevé (<em>nouveau dans la version 0.6.11</em>, peut être masqué, cf. préférences utilisateur)</p></li>
@@ -589,10 +629,11 @@
 <p><strong>Configuration</strong></p>
 <p>Les paramètres suivants peuvent être définis :</p>
 <ul class="simple">
-<li><p>limite des utilisateurs actifs. S’il est égal à 0, l’inscription est activée (aucune limite n’est définie).</p></li>
-<li><p>taille maximale du fichier gpx (ajouté unitairement ou dans une archive zip) (<em>modifié dans la version 0.7.4</em>)</p></li>
-<li><p>taille maximale de l’archive zip</p></li>
-<li><p>nombre maximum de fichiers dans l’archive zip (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>limite d’utilisateurs actifs (valeur par défaut : 0). Si la valeur est égale  à 0, l’inscription est activée (aucune limite n’est définie).</p></li>
+<li><p>taille maximale du fichier gpx (ajouté unitairement ou dans une archive zip, valeur par défaut : 1 Mo) (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>taille maximale de l’archive zip (valeur par défaut : 10 Mo)</p></li>
+<li><p>nombre maximum de fichiers dans l’archive zip (valeur par défaut : 10) (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>nombre maximum de séances pour les statistiques d’un sport (par défaut : 10 000). S’il est égal à 0, toutes les séances sont récupérées pour calculer les statistiques (<em>nouveau dans la version 0.8.5</em>)</p></li>
 <li><p>adresse électronique pour contacter l’administrateur (<em>nouveau dans la version 0.6.0</em>)</p></li>
 </ul>
 <div class="admonition warning">
@@ -693,6 +734,9 @@
 <h3>Statistiques<a class="headerlink" href="#statistics" title="Lien permanent vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Statistics sur FitTrackee" src="_images/fittrackee_screenshot-04.png" />
+</figure>
+<figure class="align-default">
+<img alt="Statistiques pour un sport sur FitTrackee" src="_images/fittrackee_screenshot-11.png" />
 </figure>
 </section>
 <section id="id1">
@@ -808,7 +852,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=1ee976d9"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=ba91f2c0"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>

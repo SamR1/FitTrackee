@@ -35,7 +35,35 @@
         </div>
       </template>
       <template #content>
-        <div class="workout-map-data">
+        <div v-if="workoutObject.suspended" class="suspended info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
+          <button
+            v-if="displayMakeAppeal && !success && !displayAppealForm"
+            class="transparent appeal-button"
+            @click="displayAppealForm = true"
+          >
+            {{ $t('user.APPEAL') }}
+          </button>
+        </div>
+        <ActionAppeal
+          v-if="displayAppealForm && workout.suspension"
+          :suspension="workout.suspension"
+          :success="success"
+          :loading="appealLoading"
+          @submitForm="submitAppeal"
+          @hideMessage="displayAppealForm = false"
+        >
+          <template #cancelButton>
+            <button @click="cancelAppeal()">
+              {{ $t('buttons.CANCEL') }}
+            </button>
+          </template>
+        </ActionAppeal>
+        <div
+          class="workout-map-data"
+          v-if="isWorkoutOwner || !workoutObject.suspended"
+        >
           <WorkoutMap
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
@@ -70,6 +98,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
@@ -134,6 +163,16 @@
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
   )
+  const success: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
+  )
+  const appealLoading: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.APPEAL_LOADING]
+  )
+  const displayMakeAppeal: ComputedRef<boolean> = computed(
+    () => workout.value.suspended_at !== null && isWorkoutOwner.value
+  )
+  const displayAppealForm: Ref<boolean> = ref(false)
 
   function getWorkoutObjectUrl(
     workout: IWorkout,
@@ -193,6 +232,7 @@
       records: segment ? [] : workout.records,
       remoteUrl: workout.remote_url,
       segmentId: segment ? segment.segment_id : null,
+      suspended: workout.suspended !== undefined ? workout.suspended : false,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
@@ -227,13 +267,26 @@
       behavior: 'smooth',
     })
   }
-  function resetReportStatus() {
+  function resetStatuses() {
     if (reportStatus.value !== null) {
       store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
     }
+    if (success.value) {
+      store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, false)
+    }
+  }
+  function submitAppeal(appealText: string) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.MAKE_WORKOUT_APPEAL, {
+      objectId: workout.value.id,
+      text: appealText,
+    })
+  }
+  function cancelAppeal() {
+    displayAppealForm.value = false
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   }
 
-  onUnmounted(() => resetReportStatus())
+  onUnmounted(() => resetStatuses())
 
   watch(
     () => route.params.segmentId,
@@ -249,7 +302,7 @@
         displayModal.value = false
         scrollToTop()
       }
-      resetReportStatus()
+      resetStatuses()
     }
   )
 </script>
@@ -270,6 +323,12 @@
             margin: $default-margin * 0.5 0 0 $default-margin;
           }
         }
+        .report-form {
+          .error-message {
+            font-weight: normal;
+            margin: $default-margin 0;
+          }
+        }
       }
       .card-content {
         display: flex;
@@ -283,6 +342,17 @@
           flex-wrap: wrap;
           gap: $default-padding;
           margin-top: $default-margin * 0.5;
+        }
+        .suspended {
+          font-size: 0.9em;
+        }
+        .appeal {
+          margin-top: $default-padding;
+        }
+
+        .appeal-button {
+          padding: 0 $default-padding;
+          font-size: 0.95em;
         }
         @media screen and (max-width: $medium-limit) {
           .workout-map-data {

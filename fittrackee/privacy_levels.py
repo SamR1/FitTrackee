@@ -48,7 +48,16 @@ def can_view(
         target_object.__class__.__name__ == "Workout"
         and target_object.suspended_at
     ):
-        return False
+        if not user:
+            return False
+
+        from fittrackee.comments.models import Comment
+
+        user_comments_count = Comment.query.filter_by(
+            workout_id=target_object.id, user_id=user.id
+        ).count()
+        if user_comments_count == 0:
+            return False
 
     if target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC and (
         not user or not user.is_blocked_by(owner)

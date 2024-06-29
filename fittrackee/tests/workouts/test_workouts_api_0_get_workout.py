@@ -8,6 +8,7 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.tests.comments.utils import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
@@ -113,7 +114,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         )
 
 
-class TestGetWorkoutAsFollower(GetWorkoutTestCase):
+class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
     def test_it_returns_404_when_workout_visibility_is_private(
         self,
         app: Flask,
@@ -136,18 +137,26 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
-    def test_it_returns_404_when_workout_is_suspended(
+    def test_it_returns_404_when_workout_is_suspended_and_no_user_comments(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
+        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
+        follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
+        user_2.approves_follow_request_from(user_3)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
         workout_cycling_user_2.suspended_at = datetime.utcnow()
+        self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -160,6 +169,41 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
 
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_404_when_workout_is_suspended_and_auth_user_commented_workout(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_2.serialize(user_1)
+        )
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',
@@ -231,7 +275,7 @@ class TestGetWorkoutAsFollower(GetWorkoutTestCase):
         self.assert_403(response)
 
 
-class TestGetWorkoutAsUser(GetWorkoutTestCase):
+class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
@@ -248,16 +292,20 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
 
-    def test_it_returns_404_when_workout_is_suspended(
+    def test_it_returns_404_when_workout_is_suspended_and_no_user_comments(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
+        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         workout_cycling_user_2.suspended_at = datetime.utcnow()
+        self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -270,6 +318,39 @@ class TestGetWorkoutAsUser(GetWorkoutTestCase):
 
         data = self.assert_404(response)
         assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_404_when_workout_is_suspended_and_auth_user_commented_workout(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_2.serialize(user_1)
+        )
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',

@@ -7,9 +7,11 @@ from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from freezegun import freeze_time
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import VERSION, db
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.models import Equipment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import (
@@ -21,6 +23,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from .utils import WorkoutMixin
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
@@ -3359,3 +3362,236 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
             f'{sport_1_cycling.label} - 2018-01-01 00:00:00'
             == data['data']['workouts'][1]['title']
         )
+
+
+class TestPostWorkoutSuspensionAppeal(
+    ApiTestCaseMixin, WorkoutMixin, BaseTestMixin
+):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_if_workout_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        workout_short_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_403_if_user_is_not_workout_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_400_if_workout_is_not_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message="workout is not suspended")
+
+    def test_it_returns_400_if_suspended_workout_has_no_admin_action(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message="workout has no suspension")
+
+    @pytest.mark.parametrize(
+        'input_data', [{}, {"text": ""}, {"comment": "some text"}]
+    )
+    def test_it_returns_400_when_appeal_text_is_missing(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        self.create_admin_workout_suspension_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(input_data),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'no text provided')
+
+    def test_user_can_appeal_comment_suspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        action = self.create_admin_workout_suspension_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        text = self.random_string()
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.post(
+                f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+                content_type='application/json',
+                data=json.dumps(dict(text=text)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "success"}
+        appeal = AdminActionAppeal.query.filter_by(action_id=action.id).first()
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == now
+        assert appeal.user_id == user_1.id
+        assert appeal.updated_at is None
+
+    def test_user_can_appeal_comment_suspension_only_once(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        action = self.create_admin_workout_suspension_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.flush()
+        appeal = AdminActionAppeal(
+            action_id=action.id,
+            user_id=user_1.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='you can appeal only once')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

@@ -10,7 +10,9 @@ from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReporterException,
+    InvalidReportException,
     ReportNotFoundException,
+    SuspendedObjectException,
 )
 from fittrackee.reports.models import ReportComment
 from fittrackee.tests.comments.utils import CommentMixin
@@ -89,6 +91,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         app: Flask,
         user_1: User,
         user_2: User,
+        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
@@ -101,6 +104,21 @@ class TestReportServiceCreateForComment(CommentMixin):
         note = self.random_string()
         now = datetime.utcnow()
         report_service = ReportService()
+        # report from another user
+        report_service.create_report(
+            reporter=user_3,
+            note=self.random_string(),
+            object_id=comment.short_id,
+            object_type="comment",
+        )
+        # resolved report from same user
+        report = report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=comment.short_id,
+            object_type="comment",
+        )
+        report.resolved = True
 
         with freeze_time(now):
             comment_report = report_service.create_report(
@@ -114,13 +132,72 @@ class TestReportServiceCreateForComment(CommentMixin):
         assert comment_report.note == note
         assert comment_report.object_type == "comment"
         assert comment_report.reported_by == user_2.id
-        assert comment_report.reported_comment_id == comment_report.id
+        assert comment_report.reported_comment_id == comment.id
         assert comment_report.reported_workout_id is None
         assert comment_report.reported_user_id == user_1.id
         assert comment_report.resolved is False
         assert comment_report.resolved_at is None
         assert comment_report.resolved_by is None
         assert comment_report.updated_at is None
+
+    def test_it_raises_error_when_report_from_the_same_user_already_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        report_service = ReportService()
+        report_service.create_report(
+            reporter=user_2,
+            note=self.random_string(),
+            object_id=comment.short_id,
+            object_type="comment",
+        )
+
+        with pytest.raises(
+            InvalidReportException, match='a report already exists'
+        ):
+            report_service.create_report(
+                reporter=user_2,
+                note=self.random_string(),
+                object_id=comment.short_id,
+                object_type="comment",
+            )
+
+    def test_it_raises_error_when_comment_is_already_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        comment.suspended_at = datetime.utcnow()
+        report_service = ReportService()
+
+        with pytest.raises(
+            SuspendedObjectException, match='comment already suspended'
+        ):
+            report_service.create_report(
+                reporter=user_2,
+                note=self.random_string(),
+                object_id=comment.short_id,
+                object_type="comment",
+            )
 
 
 class TestReportServiceCreateForWorkout(RandomMixin):
@@ -179,6 +256,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         app: Flask,
         user_1: User,
         user_2: User,
+        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
@@ -186,6 +264,21 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         note = self.random_string()
         now = datetime.utcnow()
         report_service = ReportService()
+        # report from another user
+        report_service.create_report(
+            reporter=user_3,
+            note=note,
+            object_id=workout_cycling_user_2.short_id,
+            object_type="workout",
+        )
+        # resolved report from same user
+        report = report_service.create_report(
+            reporter=user_1,
+            note=self.random_string(),
+            object_id=workout_cycling_user_2.short_id,
+            object_type="workout",
+        )
+        report.resolved = True
 
         with freeze_time(now):
             workout_report = report_service.create_report(
@@ -206,6 +299,57 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         assert workout_report.resolved_at is None
         assert workout_report.resolved_by is None
         assert workout_report.updated_at is None
+
+    def test_it_raises_error_when_report_from_the_same_user_already_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report_service = ReportService()
+        # report from same user
+        report_service.create_report(
+            reporter=user_1,
+            note=self.random_string(),
+            object_id=workout_cycling_user_2.short_id,
+            object_type="workout",
+        )
+
+        with pytest.raises(
+            InvalidReportException, match='a report already exists'
+        ):
+            report_service.create_report(
+                reporter=user_1,
+                note=self.random_string(),
+                object_id=workout_cycling_user_2.short_id,
+                object_type="workout",
+            )
+
+    def test_it_raises_error_when_workout_is_already_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        report_service = ReportService()
+
+        with pytest.raises(
+            SuspendedObjectException, match='workout already suspended'
+        ):
+            report_service.create_report(
+                reporter=user_2,
+                note=self.random_string(),
+                object_id=workout_cycling_user_2.short_id,
+                object_type="workout",
+            )
 
 
 class TestReportServiceCreateForUser(RandomMixin):
@@ -249,11 +393,26 @@ class TestReportServiceCreateForUser(RandomMixin):
             )
 
     def test_it_creates_report_for_user(
-        self, app: Flask, user_1: User, user_2: User
+        self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
         note = self.random_string()
         now = datetime.utcnow()
         report_service = ReportService()
+        # report from another user
+        report_service.create_report(
+            reporter=user_3,
+            note=note,
+            object_id=user_2.username,
+            object_type="user",
+        )
+        # resolved report from same user
+        report = report_service.create_report(
+            reporter=user_1,
+            note=note,
+            object_id=user_2.username,
+            object_type="user",
+        )
+        report.resolved = True
 
         with freeze_time(now):
             user_report = report_service.create_report(
@@ -274,6 +433,54 @@ class TestReportServiceCreateForUser(RandomMixin):
         assert user_report.resolved_at is None
         assert user_report.resolved_by is None
         assert user_report.updated_at is None
+
+    def test_it_raises_error_when_report_from_the_same_user_already_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        # report from same user
+        report_service.create_report(
+            reporter=user_1,
+            note=self.random_string(),
+            object_id=user_2.username,
+            object_type="user",
+        )
+
+        with pytest.raises(
+            InvalidReportException, match='a report already exists'
+        ):
+            report_service.create_report(
+                reporter=user_1,
+                note=self.random_string(),
+                object_id=user_2.username,
+                object_type="user",
+            )
+
+    def test_it_raises_error_when_user_is_already_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        report_service = ReportService()
+
+        with pytest.raises(
+            SuspendedObjectException, match='user already suspended'
+        ):
+            report_service.create_report(
+                reporter=user_2,
+                note=self.random_string(),
+                object_id=user_1.username,
+                object_type="user",
+            )
 
 
 class TestReportServiceUpdate(CommentMixin):

@@ -12,6 +12,7 @@
         :name="sport.label"
         :checked="selectedSportIds.includes(sport.id)"
         @input="updateSelectedSportIds(sport.id)"
+        @keyup.prevent.space="updateSelectedSportIds(sport.id)"
       />
       <SportImage :sport-label="sport.label" :color="sport.color" />
       <span class="sport-label">{{ sport.translatedLabel }}</span>
@@ -55,7 +56,7 @@
   .sports-menu {
     display: flex;
     flex-wrap: wrap;
-    padding: $default-padding;
+    padding: 0 $default-padding;
 
     label {
       display: flex;

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
-from sqlalchemy import asc, desc, nullslast
+from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
 from fittrackee.administration.models import (
@@ -11,10 +11,12 @@ from fittrackee.administration.models import (
     USER_ACTION_TYPES,
     WORKOUT_ACTION_TYPES,
     AdminAction,
+    AdminActionAppeal,
 )
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -27,10 +29,13 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
+from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     InvalidReporterException,
+    InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
 )
@@ -80,10 +85,8 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             if object_type == "user"
             else f"users can not report their own {object_type}s"
         )
-    except SuspendedObjectException as e:
-        return InvalidPayloadErrorResponse(
-            f"users can not report suspended {e}"
-        )
+    except (SuspendedObjectException, InvalidReportException) as e:
+        return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(
             error=e,
@@ -288,3 +291,71 @@ def create_admin_action(
             status="fail",
             db=db,
         )
+
+
+@reports_blueprint.route(
+    '/suspensions/appeals/<string:appeal_id>', methods=["PATCH"]
+)
+@require_auth(scopes=['users:write'], as_admin=True)
+def process_appeal(
+    auth_user: User, appeal_id: str
+) -> Union[Dict, HttpResponse]:
+    appeal_uuid = decode_short_id(appeal_id)
+    appeal = AdminActionAppeal.query.filter_by(uuid=appeal_uuid).first()
+
+    if not appeal:
+        return NotFoundErrorResponse(
+            message=f"appeal not found (id: {appeal_id})"
+        )
+
+    data = request.get_json()
+    if not data or "approved" not in data or not data.get("reason"):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        appeal.admin_user_id = auth_user.id
+        appeal.approved = data["approved"]
+        appeal.reason = data["reason"]
+        appeal.updated_at = datetime.utcnow()
+
+        if data["approved"]:
+            action = appeal.action
+            if action.action_type == "user_suspension":
+                user_manager_service = UserManagerService(
+                    username=appeal.user.username, admin_user_id=auth_user.id
+                )
+                user, _, _ = user_manager_service.update(
+                    suspended=False, report_id=appeal.action.report_id
+                )
+            if action.action_type == "comment_suspension":
+                admin_action = AdminAction(
+                    admin_user_id=auth_user.id,
+                    action_type="comment_unsuspension",
+                    comment_id=action.comment_id,
+                    created_at=datetime.now(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                )
+                db.session.add(admin_action)
+                comment = Comment.query.filter_by(id=action.comment_id).first()
+                comment.suspended_at = None
+            if action.action_type == "workout_suspension":
+                admin_action = AdminAction(
+                    admin_user_id=auth_user.id,
+                    action_type="workout_unsuspension",
+                    created_at=datetime.now(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                    workout_id=action.workout_id,
+                )
+                db.session.add(admin_action)
+                workout = Workout.query.filter_by(id=action.workout_id).first()
+                workout.suspended_at = None
+        db.session.commit()
+        return {
+            "status": "success",
+            "appeal": appeal.serialize(auth_user),
+        }
+
+    except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

@@ -19,6 +19,7 @@ export type TAppConfig = {
   max_zip_file_size: number
   privacy_policy: string | null
   privacy_policy_date: string | null
+  stats_workouts_limit: number
   version: string
   weather_provider: string | null
 }

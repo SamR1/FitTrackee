@@ -257,7 +257,7 @@
                   class="report-comment-textarea"
                   name="report-comment"
                   :required="isNoteMandatory"
-                  :placeholder="$t(getTextAreaPlaceholder())"
+                  :placeholder="getTextAreaPlaceholder()"
                   @updateValue="updateCommentText"
                 />
                 <div class="comment-buttons">
@@ -346,6 +346,7 @@
   import type { Locale } from 'date-fns'
   import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
 
   import AdminActionAppeal from '@/components/Administration/AdminActionAppeal.vue'
@@ -388,6 +389,8 @@
   const store = useStore()
   const route = useRoute()
   const router = useRouter()
+
+  const { t } = useI18n()
 
   const locale: ComputedRef<Locale> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LOCALE]
@@ -576,7 +579,16 @@
     const placeholder_action = currentAction.value?.includes('SUSPEND')
       ? currentAction.value?.split('_')[0]
       : currentAction.value
-    return `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${placeholder_action}`
+    const placeholder = t(
+      `admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.${placeholder_action}`
+    )
+    const information =
+      placeholder_action === 'ADD_COMMENT'
+        ? ''
+        : ` ${t(
+            'admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.INFORMATION_VISIBLE_TO_USER'
+          )}`
+    return `${placeholder}${information}`
   }
 
   onBeforeMount(async () => loadReport())

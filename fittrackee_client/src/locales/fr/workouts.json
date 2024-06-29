@@ -81,6 +81,7 @@
   "START": "début",
   "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
+  "SUSPENDED_BY_ADMIN": "La séance a été suspendue par un administrateur.",
   "TITLE": "titre",
   "TO": "jusqu'au",
   "TOTAL_DISTANCE": "distance totale",

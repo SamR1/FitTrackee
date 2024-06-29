@@ -18,6 +18,8 @@
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "NO_CONTACT_EMAIL": "non renseigné",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
+    "STATS_WORKOUTS_LIMIT_HELP": "Si égal à 0, pas limite sur le nombre de séances.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Nombre de séances max. pour les statistiques d'un sport",
     "TITLE": "Configuration de l'application",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
   },
@@ -73,9 +75,11 @@
     "STATUS": "état",
     "TEXTAREA_PLACEHOLDER": {
       "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile.",
-      "SUSPEND": "Indiquer le motif de la suspension (non obligatoire). Cette information sera visible de l'utilisateur.",
-      "UNSUSPEND": "Ajouter un commentaire (non obligatoire). Cette information sera visible de l'utilisateur.",
-      "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours. Cette information sera visible de l'utilisateur."
+      "INFORMATION_VISIBLE_TO_USER": "Cette information sera visible de l'utilisateur.",
+      "MARK_AS_RESOLVED": "Indiquer le motif de la résolution.",
+      "SUSPEND": "Indiquer le motif de la suspension (non obligatoire).",
+      "UNSUSPEND": "Ajouter un commentaire (non obligatoire).",
+      "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours."
     },
     "TITLE": "Modération"
   },

@@ -4,7 +4,14 @@
       <div class="workout-container" v-if="sports.length > 0">
         <div v-if="workoutData.workout.id">
           <WorkoutUser :user="workoutData.workout.user"></WorkoutUser>
+          <div
+            class="box suspended"
+            v-if="workoutData.workout.suspended && !isWorkoutOwner"
+          >
+            {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
+          </div>
           <WorkoutDetail
+            v-else
             :workoutData="workoutData"
             :sports="sports"
             :authUser="authUser"

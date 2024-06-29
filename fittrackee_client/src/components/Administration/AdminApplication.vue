@@ -32,7 +32,7 @@
               :disabled="!edition"
             />
           </label>
-          <div class="user-limit-help">
+          <div class="admin-help">
             <span class="info-box">
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('admin.APP_CONFIG.MAX_USERS_HELP') }}
@@ -73,6 +73,23 @@
               :disabled="!edition"
             />
           </label>
+          <label for="stats_workouts_limit">
+            {{ $t('admin.APP_CONFIG.STATS_WORKOUTS_LIMIT_LABEL') }}:
+            <input
+              id="stats_workouts_limit"
+              name="stats_workouts_limit"
+              type="number"
+              min="0"
+              v-model="appData.stats_workouts_limit"
+              :disabled="!edition"
+            />
+          </label>
+          <div class="admin-help">
+            <span class="info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('admin.APP_CONFIG.STATS_WORKOUTS_LIMIT_HELP') }}
+            </span>
+          </div>
           <label class="about-label" for="about">
             {{ $t('admin.ABOUT.TEXT') }}:
           </label>
@@ -182,6 +199,7 @@
     gpx_limit_import: 0,
     about: '',
     privacy_policy: '',
+    stats_workouts_limit: 0,
   })
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
@@ -227,7 +245,7 @@
   @import '~@/scss/vars.scss';
 
   #admin-app {
-    .user-limit-help {
+    .admin-help {
       display: flex;
       span {
         font-style: italic;

@@ -520,17 +520,21 @@
         getDateWithTZ(workout.workout_date, props.authUser.timezone),
         'yyyy-MM-dd'
       )
-      const duration = workout.duration.split(':')
-      workoutForm.workoutDistance = `${
-        authUser.value.imperial_units
-          ? convertDistance(workout.distance, 'km', 'mi', 3)
-          : parseFloat(workout.distance.toFixed(3))
-      }`
+      if (workout.duration) {
+        const duration = workout.duration.split(':')
+        workoutForm.workoutDurationHour = duration[0]
+        workoutForm.workoutDurationMinutes = duration[1]
+        workoutForm.workoutDurationSeconds = duration[2]
+      }
+      if (workout.distance) {
+        workoutForm.workoutDistance = `${
+          authUser.value.imperial_units
+            ? convertDistance(workout.distance, 'km', 'mi', 3)
+            : parseFloat(workout.distance.toFixed(3))
+        }`
+      }
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
-      workoutForm.workoutDurationHour = duration[0]
-      workoutForm.workoutDurationMinutes = duration[1]
-      workoutForm.workoutDurationSeconds = duration[2]
       workoutForm.workoutAscent =
         workout.ascent === null
           ? ''

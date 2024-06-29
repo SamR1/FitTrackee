@@ -20,9 +20,12 @@ import type { ISport } from '@/types/sports'
 import type {
   IStatisticsChartData,
   IStatisticsDateParams,
+  IStatisticsWorkoutsAverageChartData,
   TStatisticsDatasetKeys,
   TStatisticsDatasets,
   TStatisticsFromApi,
+  TStatisticsTimeFrame,
+  TStatisticsType,
 } from '@/types/statistics'
 import { incrementDate, getStartDate, getDateFormat } from '@/utils/dates'
 import { localeFromLanguage } from '@/utils/locales'
@@ -47,8 +50,12 @@ export const dateFormats: Record<string, Record<string, string>> = {
 }
 
 export const datasetKeys: TStatisticsDatasetKeys[] = [
+  'average_ascent',
+  'average_descent',
+  'average_distance',
+  'average_duration',
   'average_speed',
-  'nb_workouts',
+  'total_workouts',
   'total_duration',
   'total_distance',
   'total_ascent',
@@ -92,8 +99,13 @@ const getStatisticsChartDataset = (
 
 export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   const datasets: TStatisticsDatasets = {
+    average_ascent: [],
+    average_descent: [],
+    average_distance: [],
+    average_duration: [],
     average_speed: [],
-    nb_workouts: [],
+    average_workouts: [],
+    total_workouts: [],
     total_distance: [],
     total_duration: [],
     total_ascent: [],
@@ -101,10 +113,22 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   }
   displayedSports.map((sport) => {
     const color = sport.color ? sport.color : sportColors[sport.label]
+    datasets.average_ascent.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
+    datasets.average_descent.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
+    datasets.average_distance.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
+    datasets.average_duration.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
     datasets.average_speed.push(
       getStatisticsChartDataset(sport.label, color, true)
     )
-    datasets.nb_workouts.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_workouts.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_ascent.push(getStatisticsChartDataset(sport.label, color))
@@ -123,14 +147,22 @@ export const convertStatsValue = (
     case 'total_distance':
     case 'total_ascent':
     case 'total_descent':
+    case 'average_distance':
+    case 'average_ascent':
+    case 'average_descent':
       return convertStatsDistance(
-        ['average_speed', 'total_distance'].includes(datasetKey) ? 'km' : 'm',
+        ['average_speed', 'total_distance', 'average_distance'].includes(
+          datasetKey
+        )
+          ? 'km'
+          : 'm',
         value,
         useImperialUnits
       )
     default:
-    case 'nb_workouts':
+    case 'total_workouts':
     case 'total_duration':
+    case 'average_duration':
       return value
   }
 }
@@ -195,7 +227,7 @@ export const formatStats = (
                 apiStats[date][sportsId[dataset.label]][datasetKey],
                 useImperialUnits
               )
-            : datasetKey === 'average_speed'
+            : datasetKey.startsWith('average')
               ? null
               : 0
         )
@@ -210,8 +242,9 @@ export const formatStats = (
 
 export const getStatsDateParams = (
   date: Date,
-  timeFrame: string,
-  weekStartingMonday: boolean
+  timeFrame: TStatisticsTimeFrame,
+  weekStartingMonday: boolean,
+  statsType: TStatisticsType
 ): IStatisticsDateParams => {
   const weekStartsOn = weekStartingMonday ? 1 : 0
   const start =
@@ -230,6 +263,7 @@ export const getStatsDateParams = (
     duration: timeFrame,
     end,
     start,
+    statsType,
   }
 }
 
@@ -258,5 +292,43 @@ export const updateChartParams = (
               weekStartsOn,
             })
           : startOfMonth(backward ? subMonths(start, 1) : addMonths(start, 1)),
+    statsType: chartParams.statsType,
+  }
+}
+
+const getAverage = (values: (number | null)[]): number => {
+  const sum = values.reduce((total, value) => (total || 0) + (value || 0), 0)
+  const average = values.length ? (sum || 0) / values.length : 0
+  return +average.toFixed(1)
+}
+
+export const getWorkoutsAverageDatasets = (
+  total_workouts: IChartDataset[]
+): IStatisticsWorkoutsAverageChartData => {
+  const labels: string[] = []
+  const workoutsAverageDataset: IChartDataset = {
+    label: 'workouts_average',
+    backgroundColor: [],
+    data: [],
+  }
+  let all_workouts: number[] = []
+  for (const sport of total_workouts) {
+    workoutsAverageDataset.data.push(getAverage(sport.data))
+    workoutsAverageDataset.backgroundColor.push(sport.backgroundColor[0])
+    labels.push(sport.label)
+    if (all_workouts.length > 0) {
+      all_workouts = all_workouts.map(
+        (value, index) => value + (sport.data[index] || 0)
+      )
+    } else {
+      all_workouts = sport.data.map((value) => value || 0)
+    }
+  }
+  return {
+    labels,
+    datasets: {
+      workouts_average: [workoutsAverageDataset],
+    },
+    workoutsAverage: getAverage(all_workouts),
   }
 }

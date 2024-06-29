@@ -13,6 +13,7 @@ from fittrackee.administration.models import (
     USER_ACTION_TYPES,
     WORKOUT_ACTION_TYPES,
     AdminAction,
+    AdminActionAppeal,
 )
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
@@ -23,6 +24,7 @@ from fittrackee.workouts.models import Sport, Workout
 from ..comments.utils import CommentMixin
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..workouts.utils import WorkoutMixin
 
 
 class ReportTestCase(
@@ -288,7 +290,42 @@ class TestPostCommentReport(ReportTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, "users can not report suspended comment")
+        self.assert_400(response, "comment already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(user_1, comment)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
 
     def test_it_creates_report_for_comment(
         self,
@@ -393,6 +430,72 @@ class TestPostWorkoutReport(ReportTestCase):
 
         self.assert_400(response, "users can not report their own workouts")
 
+    def test_it_returns_400_when_workout_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_1,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "workout already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_report(user_1, workout_cycling_user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
+
     def test_it_creates_report_for_workout(
         self,
         app: Flask,
@@ -485,6 +588,63 @@ class TestPostUserReport(ReportTestCase):
         )
 
         self.assert_400(response, "users can not report their own profile")
+
+    def test_it_returns_400_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "user already suspended")
+
+    def test_it_returns_400_when_report_already_exist(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        self.create_report(user_1, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "a report already exists")
 
     def test_it_creates_report_for_user(
         self,
@@ -2556,3 +2716,392 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_admin, full=True)
         )
+
+
+class TestProcessAdminActionAppeal(
+    CommentMixin, WorkoutMixin, UserModerationMixin, ApiTestCaseMixin
+):
+    route = '/api/suspensions/appeals/{appeal_id}'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.patch(
+            self.route.format(appeal_id=self.random_short_id()),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_403_when_user_has_no_admin_rights(
+        self, app: Flask, user_1: User
+    ) -> None:
+        appeal_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_404_if_appeal_does_not_exist(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        appeal_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False)),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"appeal not found (id: {appeal_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_data", [{"approved": True}, {"reason": "foo"}, {}]
+    )
+    def test_it_returns_error_when_data_are_missing(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_user_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(appeal_id=appeal.short_id),
+                data=json.dumps(input_data),
+                content_type="application/json",
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.admin_user_id == user_1_admin.id
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+        assert appeal.updated_at == now
+
+    def test_it_unsuspends_user_when_appeal_is_approved(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": "ok"}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert user_2.suspended_at is None
+
+    def test_it_creates_unsuspended_user_action_when_appeal_is_approved(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": "ok"}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                report_id=suspension_action.report_id,
+                action_type="user_unsuspension",
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+                reason=None,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_comment_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+        comment_suspended_at = comment.suspended_at
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(appeal_id=appeal.short_id),
+                data=json.dumps(input_data),
+                content_type="application/json",
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.admin_user_id == user_1_admin.id
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+        assert appeal.updated_at == now
+        assert comment.suspended_at == (
+            None if input_data["approved"] else comment_suspended_at
+        )
+
+    def test_it_creates_unsuspended_comment_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        reason = self.random_string()
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": reason}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                action_type="comment_unsuspension",
+                admin_user_id=user_1_admin.id,
+                comment_id=comment.id,
+                reason=None,
+                report_id=suspension_action.report_id,
+                user_id=user_3.id,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_workout_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_suspended_at = workout_cycling_user_2.suspended_at
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        now = datetime.utcnow()
+
+        with freeze_time(now):
+            response = client.patch(
+                self.route.format(appeal_id=appeal.short_id),
+                data=json.dumps(input_data),
+                content_type="application/json",
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.admin_user_id == user_1_admin.id
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+        assert appeal.updated_at == now
+        assert workout_cycling_user_2.suspended_at == (
+            None if input_data["approved"] else workout_suspended_at
+        )
+
+    def test_it_creates_unsuspended_workout_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        reason = self.random_string()
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps({"approved": True, "reason": reason}),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                action_type="workout_unsuspension",
+                admin_user_id=user_1_admin.id,
+                reason=None,
+                report_id=suspension_action.report_id,
+                user_id=user_2.id,
+                workout_id=workout_cycling_user_2.id,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "users:write": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        appeal_id = self.random_short_id()
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal_id),
+            data=json.dumps(dict(approved=False, reason="OK")),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

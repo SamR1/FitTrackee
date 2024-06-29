@@ -6,7 +6,7 @@ import type {
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
 import type {
-  IAccountSuspension,
+  ISuspension,
   IAuthUserProfile,
   IExportRequest,
   IUserProfile,
@@ -67,7 +67,7 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   },
   [AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION](
     state: IAuthUserState,
-    accountSuspension: IAccountSuspension
+    accountSuspension: ISuspension
   ) {
     state.accountSuspension = accountSuspension
   },

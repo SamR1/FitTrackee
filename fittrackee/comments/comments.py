@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, request
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.oauth2.server import require_auth
@@ -310,3 +311,36 @@ def undo_comment_like(
         'status': 'success',
         'comment': comment.serialize(auth_user),
     }, 200
+
+
+@comments_blueprint.route(
+    "/comments/<string:comment_short_id>/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=["workouts:write"])
+@check_workout_comment(only_owner=True)
+def appeal_comment_suspension(
+    auth_user: User, comment: Comment
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if not comment.suspended_at:
+        return InvalidPayloadErrorResponse("workout comment is not suspended")
+    suspension_action = comment.suspension_action
+    if not suspension_action:
+        return InvalidPayloadErrorResponse("workout comment has no suspension")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=suspension_action.id, user_id=auth_user.id, text=text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

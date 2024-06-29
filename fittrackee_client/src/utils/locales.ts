@@ -52,18 +52,18 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  cs: 'Česky (74%)',
-  de: 'Deutsch',
+  cs: 'Česky (73%)',
+  de: 'Deutsch (98%)',
   en: 'English',
   es: 'Español',
-  eu: 'Euskara',
+  eu: 'Euskara (98%)',
   fr: 'Français',
   gl: 'Galego',
-  it: 'Italiano (74%)',
-  nb: 'Norsk bokmål (53%)',
+  it: 'Italiano (73%)',
+  nb: 'Norsk bokmål (52%)',
   nl: 'Nederlands (98%)',
-  pl: 'Polski (88%)',
-  pt: 'Português',
+  pl: 'Polski (92%)',
+  pt: 'Português (98%)',
 }
 
 const { availableLocales } = createI18n.global

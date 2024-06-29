@@ -74,6 +74,7 @@ def workout_cycling_user_1() -> Workout:
     workout = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3600),
@@ -89,6 +90,7 @@ def another_workout_cycling_user_1() -> Workout:
     workout = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Mon, 01 Jan 2024 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('01/01/2024', '%d/%m/%Y'),
         distance=18,
         duration=datetime.timedelta(seconds=3600),
@@ -121,7 +123,8 @@ def workout_running_user_1() -> Workout:
     workout = Workout(
         user_id=1,
         sport_id=2,
-        workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
+        workout_date=datetime.datetime.strptime('02/04/2018', '%d/%m/%Y'),
         distance=12,
         duration=datetime.timedelta(seconds=6000),
     )
@@ -137,6 +140,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_1 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Mon, 20 Mar 2017 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
         distance=5,
         duration=datetime.timedelta(seconds=1024),
@@ -152,6 +156,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_2 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Thu, 01 Jun 2017 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=3456),
@@ -167,6 +172,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_3 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1024),
@@ -182,6 +188,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_4 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Fri, 23 Feb 2018 10:00:00 GMT'
         workout_date=datetime.datetime.strptime(
             '23/02/2018 10:00', '%d/%m/%Y %H:%M'
         ),
@@ -199,6 +206,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_5 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Fri, 23 Feb 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
         distance=10,
         duration=datetime.timedelta(seconds=1000),
@@ -214,6 +222,7 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_6 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Sun, 01 Apr 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
         distance=8,
         duration=datetime.timedelta(seconds=6000),
@@ -229,12 +238,17 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_7 = Workout(
         user_id=1,
         sport_id=1,
+        # workout_date: 'Wed, 09 May 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
         distance=10,
-        duration=datetime.timedelta(seconds=3000),
+        duration=datetime.timedelta(seconds=3600),
     )
     workout_7.title = "Workout 7 of 7"
-    update_workout(workout_7)
+    workout_7.moving = datetime.timedelta(seconds=3000)
+    workout_7.ave_speed = float(workout_7.distance) / (
+        workout_7.moving.seconds / 3600
+    )
+    workout_7.max_speed = workout_7.ave_speed + 5
     db.session.add(workout_7)
     db.session.commit()
     workouts.append(workout_7)
@@ -247,6 +261,7 @@ def workout_cycling_user_2() -> Workout:
     workout = Workout(
         user_id=2,
         sport_id=1,
+        # workout_date: 'Tue, 23 Jan 2018 00:00:00 GMT'
         workout_date=datetime.datetime.strptime('23/01/2018', '%d/%m/%Y'),
         distance=15,
         duration=datetime.timedelta(seconds=3600),

@@ -154,7 +154,7 @@ class AdminAction(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def serialize(self, current_user: User) -> Dict:
+    def serialize(self, current_user: User, full: bool = True) -> Dict:
         if not current_user.admin and current_user.id != self.user_id:
             raise AdminActionForbiddenException()
         action = {
@@ -166,6 +166,9 @@ class AdminAction(BaseModel):
             "id": self.short_id,
             "reason": self.reason,
         }
+        if not full:
+            return action
+
         if current_user.admin:
             action = {
                 **action,
@@ -262,7 +265,11 @@ class AdminActionAppeal(BaseModel):
         created_at: Optional[datetime] = None,
     ):
         action = AdminAction.query.filter_by(id=action_id).first()
-        if action.action_type != "user_suspension":
+        if action.action_type not in [
+            "user_suspension",
+            "comment_suspension",
+            "workout_suspension",
+        ]:
             raise InvalidAdminActionAppealException()
         if action.user_id != user_id:
             raise InvalidAdminActionAppealUserException()

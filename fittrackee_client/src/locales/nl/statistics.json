@@ -1,5 +1,10 @@
 {
   "STATISTICS": "Statistieken",
+  "STATISTICS_CHARTS": {
+    "month": "Maandelijkse statistieken",
+    "week": "Wekelijkse statistieken",
+    "year": "Jaarlijkse statistieken"
+  },
   "TIME_FRAMES": {
     "month": "maand",
     "week": "week",

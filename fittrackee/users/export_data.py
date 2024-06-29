@@ -40,7 +40,9 @@ class UserDataExporter:
     def get_user_workouts_data(self) -> List[Dict]:
         workouts_data = []
         for workout in self.user.workouts:
-            workout_data = workout.get_workout_data(self.user)
+            workout_data = workout.get_workout_data(
+                self.user, additional_data=True
+            )
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
                 workout.gpx.split('/')[-1] if workout.gpx else None

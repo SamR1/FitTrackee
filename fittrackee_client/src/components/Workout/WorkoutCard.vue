@@ -17,19 +17,22 @@
           >
             {{ workout.title }}
           </router-link>
-          <time
-            class="workout-date"
-            v-if="workout.workout_date && user"
-            :datetime="workoutDateWithTZ"
-            :title="workoutDateWithTZ"
-          >
-            {{
-              formatDistance(new Date(workout.workout_date), new Date(), {
-                addSuffix: true,
-                locale,
-              })
-            }}
-          </time>
+          <div class="workout-date-visibility">
+            <time
+              class="workout-date"
+              v-if="workout.workout_date && user"
+              :datetime="workoutDateWithTZ"
+              :title="workoutDateWithTZ"
+            >
+              {{
+                formatDistance(new Date(workout.workout_date), new Date(), {
+                  addSuffix: true,
+                  locale,
+                })
+              }}
+            </time>
+            <VisibilityIcon :visibility="workout.workout_visibility" />
+          </div>
         </div>
         <div v-if="user.is_remote" class="user-remote-fullname">
           {{ user.fullname }}
@@ -218,10 +221,16 @@
             text-decoration: none;
           }
         }
-        .workout-date {
-          font-size: 0.85em;
-          font-style: italic;
-          white-space: nowrap;
+        .workout-date-visibility {
+          display: flex;
+          gap: 5px;
+          align-items: flex-end;
+
+          .workout-date {
+            font-size: 0.85em;
+            font-style: italic;
+            white-space: nowrap;
+          }
         }
         .workout-title {
           display: block;

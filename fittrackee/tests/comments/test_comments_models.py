@@ -145,6 +145,53 @@ class TestWorkoutCommentModel(CommentMixin):
 
         assert Comment.query.filter_by(id=comment_id).first() is not None
 
+    def test_suspension_action_is_none_when_no_suspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_2, workout=workout_cycling_user_1
+        )
+
+        assert comment.suspension_action is None
+
+    def test_suspension_action_is_last_suspension_action_when_comment_is_suspended(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_2, workout=workout_cycling_user_1
+        )
+        expected_admin_action = self.create_admin_comment_actions(
+            user_1_admin, user_2, comment
+        )
+        comment.suspended_at = datetime.utcnow()
+
+        assert comment.suspension_action == expected_admin_action
+
+    def test_suspension_action_is_none_when_comment_is_unsuspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(
+            user=user_2, workout=workout_cycling_user_1
+        )
+        self.create_admin_comment_actions(user_1_admin, user_2, comment)
+
+        assert comment.suspension_action is None
+
 
 class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
     @pytest.mark.parametrize('suspended', [True, False])
@@ -253,6 +300,44 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'suspended_at': comment.suspended_at,
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+        }
+
+    def test_it_serializes_owner_comment_when_comment_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        comment = self.create_comment(
+            user=user_1, workout=workout_cycling_user_2
+        )
+        expected_admin_action = self.create_admin_comment_actions(
+            user_2_admin, user_1, comment
+        )
+        comment.suspended_at = datetime.utcnow()
+
+        serialized_comment = comment.serialize(user_1)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_1.serialize(),
+            'workout_id': None,
+            'text': comment.text,
+            'text_html': comment.text,  # no mention
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [],
+            'suspended': True,
+            'suspended_at': comment.suspended_at,
+            'suspension': expected_admin_action.serialize(user_1, full=False),
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],

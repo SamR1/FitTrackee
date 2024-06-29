@@ -24,6 +24,7 @@ from fittrackee.utils import encode_uuid
 from .exceptions import CommentForbiddenException
 
 if TYPE_CHECKING:
+    from fittrackee.administration.models import AdminAction
     from fittrackee.users.models import User
 
 
@@ -176,6 +177,22 @@ class Comment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    @property
+    def suspension_action(self) -> Optional['AdminAction']:
+        if self.suspended_at is None:
+            return None
+
+        from fittrackee.administration.models import AdminAction
+
+        return (
+            AdminAction.query.filter(
+                AdminAction.comment_id == self.id,
+                AdminAction.action_type == "comment_suspension",
+            )
+            .order_by(AdminAction.created_at.desc())
+            .first()
+        )
+
     @hybrid_property
     def remote_mentions(self) -> Query:
         from fittrackee.users.models import User
@@ -266,9 +283,13 @@ class Comment(BaseModel):
 
         # suspended comment content is only visible to its owner or
         # to admin in report only
-        suspension = {}
+        suspension: Dict[str, Any] = {}
         if self.suspended_at:
             suspension["suspended"] = True
+            if user and user.id == self.user_id and self.suspension_action:
+                suspension["suspension"] = self.suspension_action.serialize(
+                    current_user=user, full=False
+                )
         if user and (user.id == self.user_id or (user.admin and for_report)):
             suspension["suspended_at"] = self.suspended_at
 

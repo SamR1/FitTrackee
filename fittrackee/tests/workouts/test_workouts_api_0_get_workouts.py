@@ -42,7 +42,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 2
         assert 'creation_date' in data['data']['workouts'][0]
         assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
+            'Mon, 02 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['data']['workouts'][0]['user'] == jsonify_dict(
@@ -226,7 +226,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             'Wed, 09 May 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert '0:50:00' == data['data']['workouts'][0]['duration']
+        assert '1:00:00' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][4]
         assert (
             'Mon, 01 Jan 2018 00:00:00 GMT'
@@ -266,7 +266,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
             'Wed, 09 May 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
-        assert '0:50:00' == data['data']['workouts'][0]['duration']
+        assert '1:00:00' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][4]
         assert (
             'Mon, 01 Jan 2018 00:00:00 GMT'
@@ -975,7 +975,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
+            'Mon, 02 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
@@ -1009,7 +1009,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
+            'Mon, 02 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
