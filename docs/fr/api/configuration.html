@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Équipements" href="equipments.html" /><link rel="prev" title="Authentification et compte" href="auth.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.05.06 -->
-        <title>Configuration - Documentation FitTrackee 0.8.4</title>
+        <title>Configuration - Documentation FitTrackee 0.8.5</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -182,7 +182,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.4
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.5
 </div></a>
     </div>
     <div class="header-right">
@@ -210,7 +210,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.4
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.5
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -322,7 +322,8 @@
 <span class="w">    </span><span class="nt">&quot;map_attribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&amp;copy; &lt;a href=http://www.openstreetmap.org/copyright&gt;OpenStreetMap&lt;/a&gt; contributors&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.8.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stats_workouts_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.8.5&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;weather_provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
@@ -367,7 +368,8 @@
 <span class="w">    </span><span class="nt">&quot;map_attribution&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&amp;copy; &lt;a href=http://www.openstreetmap.org/copyright&gt;OpenStreetMap&lt;/a&gt; contributors&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.8.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stats_workouts_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.8.5&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;weather_provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
@@ -385,6 +387,7 @@
 <li><p><strong>max_users</strong> (<em>integer</em>) – nombre maximum d’utilisateurs autorisés à s’inscrire sur l’instance</p></li>
 <li><p><strong>max_zip_file_size</strong> (<em>integer</em>) – taille maximale d’une archive zip</p></li>
 <li><p><strong>privacy_policy</strong> (<em>string</em>) – politique de confidentialité de l’instance</p></li>
+<li><p><strong>stats_workouts_limit</strong> (<em>integer</em>) – nombre maximum de séances pour les statistiques d’un sport</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -395,7 +398,17 @@
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">size</span> <span class="pre">of</span> <span class="pre">zip</span> <span class="pre">archive</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">size</span> <span class="pre">of</span> <span class="pre">zip</span> <span class="pre">archive</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">equal</span> <span class="pre">or</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">max</span> <span class="pre">size</span> <span class="pre">of</span> <span class="pre">uploaded</span> <span class="pre">files</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">size</span> <span class="pre">of</span> <span class="pre">uploaded</span> <span class="pre">files</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">files</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">zip</span> <span class="pre">archive</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">users</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">or</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">workouts</span> <span class="pre">for</span> <span class="pre">statistics</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">or</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">admin</span> <span class="pre">contact</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
@@ -493,7 +506,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=1ee976d9"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=ba91f2c0"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/furo.js?v=4e2eecee"></script>

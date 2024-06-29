@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.05.06 -->
-        <title>Features - FitTrackee 0.8.4 documentation</title>
+        <title>Features - FitTrackee 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -182,7 +182,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.8.4
+      <a href="index.html"><div class="brand">FitTrackee 0.8.5
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -210,7 +210,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.4
+  <span class="sidebar-brand-text">FitTrackee 0.8.5
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -396,18 +396,58 @@
 <li><p>Workout edition and deletion. User can add a note.</p></li>
 <li><dl class="simple">
 <dt>User statistics, by time period (week, month, year) and sport:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>totals:</dt><dd><ul>
 <li><p>total distance</p></li>
 <li><p>total duration</p></li>
 <li><p>total workouts</p></li>
 <li><p>total ascent  (<em>new in 0.5.0</em>)</p></li>
 <li><p>total descent  (<em>new in 0.5.0</em>)</p></li>
-<li><p>average speed  (<em>new in 0.5.1</em>)</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>User records by sports:</dt><dd><ul class="simple">
+<dt>averages:</dt><dd><ul>
+<li><p>average speed  (<em>new in 0.5.1</em>)</p></li>
+<li><p>average distance  (<em>new in 0.8.5</em>)</p></li>
+<li><p>average duration  (<em>new in 0.8.5</em>)</p></li>
+<li><p>average workouts  (<em>new in 0.8.5</em>)</p></li>
+<li><p>average ascent  (<em>new in 0.8.5</em>)</p></li>
+<li><p>average descent  (<em>new in 0.8.5</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>User statistics by sport (<em>new in 0.8.5</em>):</dt><dd><ul class="simple">
+<li><p>total workouts</p></li>
+<li><p>distance (total and average)</p></li>
+<li><p>duration (total and average)</p></li>
+<li><p>average speed</p></li>
+<li><p>ascent (total and average)</p></li>
+<li><p>descent (total and average)</p></li>
+<li><p>records</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.</div>
+<div class="line">If the limit is reached, the number of workouts used is displayed.</div>
+<div class="line">The total number of workouts for a given sport is not affected by this limit.</div>
+</div>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt>User records by sports:</dt><dd><ul>
 <li><p>average speed</p></li>
 <li><p>farthest distance</p></li>
 <li><p>highest ascent (<em>new in 0.6.11</em>, can be hidden, see user preferences)</p></li>
@@ -590,10 +630,11 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <p><strong>Configuration</strong></p>
 <p>The following parameters can be set:</p>
 <ul class="simple">
-<li><p>active users limit. If 0, registration is enabled (no limit defined).</p></li>
-<li><p>maximum size of gpx file (individually uploaded or in a zip archive) (<em>changed in 0.7.4</em>)</p></li>
-<li><p>maximum size of zip archive</p></li>
-<li><p>maximum number of files in the zip archive (<em>changed in 0.7.4</em>)</p></li>
+<li><p>active users limit (default: 0). If 0, registration is enabled (no limit defined).</p></li>
+<li><p>maximum size of gpx file (individually uploaded or in a zip archive, default: 1Mb) (<em>changed in 0.7.4</em>)</p></li>
+<li><p>maximum size of zip archive (default: 10Mb)</p></li>
+<li><p>maximum number of files in the zip archive (default: 10) (<em>changed in 0.7.4</em>)</p></li>
+<li><p>maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (<em>new in 0.8.5</em>)</p></li>
 <li><p>administrator email for contact (<em>new in 0.6.0</em>)</p></li>
 </ul>
 <div class="admonition warning">
@@ -694,6 +735,9 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <h3>Statistics<a class="headerlink" href="#statistics" title="Permalink to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Statistics" src="_images/fittrackee_screenshot-04.png" />
+</figure>
+<figure class="align-default">
+<img alt="FitTrackee Sport Statistics" src="_images/fittrackee_screenshot-11.png" />
 </figure>
 </section>
 <section id="id1">
@@ -809,7 +853,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=96659adb"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=321d1ec2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>

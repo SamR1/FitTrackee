@@ -330,7 +330,7 @@ def get_workouts_by_sport(
 
     **Example responses**:
 
-    - success
+    - success for all sports:
 
     .. sourcecode:: http
 
@@ -381,6 +381,33 @@ def get_workouts_by_sport(
         "status": "success"
       }
 
+    - success for a given sport:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "statistics": {
+            "2": {
+              "average_ascent": 46.0,
+              "average_descent": 78.0,
+              "average_distance": 5.613,
+              "average_duration": 1267,
+              "average_speed": 15.95,
+              "total_workouts": 1,
+              "total_ascent": 46.0,
+              "total_ascent": 78.0,
+              "total_distance": 5.613,
+              "total_duration": 1267
+            }
+          }
+        },
+        "status": "success"
+      }
+
     - no workouts:
 
     .. sourcecode:: http
@@ -397,7 +424,8 @@ def get_workouts_by_sport(
 
     :param integer user_name: username
 
-    :query integer sport_id: sport id
+    :query integer sport_id: sport id (not mandatory).
+           If not provided, statistics for all sports are returned.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

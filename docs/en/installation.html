@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.05.06 -->
-        <title>Installation - FitTrackee 0.8.4 documentation</title>
+        <title>Installation - FitTrackee 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -182,7 +182,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.8.4
+      <a href="index.html"><div class="brand">FitTrackee 0.8.5
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -210,7 +210,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.4
+  <span class="sidebar-brand-text">FitTrackee 0.8.5
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -987,11 +987,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.8.4):</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.5):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.4.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.4.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.3<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.5.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.5.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.5<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1127,11 +1127,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.8.4) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.5) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.4.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.4.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.3/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.5.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.5.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.5/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1307,18 +1307,12 @@ server {
 <p>Docker files are not suitable for production installation.</p>
 </div>
 <ul class="simple">
-<li><p>To install <strong>FitTrackee</strong>:</p></li>
+<li><p>To install and run <strong>FitTrackee</strong>:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamR1/FitTrackee.git
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 $<span class="w"> </span>cp<span class="w"> </span>.env.docker<span class="w"> </span>.env
-$<span class="w"> </span>make<span class="w"> </span>docker-build
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>To initialise database:</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-init
+$<span class="w"> </span>make<span class="w"> </span>docker-run
 </pre></div>
 </div>
 <ul class="simple">
@@ -1339,12 +1333,6 @@ $<span class="w"> </span>make<span class="w"> </span>docker-build
 <li><p>To stop <strong>Fittrackee</strong>:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-stop
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>To start <strong>Fittrackee</strong> (application and dramatiq workers):</p></li>
-</ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-run-all
 </pre></div>
 </div>
 <ul class="simple">
@@ -1496,7 +1484,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=96659adb"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=321d1ec2"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>
