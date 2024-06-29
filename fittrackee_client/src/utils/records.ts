@@ -79,14 +79,19 @@ export const getRecordsBySports = (
   tz: string,
   useImperialUnits: boolean,
   display_ascent: boolean,
-  date_format: string
+  date_format: string,
+  sportId: number | null = null
 ): IRecordsBySports => {
   date_format = getDateFormat(date_format, locale.value)
   return records
     .filter((r) => (display_ascent ? true : r.record_type !== 'HA'))
     .reduce((sportList: IRecordsBySports, record) => {
       const sport = translatedSports.find((s) => s.id === record.sport_id)
-      if (sport && sport.label) {
+      if (
+        sport &&
+        sport.label &&
+        (sportId === null ? true : sport.id === sportId)
+      ) {
         if (sportList[sport.translatedLabel] === void 0) {
           sportList[sport.translatedLabel] = {
             label: sport.label,

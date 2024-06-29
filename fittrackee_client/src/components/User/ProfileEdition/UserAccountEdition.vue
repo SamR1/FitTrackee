@@ -28,6 +28,7 @@
             :disabled="loading"
             :required="true"
             @invalid="invalidateForm"
+            autocomplete="email"
           />
         </label>
         <label class="form-items" for="password-field">
@@ -39,6 +40,7 @@
             :required="true"
             @updatePassword="updatePassword"
             @passwordError="invalidateForm"
+            autocomplete="current-password"
           />
         </label>
         <label class="form-items" for="new-password-field">
@@ -51,6 +53,7 @@
             :isSuccess="false"
             @updatePassword="updateNewPassword"
             @passwordError="invalidateForm"
+            autocomplete="new-password"
           />
         </label>
         <div class="form-buttons">

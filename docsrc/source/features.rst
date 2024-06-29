@@ -70,12 +70,33 @@ Workouts
 - Workout gpx file can be downloaded (*new in 0.5.1*)
 - Workout edition and deletion. User can add a note.
 - User statistics, by time period (week, month, year) and sport:
-    - total distance
-    - total duration
-    - total workouts
-    - total ascent  (*new in 0.5.0*)
-    - total descent  (*new in 0.5.0*)
-    - average speed  (*new in 0.5.1*)
+    - totals:
+        - total distance
+        - total duration
+        - total workouts
+        - total ascent  (*new in 0.5.0*)
+        - total descent  (*new in 0.5.0*)
+    - averages:
+        - average speed  (*new in 0.5.1*)
+        - average distance  (*new in 0.8.5*)
+        - average duration  (*new in 0.8.5*)
+        - average workouts  (*new in 0.8.5*)
+        - average ascent  (*new in 0.8.5*)
+        - average descent  (*new in 0.8.5*)
+- User statistics by sport (*new in 0.8.5*):
+   - total workouts
+   - distance (total and average)
+   - duration (total and average)
+   - average speed
+   - ascent (total and average)
+   - descent (total and average)
+   - records
+
+.. note::
+  | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
+  | If the limit is reached, the number of workouts used is displayed.
+  | The total number of workouts for a given sport is not affected by this limit.
+
 - User records by sports:
     - average speed
     - farthest distance
@@ -198,10 +219,11 @@ Application
 
 The following parameters can be set:
 
-- active users limit. If 0, registration is enabled (no limit defined).
-- maximum size of gpx file (individually uploaded or in a zip archive) (*changed in 0.7.4*)
-- maximum size of zip archive
-- maximum number of files in the zip archive (*changed in 0.7.4*)
+- active users limit (default: 0). If 0, registration is enabled (no limit defined).
+- maximum size of gpx file (individually uploaded or in a zip archive, default: 1Mb) (*changed in 0.7.4*)
+- maximum size of zip archive (default: 10Mb)
+- maximum number of files in the zip archive (default: 10) (*changed in 0.7.4*)
+- maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
 - administrator email for contact (*new in 0.6.0*)
 
 .. warning::
@@ -300,6 +322,8 @@ Statistics
 .. figure:: _images/fittrackee_screenshot-04.png
    :alt: FitTrackee Statistics
 
+.. figure:: _images/fittrackee_screenshot-11.png
+   :alt: FitTrackee Sport Statistics
 
 Equipments
 """"""""""

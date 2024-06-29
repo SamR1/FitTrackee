@@ -28,6 +28,7 @@ class AppConfig(BaseModel):
     privacy_policy_date = db.Column(db.DateTime, nullable=True)
     privacy_policy = db.Column(db.Text, nullable=True)
     about = db.Column(db.Text, nullable=True)
+    stats_workouts_limit = db.Column(db.Integer, default=10000, nullable=False)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -53,6 +54,7 @@ class AppConfig(BaseModel):
             'map_attribution': self.map_attribution,
             'privacy_policy': self.privacy_policy,
             'privacy_policy_date': self.privacy_policy_date,
+            'stats_workouts_limit': self.stats_workouts_limit,
             'version': VERSION,
             'weather_provider': (
                 weather_provider

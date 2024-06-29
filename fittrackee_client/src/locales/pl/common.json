@@ -1,8 +1,10 @@
 {
   "ABOUT": "o",
+  "ACTIVE": "aktywny",
   "CONFIRMATION": "Potwierdzenie",
   "CONTACT": "kontakt",
   "DAY": "dzień | dni",
+  "DESCRIPTION": "Opis",
   "DISPLAYED": "Wyświetlony",
   "DOCUMENTATION": "dokumentacja",
   "HERE": "tutaj",
@@ -23,5 +25,6 @@
       "LABEL": "na stronę"
     }
   },
-  "TOTAL": "Łącznie"
+  "TOTAL": "Łącznie",
+  "TOTAL_DURATION_WITH_PAUSES": "całkowity czas trwania z przerwami"
 }

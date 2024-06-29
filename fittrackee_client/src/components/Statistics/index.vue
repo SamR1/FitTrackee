@@ -1,6 +1,7 @@
 <template>
   <div id="user-statistics" v-if="translatedSports">
     <StatsMenu
+      @statsTypeUpdate="updateStatsType"
       @timeFrameUpdate="updateTimeFrame"
       @arrowClick="handleOnClickArrows"
       :isDisabled="isDisabled"
@@ -12,6 +13,7 @@
       :displayed-sport-ids="selectedSportIds"
       :fullStats="true"
       :isDisabled="isDisabled"
+      :selectedTimeFrame="selectedTimeFrame"
     />
     <SportsMenu
       :selected-sport-ids="selectedSportIds"
@@ -30,7 +32,11 @@
   import StatsMenu from '@/components/Statistics/StatsMenu.vue'
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IStatisticsDateParams } from '@/types/statistics'
+  import type {
+    IStatisticsDateParams,
+    TStatisticsTimeFrame,
+    TStatisticsType,
+  } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
   import { translateSports } from '@/utils/sports'
   import { getStatsDateParams, updateChartParams } from '@/utils/statistics'
@@ -45,21 +51,34 @@
   const { t } = useI18n()
 
   const { sports, user } = toRefs(props)
-  const selectedTimeFrame = ref('month')
+  const selectedTimeFrame: Ref<TStatisticsTimeFrame> = ref('month')
+  const selectedStatsType: Ref<TStatisticsType> = ref('total')
   const chartParams: Ref<IStatisticsDateParams> = ref(
-    getChartParams(selectedTimeFrame.value)
+    getChartParams(selectedTimeFrame.value, selectedStatsType.value)
   )
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
   const selectedSportIds: Ref<number[]> = ref(getSports(sports.value))
 
-  function updateTimeFrame(timeFrame: string) {
+  function updateTimeFrame(timeFrame: TStatisticsTimeFrame) {
     selectedTimeFrame.value = timeFrame
-    chartParams.value = getChartParams(selectedTimeFrame.value)
+    chartParams.value = getChartParams(timeFrame, selectedStatsType.value)
   }
-  function getChartParams(timeFrame: string): IStatisticsDateParams {
-    return getStatsDateParams(new Date(), timeFrame, props.user.weekm)
+  function updateStatsType(statsType: TStatisticsType) {
+    selectedStatsType.value = statsType
+    chartParams.value = getChartParams(selectedTimeFrame.value, statsType)
+  }
+  function getChartParams(
+    timeFrame: TStatisticsTimeFrame,
+    statsType: TStatisticsType
+  ): IStatisticsDateParams {
+    return getStatsDateParams(
+      new Date(),
+      timeFrame,
+      props.user.weekm,
+      statsType
+    )
   }
   function handleOnClickArrows(backward: boolean) {
     chartParams.value = updateChartParams(
@@ -100,8 +119,7 @@
 
     ::v-deep(.chart-radio) {
       justify-content: space-around;
-      padding: $default-padding * 3 $default-padding
-        $default-padding$default-padding;
+      padding: $default-padding $default-padding 0;
     }
   }
 </style>
