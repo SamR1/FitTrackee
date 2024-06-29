@@ -289,7 +289,7 @@
           ::v-deep(.dropdown-list) {
             z-index: 1000;
             margin-left: -150px !important;
-            width: 180px !important;
+            width: 190px !important;
           }
         }
       }

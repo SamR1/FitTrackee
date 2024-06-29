@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Users" href="users.html" /><link rel="prev" title="Sports" href="sports.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.05.06 -->
-        <title>Statistics - FitTrackee 0.8.4 documentation</title>
+        <title>Statistics - FitTrackee 0.8.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -182,7 +182,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.8.4
+      <a href="../index.html"><div class="brand">FitTrackee 0.8.5
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -210,7 +210,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.4
+  <span class="sidebar-brand-text">FitTrackee 0.8.5
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -299,7 +299,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_time">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_time</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get workouts statistics for a user by time.</p>
+<dd><p>Get workouts statistics for a user by time.
+For now only authenticated users can access their statistics.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
@@ -317,7 +318,7 @@
 </div>
 <p><strong>Example responses</strong>:</p>
 <ul class="simple">
-<li><p>success:</p></li>
+<li><p>success for total:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -327,8 +328,7 @@
 <span class="w">    </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;2017&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.48</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">203.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">156.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.282</span><span class="p">,</span>
@@ -337,20 +337,61 @@
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;2019&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">16.99</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">178.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9960</span>
 <span class="w">        </span><span class="p">},</span>
 <span class="w">        </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.95</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>success for average:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;2017&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">101.5</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.282</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7641</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.48</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;2019&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">59.33</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.67</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3320</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">16.99</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.95</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -391,6 +432,12 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">year</span></code>: year (default)</p></li>
 </ul>
 </p></li>
+<li><p><strong>type</strong> (<em>string</em>) – <p>stats type:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">total</span></code>: calculating totals</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">average</span></code>: calculating averages</p></li>
+</ul>
+</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Request Headers<span class="colon">:</span></dt>
@@ -401,6 +448,11 @@
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">stats</span> <span class="pre">type</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">time</span> <span class="pre">period</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
@@ -416,7 +468,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-stats-(user_name)-by_sport">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/stats/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/by_sport</span></span><a class="headerlink" href="#get--api-stats-(user_name)-by_sport" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get workouts statistics for a user by sport.</p>
+<dd><p>Get workouts statistics for a user by sport.
+For now only authenticated users can access their statistics.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Example requests</strong>:</p>
 <ul class="simple">
@@ -433,7 +486,7 @@
 </div>
 <p><strong>Example responses</strong>:</p>
 <ul class="simple">
-<li><p>success:</p></li>
+<li><p>success for all sports:</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -442,28 +495,67 @@
 <span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">59.33</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.67</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3320</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">16.99</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">150.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">178.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9960</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.95</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.46</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">101.5</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.282</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7641</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">4.48</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">203.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">156.0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.282</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12341</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>success for a given sport:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;average_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;average_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15.95</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">46.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">78.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">5.613</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1267</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">},</span>
@@ -493,7 +585,8 @@
 </dd>
 <dt class="field-even">Query Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>sport_id</strong> (<em>integer</em>) – sport id</p></li>
+<li><p><strong>sport_id</strong> (<em>integer</em>) – sport id (not mandatory).
+If not provided, statistics for all sports are returned.</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Request Headers<span class="colon">:</span></dt>
@@ -504,6 +597,10 @@
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">stats</span> <span class="pre">type</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
@@ -620,7 +717,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=96659adb"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=321d1ec2"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
