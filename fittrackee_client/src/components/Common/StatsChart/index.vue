@@ -8,8 +8,9 @@
         <label>
           <input
             type="radio"
-            name="total_distance"
-            :checked="displayedData === 'total_distance'"
+            name="value_type"
+            :value="`${statsType}_distance`"
+            :checked="displayedData === `${statsType}_distance`"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
@@ -18,8 +19,9 @@
         <label>
           <input
             type="radio"
-            name="total_duration"
-            :checked="displayedData === 'total_duration'"
+            name="value_type"
+            :value="`${statsType}_duration`"
+            :checked="displayedData === `${statsType}_duration`"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
@@ -28,28 +30,31 @@
         <label>
           <input
             type="radio"
-            name="nb_workouts"
-            :checked="displayedData === 'nb_workouts'"
+            name="value_type"
+            :value="`${statsType}_workouts`"
+            :checked="displayedData === `${statsType}_workouts`"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
           {{ $t('workouts.WORKOUT', 2) }}
         </label>
-        <label v-if="fullStats">
+        <label v-if="fullStats && statsType === 'average'">
           <input
             type="radio"
-            name="average_speed"
+            name="value_type"
+            value="average_speed"
             :checked="displayedData === 'average_speed'"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
-          {{ $t('workouts.AVERAGE_SPEED') }}
+          {{ $t('workouts.SPEED') }}
         </label>
         <label v-if="fullStats">
           <input
             type="radio"
-            name="total_ascent"
-            :checked="displayedData === 'total_ascent'"
+            name="value_type"
+            :value="`${statsType}_ascent`"
+            :checked="displayedData === `${statsType}_ascent`"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
@@ -58,8 +63,9 @@
         <label v-if="fullStats">
           <input
             type="radio"
-            name="total_descent"
-            :checked="displayedData === 'total_descent'"
+            name="value_type"
+            :value="`${statsType}_descent`"
+            :checked="displayedData === `${statsType}_descent`"
             :disabled="isDisabled"
             @click="updateDisplayData"
           />
@@ -67,9 +73,17 @@
         </label>
       </div>
       <Chart
-        v-if="labels.length > 0"
-        :datasets="datasets"
-        :labels="labels"
+        v-if="labels.length > 0 || workoutsAverageDataset.labels.length > 0"
+        :datasets="
+          displayedData === 'average_workouts'
+            ? workoutsAverageDataset.datasets.workouts_average
+            : datasets
+        "
+        :labels="
+          displayedData === 'average_workouts'
+            ? workoutsAverageDataset.labels
+            : labels
+        "
         :displayedData="displayedData"
         :displayedSportIds="displayedSportIds"
         :fullStats="fullStats"
@@ -79,6 +93,19 @@
           ` (${chartStart} - ${chartEnd})`
         "
       />
+      <div class="workouts-average">
+        <div
+          v-if="displayedData === 'average_workouts' && selectedTimeFrame"
+          class="info-box"
+        >
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('statistics.DATES') }}: {{ chartStart }} - {{ chartEnd }},
+          {{ $t('statistics.WORKOUTS_AVERAGE') }}:
+          {{ workoutsAverageDataset.workoutsAverage }}/{{
+            $t(`statistics.TIME_FRAMES.${selectedTimeFrame}`)
+          }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -97,10 +124,17 @@
     IStatisticsDateParams,
     TStatisticsFromApi,
     IStatisticsParams,
+    TStatisticsType,
+    TStatisticsTimeFrame,
   } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { dateFormats, formatStats, formatDateLabel } from '@/utils/statistics'
+  import {
+    dateFormats,
+    formatStats,
+    formatDateLabel,
+    getWorkoutsAverageDatasets,
+  } from '@/utils/statistics'
 
   interface Props {
     sports: ISport[]
@@ -110,12 +144,14 @@
     fullStats?: boolean
     hideChartIfNoData?: boolean
     isDisabled?: boolean
+    selectedTimeFrame?: TStatisticsTimeFrame | null
   }
   const props = withDefaults(defineProps<Props>(), {
     displayedSportIds: () => [],
     fullStats: false,
     hideChartIfNoData: false,
     isDisabled: false,
+    selectedTimeFrame: null,
   })
   const {
     sports,
@@ -168,6 +204,12 @@
   )
   const labels = computed(() => formattedStats.value.labels)
   const emptyStats = computed(() => Object.keys(statistics.value).length === 0)
+  const statsType: Ref<TStatisticsType> = computed(
+    () => chartParams.value.statsType
+  )
+  const workoutsAverageDataset = computed(() =>
+    getWorkoutsAverageDatasets(formattedStats.value.datasets.total_workouts)
+  )
   const isSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
@@ -180,14 +222,13 @@
     if (!isSuspended.value) {
       store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
         username: user.value.username,
-        filterType: 'by_time',
         params: apiParams,
       })
     }
   }
   function updateDisplayData(event: Event) {
     displayedData.value = (event.target as HTMLInputElement)
-      .name as TStatisticsDatasetKeys
+      .value as TStatisticsDatasetKeys
   }
   function getApiParams(
     chartParams: IStatisticsDateParams,
@@ -200,6 +241,7 @@
         chartParams.duration === 'week'
           ? `week${user.weekm ? 'm' : ''}`
           : chartParams.duration,
+      type: statsType.value,
     }
   }
 
@@ -207,6 +249,15 @@
     () => chartParams.value,
     async (newParams) => {
       getStatistics(getApiParams(newParams, user.value))
+    }
+  )
+  watch(
+    () => statsType.value,
+    async (newStatsType) => {
+      displayedData.value =
+        newStatsType === 'total' && displayedData.value === 'average_speed'
+          ? 'total_distance'
+          : (`${statsType.value}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys)
     }
   )
 </script>
@@ -226,6 +277,25 @@
         font-weight: normal;
         @media screen and (max-width: $small-limit) {
           padding-bottom: $default-padding;
+        }
+      }
+    }
+
+    .workouts-average {
+      display: flex;
+      margin: $default-padding 0 0 $default-padding * 2.5;
+      min-height: 20px;
+
+      .fa-info-circle {
+        padding-right: $default-padding * 0.5;
+      }
+
+      @media screen and (max-width: $small-limit) {
+        .fa-info-circle {
+          padding-right: $default-padding * 0.2;
+        }
+        .info-box {
+          padding: $default-padding * 0.5 $default-padding;
         }
       }
     }

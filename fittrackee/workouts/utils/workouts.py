@@ -517,14 +517,16 @@ def process_files(
 
 
 def get_average_speed(
-    nb_workouts: int, total_average_speed: float, workout_average_speed: float
+    total_workouts: int,
+    total_average_speed: float,
+    workout_average_speed: float,
 ) -> float:
     return round(
         (
-            (total_average_speed * (nb_workouts - 1))
+            (total_average_speed * (total_workouts - 1))
             + float(workout_average_speed)
         )
-        / nb_workouts,
+        / total_workouts,
         2,
     )
 

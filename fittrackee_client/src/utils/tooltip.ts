@@ -13,8 +13,12 @@ export const formatTooltipValue = (
   switch (displayedData) {
     case 'average_speed':
       return `${value.toFixed(2)} ${unitTo}/h`
+    case 'average_duration':
     case 'total_duration':
       return formatDuration(value, formatWithUnits)
+    case 'average_distance':
+    case 'average_ascent':
+    case 'average_descent':
     case 'total_distance':
     case 'total_ascent':
     case 'total_descent':

@@ -31,6 +31,7 @@
   "LOGOUT_CONFIRMATION": "Na pewno chcesz się wylogować?",
   "LOG_IN": "zaloguj się",
   "NEW_PASSWORD": "Nowe hasło",
+  "NO_SPORT_FOUND": "Nie znaleziono żadnego sportu.",
   "NO_USERS_FOUND": "Nie znaleziono użytkowników.",
   "PASSWORD": "Hasło",
   "PASSWORD_FORGOTTEN": "Nie pamiętasz hasła?",
@@ -95,6 +96,7 @@
     "SPORT": {
       "ACTION": "akcja",
       "COLOR": "kolor",
+      "DEFAULT_EQUIPMENTS": "Domyślny sprzęt | Domyślne sprzęty",
       "DISABLED_BY_ADMIN": "wyłączone przez administratora",
       "IS_ACTIVE": "aktywny",
       "LABEL": "etykieta",

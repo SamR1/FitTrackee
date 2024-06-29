@@ -1,13 +1,22 @@
 {
+  "AVERAGE": "Media",
+  "DATES": "Datas",
   "STATISTICS": "Estatísticas",
   "STATISTICS_CHARTS": {
     "month": "Estatísticas mensuais",
     "week": "Estatísticas semanais",
     "year": "Estatísticas anuais"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Estatísticas con todos os adestramentos:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Estatísticas dos últimos {count} adestramentos:",
+  "STATISTICS_TYPES": {
+    "by_sport": "por deporte",
+    "by_time": "por data"
+  },
   "TIME_FRAMES": {
     "month": "mes",
     "week": "semana",
     "year": "ano"
-  }
+  },
+  "WORKOUTS_AVERAGE": "a media de adestramentos"
 }

@@ -17,6 +17,8 @@
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "NO_CONTACT_EMAIL": "non renseigné",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Taille max. des fichiers (en Mo) ",
+    "STATS_WORKOUTS_LIMIT_HELP": "Si égal à 0, pas limite sur le nombre de séances.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Nombre de séances max. pour les statistiques d'un sport",
     "TITLE": "Configuration de l'application",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Taille max. des archives zip (en Mo) "
   },

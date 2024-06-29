@@ -16,4 +16,7 @@ RUN pip install poetry
 RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
 
 # run fittrackee server
-CMD flask run --with-threads -h 0.0.0.0
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+COPY ./docker/set-admin.sh /usr/bin/set-admin
+RUN chmod +x /usr/bin/set-admin && chmod +x /docker-entrypoint.sh
+ENTRYPOINT [ "/docker-entrypoint.sh" ]

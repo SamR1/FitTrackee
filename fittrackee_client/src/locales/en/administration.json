@@ -17,6 +17,8 @@
     "MAX_USERS_LABEL": "Max. number of active users",
     "NO_CONTACT_EMAIL": "no contact email",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. size of uploaded files (in Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "If 0, no limitation on workouts number.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Max. workouts for sport statistics",
     "TITLE": "Application configuration",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
   },
