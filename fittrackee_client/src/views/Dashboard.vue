@@ -66,7 +66,7 @@
         />
         <Timeline
           :sports="sports"
-          :user="authUser"
+          :authUser="authUser"
           :class="{ 'is-hidden': !(isSelected === 'timeline') }"
         />
       </div>

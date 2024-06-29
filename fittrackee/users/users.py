@@ -1,11 +1,12 @@
 import os
 import shutil
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import asc, desc, exc
+from sqlalchemy import asc, desc, exc, func, nullslast
 
-from fittrackee import db, limiter
+from fittrackee import appLog, db, limiter
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -25,22 +26,106 @@ from fittrackee.responses import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
-from .exceptions import InvalidEmailException, UserNotFoundException
-from .models import User, UserDataExport, UserSportPreference
-from .utils.admin import UserManagerService
+from .exceptions import (
+    BlockUserException,
+    FollowRequestAlreadyRejectedError,
+    InvalidEmailException,
+    NotExistingFollowRequestError,
+    UserNotFoundException,
+)
+from .models import FollowRequest, User, UserDataExport, UserSportPreference
 from .utils.language import get_language
 
 users_blueprint = Blueprint('users', __name__)
 
-USER_PER_PAGE = 10
+USERS_PER_PAGE = 10
+EMPTY_USERS_RESPONSE = {
+    'status': 'success',
+    'data': {'users': []},
+    'pagination': {
+        'has_next': False,
+        'has_prev': False,
+        'page': 1,
+        'pages': 0,
+        'total': 0,
+    },
+}
+
+
+def _get_value_depending_on_user_rights(
+    params: Dict, key: str, auth_user: Optional[User]
+) -> str:
+    value = params.get(key, 'false').lower()
+    if not auth_user or not auth_user.admin:
+        value = 'false'
+    return value
+
+
+def get_users_list(auth_user: User) -> Dict:
+    params = request.args.copy()
+
+    query = params.get('q')
+    page = int(params.get('page', 1))
+    per_page = int(params.get('per_page', USERS_PER_PAGE))
+    if per_page > 50:
+        per_page = 50
+    column = params.get('order_by', 'username')
+    user_column = getattr(User, column)
+    order = params.get('order', 'asc')
+    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
+    if column != 'username':
+        order_clauses.append(User.username.asc())
+    if column == "suspended_at":
+        order_clauses = [nullslast(order_clauses[0])]
+    with_inactive = _get_value_depending_on_user_rights(
+        params, 'with_inactive', auth_user
+    )
+    with_hidden_users = _get_value_depending_on_user_rights(
+        params, 'with_hidden', auth_user
+    )
+    with_suspended_users = _get_value_depending_on_user_rights(
+        params, 'with_suspended', auth_user
+    )
+    users_pagination = (
+        User.query.filter(
+            User.username.ilike('%' + query + '%') if query else True,
+            (
+                True if with_inactive == 'true' else User.is_active == True  # noqa
+            ),
+            (
+                True
+                if with_hidden_users == 'true'
+                else User.hide_profile_in_users_directory == False  # noqa
+            ),
+            (
+                True
+                if with_suspended_users == 'true'
+                else User.suspended_at == None  # noqa
+            ),
+        )
+        .order_by(*order_clauses)
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+    users = users_pagination.items
+    return {
+        'status': 'success',
+        'data': {'users': [user.serialize(auth_user) for user in users]},
+        'pagination': {
+            'has_next': users_pagination.has_next,
+            'has_prev': users_pagination.has_prev,
+            'page': users_pagination.page,
+            'pages': users_pagination.pages,
+            'total': users_pagination.total,
+        },
+    }
 
 
 @users_blueprint.route('/users', methods=['GET'])
-@require_auth(scopes=['users:read'], as_admin=True)
+@require_auth(scopes=['users:read'])
 def get_users(auth_user: User) -> Dict:
     """
-    Get all users (regardless their account status), if authenticated user
-    has admin rights.
+    Get all users.
+    If authenticated user has admin rights, users email is returned.
 
     It returns user preferences only for authenticated user.
 
@@ -79,11 +164,13 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
               "email": "admin@example.com",
               "first_name": null,
-              "is_admin": true,
-              "imperial_units": false,
-              "language": "en",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_followed_by": "false",
               "last_name": null,
               "location": null,
+              "map_visibility": "private",
               "nb_sports": 3,
               "nb_workouts": 6,
               "picture": false,
@@ -139,11 +226,10 @@ def get_users(auth_user: User) -> Dict:
                   4,
                   6
               ],
-              "timezone": "Europe/Paris",
               "total_distance": 67.895,
               "total_duration": "6:50:27",
               "username": "admin",
-              "weekm": false
+              "workouts_visibility": "private"
             },
             {
               "admin": false,
@@ -152,19 +238,22 @@ def get_users(auth_user: User) -> Dict:
               "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
               "email": "sam@example.com",
               "first_name": null,
-              "is_admin": false,
-              "language": "fr",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_followed_by": "false",
               "last_name": null,
               "location": null,
+              "map_visibility": "private",
               "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
               "records": [],
               "sports_list": [],
-              "timezone": "Europe/Paris",
               "total_distance": 0,
               "total_duration": "0:00:00",
-              "username": "sam"
+              "username": "sam",
+              "workouts_visibility": "private"
             }
           ]
         },
@@ -188,47 +277,22 @@ def get_users(auth_user: User) -> Dict:
         - ``invalid token, please log in again``
 
     """
-    params = request.args.copy()
-    page = int(params.get('page', 1))
-    per_page = int(params.get('per_page', USER_PER_PAGE))
-    if per_page > 50:
-        per_page = 50
-    user_column = getattr(User, params.get('order_by', 'username'))
-    order = params.get('order', 'asc')
-    query = params.get('q')
-    users_pagination = (
-        User.query.filter(
-            User.username.ilike('%' + query + '%') if query else True,
-        )
-        .order_by(asc(user_column) if order == 'asc' else desc(user_column))
-        .paginate(page=page, per_page=per_page, error_out=False)
-    )
-    users = users_pagination.items
-    return {
-        'status': 'success',
-        'data': {'users': [user.serialize(auth_user) for user in users]},
-        'pagination': {
-            'has_next': users_pagination.has_next,
-            'has_prev': users_pagination.has_prev,
-            'page': users_pagination.page,
-            'pages': users_pagination.pages,
-            'total': users_pagination.total,
-        },
-    }
+    return get_users_list(auth_user)
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['users:read'], optional_auth_user=True)
 def get_single_user(
-    auth_user: User, user_name: str
+    auth_user: Optional[User], user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get single user details. Only user with admin rights can get other users
-    details.
+    Get single user details.
+    If a user is authenticated, it returns relationships.
+    If authenticated user has admin rights, user email is returned.
 
     It returns user preferences only for authenticated user.
 
-    **Scope**: ``users:read``
+    **Scope**: ``users:read`` for Oauth 2.0 client
 
     **Example request**:
 
@@ -238,6 +302,8 @@ def get_single_user(
       Content-Type: application/json
 
     **Example response**:
+
+    - when a user is authenticated:
 
     .. sourcecode:: http
 
@@ -253,11 +319,13 @@ def get_single_user(
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
-            "imperial_units": false,
-            "is_admin": true,
-            "language": "en",
+            "followers": 0,
+            "following": 0,
+            "follows": "false",
+            "is_followed_by": "false",
             "last_name": null,
             "location": null,
+            "map_visibility": "private",
             "nb_sports": 3,
             "nb_workouts": 6,
             "picture": false,
@@ -313,10 +381,42 @@ def get_single_user(
                 4,
                 6
             ],
-            "timezone": "Europe/Paris",
             "total_distance": 67.895,
             "total_duration": "6:50:27",
-            "username": "admin"
+            "username": "admin",
+            "workouts_visibility": "private"
+          }
+        ],
+        "status": "success"
+      }
+
+    - when no authentication:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": [
+          {
+            "admin": true,
+            "bio": null,
+            "birth_date": null,
+            "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+            "email": "admin@example.com",
+            "first_name": null,
+            "followers": 0,
+            "following": 0,
+            "follows": "false",
+            "is_followed_by": "false",
+            "last_name": null,
+            "location": null,
+            "map_visibility": "private",
+            "nb_workouts": 6,
+            "picture": false,
+            "username": "admin",
+            "workouts_visibility": "private"
           }
         ],
         "status": "success"
@@ -324,7 +424,7 @@ def get_single_user(
 
     :param integer user_name: user name
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token if user is authenticated
 
     :statuscode 200: ``success``
     :statuscode 401:
@@ -334,17 +434,18 @@ def get_single_user(
     :statuscode 404:
         - ``user does not exist``
     """
-    if user_name != auth_user.username and not auth_user.admin:
-        return ForbiddenErrorResponse()
-
     try:
-        user = User.query.filter_by(username=user_name).first()
+        user = User.query.filter(
+            func.lower(User.username) == func.lower(user_name),
+        ).first()
         if user:
+            if (not auth_user or not auth_user.admin) and not user.is_active:
+                return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
                 'data': {'users': [user.serialize(auth_user)]},
             }
-    except ValueError:
+    except (ValueError, UserNotFoundException):
         pass
     return UserNotFoundErrorResponse()
 
@@ -377,12 +478,16 @@ def get_picture(user_name: str) -> Any:
 
     """
     try:
-        user = User.query.filter_by(username=user_name).first()
+        user = User.query.filter(
+            func.lower(User.username) == func.lower(user_name),
+        ).first()
         if not user:
             return UserNotFoundErrorResponse()
         if user.picture is not None:
             picture_path = get_absolute_file_path(user.picture)
             return send_file(picture_path)
+    except UserNotFoundException:
+        return UserNotFoundErrorResponse()
     except Exception:  # nosec
         pass
     return NotFoundErrorResponse('No picture.')
@@ -399,6 +504,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
       if sending enabled)
     - update user email (and send email to new user email, if sending enabled)
     - activate account for an inactive user
+    - deactivate account after report.
 
     Only user with admin rights can modify another user.
 
@@ -427,11 +533,13 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
             "email": "admin@example.com",
             "first_name": null,
-            "imperial_units": false,
-            "is_active": true,
-            "language": "en",
+            "followers": 0,
+            "following": 0,
+            "follows": "false",
+            "is_followed_by": "false",
             "last_name": null,
             "location": null,
+            "map_visibility": "private",
             "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
@@ -487,10 +595,10 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 4,
                 6
             ],
-            "timezone": "Europe/Paris",
             "total_distance": 67.895,
             "total_duration": "6:50:27",
-            "username": "admin"
+            "username": "admin",
+            "workouts_visibility": "private"
           }
         ],
         "status": "success"
@@ -498,7 +606,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :param string user_name: user name
 
-    :<json boolean activate: activate user account
+    :<json boolean activate: (de-)activate user account
     :<json boolean admin: does the user have administrator rights
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
@@ -522,13 +630,19 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
+    activate = user_data.get('activate')
+    if activate is False and user_name == auth_user.username:
+        return ForbiddenErrorResponse()
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
-        user_manager_service = UserManagerService(username=user_name)
+        user_manager_service = UserManagerService(
+            username=user_name, admin_user_id=auth_user.id
+        )
         user, _, _ = user_manager_service.update(
             is_admin=user_data.get('admin'),
-            activate=user_data.get('activate', False),
+            activate=user_data.get('activate'),
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
@@ -598,7 +712,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@require_auth(scopes=['users:write'])
+@require_auth(scopes=['users:write'], allow_suspended_user=True)
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -643,7 +757,9 @@ def delete_user(
 
     """
     try:
-        user = User.query.filter_by(username=user_name).first()
+        user = User.query.filter(
+            func.lower(User.username) == func.lower(user_name),
+        ).first()
         if not user:
             return UserNotFoundErrorResponse()
 
@@ -701,3 +817,403 @@ def delete_user(
         OSError,
     ) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@users_blueprint.route('/users/<user_name>/follow', methods=['POST'])
+@require_auth(scopes=['follow:write'])
+def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    """
+    Send a follow request to a user.
+
+    **Scope**: ``follow:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/users/john_doe/follow HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Follow request to user 'john_doe' is sent.",
+      }
+
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    successful_response_dict = {
+        'status': 'success',
+        'message': f"Follow request to user '{user_name}' is sent.",
+    }
+
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(
+            f'Error when following a user: user {user_name} not found'
+        )
+        return UserNotFoundErrorResponse()
+
+    if auth_user.is_blocked_by(target_user):
+        return InvalidPayloadErrorResponse("you can not follow this user")
+
+    try:
+        auth_user.send_follow_request_to(target_user)
+    except FollowRequestAlreadyRejectedError:
+        return ForbiddenErrorResponse()
+    return successful_response_dict
+
+
+@users_blueprint.route('/users/<user_name>/unfollow', methods=['POST'])
+@require_auth(scopes=['follow:write'])
+def unfollow_user(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Unfollow a user.
+
+    **Scope**: ``follow:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/users/john_doe/unfollow HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success",
+        "message": "Undo for a follow request to user 'john_doe' is sent.",
+      }
+
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+    :statuscode 500: error, please try again or contact the administrator
+
+    """
+    successful_response_dict = {
+        'status': 'success',
+        'message': f"Undo for a follow request to user '{user_name}' is sent.",
+    }
+
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(
+            f'Error when following a user: user {user_name} not found'
+        )
+        return UserNotFoundErrorResponse()
+
+    try:
+        auth_user.unfollows(target_user)
+    except NotExistingFollowRequestError:
+        return NotFoundErrorResponse(message='relationship does not exist')
+    return successful_response_dict
+
+
+def get_user_relationships(
+    auth_user: User, user_name: str, relation: str
+) -> Union[Dict, HttpResponse]:
+    params = request.args.copy()
+    try:
+        page = int(params.get('page', 1))
+    except ValueError:
+        page = 1
+
+    user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not user:
+        return UserNotFoundErrorResponse()
+
+    relations_object = (
+        user.followers if relation == 'followers' else user.following
+    )
+
+    paginated_relations = relations_object.order_by(
+        FollowRequest.updated_at.desc()
+    ).paginate(page=page, per_page=USERS_PER_PAGE, error_out=False)
+
+    return {
+        'status': 'success',
+        'data': {
+            relation: [
+                user.serialize(auth_user) for user in paginated_relations.items
+            ]
+        },
+        'pagination': {
+            'has_next': paginated_relations.has_next,
+            'has_prev': paginated_relations.has_prev,
+            'page': paginated_relations.page,
+            'pages': paginated_relations.pages,
+            'total': paginated_relations.total,
+        },
+    }
+
+
+@users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
+@require_auth(scopes=['follow:read'])
+def get_followers(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get user followers.
+    If the authenticated user has admin rights, it returns following users with
+    additional field 'email'
+
+    **Scope**: ``follow:read``
+
+    **Example request**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/followers HTTP/1.1
+      Content-Type: application/json
+
+    - with page parameter
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/followers?page=1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "followers": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
+              "first_name": null,
+              "followers": 1,
+              "following": 1,
+              "follows": "true",
+              "is_followed_by": "false",
+              "last_name": null,
+              "location": null,
+              "map_visibility": "followers_only",
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "username": "JohnDoe",
+              "workouts_visibility": "followers_only"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+
+    """
+    return get_user_relationships(auth_user, user_name, 'followers')
+
+
+@users_blueprint.route('/users/<user_name>/following', methods=['GET'])
+@require_auth(scopes=['follow:read'])
+def get_following(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get user following.
+    If the authenticate user has admin rights, it returns following users with
+    additional field 'email'
+
+    **Scope**: ``follow:read``
+
+    **Example request**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/following HTTP/1.1
+      Content-Type: application/json
+
+    - with page parameter
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/following?page=1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "following": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
+              "first_name": null,
+              "followers": 1,
+              "following": 1,
+              "follows": "false",
+              "is_followed_by": "true",
+              "last_name": null,
+              "location": null,
+              "map_visibility": "followers_only",
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0.0,
+              "total_duration": "0:00:00",
+              "username": "JohnDoe",
+              "workouts_visibility": "followers_only"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user does not exist
+
+    """
+    return get_user_relationships(auth_user, user_name, 'following')
+
+
+@users_blueprint.route('/users/<user_name>/block', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    try:
+        auth_user.blocks_user(target_user)
+        # delete follow request is exists (approved or pending)
+        FollowRequest.query.filter_by(
+            follower_user_id=target_user.id, followed_user_id=auth_user.id
+        ).delete()
+        db.session.commit()
+
+    except BlockUserException:
+        return InvalidPayloadErrorResponse()
+
+    return {"status": "success"}
+
+
+@users_blueprint.route('/users/<user_name>/unblock', methods=['POST'])
+@require_auth(scopes=['users:write'])
+def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    target_user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not target_user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    auth_user.unblocks_user(target_user)
+
+    return {"status": "success"}

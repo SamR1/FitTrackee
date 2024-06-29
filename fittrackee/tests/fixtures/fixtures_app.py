@@ -134,7 +134,7 @@ def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
-def app_no_config() -> Generator:
+def app_no_config(monkeypatch: pytest.MonkeyPatch) -> Generator:
     yield from get_app(with_config=False)
 
 

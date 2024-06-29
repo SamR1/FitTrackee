@@ -1,11 +1,7 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!userLoading">
-      <router-view
-        v-if="isAuthUserAmin"
-        :appConfig="appConfig"
-        :appStatistics="appStatistics"
-      />
+      <router-view v-if="isAuthUserAdmin" />
       <NotFound v-else />
       <div id="bottom" />
     </div>
@@ -18,25 +14,21 @@
 
   import NotFound from '@/components/Common/NotFound.vue'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig, IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
 
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const appStatistics: ComputedRef<IAppStatistics> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
-  )
-  const isAuthUserAmin: ComputedRef<boolean> = computed(
+  const isAuthUserAdmin: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
   )
   const userLoading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-
-  onBeforeMount(() => store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS))
+  onBeforeMount(() => {
+    if (isAuthUserAdmin.value) {
+      store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

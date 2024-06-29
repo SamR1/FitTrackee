@@ -275,6 +275,43 @@
                 </select>
               </div>
               <div class="form-item">
+                <label for="workout_visibility">
+                  {{ $t('privacy.WORKOUT_VISIBILITY') }}:
+                </label>
+                <select
+                  id="workout_visibility"
+                  v-model="workoutForm.workoutVisibility"
+                  :disabled="loading"
+                  @change="updateMapVisibility"
+                >
+                  <option
+                    v-for="level in privacyLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`privacy.LEVELS.${level}`) }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-item" v-if="withGpx">
+                <label for="map_visibility">
+                  {{ $t('privacy.MAP_VISIBILITY') }}:
+                </label>
+                <select
+                  id="map_visibility"
+                  v-model="workoutForm.mapVisibility"
+                  :disabled="loading"
+                >
+                  <option
+                    v-for="level in mapPrivacyLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`privacy.LEVELS.${level}`) }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-item">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
@@ -324,6 +361,7 @@
   } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
   import type { IEquipment, IEquipmentError } from '@/types/equipments'
+  import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
@@ -331,6 +369,11 @@
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
   import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
+  import {
+    getPrivacyLevels,
+    getMapVisibilityLevels,
+    getUpdatedMapVisibility,
+  } from '@/utils/privacy'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
 
@@ -363,6 +406,7 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
+  const privacyLevels = computed(() => getPrivacyLevels())
   const fileSizeLimit = appConfig.value.max_single_file_size
     ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
     : ''
@@ -385,6 +429,8 @@
     workoutAscent: '',
     workoutDescent: '',
     equipment_id: '',
+    mapVisibility: authUser.value.map_visibility,
+    workoutVisibility: authUser.value.workouts_visibility,
   })
   const withGpx = ref(
     workout.value.id ? workout.value.with_gpx : isCreation.value
@@ -411,6 +457,9 @@
         )
       : []
   )
+  const mapPrivacyLevels = computed(() =>
+    getMapVisibilityLevels(workoutForm.workoutVisibility)
+  )
 
   onMounted(() => {
     let element
@@ -425,8 +474,8 @@
     }
   })
 
-  function updateNotes(value: string) {
-    workoutForm.notes = value
+  function updateNotes(textareaData: ICustomTextareaData) {
+    workoutForm.notes = textareaData.value
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value
@@ -443,22 +492,32 @@
     workoutForm.notes = workout.notes
     workoutForm.equipment_id =
       workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
+    workoutForm.workoutVisibility = workout.workout_visibility
+      ? workout.workout_visibility
+      : 'private'
+    workoutForm.mapVisibility = workout.map_visibility
+      ? workout.map_visibility
+      : 'private'
     if (!workout.with_gpx) {
       const workoutDateTime = formatWorkoutDate(
         getDateWithTZ(workout.workout_date, props.authUser.timezone),
         'yyyy-MM-dd'
       )
-      const duration = workout.duration.split(':')
-      workoutForm.workoutDistance = `${
-        authUser.value.imperial_units
-          ? convertDistance(workout.distance, 'km', 'mi', 3)
-          : parseFloat(workout.distance.toFixed(3))
-      }`
+      if (workout.duration) {
+        const duration = workout.duration.split(':')
+        workoutForm.workoutDurationHour = duration[0]
+        workoutForm.workoutDurationMinutes = duration[1]
+        workoutForm.workoutDurationSeconds = duration[2]
+      }
+      if (workout.distance) {
+        workoutForm.workoutDistance = `${
+          authUser.value.imperial_units
+            ? convertDistance(workout.distance, 'km', 'mi', 3)
+            : parseFloat(workout.distance.toFixed(3))
+        }`
+      }
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
-      workoutForm.workoutDurationHour = duration[0]
-      workoutForm.workoutDurationMinutes = duration[1]
-      workoutForm.workoutDurationSeconds = duration[2]
       workoutForm.workoutAscent =
         workout.ascent === null
           ? ''
@@ -523,6 +582,7 @@
     ) {
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
+    payload.workout_visibility = workoutForm.workoutVisibility
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
@@ -533,10 +593,12 @@
         equipmentsForSelect.value.find((e) => e.id === workoutForm.equipment_id)
           ? [workoutForm.equipment_id]
           : [],
+      workout_visibility: workoutForm.workoutVisibility,
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
         payload.title = workoutForm.title
+        payload.map_visibility = workoutForm.mapVisibility
       } else {
         formatPayload(payload)
       }
@@ -559,6 +621,7 @@
           return
         }
         payload.file = gpxFile
+        payload.map_visibility = workoutForm.mapVisibility
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
       } else {
         formatPayload(payload)
@@ -588,6 +651,12 @@
   }
   function invalidateForm() {
     formErrors.value = true
+  }
+  function updateMapVisibility() {
+    workoutForm.mapVisibility = getUpdatedMapVisibility(
+      workoutForm.mapVisibility,
+      workoutForm.workoutVisibility
+    )
   }
 
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
@@ -639,6 +708,9 @@
 
             input {
               height: 20px;
+            }
+            label {
+              text-transform: lowercase;
             }
 
             .workout-date-duration {

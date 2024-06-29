@@ -5,6 +5,7 @@ import click
 from humanize import naturalsize
 
 from fittrackee import db
+from fittrackee.administration.users_service import UserManagerService
 from fittrackee.cli.app import app
 from fittrackee.config import SUPPORTED_LANGUAGES
 from fittrackee.users.exceptions import UserNotFoundException
@@ -12,7 +13,6 @@ from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
 )
-from fittrackee.users.utils.admin import UserManagerService
 from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
@@ -102,7 +102,7 @@ def manage_user(
             _, is_user_updated, password = user_manager_service.update(
                 is_admin=set_admin,
                 with_confirmation=False,
-                activate=activate,
+                activate=activate if activate else None,
                 reset_password=reset_password,
                 new_email=update_email,
             )

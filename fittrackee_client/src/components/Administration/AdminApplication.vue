@@ -180,7 +180,6 @@
   import { linkifyAndClean } from '@/utils/inputs'
 
   interface Props {
-    appConfig: TAppConfig
     edition?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
@@ -204,9 +203,12 @@
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
   onBeforeMount(() => {
-    if (props.appConfig) {
-      updateForm(props.appConfig)
+    if (appConfig.value) {
+      updateForm(appConfig.value)
     }
   })
 
@@ -226,7 +228,7 @@
     })
   }
   function onCancel() {
-    updateForm(props.appConfig)
+    updateForm(appConfig.value)
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     router.push('/admin/application')
   }
@@ -265,5 +267,9 @@
       margin-bottom: $default-margin;
       padding: $default-padding;
     }
+  }
+
+  .no-contact {
+    font-style: italic;
   }
 </style>

@@ -8,12 +8,14 @@ export interface IPagination {
 
 export type TPaginationPayload = {
   [key: string]: string | number | undefined
-  order: string
-  order_by: string
-  per_page: number
-  page: number
+  order?: string
+  order_by?: string
+  per_page?: number
+  page?: number
   q?: string
   notes?: string
+  object_type?: string
+  resolved?: string
 }
 
 export interface IQueryOptions {
@@ -24,4 +26,8 @@ export interface IQueryOptions {
 export interface IApiErrorMessage {
   error?: string
   message?: string
+}
+
+export interface IPagePayload {
+  page: number
 }

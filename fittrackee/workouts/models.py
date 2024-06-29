@@ -7,26 +7,33 @@ from uuid import UUID, uuid4
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.sql.expression import nulls_last
 from sqlalchemy.types import JSON, Enum
 
-from fittrackee import appLog, db
+from fittrackee import BaseModel, appLog, db
+from fittrackee.comments.models import Comment
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
+from fittrackee.privacy_levels import (
+    PrivacyLevel,
+    can_view,
+    get_map_visibility,
+)
 from fittrackee.utils import encode_uuid
 
+from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
 
+    from fittrackee.administration.models import AdminAction
     from fittrackee.equipments.models import Equipment
+    from fittrackee.users.models import User
 
-BaseModel: DeclarativeMeta = db.Model
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
@@ -224,6 +231,18 @@ class Workout(BaseModel):
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(500), nullable=True)
+    workout_visibility = db.Column(
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
+    )
+    map_visibility = db.Column(
+        Enum(PrivacyLevel, name='privacy_levels'),
+        server_default='PRIVATE',
+        nullable=False,
+    )
+    suspended_at = db.Column(db.DateTime, nullable=True)
+
     segments = db.relationship(
         'WorkoutSegment',
         lazy=True,
@@ -235,9 +254,23 @@ class Workout(BaseModel):
         lazy=True,
         cascade='all, delete',
         backref=db.backref('workout', lazy='joined', single_parent=True),
+        order_by='Record.record_type.asc()',
     )
     equipments = db.relationship(
         'Equipment', secondary=WorkoutEquipment, back_populates='workouts'
+    )
+    comments = db.relationship(
+        Comment,
+        lazy=True,
+        backref=db.backref('workout', lazy='joined', single_parent=True),
+    )
+    likes = db.relationship(
+        "User",
+        secondary="workout_likes",
+        primaryjoin="Workout.id == WorkoutLike.workout_id",
+        secondaryjoin="WorkoutLike.user_id == User.id",
+        lazy="dynamic",
+        viewonly=True,
     )
 
     def __str__(self) -> str:
@@ -261,168 +294,281 @@ class Workout(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def get_workout_data(self) -> Dict:
+    @property
+    def calculated_map_visibility(self) -> PrivacyLevel:
+        return get_map_visibility(self.map_visibility, self.workout_visibility)
+
+    def liked_by(self, user: 'User') -> bool:
+        return user in self.likes.all()
+
+    @property
+    def suspension_action(self) -> Optional['AdminAction']:
+        if self.suspended_at is None:
+            return None
+
+        from fittrackee.administration.models import AdminAction
+
+        return (
+            AdminAction.query.filter(
+                AdminAction.workout_id == self.id,
+                AdminAction.action_type == "workout_suspension",
+            )
+            .order_by(AdminAction.created_at.desc())
+            .first()
+        )
+
+    def get_workout_data(
+        self,
+        user: Optional['User'],
+        can_see_map_data: Optional[bool] = None,
+        for_report: bool = False,
+        additional_data: bool = False,
+    ) -> Dict:
+        if can_see_map_data is None:
+            can_see_map_data = can_view(
+                self,
+                "calculated_map_visibility",
+                user=user,
+                for_report=for_report,
+            )
+        if additional_data:
+            return {
+                'id': self.short_id,  # WARNING: client use uuid as id
+                'sport_id': self.sport_id,
+                'title': self.title,
+                'creation_date': self.creation_date,
+                'modification_date': self.modification_date,
+                'workout_date': self.workout_date,
+                'duration': None
+                if self.duration is None
+                else str(self.duration),
+                'pauses': str(self.pauses) if self.pauses else None,
+                'moving': None if self.moving is None else str(self.moving),
+                'distance': (
+                    None if self.distance is None else float(self.distance)
+                ),
+                'min_alt': None
+                if self.min_alt is None
+                else float(self.min_alt),
+                'max_alt': None
+                if self.max_alt is None
+                else float(self.max_alt),
+                'descent': None
+                if self.descent is None
+                else float(self.descent),
+                'ascent': None if self.ascent is None else float(self.ascent),
+                'max_speed': (
+                    None if self.max_speed is None else float(self.max_speed)
+                ),
+                'ave_speed': (
+                    None if self.ave_speed is None else float(self.ave_speed)
+                ),
+                'equipments': [
+                    equipment.serialize() for equipment in self.equipments
+                ],
+                'records': (
+                    []
+                    if for_report
+                    else [record.serialize() for record in self.records]
+                ),
+                'segments': (
+                    [segment.serialize() for segment in self.segments]
+                    if can_see_map_data
+                    else []
+                ),
+                'weather_start': self.weather_start,
+                'weather_end': self.weather_end,
+                'notes': self.notes
+                if user and user.id == self.user_id
+                else None,
+                'map_visibility': self.calculated_map_visibility.value,
+                'workout_visibility': self.workout_visibility.value,
+                'likes_count': self.likes.count(),
+                'liked': self.liked_by(user) if user else False,
+            }
+
         return {
             'id': self.short_id,  # WARNING: client use uuid as id
             'sport_id': self.sport_id,
-            'title': self.title,
-            'creation_date': self.creation_date,
-            'modification_date': self.modification_date,
+            'title': '',
+            'creation_date': None,
+            'modification_date': None,
             'workout_date': self.workout_date,
-            'duration': None if self.duration is None else str(self.duration),
-            'pauses': str(self.pauses) if self.pauses else None,
-            'moving': None if self.moving is None else str(self.moving),
-            'distance': (
-                None if self.distance is None else float(self.distance)
-            ),
-            'min_alt': None if self.min_alt is None else float(self.min_alt),
-            'max_alt': None if self.max_alt is None else float(self.max_alt),
-            'descent': None if self.descent is None else float(self.descent),
-            'ascent': None if self.ascent is None else float(self.ascent),
-            'max_speed': (
-                None if self.max_speed is None else float(self.max_speed)
-            ),
-            'ave_speed': (
-                None if self.ave_speed is None else float(self.ave_speed)
-            ),
-            'equipments': [
-                equipment.serialize() for equipment in self.equipments
-            ],
-            'records': [record.serialize() for record in self.records],
-            'segments': [segment.serialize() for segment in self.segments],
-            'weather_start': self.weather_start,
-            'weather_end': self.weather_end,
-            'notes': self.notes,
+            'duration': None,
+            'pauses': None,
+            'moving': None,
+            'distance': None,
+            'min_alt': None,
+            'max_alt': None,
+            'descent': None,
+            'ascent': None,
+            'max_speed': None,
+            'ave_speed': None,
+            'equipments': [],
+            'records': [],
+            'segments': [],
+            'weather_start': None,
+            'weather_end': None,
+            'notes': '',
+            'map_visibility': None,
+            'workout_visibility': self.workout_visibility.value,
+            'likes_count': 0,
+            'liked': False,
         }
 
-    def serialize(self, params: Optional[Dict] = None) -> Dict:
-        date_from = params.get('from') if params else None
-        date_to = params.get('to') if params else None
-        distance_from = params.get('distance_from') if params else None
-        distance_to = params.get('distance_to') if params else None
-        duration_from = params.get('duration_from') if params else None
-        duration_to = params.get('duration_to') if params else None
-        ave_speed_from = params.get('ave_speed_from') if params else None
-        ave_speed_to = params.get('ave_speed_to') if params else None
-        max_speed_from = params.get('max_speed_from') if params else None
-        max_speed_to = params.get('max_speed_to') if params else None
-        sport_id = params.get('sport_id') if params else None
-        previous_workout = (
-            Workout.query.filter(
-                Workout.id != self.id,
-                Workout.user_id == self.user_id,
-                Workout.sport_id == sport_id if sport_id else True,
-                Workout.workout_date <= self.workout_date,
-                (
-                    Workout.workout_date
-                    >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                    if date_from
-                    else True
-                ),
-                (
-                    Workout.workout_date
-                    <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                    if date_to
-                    else True
-                ),
-                (
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True
-                ),
-                (
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True
-                ),
-                (
-                    Workout.duration >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True
-                ),
-                (
-                    Workout.duration <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True
-                ),
-                (
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True
-                ),
-                (
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True
-                ),
-                (
-                    Workout.max_speed >= float(max_speed_from)
-                    if max_speed_from
-                    else True
-                ),
-                (
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True
-                ),
-            )
-            .order_by(Workout.workout_date.desc())
-            .first()
+    def serialize(
+        self,
+        user: Optional['User'] = None,
+        params: Optional[Dict] = None,
+        for_report: bool = False,
+    ) -> Dict:
+        if not can_view(
+            self, "workout_visibility", user=user, for_report=for_report
+        ):
+            raise WorkoutForbiddenException()
+        can_see_map_data = can_view(
+            self, "calculated_map_visibility", user=user, for_report=for_report
         )
-        next_workout = (
-            Workout.query.filter(
-                Workout.id != self.id,
-                Workout.user_id == self.user_id,
-                Workout.sport_id == sport_id if sport_id else True,
-                Workout.workout_date >= self.workout_date,
-                (
-                    Workout.workout_date
-                    >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                    if date_from
-                    else True
-                ),
-                (
-                    Workout.workout_date
-                    <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                    if date_to
-                    else True
-                ),
-                (
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True
-                ),
-                (
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True
-                ),
-                (
-                    Workout.duration >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True
-                ),
-                (
-                    Workout.duration <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True
-                ),
-                (
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True
-                ),
-                (
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True
-                ),
+        is_owner = user and user.id == self.user_id
+        if is_owner:
+            date_from = params.get('from') if params else None
+            date_to = params.get('to') if params else None
+            distance_from = params.get('distance_from') if params else None
+            distance_to = params.get('distance_to') if params else None
+            duration_from = params.get('duration_from') if params else None
+            duration_to = params.get('duration_to') if params else None
+            ave_speed_from = params.get('ave_speed_from') if params else None
+            ave_speed_to = params.get('ave_speed_to') if params else None
+            max_speed_from = params.get('max_speed_from') if params else None
+            max_speed_to = params.get('max_speed_to') if params else None
+            sport_id = params.get('sport_id') if params else None
+            previous_workout = (
+                Workout.query.filter(
+                    Workout.id != self.id,
+                    Workout.user_id == self.user_id,
+                    Workout.sport_id == sport_id if sport_id else True,
+                    Workout.workout_date <= self.workout_date,
+                    (
+                        Workout.workout_date
+                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                        if date_from
+                        else True
+                    ),
+                    (
+                        Workout.workout_date
+                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                        if date_to
+                        else True
+                    ),
+                    (
+                        Workout.distance >= float(distance_from)
+                        if distance_from
+                        else True
+                    ),
+                    (
+                        Workout.distance <= float(distance_to)
+                        if distance_to
+                        else True
+                    ),
+                    (
+                        Workout.duration >= convert_in_duration(duration_from)
+                        if duration_from
+                        else True
+                    ),
+                    (
+                        Workout.duration <= convert_in_duration(duration_to)
+                        if duration_to
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed >= float(ave_speed_from)
+                        if ave_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed <= float(ave_speed_to)
+                        if ave_speed_to
+                        else True
+                    ),
+                    (
+                        Workout.max_speed >= float(max_speed_from)
+                        if max_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.max_speed <= float(max_speed_to)
+                        if max_speed_to
+                        else True
+                    ),
+                )
+                .order_by(Workout.workout_date.desc())
+                .first()
             )
-            .order_by(Workout.workout_date.asc())
-            .first()
+            next_workout = (
+                Workout.query.filter(
+                    Workout.id != self.id,
+                    Workout.user_id == self.user_id,
+                    Workout.sport_id == sport_id if sport_id else True,
+                    Workout.workout_date >= self.workout_date,
+                    (
+                        Workout.workout_date
+                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
+                        if date_from
+                        else True
+                    ),
+                    (
+                        Workout.workout_date
+                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
+                        if date_to
+                        else True
+                    ),
+                    (
+                        Workout.distance >= float(distance_from)
+                        if distance_from
+                        else True
+                    ),
+                    (
+                        Workout.distance <= float(distance_to)
+                        if distance_to
+                        else True
+                    ),
+                    (
+                        Workout.duration >= convert_in_duration(duration_from)
+                        if duration_from
+                        else True
+                    ),
+                    (
+                        Workout.duration <= convert_in_duration(duration_to)
+                        if duration_to
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed >= float(ave_speed_from)
+                        if ave_speed_from
+                        else True
+                    ),
+                    (
+                        Workout.ave_speed <= float(ave_speed_to)
+                        if ave_speed_to
+                        else True
+                    ),
+                )
+                .order_by(Workout.workout_date.asc())
+                .first()
+            )
+        else:
+            next_workout = None
+            previous_workout = None
+
+        additional_data = (
+            self.suspended_at is None
+            or for_report
+            or (user is not None and user.id == self.user_id)
+        )
+        workout = self.get_workout_data(
+            user, can_see_map_data, for_report, additional_data
         )
 
-        workout = self.get_workout_data()
         workout["next_workout"] = (
             next_workout.short_id if next_workout else None
         )
@@ -430,11 +576,28 @@ class Workout(BaseModel):
             previous_workout.short_id if previous_workout else None
         )
         workout["bounds"] = (
-            [float(bound) for bound in self.bounds] if self.bounds else []
+            [float(bound) for bound in self.bounds]
+            if self.bounds and can_see_map_data and additional_data
+            else []
         )
-        workout["user"] = self.user.username
-        workout["map"] = self.map_id if self.map else None
-        workout["with_gpx"] = self.gpx is not None
+        workout["user"] = self.user.serialize()
+        workout["map"] = (
+            self.map_id
+            if self.map and can_see_map_data and additional_data
+            else None
+        )
+        workout["with_gpx"] = (
+            self.gpx is not None and can_see_map_data and additional_data
+        )
+
+        if self.suspended_at:
+            workout['suspended'] = True
+            if user and user.id == self.user_id and self.suspension_action:
+                workout["suspension"] = self.suspension_action.serialize(
+                    current_user=user, full=False
+                )
+        if is_owner or (user and user.admin and for_report):
+            workout["suspended_at"] = self.suspended_at
         return workout
 
     @classmethod
@@ -596,6 +759,7 @@ class Record(BaseModel):
         db.UniqueConstraint(
             'user_id', 'sport_id', 'record_type', name='user_sports_records'
         ),
+        db.Index('workout_records', 'workout_id', 'record_type'),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -679,3 +843,80 @@ def on_record_delete(
                 )
                 new_record.value = record_data['record_value']  # type: ignore
                 session.add(new_record)
+
+
+class WorkoutLike(BaseModel):
+    __tablename__ = 'workout_likes'
+    __table_args__ = (
+        db.UniqueConstraint(
+            'user_id', 'workout_id', name='user_id_workout_id_unique'
+        ),
+    )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='CASCADE'),
+        nullable=False,
+    )
+    workout_id = db.Column(
+        db.Integer,
+        db.ForeignKey('workouts.id', ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    user = db.relationship("User", lazy=True)
+    workout = db.relationship("Workout", lazy=True)
+
+    def __init__(
+        self,
+        user_id: int,
+        workout_id: int,
+        created_at: Optional[datetime.datetime] = None,
+    ) -> None:
+        self.user_id = user_id
+        self.workout_id = workout_id
+        self.created_at = (
+            datetime.datetime.utcnow() if created_at is None else created_at
+        )
+
+
+@listens_for(WorkoutLike, 'after_insert')
+def on_workout_like_insert(
+    mapper: Mapper, connection: Connection, new_workout_like: WorkoutLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.users.models import Notification
+
+        workout = Workout.query.filter_by(
+            id=new_workout_like.workout_id
+        ).first()
+        if new_workout_like.user_id != workout.user_id:
+            notification = Notification(
+                from_user_id=new_workout_like.user_id,
+                to_user_id=workout.user_id,
+                created_at=new_workout_like.created_at,
+                event_type='workout_like',
+                event_object_id=workout.id,
+            )
+            session.add(notification)
+
+
+@listens_for(WorkoutLike, 'after_delete')
+def on_workout_like_delete(
+    mapper: Mapper, connection: Connection, old_workout_like: WorkoutLike
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+
+        workout = Workout.query.filter_by(
+            id=old_workout_like.workout_id
+        ).first()
+        Notification.query.filter_by(
+            from_user_id=old_workout_like.user_id,
+            to_user_id=workout.user_id,
+            event_type='workout_like',
+            event_object_id=workout.id,
+        ).delete()

@@ -13,10 +13,12 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, exc
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
+from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -27,6 +29,7 @@ from fittrackee.equipments.utils import (
     handle_equipments,
 )
 from fittrackee.oauth2.server import require_auth
+from fittrackee.privacy_levels import can_view
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -42,14 +45,14 @@ from fittrackee.responses import (
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 
-from .models import Sport, Workout, WorkoutEquipment
+from .decorators import check_workout
+from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,
     create_workout,
@@ -63,6 +66,7 @@ workouts_blueprint = Blueprint('workouts', __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
+MAX_WORKOUTS_TO_SEND = 5
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -332,6 +336,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         else True
                     )
                 ),
+                Workout.suspended_at == None,  # noqa
             )
             .order_by(
                 (
@@ -347,7 +352,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'data': {
-                'workouts': [workout.serialize(params) for workout in workouts]
+                'workouts': [
+                    workout.serialize(auth_user, params)
+                    for workout in workouts
+                ]
             },
             'pagination': {
                 'has_next': workouts_pagination.has_next,
@@ -364,14 +372,13 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(only_owner=False)
 def get_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get a workout.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -453,39 +460,31 @@ def get_workout(
     :statuscode 404: ``workout not found``
 
     """
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return DataNotFoundErrorResponse('workouts')
-
-    error_response = can_view_workout(auth_user.id, workout.user_id)
-    if error_response:
-        return error_response
-
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize()]},
+        'data': {'workouts': [workout.serialize(auth_user)]},
     }
 
 
 def get_workout_data(
-    auth_user: User,
+    auth_user: Optional[User],
     workout_short_id: str,
     data_type: str,
     segment_id: Optional[int] = None,
 ) -> Union[Dict, HttpResponse]:
-    """Get data from a workout gpx file"""
+    """Get data from workout gpx file"""
+    not_found_response = DataNotFoundErrorResponse(
+        data_type=data_type,
+        message=f'workout not found (id: {workout_short_id})',
+    )
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
     if not workout:
-        return DataNotFoundErrorResponse(
-            data_type=data_type,
-            message=f'workout not found (id: {workout_short_id})',
-        )
+        return not_found_response
 
-    error_response = can_view_workout(auth_user.id, workout.user_id)
-    if error_response:
-        return error_response
+    if not can_view(workout, 'calculated_map_visibility', auth_user):
+        return not_found_response
+
     if not workout.gpx or workout.gpx == '':
         return NotFoundErrorResponse(
             f'no gpx file for this workout (id: {workout_short_id})'
@@ -535,14 +534,12 @@ def get_workout_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_gpx(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for a workout displayed on map with Leaflet.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -587,14 +584,12 @@ def get_workout_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/chart_data', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_chart_data(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -659,20 +654,18 @@ def get_workout_chart_data(
     '/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>',
     methods=['GET'],
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_gpx(
-    auth_user: User, workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for a workout segment displayed on map with Leaflet.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -713,20 +706,18 @@ def get_segment_gpx(
     '<int:segment_id>',
     methods=['GET'],
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_chart_data(
-    auth_user: User, workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/1 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1120,7 +1111,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 'status': 'created',
                 'data': {
                     'workouts': [
-                        new_workout.serialize() for new_workout in new_workouts
+                        new_workout.serialize(auth_user)
+                        for new_workout in new_workouts
                     ]
                 },
             }
@@ -1332,7 +1324,7 @@ def post_workout_no_gpx(
         return (
             {
                 'status': 'created',
-                'data': {'workouts': [new_workout.serialize()]},
+                'data': {'workouts': [new_workout.serialize(auth_user)]},
             },
             201,
         )
@@ -1350,8 +1342,9 @@ def post_workout_no_gpx(
     '/workouts/<string:workout_short_id>', methods=['PATCH']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def update_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update a workout.
@@ -1492,15 +1485,6 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-
-        response_object = can_view_workout(auth_user.id, workout.user_id)
-        if response_object:
-            return response_object
-
         if not workout.gpx:
             try:
                 # for workout without gpx file, both elevation values must be
@@ -1559,9 +1543,10 @@ def update_workout(
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
+
         return {
             'status': 'success',
-            'data': {'workouts': [workout.serialize()]},
+            'data': {'workouts': [workout.serialize(auth_user)]},
         }
 
     except InvalidEquipmentsException as e:
@@ -1578,8 +1563,9 @@ def update_workout(
     '/workouts/<string:workout_short_id>', methods=['DELETE']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def delete_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a workout.
@@ -1613,16 +1599,7 @@ def delete_workout(
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-        error_response = can_view_workout(auth_user.id, workout.user_id)
-        if error_response:
-            return error_response
-
         # update equipments totals
         workout.equipments = []
         db.session.flush()
@@ -1636,4 +1613,79 @@ def delete_workout(
         ValueError,
         OSError,
     ) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(only_owner=False)
+def like_workout(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    try:
+        like = WorkoutLike(user_id=auth_user.id, workout_id=workout.id)
+        db.session.add(like)
+        db.session.commit()
+
+    except IntegrityError:
+        db.session.rollback()
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(auth_user)]},
+    }, 200
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like/undo', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(only_owner=False)
+def undo_workout_like(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    like = WorkoutLike.query.filter_by(
+        user_id=auth_user.id, workout_id=workout.id
+    ).first()
+    if like:
+        db.session.delete(like)
+        db.session.commit()
+
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(auth_user)]},
+    }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=["workouts:write"])
+@check_workout(only_owner=True)
+def appeal_comment_suspension(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    if not workout.suspended_at:
+        return InvalidPayloadErrorResponse("workout is not suspended")
+    suspension_action = workout.suspension_action
+    if not suspension_action:
+        return InvalidPayloadErrorResponse("workout has no suspension")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=suspension_action.id, user_id=auth_user.id, text=text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

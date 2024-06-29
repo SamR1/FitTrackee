@@ -17,7 +17,10 @@
             {{ warning }}
           </div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-          <div class="modal-buttons">
+          <div v-if="loading">
+            <Loader />
+          </div>
+          <div class="modal-buttons" v-else>
             <button
               class="confirm"
               :class="{ danger: warning }"
@@ -54,9 +57,11 @@
     title: string
     message: string
     strongMessage?: string | null
+    loading?: boolean
     warning?: string
   }
   const props = withDefaults(defineProps<Props>(), {
+    loading: false,
     strongMessage: () => '',
     warning: () => '',
   })
@@ -152,6 +157,12 @@
             margin: 0 $default-margin $default-margin;
           }
         }
+      }
+      .loader {
+        border-width: 5px;
+        height: 20px;
+        margin-left: 45%;
+        width: 20px;
       }
     }
   }

@@ -5,17 +5,21 @@ import type { RouteRecordRaw } from 'vue-router'
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminEquipmentTypes from '@/components/Administration/AdminEquipmentTypes.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
+import AdminReport from '@/components/Administration/AdminReport.vue'
+import AdminReports from '@/components/Administration/AdminReports.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
+import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
+import UserAccountSuspension from '@/components/User/UserAccountSuspension.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
@@ -25,13 +29,14 @@ import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
+import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSports from '@/components/User/UserSports/index.vue'
 import UserSport from '@/components/User/UserSports/UserSport.vue'
 import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
 import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
-import { AUTH_USER_STORE } from '@/store/constants'
+import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import AdminView from '@/views/AdminView.vue'
 import Dashboard from '@/views/Dashboard.vue'
@@ -42,10 +47,13 @@ import AccountConfirmationResendView from '@/views/user/AccountConfirmationResen
 import AccountConfirmationView from '@/views/user/AccountConfirmationView.vue'
 import EmailUpdateView from '@/views/user/EmailUpdateView.vue'
 import LoginOrRegister from '@/views/user/LoginOrRegister.vue'
+import NotificationsView from '@/views/user/NotificationsView.vue'
 import PasswordResetView from '@/views/user/PasswordResetView.vue'
 import ProfileView from '@/views/user/ProfileView.vue'
 import UserView from '@/views/user/UserView.vue'
+import UsersView from '@/views/UsersView.vue'
 import AddWorkout from '@/views/workouts/AddWorkout.vue'
+import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
 import Workout from '@/views/workouts/Workout.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
@@ -65,6 +73,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Dashboard,
     meta: {
       title: 'dashboard.DASHBOARD',
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -301,6 +310,35 @@ const routes: Array<RouteRecordRaw> = [
               },
             ],
           },
+          {
+            path: 'follow-requests',
+            name: 'FollowRequests',
+            component: UsersList,
+            props: { itemType: 'follow-requests' },
+          },
+          {
+            path: 'blocked-users',
+            name: 'BlockedUsers',
+            component: UsersList,
+            props: { itemType: 'blocked-users' },
+          },
+          {
+            path: 'followers',
+            name: 'AuthUserFollowers',
+            component: UserRelationships,
+            props: { relationship: 'followers' },
+          },
+          {
+            path: 'following',
+            name: 'AuthUserFollowing',
+            component: UserRelationships,
+            props: { relationship: 'following' },
+          },
+          {
+            path: 'suspension',
+            name: 'AuthUserAccountSuspension',
+            component: UserAccountSuspension,
+          },
         ],
       },
       {
@@ -407,20 +445,54 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: '/notifications',
+    name: 'Notifications',
+    component: NotificationsView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
     path: '/statistics',
     name: 'Statistics',
     component: StatisticsView,
     meta: {
       title: 'statistics.STATISTICS',
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: UsersView,
+    meta: {
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/users/:username',
     name: 'User',
+    props: { fromAdmin: false },
     component: UserView,
     meta: {
-      title: 'administration.USER',
+      title: 'user.USER',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
+    children: [
+      {
+        path: 'followers',
+        name: 'UserFollowers',
+        component: UserRelationships,
+        props: { relationship: 'followers' },
+      },
+      {
+        path: 'following',
+        name: 'UserFollowing',
+        component: UserRelationships,
+        props: { relationship: 'following' },
+      },
+    ],
   },
   {
     path: '/workouts',
@@ -429,6 +501,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'workouts.WORKOUT',
       count: 0,
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -438,6 +511,8 @@ const routes: Array<RouteRecordRaw> = [
     props: { displaySegment: false },
     meta: {
       title: 'workouts.WORKOUT',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -446,6 +521,7 @@ const routes: Array<RouteRecordRaw> = [
     component: EditWorkout,
     meta: {
       title: 'workouts.EDIT_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -456,6 +532,24 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: 'workouts.SEGMENT',
       count: 0,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
+    path: '/workouts/:workoutId/comments/:commentId',
+    name: 'WorkoutComment',
+    component: Workout,
+    props: { displaySegment: false },
+    meta: {
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
+    path: '/comments/:commentId',
+    name: 'Comment',
+    component: CommentView,
+    meta: {
+      allowedToSuspendedUser: false,
     },
   },
   {
@@ -464,12 +558,16 @@ const routes: Array<RouteRecordRaw> = [
     component: AddWorkout,
     meta: {
       title: 'workouts.ADD_WORKOUT',
+      allowedToSuspendedUser: false,
     },
   },
   {
     path: '/admin',
     name: 'Administration',
     component: AdminView,
+    meta: {
+      allowedToSuspendedUser: false,
+    },
     children: [
       {
         path: '',
@@ -510,6 +608,22 @@ const routes: Array<RouteRecordRaw> = [
         component: AdminSports,
         meta: {
           title: 'admin.SPORTS.TITLE',
+        },
+      },
+      {
+        path: 'reports',
+        name: 'ReportsAdministration',
+        component: AdminReports,
+        meta: {
+          title: 'admin.APP_MODERATION.TITLE',
+        },
+      },
+      {
+        path: 'reports/:reportId',
+        name: 'ReportAdministration',
+        component: AdminReport,
+        meta: {
+          title: 'admin.APP_MODERATION.REPORT',
         },
       },
       {
@@ -583,12 +697,31 @@ router.beforeEach((to, from, next) => {
       if (to.meta.withoutChecks) {
         return next()
       }
+
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED] &&
+        !to.path.startsWith('/profile') &&
+        !to.meta.allowedToSuspendedUser
+      ) {
+        return next('/profile')
+      }
+
+      if (
+        store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
+        store.getters[AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED] &&
+        !store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+      ) {
+        store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
+      }
+
       if (
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         to.meta.withoutAuth
       ) {
         return next('/')
       }
+
       if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !to.meta.withoutAuth

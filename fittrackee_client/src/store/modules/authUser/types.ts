@@ -7,8 +7,10 @@ import type {
 
 import { AUTH_USER_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
+import type { IPagePayload } from '@/types/api'
 import type {
   IAuthUserProfile,
+  IFollowRequestsActionPayload,
   ILoginOrRegisterData,
   IUserDeletionPayload,
   IUserEmailPayload,
@@ -17,10 +19,12 @@ import type {
   IUserPicturePayload,
   IUserPreferencesPayload,
   IUserSportPreferencesResetPayload,
+  IUserProfile,
   IUserSportPreferencesPayload,
   IUserAccountPayload,
   IUserAccountUpdatePayload,
   IExportRequest,
+  ISuspension,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -30,6 +34,9 @@ export interface IAuthUserState {
   isSuccess: boolean
   loading: boolean
   exportRequest: IExportRequest | null
+  followRequests: IUserProfile[]
+  blockedUsers: IUserProfile[]
+  accountSuspension: ISuspension
 }
 
 export interface IAuthUserActions {
@@ -52,6 +59,15 @@ export interface IAuthUserActions {
     updateUI: boolean
   ): void
 
+  [AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void
+
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IAuthUserState, IRootState>,
     data: ILoginOrRegisterData
@@ -64,6 +80,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
     payload: IUserPayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsActionPayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_ACCOUNT](
@@ -127,6 +148,16 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT](
     context: ActionContext<IAuthUserState, IRootState>
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_BLOCKED_USERS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.APPEAL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    appealText: string
+  ): void
 }
 
 export interface IAuthUserGetters {
@@ -136,9 +167,15 @@ export interface IAuthUserGetters {
     state: IAuthUserState
   ): IAuthUserProfile
 
+  [AUTH_USER_STORE.GETTERS.BLOCKED_USERS](state: IAuthUserState): IUserProfile[]
+
   [AUTH_USER_STORE.GETTERS.EXPORT_REQUEST](
     state: IAuthUserState
   ): IExportRequest | null
+
+  [AUTH_USER_STORE.GETTERS.FOLLOW_REQUESTS](
+    state: IAuthUserState
+  ): IUserProfile[]
 
   [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
 
@@ -154,7 +191,15 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.IS_SUCCESS](state: IAuthUserState): boolean
 
+  [AUTH_USER_STORE.GETTERS.IS_SUSPENDED](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.IS_PROFILE_LOADED](state: IAuthUserState): boolean
+
   [AUTH_USER_STORE.GETTERS.USER_LOADING](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION](
+    state: IAuthUserState
+  ): ISuspension
 }
 
 export type TAuthUserMutations<S = IAuthUserState> = {
@@ -171,6 +216,14 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     state: S,
     authUserProfile: IAuthUserProfile
   ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS](
+    state: S,
+    blockedUsers: IUserProfile[]
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
+    state: S,
+    followRequests: IUserProfile[]
+  ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS](
     state: S,
     isSuccess: boolean
@@ -182,6 +235,10 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_REGISTRATION_SUCCESS](
     state: S,
     loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION](
+    state: S,
+    accountSuspension: ISuspension
   ): void
 }
 

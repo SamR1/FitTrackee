@@ -178,6 +178,7 @@
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import {
+    AUTH_USER_STORE,
     EQUIPMENTS_STORE,
     ROOT_STORE,
     WORKOUTS_STORE,
@@ -219,6 +220,9 @@
   const currentLanguage: ComputedRef<string> = computed(
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
   const hoverWorkoutId: Ref<string | null> = ref(null)
 
@@ -228,10 +232,12 @@
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
-    store.dispatch(
-      WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
-      user.value.imperial_units ? getConvertedPayload(payload) : payload
-    )
+    if (!isSuspended.value) {
+      store.dispatch(
+        WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
+        user.value.imperial_units ? getConvertedPayload(payload) : payload
+      )
+    }
   }
   function reloadWorkouts(queryParam: string, queryValue: string) {
     const newQuery: LocationQuery = Object.assign({}, route.query)
