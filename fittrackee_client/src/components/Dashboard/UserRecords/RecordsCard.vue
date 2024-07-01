@@ -6,26 +6,11 @@
         {{ sportTranslatedLabel }}
       </template>
       <template #content>
-        <div
-          class="record"
+        <SportRecordsTable
           v-for="record in getTranslatedRecords(records.records)"
+          :record="record"
           :key="record.id"
-        >
-          <span class="record-type">
-            {{ record.label }}
-          </span>
-          <span class="record-value">{{ record.value }}</span>
-          <span class="record-date">
-            <router-link
-              :to="{
-                name: 'Workout',
-                params: { workoutId: record.workout_id },
-              }"
-            >
-              <time>{{ record.workout_date }}</time>
-            </router-link>
-          </span>
-        </div>
+        />
       </template>
     </Card>
   </div>
@@ -35,6 +20,7 @@
   import { toRefs } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import SportRecordsTable from '@/components/Common/SportRecordsTable.vue'
   import type { ICardRecord, IRecord, IRecordsBySport } from '@/types/workouts'
   import { sortRecords } from '@/utils/records'
 

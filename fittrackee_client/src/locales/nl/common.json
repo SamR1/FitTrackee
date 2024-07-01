@@ -11,11 +11,14 @@
   "HERE": "hier",
   "HIDDEN": "Verborgen",
   "HOME": "Startscherm",
+  "HOURS": "uur|uren",
   "INACTIVE": "inactief",
   "LABEL": "label",
+  "MINUTES": "minuut|minuten",
   "NEXT": "volgende",
   "NO_DESCRIPTION": "geen beschrijving",
   "PREVIOUS": "vorige",
+  "SECONDS": "seconde|secondes",
   "SELECTS": {
     "ORDER": {
       "ASC": "oplopend",

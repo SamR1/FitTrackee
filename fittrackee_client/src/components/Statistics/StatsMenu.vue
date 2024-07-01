@@ -47,37 +47,69 @@
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </button>
   </div>
+  <div class="stats-type">
+    <div class="stats-type-radio">
+      <label>
+        <input
+          type="radio"
+          name="stats_type"
+          value="total"
+          :checked="selectedStatsType === 'total'"
+          :disabled="isDisabled"
+          @click="updateStatsType"
+        />
+        {{ $t('common.TOTAL') }}
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="stats_type"
+          value="average"
+          :checked="selectedStatsType === 'average'"
+          :disabled="isDisabled"
+          @click="updateStatsType"
+        />
+        {{ $t('statistics.AVERAGE') }}
+      </label>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-  import { onMounted, ref, toRefs } from 'vue'
+  import { ref, toRefs } from 'vue'
+  import type { Ref } from 'vue'
+
+  import type {
+    TStatisticsTimeFrame,
+    TStatisticsType,
+  } from '@/types/statistics'
+
   interface Props {
     isDisabled: boolean
   }
   const props = defineProps<Props>()
   const { isDisabled } = toRefs(props)
 
-  const emit = defineEmits(['arrowClick', 'timeFrameUpdate'])
+  const emit = defineEmits(['arrowClick', 'statsTypeUpdate', 'timeFrameUpdate'])
 
-  const selectedTimeFrame = ref('month')
-  const timeFrames = ['week', 'month', 'year']
+  const selectedTimeFrame: Ref<TStatisticsTimeFrame> = ref('month')
+  const timeFrames: TStatisticsTimeFrame[] = ['week', 'month', 'year']
+  const selectedStatsType: Ref<TStatisticsType> = ref('total')
 
-  function onUpdateTimeFrame(timeFrame: string) {
+  function onUpdateTimeFrame(timeFrame: TStatisticsTimeFrame) {
     selectedTimeFrame.value = timeFrame
     emit('timeFrameUpdate', timeFrame)
   }
-
-  onMounted(() => {
-    if (!isDisabled.value) {
-      const input = document.getElementById('frame-month')
-      if (input) {
-        input.focus()
-      }
-    }
-  })
+  function updateStatsType(event: Event) {
+    selectedStatsType.value = (event.target as HTMLInputElement)
+      .value as TStatisticsType
+    emit('statsTypeUpdate', selectedStatsType.value)
+  }
 </script>
 
 <style lang="scss" scoped>
+  @import '~@/scss/vars';
+
   .chart-menu {
     display: flex;
     align-items: center;
@@ -90,6 +122,20 @@
 
     .chart-arrow {
       cursor: pointer;
+    }
+  }
+  .stats-type {
+    display: flex;
+    justify-content: center;
+    margin: $default-margin 0 $default-margin * 0.5;
+    .stats-type-radio {
+      display: flex;
+      gap: $default-padding;
+      label {
+        font-size: 0.9em;
+        font-weight: normal;
+        text-transform: lowercase;
+      }
     }
   }
 </style>

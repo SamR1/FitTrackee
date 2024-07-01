@@ -29,6 +29,11 @@
   "MAX_SIZE": "maks. wielkość",
   "MAX_SPEED": "maks. prędkość",
   "MIN_ALTITUDE": "min. wysokość",
+  "MULTISELECT": {
+    "deselectLabel": "Naciśnij enter aby usunąć",
+    "selectLabel": "Naciśnij enter aby wybrać",
+    "selectedLabel": "Wybrane"
+  },
   "NEXT_SEGMENT": "Następny segment",
   "NEXT_WORKOUT": "Następny trening",
   "NOTES": "notatki",
@@ -62,6 +67,7 @@
   "START_ELEVATION_AT_ZERO": "zacznij oś wysokości od zera",
   "TITLE": "tytuł",
   "TO": "do",
+  "TOTAL_DISTANCE": "całkowita odległość",
   "TOTAL_DURATION": "całkowity czas trwania",
   "UPLOAD_FIRST_WORKOUT": "Wyślij jakiś!",
   "VIEW_FULLSCREEN": "Włącz pełny ekran",

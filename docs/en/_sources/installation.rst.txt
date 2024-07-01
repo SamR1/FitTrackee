@@ -529,13 +529,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.8.4):
+-  Download the last release (for now, it is the release v0.8.5):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.4.tar.gz
-   $ tar -xzf v0.8.4.tar.gz
-   $ mv FitTrackee-0.8.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.5.tar.gz
+   $ tar -xzf v0.8.5.tar.gz
+   $ mv FitTrackee-0.8.5 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -666,13 +666,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.8.4) and overwrite existing files:
+- Download the last release (for now, it is the release v0.8.5) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.4.tar.gz
-   $ tar -xzf v0.8.4.tar.gz
-   $ cp -R FitTrackee-0.8.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.5.tar.gz
+   $ tar -xzf v0.8.5.tar.gz
+   $ cp -R FitTrackee-0.8.5/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -844,20 +844,14 @@ For **evaluation** purposes, docker files are available, installing **FitTrackee
 .. warning::
     Docker files are not suitable for production installation.
 
-- To install **FitTrackee**:
+- To install and run **FitTrackee**:
 
 .. code-block:: bash
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
     $ cp .env.docker .env
-    $ make docker-build
-
-- To initialise database:
-
-.. code-block:: bash
-
-    $ make docker-init
+    $ make docker-run
 
 - Open http://localhost:5000 and register.
 
@@ -877,13 +871,6 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-stop
-
-- To start **Fittrackee** (application and dramatiq workers):
-
-.. code-block:: bash
-
-    $ make docker-run-all
-
 
 - To run shell inside **Fittrackee** container:
 

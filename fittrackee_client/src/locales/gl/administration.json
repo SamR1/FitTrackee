@@ -17,6 +17,8 @@
     "MAX_USERS_LABEL": "Número máx. de usuarias activas",
     "NO_CONTACT_EMAIL": "sen correo de contacto",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. dos ficheiros subidos (en MB)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Se é 0, non hai límite ao número de adestramentos.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Máx. de adestramentos para estatísticas de deporte",
     "TITLE": "Configuración da aplicación",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. do arquivo zip (en MB)"
   },

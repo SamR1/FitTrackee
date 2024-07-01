@@ -899,7 +899,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
+            'Mon, 02 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
@@ -933,7 +933,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Sun, 01 Apr 2018 00:00:00 GMT'
+            'Mon, 02 Apr 2018 00:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {

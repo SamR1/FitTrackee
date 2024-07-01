@@ -39,6 +39,7 @@ const removeAuthUserData = (
   localStorage.removeItem('authToken')
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
+  context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_SPORT_STATS)
   context.commit(AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
