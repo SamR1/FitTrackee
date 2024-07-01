@@ -3,17 +3,24 @@
   "CONFIRMATION": "Conferma",
   "CONTACT": "contatto",
   "DAY": "giorno | giorni",
+  "DESCRIPTION": "Descrizione",
   "DISPLAYED": "Mostrato",
   "DOCUMENTATION": "documentazione",
   "HERE": "qui",
   "HIDDEN": "Nascosto",
   "HOME": "Home",
+  "HOURS": "ora|ore",
+  "INACTIVE": "inattivo",
+  "LABEL": "etichetta",
+  "MINUTES": "minuto|minuti",
   "NEXT": "avanti",
+  "NO_DESCRIPTION": "nessuna descrizione",
   "PREVIOUS": "precedente",
+  "SECONDS": "secondo|secondi",
   "SELECTS": {
     "ORDER": {
-      "ASC": "Dal più basso al più alto",
-      "DESC": "Dal più alto al più basso",
+      "ASC": "crescente",
+      "DESC": "decrescente",
       "LABEL": "ordina"
     },
     "ORDER_BY": {
@@ -23,5 +30,6 @@
       "LABEL": "per pagina"
     }
   },
-  "TOTAL": "Totale"
+  "TOTAL": "Totale",
+  "TOTAL_DURATION_WITH_PAUSES": "durata totale con pause"
 }
