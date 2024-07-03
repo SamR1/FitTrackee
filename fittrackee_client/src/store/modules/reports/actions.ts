@@ -97,7 +97,7 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
       context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
       const { report_id, ...data } = payload
       authApi
-        .post(`reports/${report_id}/admin_actions`, data)
+        .post(`reports/${report_id}/admin-actions`, data)
         .then((res) => {
           if (res.data.status === 'success') {
             context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, report_id)

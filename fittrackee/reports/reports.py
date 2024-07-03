@@ -205,7 +205,7 @@ def update_report(
 
 
 @reports_blueprint.route(
-    "/reports/<int:report_id>/admin_actions", methods=["POST"]
+    "/reports/<int:report_id>/admin-actions", methods=["POST"]
 )
 @require_auth(scopes=["reports:write"], as_admin=True)
 def create_admin_action(

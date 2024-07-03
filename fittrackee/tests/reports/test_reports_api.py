@@ -1816,7 +1816,7 @@ class TestPatchReport(ReportTestCase):
 
 
 class TestPostReportAdminAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -1919,7 +1919,7 @@ class TestPostReportAdminAction(ReportTestCase):
 
 
 class TestPostReportAdminActionForUserAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
     @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
     def test_it_returns_400_when_username_is_missing_on_user_admin_action(
@@ -2151,7 +2151,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
 
 class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
     @pytest.mark.parametrize('input_action_type', WORKOUT_ACTION_TYPES)
     def test_it_returns_400_when_workout_id_is_missing_on_workout_admin_action(
@@ -2434,7 +2434,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
 
 
 class TestPostReportAdminActionForCommentAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
     @pytest.mark.parametrize('input_action_type', COMMENT_ACTION_TYPES)
     def test_it_returns_400_when_comment_id_is_missing_on_comment_admin_action(
