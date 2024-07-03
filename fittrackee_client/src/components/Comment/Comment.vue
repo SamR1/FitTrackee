@@ -193,7 +193,7 @@
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
   import type { Locale } from 'date-fns'
-  import { computed, ref, toRefs, onUnmounted, withDefaults, watch } from 'vue'
+  import { computed, ref, toRefs, onUnmounted, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
