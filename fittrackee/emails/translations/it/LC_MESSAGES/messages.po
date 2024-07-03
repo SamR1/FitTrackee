@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-04 10:33+0100\n"
+"POT-Creation-Date: 2024-07-03 20:12+0200\n"
 "PO-Revision-Date: 2022-12-12 19:48+0000\n"
 "Last-Translator: Donato Perruso <dperruso@protonmail.com>\n"
 "Language: it\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.15.0\n"
 
 #: fittrackee/emails/templates/layout.html:215
 #: fittrackee/emails/templates/layout.txt:1
@@ -87,6 +87,7 @@ msgstr ""
 #: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
@@ -259,4 +260,59 @@ msgstr ""
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
 msgstr "Usa il link qui sotto per resettarla."
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+#, fuzzy
+msgid "Your account has been suspended"
+msgstr "La tua password è stata cambiata."
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+msgid "Reason:"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+msgid "If you think this is an error, you can appeal:"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:14
+msgid "Appeal"
+msgstr ""
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+#, fuzzy
+msgid "Your account has been reactivated"
+msgstr "La tua password è stata cambiata."
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr ""
 

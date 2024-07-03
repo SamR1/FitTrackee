@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from typing import Dict, List
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
@@ -2038,6 +2038,32 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             response, f"user '{user_2.username}' already suspended"
         )
 
+    def test_it_reactivates_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_unsuspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        assert (
+            User.query.filter_by(username=user_2.username).first().suspended_at
+            is None
+        )
+
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_creates_admin_action(
         self,
@@ -2148,6 +2174,87 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
 
         self.assert_403(response, 'error, registration is disabled')
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_sends_an_email_on_user_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_suspension_email_mock: MagicMock,
+        input_reason: Dict,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_suspension",
+                "username": user_2.username,
+                **input_reason,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_suspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'username': user_2.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'appeal_url': f'{app.config["UI_URL"]}/profile/suspension',
+                'reason': input_reason.get('reason'),
+            },
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_sends_an_email_on_user_reactivation(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_unsuspension_email_mock: MagicMock,
+        input_reason: Dict,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_unsuspension",
+                "username": user_2.username,
+                **input_reason,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_unsuspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'username': user_2.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': input_reason.get('reason'),
+            },
+        )
 
 
 class TestPostReportAdminActionForWorkoutAction(ReportTestCase):

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, Tuple, Union
 
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
@@ -17,6 +17,10 @@ from fittrackee.administration.reports_service import ReportService
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
+from fittrackee.emails.tasks import (
+    user_suspension_email,
+    user_unsuspension_email,
+)
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -29,6 +33,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.utils.language import get_language
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
@@ -242,6 +247,23 @@ def create_admin_action(
                 report_id=report_id,
                 reason=reason,
             )
+
+            ui_url = current_app.config['UI_URL']
+            user_data = {
+                'language': get_language(user.language),
+                'email': user.email,
+            }
+            email_data = {
+                'username': user.username,
+                'fittrackee_url': ui_url,
+                'reason': reason,
+            }
+
+            if action_type == "user_suspension":
+                email_data['appeal_url'] = f'{ui_url}/profile/suspension'
+                user_suspension_email.send(user_data, email_data)
+            else:
+                user_unsuspension_email.send(user_data, email_data)
 
         if action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
             object_type = action_type.split("_")[0]

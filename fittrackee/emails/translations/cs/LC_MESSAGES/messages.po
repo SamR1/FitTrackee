@@ -7,18 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-02-10 08:42+0100\n"
+"POT-Creation-Date: 2024-07-03 20:12+0200\n"
 "PO-Revision-Date: 2024-05-12 18:01+0000\n"
 "Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
-"Language-Team: Czech <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/cs/>\n"
 "Language: cs\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/cs/>\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.5.4\n"
-"Generated-By: Babel 2.14.0\n"
+"Generated-By: Babel 2.15.0\n"
 
 #: fittrackee/emails/templates/layout.html:215
 #: fittrackee/emails/templates/layout.txt:1
@@ -37,8 +36,8 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
-"Kvůli bezpečnosti: Tento požadavek přišel ze zařízení s %(operating_system)s "
-"a prohlížeče %(browser_name)s."
+"Kvůli bezpečnosti: Tento požadavek přišel ze zařízení s "
+"%(operating_system)s a prohlížeče %(browser_name)s."
 
 #: fittrackee/emails/templates/layout.html:221
 #: fittrackee/emails/templates/layout.txt:5
@@ -80,19 +79,19 @@ msgstr "Ověřte Váš email"
 msgid ""
 "If this account creation wasn't initiated by you, please ignore this "
 "email."
-msgstr ""
-"Pokud jste nepožadovali vytvoření účtu, tak prosím ignorujte tento email."
+msgstr "Pokud jste nepožadovali vytvoření účtu, tak prosím ignorujte tento email."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
 #: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Pokud máte potíže s tlačítkem výše, zkopírujte URL níže do Vašeho webového "
-"prohlížeče."
+"Pokud máte potíže s tlačítkem výše, zkopírujte URL níže do Vašeho "
+"webového prohlížeče."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
@@ -128,8 +127,8 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
-"Pokud jste o export nepožádali, okamžitě si změňte heslo nebo kontaktujte "
-"svého správce, pokud je váš účet uzamčen."
+"Pokud jste o export nepožádali, okamžitě si změňte heslo nebo kontaktujte"
+" svého správce, pokud je váš účet uzamčen."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
@@ -146,7 +145,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
-"Nedávno jste požádali o změnu e-mailové adresy pro svůj účet FitTrackee na:"
+"Nedávno jste požádali o změnu e-mailové adresy pro svůj účet FitTrackee "
+"na:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
@@ -171,8 +171,7 @@ msgstr "Pomocí tohoto odkazu potvrďte změnu e-mailu."
 msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
-msgstr ""
-"Nedávno jste požádali o změnu e-mailové adresy pro svůj účet FitTrackee."
+msgstr "Nedávno jste požádali o změnu e-mailové adresy pro svůj účet FitTrackee."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
@@ -182,7 +181,8 @@ msgstr "Pro potvrzení této adresy použijte tlačítko níže."
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Pokud jste tuto změnu e-mailu neiniciovali vy, ignorujte prosím tento e-mail."
+"Pokud jste tuto změnu e-mailu neiniciovali vy, ignorujte prosím tento "
+"e-mail."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
@@ -209,8 +209,8 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
-"Pokud jste tuto změnu hesla neiniciovali vy, okamžitě si heslo změňte, nebo "
-"pokud je váš účet uzamčen, kontaktujte svého správce."
+"Pokud jste tuto změnu hesla neiniciovali vy, okamžitě si heslo změňte, "
+"nebo pokud je váš účet uzamčen, kontaktujte svého správce."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
@@ -239,8 +239,7 @@ msgstr "Pro obnovu použijte tlačítko níže."
 #: fittrackee/emails/templates/password_reset_request/body.txt:2
 #, python-format
 msgid "This password reset link is only valid for %(expiration_delay)s."
-msgstr ""
-"Tento odkaz na obnovu hesla je platný pouze po dobu %(expiration_delay)s."
+msgstr "Tento odkaz na obnovu hesla je platný pouze po dobu %(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:13
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
@@ -255,3 +254,59 @@ msgstr "Pokud jste o obnovu hesla nepožádali, ignorujte prosím tento e-mail."
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
 msgstr "Pro obnovu použijte odkaz níže."
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+#, fuzzy
+msgid "Your account has been suspended"
+msgstr "Vaše heslo bylo změněno."
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+msgid "Reason:"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+msgid "If you think this is an error, you can appeal:"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:14
+msgid "Appeal"
+msgstr ""
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+#, fuzzy
+msgid "Your account has been reactivated"
+msgstr "Vaše heslo bylo změněno."
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr ""
+
