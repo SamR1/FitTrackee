@@ -204,7 +204,11 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type {
+    IAuthUserProfile,
+    IUserLightProfile,
+    IUserProfile,
+  } from '@/types/user'
   import type {
     IComment,
     ICurrentCommentEdition,
@@ -275,7 +279,7 @@
 
   function isCommentOwner(
     authUser: IAuthUserProfile | null,
-    commentUser: IUserProfile
+    commentUser: IUserProfile | IUserLightProfile
   ) {
     return authUser && authUser.username === commentUser.username
   }

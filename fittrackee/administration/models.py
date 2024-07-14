@@ -172,10 +172,14 @@ class AdminAction(BaseModel):
         if current_user.admin:
             action = {
                 **action,
-                "admin_user": self.admin_user.serialize(current_user),
+                "admin_user": self.admin_user.serialize(
+                    current_user, light=True
+                ),
                 "report_id": self.report_id,
                 "user": (
-                    self.user.serialize(current_user) if self.user else None
+                    self.user.serialize(current_user, light=True)
+                    if self.user
+                    else None
                 ),
                 "comment": (
                     self.comment.serialize(user=current_user, for_report=True)

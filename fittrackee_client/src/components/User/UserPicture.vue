@@ -15,11 +15,11 @@
 <script setup lang="ts">
   import { computed } from 'vue'
 
-  import type { IUserProfile } from '@/types/user'
+  import type { IUserLightProfile, IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
   interface Props {
-    user: IUserProfile
+    user: IUserProfile | IUserLightProfile
   }
   const props = defineProps<Props>()
 

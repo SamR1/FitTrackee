@@ -1,4 +1,8 @@
-import type { ISuspensionAppeal, IUserProfile } from '@/types/user'
+import type {
+  ISuspensionAppeal,
+  IUserLightProfile,
+  IUserProfile,
+} from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
@@ -18,13 +22,13 @@ export interface IReport {
 
 export interface IAdminAction {
   action_type: string
-  admin_user: IUserProfile
+  admin_user: IUserLightProfile
   appeal: ISuspensionAppeal | null
   created_at: string
   id: number
   reason: string | null
   report_id: number | null
-  user: IUserProfile | null
+  user: IUserLightProfile | null
 }
 
 export interface IReportComment {

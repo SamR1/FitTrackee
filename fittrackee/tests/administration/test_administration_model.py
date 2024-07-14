@@ -656,14 +656,16 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
 
         assert serialized_action['action_type'] == admin_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
-            user_1_admin
+            user_1_admin, light=True
         )
         assert serialized_action['comment'] is None
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
-        assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action['user'] == user_2.serialize(
+            user_1_admin, light=True
+        )
         assert serialized_action['workout'] is None
 
     def test_it_returns_serialized_admin_action_with_report(
@@ -682,7 +684,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
 
         assert serialized_action['action_type'] == admin_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
-            user_1_admin
+            user_1_admin, light=True
         )
         assert serialized_action['comment'] is None
         assert serialized_action['created_at'] == admin_action.created_at
@@ -714,7 +716,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
 
         assert serialized_action['action_type'] == admin_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
-            user_1_admin
+            user_1_admin, light=True
         )
         assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
         assert serialized_action['created_at'] == admin_action.created_at
@@ -722,7 +724,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
-        assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action['user'] == user_2.serialize(
+            user_1_admin, light=True
+        )
         assert serialized_action['workout'] is None
 
     def test_it_serialized_user_action_for_user(
@@ -860,14 +864,16 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
 
         assert serialized_action['action_type'] == admin_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
-            user_1_admin
+            user_1_admin, light=True
         )
         assert serialized_action['comment'] is None
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
-        assert serialized_action['user'] == user_2.serialize(user_1_admin)
+        assert serialized_action['user'] == user_2.serialize(
+            user_1_admin, light=True
+        )
         assert serialized_action[
             'workout'
         ] == workout_cycling_user_2.serialize(user_1_admin, for_report=True)
@@ -934,7 +940,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
 
         assert serialized_action['action_type'] == admin_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
-            user_1_admin
+            user_1_admin, light=True
         )
         assert serialized_action['comment'] == comment.serialize(
             user_1_admin, for_report=True
@@ -943,7 +949,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
         assert serialized_action['report_id'] is None
-        assert serialized_action['user'] == user_3.serialize(user_1_admin)
+        assert serialized_action['user'] == user_3.serialize(
+            user_1_admin, light=True
+        )
         assert serialized_action['workout'] is None
 
 

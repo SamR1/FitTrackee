@@ -9,12 +9,17 @@ export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 
-export interface IUserProfile {
+export interface IUserLightProfile {
   admin: boolean
+  created_at: string
+  picture: string | boolean
+  username: string
+}
+
+export interface IUserProfile extends IUserLightProfile {
   bio: string | null
   birth_date: string | null
   blocked: boolean
-  created_at: string
   email?: string
   email_to_confirm?: string
   is_active: boolean
@@ -27,7 +32,6 @@ export interface IUserProfile {
   location: string | null
   nb_sports?: number
   nb_workouts: number
-  picture: string | boolean
   profile_link?: string
   records: IRecord[]
   sports_list: number[]
@@ -35,7 +39,6 @@ export interface IUserProfile {
   total_ascent: number
   total_distance: number
   total_duration: string
-  username: string
 }
 
 export interface IAuthUserProfile extends IUserProfile {

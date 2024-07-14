@@ -1260,3 +1260,43 @@ class TestUsersWithSuspensions:
         db.session.commit()
 
         assert user_2.suspension_action is None
+
+
+class TestUserLightSerializer(UserModelAssertMixin):
+    def test_it_returns_limited_user_infos_as_admin(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=True
+        )
+
+        assert serialized_user == {
+            'admin': user_2.admin,
+            'created_at': user_2.created_at,
+            'picture': user_2.picture is not None,
+            'username': user_2.username,
+        }
+
+    def test_it_returns_limited_user_infos_as_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(current_user=user_1, light=True)
+
+        assert serialized_user == {
+            'admin': user_2.admin,
+            'created_at': user_2.created_at,
+            'picture': user_2.picture is not None,
+            'username': user_2.username,
+        }
+
+    def test_it_returns_limited_user_infos_as_unauthenticated_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(current_user=None, light=True)
+
+        assert serialized_user == {
+            'admin': user_2.admin,
+            'created_at': user_2.created_at,
+            'picture': user_2.picture is not None,
+            'username': user_2.username,
+        }

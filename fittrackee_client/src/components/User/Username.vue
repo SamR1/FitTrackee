@@ -15,10 +15,10 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import type { IUserProfile } from '@/types/user'
+  import type { IUserLightProfile, IUserProfile } from '@/types/user'
 
   interface Props {
-    user: IUserProfile
+    user: IUserProfile | IUserLightProfile
   }
 
   const props = defineProps<Props>()

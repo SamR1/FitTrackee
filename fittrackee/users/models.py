@@ -566,7 +566,9 @@ class User(BaseModel):
             .first()
         )
 
-    def serialize(self, current_user: Optional['User'] = None) -> Dict:
+    def serialize(
+        self, current_user: Optional['User'] = None, light: bool = False
+    ) -> Dict:
         if current_user is None:
             role = None
         else:
@@ -578,7 +580,7 @@ class User(BaseModel):
                 else UserRole.USER
             )
         sports = []
-        if self.workouts_count > 0:  # type: ignore
+        if self.workouts_count > 0 and not light:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
                 .filter(Workout.user_id == self.id)
@@ -589,9 +591,17 @@ class User(BaseModel):
 
         serialized_user = {
             'admin': self.admin,
+            'created_at': self.created_at,
+            'picture': self.picture is not None,
+            'username': self.username,
+        }
+        if light:
+            return serialized_user
+
+        serialized_user = {
+            **serialized_user,
             'bio': self.bio,
             'birth_date': self.birth_date,
-            'created_at': self.created_at,
             'first_name': self.first_name,
             'followers': self.followers.count(),
             'following': self.following.count(),
@@ -599,9 +609,7 @@ class User(BaseModel):
             'last_name': self.last_name,
             'location': self.location,
             'nb_workouts': self.workouts_count,
-            'picture': self.picture is not None,
             'suspended_at': self.suspended_at,
-            'username': self.username,
         }
 
         if role is not None:

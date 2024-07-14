@@ -1,7 +1,12 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
-import type { ISuspension, IUserProfile, TPrivacyLevels } from '@/types/user'
+import type {
+  ISuspension,
+  IUserLightProfile,
+  IUserProfile,
+  TPrivacyLevels,
+} from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -220,7 +225,7 @@ export interface IComment {
   text: string | null
   text_html: string | null
   text_visibility: TPrivacyLevels
-  user: IUserProfile
+  user: IUserLightProfile
   workout_id: string
 }
 
