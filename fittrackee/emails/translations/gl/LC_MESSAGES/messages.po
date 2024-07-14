@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-03 20:12+0200\n"
-"PO-Revision-Date: 2023-03-22 17:40+0000\n"
+"POT-Creation-Date: 2023-03-04 10:33+0100\n"
+"PO-Revision-Date: 2024-07-05 13:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language: gl\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee"
@@ -17,7 +17,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.15.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7-dev\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: fittrackee/emails/templates/layout.html:215
 #: fittrackee/emails/templates/layout.txt:1
@@ -72,7 +74,7 @@ msgstr "Usa o botón inferior para confirmar o enderezo do teu correo."
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:11
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
 msgid "Verify your email"
-msgstr "Verifica o email"
+msgstr "Verifica o enderezo de correo"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:18
 #: fittrackee/emails/templates/account_confirmation/body.txt:7
@@ -133,11 +135,11 @@ msgstr ""
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
 msgid "Email changed"
-msgstr "Email cambiado"
+msgstr "Enderezo cambiado"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:3
 msgid "Your email is being updated."
-msgstr "Estase actualizando o enderezo de email."
+msgstr "Estase actualizando o enderezo de correo."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
@@ -160,7 +162,7 @@ msgstr ""
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
 msgid "Confirm email change"
-msgstr "Confirma o cambio de email"
+msgstr "Confirma o cambio de enderezo"
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:3
 msgid "Use this link to confirm email change."
