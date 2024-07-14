@@ -6,9 +6,14 @@
     "week": "Wöchentliche Statistiken",
     "year": "Jährliche Statistiken"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistiken für alle Trainings:",
+  "STATISTICS_TYPES": {
+    "by_sport": "nach Sportart"
+  },
   "TIME_FRAMES": {
     "month": "Monat",
     "week": "Woche",
     "year": "Jahr"
-  }
+  },
+  "WORKOUTS_AVERAGE": "durchschnittliche Anzahl an Trainings"
 }
