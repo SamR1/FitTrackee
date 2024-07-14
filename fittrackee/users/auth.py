@@ -73,14 +73,14 @@ BLOCKED_USERS_PER_PAGE = 5
 
 def send_account_confirmation_email(user: User) -> None:
     if current_app.config['CAN_SEND_EMAILS']:
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         email_data = {
             'username': user.username,
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore  # noqa
             'browser_name': request.user_agent.browser,  # type: ignore
             'account_confirmation_url': (
-                f'{ui_url}/account-confirmation'
+                f'{fittrackee_url}/account-confirmation'
                 f'?token={user.confirmation_token}'
             ),
         }
@@ -752,14 +752,14 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             user_data = {
                 'language': get_language(auth_user.language),
                 'email': auth_user.email,
             }
             data = {
                 'username': auth_user.username,
-                'fittrackee_url': ui_url,
+                'fittrackee_url': fittrackee_url,
                 'operating_system': request.user_agent.platform,
                 'browser_name': request.user_agent.browser,
             }
@@ -781,7 +781,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     **data,
                     **{
                         'email_confirmation_url': (
-                            f'{ui_url}/email-update'
+                            f'{fittrackee_url}/email-update'
                             f'?token={auth_user.confirmation_token}'
                         )
                     },
@@ -1427,7 +1427,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     user = User.query.filter(User.email == email).first()
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         user_language = get_language(user.language)
         email_data = {
             'expiration_delay': get_readable_duration(
@@ -1436,9 +1436,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             ),
             'username': user.username,
             'password_reset_url': (
-                f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
+                f'{fittrackee_url}/password-reset?token={password_reset_token}'  # noqa
             ),
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore
             'browser_name': request.user_agent.browser,  # type: ignore
         }

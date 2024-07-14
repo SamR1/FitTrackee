@@ -650,7 +650,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         if current_app.config['CAN_SEND_EMAILS']:
             user_language = get_language(user.language)
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             if reset_password:
                 user_data = {
                     'language': user_language,
@@ -660,7 +660,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                     user_data,
                     {
                         'username': user.username,
-                        'fittrackee_url': ui_url,
+                        'fittrackee_url': fittrackee_url,
                     },
                 )
                 password_reset_token = user.encode_password_reset_token(
@@ -677,10 +677,10 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                         ),
                         'username': user.username,
                         'password_reset_url': (
-                            f'{ui_url}/password-reset?'
+                            f'{fittrackee_url}/password-reset?'
                             f'token={password_reset_token}'
                         ),
-                        'fittrackee_url': ui_url,
+                        'fittrackee_url': fittrackee_url,
                     },
                 )
 
@@ -691,9 +691,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 }
                 email_data = {
                     'username': user.username,
-                    'fittrackee_url': ui_url,
+                    'fittrackee_url': fittrackee_url,
                     'email_confirmation_url': (
-                        f'{ui_url}/email-update'
+                        f'{fittrackee_url}/email-update'
                         f'?token={user.confirmation_token}'
                     ),
                 }

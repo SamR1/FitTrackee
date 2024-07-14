@@ -339,23 +339,23 @@ class Workout(BaseModel):
                 'creation_date': self.creation_date,
                 'modification_date': self.modification_date,
                 'workout_date': self.workout_date,
-                'duration': None
-                if self.duration is None
-                else str(self.duration),
+                'duration': (
+                    None if self.duration is None else str(self.duration)
+                ),
                 'pauses': str(self.pauses) if self.pauses else None,
                 'moving': None if self.moving is None else str(self.moving),
                 'distance': (
                     None if self.distance is None else float(self.distance)
                 ),
-                'min_alt': None
-                if self.min_alt is None
-                else float(self.min_alt),
-                'max_alt': None
-                if self.max_alt is None
-                else float(self.max_alt),
-                'descent': None
-                if self.descent is None
-                else float(self.descent),
+                'min_alt': (
+                    None if self.min_alt is None else float(self.min_alt)
+                ),
+                'max_alt': (
+                    None if self.max_alt is None else float(self.max_alt)
+                ),
+                'descent': (
+                    None if self.descent is None else float(self.descent)
+                ),
                 'ascent': None if self.ascent is None else float(self.ascent),
                 'max_speed': (
                     None if self.max_speed is None else float(self.max_speed)
@@ -378,9 +378,9 @@ class Workout(BaseModel):
                 ),
                 'weather_start': self.weather_start,
                 'weather_end': self.weather_end,
-                'notes': self.notes
-                if user and user.id == self.user_id
-                else None,
+                'notes': (
+                    self.notes if user and user.id == self.user_id else None
+                ),
                 'map_visibility': self.calculated_map_visibility.value,
                 'workout_visibility': self.workout_visibility.value,
                 'likes_count': self.likes.count(),

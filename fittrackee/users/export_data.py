@@ -132,11 +132,11 @@ def export_user_data(export_request_id: int) -> None:
             db.session.commit()
 
             if current_app.config['CAN_SEND_EMAILS']:
-                ui_url = current_app.config['UI_URL']
+                fittrackee_url = current_app.config['UI_URL']
                 email_data = {
                     'username': user.username,
-                    'fittrackee_url': ui_url,
-                    'account_url': f'{ui_url}/profile/edit/account',
+                    'fittrackee_url': fittrackee_url,
+                    'account_url': f'{fittrackee_url}/profile/edit/account',
                 }
                 user_data = {
                     'language': get_language(user.language),

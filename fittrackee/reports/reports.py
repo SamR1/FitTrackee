@@ -235,7 +235,7 @@ def create_admin_action(
             username = data.get("username")
             if not username:
                 return InvalidPayloadErrorResponse("'username' is missing")
-            reported_user = report.reported_user
+            reported_user: User = report.reported_user
             if not reported_user or username != reported_user.username:
                 return InvalidPayloadErrorResponse("invalid 'username'")
 
@@ -248,19 +248,21 @@ def create_admin_action(
                 reason=reason,
             )
 
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             user_data = {
                 'language': get_language(user.language),
                 'email': user.email,
             }
             email_data = {
                 'username': user.username,
-                'fittrackee_url': ui_url,
+                'fittrackee_url': fittrackee_url,
                 'reason': reason,
             }
 
             if action_type == "user_suspension":
-                email_data['appeal_url'] = f'{ui_url}/profile/suspension'
+                email_data['appeal_url'] = (
+                    f'{fittrackee_url}/profile/suspension'
+                )
                 user_suspension_email.send(user_data, email_data)
             else:
                 user_unsuspension_email.send(user_data, email_data)
@@ -273,7 +275,9 @@ def create_admin_action(
                 return InvalidPayloadErrorResponse(
                     f"'{object_type_column}' is missing"
                 )
-            reported_object = getattr(report, f"reported_{object_type}")
+            reported_object: Union[Comment, Workout] = getattr(
+                report, f"reported_{object_type}"
+            )
             if not reported_object or reported_object.short_id != object_id:
                 return InvalidPayloadErrorResponse(
                     f"invalid '{object_type_column}'"
