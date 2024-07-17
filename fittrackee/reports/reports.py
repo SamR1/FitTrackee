@@ -18,8 +18,10 @@ from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.emails.tasks import (
+    comment_suspension_email,
     user_suspension_email,
     user_unsuspension_email,
+    workout_suspension_email,
 )
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -34,7 +36,7 @@ from fittrackee.users.exceptions import (
 )
 from fittrackee.users.models import User
 from fittrackee.users.utils.language import get_language
-from fittrackee.utils import decode_short_id
+from fittrackee.utils import decode_short_id, get_date_string_for_user
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
 
@@ -231,11 +233,11 @@ def create_admin_action(
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
+        reported_user: User = report.reported_user
         if action_type in USER_ACTION_TYPES:
             username = data.get("username")
             if not username:
                 return InvalidPayloadErrorResponse("'username' is missing")
-            reported_user: User = report.reported_user
             if not reported_user or username != reported_user.username:
                 return InvalidPayloadErrorResponse("invalid 'username'")
 
@@ -290,6 +292,57 @@ def create_admin_action(
                         f"{object_type} '{object_id}' already suspended"
                     )
                 reported_object.suspended_at = now
+
+                ui_url = current_app.config['UI_URL']
+                is_comment = object_type.startswith("comment")
+                user_data = {
+                    'language': get_language(reported_user.language),
+                    'email': reported_user.email,
+                }
+                email_data = {
+                    'username': reported_user.username,
+                    'fittrackee_url': ui_url,
+                    'reason': reason,
+                    'user_image_url': (
+                        f'{ui_url}/api/users/{reported_user.username}/picture'
+                        if reported_user.picture
+                        else f'{ui_url}/img/user.png'
+                    ),
+                }
+                if is_comment:
+                    if reported_object.workout_id:
+                        workout = Workout.query.filter_by(
+                            id=reported_object.workout_id
+                        ).first()
+                        email_data["appeal_url"] = (
+                            f'{ui_url}/workouts/{workout.short_id}'
+                            f'/comments/{reported_object.short_id}'
+                        )
+                    else:
+                        email_data["appeal_url"] = (
+                            f'{ui_url}/comments/{reported_object.short_id}'
+                        )
+
+                    email_data["text"] = reported_object.handle_mentions()[0]
+                    email_data["created_at"] = get_date_string_for_user(
+                        reported_object.created_at, reported_user
+                    )
+                    comment_suspension_email.send(user_data, email_data)
+                else:
+                    email_data["appeal_url"] = (
+                        f'{ui_url}/workouts/{reported_object.short_id}'
+                    )
+                    email_data["title"] = reported_object.title
+                    email_data["workout_date"] = get_date_string_for_user(
+                        reported_object.workout_date, reported_user
+                    )
+                    email_data["map"] = (
+                        f"{ui_url}/api/workouts/map/{reported_object.map_id}"
+                        if reported_object.map_id
+                        else None
+                    )
+                    workout_suspension_email.send(user_data, email_data)
+
             else:
                 reported_object.suspended_at = None
             admin_action = AdminAction(

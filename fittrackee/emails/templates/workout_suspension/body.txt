@@ -1,0 +1,6 @@
+{% extends "layout.txt" %}{% block content %}{{ _('Your comment has been suspended, it is no longer visible') }}.
+
+{% if reason %}{{ _('Reason:') }} {{ reason }}
+
+{% endif %}{{ _('If you think this is an error, you can appeal:') }} {{ appeal_url }}
+{% endblock %}

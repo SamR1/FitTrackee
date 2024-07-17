@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-03 20:12+0200\n"
+"POT-Creation-Date: 2024-07-17 19:33+0200\n"
 "PO-Revision-Date: 2023-10-18 04:01+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language: nb\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.15.0\n"
 
-#: fittrackee/emails/templates/layout.html:215
+#: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
 #, python-format
 msgid "Hi %(username)s,"
@@ -29,7 +29,7 @@ msgstr "Hei %(username)s,"
 #: fittrackee/emails/templates/account_confirmation/body.txt:6
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
-#: fittrackee/emails/templates/layout.html:218
+#: fittrackee/emails/templates/layout.html:235
 #: fittrackee/emails/templates/password_change/body.txt:3
 #: fittrackee/emails/templates/password_reset_request/body.txt:6
 #, python-format
@@ -40,12 +40,12 @@ msgstr ""
 "Av sikkerhetshensyn kan det nevnes at denne forespørselen ble mottatt fra"
 " en %(operating_system)s-enhet som bruker %(browser_name)s."
 
-#: fittrackee/emails/templates/layout.html:221
+#: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
 msgstr "Takk,"
 
-#: fittrackee/emails/templates/layout.html:222
+#: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
 msgid "The FitTrackee Team"
 msgstr "FitTrackee-laget"
@@ -84,10 +84,12 @@ msgid ""
 msgstr ""
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/comment_suspension/body.html:37
 #: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
 #: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/workout_suspension/body.html:40
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
@@ -95,6 +97,46 @@ msgstr ""
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:2
+#: fittrackee/emails/templates/comment_suspension/subject.txt:1
+#, fuzzy
+msgid "Your comment has been suspended"
+msgstr "Passord endret."
+
+#: fittrackee/emails/templates/comment_suspension/body.html:3
+#: fittrackee/emails/templates/comment_suspension/body.html:4
+#: fittrackee/emails/templates/comment_suspension/body.txt:1
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
+#, fuzzy
+msgid "Your comment has been suspended, it is no longer visible"
+msgstr "Passord endret."
+
+#: fittrackee/emails/templates/comment_suspension/body.html:5
+#: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/workout_suspension/body.html:5
+#: fittrackee/emails/templates/workout_suspension/body.txt:3
+msgid "Reason:"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:20
+#: fittrackee/emails/templates/comment_suspension/body.txt:5
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/workout_suspension/body.html:23
+#: fittrackee/emails/templates/workout_suspension/body.txt:5
+msgid "If you think this is an error, you can appeal:"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:27
+#: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/workout_suspension/body.html:30
+msgid "Appeal"
 msgstr ""
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
@@ -270,22 +312,6 @@ msgid ""
 "account"
 msgstr ""
 
-#: fittrackee/emails/templates/user_suspension/body.html:6
-#: fittrackee/emails/templates/user_suspension/body.txt:4
-#: fittrackee/emails/templates/user_unsuspension/body.html:5
-#: fittrackee/emails/templates/user_unsuspension/body.txt:4
-msgid "Reason:"
-msgstr ""
-
-#: fittrackee/emails/templates/user_suspension/body.html:7
-#: fittrackee/emails/templates/user_suspension/body.txt:6
-msgid "If you think this is an error, you can appeal:"
-msgstr ""
-
-#: fittrackee/emails/templates/user_suspension/body.html:14
-msgid "Appeal"
-msgstr ""
-
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
@@ -300,4 +326,16 @@ msgstr "Passord endret."
 #: fittrackee/emails/templates/user_unsuspension/body.txt:2
 msgid "You can now use all the features on FitTrackee"
 msgstr ""
+
+#: fittrackee/emails/templates/workout_suspension/body.html:2
+#: fittrackee/emails/templates/workout_suspension/subject.txt:1
+#, fuzzy
+msgid "Your workout has been suspended"
+msgstr "Passord endret."
+
+#: fittrackee/emails/templates/workout_suspension/body.html:3
+#: fittrackee/emails/templates/workout_suspension/body.html:4
+#, fuzzy
+msgid "Your workout has been suspended, it is no longer visible"
+msgstr "Passord endret."
 
