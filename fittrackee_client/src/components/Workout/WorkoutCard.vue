@@ -31,7 +31,10 @@
                 })
               }}
             </time>
-            <VisibilityIcon :visibility="workout.workout_visibility" />
+            <VisibilityIcon
+              v-if="workout.workout_visibility"
+              :visibility="workout.workout_visibility"
+            />
           </div>
         </div>
       </div>
