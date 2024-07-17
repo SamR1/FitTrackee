@@ -6,6 +6,7 @@ from sqlalchemy import func
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
+from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     MissingAdminIdException,
@@ -159,8 +160,8 @@ class UserManagerService:
             return None, None
 
         new_user = User(username=self.username, email=email, password=password)
-        new_user.timezone = 'Europe/Paris'
-        new_user.date_format = 'MM/dd/yyyy'
+        new_user.timezone = USER_TIMEZONE
+        new_user.date_format = USER_DATE_FORMAT
         new_user.confirmation_token = secrets.token_urlsafe(30)
         db.session.add(new_user)
         db.session.flush()
