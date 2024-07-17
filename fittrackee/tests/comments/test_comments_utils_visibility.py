@@ -38,7 +38,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_1,
-            workout=workout_cycling_user_1,
+            workout_cycling_user_1,
             text_visibility=input_text_visibility,
         )
 
@@ -57,7 +57,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=PrivacyLevel.PRIVATE,
         )
 
@@ -91,7 +91,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=input_text_visibility,
         )
 
@@ -123,7 +123,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=input_text_visibility,
         )
 
@@ -140,7 +140,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PRIVATE,
         )
@@ -158,7 +158,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
 
@@ -175,7 +175,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
         user_2.blocks_user(user_1)
@@ -208,7 +208,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=input_text_visibility,
         )
 
@@ -225,7 +225,7 @@ class TestCanViewComment(CommentMixin):
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
             user_2,
-            workout=workout_cycling_user_2,
+            workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
 

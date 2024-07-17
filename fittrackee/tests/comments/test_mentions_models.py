@@ -28,10 +28,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         created_at = datetime.utcnow()
 
         mention = Mention(
@@ -49,10 +46,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         now = datetime.utcnow()
         with freeze_time(now):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
@@ -67,9 +61,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         mention = Mention(comment_id=comment.id, user_id=user_1.id)
         db.session.add(mention)
         db.session.commit()
@@ -92,9 +84,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         mention = Mention(comment_id=comment.id, user_id=user_1.id)
         db.session.add(mention)
         db.session.commit()
@@ -124,8 +114,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_2.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )
@@ -151,8 +141,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
@@ -180,8 +170,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PRIVATE,
         )

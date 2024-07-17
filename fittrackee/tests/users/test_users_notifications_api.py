@@ -517,8 +517,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
@@ -727,8 +727,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
@@ -988,8 +988,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
