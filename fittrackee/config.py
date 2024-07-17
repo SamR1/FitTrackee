@@ -7,6 +7,7 @@ from flask import current_app
 from sqlalchemy.pool import NullPool
 
 from fittrackee import VERSION
+from fittrackee.languages import SUPPORTED_LANGUAGES
 
 broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
     StubBroker
@@ -19,20 +20,6 @@ XDIST_WORKER = (
     if os.getenv('PYTEST_XDIST_WORKER')
     else ''
 )
-SUPPORTED_LANGUAGES = [
-    'cs',  # Czech
-    'de',  # German
-    'en',  # English
-    'es',  # Spanish
-    'eu',  # Basque
-    'fr',  # French
-    'gl',  # Galician
-    'it',  # Italian
-    'nb',  # Norwegian Bokmål
-    'nl',  # Dutch
-    'pl',  # Polish
-    'pt',  # Portuguese
-]
 
 
 class BaseConfig:

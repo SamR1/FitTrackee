@@ -7,7 +7,7 @@ from humanize import naturalsize
 from fittrackee import db
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.cli.app import app
-from fittrackee.config import SUPPORTED_LANGUAGES
+from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
     clean_user_data_export,
