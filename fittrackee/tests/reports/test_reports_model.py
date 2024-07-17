@@ -1054,8 +1054,8 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
 
         assert serialized_report == {
             "admin_actions": [
-                admin_action_1.serialize(user_1_admin),
-                admin_action_2.serialize(user_1_admin),
+                admin_action_1.serialize(user_1_admin, full=False),
+                admin_action_2.serialize(user_1_admin, full=False),
             ],
             "created_at": report.created_at,
             "comments": [],

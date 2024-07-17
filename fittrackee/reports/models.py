@@ -200,7 +200,7 @@ class Report(BaseModel):
         if current_user.admin:
             if full:
                 report["admin_actions"] = [
-                    action.serialize(current_user)
+                    action.serialize(current_user, full=False)
                     for action in self.admin_actions
                 ]
                 report["comments"] = [

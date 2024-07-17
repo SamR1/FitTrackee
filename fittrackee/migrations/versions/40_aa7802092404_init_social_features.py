@@ -404,6 +404,11 @@ def upgrade():
             ['workout_id'],
             unique=False,
         )
+        batch_op.create_index(
+            batch_op.f('ix_admin_actions_created_at'),
+            ['created_at'],
+            unique=False,
+        )
 
     op.create_table(
         'admin_action_appeals',
@@ -459,6 +464,7 @@ def downgrade():
     op.drop_table('admin_action_appeals')
 
     with op.batch_alter_table('admin_actions', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_admin_actions_created_at'))
         batch_op.drop_index(batch_op.f('ix_admin_actions_user_id'))
         batch_op.drop_index(batch_op.f('ix_admin_actions_report_id'))
         batch_op.drop_index(batch_op.f('ix_admin_actions_admin_user_id'))

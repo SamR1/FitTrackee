@@ -51,7 +51,7 @@ class AdminAction(BaseModel):
         unique=True,
         nullable=False,
     )
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     admin_user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
@@ -166,21 +166,23 @@ class AdminAction(BaseModel):
             "id": self.short_id,
             "reason": self.reason,
         }
+
+        if current_user.admin:
+            action["admin_user"] = self.admin_user.serialize(
+                current_user, light=True
+            )
+            action["user"] = (
+                self.user.serialize(current_user, light=True)
+                if self.user
+                else None
+            )
         if not full:
             return action
 
         if current_user.admin:
             action = {
                 **action,
-                "admin_user": self.admin_user.serialize(
-                    current_user, light=True
-                ),
                 "report_id": self.report_id,
-                "user": (
-                    self.user.serialize(current_user, light=True)
-                    if self.user
-                    else None
-                ),
                 "comment": (
                     self.comment.serialize(user=current_user, for_report=True)
                     if self.comment_id
@@ -299,11 +301,11 @@ class AdminActionAppeal(BaseModel):
         }
         if current_user.admin:
             appeal["admin_user"] = (
-                self.admin_user.serialize(current_user)
+                self.admin_user.serialize(current_user, light=True)
                 if self.admin_user
                 else None
             )
-            appeal["user"] = self.user.serialize(current_user)
+            appeal["user"] = self.user.serialize(current_user, light=True)
         return appeal
 
 
