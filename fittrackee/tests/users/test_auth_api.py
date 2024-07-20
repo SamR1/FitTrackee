@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
 from sqlalchemy.dialects.postgresql import insert
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
@@ -2477,7 +2477,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
-        with freeze_time(now + timedelta(seconds=61)):
+        with travel(now + timedelta(seconds=61), tick=False):
             response = client.post(
                 '/api/auth/password/update',
                 data=json.dumps(
@@ -2891,7 +2891,7 @@ class TestUserLogout(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        with freeze_time(now + timedelta(seconds=61)):
+        with travel(now + timedelta(seconds=61), tick=False):
             response = client.post(
                 '/api/auth/logout',
                 headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -2986,8 +2986,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         )
         accepted_policy_date = datetime.utcnow()
 
-        with patch('fittrackee.users.auth.datetime.datetime') as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=accepted_policy_date)
+        with travel(accepted_policy_date, tick=False):
             response = client.post(
                 '/api/auth/account/privacy-policy',
                 content_type='application/json',
