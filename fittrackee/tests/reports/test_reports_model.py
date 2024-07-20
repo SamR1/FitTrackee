@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
@@ -272,7 +272,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         now = datetime.now()
         report_note = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             report = Report(
                 note=report_note,
                 reported_by=user_1.id,
@@ -1105,7 +1105,7 @@ class TestReportCommentModel(ReportCommentTestCase):
         comment = self.random_string()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             report_comment = ReportComment(
                 report_id=report.id,
                 user_id=user_1_admin.id,

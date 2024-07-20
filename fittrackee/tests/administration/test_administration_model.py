@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.exceptions import (
@@ -97,7 +97,7 @@ class TestAdminActionForReportModel(AdminActionTestCase):
         now = datetime.utcnow()
         action_type = "report_resolution"
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             admin_action = AdminAction(
                 action_type=action_type,
                 admin_user_id=user_1_admin.id,
@@ -122,7 +122,7 @@ class TestAdminActionForReportModel(AdminActionTestCase):
         report = self.create_report(reporter=user_2, reported_object=user_3)
         action_type = "report_resolution"
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             admin_action = AdminAction(
                 action_type=action_type,
                 admin_user_id=user_1_admin.id,
@@ -1067,7 +1067,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         admin_action = self.create_admin_action(user_1_admin, user_2)
         now = datetime.now()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             appeal = AdminActionAppeal(
                 action_id=admin_action.id, user_id=user_2.id, text=appeal_text
             )

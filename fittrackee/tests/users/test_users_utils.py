@@ -2,13 +2,14 @@ import time
 from calendar import timegm
 from datetime import datetime, timedelta
 from typing import Dict, Optional
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import jwt
 import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from flask import Flask
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.users.models import BlacklistedToken, User
@@ -216,9 +217,7 @@ class TestGetUserToken:
     ) -> None:
         user_id = 1
         iat = datetime.utcnow()
-        with patch('fittrackee.users.utils.token.datetime') as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=iat)
-
+        with travel(iat, tick=False):
             token = get_user_token(
                 user_id=user_id, password_reset=input_password_reset
             )
@@ -235,9 +234,7 @@ class TestGetUserToken:
             days=app.config['TOKEN_EXPIRATION_DAYS'],
             seconds=app.config['TOKEN_EXPIRATION_SECONDS'],
         )
-        with patch('fittrackee.users.utils.token.datetime') as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=iat)
-
+        with travel(iat, tick=False):
             token = get_user_token(user_id=user_id)
 
             decoded_token = self.decode_token(app, token)
@@ -254,9 +251,7 @@ class TestGetUserToken:
             days=0.0,
             seconds=app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
         )
-        with patch('fittrackee.users.utils.token.datetime') as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=iat)
-
+        with travel(iat, tick=False):
             token = get_user_token(user_id=user_id, password_reset=True)
 
             decoded_token = self.decode_token(app, token)
@@ -268,8 +263,7 @@ class TestGetUserToken:
 class TestDecodeUserToken:
     @staticmethod
     def generate_token(user_id: int, now: datetime) -> str:
-        with patch('fittrackee.users.utils.token.datetime') as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=now)
+        with travel(now, tick=False):
             token = get_user_token(user_id)
         return token
 

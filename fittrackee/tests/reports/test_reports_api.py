@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import (
@@ -1689,7 +1689,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1723,7 +1723,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1758,7 +1758,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1791,7 +1791,7 @@ class TestPatchReport(ReportTestCase):
         comment_time = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(comment_time):
+        with travel(comment_time, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1996,7 +1996,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2024,7 +2024,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         db.session.commit()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2080,7 +2080,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2117,7 +2117,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2367,7 +2367,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2406,7 +2406,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         db.session.commit()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2441,7 +2441,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2480,7 +2480,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2521,7 +2521,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2868,7 +2868,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2905,7 +2905,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         db.session.commit()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2941,7 +2941,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2978,7 +2978,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -3020,7 +3020,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -3362,7 +3362,7 @@ class TestProcessAdminActionAppeal(
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
@@ -3465,7 +3465,7 @@ class TestProcessAdminActionAppeal(
         now = datetime.utcnow()
         comment_suspended_at = comment.suspended_at
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
@@ -3561,7 +3561,7 @@ class TestProcessAdminActionAppeal(
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),

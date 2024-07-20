@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee.administration.models import AdminAction
 from fittrackee.administration.reports_service import ReportService
@@ -120,7 +120,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         )
         report.resolved = True
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             comment_report = report_service.create_report(
                 reporter=user_2,
                 note=note,
@@ -280,7 +280,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         )
         report.resolved = True
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             workout_report = report_service.create_report(
                 reporter=user_1,
                 note=note,
@@ -414,7 +414,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         )
         report.resolved = True
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             user_report = report_service.create_report(
                 reporter=user_1,
                 note=note,
@@ -510,7 +510,7 @@ class TestReportServiceUpdate(CommentMixin):
         created_at = report.created_at
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -542,7 +542,7 @@ class TestReportServiceUpdate(CommentMixin):
         comment = self.random_string()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -589,7 +589,7 @@ class TestReportServiceUpdate(CommentMixin):
         created_at = report.created_at
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -621,7 +621,7 @@ class TestReportServiceUpdate(CommentMixin):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -654,7 +654,7 @@ class TestReportServiceUpdate(CommentMixin):
         report.resolved_by = user_1_admin.id
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -689,7 +689,7 @@ class TestReportServiceUpdate(CommentMixin):
         report.resolved_by = user_1_admin.id
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -716,7 +716,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
 
-        with freeze_time(datetime.utcnow()):
+        with travel(datetime.utcnow(), tick=False):
             report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -741,7 +741,7 @@ class TestReportServiceUpdate(CommentMixin):
         resolved_time = datetime.utcnow()
 
         # resolved by user_1_admin
-        with freeze_time(resolved_time):
+        with travel(resolved_time, tick=False):
             report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,
@@ -751,7 +751,7 @@ class TestReportServiceUpdate(CommentMixin):
 
         # comment added by user_2_admin
         comment_time = resolved_time + timedelta(minutes=10)
-        with freeze_time(comment_time):
+        with travel(comment_time, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
                 admin_user=user_1_admin,

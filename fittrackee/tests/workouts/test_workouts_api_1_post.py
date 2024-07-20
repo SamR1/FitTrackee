@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
 from sqlalchemy.dialects.postgresql import insert
+from time_machine import travel
 
 from fittrackee import VERSION, db
 from fittrackee.administration.models import AdminActionAppeal
@@ -3443,7 +3443,7 @@ class TestPostWorkoutSuspensionAppeal(
         text = self.random_string()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
                 content_type='application/json',

@@ -3,8 +3,8 @@ from typing import Dict
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
 from sqlalchemy.dialects.postgresql import insert
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
@@ -485,7 +485,7 @@ class TestUserModelToken:
     ) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         now = datetime.utcnow()
-        with freeze_time(now + timedelta(seconds=61)):
+        with travel(now + timedelta(seconds=61), tick=False):
             assert (
                 User.decode_auth_token(auth_token)
                 == 'signature expired, please log in again'
@@ -997,7 +997,7 @@ class TestBlocksUser:
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             user_1.blocks_user(user_2)
 
         blocked_user = BlockedUser.query.filter_by(

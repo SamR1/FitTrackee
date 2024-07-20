@@ -4,7 +4,7 @@ from typing import Dict, List
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 from werkzeug import Response
 
 from fittrackee import db
@@ -3100,7 +3100,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
         text = self.random_string()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 f"/api/comments/{comment.short_id}/suspension/appeal",
                 content_type='application/json',

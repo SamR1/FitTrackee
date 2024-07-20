@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
@@ -48,7 +48,7 @@ class TestMentionModel(CommentMixin):
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
 
         assert mention.created_at == now

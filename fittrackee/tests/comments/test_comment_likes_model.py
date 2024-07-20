@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.comments.models import CommentLike
@@ -43,7 +43,7 @@ class TestCommentLikeModel(CommentMixin):
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             like = CommentLike(user_id=user_2.id, comment_id=comment.id)
 
         assert like.user_id == user_2.id
