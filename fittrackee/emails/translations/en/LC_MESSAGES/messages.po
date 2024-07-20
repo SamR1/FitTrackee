@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-17 19:33+0200\n"
+"POT-Creation-Date: 2024-07-20 09:33+0200\n"
 "PO-Revision-Date: 2022-07-02 18:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -114,12 +114,16 @@ msgstr "Your comment has been suspended, it is no longer visible"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
 #: fittrackee/emails/templates/user_suspension/body.html:6
 #: fittrackee/emails/templates/user_suspension/body.txt:4
 #: fittrackee/emails/templates/user_unsuspension/body.html:5
 #: fittrackee/emails/templates/user_unsuspension/body.txt:4
 #: fittrackee/emails/templates/workout_suspension/body.html:5
 #: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
 msgstr "Reason:"
 
@@ -137,6 +141,17 @@ msgstr "If you think this is an error, you can appeal:"
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
 msgstr "Appeal"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr "The suspension on your comment has been lifted"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
+msgstr "The suspension on your comment has been lifted, it is visible again"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
@@ -345,7 +360,17 @@ msgstr "Your workout has been suspended"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
-#, fuzzy
 msgid "Your workout has been suspended, it is no longer visible"
 msgstr "Your workout has been suspended, it is no longer visible"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr "The suspension on your workout has been lifted"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr "The suspension on your workout has been lifted, it is visible again"
 

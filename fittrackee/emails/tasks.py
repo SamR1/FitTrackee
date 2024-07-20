@@ -94,9 +94,29 @@ def comment_suspension_email(user: Dict, email_data: Dict) -> None:
 
 
 @dramatiq.actor(queue_name='fittrackee_emails')
+def comment_unsuspension_email(user: Dict, email_data: Dict) -> None:
+    email_service.send(
+        template='comment_unsuspension',
+        lang=user['language'],
+        recipient=user['email'],
+        data=email_data,
+    )
+
+
+@dramatiq.actor(queue_name='fittrackee_emails')
 def workout_suspension_email(user: Dict, email_data: Dict) -> None:
     email_service.send(
         template='workout_suspension',
+        lang=user['language'],
+        recipient=user['email'],
+        data=email_data,
+    )
+
+
+@dramatiq.actor(queue_name='fittrackee_emails')
+def workout_unsuspension_email(user: Dict, email_data: Dict) -> None:
+    email_service.send(
+        template='workout_unsuspension',
         lang=user['language'],
         recipient=user['email'],
         data=email_data,

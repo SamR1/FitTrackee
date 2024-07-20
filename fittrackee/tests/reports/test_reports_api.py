@@ -2603,7 +2603,6 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         workout_suspension_email_mock: MagicMock,
-        gpx_file: str,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         db.session.commit()
@@ -2635,6 +2634,111 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
                     f'{app.config["UI_URL"]}/workouts/'
                     f'{workout_cycling_user_2.short_id}'
                 ),
+                'fittrackee_url': app.config['UI_URL'],
+                'map': (
+                    f'{app.config["UI_URL"]}/api/workouts/map'
+                    f'/{workout_cycling_user_2.map_id}'
+                ),
+                'reason': None,
+                'title': workout_cycling_user_2.title,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_2.username,
+                'workout_date': get_date_string_for_user(
+                    workout_cycling_user_2.workout_date, user_2
+                ),
+            },
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_sends_an_email_on_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_unsuspension_email_mock: MagicMock,
+        input_reason: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = self.create_report(
+            user_3, reported_object=workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_unsuspension",
+                "workout_id": workout_cycling_user_2.short_id,
+                **input_reason,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout_unsuspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'fittrackee_url': app.config['UI_URL'],
+                'map': None,
+                'reason': input_reason.get('reason'),
+                'title': workout_cycling_user_2.title,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_2.username,
+                'workout_date': get_date_string_for_user(
+                    workout_cycling_user_2.workout_date, user_2
+                ),
+            },
+        )
+
+    def test_it_sends_an_email_on_workout_with_gpx_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.map_id = self.random_short_id()
+        db.session.commit()
+        report = self.create_report(
+            user_3, reported_object=workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_unsuspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout_unsuspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
                 'fittrackee_url': app.config['UI_URL'],
                 'map': (
                     f'{app.config["UI_URL"]}/api/workouts/map'
@@ -3039,6 +3143,116 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/comments/{comment.short_id}'
                 ),
+                'created_at': get_date_string_for_user(
+                    comment.created_at, user_3
+                ),
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'text': comment.handle_mentions()[0],
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_3.username,
+            },
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_sends_an_email_on_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_unsuspension_email_mock: MagicMock,
+        input_reason: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        report = self.create_report(user_2, reported_object=comment)
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_unsuspension",
+                "comment_id": comment.short_id,
+                **input_reason,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        comment_unsuspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'created_at': get_date_string_for_user(
+                    comment.created_at, user_3
+                ),
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': input_reason.get('reason'),
+                'text': comment.handle_mentions()[0],
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_3.username,
+            },
+        )
+
+    def test_it_sends_an_email_on_comment_unsuspension_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        report = self.create_report(user_2, reported_object=comment)
+        db.session.delete(workout_cycling_user_2)
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_unsuspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        comment_unsuspension_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
                 'created_at': get_date_string_for_user(
                     comment.created_at, user_3
                 ),

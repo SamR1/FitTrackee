@@ -79,6 +79,22 @@ def comment_suspension_email_mock() -> Iterator[MagicMock]:
 
 
 @pytest.fixture()
+def comment_unsuspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports.comment_unsuspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
 def workout_suspension_email_mock() -> Iterator[MagicMock]:
     with patch('fittrackee.reports.reports.workout_suspension_email') as mock:
+        yield mock
+
+
+@pytest.fixture()
+def workout_unsuspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports.workout_unsuspension_email'
+    ) as mock:
         yield mock

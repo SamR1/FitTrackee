@@ -1,0 +1,3 @@
+{% extends "layout.txt" %}{% block content %}{{ _('The suspension on your workout has been lifted, it is visible again') }}.
+
+{% if reason %}{{ _('Reason:') }} {{ reason }}{% endif %}{% endblock %}

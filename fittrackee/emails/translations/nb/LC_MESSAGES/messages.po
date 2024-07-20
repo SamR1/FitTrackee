@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-17 19:33+0200\n"
+"POT-Creation-Date: 2024-07-20 09:33+0200\n"
 "PO-Revision-Date: 2023-10-18 04:01+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language: nb\n"
@@ -65,7 +65,6 @@ msgid "You have created an account on FitTrackee."
 msgstr "Du har opprettet en FitTrackee-konto."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
-#, fuzzy
 msgid "Use the button below to confirm your address email."
 msgstr "Bruk knappen nedenfor for å bekrefte din e-postadresse."
 
@@ -101,26 +100,28 @@ msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
-#, fuzzy
 msgid "Your comment has been suspended"
-msgstr "Passord endret."
+msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
-#, fuzzy
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr "Passord endret."
+msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
 #: fittrackee/emails/templates/user_suspension/body.html:6
 #: fittrackee/emails/templates/user_suspension/body.txt:4
 #: fittrackee/emails/templates/user_unsuspension/body.html:5
 #: fittrackee/emails/templates/user_unsuspension/body.txt:4
 #: fittrackee/emails/templates/workout_suspension/body.html:5
 #: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
 msgstr ""
 
@@ -137,6 +138,17 @@ msgstr ""
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
 msgstr ""
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
@@ -195,7 +207,6 @@ msgstr ""
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
-#, fuzzy
 msgid "Confirm email change"
 msgstr "Bekreft e-postbytte"
 
@@ -211,7 +222,6 @@ msgid ""
 msgstr ""
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
-#, fuzzy
 msgid "Use the button below to confirm this address."
 msgstr "Bekreft denne adressen med knappen nedenfor."
 
@@ -230,7 +240,6 @@ msgid "Password changed"
 msgstr "Passord endret"
 
 #: fittrackee/emails/templates/password_change/body.html:3
-#, fuzzy
 msgid "Your password has been changed."
 msgstr "Passord endret."
 
@@ -293,9 +302,8 @@ msgstr "Bruk lenken nedenfor for å tilbakestille det."
 #: fittrackee/emails/templates/user_suspension/body.html:4
 #: fittrackee/emails/templates/user_suspension/body.txt:1
 #: fittrackee/emails/templates/user_suspension/subject.txt:1
-#, fuzzy
 msgid "Your account has been suspended"
-msgstr "Passord endret."
+msgstr ""
 
 #: fittrackee/emails/templates/user_suspension/body.html:3
 #: fittrackee/emails/templates/user_suspension/body.html:5
@@ -317,9 +325,8 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
-#, fuzzy
 msgid "Your account has been reactivated"
-msgstr "Passord endret."
+msgstr ""
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
@@ -329,13 +336,22 @@ msgstr ""
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
-#, fuzzy
 msgid "Your workout has been suspended"
-msgstr "Passord endret."
+msgstr ""
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
-#, fuzzy
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr "Passord endret."
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr ""
 

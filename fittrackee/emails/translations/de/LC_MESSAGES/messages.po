@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-17 19:33+0200\n"
+"POT-Creation-Date: 2024-07-20 09:33+0200\n"
 "PO-Revision-Date: 2023-03-05 11:17+0000\n"
 "Last-Translator: qwerty287 <ndev@web.de>\n"
 "Language: de\n"
@@ -103,26 +103,28 @@ msgstr "Verwende den unteren Link, um deine E-Mail-Adresse zu bestätigen."
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
-#, fuzzy
 msgid "Your comment has been suspended"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
-#, fuzzy
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
 #: fittrackee/emails/templates/user_suspension/body.html:6
 #: fittrackee/emails/templates/user_suspension/body.txt:4
 #: fittrackee/emails/templates/user_unsuspension/body.html:5
 #: fittrackee/emails/templates/user_unsuspension/body.txt:4
 #: fittrackee/emails/templates/workout_suspension/body.html:5
 #: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
 msgstr ""
 
@@ -139,6 +141,17 @@ msgstr ""
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
 msgstr ""
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
@@ -312,9 +325,8 @@ msgstr "Verwende den unteren Link, um es zurückzusetzen."
 #: fittrackee/emails/templates/user_suspension/body.html:4
 #: fittrackee/emails/templates/user_suspension/body.txt:1
 #: fittrackee/emails/templates/user_suspension/subject.txt:1
-#, fuzzy
 msgid "Your account has been suspended"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
 
 #: fittrackee/emails/templates/user_suspension/body.html:3
 #: fittrackee/emails/templates/user_suspension/body.html:5
@@ -336,9 +348,8 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
-#, fuzzy
 msgid "Your account has been reactivated"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
@@ -348,13 +359,22 @@ msgstr ""
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
-#, fuzzy
 msgid "Your workout has been suspended"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
-#, fuzzy
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr "Dein Passwort wurde geändert."
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr ""
 
