@@ -48,7 +48,7 @@
         </div>
         <ActionAppeal
           v-if="displayAppealForm && workout.suspension"
-          :suspension="workout.suspension"
+          :admin-action="workout.suspension"
           :success="success"
           :loading="appealLoading"
           @submitForm="submitAppeal"

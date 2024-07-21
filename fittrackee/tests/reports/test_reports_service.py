@@ -985,6 +985,29 @@ class TestReportServiceCreateAdminActionForUser(
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
 
+    def test_it_creates_admin_action_for_user_warning(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+
+        report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning",
+            data={"username": user_3.username},
+        )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "user_warning"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.reason is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
 
 class TestReportServiceCreateAdminActionForComment(
     ReportServiceCreateAdminActionMixin

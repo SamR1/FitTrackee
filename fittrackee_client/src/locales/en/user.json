@@ -199,5 +199,6 @@
   "USER_PICTURE": "user picture",
   "YOU": "you",
   "YOU_CAN_APPEAL_ONCE": "You can appeal only once.",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}."
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}.",
+  "WARNING_REASON": "Warning reason"
 }

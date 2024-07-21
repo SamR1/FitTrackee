@@ -199,5 +199,6 @@
   "USER_PICTURE": "photo de l'utilisateur",
   "YOU": "vous",
   "YOU_CAN_APPEAL_ONCE": "Vous ne pouvez faire appel qu'une seule fois.",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}."
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}.",
+  "WARNING_REASON": "Raison de l'avertissement"
 }

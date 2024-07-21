@@ -1,10 +1,16 @@
 <template>
-  <div v-if="suspension.id" class="appeal description-list">
-    <dl v-if="suspension.reason">
-      <dt>{{ $t('user.SUSPENSION_REASON') }}:</dt>
-      <dd>{{ suspension.reason }}</dd>
+  <div v-if="adminAction.id" class="appeal description-list">
+    <dl v-if="adminAction.reason">
+      <dt>
+        {{
+          $t(
+            `user.${adminAction.action_type === 'user_suspension' ? 'SUSPENSION' : 'WARNING'}_REASON`
+          )
+        }}:
+      </dt>
+      <dd>{{ adminAction.reason }}</dd>
     </dl>
-    <div v-if="success || suspension.appeal" class="appeal-submitted">
+    <div v-if="success || adminAction.appeal" class="appeal-submitted">
       <div
         class="info-box"
         :class="{ 'success-message': success, 'appeal-success': success }"
@@ -21,7 +27,7 @@
           </button>
         </span>
       </div>
-      <div v-if="suspension.action_type === 'user_suspension'">
+      <div v-if="adminAction.action_type === 'user_adminAction'">
         <slot name="cancelButton"></slot>
       </div>
     </div>
@@ -65,11 +71,11 @@
   import { ROOT_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { ISuspension } from '@/types/user'
+  import type { IUserAdminAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
-    suspension: ISuspension
+    adminAction: IUserAdminAction
     loading: boolean
     success: boolean
   }

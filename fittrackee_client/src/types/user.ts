@@ -183,7 +183,7 @@ export interface IFollowRequestsActionPayload {
   getFollowRequests?: boolean
 }
 
-export interface ISuspensionAppeal {
+export interface IAdminActionAppeal {
   approved: boolean | null
   created_at: string
   id: string
@@ -192,11 +192,17 @@ export interface ISuspensionAppeal {
   updated_at: string
 }
 
-export interface ISuspension {
+export interface IUserAdminAction {
   action_type: string
-  appeal: ISuspensionAppeal
+  appeal: IAdminActionAppeal
   created_at: string
   id: string
   reason: string
   user?: IUserProfile
+}
+
+export interface IUserAppealPayload {
+  actionId: string
+  actionType: 'user_suspension' | 'user_warning'
+  text: string
 }

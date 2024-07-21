@@ -27,6 +27,7 @@ REPORT_ACTION_TYPES = [
 USER_ACTION_TYPES = [
     "user_suspension",
     "user_unsuspension",
+    "user_warning",
 ]
 COMMENT_ACTION_TYPES = [
     "comment_suspension",
@@ -272,8 +273,9 @@ class AdminActionAppeal(BaseModel):
     ):
         action = AdminAction.query.filter_by(id=action_id).first()
         if action.action_type not in [
-            "user_suspension",
             "comment_suspension",
+            "user_suspension",
+            "user_warning",
             "workout_suspension",
         ]:
             raise InvalidAdminActionAppealException()

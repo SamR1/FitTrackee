@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-20 09:33+0200\n"
+"POT-Creation-Date: 2024-07-21 18:25+0200\n"
 "PO-Revision-Date: 2024-05-12 18:01+0000\n"
 "Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language: cs\n"
@@ -87,6 +87,7 @@ msgstr "Pokud jste nepožadovali vytvoření účtu, tak prosím ignorujte tento
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
 #: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/user_warning/body.html:22
 #: fittrackee/emails/templates/workout_suspension/body.html:40
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
@@ -119,6 +120,8 @@ msgstr ""
 #: fittrackee/emails/templates/user_suspension/body.txt:4
 #: fittrackee/emails/templates/user_unsuspension/body.html:5
 #: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:2
 #: fittrackee/emails/templates/workout_suspension/body.html:5
 #: fittrackee/emails/templates/workout_suspension/body.txt:3
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
@@ -130,6 +133,8 @@ msgstr ""
 #: fittrackee/emails/templates/comment_suspension/body.txt:5
 #: fittrackee/emails/templates/user_suspension/body.html:7
 #: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:4
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 msgid "If you think this is an error, you can appeal:"
@@ -137,6 +142,7 @@ msgstr ""
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/user_warning/body.html:12
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
 msgstr ""
@@ -345,6 +351,18 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:2
 msgid "You can now use all the features on FitTrackee"
+msgstr ""
+
+#: fittrackee/emails/templates/user_warning/body.html:2
+#: fittrackee/emails/templates/user_warning/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s"
+msgstr ""
+
+#: fittrackee/emails/templates/user_warning/body.html:3
+#: fittrackee/emails/templates/user_warning/body.html:4
+#: fittrackee/emails/templates/user_warning/body.txt:1
+msgid "You received a warning"
 msgstr ""
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2

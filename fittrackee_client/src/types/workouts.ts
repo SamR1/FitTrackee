@@ -2,7 +2,7 @@ import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
 import type {
-  ISuspension,
+  IUserAdminAction,
   IUserLightProfile,
   IUserProfile,
   TPrivacyLevels,
@@ -88,7 +88,7 @@ export interface IWorkout {
   sport_id: number
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: ISuspension
+  suspension?: IUserAdminAction
   title: string
   user: IUserProfile
   weather_end: IWeather | null
@@ -221,7 +221,7 @@ export interface IComment {
   reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: ISuspension
+  suspension?: IUserAdminAction
   text: string | null
   text_html: string | null
   text_visibility: TPrivacyLevels

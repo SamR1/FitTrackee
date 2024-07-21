@@ -183,11 +183,7 @@
                   >
                     <router-link
                       class="user-name"
-                      v-if="
-                        ['user_suspension', 'user_unsuspension'].includes(
-                          item.action_type
-                        ) && item.user
-                      "
+                      v-if="item.action_type.startsWith('user_') && item.user"
                       :to="`/admin/users/${item.user.username}`"
                       :title="item.user.username"
                     >
@@ -275,8 +271,11 @@
               <button @click="displayTextArea('ADD_COMMENT')">
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
-              <button v-if="!report.resolved && report.reported_user">
-                {{ $t('admin.APP_MODERATION.ACTIONS.SEND_EMAIL') }}
+              <button
+                v-if="!report.resolved && report.reported_user"
+                @click="displayTextArea('SEND_WARNING_EMAIL')"
+              >
+                {{ $t('admin.APP_MODERATION.ACTIONS.SEND_WARNING_EMAIL') }}
               </button>
               <button
                 class="danger"
@@ -465,6 +464,9 @@
   }
   function submit() {
     switch (currentAction.value) {
+      case 'SEND_WARNING_EMAIL':
+        sendWarningEmail()
+        break
       case 'SUSPEND_ACCOUNT':
       case 'SUSPEND_CONTENT':
         updateDisplayModal('suspension')
@@ -534,6 +536,17 @@
     if (value !== '') {
       store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     }
+  }
+  function sendWarningEmail() {
+    const payload: IReportAdminActionPayload = {
+      action_type: 'user_warning',
+      report_id: report.value.id,
+      username: report.value.reported_user?.username,
+    }
+    if (reportCommentText.value) {
+      payload.reason = reportCommentText.value
+    }
+    store.dispatch(REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION, payload)
   }
   function goBack() {
     router.go(-1)

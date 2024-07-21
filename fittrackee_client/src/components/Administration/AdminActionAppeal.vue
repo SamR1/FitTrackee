@@ -76,12 +76,12 @@
   import CustomTextArea from '@/components/Common/CustomTextArea.vue'
   import { ROOT_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { ISuspensionAppeal, IAuthUserProfile } from '@/types/user'
+  import type { IAdminActionAppeal, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    appeal: ISuspensionAppeal
+    appeal: IAdminActionAppeal
     authUser: IAuthUserProfile
   }
 

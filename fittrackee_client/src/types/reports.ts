@@ -1,5 +1,5 @@
 import type {
-  ISuspensionAppeal,
+  IAdminActionAppeal,
   IUserLightProfile,
   IUserProfile,
 } from '@/types/user'
@@ -23,7 +23,7 @@ export interface IReport {
 export interface IAdminAction {
   action_type: string
   admin_user: IUserLightProfile
-  appeal: ISuspensionAppeal | null
+  appeal: IAdminActionAppeal | null
   created_at: string
   id: number
   reason: string | null
@@ -61,6 +61,7 @@ export type TReportAction =
   | 'ADD_COMMENT'
   | 'MARK_AS_RESOLVED'
   | 'MARK_AS_UNRESOLVED'
+  | 'SEND_WARNING_EMAIL'
   | 'SUSPEND_ACCOUNT'
   | 'SUSPEND_CONTENT'
   | 'UNSUSPEND_ACCOUNT'

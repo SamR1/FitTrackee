@@ -220,7 +220,7 @@ def create_admin_action(
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
-        report_service.create_admin_action(
+        action = report_service.create_admin_action(
             report=report,
             admin_user=auth_user,
             action_type=action_type,
@@ -232,7 +232,7 @@ def create_admin_action(
         if current_app.config['CAN_SEND_EMAILS']:
             admin_action_email_service = ReportEmailService()
             admin_action_email_service.send_admin_action_email(
-                report, action_type, reason
+                report, action_type, reason, action
             )
 
         db.session.commit()

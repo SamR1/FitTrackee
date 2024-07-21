@@ -2,12 +2,14 @@ from typing import Dict, Optional, Tuple
 
 from flask import current_app
 
+from fittrackee.administration.models import AdminAction
 from fittrackee.comments.models import Comment
 from fittrackee.emails.tasks import (
     comment_suspension_email,
     comment_unsuspension_email,
     user_suspension_email,
     user_unsuspension_email,
+    user_warning_email,
     workout_suspension_email,
     workout_unsuspension_email,
 )
@@ -16,6 +18,7 @@ from fittrackee.users.utils.language import get_language
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Workout
 
+from .exceptions import InvalidAdminActionException
 from .models import Report
 
 
@@ -78,7 +81,11 @@ class ReportEmailService:
         }
 
     def _send_user_suspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason
@@ -87,13 +94,39 @@ class ReportEmailService:
         user_suspension_email.send(user_data, email_data)
 
     def _send_user_unsuspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, _ = self._get_email_data(report, reason)
         user_unsuspension_email.send(user_data, email_data)
 
+    def _send_user_warning_email(
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
+    ) -> None:
+        user_data, email_data, fittrackee_url = self._get_email_data(
+            report, reason
+        )
+        if not admin_action:
+            raise InvalidAdminActionException('invalid action action')
+
+        email_data['appeal_url'] = (
+            f'{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal'
+        )
+        user_warning_email.send(user_data, email_data)
+
     def _send_comment_suspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -115,7 +148,11 @@ class ReportEmailService:
         comment_suspension_email.send(user_data, email_data)
 
     def _send_comment_unsuspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -127,7 +164,11 @@ class ReportEmailService:
         comment_unsuspension_email.send(user_data, email_data)
 
     def _send_workout_suspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -142,7 +183,11 @@ class ReportEmailService:
         workout_suspension_email.send(user_data, email_data)
 
     def _send_workout_unsuspension_email(
-        self, report: Report, reason: Optional[str] = None
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -157,7 +202,12 @@ class ReportEmailService:
         self,
         report: Report,
         action_type: str,
-        reason: Optional[str] = None,
+        reason: Optional[str],
+        admin_action: Optional[
+            AdminAction
+        ] = None,  # needed only for user warning
     ) -> None:
         send_email_func = getattr(self, f"_send_{action_type}_email")
-        send_email_func(report, reason)
+        send_email_func(
+            report=report, reason=reason, admin_action=admin_action
+        )

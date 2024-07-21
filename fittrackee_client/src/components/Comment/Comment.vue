@@ -71,7 +71,7 @@
       </div>
       <ActionAppeal
         v-if="comment.suspension && displayAppealForm === comment.id"
-        :suspension="comment.suspension"
+        :admin-action="comment.suspension"
         :success="success"
         :loading="commentsLoading === comment.id"
         @submitForm="submitAppeal"

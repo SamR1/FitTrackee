@@ -127,13 +127,15 @@ class ReportService:
         action_type: str,
         reason: Optional[str] = None,
         data: Dict,
-    ) -> None:
+    ) -> Optional[AdminAction]:
         reported_user: User = report.reported_user
 
         # if reported user has been deleted after report creation
         if not reported_user:
             raise InvalidAdminActionException("invalid 'username'")
 
+        now = datetime.utcnow()
+        admin_action = None
         if action_type in USER_ACTION_TYPES:
             username = data.get("username")
             if not username:
@@ -141,14 +143,26 @@ class ReportService:
             if username != reported_user.username:
                 raise InvalidAdminActionException("invalid 'username'")
 
-            user_manager_service = UserManagerService(
-                username=username, admin_user_id=admin_user.id
-            )
-            user, _, _ = user_manager_service.update(
-                suspended=action_type == "user_suspension",
-                report_id=report.id,
-                reason=reason,
-            )
+            if action_type == "user_warning":
+                user = User.query.filter_by(username=username).first()
+                admin_action = AdminAction(
+                    admin_user_id=admin_user.id,
+                    action_type=action_type,
+                    created_at=now,
+                    report_id=report.id,
+                    reason=reason,
+                    user_id=user.id,
+                )
+                db.session.add(admin_action)
+            else:
+                user_manager_service = UserManagerService(
+                    username=username, admin_user_id=admin_user.id
+                )
+                user, _, _ = user_manager_service.update(
+                    suspended=action_type == "user_suspension",
+                    report_id=report.id,
+                    reason=reason,
+                )
 
         elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
             object_type = action_type.split("_")[0]
@@ -166,7 +180,6 @@ class ReportService:
                     f"invalid '{object_type_column}'"
                 )
 
-            now = datetime.utcnow()
             admin_action = AdminAction(
                 admin_user_id=admin_user.id,
                 action_type=action_type,
@@ -190,6 +203,7 @@ class ReportService:
             db.session.flush()
         else:
             raise InvalidAdminActionException("invalid action type")
+        return admin_action
 
     @staticmethod
     def process_appeal(

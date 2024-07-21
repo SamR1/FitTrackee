@@ -51,6 +51,9 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
     return state.authUserProfile.username === undefined
   },
   [AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]: (state: IAuthUserState) => {
-    return state.accountSuspension
+    return state.userAdminAction
+  },
+  [AUTH_USER_STORE.GETTERS.USER_WARNING]: (state: IAuthUserState) => {
+    return state.userAdminAction
   },
 }

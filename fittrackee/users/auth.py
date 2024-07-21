@@ -18,7 +18,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
-from fittrackee.administration.models import AdminActionAppeal
+from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -47,7 +47,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.users_service import UserManagerService
-from fittrackee.utils import get_readable_duration
+from fittrackee.utils import decode_short_id, get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .exceptions import UserControlsException, UserCreationException
@@ -2090,6 +2090,62 @@ def appeal_user_suspension(
     try:
         appeal = AdminActionAppeal(
             action_id=auth_user.suspension_action.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route(
+    "/auth/account/warning/<string:action_short_id>", methods=["GET"]
+)
+@require_auth(scopes=['profile:read'])
+def get_user_warning(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    warning_action = AdminAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not warning_action:
+        return NotFoundErrorResponse("no warning found")
+
+    return {
+        "status": "success",
+        "user_warning": warning_action.serialize(
+            current_user=auth_user, full=False
+        ),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/warning/<string:action_short_id>/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'])
+def appeal_user_warning(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    warning_action = AdminAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not warning_action:
+        return NotFoundErrorResponse("no warning found")
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=warning_action.id,
             user_id=auth_user.id,
             text=text,
         )

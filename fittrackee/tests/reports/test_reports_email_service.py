@@ -83,6 +83,52 @@ class TestReportEmailServiceForUser(ReportServiceCreateAdminActionMixin):
             },
         )
 
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_sends_an_email_on_user_warning(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_warning_email_mock: MagicMock,
+        input_reason: Dict,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.flush()
+        report_email_service = ReportEmailService()
+        user_warning = report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning",
+            reason=None,
+            data={"username": user_3.username},
+        )
+        db.session.flush()
+
+        report_email_service.send_admin_action_email(
+            report, "user_warning", input_reason.get("reason"), user_warning
+        )
+
+        user_warning_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'username': user_3.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'appeal_url': (
+                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                ),
+                'reason': input_reason.get('reason'),
+            },
+        )
+
 
 class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])

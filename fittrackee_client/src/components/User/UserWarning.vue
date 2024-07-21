@@ -4,8 +4,7 @@
   </div>
   <div v-else>
     <ActionAppeal
-      v-if="accountSuspension.id"
-      :admin-action="accountSuspension"
+      :admin-action="userWarning"
       :success="isSuccess"
       :loading="loading"
       @submitForm="submitAppeal"
@@ -16,13 +15,13 @@
         </button>
       </template>
     </ActionAppeal>
-    <div v-else>{{ $t('user.ACTIVE_ACCOUNT') }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { computed, ref, onMounted, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import { AUTH_USER_STORE } from '@/store/constants'
@@ -30,33 +29,41 @@
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
+  const route = useRoute()
 
   const loading = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
-  const accountSuspension: ComputedRef<IUserAdminAction> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]
+  const userWarning: ComputedRef<IUserAdminAction> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_WARNING]
   )
   const appealText: Ref<string> = ref('')
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
 
-  onMounted(() => loadUserSuspension())
+  onMounted(() => loadUserWarning())
 
-  function loadUserSuspension() {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION)
+  function loadUserWarning() {
+    store.dispatch(
+      AUTH_USER_STORE.ACTIONS.GET_USER_WARNING,
+      route.params.action_id as string
+    )
   }
   function submitAppeal(text: string) {
     appealText.value = text
     store.dispatch(AUTH_USER_STORE.ACTIONS.APPEAL, {
-      actionId: accountSuspension.value.id,
-      actionType: 'user_suspension',
+      actionId: userWarning.value.id,
+      actionType: 'user_warning',
       text,
     })
   }
 
-  onUnmounted(() =>
+  onUnmounted(() => {
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  )
+    store.commit(
+      AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING,
+      {} as IUserAdminAction
+    )
+  })
 </script>

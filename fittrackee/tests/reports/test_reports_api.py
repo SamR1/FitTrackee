@@ -9,6 +9,7 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import (
+    USER_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
@@ -2055,14 +2056,19 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             is None
         )
 
+    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
     def test_it_creates_admin_action(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(user_3, reported_object=user_2)
+        if input_action_type == "user_unsuspension":
+            user_2.suspended_at = datetime.utcnow()
+            db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2071,7 +2077,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={
-                "action_type": "user_suspension",
+                "action_type": input_action_type,
                 "username": user_2.username,
             },
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -2080,7 +2086,9 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             AdminAction.query.filter_by(
-                admin_user_id=user_1_admin.id, user_id=user_2.id
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+                action_type=input_action_type,
             ).first()
             is not None
         )
@@ -2211,6 +2219,32 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         user_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_on_user_warning(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_warning_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_warning_email_mock.send.assert_called_once()
 
     def test_it_does_not_send_when_email_sending_is_disabled(
         self,

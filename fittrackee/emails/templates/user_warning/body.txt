@@ -1,0 +1,5 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You received a warning') }}.
+{% if reason %}{{ _('Reason:') }} {{ reason }}
+
+{% endif %}{{ _('If you think this is an error, you can appeal:') }} {{ appeal_url }}
+{% endblock %}
