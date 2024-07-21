@@ -21,7 +21,7 @@ from fittrackee.workouts.models import Sport, Workout
 from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from ..workouts.utils import WorkoutMixin
+from ..workouts.mixins import WorkoutMixin
 
 
 class ReportTestCase(
@@ -3065,7 +3065,7 @@ class TestProcessAdminActionAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
-    def test_it_processes_user_appeal(
+    def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
         suspension_action = self.create_user_suspension_action(
@@ -3075,15 +3075,13 @@ class TestProcessAdminActionAppeal(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with travel(now, tick=False):
-            response = client.patch(
-                self.route.format(appeal_id=appeal.short_id),
-                data=json.dumps(input_data),
-                content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
         assert response.status_code == 200
         assert response.json == {
@@ -3091,59 +3089,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-
-    def test_it_unsuspends_user_when_appeal_is_approved(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": "ok"}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert user_2.suspended_at is None
-
-    def test_it_creates_unsuspended_user_action_when_appeal_is_approved(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": "ok"}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                report_id=suspension_action.report_id,
-                action_type="user_unsuspension",
-                admin_user_id=user_1_admin.id,
-                user_id=user_2.id,
-                reason=None,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3177,16 +3124,13 @@ class TestProcessAdminActionAppeal(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
-        comment_suspended_at = comment.suspended_at
 
-        with travel(now, tick=False):
-            response = client.patch(
-                self.route.format(appeal_id=appeal.short_id),
-                data=json.dumps(input_data),
-                content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
         assert response.status_code == 200
         assert response.json == {
@@ -3194,58 +3138,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-        assert comment.suspended_at == (
-            None if input_data["approved"] else comment_suspended_at
-        )
-
-    def test_it_creates_unsuspended_comment_action_when_appeal_is_approved(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_3,
-            workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
-        )
-        suspension_action = self.create_admin_comment_suspension_action(
-            user_1_admin, user_3, comment
-        )
-        db.session.flush()
-        appeal = self.create_action_appeal(suspension_action.id, user_3)
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        reason = self.random_string()
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": reason}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                action_type="comment_unsuspension",
-                admin_user_id=user_1_admin.id,
-                comment_id=comment.id,
-                reason=None,
-                report_id=suspension_action.report_id,
-                user_id=user_3.id,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3267,7 +3161,6 @@ class TestProcessAdminActionAppeal(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
-        workout_suspended_at = workout_cycling_user_2.suspended_at
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3290,52 +3183,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-        assert workout_cycling_user_2.suspended_at == (
-            None if input_data["approved"] else workout_suspended_at
-        )
-
-    def test_it_creates_unsuspended_workout_action_when_appeal_is_approved(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        suspension_action = self.create_admin_workout_suspension_action(
-            user_1_admin, user_2, workout_cycling_user_2
-        )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
-        db.session.flush()
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        reason = self.random_string()
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": reason}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                action_type="workout_unsuspension",
-                admin_user_id=user_1_admin.id,
-                reason=None,
-                report_id=suspension_action.report_id,
-                user_id=user_2.id,
-                workout_id=workout_cycling_user_2.id,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

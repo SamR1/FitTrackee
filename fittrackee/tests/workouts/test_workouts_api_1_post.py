@@ -23,7 +23,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .utils import WorkoutMixin
+from .mixins import WorkoutMixin
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:

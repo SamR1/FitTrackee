@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Dict, Tuple, Union
 
 from flask import Blueprint, current_app, request
@@ -7,11 +6,9 @@ from sqlalchemy import asc, desc, exc, nullslast
 from fittrackee import db
 from fittrackee.administration.models import (
     OBJECTS_ADMIN_ACTION_TYPES,
-    AdminAction,
     AdminActionAppeal,
 )
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -24,10 +21,8 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
-from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Workout
 
 from .exceptions import (
     InvalidAdminActionException,
@@ -277,44 +272,7 @@ def process_appeal(
         return InvalidPayloadErrorResponse()
 
     try:
-        appeal.admin_user_id = auth_user.id
-        appeal.approved = data["approved"]
-        appeal.reason = data["reason"]
-        appeal.updated_at = datetime.utcnow()
-
-        if data["approved"]:
-            action = appeal.action
-            if action.action_type == "user_suspension":
-                user_manager_service = UserManagerService(
-                    username=appeal.user.username, admin_user_id=auth_user.id
-                )
-                user, _, _ = user_manager_service.update(
-                    suspended=False, report_id=appeal.action.report_id
-                )
-            if action.action_type == "comment_suspension":
-                admin_action = AdminAction(
-                    admin_user_id=auth_user.id,
-                    action_type="comment_unsuspension",
-                    comment_id=action.comment_id,
-                    created_at=datetime.now(),
-                    report_id=action.report_id,
-                    user_id=action.user_id,
-                )
-                db.session.add(admin_action)
-                comment = Comment.query.filter_by(id=action.comment_id).first()
-                comment.suspended_at = None
-            if action.action_type == "workout_suspension":
-                admin_action = AdminAction(
-                    admin_user_id=auth_user.id,
-                    action_type="workout_unsuspension",
-                    created_at=datetime.now(),
-                    report_id=action.report_id,
-                    user_id=action.user_id,
-                    workout_id=action.workout_id,
-                )
-                db.session.add(admin_action)
-                workout = Workout.query.filter_by(id=action.workout_id).first()
-                workout.suspended_at = None
+        report_service.process_appeal(appeal, auth_user, data)
         db.session.commit()
         return {
             "status": "success",

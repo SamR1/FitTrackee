@@ -14,7 +14,8 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..utils import random_string
-from .utils import WorkoutMixin, add_follower
+from .mixins import WorkoutMixin
+from .utils import add_follower
 
 
 class WorkoutModelTestCase(WorkoutMixin):

@@ -6,7 +6,7 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
+from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
@@ -28,7 +28,8 @@ from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin
+from ..mixins import RandomMixin, UserModerationMixin
+from ..workouts.mixins import WorkoutMixin
 from .mixins import ReportServiceCreateAdminActionMixin
 
 
@@ -1445,3 +1446,269 @@ class TestReportServiceCreateAdminActionForWorkout(
         assert admin_action.reason is None
         assert admin_action.user_id == user_2.id
         assert admin_action.workout_id is report.reported_workout_id
+
+
+class TestReportServiceProcessAppeal(
+    ReportServiceCreateAdminActionMixin, UserModerationMixin, WorkoutMixin
+):
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_process_user_suspension_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data=input_data,
+            )
+
+        updated_appeal = AdminActionAppeal.query.filter_by(
+            id=appeal.id
+        ).first()
+        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.approved is input_data["approved"]
+        assert updated_appeal.reason == input_data["reason"]
+        assert updated_appeal.updated_at == now
+
+    def test_it_unsuspends_user_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+        assert user_2.suspended_at is None
+
+    def test_it_creates_unsuspended_user_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+        assert (
+            AdminAction.query.filter_by(
+                report_id=suspension_action.report_id,
+                action_type="user_unsuspension",
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+                reason=None,
+                created_at=now,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_process_comment_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        comment_suspended_at = comment.suspended_at
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data=input_data,
+            )
+
+        updated_appeal = AdminActionAppeal.query.filter_by(
+            id=appeal.id
+        ).first()
+        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.approved is input_data["approved"]
+        assert updated_appeal.reason == input_data["reason"]
+        assert updated_appeal.updated_at == now
+        assert comment.suspended_at == (
+            None if input_data["approved"] else comment_suspended_at
+        )
+
+    def test_it_creates_unsuspended_comment_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        report_service = ReportService()
+        reason = self.random_string()
+
+        report_service.process_appeal(
+            appeal=appeal,
+            admin_user=user_1_admin,
+            data={"approved": True, "reason": reason},
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                admin_user_id=user_1_admin.id,
+                action_type="comment_unsuspension",
+                comment_id=comment.id,
+                report_id=suspension_action.report_id,
+                user_id=user_3.id,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_process_workout_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_suspended_at = workout_cycling_user_2.suspended_at
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data=input_data,
+            )
+
+        updated_appeal = AdminActionAppeal.query.filter_by(
+            id=appeal.id
+        ).first()
+        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.approved is input_data["approved"]
+        assert updated_appeal.reason == input_data["reason"]
+        assert updated_appeal.updated_at == now
+        assert workout_cycling_user_2.suspended_at == (
+            None if input_data["approved"] else workout_suspended_at
+        )
+
+    def test_it_creates_unsuspended_workout_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        report_service = ReportService()
+        reason = self.random_string()
+
+        report_service.process_appeal(
+            appeal=appeal,
+            admin_user=user_1_admin,
+            data={"approved": True, "reason": reason},
+        )
+
+        assert (
+            AdminAction.query.filter_by(
+                action_type="workout_unsuspension",
+                admin_user_id=user_1_admin.id,
+                reason=None,
+                report_id=suspension_action.report_id,
+                user_id=user_2.id,
+                workout_id=workout_cycling_user_2.id,
+            ).first()
+            is not None
+        )
