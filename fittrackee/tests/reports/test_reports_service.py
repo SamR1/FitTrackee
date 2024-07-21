@@ -7,7 +7,6 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
-from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
@@ -19,7 +18,8 @@ from fittrackee.reports.exceptions import (
     SuspendedObjectException,
 )
 from fittrackee.reports.models import ReportComment
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.reports.reports_service import ReportService
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import (
     UserAlreadySuspendedException,
     UserNotFoundException,
@@ -29,7 +29,7 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin
-from .utils import ReportServiceCreateAdminActionTestCase
+from .mixins import ReportServiceCreateAdminActionMixin
 
 
 class TestReportServiceCreateForComment(CommentMixin):
@@ -779,9 +779,7 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.updated_at == comment_time
 
 
-class TestReportServiceCreateAdminAction(
-    ReportServiceCreateAdminActionTestCase
-):
+class TestReportServiceCreateAdminAction(ReportServiceCreateAdminActionMixin):
     def test_it_raises_exception_when_reported_user_does_not_exist(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -822,7 +820,7 @@ class TestReportServiceCreateAdminAction(
 
 
 class TestReportServiceCreateAdminActionForUser(
-    ReportServiceCreateAdminActionTestCase
+    ReportServiceCreateAdminActionMixin
 ):
     def test_it_raises_exception_when_username_is_missing(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -988,7 +986,7 @@ class TestReportServiceCreateAdminActionForUser(
 
 
 class TestReportServiceCreateAdminActionForComment(
-    ReportServiceCreateAdminActionTestCase
+    ReportServiceCreateAdminActionMixin
 ):
     def test_it_raises_exception_when_report_is_invalid(
         self,
@@ -1221,7 +1219,7 @@ class TestReportServiceCreateAdminActionForComment(
 
 
 class TestReportServiceCreateAdminActionForWorkout(
-    ReportServiceCreateAdminActionTestCase
+    ReportServiceCreateAdminActionMixin
 ):
     def test_it_raises_exception_when_report_is_invalid(
         self,

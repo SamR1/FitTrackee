@@ -10,11 +10,6 @@ from fittrackee.administration.models import (
     AdminAction,
     AdminActionAppeal,
 )
-from fittrackee.administration.reports_email_service import (
-    ReportEmailService,
-)
-from fittrackee.administration.reports_service import ReportService
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
@@ -29,6 +24,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
@@ -41,6 +37,10 @@ from .exceptions import (
     SuspendedObjectException,
 )
 from .models import REPORT_OBJECT_TYPES, Report
+from .reports_email_service import (
+    ReportEmailService,
+)
+from .reports_service import ReportService
 
 reports_blueprint = Blueprint('reports', __name__)
 

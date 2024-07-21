@@ -6,7 +6,6 @@ from time_machine import travel
 
 from fittrackee import bcrypt, db
 from fittrackee.administration.models import AdminAction
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import (
     InvalidEmailException,
@@ -17,6 +16,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.users_service import UserManagerService
 
 from ..utils import random_email, random_string
 

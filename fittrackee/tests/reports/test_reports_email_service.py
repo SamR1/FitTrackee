@@ -6,16 +6,16 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.administration.reports_email_service import ReportEmailService
-from fittrackee.administration.reports_service import ReportService
+from fittrackee.reports.reports_email_service import ReportEmailService
+from fittrackee.reports.reports_service import ReportService
 from fittrackee.users.models import User
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import ReportServiceCreateAdminActionTestCase
+from .mixins import ReportServiceCreateAdminActionMixin
 
 
-class TestReportEmailServiceForUser(ReportServiceCreateAdminActionTestCase):
+class TestReportEmailServiceForUser(ReportServiceCreateAdminActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_suspension(
         self,
@@ -84,7 +84,7 @@ class TestReportEmailServiceForUser(ReportServiceCreateAdminActionTestCase):
         )
 
 
-class TestReportEmailServiceForComment(ReportServiceCreateAdminActionTestCase):
+class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_comment_suspension(
         self,
@@ -266,7 +266,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionTestCase):
         )
 
 
-class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionTestCase):
+class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_workout_suspension(
         self,

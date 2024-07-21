@@ -5,7 +5,7 @@ from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 
 class TestCanViewComment(CommentMixin):

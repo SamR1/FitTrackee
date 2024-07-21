@@ -7,7 +7,7 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException

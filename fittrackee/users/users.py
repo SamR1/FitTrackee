@@ -6,7 +6,6 @@ from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import asc, desc, exc, func, nullslast
 
 from fittrackee import appLog, db, limiter
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -23,6 +22,7 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 

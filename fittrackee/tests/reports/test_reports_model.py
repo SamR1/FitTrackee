@@ -14,7 +14,7 @@ from fittrackee.reports.exceptions import (
     ReportForbiddenException,
 )
 from fittrackee.reports.models import Report, ReportComment
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 

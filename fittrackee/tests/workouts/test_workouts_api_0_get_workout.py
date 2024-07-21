@@ -8,7 +8,7 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 

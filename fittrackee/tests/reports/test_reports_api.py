@@ -18,7 +18,7 @@ from fittrackee.reports.models import Report, ReportComment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..comments.utils import CommentMixin
+from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from ..workouts.utils import WorkoutMixin

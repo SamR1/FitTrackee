@@ -12,7 +12,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 
 class TestWorkoutCommentModel(CommentMixin):

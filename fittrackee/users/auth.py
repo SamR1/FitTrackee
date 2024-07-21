@@ -19,7 +19,6 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.administration.models import AdminActionAppeal
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -47,6 +46,7 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
+from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport
 

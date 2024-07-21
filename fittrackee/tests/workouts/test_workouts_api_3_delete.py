@@ -10,7 +10,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
-from ..comments.utils import CommentMixin
+from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES
 from .utils import post_a_workout

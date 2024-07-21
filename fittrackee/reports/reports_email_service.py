@@ -11,11 +11,12 @@ from fittrackee.emails.tasks import (
     workout_suspension_email,
     workout_unsuspension_email,
 )
-from fittrackee.reports.models import Report
 from fittrackee.users.models import User
 from fittrackee.users.utils.language import get_language
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Workout
+
+from .models import Report
 
 
 class ReportEmailService:

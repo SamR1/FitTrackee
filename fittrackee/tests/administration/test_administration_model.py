@@ -24,7 +24,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..comments.utils import CommentMixin
+from ..comments.mixins import CommentMixin
 from ..mixins import UserModerationMixin
 
 

@@ -1,12 +1,12 @@
-from fittrackee.administration.reports_service import ReportService
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import Report
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.reports.reports_service import ReportService
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
 
 
-class ReportServiceCreateAdminActionTestCase(CommentMixin):
+class ReportServiceCreateAdminActionMixin(CommentMixin):
     def create_report_for_user(
         self,
         report_service: ReportService,

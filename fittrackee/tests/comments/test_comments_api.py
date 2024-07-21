@@ -16,7 +16,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 
 class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):

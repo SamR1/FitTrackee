@@ -11,7 +11,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 ALL_VISIBILITIES = [
     PrivacyLevel.PUBLIC,

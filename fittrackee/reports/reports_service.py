@@ -10,20 +10,21 @@ from fittrackee.administration.models import (
     WORKOUT_ACTION_TYPES,
     AdminAction,
 )
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.models import Comment
 from fittrackee.comments.utils import get_comment
-from fittrackee.reports.exceptions import (
+from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.models import User
+from fittrackee.users.users_service import UserManagerService
+from fittrackee.workouts.models import Workout
+from fittrackee.workouts.utils.workouts import get_workout
+
+from .exceptions import (
     InvalidAdminActionException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
 )
-from fittrackee.reports.models import Report, ReportComment
-from fittrackee.users.exceptions import UserNotFoundException
-from fittrackee.users.models import User
-from fittrackee.workouts.models import Workout
-from fittrackee.workouts.utils.workouts import get_workout
+from .models import Report, ReportComment
 
 
 class ReportService:
