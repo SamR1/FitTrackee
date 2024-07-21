@@ -6,25 +6,17 @@ from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
 from fittrackee.administration.models import (
-    COMMENT_ACTION_TYPES,
     OBJECTS_ADMIN_ACTION_TYPES,
-    USER_ACTION_TYPES,
-    WORKOUT_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
+)
+from fittrackee.administration.reports_email_service import (
+    ReportEmailService,
 )
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
-from fittrackee.emails.tasks import (
-    comment_suspension_email,
-    comment_unsuspension_email,
-    user_suspension_email,
-    user_unsuspension_email,
-    workout_suspension_email,
-    workout_unsuspension_email,
-)
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -37,12 +29,12 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
-from fittrackee.users.utils.language import get_language
-from fittrackee.utils import decode_short_id, get_date_string_for_user
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
+    InvalidAdminActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
@@ -221,7 +213,7 @@ def create_admin_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     data = request.get_json()
-    action_type = data.get("action_type")
+    action_type = data.get("action_type", "")
     reason = data.get("reason")
     if not data or not action_type:
         return InvalidPayloadErrorResponse()
@@ -229,160 +221,32 @@ def create_admin_action(
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
     report = Report.query.filter_by(id=report_id).first()
-    if not report or (
-        not auth_user.admin and report.reported_by != auth_user.id
-    ):
+    if not report:
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
-        reported_user: User = report.reported_user
-        fittrackee_url = current_app.config['UI_URL']
-        if reported_user:
-            user_data = {
-                'language': get_language(reported_user.language),
-                'email': reported_user.email,
-            }
-            email_data = {
-                'username': reported_user.username,
-                'fittrackee_url': fittrackee_url,
-                'reason': reason,
-            }
-        else:
-            user_data = {}
-            email_data = {}
+        report_service.create_admin_action(
+            report=report,
+            admin_user=auth_user,
+            action_type=action_type,
+            reason=reason,
+            data=data,
+        )
+        db.session.flush()
 
-        if action_type in USER_ACTION_TYPES:
-            username = data.get("username")
-            if not username:
-                return InvalidPayloadErrorResponse("'username' is missing")
-            if not reported_user or username != reported_user.username:
-                return InvalidPayloadErrorResponse("invalid 'username'")
-
-            user_manager_service = UserManagerService(
-                username=username, admin_user_id=auth_user.id
-            )
-            user, _, _ = user_manager_service.update(
-                suspended=action_type == "user_suspension",
-                report_id=report_id,
-                reason=reason,
+        if current_app.config['CAN_SEND_EMAILS']:
+            admin_action_email_service = ReportEmailService()
+            admin_action_email_service.send_admin_action_email(
+                report, action_type, reason
             )
 
-            if action_type == "user_suspension":
-                email_data['appeal_url'] = (
-                    f'{fittrackee_url}/profile/suspension'
-                )
-                user_suspension_email.send(user_data, email_data)
-            else:
-                user_unsuspension_email.send(user_data, email_data)
-
-        if action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
-            object_type = action_type.split("_")[0]
-            object_type_column = f"{object_type}_id"
-            object_id = data.get(object_type_column)
-            if not object_id:
-                return InvalidPayloadErrorResponse(
-                    f"'{object_type_column}' is missing"
-                )
-            reported_object: Union[Comment, Workout] = getattr(
-                report, f"reported_{object_type}"
-            )
-            if not reported_object or reported_object.short_id != object_id:
-                return InvalidPayloadErrorResponse(
-                    f"invalid '{object_type_column}'"
-                )
-
-            now = datetime.utcnow()
-            admin_action = AdminAction(
-                admin_user_id=auth_user.id,
-                action_type=action_type,
-                created_at=now,
-                report_id=report_id,
-                reason=reason,
-                user_id=reported_object.user_id,
-                **{object_type_column: reported_object.id},
-            )
-            db.session.add(admin_action)
-            db.session.flush()
-
-            is_comment = object_type.startswith("comment")
-            email_data["user_image_url"] = (
-                f'{fittrackee_url}/api/users/{reported_user.username}/picture'
-                if reported_user.picture
-                else f'{fittrackee_url}/img/user.png'
-            )
-            if is_comment:
-                email_data = {
-                    **email_data,
-                    "text": reported_object.handle_mentions()[0],
-                    "created_at": get_date_string_for_user(
-                        reported_object.created_at, reported_user
-                    ),
-                }
-            else:
-                email_data = {
-                    **email_data,
-                    "title": reported_object.title,
-                    "workout_date": get_date_string_for_user(
-                        reported_object.workout_date, reported_user
-                    ),
-                    "map": (
-                        (
-                            f"{fittrackee_url}/api/workouts/"
-                            f"map/{reported_object.map_id}"
-                        )
-                        if reported_object.map_id
-                        else None
-                    ),
-                }
-
-            if "_suspension" in action_type:
-                if reported_object.suspended_at:
-                    return InvalidPayloadErrorResponse(
-                        f"{object_type} '{object_id}' already suspended"
-                    )
-                reported_object.suspended_at = now
-
-                email_data['user_image_url'] = (
-                    (
-                        f'{fittrackee_url}/api/users/'
-                        f'{reported_user.username}/picture'
-                    )
-                    if reported_user.picture
-                    else f'{fittrackee_url}/img/user.png'
-                )
-                if is_comment:
-                    if reported_object.workout_id:
-                        workout = Workout.query.filter_by(
-                            id=reported_object.workout_id
-                        ).first()
-                        email_data["appeal_url"] = (
-                            f'{fittrackee_url}/workouts/{workout.short_id}'
-                            f'/comments/{reported_object.short_id}'
-                        )
-                    else:
-                        email_data["appeal_url"] = (
-                            f'{fittrackee_url}/comments'
-                            f'/{reported_object.short_id}'
-                        )
-                    comment_suspension_email.send(user_data, email_data)
-                else:
-                    email_data["appeal_url"] = (
-                        f'{fittrackee_url}/workouts/{reported_object.short_id}'
-                    )
-                    workout_suspension_email.send(user_data, email_data)
-            else:
-                reported_object.suspended_at = None
-                if is_comment:
-                    comment_unsuspension_email.send(user_data, email_data)
-                else:
-                    workout_unsuspension_email.send(user_data, email_data)
-            db.session.commit()
+        db.session.commit()
 
         return {
             "status": "success",
             "report": report.serialize(auth_user, full=True),
         }, 200
-    except UserAlreadySuspendedException as e:
+    except (UserAlreadySuspendedException, InvalidAdminActionException) as e:
         return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(

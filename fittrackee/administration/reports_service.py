@@ -1,12 +1,20 @@
 from datetime import datetime
-from typing import Optional
+from typing import Dict, Optional, Union
 
 from sqlalchemy import func
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
+from fittrackee.administration.models import (
+    COMMENT_ACTION_TYPES,
+    USER_ACTION_TYPES,
+    WORKOUT_ACTION_TYPES,
+    AdminAction,
+)
+from fittrackee.administration.users_service import UserManagerService
+from fittrackee.comments.models import Comment
 from fittrackee.comments.utils import get_comment
 from fittrackee.reports.exceptions import (
+    InvalidAdminActionException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
@@ -14,6 +22,7 @@ from fittrackee.reports.exceptions import (
 from fittrackee.reports.models import Report, ReportComment
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Workout
 from fittrackee.workouts.utils.workouts import get_workout
 
 
@@ -107,3 +116,75 @@ class ReportService:
         db.session.commit()
 
         return report
+
+    @staticmethod
+    def create_admin_action(
+        *,
+        report: Report,
+        admin_user: User,
+        action_type: str,
+        reason: Optional[str] = None,
+        data: Dict,
+    ) -> None:
+        reported_user: User = report.reported_user
+
+        # if reported user has been deleted after report creation
+        if not reported_user:
+            raise InvalidAdminActionException("invalid 'username'")
+
+        if action_type in USER_ACTION_TYPES:
+            username = data.get("username")
+            if not username:
+                raise InvalidAdminActionException("'username' is missing")
+            if username != reported_user.username:
+                raise InvalidAdminActionException("invalid 'username'")
+
+            user_manager_service = UserManagerService(
+                username=username, admin_user_id=admin_user.id
+            )
+            user, _, _ = user_manager_service.update(
+                suspended=action_type == "user_suspension",
+                report_id=report.id,
+                reason=reason,
+            )
+
+        elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
+            object_type = action_type.split("_")[0]
+            object_type_column = f"{object_type}_id"
+            object_id = data.get(object_type_column)
+            if not object_id:
+                raise InvalidAdminActionException(
+                    f"'{object_type_column}' is missing"
+                )
+            reported_object: Union[Comment, Workout] = getattr(
+                report, f"reported_{object_type}"
+            )
+            if not reported_object or reported_object.short_id != object_id:
+                raise InvalidAdminActionException(
+                    f"invalid '{object_type_column}'"
+                )
+
+            now = datetime.utcnow()
+            admin_action = AdminAction(
+                admin_user_id=admin_user.id,
+                action_type=action_type,
+                created_at=now,
+                report_id=report.id,
+                reason=reason,
+                user_id=reported_object.user_id,
+                **{object_type_column: reported_object.id},
+            )
+            db.session.add(admin_action)
+
+            if "_suspension" in action_type:
+                if reported_object.suspended_at:
+                    raise InvalidAdminActionException(
+                        f"{object_type} '{object_id}' already suspended"
+                    )
+                reported_object.suspended_at = now
+
+            else:
+                reported_object.suspended_at = None
+            db.session.flush()
+        else:
+            raise InvalidAdminActionException("invalid action type")

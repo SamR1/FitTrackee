@@ -62,39 +62,53 @@ def data_export_email_mock() -> Iterator[MagicMock]:
 
 @pytest.fixture()
 def user_suspension_email_mock() -> Iterator[MagicMock]:
-    with patch('fittrackee.reports.reports.user_suspension_email') as mock:
+    with patch(
+        'fittrackee.administration.reports_email_service'
+        '.user_suspension_email'
+    ) as mock:
         yield mock
 
 
 @pytest.fixture()
 def user_unsuspension_email_mock() -> Iterator[MagicMock]:
-    with patch('fittrackee.reports.reports.user_unsuspension_email') as mock:
+    with patch(
+        'fittrackee.administration.reports_email_service'
+        '.user_unsuspension_email'
+    ) as mock:
         yield mock
 
 
 @pytest.fixture()
 def comment_suspension_email_mock() -> Iterator[MagicMock]:
-    with patch('fittrackee.reports.reports.comment_suspension_email') as mock:
+    with patch(
+        'fittrackee.administration.reports_email_service'
+        '.comment_suspension_email'
+    ) as mock:
         yield mock
 
 
 @pytest.fixture()
 def comment_unsuspension_email_mock() -> Iterator[MagicMock]:
     with patch(
-        'fittrackee.reports.reports.comment_unsuspension_email'
+        'fittrackee.administration.reports_email_service'
+        '.comment_unsuspension_email'
     ) as mock:
         yield mock
 
 
 @pytest.fixture()
 def workout_suspension_email_mock() -> Iterator[MagicMock]:
-    with patch('fittrackee.reports.reports.workout_suspension_email') as mock:
+    with patch(
+        'fittrackee.administration.reports_email_service'
+        '.workout_suspension_email'
+    ) as mock:
         yield mock
 
 
 @pytest.fixture()
 def workout_unsuspension_email_mock() -> Iterator[MagicMock]:
     with patch(
-        'fittrackee.reports.reports.workout_unsuspension_email'
+        'fittrackee.administration.reports_email_service'
+        '.workout_unsuspension_email'
     ) as mock:
         yield mock

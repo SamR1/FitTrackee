@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta
+from typing import Dict
 
 import pytest
 from flask import Flask
 from time_machine import travel
 
+from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.administration.reports_service import ReportService
 from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
+    InvalidAdminActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
@@ -16,12 +20,16 @@ from fittrackee.reports.exceptions import (
 )
 from fittrackee.reports.models import ReportComment
 from fittrackee.tests.comments.utils import CommentMixin
-from fittrackee.users.exceptions import UserNotFoundException
+from fittrackee.users.exceptions import (
+    UserAlreadySuspendedException,
+    UserNotFoundException,
+)
 from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin
+from .utils import ReportServiceCreateAdminActionTestCase
 
 
 class TestReportServiceCreateForComment(CommentMixin):
@@ -769,3 +777,673 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.resolved_at == resolved_time
         assert updated_report.resolved_by == user_1_admin.id
         assert updated_report.updated_at == comment_time
+
+
+class TestReportServiceCreateAdminAction(
+    ReportServiceCreateAdminActionTestCase
+):
+    def test_it_raises_exception_when_reported_user_does_not_exist(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        db.session.delete(user_3)
+        db.session.flush()
+
+        with pytest.raises(
+            InvalidAdminActionException, match="invalid 'username'"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                data={"username": user_3.username},
+            )
+
+    def test_it_raises_exception_when_admin_action_is_invalid(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="invalid action type"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type=self.random_string(),
+                data={"username": user_3.username},
+            )
+
+
+class TestReportServiceCreateAdminActionForUser(
+    ReportServiceCreateAdminActionTestCase
+):
+    def test_it_raises_exception_when_username_is_missing(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="'username' is missing"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                data={},
+            )
+
+    def test_it_raises_exception_when_username_does_not_match_reported_user_username(  # noqa
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="invalid 'username'"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                data={"username": self.random_string()},
+            )
+
+    def test_it_suspends_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                reason=None,
+                data={"username": user_3.username},
+            )
+
+        assert (
+            User.query.filter_by(username=user_3.username).first().suspended_at
+            == now
+        )
+
+    def test_it_raise_exception_when_user_already_suspended(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.flush()
+
+        with pytest.raises(
+            UserAlreadySuspendedException,
+            match=f"user '{user_3.username}' already suspended",
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                reason=None,
+                data={"username": user_3.username},
+            )
+
+    def test_it_reactivates_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.flush()
+
+        report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_unsuspension",
+            reason=None,
+            data={"username": user_3.username},
+        )
+
+        assert (
+            User.query.filter_by(username=user_3.username).first().suspended_at
+            is None
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    def test_it_creates_admin_action_for_user_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        input_reason: Dict,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_suspension",
+                reason=input_reason.get("reason"),
+                data={"username": user_3.username},
+            )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "user_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.comment_id is None
+        assert admin_action.reason == input_reason.get("reason")
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_creates_admin_action_for_user_unsuspension(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.flush()
+
+        report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_unsuspension",
+            data={"username": user_3.username},
+        )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "user_unsuspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.reason is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+
+class TestReportServiceCreateAdminActionForComment(
+    ReportServiceCreateAdminActionTestCase
+):
+    def test_it_raises_exception_when_report_is_invalid(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="'comment_id' is missing"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_suspension",
+                data={},
+            )
+
+    def test_it_raises_exception_when_comment_id_does_not_match_reported_object_id(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="invalid 'comment_id'"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_suspension",
+                data={"comment_id": self.random_short_id()},
+            )
+
+    def test_it_raises_error_when_comment_is_already_suspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_comment.suspended_at = datetime.utcnow()
+        db.session.flush()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match=(
+                f"comment '{report.reported_comment.short_id}' "
+                "already suspended"
+            ),
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_suspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
+
+    def test_it_suspends_comment(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_suspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
+
+        assert (
+            Comment.query.filter_by(id=report.reported_comment_id)
+            .first()
+            .suspended_at
+            == now
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    def test_it_creates_admin_action_for_comment_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_reason: Dict,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                reason=input_reason.get("reason"),
+                action_type="comment_suspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "comment_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.comment_id == report.reported_comment_id
+        assert admin_action.reason == input_reason.get("reason")
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_unsuspends_comment(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_comment.suspended_at = datetime.utcnow()
+        db.session.flush()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_unsuspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
+
+        assert (
+            Comment.query.filter_by(id=report.reported_comment_id)
+            .first()
+            .suspended_at
+            is None
+        )
+
+    def test_it_creates_admin_action_for_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_comment.suspended_at = datetime.utcnow()
+        db.session.flush()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_unsuspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "comment_unsuspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.comment_id == report.reported_comment_id
+        assert admin_action.reason is None
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+
+class TestReportServiceCreateAdminActionForWorkout(
+    ReportServiceCreateAdminActionTestCase
+):
+    def test_it_raises_exception_when_report_is_invalid(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            commenter=user_3,
+            reporter=user_2,
+            workout=workout_cycling_user_2,
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="'workout_id' is missing"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_suspension",
+                data={},
+            )
+
+    def test_it_raises_exception_when_workout_id_does_not_match_reported_object_id(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+
+        with pytest.raises(
+            InvalidAdminActionException, match="invalid 'workout_id'"
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_suspension",
+                data={"workout_id": self.random_short_id()},
+            )
+
+    def test_it_raises_error_when_workout_is_already_suspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_workout.suspended_at = datetime.utcnow()
+        db.session.flush()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match=(
+                f"workout '{report.reported_workout.short_id}' "
+                "already suspended"
+            ),
+        ):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_suspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
+
+    def test_it_suspends_workout(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_suspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
+
+        assert (
+            Workout.query.filter_by(id=report.reported_workout_id)
+            .first()
+            .suspended_at
+            == now
+        )
+
+    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    def test_it_creates_admin_action_for_workout_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_reason: Dict,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                reason=input_reason.get("reason"),
+                action_type="workout_suspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "workout_suspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.comment_id is None
+        assert admin_action.reason == input_reason.get("reason")
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id == report.reported_workout_id
+
+    def test_it_unsuspends_workout(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_workout.suspended_at = datetime.utcnow()
+        db.session.flush()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_unsuspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
+
+        assert (
+            Workout.query.filter_by(id=report.reported_workout_id)
+            .first()
+            .suspended_at
+            is None
+        )
+
+    def test_it_creates_admin_action_for_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report.reported_workout.suspended_at = datetime.utcnow()
+        db.session.flush()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.create_admin_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_unsuspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "workout_unsuspension"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.created_at == now
+        assert admin_action.comment_id is None
+        assert admin_action.reason is None
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id is report.reported_workout_id

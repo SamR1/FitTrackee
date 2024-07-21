@@ -1,3 +1,6 @@
+class InvalidAdminActionException(Exception): ...
+
+
 class InvalidReportException(Exception): ...
 
 
