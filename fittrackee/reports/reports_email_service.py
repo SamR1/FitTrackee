@@ -127,11 +127,25 @@ class ReportEmailService:
         admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
-            report, reason
+            report, reason, with_user_image=True
         )
         if not admin_action:
             raise InvalidAdminActionException("invalid action action")
 
+        if report.reported_comment_id:
+            email_data = self._get_comment_email_data(
+                email_data,
+                report.reported_comment,
+                report.reported_user,
+                fittrackee_url,
+            )
+        elif report.reported_workout_id:
+            email_data = self._get_workout_email_data(
+                email_data,
+                report.reported_workout,
+                report.reported_user,
+                fittrackee_url,
+            )
         email_data["appeal_url"] = (
             f"{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal"
         )
