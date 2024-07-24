@@ -52,6 +52,11 @@ export interface IReportPayload {
   from?: string
 }
 
+export interface IGetReportPayload {
+  reportId: number
+  loader: 'REPORT' | 'REPORT_UPDATE'
+}
+
 export interface IReportCommentPayload {
   reportId: number
   comment: string

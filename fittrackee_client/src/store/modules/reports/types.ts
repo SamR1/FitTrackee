@@ -15,6 +15,7 @@ import type {
   IReportAdminActionPayload,
   IReportCommentPayload,
   IReportPayload,
+  IGetReportPayload,
 } from '@/types/reports'
 
 export interface IReportsState {
@@ -22,6 +23,8 @@ export interface IReportsState {
   reports: IReportForAdmin[]
   pagination: IPagination
   reportStatus: string | null
+  reportLoading: boolean
+  reportUpdateLoading: boolean
 }
 
 export interface IReportsActions {
@@ -30,7 +33,7 @@ export interface IReportsActions {
   ): void
   [REPORTS_STORE.ACTIONS.GET_REPORT](
     context: ActionContext<IReportsState, IRootState>,
-    reportId: number
+    reportPayload: IGetReportPayload
   ): void
   [REPORTS_STORE.ACTIONS.GET_REPORTS](
     context: ActionContext<IReportsState, IRootState>,
@@ -56,14 +59,24 @@ export interface IReportsActions {
 
 export interface IReportsGetters {
   [REPORTS_STORE.GETTERS.REPORT](state: IReportsState): IReportForAdmin
+  [REPORTS_STORE.GETTERS.REPORT_LOADING](state: IReportsState): boolean
+  [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
+  [REPORTS_STORE.GETTERS.REPORT_UPDATE_LOADING](state: IReportsState): boolean
   [REPORTS_STORE.GETTERS.REPORTS](state: IReportsState): IReport[]
   [REPORTS_STORE.GETTERS.REPORTS_PAGINATION](state: IReportsState): IPagination
-  [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
 }
 
 export type TReportsMutations<S = IReportsState> = {
   [REPORTS_STORE.MUTATIONS.EMPTY_REPORT](state: S): void
   [REPORTS_STORE.MUTATIONS.SET_REPORT](state: S, report: IReport): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_LOADING](
+    state: S,
+    reportLoading: boolean
+  ): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING](
+    state: S,
+    reportLoading: boolean
+  ): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](state: S, reports: IReport[]): void
   [REPORTS_STORE.MUTATIONS.SET_REPORTS_PAGINATION](
     state: S,

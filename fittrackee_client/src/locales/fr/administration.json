@@ -77,6 +77,7 @@
       "ADD_COMMENT": "Ajouter un commentaire, une action entreprise ou toute autre information utile.",
       "INFORMATION_VISIBLE_TO_USER": "Cette information sera visible de l'utilisateur.",
       "MARK_AS_RESOLVED": "Indiquer le motif de la résolution.",
+      "MARK_AS_UNRESOLVED": "Indiquer le motif de la non-résolution.",
       "SEND_WARNING_EMAIL": "Indiquer le motif de l'avertissement (not mandatory).",
       "SUSPEND": "Indiquer le motif de la suspension (non obligatoire).",
       "UNSUSPEND": "Ajouter un commentaire (non obligatoire).",

@@ -15,6 +15,7 @@ import type { IRootState } from '@/store/modules/root/types'
 import type { TPaginationPayload } from '@/types/api'
 import type {
   IAppealPayload,
+  IGetReportPayload,
   IReportAdminActionPayload,
   IReportCommentPayload,
   IReportPayload,
@@ -33,11 +34,15 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
     },
     [REPORTS_STORE.ACTIONS.GET_REPORT](
       context: ActionContext<IReportsState, IRootState>,
-      reportId: number
+      reportPayload: IGetReportPayload
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      context.commit(
+        REPORTS_STORE.MUTATIONS[`SET_${reportPayload.loader}_LOADING`],
+        true
+      )
       authApi
-        .get(`reports/${reportId}`)
+        .get(`reports/${reportPayload.reportId}`)
         .then((res) => {
           if (res.data.status === 'success') {
             context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT, res.data.report)
@@ -46,6 +51,12 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
           }
         })
         .catch((error) => handleError(context, error))
+        .finally(() =>
+          context.commit(
+            REPORTS_STORE.MUTATIONS[`SET_${reportPayload.loader}_LOADING`],
+            false
+          )
+        )
     },
     [REPORTS_STORE.ACTIONS.GET_REPORTS](
       context: ActionContext<IReportsState, IRootState>,
@@ -80,7 +91,10 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
         .patch(`suspensions/appeals/${appealId}`, data)
         .then((res) => {
           if (res.data.status === 'success') {
-            context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, reportId)
+            context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, {
+              reportId: reportId,
+              loader: 'REPORT_UPDATE',
+            })
           } else {
             handleError(context, null)
           }
@@ -95,12 +109,13 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
       context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+      context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING, true)
       const { report_id, ...data } = payload
       authApi
         .post(`reports/${report_id}/admin-actions`, data)
         .then((res) => {
           if (res.data.status === 'success') {
-            context.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, report_id)
+            context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT, res.data.report)
             context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           } else {
             handleError(context, null)
@@ -109,6 +124,12 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
         .catch((error) => {
           handleError(context, error)
         })
+        .finally(() =>
+          context.commit(
+            REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING,
+            false
+          )
+        )
     },
     [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
       context: ActionContext<IReportsState, IRootState>,
@@ -157,6 +178,7 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
       payload: IReportCommentPayload
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING, true)
       const { reportId, ...data } = payload
       authApi
         .patch(`reports/${reportId}`, data)
@@ -172,5 +194,11 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
           handleError(context, error)
           context.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
         })
+        .finally(() =>
+          context.commit(
+            REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING,
+            false
+          )
+        )
     },
   }

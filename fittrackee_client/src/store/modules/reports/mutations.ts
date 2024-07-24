@@ -18,6 +18,24 @@ export const mutations: MutationTree<IReportsState> & TReportsMutations = {
   ) {
     state.report = report
   },
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_LOADING](
+    state: IReportsState,
+    reportLoading: boolean
+  ) {
+    state.reportLoading = reportLoading
+  },
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS](
+    state: IReportsState,
+    reportStatus: string | null
+  ) {
+    state.reportStatus = reportStatus
+  },
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING](
+    state: IReportsState,
+    reportUpdateLoading: boolean
+  ) {
+    state.reportUpdateLoading = reportUpdateLoading
+  },
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](
     state: IReportsState,
     reports: IReportForAdmin[]
@@ -29,11 +47,5 @@ export const mutations: MutationTree<IReportsState> & TReportsMutations = {
     pagination: IPagination
   ) {
     state.pagination = pagination
-  },
-  [REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS](
-    state: IReportsState,
-    reportStatus: string | null
-  ) {
-    state.reportStatus = reportStatus
   },
 }
