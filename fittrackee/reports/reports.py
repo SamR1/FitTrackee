@@ -30,6 +30,7 @@ from .exceptions import (
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
+    UserWarningExistsException,
 )
 from .models import REPORT_OBJECT_TYPES, Report
 from .reports_email_service import (
@@ -241,7 +242,11 @@ def create_admin_action(
             "status": "success",
             "report": report.serialize(auth_user, full=True),
         }, 200
-    except (UserAlreadySuspendedException, InvalidAdminActionException) as e:
+    except (
+        InvalidAdminActionException,
+        UserAlreadySuspendedException,
+        UserWarningExistsException,
+    ) as e:
         return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(

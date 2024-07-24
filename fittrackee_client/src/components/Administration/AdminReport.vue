@@ -272,7 +272,11 @@
                 {{ $t('admin.APP_MODERATION.ACTIONS.ADD_COMMENT') }}
               </button>
               <button
-                v-if="!report.resolved && report.reported_user"
+                v-if="
+                  !report.resolved &&
+                  report.reported_user &&
+                  !report.is_reported_user_warned
+                "
                 @click="displayTextArea('SEND_WARNING_EMAIL')"
               >
                 {{ $t('admin.APP_MODERATION.ACTIONS.SEND_WARNING_EMAIL') }}

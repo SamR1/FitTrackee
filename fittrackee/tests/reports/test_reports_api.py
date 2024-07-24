@@ -2030,6 +2030,30 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             response, f"user '{user_2.username}' already suspended"
         )
 
+    def test_it_returns_400_when_when_user_already_warned(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        self.create_admin_action(
+            user_1_admin, user_2, "user_warning", report.id
+        )
+        db.session.commit()
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "user already warned")
+
     def test_it_reactivates_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:

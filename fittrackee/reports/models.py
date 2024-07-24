@@ -7,6 +7,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
 from fittrackee import BaseModel, db
+from fittrackee.administration.models import AdminAction
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.users.models import User
@@ -122,6 +123,17 @@ class Report(BaseModel):
             return self.reported_workout
         return None
 
+    @property
+    def is_reported_user_warned(self) -> bool:
+        return (
+            AdminAction.query.filter_by(
+                action_type="user_warning",
+                report_id=self.id,
+                user_id=self.reported_user_id,
+            ).first()
+            is not None
+        )
+
     def __init__(
         self,
         note: str,
@@ -178,6 +190,7 @@ class Report(BaseModel):
         report = {
             "created_at": self.created_at,
             "id": self.id,
+            "is_reported_user_warned": self.is_reported_user_warned,
             "note": self.note,
             "object_type": self.object_type,
             "reported_by": (

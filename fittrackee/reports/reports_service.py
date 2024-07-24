@@ -24,6 +24,7 @@ from .exceptions import (
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
+    UserWarningExistsException,
 )
 from .models import Report, ReportComment
 
@@ -145,6 +146,15 @@ class ReportService:
 
             if action_type == "user_warning":
                 user = User.query.filter_by(username=username).first()
+
+                existing_admin_action = AdminAction.query.filter_by(
+                    action_type=action_type,
+                    report_id=report.id,
+                    user_id=user.id,
+                ).first()
+                if existing_admin_action:
+                    raise UserWarningExistsException("user already warned")
+
                 admin_action = AdminAction(
                     admin_user_id=admin_user.id,
                     action_type=action_type,

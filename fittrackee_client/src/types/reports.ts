@@ -7,6 +7,7 @@ import type { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
   id: number
+  is_reported_user_warned: boolean
   created_at: string
   note: string
   object_type: string

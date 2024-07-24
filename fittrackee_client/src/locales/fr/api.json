@@ -37,6 +37,7 @@
     "successfully registered": "Inscription validée.",
     "the number of files in the archive exceeds the limit": "Le nombre de fichiers de l'archive dépasse la limite.",
     "user already suspended": "L'utilisateur est déjà suspendu.",
+    "user already warned": "L'utilisateur a déjà reçu un avertissement.",
     "user does not exist": "L'utilisateur n'existe pas.",
     "valid email must be provided for admin contact": "Une adresse électronique doit être fournie pour le contact de l'administrateur",
     "workout already suspended": "La séance est déjà suspendu.",
