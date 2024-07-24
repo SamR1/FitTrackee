@@ -63,9 +63,8 @@ class ReportEmailService:
             "text": comment.handle_mentions()[0],
         }
         if comment.workout_id:
-            workout = Workout.query.filter_by(id=comment.workout_id).first()
             comment_email_data["comment_url"] = (
-                f"{fittrackee_url}/workouts/{workout.short_id}"
+                f"{fittrackee_url}/workouts/{comment.workout.short_id}"
                 f"/comments/{comment.short_id}"
             )
         else:
