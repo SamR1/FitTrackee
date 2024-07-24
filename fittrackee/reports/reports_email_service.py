@@ -32,19 +32,19 @@ class ReportEmailService:
         fittrackee_url = current_app.config["UI_URL"]
         reported_user: User = report.reported_user
         user_data = {
-            'language': get_language(reported_user.language),
-            'email': reported_user.email,
+            "language": get_language(reported_user.language),
+            "email": reported_user.email,
         }
         email_data = {
-            'username': reported_user.username,
-            'fittrackee_url': fittrackee_url,
-            'reason': reason,
+            "username": reported_user.username,
+            "fittrackee_url": fittrackee_url,
+            "reason": reason,
         }
         if with_user_image:
             email_data["user_image_url"] = (
-                f'{fittrackee_url}/api/users/{reported_user.username}/picture'
+                f"{fittrackee_url}/api/users/{reported_user.username}/picture"
                 if reported_user.picture
-                else f'{fittrackee_url}/img/user.png'
+                else f"{fittrackee_url}/img/user.png"
             )
         return user_data, email_data, fittrackee_url
 
@@ -53,30 +53,25 @@ class ReportEmailService:
         email_data: Dict,
         comment: Comment,
         reported_user: User,
-        *,
-        fittrackee_url_for_appeal: Optional[str] = None,
+        fittrackee_url: str,
     ) -> Dict:
         comment_email_data = {
             **email_data,
-            "text": comment.handle_mentions()[0],
             "created_at": get_date_string_for_user(
                 comment.created_at, reported_user
             ),
+            "text": comment.handle_mentions()[0],
         }
-        if fittrackee_url_for_appeal:
-            if comment.workout_id:
-                workout = Workout.query.filter_by(
-                    id=comment.workout_id
-                ).first()
-                comment_email_data["appeal_url"] = (
-                    f'{fittrackee_url_for_appeal}/workouts/{workout.short_id}'
-                    f'/comments/{comment.short_id}'
-                )
-            else:
-                comment_email_data["appeal_url"] = (
-                    f'{fittrackee_url_for_appeal}/comments'
-                    f'/{comment.short_id}'
-                )
+        if comment.workout_id:
+            workout = Workout.query.filter_by(id=comment.workout_id).first()
+            comment_email_data["comment_url"] = (
+                f"{fittrackee_url}/workouts/{workout.short_id}"
+                f"/comments/{comment.short_id}"
+            )
+        else:
+            comment_email_data["comment_url"] = (
+                f"{fittrackee_url}/comments" f"/{comment.short_id}"
+            )
 
         return comment_email_data
 
@@ -85,27 +80,21 @@ class ReportEmailService:
         email_data: Dict,
         workout: Workout,
         reported_user: User,
-        *,
         fittrackee_url: str,
-        with_appeal_url: bool = False,
     ) -> Dict:
-        workout_email_data = {
+        return {
             **email_data,
-            "title": workout.title,
-            "workout_date": get_date_string_for_user(
-                workout.workout_date, reported_user
-            ),
             "map": (
                 f"{fittrackee_url}/api/workouts/map/{workout.map_id}"
                 if workout.map_id
                 else None
             ),
+            "title": workout.title,
+            "workout_date": get_date_string_for_user(
+                workout.workout_date, reported_user
+            ),
+            "workout_url": f'{fittrackee_url}/workouts/{workout.short_id}',
         }
-        if with_appeal_url:
-            workout_email_data["appeal_url"] = (
-                f'{fittrackee_url}/workouts/{workout.short_id}'
-            )
-        return workout_email_data
 
     def _send_user_suspension_email(
         self,
@@ -117,7 +106,7 @@ class ReportEmailService:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason
         )
-        email_data['appeal_url'] = f'{fittrackee_url}/profile/suspension'
+        email_data["appeal_url"] = f"{fittrackee_url}/profile/suspension"
         user_suspension_email.send(user_data, email_data)
 
     def _send_user_unsuspension_email(
@@ -141,10 +130,10 @@ class ReportEmailService:
             report, reason
         )
         if not admin_action:
-            raise InvalidAdminActionException('invalid action action')
+            raise InvalidAdminActionException("invalid action action")
 
-        email_data['appeal_url'] = (
-            f'{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal'
+        email_data["appeal_url"] = (
+            f"{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal"
         )
         user_warning_email.send(user_data, email_data)
 
@@ -162,7 +151,7 @@ class ReportEmailService:
             email_data,
             report.reported_comment,
             report.reported_user,
-            fittrackee_url_for_appeal=fittrackee_url,
+            fittrackee_url,
         )
         comment_suspension_email.send(user_data, email_data)
 
@@ -177,7 +166,10 @@ class ReportEmailService:
             report, reason, with_user_image=True
         )
         email_data = self._get_comment_email_data(
-            email_data, report.reported_comment, report.reported_user
+            email_data,
+            report.reported_comment,
+            report.reported_user,
+            fittrackee_url,
         )
         comment_unsuspension_email.send(user_data, email_data)
 
@@ -195,8 +187,7 @@ class ReportEmailService:
             email_data,
             report.reported_workout,
             report.reported_user,
-            fittrackee_url=fittrackee_url,
-            with_appeal_url=True,
+            fittrackee_url,
         )
         workout_suspension_email.send(user_data, email_data)
 
@@ -214,7 +205,7 @@ class ReportEmailService:
             email_data,
             report.reported_workout,
             report.reported_user,
-            fittrackee_url=fittrackee_url,
+            fittrackee_url,
         )
         workout_unsuspension_email.send(user_data, email_data)
 

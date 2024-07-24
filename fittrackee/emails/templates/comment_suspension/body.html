@@ -14,7 +14,7 @@
                        <td>{{ text }}</td>
                      </tr>
                      <tr>
-                       <td class="content-date">{{ created_at }}</td>
+                       <td class="content-date"><a href="{{ comment_url }}" target="_blank">{{ created_at }}</a></td>
                      </tr>
                    </table>
                    <p>{{ _('If you think this is an error, you can appeal:') }}</p>
@@ -24,7 +24,7 @@
                          <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                            <tr>
                              <td align="center">
-                               <a href="{{ appeal_url }}" class="f-fallback button button--green" target="_blank">{{ _('Appeal') }}</a>
+                               <a href="{{ comment_url }}" class="f-fallback button button--green" target="_blank">{{ _('Appeal') }}</a>
                              </td>
                            </tr>
                          </table>
@@ -35,7 +35,7 @@
                           <tr>
                             <td>
                               <p class="f-fallback sub">{{ _("If you're having trouble with the button above, copy and paste the URL below into your web browser.") }}</p>
-                              <p class="f-fallback sub">{{ appeal_url }}</p>
+                              <p class="f-fallback sub">{{ comment_url }}</p>
                             </td>
                           </tr>
                         </table>{% endblock %}

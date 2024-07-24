@@ -2,5 +2,8 @@
 
 {% if reason %}{{ _('Reason:') }} {{ reason }}
 
-{% endif %}{{ _('If you think this is an error, you can appeal:') }} {{ appeal_url }}
+{% endif %}{{ _('Workout:') }} {{ title }}
+
+{{ _('If you think this is an error, you can appeal:') }}
+{{ workout_url }}
 {% endblock %}

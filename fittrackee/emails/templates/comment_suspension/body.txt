@@ -2,5 +2,7 @@
 
 {% if reason %}{{ _('Reason:') }} {{ reason }}
 
-{% endif %}{{ _('If you think this is an error, you can appeal:') }} {{ appeal_url }}
-{% endblock %}
+{% endif %}{{ _('Comment:') }} {{ text }}
+
+{{ _('If you think this is an error, you can appeal:') }}
+{{ comment_url }}{% endblock %}

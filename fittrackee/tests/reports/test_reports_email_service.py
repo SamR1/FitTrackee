@@ -162,7 +162,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'email': user_3.email,
             },
             {
-                'appeal_url': (
+                'comment_url': (
                     f'{app.config["UI_URL"]}/workouts'
                     f'/{workout_cycling_user_2.short_id}'
                     f'/comments/{report.reported_comment.short_id}'
@@ -209,7 +209,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'email': user_3.email,
             },
             {
-                'appeal_url': (
+                'comment_url': (
                     f'{app.config["UI_URL"]}/comments'
                     f'/{report.reported_comment.short_id}'
                 ),
@@ -257,6 +257,11 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'email': user_3.email,
             },
             {
+                'comment_url': (
+                    f'{app.config["UI_URL"]}/workouts'
+                    f'/{workout_cycling_user_2.short_id}'
+                    f'/comments/{report.reported_comment.short_id}'
+                ),
                 'created_at': get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
@@ -300,6 +305,10 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'email': user_3.email,
             },
             {
+                'comment_url': (
+                    f'{app.config["UI_URL"]}/comments'
+                    f'/{report.reported_comment.short_id}'
+                ),
                 'created_at': get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
@@ -343,10 +352,6 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'email': user_2.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
-                ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': None,
                 'reason': input_reason.get('reason'),
@@ -355,6 +360,10 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'username': user_2.username,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
                 ),
             },
         )
@@ -389,10 +398,6 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'email': user_2.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
-                ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': (
                     f'{app.config["UI_URL"]}/api/workouts/map'
@@ -404,6 +409,10 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'username': user_2.username,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
                 ),
             },
         )
@@ -448,6 +457,10 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'username': user_2.username,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
                 ),
             },
         )
@@ -494,6 +507,10 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'username': user_2.username,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
                 ),
             },
         )
