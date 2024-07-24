@@ -41,13 +41,18 @@ USER_LINK_TEMPLATE = (
 NOTIFICATION_TYPES = [
     'comment_like',
     'comment_reply',
+    'comment_suspension',
+    'comment_unsuspension',
     'follow',
     'follow_request',
     'mention',
     'report',
     'suspension_appeal',
+    'user_warning',
     'workout_comment',
     'workout_like',
+    'workout_suspension',
+    'workout_unsuspension',
 ]
 
 
@@ -915,11 +920,24 @@ class Notification(BaseModel):
                 },
             }
 
-        from_user = User.query.filter_by(id=self.from_user_id).first()
+        if self.event_type in [
+            "comment_suspension",
+            "comment_unsuspension",
+            "user_warning",
+            "workout_suspension",
+            "workout_unsuspension",
+        ]:
+            from_user = None
+        else:
+            from_user = User.query.filter_by(id=self.from_user_id).first()
         to_user = User.query.filter_by(id=self.to_user_id).first()
         serialized_notification = {
             **serialized_notification,
-            "from": from_user.serialize(current_user=to_user),
+            "from": (
+                from_user.serialize(current_user=to_user)
+                if from_user
+                else None
+            ),
         }
 
         if self.event_type == "workout_like":
@@ -957,5 +975,37 @@ class Notification(BaseModel):
             serialized_notification["report"] = report.serialize(
                 current_user=to_user
             )
+
+        if self.event_type in [
+            "comment_suspension",
+            "comment_unsuspension",
+            "user_warning",
+            "workout_suspension",
+            "workout_unsuspension",
+        ]:
+            from fittrackee.administration.models import AdminAction
+            from fittrackee.reports.models import Report
+
+            admin_action = AdminAction.query.filter_by(
+                id=self.event_object_id
+            ).first()
+            serialized_notification["admin_action"] = admin_action.serialize(
+                current_user=to_user
+            )
+            report = Report.query.filter_by(id=admin_action.report_id).first()
+            if report.object_type == "comment":
+                comment = Comment.query.filter_by(
+                    id=report.reported_comment_id
+                ).first()
+                serialized_notification["comment"] = comment.serialize(
+                    user=to_user
+                )
+            elif report.object_type == "workout":
+                workout = Workout.query.filter_by(
+                    id=report.reported_workout_id
+                ).first()
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
 
         return serialized_notification

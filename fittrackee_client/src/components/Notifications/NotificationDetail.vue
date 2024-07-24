@@ -11,7 +11,10 @@
           class="fa notification-icon"
           aria-hidden="true"
         />
-        <router-link :to="`/users/${notification.from.username}`">
+        <router-link
+          :to="`/users/${notification.from.username}`"
+          v-if="notification.from"
+        >
           {{ notification.from.username }}
         </router-link>
         {{ $t(getUserAction(notification.type)) }}
@@ -49,6 +52,10 @@
       </div>
     </template>
     <template #content>
+      <div v-if="notification.admin_action?.reason">
+        <strong> {{ $t('admin.APP_MODERATION.REASON') }} </strong>:
+        {{ notification.admin_action.reason }}
+      </div>
       <Comment
         v-if="displayCommentCard(notification.type) && notification.comment"
         :comment="notification.comment"
@@ -137,7 +144,10 @@
     return [
       'comment_like',
       'comment_reply',
+      'comment_suspension',
+      'comment_unsuspension',
       'mention',
+      'user_warning',
       'workout_comment',
     ].includes(notificationType)
   }
@@ -150,6 +160,10 @@
         return 'notifications.LIKED_YOUR_COMMENT'
       case 'comment_reply':
         return 'notifications.REPLIED_YOUR_COMMENT'
+      case 'comment_suspension':
+        return 'notifications.YOUR_COMMENT_HAS_BEEN_SUSPENDED'
+      case 'comment_unsuspension':
+        return 'notifications.YOUR_COMMENT_HAS_BEEN_UNSUSPENDED'
       case 'follow':
         return 'user.RELATIONSHIPS.FOLLOWS_YOU'
       case 'follow_request':
@@ -158,24 +172,37 @@
         return 'notifications.MENTIONED_YOU'
       case 'suspension_appeal':
         return 'notifications.APPEALED_SUSPENSION'
+      case 'user_warning':
+        return 'notifications.YOU_RECEIVED_A_WARNING'
       case 'workout_comment':
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':
         return 'notifications.LIKED_YOUR_WORKOUT'
+      case 'workout_suspension':
+        return 'notifications.YOUR_WORKOUT_HAS_BEEN_SUSPENDED'
+      case 'workout_unsuspension':
+        return 'notifications.YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED'
       case 'report':
         return `notifications.REPORTED_USER_${
           notification.value.report?.object_type
             ? notification.value.report.object_type.toUpperCase()
             : ''
         }`
+      default:
+        return ''
     }
   }
   function getIcon(notificationType: TNotificationType): string {
     switch (notificationType) {
       case 'mention':
         return 'at'
-      case 'suspension_appeal':
+      case 'comment_suspension':
+      case 'comment_unsuspension':
       case 'report':
+      case 'suspension_appeal':
+      case 'user_warning':
+      case 'workout_suspension':
+      case 'workout_unsuspension':
         return 'flag'
       default:
         return 'comment'

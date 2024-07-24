@@ -1,5 +1,5 @@
 import type { IReportForAdmin } from '@/types/reports'
-import type { IUserProfile } from '@/types/user'
+import type { IUserAdminAction, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export type TNotificationType =
@@ -7,17 +7,23 @@ export type TNotificationType =
   | 'follow_request'
   | 'comment_like'
   | 'comment_reply'
+  | 'comment_suspension'
+  | 'comment_unsuspension'
   | 'mention'
   | 'report'
   | 'suspension_appeal'
+  | 'user_warning'
   | 'workout_comment'
+  | 'workout_suspension'
+  | 'workout_unsuspension'
   | 'workout_like'
 
 export interface INotification {
+  admin_action?: IUserAdminAction
   comment?: IComment
   created_at: string
   id: number
-  from: IUserProfile
+  from?: IUserProfile
   marked_as_read: boolean
   report?: IReportForAdmin
   type: TNotificationType

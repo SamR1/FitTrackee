@@ -1,5 +1,5 @@
 <template>
-  <div class="follow-request">
+  <div class="follow-request" v-if="notification.from">
     <div class="follow-request-user">
       <UserPicture :user="notification.from" />
       <div class="user-name">

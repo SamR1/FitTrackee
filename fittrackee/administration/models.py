@@ -9,7 +9,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
 from fittrackee import BaseModel, db
-from fittrackee.users.models import User
+from fittrackee.users.models import Notification, User
 from fittrackee.utils import encode_uuid
 
 from .exceptions import (
@@ -311,8 +311,33 @@ class AdminActionAppeal(BaseModel):
         return appeal
 
 
+@listens_for(AdminAction, 'after_insert')
+def on_admin_insert(
+    mapper: Mapper, connection: Connection, new_action: AdminAction
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.administration.models import (
+            COMMENT_ACTION_TYPES,
+            WORKOUT_ACTION_TYPES,
+        )
+
+        if (
+            new_action.action_type
+            in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES + ["user_warning"]
+        ):
+            notification = Notification(
+                from_user_id=new_action.admin_user_id,
+                to_user_id=new_action.user_id,
+                created_at=new_action.created_at,
+                event_type=new_action.action_type,
+                event_object_id=new_action.id,
+            )
+            session.add(notification)
+
+
 @listens_for(AdminActionAppeal, 'after_insert')
-def on_report_insert(
+def on_admin_action_appeal_insert(
     mapper: Mapper, connection: Connection, new_appeal: AdminActionAppeal
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)

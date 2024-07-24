@@ -2038,7 +2038,10 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             app, user_1_admin.email
         )
         self.create_admin_action(
-            user_1_admin, user_2, "user_warning", report.id
+            user_1_admin,
+            user_2,
+            action_type="user_warning",
+            report_id=report.id,
         )
         db.session.commit()
 
