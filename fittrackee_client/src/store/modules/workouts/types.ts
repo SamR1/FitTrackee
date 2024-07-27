@@ -28,8 +28,8 @@ export interface IWorkoutsState {
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
   pagination: IPagination
-  success: boolean
-  appealLoading: boolean
+  success: null | string
+  appealLoading: null | string
 }
 
 export interface IWorkoutsActions {
@@ -116,10 +116,10 @@ export interface IWorkoutsActions {
 }
 
 export interface IWorkoutsGetters {
-  [WORKOUTS_STORE.GETTERS.APPEAL_LOADING](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.APPEAL_LOADING](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING](state: IWorkoutsState): boolean
-  [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
@@ -135,7 +135,7 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING](
     state: S,
-    loading: boolean
+    loading: null | string
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_CALENDAR_WORKOUTS](
     state: S,
@@ -186,7 +186,7 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     currentReporting: boolean
   ): void
-  [WORKOUTS_STORE.MUTATIONS.SET_SUCCESS](state: S, success: boolean): void
+  [WORKOUTS_STORE.MUTATIONS.SET_SUCCESS](state: S, success: null | string): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

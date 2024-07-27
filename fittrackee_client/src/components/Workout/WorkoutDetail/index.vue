@@ -49,8 +49,8 @@
         <ActionAppeal
           v-if="displayAppealForm && workout.suspension"
           :admin-action="workout.suspension"
-          :success="success"
-          :loading="appealLoading"
+          :success="success === `workout_${workout.id}`"
+          :loading="appealLoading === `workout_${workout.id}`"
           @submitForm="submitAppeal"
           @hideMessage="displayAppealForm = false"
         >
@@ -163,10 +163,10 @@
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
   )
-  const success: ComputedRef<boolean> = computed(
+  const success: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
-  const appealLoading: ComputedRef<boolean> = computed(
+  const appealLoading: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.APPEAL_LOADING]
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
@@ -271,7 +271,7 @@
       store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
     }
     if (success.value) {
-      store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, false)
+      store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
     }
   }
   function submitAppeal(appealText: string) {

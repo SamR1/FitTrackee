@@ -460,14 +460,17 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING,
       payload.objectId
     )
-    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, false)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
     authApi
       .post(`comments/${payload.objectId}/suspension/appeal`, {
         text: payload.text,
       })
       .then((res) => {
         if (res.data.status === 'success') {
-          context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, true)
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_SUCCESS,
+            `comment_${payload.objectId}`
+          )
         }
       })
       .catch((error) => {
@@ -480,15 +483,21 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: IAppealPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, true)
-    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, false)
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING,
+      `workout_${payload.objectId}`
+    )
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
     authApi
       .post(`workouts/${payload.objectId}/suspension/appeal`, {
         text: payload.text,
       })
       .then((res) => {
         if (res.data.status === 'success') {
-          context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, true)
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_SUCCESS,
+            `workout_${payload.objectId}`
+          )
         }
       })
       .catch((error) => {

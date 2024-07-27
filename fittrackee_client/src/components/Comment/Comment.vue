@@ -72,8 +72,8 @@
       <ActionAppeal
         v-if="comment.suspension && displayAppealForm === comment.id"
         :admin-action="comment.suspension"
-        :success="success"
-        :loading="commentsLoading === comment.id"
+        :success="success === `comment_${comment.id}`"
+        :loading="commentsLoading === `comment_${comment.id}`"
         @submitForm="submitAppeal"
         @hideMessage="displayAppealForm = null"
       >
@@ -275,7 +275,7 @@
       displayAppealForm.value !== comment.value.id
   )
   const displayAppealForm: Ref<string | null> = ref(null)
-  const success: ComputedRef<boolean> = computed(
+  const success: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
 

@@ -21,8 +21,8 @@
     <ActionAppeal
       v-if="displayAppealForm"
       :admin-action="action"
-      :success="success"
-      :loading="appealLoading"
+      :success="success === `workout_${workout.id}`"
+      :loading="appealLoading === `workout_${workout.id}`"
       @submitForm="submitAppeal"
       @hideMessage="displayAppealForm = false"
     >
@@ -78,10 +78,10 @@
   const dateFormat = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)
   )
-  const success: ComputedRef<boolean> = computed(
+  const success: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
-  const appealLoading: ComputedRef<boolean> = computed(
+  const appealLoading: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.APPEAL_LOADING]
   )
   const displayAppealForm: Ref<boolean> = ref(false)

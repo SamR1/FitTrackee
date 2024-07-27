@@ -22,8 +22,8 @@
     <ActionAppeal
       v-if="displayAppealForm"
       :admin-action="action"
-      :success="success"
-      :loading="appealLoading"
+      :success="success === `comment_${comment.id}`"
+      :loading="appealLoading === `comment_${comment.id}`"
       @submitForm="submitAppeal"
       @hideMessage="displayAppealForm = false"
     >
@@ -66,10 +66,10 @@
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
   const displayAppealForm: Ref<boolean> = ref(false)
-  const success: ComputedRef<boolean> = computed(
+  const success: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
-  const appealLoading: ComputedRef<boolean> = computed(
+  const appealLoading: ComputedRef<null | string> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.APPEAL_LOADING]
   )
 

@@ -22,7 +22,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   },
   [WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING](
     state: IWorkoutsState,
-    loading: boolean
+    loading: null | string
   ) {
     state.appealLoading = loading
   },
@@ -34,7 +34,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   },
   [WORKOUTS_STORE.MUTATIONS.SET_SUCCESS](
     state: IWorkoutsState,
-    success: boolean
+    success: null | string
   ) {
     state.success = success
   },
