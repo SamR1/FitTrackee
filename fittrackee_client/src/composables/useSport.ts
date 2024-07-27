@@ -10,7 +10,7 @@ import type {
 import { useStore } from '@/use/useStore'
 import { convertDistance } from '@/utils/units'
 
-export default function userSportComponent() {
+export default function useSport() {
   const store = useStore()
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =

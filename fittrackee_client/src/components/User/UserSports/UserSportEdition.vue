@@ -101,7 +101,7 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useSport from '@/composables/useSport'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
@@ -130,7 +130,7 @@
     sportPayload,
     updateIsActive,
     updateSport,
-  } = userSportComponent()
+  } = useSport()
 
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)

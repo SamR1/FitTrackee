@@ -216,7 +216,7 @@
   import { ref, toRefs, watch } from 'vue'
   import type { Ref } from 'vue'
 
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useSport from '@/composables/useSport'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -243,7 +243,7 @@
     updateDisplayModal,
     updateIsActive,
     updateSport,
-  } = userSportComponent()
+  } = useSport()
 
   const hasEquipments: Ref<boolean> = ref(false)
 

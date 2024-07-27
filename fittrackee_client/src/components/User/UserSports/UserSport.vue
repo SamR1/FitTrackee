@@ -103,7 +103,7 @@
   import { useRoute } from 'vue-router'
 
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useSport from '@/composables/useSport'
   import { ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -126,7 +126,7 @@
     sportColors,
     resetSport,
     updateDisplayModal,
-  } = userSportComponent()
+  } = useSport()
 
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
