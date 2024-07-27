@@ -79,10 +79,13 @@
     'follow_request',
     'comment_like',
     'comment_reply',
+    'comment_suspension',
     'mention',
     'report',
+    'user_warning',
     'workout_comment',
     'workout_like',
+    'workout_suspension',
   ]
   let params: LocationQuery = Object.assign({}, route.query)
   const notificationsStatus = ref(getStatusFromQuery(route.query))

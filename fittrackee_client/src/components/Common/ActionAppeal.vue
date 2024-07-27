@@ -27,7 +27,7 @@
           </button>
         </span>
       </div>
-      <div v-if="adminAction.action_type === 'user_adminAction'">
+      <div v-if="adminAction.action_type.startsWith('user_')">
         <slot name="cancelButton"></slot>
       </div>
     </div>

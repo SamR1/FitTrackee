@@ -53,16 +53,27 @@
     </template>
     <template #content>
       <div v-if="notification.admin_action?.reason">
-        <strong> {{ $t('admin.APP_MODERATION.REASON') }} </strong>:
+        <span class="notification-reason">
+          {{ $t('admin.APP_MODERATION.REASON') }}:
+        </span>
         {{ notification.admin_action.reason }}
       </div>
-      <Comment
-        v-if="displayCommentCard(notification.type) && notification.comment"
-        :comment="notification.comment"
-        :authUser="authUser"
-        comments-loading="null"
-        :for-notification="true"
-      />
+      <template
+        v-if="
+          displayCommentCard(notification.type) &&
+          notification.comment &&
+          notification.admin_action
+        "
+      >
+        <CommentForUser
+          :action="notification.admin_action"
+          :display-appeal="
+            notification.admin_action?.action_type !== 'user_warning'
+          "
+          :display-object-name="notification.type === 'user_warning'"
+          :comment="notification.comment"
+        />
+      </template>
       <RelationshipDetail
         v-else-if="displayRelationshipCard(notification.type)"
         :notification="notification"
@@ -76,33 +87,36 @@
         "
         :report="notification.report"
       />
-      <WorkoutCard
-        v-else-if="notification.workout && sport"
-        :workout="notification.workout"
-        :sport="sport"
-        :user="notification.workout?.user"
-        :useImperialUnits="authUser.imperial_units"
-        :dateFormat="dateFormat"
-        :timezone="authUser.timezone"
-      />
+      <template v-else-if="notification.workout && notification.admin_action">
+        <WorkoutForUser
+          :action="notification.admin_action"
+          :display-object-name="notification.type === 'user_warning'"
+          :displayAppeal="
+            notification.admin_action?.action_type !== 'user_warning'
+          "
+          :workout="notification.workout"
+        />
+      </template>
+      <div v-if="notification.admin_action?.action_type === 'user_warning'">
+        <router-link
+          class="appeal-link"
+          :to="`profile/warning/${notification.admin_action.id}/appeal`"
+        >
+          {{ $t('user.APPEAL') }}
+        </router-link>
+      </div>
     </template>
   </Card>
 </template>
 <script lang="ts" setup>
   import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
 
-  import Comment from '@/components/Comment/Comment.vue'
+  import CommentForUser from '@/components/Common/CommentForUser.vue'
+  import WorkoutForUser from '@/components/Common/WorkoutForUser.vue'
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
-  import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
-  import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import type { TLanguage } from '@/types/locales'
   import type { INotification, TNotificationType } from '@/types/notifications'
-  import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { getDateFormat } from '@/utils/dates'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -112,18 +126,6 @@
   const props = defineProps<Props>()
   const { authUser, notification } = toRefs(props)
 
-  const store = useStore()
-
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const appLanguage: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const sport: ComputedRef<ISport | null> = computed(() => getSport())
-  const dateFormat = computed(() =>
-    getDateFormat(authUser.value.date_format, appLanguage.value)
-  )
   const icon = computed(() => getIcon(notification.value.type))
   const emit = defineEmits(['reload', 'updateReadStatus'])
 
@@ -133,23 +135,18 @@
   function updateReadStatus(notificationId: number, markedAsRead: boolean) {
     emit('updateReadStatus', { notificationId, markedAsRead })
   }
-  function getSport(): ISport | null {
-    return notification.value.workout
-      ? sports.value.filter(
-          (s) => s.id === notification.value.workout?.sport_id
-        )[0]
-      : null
-  }
   function displayCommentCard(notificationType: TNotificationType) {
-    return [
-      'comment_like',
-      'comment_reply',
-      'comment_suspension',
-      'comment_unsuspension',
-      'mention',
-      'user_warning',
-      'workout_comment',
-    ].includes(notificationType)
+    return (
+      [
+        'comment_like',
+        'comment_reply',
+        'comment_suspension',
+        'comment_unsuspension',
+        'mention',
+        'user_warning',
+        'workout_comment',
+      ].includes(notificationType) && notification.value.comment
+    )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
     return ['follow', 'follow_request'].includes(notificationType)
@@ -194,6 +191,9 @@
   }
   function getIcon(notificationType: TNotificationType): string {
     switch (notificationType) {
+      case 'follow':
+      case 'follow_request':
+        return 'user-plus'
       case 'mention':
         return 'at'
       case 'comment_suspension':
@@ -240,9 +240,19 @@
       }
     }
 
+    .notification-reason {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .comment-box {
+      padding: $default-padding * 0.5 $default-padding;
+    }
+
     &.read {
       color: var(--app-color-lighter);
 
+      ::v-deep(.workout-card-title),
       ::v-deep(.workout-comment),
       ::v-deep(.follow-request) {
         .user-picture {
@@ -259,8 +269,12 @@
           color: var(--app-color-lighter);
         }
       }
-      ::v-deep(a) {
+      ::v-deep(a:not(.appeal-link)) {
         color: var(--app-color-lighter);
+      }
+
+      ::v-deep(.sport-img) {
+        opacity: 0.5;
       }
 
       .mark-action {

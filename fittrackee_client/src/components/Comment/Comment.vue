@@ -59,7 +59,7 @@
           :authUser="authUser"
         />
       </template>
-      <div v-if="comment.suspended" class="suspended">
+      <div v-if="comment.suspended && displayAppeal" class="suspended">
         {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
         <button
           v-if="displayMakeAppeal"
@@ -226,9 +226,11 @@
     currentCommentEdition?: ICurrentCommentEdition | null
     forNotification?: boolean
     forAdmin?: boolean
+    displayAppeal?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
+    displayAppeal: true,
     currentCommentEdition: null,
     forAdmin: false,
     forNotification: false,

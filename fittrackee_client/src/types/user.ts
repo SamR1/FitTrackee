@@ -2,7 +2,7 @@ import type { LocationQueryValue } from 'vue-router'
 
 import type { IPagePayload, TPaginationPayload } from '@/types/api'
 import type { TLanguage } from '@/types/locales'
-import type { IRecord } from '@/types/workouts'
+import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
 export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
@@ -195,10 +195,12 @@ export interface IAdminActionAppeal {
 export interface IUserAdminAction {
   action_type: string
   appeal: IAdminActionAppeal
+  comment?: IComment | null
   created_at: string
   id: string
   reason: string
   user?: IUserProfile
+  workout?: IWorkout | null
 }
 
 export interface IUserAppealPayload {

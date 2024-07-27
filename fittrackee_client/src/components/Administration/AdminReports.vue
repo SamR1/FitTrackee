@@ -202,7 +202,7 @@
 
   const orderByList: string[] = ['created_at', 'updated_at']
   const objectTypes: Record<string, string> = {
-    comment: 'workouts.COMMENTS.COMMENTS',
+    comment: 'workouts.COMMENTS.COMMENT',
     user: 'user.USER',
     workout: 'workouts.WORKOUT',
   }

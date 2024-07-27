@@ -163,6 +163,10 @@ class ReportService:
                     reason=reason,
                     user_id=user.id,
                 )
+                if report.reported_comment_id:
+                    admin_action.comment_id = report.reported_comment_id
+                elif report.reported_workout_id:
+                    admin_action.workout_id = report.reported_workout_id
                 db.session.add(admin_action)
             else:
                 user_manager_service = UserManagerService(

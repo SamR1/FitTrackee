@@ -988,7 +988,7 @@ class TestReportServiceCreateAdminActionForUser(
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
 
-    def test_it_creates_admin_action_for_user_warning(
+    def test_it_creates_admin_action_for_user_warning_on_user_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_service = ReportService()
@@ -1011,6 +1011,71 @@ class TestReportServiceCreateAdminActionForUser(
         assert admin_action.report_id == report.id
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
+
+    def test_it_creates_admin_action_for_user_warning_on_comment_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+
+        report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning",
+            data={"username": user_3.username},
+        )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "user_warning"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id == report.reported_comment_id
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
+        assert admin_action.user_id == user_3.id
+        assert admin_action.workout_id is None
+
+    def test_it_creates_admin_action_for_user_warning_on_workout_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+
+        report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning",
+            data={"username": user_2.username},
+        )
+
+        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
+        assert admin_action.action_type == "user_warning"
+        assert admin_action.admin_user_id == user_1_admin.id
+        assert admin_action.comment_id is None
+        assert admin_action.reason is None
+        assert admin_action.report_id == report.id
+        assert admin_action.user_id == user_2.id
+        assert admin_action.workout_id == report.reported_workout_id
 
     def test_it_raises_exception_when_user_warning_already_exists_for_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User

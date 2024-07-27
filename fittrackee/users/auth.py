@@ -2120,7 +2120,7 @@ def get_user_warning(
     return {
         "status": "success",
         "user_warning": warning_action.serialize(
-            current_user=auth_user, full=False
+            current_user=auth_user, full=True
         ),
     }, 200
 

@@ -39,6 +39,7 @@
   "NEW_PASSWORD": "New password",
   "NO_SPORT_FOUND": "No sport found.",
   "NO_USERS_FOUND": "No users found.",
+  "NO_WARNING_FOUND": "No warning found.",
   "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", only {0} from this instance are displayed",
   "PASSWORD": "Password",
   "PASSWORD_FORGOTTEN": "Forgot password?",
@@ -200,5 +201,6 @@
   "YOU": "you",
   "YOU_CAN_APPEAL_ONCE": "You can appeal only once.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}.",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Your account has been suspended",
   "WARNING_REASON": "Warning reason"
 }

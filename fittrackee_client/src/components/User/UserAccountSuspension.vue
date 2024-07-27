@@ -2,9 +2,9 @@
   <div v-if="loading && !appealText">
     <Loader />
   </div>
-  <div v-else>
+  <div v-else-if="accountSuspension.id">
+    <div>{{ $t('user.YOUR_ACCOUNT_HAS_BEEN_SUSPENDED') }}.</div>
     <ActionAppeal
-      v-if="accountSuspension.id"
       :admin-action="accountSuspension"
       :success="isSuccess"
       :loading="loading"
@@ -16,7 +16,14 @@
         </button>
       </template>
     </ActionAppeal>
-    <div v-else>{{ $t('user.ACTIVE_ACCOUNT') }}</div>
+  </div>
+  <div v-else>
+    <div class="no-suspension">
+      {{ $t('user.ACTIVE_ACCOUNT') }}
+    </div>
+    <button @click="$router.push('/profile')">
+      {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
+    </button>
   </div>
 </template>
 
@@ -25,7 +32,7 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { IUserAdminAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -56,7 +63,16 @@
     })
   }
 
-  onUnmounted(() =>
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-  )
+  })
 </script>
+
+<style lang="scss" scoped>
+  @import '~@/scss/vars.scss';
+
+  .no-suspension {
+    margin: $default-padding 0;
+  }
+</style>

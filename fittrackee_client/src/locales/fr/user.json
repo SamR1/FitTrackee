@@ -39,6 +39,7 @@
   "NEW_PASSWORD": "Nouveau mot de passe",
   "NO_SPORT_FOUND": "Aucun sport trouvé.",
   "NO_USERS_FOUND": "Aucun utilisateur trouvé.",
+  "NO_WARNING_FOUND": "Aucun avertissement trouvé.",
   "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", seuls les {0} de cette instance sont affichés",
   "PASSWORD": "Mot de passe",
   "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
@@ -200,5 +201,6 @@
   "YOU": "vous",
   "YOU_CAN_APPEAL_ONCE": "Vous ne pouvez faire appel qu'une seule fois.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}.",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Votre compte a été suspendu",
   "WARNING_REASON": "Raison de l'avertissement"
 }

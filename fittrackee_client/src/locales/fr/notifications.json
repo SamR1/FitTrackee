@@ -21,12 +21,15 @@
     "ALL": "toutes",
     "comment_like": "likes sur un commentaire",
     "comment_reply": "réponses à un commentaire",
+    "comment_suspension": "commentaires suspendus",
     "follow": "abonnements",
     "follow_request": "demandes d'abonnement",
     "mention": "mentions",
     "report": "signalements",
+    "user_warning": "avertissements",
     "workout_comment": "commentaires sur une séance",
-    "workout_like": "likes sur une séance"
+    "workout_like": "likes sur une séance",
+    "workout_suspension": "séances suspendues"
   },
   "UNREAD": "Non lues",
   "YOU_RECEIVED_A_WARNING": "Vous avez reçu un avertissement",

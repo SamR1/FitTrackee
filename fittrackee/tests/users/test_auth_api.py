@@ -4329,7 +4329,7 @@ class TestGetUserWarning(UserSuspensionTestCase):
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "user_warning": jsonify_dict(action.serialize(user_2, full=False)),
+            "user_warning": jsonify_dict(action.serialize(user_2, full=True)),
         }
 
     @pytest.mark.parametrize(
