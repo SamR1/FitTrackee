@@ -353,7 +353,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'data': {
                 'workouts': [
-                    workout.serialize(auth_user, params)
+                    workout.serialize(user=auth_user, params=params)
                     for workout in workouts
                 ]
             },
@@ -462,7 +462,7 @@ def get_workout(
     """
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user)]},
     }
 
 
@@ -1111,7 +1111,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 'status': 'created',
                 'data': {
                     'workouts': [
-                        new_workout.serialize(auth_user)
+                        new_workout.serialize(user=auth_user)
                         for new_workout in new_workouts
                     ]
                 },
@@ -1324,7 +1324,7 @@ def post_workout_no_gpx(
         return (
             {
                 'status': 'created',
-                'data': {'workouts': [new_workout.serialize(auth_user)]},
+                'data': {'workouts': [new_workout.serialize(user=auth_user)]},
             },
             201,
         )
@@ -1546,7 +1546,7 @@ def update_workout(
 
         return {
             'status': 'success',
-            'data': {'workouts': [workout.serialize(auth_user)]},
+            'data': {'workouts': [workout.serialize(user=auth_user)]},
         }
 
     except InvalidEquipmentsException as e:
@@ -1633,7 +1633,7 @@ def like_workout(
         db.session.rollback()
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user)]},
     }, 200
 
 
@@ -1654,7 +1654,7 @@ def undo_workout_like(
 
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user)]},
     }, 200
 
 

@@ -347,7 +347,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         assert serialized_notification["type"] == "workout_like"
         assert serialized_notification[
             "workout"
-        ] == workout_cycling_user_1.serialize(user_1)
+        ] == workout_cycling_user_1.serialize(user=user_1)
         assert "admin_action" not in serialized_notification
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
@@ -559,7 +559,7 @@ class TestNotificationForWorkoutAdminAction(
         assert serialized_notification["type"] == input_admin_action
         assert serialized_notification[
             "workout"
-        ] == workout_cycling_user_2.serialize(user_2)
+        ] == workout_cycling_user_2.serialize(user=user_2)
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
 
@@ -1454,7 +1454,7 @@ class TestNotificationForUserWarning(
         assert serialized_notification["type"] == "user_warning"
         assert serialized_notification[
             "workout"
-        ] == workout_cycling_user_2.serialize(user_2)
+        ] == workout_cycling_user_2.serialize(user=user_2)
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
 

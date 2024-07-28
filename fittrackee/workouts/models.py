@@ -320,6 +320,7 @@ class Workout(BaseModel):
     def get_workout_data(
         self,
         user: Optional['User'],
+        *,
         can_see_map_data: Optional[bool] = None,
         for_report: bool = False,
         additional_data: bool = False,
@@ -418,6 +419,7 @@ class Workout(BaseModel):
 
     def serialize(
         self,
+        *,
         user: Optional['User'] = None,
         params: Optional[Dict] = None,
         for_report: bool = False,
@@ -566,7 +568,10 @@ class Workout(BaseModel):
             or (user is not None and user.id == self.user_id)
         )
         workout = self.get_workout_data(
-            user, can_see_map_data, for_report, additional_data
+            user,
+            can_see_map_data=can_see_map_data,
+            for_report=for_report,
+            additional_data=additional_data,
         )
 
         workout["next_workout"] = (

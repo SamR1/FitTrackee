@@ -68,7 +68,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
             'status': 'success',
             'data': {
                 'workouts': [
-                    workout.serialize(auth_user) for workout in workouts
+                    workout.serialize(user=auth_user) for workout in workouts
                 ]
             },
             'pagination': {

@@ -557,7 +557,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "reported_comment": None,
             "reported_user": user_2.serialize(),
             "reported_workout": workout_cycling_user_2.serialize(
-                user_1, for_report=True
+                user=user_1, for_report=True
             ),
             "resolved": False,
             "resolved_at": None,
@@ -863,7 +863,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_comment": None,
             "reported_user": user_2.serialize(),
             "reported_workout": workout_cycling_user_2.serialize(
-                user_1_admin, for_report=True
+                user=user_1_admin, for_report=True
             ),
             "resolved": False,
             "resolved_at": None,

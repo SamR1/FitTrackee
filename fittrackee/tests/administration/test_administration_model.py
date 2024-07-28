@@ -842,7 +842,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
             "created_at": admin_action.created_at,
             "id": admin_action.short_id,
             "reason": admin_action.reason,
-            "workout": workout_cycling_user_2.serialize(user_2),
+            "workout": workout_cycling_user_2.serialize(user=user_2),
         }
 
     def test_it_returns_serialized_workout_admin_action_for_admin(
@@ -878,7 +878,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         )
         assert serialized_action[
             'workout'
-        ] == workout_cycling_user_2.serialize(user_1_admin, for_report=True)
+        ] == workout_cycling_user_2.serialize(
+            user=user_1_admin, for_report=True
+        )
 
     def test_it_returns_serialized_comment_admin_action_for_user(
         self,

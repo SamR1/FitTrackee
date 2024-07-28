@@ -112,7 +112,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout = workout_cycling_user_1
 
-        serialized_workout = workout.serialize(user_1)
+        serialized_workout = workout.serialize(user=user_1)
 
         assert serialized_workout['ascent'] is None
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
@@ -162,7 +162,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.ascent = 0
         workout.descent = 10
 
-        serialized_workout = workout.serialize(user_1)
+        serialized_workout = workout.serialize(user=user_1)
         assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
         assert serialized_workout['bounds'] == []
@@ -208,7 +208,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_1)
+        serialized_workout = workout.serialize(user=user_1)
         assert serialized_workout['ascent'] is None
         assert serialized_workout['ave_speed'] == float(workout.ave_speed)
         assert serialized_workout['bounds'] == [
@@ -259,7 +259,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_1)
+        serialized_workout = workout.serialize(user=user_1)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -333,7 +333,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_cycling_user_1.calculated_map_visibility
             == expected_map_visibility
         )
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
         assert (
             serialized_workout['map_visibility']
             == expected_map_visibility.value
@@ -358,7 +358,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             user_2_admin, user_1, workout_cycling_user_1
         )
 
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert (
             serialized_workout["suspended_at"]
@@ -392,7 +392,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_running_user_1.serialize(user_1)
+        serialized_workout = workout_running_user_1.serialize(user=user_1)
 
         assert (
             serialized_workout['previous_workout']
@@ -408,7 +408,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert (
             serialized_workout['next_workout']
@@ -425,7 +425,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert serialized_workout['equipments'] == [
             equipment_bike_user_1.serialize()
@@ -543,7 +543,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert serialized_workout['likes_count'] == 2
 
@@ -561,7 +561,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert serialized_workout['liked'] is False
 
@@ -580,7 +580,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user_1)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
 
         assert serialized_workout['liked'] is True
 
@@ -598,7 +598,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         add_follower(user_1, user_2)
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_2)
+            workout_cycling_user_1.serialize(user=user_2)
 
     def test_serializer_does_not_return_notes(
         self,
@@ -611,7 +611,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert serialized_workout['notes'] is None
 
@@ -649,7 +649,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_2)
+        serialized_workout = workout.serialize(user=user_2)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -689,7 +689,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         add_follower(user_1, user_2)
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_2)
+        serialized_workout = workout.serialize(user=user_2)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -713,7 +713,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert serialized_workout['next_workout'] is None
 
@@ -730,7 +730,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_running_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
-        serialized_workout = workout_running_user_1.serialize(user_2)
+        serialized_workout = workout_running_user_1.serialize(user=user_2)
 
         assert serialized_workout['previous_workout'] is None
 
@@ -745,7 +745,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert 'suspended_at' not in serialized_workout
 
@@ -777,7 +777,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(
-                user_2, for_report=input_for_report
+                user=user_2, for_report=input_for_report
             )
 
     def test_serialize_returns_suspended_workout_when_user_commented_workout(
@@ -801,7 +801,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
-        serialized_workout = workout_cycling_user_1.serialize(user_3)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_3)
 
         assert serialized_workout == {
             'ascent': None,
@@ -861,7 +861,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = input_workout_visibility
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user_2)
+            workout_cycling_user_1.serialize(user=user_2)
 
     def test_serializer_does_not_return_notes(
         self,
@@ -874,7 +874,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert serialized_workout['notes'] is None
 
@@ -892,7 +892,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user_2)
+        serialized_workout = workout.serialize(user=user_2)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -928,7 +928,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user_2)
+        serialized_workout = workout.serialize(user=user_2)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -952,7 +952,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert serialized_workout['next_workout'] is None
 
@@ -968,7 +968,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_running_user_1.serialize(user_2)
+        serialized_workout = workout_running_user_1.serialize(user=user_2)
 
         assert serialized_workout['previous_workout'] is None
 
@@ -982,7 +982,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user_2)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
 
         assert 'suspended_at' not in serialized_workout
 
@@ -1005,7 +1005,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(
-                user_2, for_report=input_for_report
+                user=user_2, for_report=input_for_report
             )
 
     def test_serialize_returns_suspended_workout_when_user_commented_workout(
@@ -1026,7 +1026,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
-        serialized_workout = workout_cycling_user_1.serialize(user_3)
+        serialized_workout = workout_cycling_user_1.serialize(user=user_3)
 
         assert serialized_workout == {
             'ascent': None,
@@ -1267,7 +1267,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_2.serialize(user_1_admin)
+            workout_cycling_user_2.serialize(user=user_1_admin)
 
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
@@ -1289,7 +1289,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user_1_admin, for_report=True
+            user=user_1_admin, for_report=True
         )
 
         assert serialized_workout['ascent'] == workout_cycling_user_2.ascent
@@ -1357,7 +1357,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         )
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user_1_admin, for_report=True
+            user=user_1_admin, for_report=True
         )
 
         assert serialized_workout['ascent'] == workout_cycling_user_2.ascent
@@ -1418,7 +1418,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_2.serialize(user_1_admin)
+            workout_cycling_user_2.serialize(user=user_1_admin)
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
@@ -1437,7 +1437,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user_1_admin, for_report=True
+            user=user_1_admin, for_report=True
         )
 
         assert (

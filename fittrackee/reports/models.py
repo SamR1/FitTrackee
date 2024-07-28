@@ -180,7 +180,9 @@ class Report(BaseModel):
 
         try:
             reported_workout = (
-                self.reported_workout.serialize(current_user, for_report=True)
+                self.reported_workout.serialize(
+                    user=current_user, for_report=True
+                )
                 if self.reported_workout
                 else None
             )
