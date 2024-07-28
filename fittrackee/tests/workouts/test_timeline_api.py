@@ -10,11 +10,11 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES
+from .mixins import WorkoutApiTestCaseMixin
 
 
-class TestGetUserTimeline(ApiTestCaseMixin):
+class TestGetUserTimeline(WorkoutApiTestCaseMixin):
     @staticmethod
     def assert_no_workout_returned(response: TestResponse) -> None:
         assert response.status_code == 200
@@ -418,7 +418,7 @@ class TestGetUserTimeline(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestGetUserTimelinePagination(ApiTestCaseMixin):
+class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
     def test_it_returns_pagination_when_no_workouts(
         self,
         app: Flask,

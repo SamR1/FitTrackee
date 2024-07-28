@@ -1,6 +1,6 @@
 import datetime
 from io import BytesIO
-from typing import Generator, List
+from typing import Generator, Iterator, List
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -15,6 +15,19 @@ from fittrackee.workouts.utils.maps import StaticMap
 byte_io = BytesIO()
 Image.new('RGB', (256, 256)).save(byte_io, 'PNG')
 byte_image = byte_io.getvalue()
+
+
+@pytest.fixture(autouse=True)
+def update_records_patch(request: pytest.FixtureRequest) -> Iterator[None]:
+    # allows to disable record creation/update on tests where
+    # records are not needed
+    if 'disable_autouse_update_records_patch' in request.keywords:
+        yield
+    else:
+        with patch(
+            'fittrackee.workouts.models.update_records', return_value=None
+        ):
+            yield
 
 
 @pytest.fixture(scope='session', autouse=True)

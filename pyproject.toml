@@ -100,7 +100,7 @@ quote-style = "preserve"
 
 [tool.pytest.ini_options]
 markers = [
-    "disable_autouse_generate_keys: disable patch for keys generation",
+    "disable_autouse_update_records_patch: disable records update",
 ]
 
 [tool.bandit]

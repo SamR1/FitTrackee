@@ -328,6 +328,7 @@ class TestInactiveUserSerialize(UserModelAssertMixin):
         assert serialized_user['is_active'] is False
 
 
+@pytest.mark.disable_autouse_update_records_patch
 class TestUserRecords(UserModelAssertMixin):
     def test_it_returns_empty_list_when_no_workouts(
         self,

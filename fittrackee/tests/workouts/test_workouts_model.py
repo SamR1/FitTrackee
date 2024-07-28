@@ -18,6 +18,7 @@ from .mixins import WorkoutMixin
 from .utils import add_follower
 
 
+@pytest.mark.disable_autouse_update_records_patch
 class WorkoutModelTestCase(WorkoutMixin):
     @staticmethod
     def update_workout(

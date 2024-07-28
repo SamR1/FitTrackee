@@ -1,7 +1,11 @@
+import pytest
+
 from fittrackee import db
 from fittrackee.administration.models import AdminAction
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
+
+from ..mixins import ApiTestCaseMixin
 
 
 class WorkoutMixin:
@@ -17,3 +21,8 @@ class WorkoutMixin:
         )
         db.session.add(admin_action)
         return admin_action
+
+
+@pytest.mark.disable_autouse_update_records_patch
+class WorkoutApiTestCaseMixin(ApiTestCaseMixin):
+    pass

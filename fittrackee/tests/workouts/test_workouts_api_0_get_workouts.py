@@ -11,11 +11,11 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from .mixins import WorkoutApiTestCaseMixin
 
 
-class TestGetWorkouts(ApiTestCaseMixin):
+class TestGetWorkouts(WorkoutApiTestCaseMixin):
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,
@@ -200,7 +200,7 @@ class TestGetWorkouts(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
+class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
     def test_it_gets_workouts_with_default_pagination(
         self,
         app: Flask,
@@ -448,7 +448,7 @@ class TestGetWorkoutsWithPagination(ApiTestCaseMixin):
         }
 
 
-class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
+class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
     def test_it_gets_workouts_with_default_order(
         self,
         app: Flask,
@@ -558,7 +558,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         }
 
 
-class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
+class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
     def test_it_gets_workouts_ordered_by_workout_date(
         self,
         app: Flask,
@@ -706,7 +706,7 @@ class TestGetWorkoutsWithOrderBy(ApiTestCaseMixin):
         }
 
 
-class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
+class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
     def test_it_gets_workouts_with_date_filter(
         self,
         app: Flask,
@@ -1211,7 +1211,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
         assert workouts[1]['id'] == workout_cycling_user_1.short_id
 
 
-class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
+class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
         self,
         app: Flask,
