@@ -1,6 +1,6 @@
 <template>
   <div class="users-list">
-    <UsersFilters @filterOnUsername="searchUsers" />
+    <UsersNameFilter @filterOnUsername="searchUsers" />
     <div class="container users-container" v-if="users.length > 0">
       <div v-for="user in users" :key="user.username" class="user-box">
         <UserCard
@@ -33,14 +33,15 @@
     toRefs,
     watch,
   } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import type { ComputedRef, Reactive, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
-  import UsersFilters from '@/components/Users/UsersFilters.vue'
-  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
+  import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
   import type {
     IAuthUserProfile,
@@ -54,30 +55,29 @@
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
   const router = useRouter()
 
-  const { authUser } = toRefs(props)
+  const { isAuthUserSuspended } = useAuthUser()
+
   const orderByList: string[] = ['created_at', 'username', 'workouts_count']
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(getUsersQuery(route.query))
+
+  let query: Reactive<TPaginationPayload> = reactive(getUsersQuery(route.query))
+  const updatedUser: Ref<string | null> = ref(null)
+
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-  const updatedUser: Ref<string | null> = ref(null)
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-
-  onBeforeMount(() => loadUsers(query))
 
   function loadUsers(queryParams: TUsersPayload) {
-    if (!isSuspended.value) {
+    if (!isAuthUserSuspended.value) {
       queryParams.per_page = 9
       store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
     }
@@ -105,10 +105,6 @@
     return updateQuery
   }
 
-  onUnmounted(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
-  })
-
   watch(
     () => route.query,
     (newQuery: LocationQuery) => {
@@ -116,6 +112,11 @@
       loadUsers(query)
     }
   )
+
+  onBeforeMount(() => loadUsers(query))
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+  })
 </script>
 
 <style lang="scss" scoped>

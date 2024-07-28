@@ -9,7 +9,7 @@
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
       <dt>{{ $t('user.PROFILE.DATE_FORMAT') }}:</dt>
-      <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
+      <dd>{{ dateFormat }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
     </dl>
@@ -98,42 +98,31 @@
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
-  import type { TLanguage } from '@/types/locales'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
+
   interface Props {
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
-
   const { user } = toRefs(props)
-  const store = useStore()
 
-  const appLanguage: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const userLanguage = computed(() =>
+  const { dateFormat, timezone } = useAuthUser()
+
+  const userLanguage: ComputedRef<string> = computed(() =>
     user.value.language
       ? languageLabels[user.value.language]
       : languageLabels['en']
   )
-  const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
-  const timezone = computed(() =>
-    props.user.timezone ? props.user.timezone : 'Europe/Paris'
-  )
-  const date_format = computed(() =>
-    props.user.date_format ? props.user.date_format : 'MM/dd/yyyy'
-  )
+  const fistDayOfWeek = computed(() => (user.value.weekm ? 'MONDAY' : 'SUNDAY'))
   const display_ascent = computed(() =>
-    props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
+    user.value.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
   const darkMode = computed(() =>
-    props.user.use_dark_mode === true
+    user.value.use_dark_mode === true
       ? 'DARK'
-      : props.user.use_dark_mode === false
+      : user.value.use_dark_mode === false
         ? 'LIGHT'
         : 'DEFAULT'
   )

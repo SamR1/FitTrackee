@@ -46,11 +46,10 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onUnmounted, onMounted, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { onUnmounted, onMounted, toRefs } from 'vue'
 
+  import useApp from '@/composables/useApp'
   import { ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -65,14 +64,14 @@
     strongMessage: () => '',
     warning: () => '',
   })
+  const { title, message, strongMessage } = toRefs(props)
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
 
   const store = useStore()
 
-  const { title, message, strongMessage } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+  const { errorMessages } = useApp()
+
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null

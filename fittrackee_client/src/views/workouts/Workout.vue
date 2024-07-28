@@ -64,60 +64,36 @@
   import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
-  import {
-    AUTH_USER_STORE,
-    SPORTS_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
-  import type {
-    IWorkoutData,
-    IWorkoutPayload,
-    TCoordinates,
-  } from '@/types/workouts'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
+  import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { TCoordinates } from '@/types/map'
+  import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     displaySegment: boolean
   }
   const props = defineProps<Props>()
+  const { displaySegment } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()
 
-  const { displaySegment } = toRefs(props)
-  const workoutData: ComputedRef<IWorkoutData> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
-  )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
+  const { authUser } = useAuthUser()
+  const { sports } = useSports()
+
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
     longitude: null,
   })
-  const isWorkoutOwner = computed(
+
+  const workoutData: ComputedRef<IWorkoutData> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
+  )
+  const isWorkoutOwner: ComputedRef<boolean> = computed(
     () => authUser.value.username === workoutData.value.workout.user.username
   )
-
-  onBeforeMount(() => {
-    const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
-    if (props.displaySegment) {
-      payload.segmentId = route.params.segmentId
-    }
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
-    if (sports.value.length === 0) {
-      store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
-    }
-  })
-
-  onUnmounted(() => {
-    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-  })
 
   function updateCoordinates(coordinates: TCoordinates) {
     markerCoordinates.value = {
@@ -150,6 +126,20 @@
       }
     }
   )
+
+  onBeforeMount(() => {
+    const payload: IWorkoutPayload = { workoutId: route.params.workoutId }
+    if (props.displaySegment) {
+      payload.segmentId = route.params.segmentId
+    }
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
+    if (sports.value.length === 0) {
+      store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+    }
+  })
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+  })
 </script>
 
 <style lang="scss" scoped>

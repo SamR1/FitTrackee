@@ -86,7 +86,7 @@
                 ({{ $t('user.PROFILE.SPORT.DISABLED_BY_ADMIN') }})
               </span>
               <i
-                v-if="loading && isSportInEdition(sport.id)"
+                v-if="authUserLoading && isSportInEdition(sport.id)"
                 class="fa fa-refresh fa-spin fa-fw"
               />
               <ErrorMessage
@@ -177,19 +177,22 @@
               </button>
               <div v-if="isSportInEdition(sport.id)" class="edition-buttons">
                 <button
-                  :disabled="loading"
+                  :disabled="authUserLoading"
                   @click.prevent="updateSport(authUser)"
                 >
                   {{ $t('buttons.SUBMIT') }}
                 </button>
                 <button
-                  :disabled="loading"
+                  :disabled="authUserLoading"
                   class="warning"
                   @click.prevent="updateDisplayModal(true)"
                 >
                   {{ $t('buttons.RESET') }}
                 </button>
-                <button :disabled="loading" @click="updateSportInEdition(null)">
+                <button
+                  :disabled="authUserLoading"
+                  @click="updateSportInEdition(null)"
+                >
                   {{ $t('buttons.CANCEL') }}
                 </button>
               </div>
@@ -216,34 +219,37 @@
   import { ref, toRefs, watch } from 'vue'
   import type { Ref } from 'vue'
 
-  import useSport from '@/composables/useSport'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { convertDistance } from '@/utils/units'
+
   interface Props {
     authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
     isEdition: boolean
   }
   const props = defineProps<Props>()
+  const { authUser, isEdition, translatedSports } = toRefs(props)
 
   const store = useStore()
 
-  const { authUser, isEdition, translatedSports } = toRefs(props)
+  const { errorMessages } = useApp()
   const {
     defaultColor,
     displayModal,
-    errorMessages,
-    loading,
     sportColors,
     sportPayload,
     resetSport,
     updateDisplayModal,
     updateIsActive,
     updateSport,
-  } = useSport()
+  } = useSports()
+  const { authUserLoading } = useAuthUser()
 
   const hasEquipments: Ref<boolean> = ref(false)
 
@@ -279,7 +285,7 @@
   }
 
   watch(
-    () => loading.value,
+    () => authUserLoading.value,
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         resetSportPayload()

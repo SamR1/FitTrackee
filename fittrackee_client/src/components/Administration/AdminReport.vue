@@ -374,7 +374,6 @@
 
 <script setup lang="ts">
   import { formatDistance, compareAsc } from 'date-fns'
-  import type { Locale } from 'date-fns'
   import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
@@ -388,16 +387,11 @@
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
-  import {
-    AUTH_USER_STORE,
-    REPORTS_STORE,
-    ROOT_STORE,
-    SPORTS_STORE,
-    USERS_STORE,
-  } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
+  import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { TLanguage } from '@/types/locales'
   import type {
     IAdminAction,
     IReportComment,
@@ -406,11 +400,9 @@
     TReportAction,
     IReportAdminActionPayload,
   } from '@/types/reports'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
   import type { IComment, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { formatDate, getDateFormat } from '@/utils/dates'
+  import { formatDate } from '@/utils/dates'
 
   interface AppealEventData {
     approved: boolean
@@ -418,34 +410,26 @@
     reason: string
   }
 
-  const store = useStore()
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
 
   const { t } = useI18n()
 
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { errorMessages, locale } = useApp()
+  const { authUser, authUserSuccess, dateFormat } = useAuthUser()
+  const { sports } = useSports()
+
+  const reportCommentText: Ref<string> = ref('')
+  const currentAction: Ref<TReportAction | null> = ref(null)
+  const displayModal: Ref<string> = ref('')
+  const displayedAppeals: Ref<string[]> = ref([])
+
   const report: ComputedRef<IReportForAdmin> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT]
   )
   const reportedContent: ComputedRef<IComment | IWorkout | null> = computed(
     () => report.value.reported_comment || report.value.reported_workout
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const appLanguage: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const isSuccess: ComputedRef<boolean> = computed(
-    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
   )
   const reportLoading: ComputedRef<boolean> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_LOADING]
@@ -453,13 +437,7 @@
   const reportUpdateLoading: ComputedRef<boolean> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_UPDATE_LOADING]
   )
-  const dateFormat: ComputedRef<string> = computed(() =>
-    getDateFormat(authUser.value.date_format, appLanguage.value)
-  )
-  const reportCommentText: Ref<string> = ref('')
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
-  const currentAction: Ref<TReportAction | null> = ref(null)
-  const displayModal: Ref<string> = ref('')
   const reportsItems: ComputedRef<(IAdminAction | IReportComment)[]> = computed(
     () => getActionsAndComments()
   )
@@ -470,7 +448,6 @@
         currentAction.value
       )
   )
-  const displayedAppeals: Ref<string[]> = ref([])
 
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, {
@@ -653,8 +630,6 @@
     return `${placeholder}${information}`
   }
 
-  onBeforeMount(async () => loadReport())
-
   watch(
     () => report.value.comments,
     () => {
@@ -663,7 +638,7 @@
     }
   )
   watch(
-    () => isSuccess.value,
+    () => authUserSuccess.value,
     (newIsSuccess) => {
       if (newIsSuccess) {
         updateDisplayModal('')
@@ -671,6 +646,7 @@
     }
   )
 
+  onBeforeMount(async () => loadReport())
   onUnmounted(() =>
     store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
   )
@@ -799,11 +775,6 @@
         display: flex;
         gap: $default-padding;
         padding-top: $default-padding;
-
-        .action-loading {
-          display: flex;
-          align-items: center;
-        }
       }
     }
     .actions-buttons {

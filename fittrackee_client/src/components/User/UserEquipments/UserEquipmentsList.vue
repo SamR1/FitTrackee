@@ -163,6 +163,7 @@
 
 <script setup lang="ts">
   import { capitalize, computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
@@ -175,13 +176,13 @@
     isEdition: boolean
   }
   const props = defineProps<Props>()
-
   const { authUser, isEdition, equipments, translatedEquipmentTypes } =
     toRefs(props)
 
-  const equipmentByTypes = computed(() =>
-    formatEquipmentsList(equipments.value)
+  const equipmentByTypes: ComputedRef<Record<number, IEquipment[]>> = computed(
+    () => formatEquipmentsList(equipments.value)
   )
+
   function formatEquipmentsList(equipments: IEquipment[]) {
     const equipmentByTypes: Record<number, IEquipment[]> = {}
     equipments.map((equipment) => {

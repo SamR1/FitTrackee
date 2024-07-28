@@ -208,3 +208,5 @@ export interface IUserAppealPayload {
   actionType: 'user_suspension' | 'user_warning'
   text: string
 }
+
+export type TToken = string | LocationQueryValue | LocationQueryValue[]

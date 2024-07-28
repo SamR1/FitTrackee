@@ -51,13 +51,12 @@
     authUser: IAuthUserProfile
     notification: INotification
   }
-
   const props = defineProps<Props>()
   const { authUser, notification } = toRefs(props)
 
-  const store = useStore()
-
   const emit = defineEmits(['updatedUserRelationship'])
+
+  const store = useStore()
 
   function updateFollowRequest(username: string, action: TFollowRequestAction) {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS, {

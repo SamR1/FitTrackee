@@ -1,30 +1,37 @@
 import { computed, inject, reactive, ref } from 'vue'
-import type { ComputedRef, Ref } from 'vue'
+import type { Reactive, ComputedRef, Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-import type { IEquipmentError } from '@/types/equipments'
+import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
+import type { ISport, ITranslatedSport } from '@/types/sports'
 import type {
   IAuthUserProfile,
   IUserSportPreferencesPayload,
 } from '@/types/user'
+import type { IWorkout } from '@/types/workouts'
 import { useStore } from '@/use/useStore'
+import { translateSports } from '@/utils/sports'
 import { convertDistance } from '@/utils/units'
 
-export default function useSport() {
+export default function useSports() {
   const store = useStore()
+  const { t } = useI18n()
 
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
+  const sportColors = inject('sportColors') as Record<string, string>
 
   const defaultColor = '#838383'
-  const sportColors = inject('sportColors') as Record<string, string>
 
   const displayModal: Ref<boolean> = ref(false)
   const defaultEquipmentId: Ref<string> = ref('')
-  const sportPayload: IUserSportPreferencesPayload = reactive({
+
+  const sports: ComputedRef<ISport[]> = computed(
+    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
+  )
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(sports.value, t)
+  )
+
+  const sportPayload: Reactive<IUserSportPreferencesPayload> = reactive({
     sport_id: 0,
     color: null,
     is_active: true,
@@ -54,15 +61,21 @@ export default function useSport() {
       fromSport,
     })
   }
+  function getWorkoutSport(workout: IWorkout | null): ISport | null {
+    return workout
+      ? sports.value.filter((s) => s.id === workout.sport_id)[0]
+      : null
+  }
 
   return {
     defaultColor,
     defaultEquipmentId,
     displayModal,
-    errorMessages,
-    loading,
     sportColors,
     sportPayload,
+    sports,
+    translatedSports,
+    getWorkoutSport,
     resetSport,
     updateDisplayModal,
     updateIsActive,

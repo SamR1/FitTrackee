@@ -61,12 +61,11 @@
   const props = withDefaults(defineProps<Props>(), {
     displayFollowsYou: false,
   })
-
-  const store = useStore()
-
   const { authUser, from, user, displayFollowsYou } = toRefs(props)
 
   const emit = defineEmits(['updatedUser'])
+
+  const store = useStore()
 
   function updateRelationship(username: string, following: boolean) {
     emit('updatedUser', username)

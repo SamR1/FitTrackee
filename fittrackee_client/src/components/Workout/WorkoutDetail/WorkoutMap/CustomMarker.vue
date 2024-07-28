@@ -14,13 +14,12 @@
   import { LIcon, LMarker } from '@vue-leaflet/vue-leaflet'
   import { toRefs } from 'vue'
 
-  import type { TCoordinates } from '@/types/workouts'
+  import type { TCoordinates } from '@/types/map'
 
   interface Props {
     markerCoordinates: TCoordinates
     isStart: boolean
   }
   const props = defineProps<Props>()
-
   const { isStart, markerCoordinates } = toRefs(props)
 </script>

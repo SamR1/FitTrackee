@@ -32,10 +32,9 @@
     localeOptions: Locale
   }
   const props = defineProps<Props>()
+  const { day, localeOptions } = toRefs(props)
 
   const emit = defineEmits(['displayNextMonth', 'displayPreviousMonth'])
-
-  const { day, localeOptions } = toRefs(props)
 </script>
 
 <style lang="scss">

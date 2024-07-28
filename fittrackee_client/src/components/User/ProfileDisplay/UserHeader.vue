@@ -30,28 +30,22 @@
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IDisplayOptions } from '@/types/application'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import type { IUserProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
     user: IUserProfile
   }
   const props = defineProps<Props>()
-
   const { user } = toRefs(props)
 
-  const store = useStore()
   const route = useRoute()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const displayOptions: ComputedRef<IDisplayOptions> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
-  )
+  const { displayOptions } = useApp()
+  const { authUser } = useAuthUser()
+
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at
       ? formatDate(

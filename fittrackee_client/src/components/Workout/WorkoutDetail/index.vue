@@ -35,31 +35,14 @@
         </div>
       </template>
       <template #content>
-        <div v-if="workoutObject.suspended" class="suspended info-box">
-          <i class="fa fa-info-circle" aria-hidden="true" />
-          {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
-          <button
-            v-if="displayMakeAppeal && !success && !displayAppealForm"
-            class="transparent appeal-button"
-            @click="displayAppealForm = true"
-          >
-            {{ $t('user.APPEAL') }}
-          </button>
-        </div>
-        <ActionAppeal
-          v-if="displayAppealForm && workout.suspension"
-          :admin-action="workout.suspension"
-          :success="success === `workout_${workout.id}`"
-          :loading="appealLoading === `workout_${workout.id}`"
-          @submitForm="submitAppeal"
-          @hideMessage="displayAppealForm = false"
-        >
-          <template #cancelButton>
-            <button @click="cancelAppeal()">
-              {{ $t('buttons.CANCEL') }}
-            </button>
-          </template>
-        </ActionAppeal>
+        <WorkoutActionAppeal
+          v-if="
+            displayMakeAppeal && workoutObject.suspended && workout.suspension
+          "
+          display-suspension-message
+          :action="workout.suspension"
+          :workout="workout"
+        />
         <div
           class="workout-map-data"
           v-if="isWorkoutOwner || !workoutObject.suspended"
@@ -98,15 +81,17 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
+  import WorkoutActionAppeal from '@/components/Workout/WorkoutActionAppeal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
+  import useSports from '@/composables/useSports'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
+  import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -114,7 +99,6 @@
     IWorkoutData,
     IWorkoutObject,
     IWorkoutSegment,
-    TCoordinates,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -134,6 +118,8 @@
   const route = useRoute()
   const store = useStore()
 
+  const { getWorkoutSport } = useSports()
+
   const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
@@ -147,12 +133,8 @@
       : null
   )
   const displayModal: Ref<boolean> = ref(false)
-  const sport = computed(() =>
-    props.sports
-      ? props.sports.find(
-          (sport) => sport.id === props.workoutData.workout.sport_id
-        )
-      : ({} as ISport)
+  const sport: ComputedRef<ISport | null> = computed(() =>
+    getWorkoutSport(workout.value)
   )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
@@ -163,16 +145,12 @@
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
   )
-  const success: ComputedRef<null | string> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
-  )
-  const appealLoading: ComputedRef<null | string> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.APPEAL_LOADING]
-  )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () => workout.value.suspended_at !== null && isWorkoutOwner.value
   )
-  const displayAppealForm: Ref<boolean> = ref(false)
+  const success: ComputedRef<null | string> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
+  )
 
   function getWorkoutObjectUrl(
     workout: IWorkout,
@@ -274,16 +252,6 @@
       store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
     }
   }
-  function submitAppeal(appealText: string) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.MAKE_WORKOUT_APPEAL, {
-      objectId: workout.value.id,
-      text: appealText,
-    })
-  }
-  function cancelAppeal() {
-    displayAppealForm.value = false
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
 
   onUnmounted(() => resetStatuses())
 
@@ -341,9 +309,6 @@
           flex-wrap: wrap;
           gap: $default-padding;
           margin-top: $default-margin * 0.5;
-        }
-        .suspended {
-          font-size: 0.9em;
         }
         .appeal {
           margin-top: $default-padding;

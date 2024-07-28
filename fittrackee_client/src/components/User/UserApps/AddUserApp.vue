@@ -86,7 +86,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive } from 'vue'
+  import { computed, reactive, toRefs } from 'vue'
+  import type { ComputedRef, Reactive } from 'vue'
 
   import { OAUTH2_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
@@ -99,8 +100,10 @@
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
+
   const appForm = reactive({
     client_name: '',
     client_uri: '',
@@ -108,9 +111,10 @@
     description: '',
     redirect_uri: '',
   })
-  const scopes: string[] = reactive([])
-  const filtered_scopes = computed(() =>
-    getScopes(props.authUser, admin_oauth2_scopes, oauth2_scopes)
+  const scopes: Reactive<string[]> = reactive([])
+
+  const filtered_scopes: ComputedRef<string[]> = computed(() =>
+    getScopes(authUser.value, admin_oauth2_scopes, oauth2_scopes)
   )
 
   function createApp() {

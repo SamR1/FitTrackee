@@ -57,21 +57,16 @@
 <script setup lang="ts">
   import type { ChartData, ChartOptions } from 'chart.js'
   import { computed, ref, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
-  import { useStore } from 'vuex'
 
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import type { TCoordinates } from '@/types/map'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
-  import type {
-    IWorkoutChartData,
-    IWorkoutData,
-    TCoordinates,
-  } from '@/types/workouts'
-  import { getDarkTheme } from '@/utils'
+  import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { units } from '@/utils/units'
   import { chartsColors, getDatasets } from '@/utils/workouts'
 
@@ -80,21 +75,26 @@
     workoutData: IWorkoutData
   }
   const props = defineProps<Props>()
+  const { authUser, workoutData } = toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
-  const store = useStore()
   const { t } = useI18n()
 
-  const { authUser, workoutData } = toRefs(props)
-  const darkMode: ComputedRef<boolean | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
+  const { darkTheme } = useApp()
+
+  const displayDistance: Ref<boolean> = ref(true)
+
+  const plugins = [htmlLegendPlugin]
+  const fromKmUnit = getUnitTo('km')
+  const fromMUnit = getUnitTo('m')
+
+  const beginElevationAtZero: ComputedRef<boolean> = computed(
+    () => authUser.value.start_elevation_at_zero
   )
-  const darkTheme: ComputedRef<boolean> = computed(() =>
-    getDarkTheme(darkMode.value)
+  const hasElevation: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.elevation.data.length > 0
   )
-  const displayDistance = ref(true)
-  const beginElevationAtZero = ref(authUser.value.start_elevation_at_zero)
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(
       workoutData.value.chartData,
@@ -103,11 +103,6 @@
       darkTheme.value
     )
   )
-  const hasElevation = computed(
-    () => datasets.value && datasets.value.datasets.elevation.data.length > 0
-  )
-  const fromKmUnit = getUnitTo('km')
-  const fromMUnit = getUnitTo('m')
   const chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
     labels: displayDistance.value
       ? datasets.value.distance_labels
@@ -122,18 +117,17 @@
   const coordinates: ComputedRef<TCoordinates[]> = computed(
     () => datasets.value.coordinates
   )
-  const lineColors = computed(() => ({
+  const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.line
       : chartsColors.ligthMode.line,
   }))
-  const textColors = computed(() => ({
+  const textColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.text
       : chartsColors.ligthMode.text,
   }))
-
-  const options = computed<ChartOptions<'line'>>(() => ({
+  const options: ComputedRef<ChartOptions<'line'>> = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     animation: false,
@@ -256,7 +250,6 @@
       },
     },
   }))
-  const plugins = [htmlLegendPlugin]
 
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value

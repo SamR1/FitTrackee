@@ -25,8 +25,9 @@
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
-  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
+  import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
@@ -38,16 +39,11 @@
   const route = useRoute()
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser } = useAuthUser()
+
   const user: ComputedRef<IUserProfile> = computed(
     () => store.getters[USERS_STORE.GETTERS.USER]
   )
-
-  onBeforeMount(() => {
-    getUser(route.params)
-  })
 
   function getUser(params: LocationQuery) {
     if (params.username && typeof params.username === 'string') {
@@ -56,17 +52,20 @@
     }
   }
 
-  onBeforeUnmount(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USER)
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
-  })
-
   watch(
     () => route.params,
     (newParam: LocationQuery) => {
       getUser(newParam)
     }
   )
+
+  onBeforeMount(() => {
+    getUser(route.params)
+  })
+  onBeforeUnmount(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USER)
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
+  })
 </script>
 
 <style lang="scss" scoped>

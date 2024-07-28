@@ -108,24 +108,31 @@
     <div class="equipment-buttons">
       <button
         @click="$router.push(`/profile/edit/equipments/${equipment.id}`)"
-        :disabled="loading"
+        :disabled="equipmentsLoading"
       >
         {{ $t('buttons.EDIT') }}
       </button>
-      <button :disabled="loading" @click="refreshTotals(equipment.id)">
+      <button
+        :disabled="equipmentsLoading"
+        @click="refreshTotals(equipment.id)"
+      >
         {{ $t('buttons.REFRESH_TOTALS') }}
       </button>
-      <button class="danger" @click="displayModal = true" :disabled="loading">
+      <button
+        class="danger"
+        @click="displayModal = true"
+        :disabled="equipmentsLoading"
+      >
         {{ $t('buttons.DELETE') }}
       </button>
       <button
-        :disabled="loading"
+        :disabled="equipmentsLoading"
         @click="
           $router.push(
-            route.query.fromWorkoutId
-              ? `/workouts/${route.query.fromWorkoutId}`
-              : route.query.fromSportId
-                ? `/profile/sports/${route.query.fromSportId}`
+            $route.query.fromWorkoutId
+              ? `/workouts/${$route.query.fromWorkoutId}`
+              : $route.query.fromSportId
+                ? `/profile/sports/${$route.query.fromSportId}`
                 : '/profile/equipments'
           )
         "
@@ -136,7 +143,10 @@
   </div>
   <div v-else>
     <p class="no-equipment">{{ $t('equipments.NO_EQUIPMENT') }}</p>
-    <button @click="$router.push('/profile/equipments')" :disabled="loading">
+    <button
+      @click="$router.push('/profile/equipments')"
+      :disabled="equipmentsLoading"
+    >
       {{ $t('buttons.BACK') }}
     </button>
   </div>
@@ -146,7 +156,6 @@
   import {
     capitalize,
     computed,
-    inject,
     onBeforeMount,
     onUnmounted,
     ref,
@@ -154,11 +163,12 @@
   } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useRoute } from 'vue-router'
 
-  import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import type { IDeleteEquipmentPayload, IEquipment } from '@/types/equipments'
-  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import useEquipments from '@/composables/useEquipments'
+  import useSports from '@/composables/useSports'
+  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IDeleteEquipmentPayload } from '@/types/equipments'
+  import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getTotalDuration } from '@/utils/duration'
@@ -166,26 +176,19 @@
 
   interface Props {
     authUser: IAuthUserProfile
-    equipments: IEquipment[]
+    equipmentsLoading: boolean
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
-  const route = useRoute()
   const { t } = useI18n()
 
-  const { authUser, equipments } = toRefs(props)
+  const { equipment } = useEquipments()
+  const { sportColors, sports } = useSports()
 
-  const sportColors = inject('sportColors') as Record<string, string>
-  const loading: ComputedRef<boolean> = computed(
-    () => store.getters[EQUIPMENTS_STORE.GETTERS.LOADING]
-  )
-  const equipment: ComputedRef<IEquipment | null> = computed(() =>
-    getEquipment(equipments.value)
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
+  const displayModal: Ref<boolean> = ref(false)
+
   const equipmentTranslatedSports: ComputedRef<ITranslatedSport[]> = computed(
     () =>
       translateSports(
@@ -199,24 +202,7 @@
           : false
       )
   )
-  const displayModal: Ref<boolean> = ref(false)
 
-  onBeforeMount(() => {
-    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
-  })
-
-  function getEquipment(equipmentsList: IEquipment[]) {
-    if (!route.params.id) {
-      return null
-    }
-    const filteredEquipmentList = equipmentsList.filter((equipment) =>
-      route.params.id ? equipment.id === route.params.id : null
-    )
-    if (filteredEquipmentList.length === 0) {
-      return null
-    }
-    return filteredEquipmentList[0]
-  }
   function updateDisplayModal(display: boolean) {
     displayModal.value = display
   }
@@ -233,6 +219,9 @@
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.REFRESH_EQUIPMENT, equipmentId)
   }
 
+  onBeforeMount(() => {
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })

@@ -40,10 +40,10 @@
           {{ $t('about.CONTACT_ADMIN') }}
         </a>
       </div>
-      <div v-if="weather_provider && weather_provider.name">
+      <div v-if="weatherProvider && weatherProvider.name">
         {{ $t('about.WEATHER_DATA_FROM') }}
-        <a :href="weather_provider.url" target="_blank" rel="nofollow noopener">
-          {{ weather_provider.name }}
+        <a :href="weatherProvider.url" target="_blank" rel="nofollow noopener">
+          {{ weatherProvider.name }}
         </a>
       </div>
       <template v-if="appConfig.about">
@@ -59,37 +59,30 @@
   import { computed, capitalize } from 'vue'
   import type { ComputedRef } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import { useStore } from '@/use/useStore'
+  import useApp from '@/composables/useApp'
   import { linkifyAndClean } from '@/utils/inputs'
 
-  const store = useStore()
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const weather_provider: ComputedRef<Record<string, string>> = computed(() =>
+  const { appConfig, appLanguage } = useApp()
+
+  const weatherProvider: ComputedRef<Record<string, string>> = computed(() =>
     get_weather_provider()
-  )
-  const language: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const documentationLink: ComputedRef<string> = computed(() =>
     get_documentation_link()
   )
 
   function get_weather_provider() {
-    const weather_provider: Record<string, string> = {}
-    if (appConfig.value.weather_provider === 'visualcrossing') {
-      weather_provider['name'] = 'Visual Crossing'
-      weather_provider['url'] = 'https://www.visualcrossing.com'
+    const weatherProvider: Record<string, string> = {}
+    if (appConfig.value.weatherProvider === 'visualcrossing') {
+      weatherProvider['name'] = 'Visual Crossing'
+      weatherProvider['url'] = 'https://www.visualcrossing.com'
     }
-    return weather_provider
+    return weatherProvider
   }
 
   function get_documentation_link() {
     let link = 'https://samr1.github.io/FitTrackee/'
-    if (language.value === 'fr') {
+    if (appLanguage.value === 'fr') {
       link += 'fr/'
     }
     return link

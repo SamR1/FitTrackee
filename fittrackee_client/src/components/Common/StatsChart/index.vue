@@ -116,7 +116,8 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
-  import { AUTH_USER_STORE, STATS_STORE } from '@/store/constants'
+  import { STATS_STORE } from '@/store/constants'
+  import type { IChartDataset } from '@/types/chart'
   import type { ISport } from '@/types/sports'
   import type {
     IStatisticsChartData,
@@ -126,6 +127,7 @@
     IStatisticsParams,
     TStatisticsType,
     TStatisticsTimeFrame,
+    IStatisticsWorkoutsAverageChartData,
   } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -166,26 +168,27 @@
   const store = useStore()
 
   const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
+
   const statistics: ComputedRef<TStatisticsFromApi> = computed(
     () => store.getters[STATS_STORE.GETTERS.USER_STATS]
   )
-  const dateFormat = computed(
+  const chartDateFormat: ComputedRef<string> = computed(
     () => dateFormats[chartParams.value.duration].chart
   )
-  const chartStart = computed(() =>
+  const chartStart: ComputedRef<string> = computed(() =>
     formatDateLabel(
       chartParams.value.start,
       chartParams.value.duration,
       user.value.date_format,
-      dateFormat.value
+      chartDateFormat.value
     )
   )
-  const chartEnd = computed(() =>
+  const chartEnd: ComputedRef<string> = computed(() =>
     formatDateLabel(
       chartParams.value.end,
       chartParams.value.duration,
       user.value.date_format,
-      dateFormat.value
+      chartDateFormat.value
     )
   )
   const formattedStats: ComputedRef<IStatisticsChartData> = computed(() =>
@@ -199,32 +202,28 @@
       user.value.date_format
     )
   )
-  const datasets = computed(
+  const datasets: ComputedRef<IChartDataset[]> = computed(
     () => formattedStats.value.datasets[displayedData.value]
   )
-  const labels = computed(() => formattedStats.value.labels)
-  const emptyStats = computed(() => Object.keys(statistics.value).length === 0)
-  const statsType: Ref<TStatisticsType> = computed(
+  const labels: ComputedRef<unknown[]> = computed(
+    () => formattedStats.value.labels
+  )
+  const emptyStats: ComputedRef<boolean> = computed(
+    () => Object.keys(statistics.value).length === 0
+  )
+  const statsType: ComputedRef<TStatisticsType> = computed(
     () => chartParams.value.statsType
   )
-  const workoutsAverageDataset = computed(() =>
-    getWorkoutsAverageDatasets(formattedStats.value.datasets.total_workouts)
-  )
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-
-  onBeforeMount(() =>
-    getStatistics(getApiParams(chartParams.value, user.value))
-  )
+  const workoutsAverageDataset: ComputedRef<IStatisticsWorkoutsAverageChartData> =
+    computed(() =>
+      getWorkoutsAverageDatasets(formattedStats.value.datasets.total_workouts)
+    )
 
   function getStatistics(apiParams: IStatisticsParams) {
-    if (!isSuspended.value) {
-      store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-        username: user.value.username,
-        params: apiParams,
-      })
-    }
+    store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+      username: user.value.username,
+      params: apiParams,
+    })
   }
   function updateDisplayData(event: Event) {
     displayedData.value = (event.target as HTMLInputElement)
@@ -259,6 +258,10 @@
           ? 'total_distance'
           : (`${statsType.value}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys)
     }
+  )
+
+  onBeforeMount(() =>
+    getStatistics(getApiParams(chartParams.value, user.value))
   )
 </script>
 

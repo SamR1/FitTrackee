@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loading && !appealText">
+  <div v-if="authUserLoading && !appealText">
     <Loader />
   </div>
   <div v-else-if="userWarning.id">
@@ -22,8 +22,8 @@
     </template>
     <ActionAppeal
       :admin-action="userWarning"
-      :success="isSuccess"
-      :loading="loading"
+      :success="authUserSuccess"
+      :loading="authUserLoading"
       @submitForm="submitAppeal"
     >
       <template #cancelButton>
@@ -48,9 +48,10 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import CommentForUser from '@/components/Comment/CommentForUser.vue'
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
-  import CommentForUser from '@/components/Common/CommentForUser.vue'
-  import WorkoutForUser from '@/components/Common/WorkoutForUser.vue'
+  import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { IUserAdminAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -58,18 +59,13 @@
   const store = useStore()
   const route = useRoute()
 
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
+  const { authUserLoading, authUserSuccess } = useAuthUser()
+
+  const appealText: Ref<string> = ref('')
+
   const userWarning: ComputedRef<IUserAdminAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_WARNING]
   )
-  const appealText: Ref<string> = ref('')
-  const isSuccess: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
-  )
-
-  onMounted(() => loadUserWarning())
 
   function loadUserWarning() {
     store.dispatch(
@@ -86,6 +82,7 @@
     })
   }
 
+  onMounted(() => loadUserWarning())
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)

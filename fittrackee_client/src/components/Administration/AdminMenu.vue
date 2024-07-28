@@ -75,15 +75,15 @@
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
+  import useApp from '@/composables/useApp'
   import { ROOT_STORE } from '@/store/constants'
-  import type { IAppStatistics, TAppConfig } from '@/types/application'
+  import type { IAppStatistics } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
 
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
+  const { appConfig } = useApp()
+
   const appStatistics: ComputedRef<IAppStatistics> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
   )

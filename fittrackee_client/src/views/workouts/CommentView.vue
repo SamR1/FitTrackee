@@ -28,31 +28,19 @@
 
   import Comments from '@/components/Comment/Comments.vue'
   import NotFound from '@/components/Common/NotFound.vue'
-  import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import type { IAuthUserProfile } from '@/types/user'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { WORKOUTS_STORE } from '@/store/constants'
   import type { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser } = useAuthUser()
+
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
   )
-
-  onBeforeMount(() => {
-    store.dispatch(
-      WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
-      route.params.commentId as string
-    )
-  })
-
-  onUnmounted(() => {
-    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-  })
 
   watch(
     () => route.params.commentId,
@@ -65,6 +53,16 @@
       }
     }
   )
+
+  onBeforeMount(() => {
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT,
+      route.params.commentId as string
+    )
+  })
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+  })
 </script>
 
 <style lang="scss" scoped>

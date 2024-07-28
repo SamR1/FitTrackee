@@ -180,50 +180,48 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { Reactive, ComputedRef } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { AUTH_USER_STORE, REPORTS_STORE, ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { REPORTS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IEquipmentError } from '@/types/equipments'
   import type { IReport } from '@/types/reports'
-  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
 
-  const store = useStore()
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
 
-  const orderByList: string[] = ['created_at', 'updated_at']
+  const { errorMessages } = useApp()
+  const { authUser } = useAuthUser()
+
+  const maxTextLength = 20
+  const orderByList = ['created_at', 'updated_at']
   const objectTypes: Record<string, string> = {
     comment: 'workouts.COMMENTS.COMMENT',
     user: 'user.USER',
     workout: 'workouts.WORKOUT',
   }
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(
+
+  let query: Reactive<TPaginationPayload> = reactive(
     getQuery(route.query, orderByList, defaultOrderBy)
   )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
   const reports: ComputedRef<IReport[]> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORTS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORTS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const maxTextLength = 20
-
-  onBeforeMount(() => loadReports(query))
 
   function loadReports(queryParams: TPaginationPayload) {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORTS, queryParams)
@@ -281,10 +279,6 @@
     return ''
   }
 
-  onUnmounted(() => {
-    store.dispatch(REPORTS_STORE.ACTIONS.EMPTY_REPORTS)
-  })
-
   watch(
     () => route.query,
     (newQuery: LocationQuery) => {
@@ -293,6 +287,11 @@
       loadReports(query)
     }
   )
+
+  onBeforeMount(() => loadReports(query))
+  onUnmounted(() => {
+    store.dispatch(REPORTS_STORE.ACTIONS.EMPTY_REPORTS)
+  })
 </script>
 
 <style lang="scss" scoped>

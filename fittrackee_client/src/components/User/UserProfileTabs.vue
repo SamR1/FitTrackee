@@ -23,8 +23,7 @@
     edition: boolean
   }
   const props = defineProps<Props>()
-
-  const { tabs, selectedTab } = toRefs(props)
+  const { edition, selectedTab, tabs } = toRefs(props)
 
   onMounted(() => {
     const input = document.getElementById(`tab-${tabs.value[0]}`)
@@ -33,7 +32,7 @@
     }
   })
 
-  function getPath(tab: string) {
+  function getPath(tab: string): string {
     switch (tab) {
       case 'ACCOUNT':
       case 'PICTURE':
@@ -46,11 +45,11 @@
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
-          props.edition ? '/edit' : ''
+          edition.value ? '/edit' : ''
         }/${tab.toLocaleLowerCase()}`
       default:
       case 'PROFILE':
-        return `/profile${props.edition ? '/edit' : ''}`
+        return `/profile${edition.value ? '/edit' : ''}`
     }
   }
 </script>

@@ -249,45 +249,35 @@
 
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
-  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
-  import { translateSports } from '@/utils/sports'
   import { units } from '@/utils/units'
 
   interface Props {
     authUser: IAuthUserProfile
-    sports: ISport[]
+    translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const emit = defineEmits(['filter'])
 
-  const { t } = useI18n()
-  const store = useStore()
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
+  const { t } = useI18n()
 
-  const { authUser } = toRefs(props)
+  let params: LocationQuery = Object.assign({}, route.query)
 
-  const toUnit = authUser.value.imperial_units
-    ? units['km'].defaultTarget
-    : 'km'
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(props.sports, t)
+  const toUnit: ComputedRef<string> = computed(() =>
+    authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
   )
+
   const equipmentsWithWorkouts: ComputedRef<Record<string, IEquipment[]>> =
     computed(() =>
       getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
     )
-  let params: LocationQuery = Object.assign({}, route.query)
-
-  onMounted(() => {
-    const filter = document.getElementById('from')
-    if (filter) {
-      filter.focus()
-    }
-  })
 
   function handleFilterChange(event: Event) {
     const name = (event.target as HTMLInputElement).name
@@ -332,6 +322,13 @@
       params = Object.assign({}, newQuery)
     }
   )
+
+  onMounted(() => {
+    const filter = document.getElementById('from')
+    if (filter) {
+      filter.focus()
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -24,11 +24,12 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import type { Ref } from 'vue'
 
   import Notifications from '@/components/Notifications/Notifications.vue'
   import NotificationsFilters from '@/components/Notifications/NotificationsFilters.vue'
 
-  const hiddenFilters = ref(true)
+  const hiddenFilters: Ref<boolean> = ref(true)
 
   function toggleFilters() {
     hiddenFilters.value = !hiddenFilters.value

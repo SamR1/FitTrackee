@@ -12,7 +12,7 @@
           <input
             id="first_name"
             v-model="userForm.first_name"
-            :disabled="loading"
+            :disabled="authUserLoading"
           />
         </label>
         <label class="form-items" for="last_name">
@@ -26,7 +26,7 @@
             type="date"
             class="birth-date"
             v-model="userForm.birth_date"
-            :disabled="loading"
+            :disabled="authUserLoading"
           />
         </label>
         <label class="form-items" for="location">
@@ -34,7 +34,7 @@
           <input
             id="location"
             v-model="userForm.location"
-            :disabled="loading"
+            :disabled="authUserLoading"
           />
         </label>
         <label class="form-items">
@@ -43,7 +43,7 @@
             name="bio"
             :charLimit="200"
             :input="userForm.bio"
-            :disabled="loading"
+            :disabled="authUserLoading"
             @updateValue="updateBio"
           />
         </label>
@@ -62,11 +62,12 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { computed, reactive, onMounted, onUnmounted } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted, toRefs } from 'vue'
+  import type { ComputedRef, Reactive } from 'vue'
 
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IUserProfile,
@@ -80,36 +81,30 @@
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const store = useStore()
 
-  const userForm: IUserPayload = reactive({
+  const { errorMessages } = useApp()
+  const { authUserLoading } = useAuthUser()
+
+  const userForm: Reactive<IUserPayload> = reactive({
     first_name: '',
     last_name: '',
     birth_date: '',
     location: '',
     bio: '',
   })
-  const registrationDate = computed(() =>
-    props.user.created_at
+
+  const registrationDate: ComputedRef<string> = computed(() =>
+    user.value.created_at
       ? formatDate(
-          props.user.created_at,
-          props.user.timezone,
-          props.user.date_format
+          user.value.created_at,
+          user.value.timezone,
+          user.value.date_format
         )
       : ''
   )
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onMounted(() => {
-    if (props.user) {
-      updateUserForm(props.user)
-    }
-  })
 
   function updateUserForm(user: IUserProfile) {
     userForm.first_name = user.first_name ? user.first_name : ''
@@ -127,6 +122,11 @@
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE, userForm)
   }
 
+  onMounted(() => {
+    if (user.value) {
+      updateUserForm(user.value)
+    }
+  })
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })

@@ -97,11 +97,7 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
-  [WORKOUTS_STORE.ACTIONS.MAKE_COMMENT_APPEAL](
-    context: ActionContext<IWorkoutsState, IRootState>,
-    payload: IAppealPayload
-  ): void
-  [WORKOUTS_STORE.ACTIONS.MAKE_WORKOUT_APPEAL](
+  [WORKOUTS_STORE.ACTIONS.MAKE_APPEAL](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IAppealPayload
   ): void

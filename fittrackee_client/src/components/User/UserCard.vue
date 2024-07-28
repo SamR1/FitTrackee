@@ -47,10 +47,8 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
+  import useApp from '@/composables/useApp'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
@@ -61,14 +59,12 @@
     hideRelationship?: boolean
   }
   const props = defineProps<Props>()
+  const { authUser, from, hideRelationship, updatedUser, user } = toRefs(props)
 
-  const store = useStore()
+  const emit = defineEmits(['updatedUserRelationship'])
 
-  const { from } = toRefs(props)
+  const { errorMessages } = useApp()
 
-  const { authUser, updatedUser, user, hideRelationship } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at
       ? formatDate(
@@ -78,8 +74,6 @@
         )
       : null
   )
-
-  const emit = defineEmits(['updatedUserRelationship'])
 
   function emitUser(username: string) {
     emit('updatedUserRelationship', username)

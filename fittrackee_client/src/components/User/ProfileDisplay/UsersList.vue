@@ -70,14 +70,15 @@
     itemType: string
   }
   const props = defineProps<Props>()
-
   const { itemType } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()
+
   const payload: IPagePayload = {
     page: 1,
   }
+
   const items: ComputedRef<IUserProfile[]> = computed(
     () =>
       store.getters[
@@ -91,8 +92,6 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-
-  onBeforeMount(() => loadItems(getQuery(route.query)))
 
   function loadItems(payload: IPagePayload) {
     store.dispatch(
@@ -125,17 +124,6 @@
     return payload
   }
 
-  onUnmounted(() => {
-    store.commit(
-      AUTH_USER_STORE.MUTATIONS[
-        itemType.value === 'follow-requests'
-          ? 'UPDATE_FOLLOW_REQUESTS'
-          : 'UPDATE_BLOCKED_USERS'
-      ],
-      []
-    )
-  })
-
   watch(
     () => route.query,
     (newQuery: LocationQuery) => {
@@ -153,6 +141,18 @@
       }
     }
   )
+
+  onBeforeMount(() => loadItems(getQuery(route.query)))
+  onUnmounted(() => {
+    store.commit(
+      AUTH_USER_STORE.MUTATIONS[
+        itemType.value === 'follow-requests'
+          ? 'UPDATE_FOLLOW_REQUESTS'
+          : 'UPDATE_BLOCKED_USERS'
+      ],
+      []
+    )
+  })
 </script>
 
 <style scoped lang="scss">

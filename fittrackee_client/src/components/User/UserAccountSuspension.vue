@@ -1,13 +1,13 @@
 <template>
-  <div v-if="loading && !appealText">
+  <div v-if="authUserLoading && !appealText">
     <Loader />
   </div>
   <div v-else-if="accountSuspension.id">
     <div>{{ $t('user.YOUR_ACCOUNT_HAS_BEEN_SUSPENDED') }}.</div>
     <ActionAppeal
       :admin-action="accountSuspension"
-      :success="isSuccess"
-      :loading="loading"
+      :success="authUserSuccess"
+      :loading="authUserLoading"
       @submitForm="submitAppeal"
     >
       <template #cancelButton>
@@ -32,24 +32,20 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { IUserAdminAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
 
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
+  const { authUserLoading, authUserSuccess } = useAuthUser()
+
+  const appealText: Ref<string> = ref('')
+
   const accountSuspension: ComputedRef<IUserAdminAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]
   )
-  const appealText: Ref<string> = ref('')
-  const isSuccess: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
-  )
-
-  onMounted(() => loadUserSuspension())
 
   function loadUserSuspension() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION)
@@ -63,6 +59,7 @@
     })
   }
 
+  onMounted(() => loadUserSuspension())
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)

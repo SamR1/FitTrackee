@@ -26,12 +26,18 @@
 
 <script lang="ts" setup>
   import { ref } from 'vue'
+  import type { Ref } from 'vue'
   import { useRoute } from 'vue-router'
-
-  const route = useRoute()
-  const username = ref(route.query.q ? route.query.q : '')
+  import type { LocationQueryValue } from 'vue-router'
 
   const emit = defineEmits(['filterOnUsername'])
+
+  const route = useRoute()
+
+  const username: Ref<string | LocationQueryValue[]> = ref(
+    route.query.q ? route.query.q : ''
+  )
+
   function searchUsers() {
     if (username.value !== '') {
       emit('filterOnUsername', username)

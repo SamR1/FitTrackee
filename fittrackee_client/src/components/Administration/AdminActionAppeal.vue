@@ -69,32 +69,26 @@
 
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
-  import { computed, ref, toRefs } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { ref, toRefs } from 'vue'
+  import type { Ref } from 'vue'
 
   import CustomTextArea from '@/components/Common/CustomTextArea.vue'
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { IAdminActionAppeal, IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
     appeal: IAdminActionAppeal
     authUser: IAuthUserProfile
   }
-
   const props = defineProps<Props>()
   const { appeal, authUser } = toRefs(props)
 
-  const store = useStore()
-
   const emit = defineEmits(['updateAppeal'])
 
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
+  const { locale } = useApp()
+
   const reason: Ref<string> = ref('')
 
   function updateAppeal(event: Event) {

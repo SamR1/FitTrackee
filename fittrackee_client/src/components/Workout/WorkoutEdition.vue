@@ -354,16 +354,16 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
+  import useApp from '@/composables/useApp'
   import {
     EQUIPMENTS_STORE,
     ROOT_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipment, IEquipmentError } from '@/types/equipments'
+  import type { IEquipment } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, TPrivacyLevels } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -389,33 +389,16 @@
     loading: false,
     workout: () => ({}) as IWorkout,
   })
-
-  const { t } = useI18n()
-  const store = useStore()
-  const router = useRouter()
-
   const { authUser, workout, isCreation, loading } = toRefs(props)
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(
-      props.sports,
-      t,
-      'is_active_for_user',
-      workout.value.id ? [workout.value.sport_id] : []
-    )
-  )
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const privacyLevels = computed(() => getPrivacyLevels())
-  const fileSizeLimit = appConfig.value.max_single_file_size
-    ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
-    : ''
-  const gpx_limit_import = appConfig.value.gpx_limit_import
-  const zipSizeLimit = appConfig.value.max_zip_file_size
-    ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
-    : ''
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+
+  const router = useRouter()
+  const store = useStore()
+  const { t } = useI18n()
+
+  const { appConfig, errorMessages } = useApp()
+
+  let gpxFile: File | null = null
+
   const workoutForm = reactive({
     sport_id: '',
     title: '',
@@ -432,12 +415,37 @@
     mapVisibility: authUser.value.map_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
   })
-  const withGpx = ref(
-    workout.value.id ? workout.value.with_gpx : isCreation.value
+  const withGpx: Ref<boolean> = ref(
+    workout.value.id && workout.value.with_gpx ? true : isCreation.value
   )
-  let gpxFile: File | null = null
-  const formErrors = ref(false)
+  const formErrors: Ref<boolean> = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
+
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(
+      props.sports,
+      t,
+      'is_active_for_user',
+      workout.value.id ? [workout.value.sport_id] : []
+    )
+  )
+  const privacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
+    getPrivacyLevels()
+  )
+  const fileSizeLimit: ComputedRef<string> = computed(() =>
+    appConfig.value.max_single_file_size
+      ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
+      : ''
+  )
+  const gpx_limit_import: ComputedRef<number> = computed(
+    () => appConfig.value.gpx_limit_import
+  )
+  const zipSizeLimit: ComputedRef<string> = computed(() =>
+    appConfig.value.max_zip_file_size
+      ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
+      : ''
+  )
+
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
@@ -457,22 +465,9 @@
         )
       : []
   )
-  const mapPrivacyLevels = computed(() =>
+  const mapPrivacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
     getMapVisibilityLevels(workoutForm.workoutVisibility)
   )
-
-  onMounted(() => {
-    let element
-    if (props.workout.id) {
-      formatWorkoutForm(props.workout)
-      element = document.getElementById('sport')
-    } else {
-      element = document.getElementById('withGpx')
-    }
-    if (element) {
-      element.focus()
-    }
-  })
 
   function updateNotes(textareaData: ICustomTextareaData) {
     workoutForm.notes = textareaData.value
@@ -659,8 +654,6 @@
     )
   }
 
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-
   watch(
     () => props.workout,
     async (
@@ -684,6 +677,20 @@
       }
     }
   )
+
+  onMounted(() => {
+    let element
+    if (props.workout.id) {
+      formatWorkoutForm(props.workout)
+      element = document.getElementById('sport')
+    } else {
+      element = document.getElementById('withGpx')
+    }
+    if (element) {
+      element.focus()
+    }
+  })
+  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 
 <style lang="scss" scoped>

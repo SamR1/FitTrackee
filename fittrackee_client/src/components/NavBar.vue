@@ -30,7 +30,10 @@
           </button>
         </div>
         <div class="nav-items-app-menu">
-          <div class="nav-items-group" v-if="isAuthenticated && !isSuspended">
+          <div
+            class="nav-items-group"
+            v-if="isAuthenticated && !isAuthUserSuspended"
+          >
             <router-link class="nav-item" to="/" @click="closeMenu()">
               {{ $t('dashboard.DASHBOARD') }}
             </router-link>
@@ -73,7 +76,7 @@
               <span class="user-name">{{ authUser.username }}</span>
             </router-link>
             <router-link
-              v-if="!isSuspended"
+              v-if="!isAuthUserSuspended"
               class="nav-item nav-profile-img notifications"
               to="/notifications?status=unread"
               @click="closeMenu"
@@ -128,10 +131,10 @@
             </button>
           </div>
           <Dropdown
-            v-if="availableLanguages && language"
+            v-if="availableLanguages && appLanguage"
             class="nav-item"
             :options="availableLanguages"
-            :selected="language"
+            :selected="appLanguage"
             @selected="updateLanguage"
             :buttonLabel="$t('user.LANGUAGE')"
             :listLabel="$t('user.LANGUAGE', 0)"
@@ -150,6 +153,8 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import {
     AUTH_USER_STORE,
     NOTIFICATIONS_STORE,
@@ -157,40 +162,22 @@
   } from '@/store/constants'
   import type { IDropdownOption } from '@/types/forms'
   import type { TLanguage } from '@/types/locales'
-  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getDarkTheme } from '@/utils'
   import { availableLanguages } from '@/utils/locales'
 
   const emit = defineEmits(['menuInteraction'])
 
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const isAuthenticated: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-  )
-  const language: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
+  const { appLanguage, darkTheme } = useApp()
+  const { authUser, isAuthenticated, isAuthUserSuspended } = useAuthUser()
+
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
-  const darkMode: ComputedRef<boolean | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
-  )
-  const darkTheme: ComputedRef<boolean> = computed(() =>
-    getDarkTheme(darkMode.value)
-  )
+
   const hasUnreadNotifications: ComputedRef<boolean> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]
   )
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-
-  onBeforeMount(() => setTheme())
 
   function openMenu() {
     isMenuOpen.value = true
@@ -230,6 +217,8 @@
       setTheme()
     }
   )
+
+  onBeforeMount(() => setTheme())
 </script>
 
 <style scoped lang="scss">

@@ -22,7 +22,6 @@
     workoutObject: IWorkoutObject
   }
   const props = defineProps<Props>()
-
   const { recordType, workoutObject } = toRefs(props)
 </script>
 

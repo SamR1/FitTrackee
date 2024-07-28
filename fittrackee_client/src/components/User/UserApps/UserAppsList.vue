@@ -55,23 +55,19 @@
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
 
-  const { authUser } = toRefs(props)
+  let query: IOauth2ClientsPayload = getClientsQuery(route.query)
+
   const clients: ComputedRef<IOAuth2Client[]> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENTS]
   )
-
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENTS_PAGINATION]
   )
-  let query: IOauth2ClientsPayload = getClientsQuery(route.query)
-
-  onBeforeMount(() => {
-    loadClients(query)
-  })
 
   function getClientsQuery(newQuery: LocationQuery): IOauth2ClientsPayload {
     const clientsQuery: IOauth2ClientsPayload = {}
@@ -91,6 +87,10 @@
       loadClients(query)
     }
   )
+
+  onBeforeMount(() => {
+    loadClients(query)
+  })
 </script>
 
 <style scoped lang="scss">

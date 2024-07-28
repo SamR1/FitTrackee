@@ -22,7 +22,7 @@
         />
         <div
           class="info-box success-message"
-          v-if="isSuccess || isRegistrationSuccess"
+          v-if="authUserSuccess || isRegistrationSuccess"
         >
           {{
             $t(
@@ -179,51 +179,44 @@
 
 <script setup lang="ts">
   import { computed, onUnmounted, reactive, ref, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { Reactive, ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import PasswordInput from '@/components/Common/PasswordInput.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { TLanguage } from '@/types/locales'
-  import type { ILoginRegisterFormData } from '@/types/user'
+  import type { ILoginRegisterFormData, TToken } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     action: string
-    token?: string
+    token?: TToken
   }
   const props = withDefaults(defineProps<Props>(), {
     token: '',
   })
+  const { action, token } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()
 
-  const { action } = toRefs(props)
-  const formData: ILoginRegisterFormData = reactive({
+  const { appConfig, appLanguage, errorMessages } = useApp()
+  const { authUserSuccess } = useAuthUser()
+
+  const formData: Reactive<ILoginRegisterFormData> = reactive({
     username: '',
     email: '',
     password: '',
     accepted_policy: false,
   })
+  const formErrors: Ref<boolean> = ref(false)
+
   const buttonText: ComputedRef<string> = computed(() =>
     getButtonText(props.action)
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const isRegistrationSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS]
-  )
-  const isSuccess: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
-  )
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const language: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const registration_disabled: ComputedRef<boolean> = computed(
     () =>
@@ -234,7 +227,6 @@
       ['reset-request', 'account-confirmation-resend'].includes(props.action) &&
       !appConfig.value.is_email_sending_enabled
   )
-  const formErrors = ref(false)
 
   function getButtonText(action: string): string {
     switch (action) {
@@ -254,7 +246,7 @@
   function onSubmit(actionType: string) {
     switch (actionType) {
       case 'reset':
-        if (!props.token) {
+        if (!token.value) {
           return store.commit(
             ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
             'user.INVALID_TOKEN'
@@ -262,7 +254,7 @@
         }
         return store.dispatch(AUTH_USER_STORE.ACTIONS.RESET_USER_PASSWORD, {
           password: formData.password,
-          token: props.token,
+          token: String(token.value),
         })
       case 'reset-request':
         return store.dispatch(
@@ -279,7 +271,7 @@
           }
         )
       default:
-        formData['language'] = language.value
+        formData['language'] = appLanguage.value
         store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
           actionType,
           formData,
@@ -294,8 +286,6 @@
     formData.accepted_policy = false
   }
 
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-
   watch(
     () => route.path,
     async () => {
@@ -309,6 +299,8 @@
       resetFormData()
     }
   )
+
+  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 
 <style scoped lang="scss">

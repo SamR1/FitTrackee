@@ -41,10 +41,10 @@
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
-  import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination } from '@/types/api'
   import type {
-    IAuthUserProfile,
     IUserProfile,
     IUserRelationshipsPayload,
     TRelationships,
@@ -56,19 +56,20 @@
     relationship: TRelationships
   }
   const props = defineProps<Props>()
+  const { relationship, user } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
 
-  const { relationship, user } = toRefs(props)
-  const payload: IUserRelationshipsPayload = {
-    username: user.value.username,
-    relationship: relationship.value,
-    page: 1,
-  }
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser } = useAuthUser()
+
+  const payload: ComputedRef<IUserRelationshipsPayload> = computed(() => {
+    return {
+      username: user.value.username,
+      relationship: relationship.value,
+      page: 1,
+    }
+  })
   const relationships: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USER_RELATIONSHIPS]
   )
@@ -76,47 +77,46 @@
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
 
-  onBeforeMount(() => loadRelationships(payload))
-
   function loadRelationships(payload: IUserRelationshipsPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_RELATIONSHIPS, payload)
   }
 
-  onUnmounted(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
-  })
-
   watch(
     () => route.path,
     (newPath: string) => {
-      payload.page = pagination.value.page
-      payload.relationship = newPath.includes('following')
+      payload.value.page = pagination.value.page
+      payload.value.relationship = newPath.includes('following')
         ? 'following'
         : 'followers'
-      loadRelationships(payload)
+      loadRelationships(payload.value)
     }
   )
   watch(
     () => route.query,
     (newQuery: LocationQuery, oldQuery: LocationQuery) => {
       if (newQuery.page !== oldQuery.page) {
-        payload.page = newQuery.page ? +newQuery.page : 1
-        loadRelationships(payload)
+        payload.value.page = newQuery.page ? +newQuery.page : 1
+        loadRelationships(payload.value)
       }
     }
   )
   watch(
     () => user.value.following,
     () => {
-      loadRelationships(payload)
+      loadRelationships(payload.value)
     }
   )
   watch(
     () => user.value.followers,
     () => {
-      loadRelationships(payload)
+      loadRelationships(payload.value)
     }
   )
+
+  onBeforeMount(() => loadRelationships(payload.value))
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_RELATIONSHIPS)
+  })
 </script>
 
 <style lang="scss" scoped>

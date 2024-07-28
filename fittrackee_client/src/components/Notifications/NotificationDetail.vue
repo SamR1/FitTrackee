@@ -90,10 +90,8 @@
       <template v-else-if="notification.workout && notification.admin_action">
         <WorkoutForUser
           :action="notification.admin_action"
+          :display-appeal="notification.type !== 'user_warning'"
           :display-object-name="notification.type === 'user_warning'"
-          :displayAppeal="
-            notification.admin_action?.action_type !== 'user_warning'
-          "
           :workout="notification.workout"
         />
       </template>
@@ -110,11 +108,12 @@
 </template>
 <script lang="ts" setup>
   import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
-  import CommentForUser from '@/components/Common/CommentForUser.vue'
-  import WorkoutForUser from '@/components/Common/WorkoutForUser.vue'
+  import CommentForUser from '@/components/Comment/CommentForUser.vue'
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
+  import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
   import type { INotification, TNotificationType } from '@/types/notifications'
   import type { IAuthUserProfile } from '@/types/user'
 
@@ -122,12 +121,14 @@
     authUser: IAuthUserProfile
     notification: INotification
   }
-
   const props = defineProps<Props>()
   const { authUser, notification } = toRefs(props)
 
-  const icon = computed(() => getIcon(notification.value.type))
   const emit = defineEmits(['reload', 'updateReadStatus'])
+
+  const icon: ComputedRef<string> = computed(() =>
+    getIcon(notification.value.type)
+  )
 
   function emitReload() {
     emit('reload')

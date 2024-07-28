@@ -59,30 +59,19 @@
           :authUser="authUser"
         />
       </template>
-      <div v-if="comment.suspended && displayAppeal" class="suspended">
-        {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
-        <button
-          v-if="displayMakeAppeal"
-          class="transparent appeal-button"
-          @click="displayAppealForm = comment.id"
-        >
-          {{ $t('user.APPEAL') }}
-        </button>
-      </div>
-      <ActionAppeal
-        v-if="comment.suspension && displayAppealForm === comment.id"
-        :admin-action="comment.suspension"
-        :success="success === `comment_${comment.id}`"
-        :loading="commentsLoading === `comment_${comment.id}`"
-        @submitForm="submitAppeal"
-        @hideMessage="displayAppealForm = null"
+      <div
+        class="suspended info-box"
+        v-if="comment.suspended && !comment.suspension"
       >
-        <template #cancelButton>
-          <button @click="cancelAppeal()">
-            {{ $t('buttons.CANCEL') }}
-          </button>
-        </template>
-      </ActionAppeal>
+        <i class="fa fa-info-circle" aria-hidden="true" />
+        {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
+      </div>
+      <CommentActionAppeal
+        v-if="displayMakeAppeal && comment.suspended && comment.suspension"
+        :display-suspension-message="displayAppeal"
+        :action="comment.suspension"
+        :comment="comment"
+      />
       <div class="comment-actions" v-if="!forAdmin">
         <button
           v-if="!comment.suspended"
@@ -192,18 +181,18 @@
 
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
-  import { computed, ref, toRefs, onUnmounted, watch } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { computed, toRefs, onUnmounted, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
+  import CommentActionAppeal from '@/components/Comment/CommentActionAppeal.vue'
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
-  import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import type { IDisplayOptions } from '@/types/application'
+  import useApp from '@/composables/useApp'
+  import useAppeal from '@/composables/useAppeal'
+  import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type {
     IAuthUserProfile,
     IUserLightProfile,
@@ -228,7 +217,6 @@
     forAdmin?: boolean
     displayAppeal?: boolean
   }
-
   const props = withDefaults(defineProps<Props>(), {
     displayAppeal: true,
     currentCommentEdition: null,
@@ -245,15 +233,12 @@
     workout,
   } = toRefs(props)
 
-  const store = useStore()
   const route = useRoute()
+  const store = useStore()
 
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
-  const displayOptions: ComputedRef<IDisplayOptions> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
-  )
+  const { displayAppealForm } = useAppeal()
+  const { displayOptions, locale } = useApp()
+
   const reportStatus: ComputedRef<string | null> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
@@ -273,10 +258,6 @@
       comment.value.user.username === authUser?.value.username &&
       comment.value.suspension !== undefined &&
       displayAppealForm.value !== comment.value.id
-  )
-  const displayAppealForm: Ref<string | null> = ref(null)
-  const success: ComputedRef<null | string> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
 
   function isCommentOwner(
@@ -344,26 +325,16 @@
       comment
     )
   }
-  function submitAppeal(appealText: string) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.MAKE_COMMENT_APPEAL, {
-      objectId: comment.value.id,
-      text: appealText,
-    })
-  }
-  function cancelAppeal() {
-    displayAppealForm.value = null
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  }
-
-  onUnmounted(() =>
-    store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
-  )
 
   watch(
     () => route.params.workoutId,
     () => {
       store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
     }
+  )
+
+  onUnmounted(() =>
+    store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
   )
 </script>
 
@@ -457,12 +428,8 @@
         }
       }
 
-      .suspended {
-        padding: $default-padding 0 0 $default-padding;
-        .appeal-button {
-          padding: 0 $default-padding;
-          font-size: 0.9em;
-        }
+      ::v-deep(.suspended) {
+        margin-top: $default-padding;
       }
 
       .add-comment-reply {

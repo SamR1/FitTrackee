@@ -1,6 +1,7 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
+import type { TCoordinates } from '@/types/map'
 import type {
   IUserAdminAction,
   IUserLightProfile,
@@ -197,17 +198,16 @@ export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
 }
 
-export type TCoordinatesKeys = 'latitude' | 'longitude'
-
-export type TCoordinates = {
-  [key in TCoordinatesKeys]: number | null
-}
-
 export interface IWorkoutChartData {
   distance_labels: unknown[]
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
   coordinates: TCoordinates[]
+}
+
+export interface IDuration {
+  days: string
+  duration: string
 }
 
 export interface IComment {
@@ -244,5 +244,6 @@ export interface ICommentPayload {
 
 export interface IAppealPayload {
   objectId: string
+  objectType: 'comment' | 'workout'
   text: string
 }

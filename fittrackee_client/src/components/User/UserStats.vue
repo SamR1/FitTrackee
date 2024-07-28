@@ -58,32 +58,29 @@
 
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
 
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
   }
   const props = defineProps<Props>()
-
   const { user } = toRefs(props)
-  const store = useStore()
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
+  const { authUser } = useAuthUser()
+
   const displayLinks = computed(() =>
     user.value.username === authUser?.value.username
       ? !authUser?.value.suspended_at
       : true
   )
+
   function getURL(
     user: IUserProfile,
     authUser: IAuthUserProfile,
     currentPath: string
-  ) {
+  ): string {
     return user.username === authUser?.username &&
       currentPath.includes('/profile')
       ? 'profile'

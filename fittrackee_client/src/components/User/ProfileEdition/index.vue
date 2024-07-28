@@ -17,25 +17,20 @@
   import type { ComputedRef } from 'vue'
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
     tab: string
   }
   const props = defineProps<Props>()
-
   const { user, tab } = toRefs(props)
 
-  const store = useStore()
+  const { isAuthUserSuspended } = useAuthUser()
 
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-  const tabs = computed(() =>
-    isSuspended.value
+  const tabs: ComputedRef<string[]> = computed(() =>
+    isAuthUserSuspended.value
       ? [
           'PROFILE',
           'ACCOUNT',

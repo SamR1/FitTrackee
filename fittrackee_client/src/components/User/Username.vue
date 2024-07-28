@@ -20,7 +20,6 @@
   interface Props {
     user: IUserProfile | IUserLightProfile
   }
-
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 </script>

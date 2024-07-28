@@ -27,13 +27,14 @@
 
 <script setup lang="ts">
   import { computed, reactive, onBeforeMount, onUnmounted, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Reactive } from 'vue'
   import { useRoute } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import NotificationDetail from '@/components/Notifications/NotificationDetail.vue'
-  import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { NOTIFICATIONS_STORE } from '@/store/constants'
   import type { IPagination } from '@/types/api'
   import type {
     INotification,
@@ -41,29 +42,23 @@
     TNotificationType,
     INotificationPayload,
   } from '@/types/notifications'
-  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
   const route = useRoute()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
+  const { authUser, isAuthUserSuspended } = useAuthUser()
+
+  let query: Reactive<INotificationsPayload> = reactive(
+    getNotificationsQuery(route.query)
   )
+
   const notifications: ComputedRef<INotification[]> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.NOTIFICATIONS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[NOTIFICATIONS_STORE.GETTERS.PAGINATION]
   )
-  let query: INotificationsPayload = reactive(
-    getNotificationsQuery(route.query)
-  )
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-
-  onBeforeMount(() => loadNotifications(query))
 
   function getNotificationsQuery(
     newQuery: LocationQuery
@@ -80,14 +75,13 @@
     }
     return payload
   }
-
   function reload() {
     setTimeout(() => {
       loadNotifications(query)
     }, 500)
   }
   function loadNotifications(queryParams: INotificationsPayload) {
-    if (!isSuspended.value) {
+    if (!isAuthUserSuspended.value) {
       store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS, queryParams)
     }
   }
@@ -109,6 +103,7 @@
     }
   )
 
+  onBeforeMount(() => loadNotifications(query))
   onUnmounted(() => {
     store.commit(NOTIFICATIONS_STORE.MUTATIONS.EMPTY_NOTIFICATIONS)
   })

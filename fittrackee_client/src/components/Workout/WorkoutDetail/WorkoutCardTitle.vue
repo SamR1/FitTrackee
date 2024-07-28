@@ -143,12 +143,12 @@
     isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
-
-  const store = useStore()
+  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
-  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
+  const store = useStore()
+
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
   )

@@ -71,8 +71,8 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE, USERS_STORE, WORKOUTS_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
+  import useApp from '@/composables/useApp'
+  import { USERS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IAuthUserProfile,
@@ -88,6 +88,7 @@
     position: number | null
     usernameQuery: string | null
   }
+
   interface Props {
     workout: IWorkout | null
     commentsLoading: string | null
@@ -97,7 +98,6 @@
     name?: string | null
     mentions?: IUserProfile[]
   }
-
   const props = withDefaults(defineProps<Props>(), {
     comment: null,
     replyTo: null,
@@ -116,15 +116,18 @@
 
   const store = useStore()
 
+  const { errorMessages } = useApp()
+
+  let suggestion: ISuggestion = { position: null, usernameQuery: null }
+
   const commentText: Ref<string> = ref(getText())
   const commentTextVisibility: Ref<TPrivacyLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
       : workout.value?.workout_visibility
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const isLoading = computed(() =>
+
+  const isLoading: ComputedRef<boolean> = computed(() =>
     comment.value
       ? comment.value.id === commentsLoading.value
       : commentsLoading.value ===
@@ -133,7 +136,6 @@
   const matchingUsers: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
-  let suggestion: ISuggestion = { position: null, usernameQuery: null }
 
   function getText(): string {
     // comment edition

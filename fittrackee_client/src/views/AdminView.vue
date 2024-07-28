@@ -1,6 +1,6 @@
 <template>
   <div id="admin" class="view">
-    <div class="container" v-if="!userLoading">
+    <div class="container" v-if="!authUserLoading">
       <router-view v-if="isAuthUserAdmin" />
       <NotFound v-else />
       <div id="bottom" />
@@ -9,21 +9,17 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { onBeforeMount } from 'vue'
 
   import NotFound from '@/components/Common/NotFound.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { ROOT_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
 
-  const isAuthUserAdmin: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
-  )
-  const userLoading: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
+  const { isAuthUserAdmin, authUserLoading } = useAuthUser()
+
   onBeforeMount(() => {
     if (isAuthUserAdmin.value) {
       store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
