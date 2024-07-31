@@ -59,7 +59,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(current_user=user_1_admin)
+            user_2.serialize(current_user=user_1_admin, light=False)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -85,7 +85,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(current_user=user_1_admin)
+            user_2.serialize(current_user=user_1_admin, light=False)
         )
 
     def test_it_gets_authenticated_user(
@@ -112,7 +112,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(current_user=user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin, light=False)
         )
 
     def test_it_gets_inactive_user(
@@ -134,7 +134,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
         assert user == jsonify_dict(
-            inactive_user.serialize(current_user=user_1_admin)
+            inactive_user.serialize(current_user=user_1_admin, light=False)
         )
 
     def test_it_gets_hidden_user(
@@ -157,7 +157,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
         assert user == jsonify_dict(
-            user_2.serialize(current_user=user_1_admin)
+            user_2.serialize(current_user=user_1_admin, light=False)
         )
 
     @pytest.mark.parametrize(
@@ -244,7 +244,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(current_user=user_1)
+            user_2.serialize(current_user=user_1, light=False)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -270,7 +270,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(current_user=user_1)
+            user_2.serialize(current_user=user_1, light=False)
         )
 
     def test_it_gets_authenticated_user(
@@ -293,7 +293,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1.serialize(current_user=user_1)
+            user_1.serialize(current_user=user_1, light=False)
         )
 
     def test_it_gets_hidden_user(
@@ -315,7 +315,9 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(user_2.serialize(current_user=user_1))
+        assert user == jsonify_dict(
+            user_2.serialize(current_user=user_1, light=False)
+        )
 
 
 class TestGetUserAsSuspendedUser(ApiTestCaseMixin):
@@ -382,7 +384,9 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
         assert response.status_code == 200
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        assert data['data']['users'][0] == jsonify_dict(user_2.serialize())
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(light=False)
+        )
 
     def test_it_gets_single_user_with_workouts(
         self,
@@ -404,7 +408,9 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
         assert response.status_code == 200
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        assert data['data']['users'][0] == jsonify_dict(user_1.serialize())
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(light=False)
+        )
 
     def test_it_gets_hidden_user(self, app: Flask, user_1: User) -> None:
         user_1.hide_profile_in_users_directory = True
@@ -420,7 +426,7 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(user_1.serialize())
+        assert user == jsonify_dict(user_1.serialize(light=False))
 
 
 class TestGetUsersAsAdmin(ApiTestCaseMixin):

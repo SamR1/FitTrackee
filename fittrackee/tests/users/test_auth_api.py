@@ -624,7 +624,7 @@ class TestUserProfile(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] == jsonify_dict(
-            user_1.serialize(current_user=user_1)
+            user_1.serialize(current_user=user_1, light=False)
         )
 
     def test_it_returns_suspended_user(
@@ -643,7 +643,7 @@ class TestUserProfile(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] == jsonify_dict(
-            suspended_user.serialize(current_user=suspended_user)
+            suspended_user.serialize(current_user=suspended_user, light=False)
         )
 
     @pytest.mark.parametrize(
@@ -734,7 +734,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
         assert data['data'] == jsonify_dict(
-            user_1.serialize(current_user=user_1)
+            user_1.serialize(current_user=user_1, light=False)
         )
 
     def test_it_updates_suspended_user_profile(
@@ -769,7 +769,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
         assert data['data'] == jsonify_dict(
-            suspended_user.serialize(current_user=suspended_user)
+            suspended_user.serialize(current_user=suspended_user, light=False)
         )
 
     @pytest.mark.parametrize(

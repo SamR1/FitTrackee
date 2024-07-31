@@ -260,7 +260,7 @@ class Comment(BaseModel):
 
         return {
             'id': self.short_id,
-            'user': self.user.serialize(light=True),
+            'user': self.user.serialize(),
             'workout_id': (
                 self.workout.short_id
                 if self.workout
@@ -276,7 +276,7 @@ class Comment(BaseModel):
             'modification_date': self.modification_date,
             'mentions': (
                 [
-                    mentioned_user.serialize(light=True)
+                    mentioned_user.serialize()
                     for mentioned_user in self.mentioned_users
                 ]
                 if display_content

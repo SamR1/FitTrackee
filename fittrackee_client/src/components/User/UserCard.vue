@@ -23,12 +23,12 @@
     />
     <AlertMessage
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
-      v-if="!user.is_active"
+      v-if="'is_active' in user && !user.is_active"
     />
     <AlertMessage
       message="user.ACCOUNT_SUSPENDED_AT"
       :param="suspensionDate"
-      v-if="user.suspended_at !== null"
+      v-if="'suspended_at' in user && user.suspended_at !== null"
     />
     <ErrorMessage
       :message="errorMessages"
@@ -48,12 +48,12 @@
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import useApp from '@/composables/useApp'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
     authUser: IAuthUserProfile
-    user: IUserProfile
+    user: IUserLightProfile
     updatedUser?: string | null
     from?: string
     hideRelationship?: boolean

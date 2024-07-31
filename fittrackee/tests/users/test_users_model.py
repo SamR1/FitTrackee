@@ -67,7 +67,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         self.assert_user_account(serialized_user, user_1)
         assert serialized_user['email_to_confirm'] == user_1.email_to_confirm
@@ -75,7 +75,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         self.assert_user_profile(serialized_user, user_1)
         assert 'blocked' not in serialized_user
@@ -83,7 +83,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['imperial_units'] == user_1.imperial_units
         assert serialized_user['language'] == user_1.language
@@ -111,7 +111,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         )
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         self.assert_workouts_keys_are_present(serialized_user)
 
@@ -121,7 +121,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         # default privacy policy
         app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = None
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is False
 
@@ -131,7 +131,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         # default privacy policy
         app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = datetime.utcnow()
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
 
@@ -141,7 +141,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1.accepted_policy_date = datetime.utcnow()
         # custom privacy policy
         app.config['privacy_policy_date'] = datetime.utcnow()
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is False
 
@@ -151,14 +151,16 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         # custom privacy policy
         app.config['privacy_policy_date'] = datetime.utcnow()
         user_1.accepted_policy_date = datetime.utcnow()
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         assert 'confirmation_token' not in serialized_user
 
@@ -167,7 +169,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         self.assert_user_account(serialized_user, user_2)
         assert serialized_user['email_to_confirm'] == user_2.email_to_confirm
@@ -175,7 +179,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         self.assert_user_profile(serialized_user, user_1_admin)
         assert serialized_user["blocked"] is False
@@ -183,7 +189,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
     def test_it_does_return_user_preferences(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
@@ -200,21 +208,27 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         self.assert_workouts_keys_are_present(serialized_user)
 
     def test_it_does_not_return_accepted_privacy_policy_date(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         assert 'accepted_privacy_policy' not in serialized_user
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         assert 'confirmation_token' not in serialized_user
 
@@ -223,15 +237,17 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
-        self.assert_user_account(serialized_user, user_2)
+        assert serialized_user['admin'] == user_2.admin
+        assert serialized_user['username'] == user_2.username
         assert 'email_to_confirm' not in serialized_user
+        assert 'is_active' not in serialized_user
 
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         self.assert_user_profile(serialized_user, user_1)
         assert serialized_user["blocked"] is False
@@ -239,7 +255,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
     def test_it_does_return_user_preferences(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
@@ -253,14 +269,18 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         self.assert_workouts_keys_are_present(serialized_user)
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1_admin)
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
 
         assert 'confirmation_token' not in serialized_user
 
@@ -269,23 +289,25 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(light=False)
 
-        self.assert_user_account(serialized_user, user_1)
-        assert 'email_to_confirm' not in serialized_user
+        assert serialized_user['admin'] == user_1.admin
+        assert serialized_user['username'] == user_1.username
         assert 'blocked' not in serialized_user
+        assert 'email_to_confirm' not in serialized_user
+        assert 'is_active' not in serialized_user
 
     def test_it_returns_user_profile_infos(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(light=False)
 
         self.assert_user_profile(serialized_user, user_1)
 
     def test_it_does_return_user_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(light=False)
 
         assert 'imperial_units' not in serialized_user
         assert 'language' not in serialized_user
@@ -299,7 +321,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
     def test_it_returns_some_workouts_infos(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(light=False)
 
         assert 'nb_workouts' in serialized_user
         assert 'nb_sports' not in serialized_user
@@ -312,7 +334,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_1.serialize()
+        serialized_user = user_1.serialize(light=False)
 
         assert 'confirmation_token' not in serialized_user
 
@@ -323,7 +345,9 @@ class TestInactiveUserSerialize(UserModelAssertMixin):
         app: Flask,
         inactive_user: User,
     ) -> None:
-        serialized_user = inactive_user.serialize(current_user=inactive_user)
+        serialized_user = inactive_user.serialize(
+            current_user=inactive_user, light=False
+        )
 
         assert serialized_user['is_active'] is False
 
@@ -335,7 +359,7 @@ class TestUserRecords(UserModelAssertMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['records'] == []
 
@@ -347,7 +371,7 @@ class TestUserRecords(UserModelAssertMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
         assert len(serialized_user['records']) == 4
         records = sorted(
             serialized_user['records'], key=lambda r: r['record_type']
@@ -366,7 +390,7 @@ class TestUserRecords(UserModelAssertMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
         assert serialized_user['total_ascent'] == 0
         assert serialized_user['total_distance'] == 10
         assert serialized_user['total_duration'] == '1:00:00'
@@ -379,7 +403,7 @@ class TestUserRecords(UserModelAssertMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.ascent = 100
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
         assert serialized_user['total_ascent'] == 100
         assert serialized_user['total_distance'] == 10
         assert serialized_user['total_duration'] == '1:00:00'
@@ -394,7 +418,7 @@ class TestUserRecords(UserModelAssertMixin):
         workout_running_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.ascent = 100
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
         assert serialized_user['total_ascent'] == 100
         assert serialized_user['total_distance'] == 22
         assert serialized_user['total_duration'] == '2:40:00'
@@ -406,7 +430,7 @@ class TestUserWorkouts(UserModelAssertMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['nb_sports'] == 0
         assert serialized_user['nb_workouts'] == 0
@@ -421,7 +445,7 @@ class TestUserWorkouts(UserModelAssertMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['nb_sports'] == 1
         assert serialized_user['nb_workouts'] == 1
@@ -443,7 +467,7 @@ class TestUserWorkouts(UserModelAssertMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_user = user_1.serialize(current_user=user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['nb_sports'] == 2
         assert serialized_user['nb_workouts'] == 2
@@ -895,7 +919,7 @@ class TestUserFollowRequestStatus(UserModelAssertMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 0
@@ -910,7 +934,7 @@ class TestUserFollowRequestStatus(UserModelAssertMixin):
     ) -> None:
         user_1.send_follow_request_to(user_2)
 
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 0
@@ -926,7 +950,7 @@ class TestUserFollowRequestStatus(UserModelAssertMixin):
         user_1.send_follow_request_to(user_2)
         user_2.rejects_follow_request_from(user_1)
 
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 0
@@ -942,7 +966,7 @@ class TestUserFollowRequestStatus(UserModelAssertMixin):
         user_1.send_follow_request_to(user_2)
         user_2.approves_follow_request_from(user_1)
 
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert serialized_user['followers'] == 1
         assert serialized_user['following'] == 0
@@ -958,7 +982,7 @@ class TestUserFollowRequestStatus(UserModelAssertMixin):
         user_1.send_follow_request_to(user_2)
         user_2.approves_follow_request_from(user_1)
 
-        serialized_user = user_1.serialize(current_user=user_2)
+        serialized_user = user_1.serialize(current_user=user_2, light=False)
 
         assert serialized_user['followers'] == 0
         assert serialized_user['following'] == 1
@@ -991,7 +1015,7 @@ class TestBlocksUser:
             ).first()
             is not None
         )
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
         assert serialized_user['blocked'] is True
 
     def test_it_inits_created_at(
@@ -1044,7 +1068,7 @@ class TestBlocksUser:
             ).first()
             is not None
         )
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
         assert serialized_user['blocked'] is True
 
     def test_it_deletes_follow_request_when_a_follow_request_exists(
@@ -1135,7 +1159,7 @@ class TestUnBlocksUser:
             ).first()
             is None
         )
-        serialized_user = user_2.serialize(current_user=user_1)
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
         assert serialized_user['blocked'] is False
 
     def test_it_does_not_raises_error_when_user_is_not_blocked(
@@ -1264,6 +1288,27 @@ class TestUsersWithSuspensions:
 
 
 class TestUserLightSerializer(UserModelAssertMixin):
+    def test_it_returns_limited_user_infos_by_default(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(current_user=user_1_admin)
+
+        assert serialized_user == {
+            'admin': user_2.admin,
+            'blocked': user_2.is_blocked_by(user_1_admin),
+            'created_at': user_2.created_at,
+            'email': user_2.email,
+            'followers': user_2.followers.count(),
+            'following': user_2.following.count(),
+            'follows': user_2.follows(user_1_admin),
+            'is_active': True,
+            'is_followed_by': user_2.is_followed_by(user_1_admin),
+            'nb_workouts': user_2.workouts_count,
+            'picture': user_2.picture is not None,
+            'suspended_at': None,
+            'username': user_2.username,
+        }
+
     def test_it_returns_limited_user_infos_as_admin(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -1273,8 +1318,17 @@ class TestUserLightSerializer(UserModelAssertMixin):
 
         assert serialized_user == {
             'admin': user_2.admin,
+            'blocked': user_2.is_blocked_by(user_1_admin),
             'created_at': user_2.created_at,
+            'email': user_2.email,
+            'followers': user_2.followers.count(),
+            'following': user_2.following.count(),
+            'follows': user_2.follows(user_1_admin),
+            'is_active': True,
+            'is_followed_by': user_2.is_followed_by(user_1_admin),
+            'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
+            'suspended_at': None,
             'username': user_2.username,
         }
 
@@ -1285,7 +1339,13 @@ class TestUserLightSerializer(UserModelAssertMixin):
 
         assert serialized_user == {
             'admin': user_2.admin,
+            'blocked': user_2.is_blocked_by(user_1),
             'created_at': user_2.created_at,
+            'followers': user_2.followers.count(),
+            'following': user_2.following.count(),
+            'follows': user_2.follows(user_1),
+            'is_followed_by': user_2.is_followed_by(user_1),
+            'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
             'username': user_2.username,
         }
@@ -1298,6 +1358,9 @@ class TestUserLightSerializer(UserModelAssertMixin):
         assert serialized_user == {
             'admin': user_2.admin,
             'created_at': user_2.created_at,
+            'followers': user_2.followers.count(),
+            'following': user_2.following.count(),
+            'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
             'username': user_2.username,
         }

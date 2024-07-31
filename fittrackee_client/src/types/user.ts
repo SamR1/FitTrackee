@@ -11,31 +11,31 @@ export type TFollowRequestAction = 'accept' | 'reject'
 
 export interface IUserLightProfile {
   admin: boolean
+  blocked: boolean
   created_at: string
+  followers: IUserProfile[]
+  following: IUserProfile[]
+  follows: string
+  is_active?: boolean
+  is_followed_by: string
+  nb_workouts: number
   picture: string | boolean
+  suspended_at?: string | null
   username: string
 }
 
 export interface IUserProfile extends IUserLightProfile {
   bio: string | null
   birth_date: string | null
-  blocked: boolean
   email?: string
   email_to_confirm?: string
-  is_active: boolean
   first_name: string | null
-  followers: IUserProfile[]
-  following: IUserProfile[]
-  follows: string
-  is_followed_by: string
   last_name: string | null
   location: string | null
   nb_sports?: number
-  nb_workouts: number
   profile_link?: string
   records: IRecord[]
   sports_list: number[]
-  suspended_at: string | null
   total_ascent: number
   total_distance: number
   total_duration: string

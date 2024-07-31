@@ -88,7 +88,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user=user_1, light=True)
+            workout_cycling_user_1.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(

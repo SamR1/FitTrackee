@@ -49,12 +49,12 @@
   import { toRefs } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
     authUser: IAuthUserProfile
-    user: IUserProfile
+    user: IUserLightProfile
     from: string
     displayFollowsYou?: boolean
   }

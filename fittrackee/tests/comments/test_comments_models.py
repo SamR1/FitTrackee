@@ -190,7 +190,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -221,7 +221,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -251,7 +251,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -285,7 +285,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -368,7 +368,7 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -404,7 +404,7 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -462,7 +462,7 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -497,7 +497,7 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -530,7 +530,7 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -605,13 +605,13 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_3.serialize(light=True),
+            'user': user_3.serialize(),
             'workout_id': workout_cycling_user_2.short_id,
             'text': comment.text,
             'text_html': comment.handle_mentions()[0],
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
-            'mentions': [user_2.serialize(light=True)],
+            'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],
@@ -643,7 +643,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_3.serialize(light=True),
+            'user': user_3.serialize(),
             'workout_id': workout_cycling_user_2.short_id,
             'text': None,
             'text_html': None,
@@ -700,7 +700,7 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -732,7 +732,7 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -773,7 +773,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': parent_comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': parent_comment.text,
             'text_html': parent_comment.text,  # no mention
@@ -814,7 +814,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': parent_comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': parent_comment.text,
             'text_html': parent_comment.text,  # no mention
@@ -856,7 +856,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': parent_comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': parent_comment.text,
             'text_html': parent_comment.text,  # no mention
@@ -896,7 +896,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_2.serialize(light=True),
+            'user': user_2.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -935,7 +935,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_2.serialize(light=True),
+            'user': user_2.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -976,7 +976,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_2.serialize(light=True),
+            'user': user_2.serialize(),
             'workout_id': None,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -1045,7 +1045,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -1114,7 +1114,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.text,  # no mention
@@ -1230,7 +1230,7 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
 
         assert serialized_comment == {
             'id': parent_comment.short_id,
-            'user': user_2.serialize(light=True),
+            'user': user_2.serialize(),
             'workout_id': workout_cycling_user_2.short_id,
             'text': parent_comment.text,
             'text_html': parent_comment.text,  # no mention
@@ -1403,8 +1403,8 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert len(serialized_comment["mentions"]) == 2
-        assert user_1.serialize(light=True) in serialized_comment["mentions"]
-        assert user_3.serialize(light=True) in serialized_comment["mentions"]
+        assert user_1.serialize() in serialized_comment["mentions"]
+        assert user_3.serialize() in serialized_comment["mentions"]
 
 
 class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
@@ -1434,13 +1434,13 @@ class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
 
         assert serialized_comment == {
             'id': comment.short_id,
-            'user': user_1.serialize(light=True),
+            'user': user_1.serialize(),
             'workout_id': workout_cycling_user_1.short_id,
             'text': comment.text,
             'text_html': comment.handle_mentions()[0],
             'text_visibility': comment.text_visibility,
             'created_at': comment.created_at,
-            'mentions': [user_2.serialize(light=True)],
+            'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],

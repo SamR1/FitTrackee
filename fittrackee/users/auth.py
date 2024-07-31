@@ -400,7 +400,7 @@ def get_authenticated_user_profile(
     """
     return {
         'status': 'success',
-        'data': auth_user.serialize(current_user=auth_user),
+        'data': auth_user.serialize(current_user=auth_user, light=False),
     }
 
 
@@ -567,7 +567,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user profile updated',
-            'data': auth_user.serialize(current_user=auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -798,7 +798,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user account updated',
-            'data': auth_user.serialize(current_user=auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -1020,7 +1020,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user preferences updated',
-            'data': auth_user.serialize(current_user=auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors

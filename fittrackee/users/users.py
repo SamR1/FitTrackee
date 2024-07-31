@@ -445,7 +445,11 @@ def get_single_user(
                 return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
-                'data': {'users': [user.serialize(current_user=auth_user)]},
+                'data': {
+                    'users': [
+                        user.serialize(current_user=auth_user, light=False)
+                    ]
+                },
             }
     except (ValueError, UserNotFoundException):
         pass
@@ -703,7 +707,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         return {
             'status': 'success',
-            'data': {'users': [user.serialize(current_user=auth_user)]},
+            'data': {
+                'users': [user.serialize(current_user=auth_user, light=False)]
+            },
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()

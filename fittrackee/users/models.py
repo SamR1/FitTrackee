@@ -572,7 +572,10 @@ class User(BaseModel):
         )
 
     def serialize(
-        self, *, current_user: Optional['User'] = None, light: bool = False
+        self,
+        *,
+        current_user: Optional['User'] = None,
+        light: bool = True,
     ) -> Dict:
         if current_user is None:
             role = None
@@ -584,8 +587,34 @@ class User(BaseModel):
                 if current_user.admin
                 else UserRole.USER
             )
+
+        serialized_user = {
+            'admin': self.admin,
+            'created_at': self.created_at,
+            'followers': self.followers.count(),
+            'following': self.following.count(),
+            'nb_workouts': self.workouts_count,
+            'picture': self.picture is not None,
+            'username': self.username,
+        }
+        if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
+            serialized_user['suspended_at'] = self.suspended_at
+            serialized_user['is_active'] = self.is_active
+        if role == UserRole.ADMIN:
+            serialized_user['email'] = self.email
+
+        if current_user is not None and role != UserRole.AUTH_USER:
+            serialized_user['follows'] = self.follows(current_user)
+            serialized_user['is_followed_by'] = self.is_followed_by(
+                current_user
+            )
+            serialized_user['blocked'] = self.is_blocked_by(current_user)
+
+        if light:
+            return serialized_user
+
         sports = []
-        if self.workouts_count > 0 and not light:  # type: ignore
+        if self.workouts_count > 0:  # type: ignore
             sports = (
                 db.session.query(Workout.sport_id)
                 .filter(Workout.user_id == self.id)
@@ -595,26 +624,12 @@ class User(BaseModel):
             )
 
         serialized_user = {
-            'admin': self.admin,
-            'created_at': self.created_at,
-            'picture': self.picture is not None,
-            'username': self.username,
-        }
-        if light:
-            return serialized_user
-
-        serialized_user = {
             **serialized_user,
             'bio': self.bio,
             'birth_date': self.birth_date,
             'first_name': self.first_name,
-            'followers': self.followers.count(),
-            'following': self.following.count(),
-            'is_active': self.is_active,
             'last_name': self.last_name,
             'location': self.location,
-            'nb_workouts': self.workouts_count,
-            'suspended_at': self.suspended_at,
         }
 
         if role is not None:
@@ -644,7 +659,6 @@ class User(BaseModel):
             serialized_user['total_duration'] = str(total[1])
 
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
-            serialized_user['email'] = self.email
             serialized_user['email_to_confirm'] = self.email_to_confirm
 
         if role == UserRole.AUTH_USER:
@@ -679,13 +693,6 @@ class User(BaseModel):
                     ),
                 },
             }
-
-        if current_user is not None and role != UserRole.AUTH_USER:
-            serialized_user['follows'] = self.follows(current_user)
-            serialized_user['is_followed_by'] = self.is_followed_by(
-                current_user
-            )
-            serialized_user['blocked'] = self.is_blocked_by(current_user)
 
         return serialized_user
 
