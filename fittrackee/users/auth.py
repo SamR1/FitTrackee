@@ -398,7 +398,10 @@ def get_authenticated_user_profile(
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
     """
-    return {'status': 'success', 'data': auth_user.serialize(auth_user)}
+    return {
+        'status': 'success',
+        'data': auth_user.serialize(current_user=auth_user),
+    }
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
@@ -564,7 +567,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user profile updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user),
         }
 
     # handler errors
@@ -795,7 +798,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user account updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -1017,7 +1020,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user preferences updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user),
         }
 
     # handler errors
@@ -2046,7 +2049,8 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
     return {
         "status": "success",
         "blocked_users": [
-            user.serialize(auth_user) for user in paginated_relations.items
+            user.serialize(current_user=auth_user)
+            for user in paginated_relations.items
         ],
         "pagination": {
             "has_next": paginated_relations.has_next,

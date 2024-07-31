@@ -572,7 +572,7 @@ class User(BaseModel):
         )
 
     def serialize(
-        self, current_user: Optional['User'] = None, light: bool = False
+        self, *, current_user: Optional['User'] = None, light: bool = False
     ) -> Dict:
         if current_user is None:
             role = None

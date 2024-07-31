@@ -109,7 +109,9 @@ def get_users_list(auth_user: User) -> Dict:
     users = users_pagination.items
     return {
         'status': 'success',
-        'data': {'users': [user.serialize(auth_user) for user in users]},
+        'data': {
+            'users': [user.serialize(current_user=auth_user) for user in users]
+        },
         'pagination': {
             'has_next': users_pagination.has_next,
             'has_prev': users_pagination.has_prev,
@@ -443,7 +445,7 @@ def get_single_user(
                 return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
-                'data': {'users': [user.serialize(auth_user)]},
+                'data': {'users': [user.serialize(current_user=auth_user)]},
             }
     except (ValueError, UserNotFoundException):
         pass
@@ -701,7 +703,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         return {
             'status': 'success',
-            'data': {'users': [user.serialize(auth_user)]},
+            'data': {'users': [user.serialize(current_user=auth_user)]},
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
@@ -981,7 +983,8 @@ def get_user_relationships(
         'status': 'success',
         'data': {
             relation: [
-                user.serialize(auth_user) for user in paginated_relations.items
+                user.serialize(current_user=auth_user)
+                for user in paginated_relations.items
             ]
         },
         'pagination': {

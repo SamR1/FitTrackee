@@ -59,7 +59,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(user_1_admin)
+            user_2.serialize(current_user=user_1_admin)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -85,7 +85,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(user_1_admin)
+            user_2.serialize(current_user=user_1_admin)
         )
 
     def test_it_gets_authenticated_user(
@@ -112,7 +112,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
 
     def test_it_gets_inactive_user(
@@ -133,7 +133,9 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(inactive_user.serialize(user_1_admin))
+        assert user == jsonify_dict(
+            inactive_user.serialize(current_user=user_1_admin)
+        )
 
     def test_it_gets_hidden_user(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -154,7 +156,9 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(user_2.serialize(user_1_admin))
+        assert user == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -240,7 +244,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(user_1)
+            user_2.serialize(current_user=user_1)
         )
 
     def test_it_gets_single_user_with_workouts(
@@ -266,7 +270,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_2.serialize(user_1)
+            user_2.serialize(current_user=user_1)
         )
 
     def test_it_gets_authenticated_user(
@@ -289,7 +293,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            user_1.serialize(user_1)
+            user_1.serialize(current_user=user_1)
         )
 
     def test_it_gets_hidden_user(
@@ -311,7 +315,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(user_2.serialize(user_1))
+        assert user == jsonify_dict(user_2.serialize(current_user=user_1))
 
 
 class TestGetUserAsSuspendedUser(ApiTestCaseMixin):
@@ -445,10 +449,10 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -476,13 +480,13 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            inactive_user.serialize(user_1_admin)
+            inactive_user.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -510,13 +514,13 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(user_1_admin)
+            user_2.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -544,13 +548,13 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(user_1_admin)
+            user_2.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -585,16 +589,16 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 4
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            inactive_user.serialize(user_1_admin)
+            inactive_user.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][3] == jsonify_dict(
-            user_2.serialize(user_1_admin)
+            user_2.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -1557,10 +1561,10 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['data']['users'][0] == jsonify_dict(
-            user_3.serialize(user_1)
+            user_3.serialize(current_user=user_1)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            user_1.serialize(user_1)
+            user_1.serialize(current_user=user_1)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -1596,14 +1600,14 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_3.serialize(user_1)
+            user_3.serialize(current_user=user_1)
         )
 
         assert data['data']['users'][1] == jsonify_dict(
-            user_1.serialize(user_1)
+            user_1.serialize(current_user=user_1)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_2.serialize(user_1)
+            user_2.serialize(current_user=user_1)
         )
         assert data['pagination'] == {
             'has_next': False,

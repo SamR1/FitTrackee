@@ -170,10 +170,10 @@ class AdminAction(BaseModel):
 
         if current_user.admin:
             action["admin_user"] = self.admin_user.serialize(
-                current_user, light=True
+                current_user=current_user, light=True
             )
             action["user"] = (
-                self.user.serialize(current_user, light=True)
+                self.user.serialize(current_user=current_user, light=True)
                 if self.user
                 else None
             )
@@ -303,11 +303,15 @@ class AdminActionAppeal(BaseModel):
         }
         if current_user.admin:
             appeal["admin_user"] = (
-                self.admin_user.serialize(current_user, light=True)
+                self.admin_user.serialize(
+                    current_user=current_user, light=True
+                )
                 if self.admin_user
                 else None
             )
-            appeal["user"] = self.user.serialize(current_user, light=True)
+            appeal["user"] = self.user.serialize(
+                current_user=current_user, light=True
+            )
         return appeal
 
 

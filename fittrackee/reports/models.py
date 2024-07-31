@@ -196,14 +196,16 @@ class Report(BaseModel):
             "note": self.note,
             "object_type": self.object_type,
             "reported_by": (
-                self.reporter.serialize(current_user)
+                self.reporter.serialize(current_user=current_user)
                 if self.reported_by
                 else None
             ),
             "reported_comment": reported_comment,
             "reported_user": (
                 self.reported_user.serialize(
-                    current_user if self.object_type == 'user' else None
+                    current_user=current_user
+                    if self.object_type == 'user'
+                    else None
                 )
                 if self.reported_user_id
                 else None
@@ -225,7 +227,7 @@ class Report(BaseModel):
             report["resolved_by"] = (
                 None
                 if self.resolved_by is None
-                else self.resolver.serialize(current_user)
+                else self.resolver.serialize(current_user=current_user)
             )
             report["updated_at"] = self.updated_at
         return report
@@ -297,5 +299,5 @@ class ReportComment(BaseModel):
             "comment": self.comment,
             "id": self.id,
             "report_id": self.report_id,
-            "user": self.user.serialize(current_user),
+            "user": self.user.serialize(current_user=current_user),
         }

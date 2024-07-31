@@ -623,7 +623,9 @@ class TestUserProfile(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
-        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+        assert data['data'] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
 
     def test_it_returns_suspended_user(
         self, app: Flask, suspended_user: User
@@ -641,7 +643,7 @@ class TestUserProfile(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data'] == jsonify_dict(
-            suspended_user.serialize(suspended_user)
+            suspended_user.serialize(current_user=suspended_user)
         )
 
     @pytest.mark.parametrize(
@@ -731,7 +733,9 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
-        assert data['data'] == jsonify_dict(user_1.serialize(user_1))
+        assert data['data'] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
 
     def test_it_updates_suspended_user_profile(
         self, app: Flask, suspended_user: User
@@ -765,7 +769,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user profile updated'
         assert data['data'] == jsonify_dict(
-            suspended_user.serialize(suspended_user)
+            suspended_user.serialize(current_user=suspended_user)
         )
 
     @pytest.mark.parametrize(
@@ -3926,8 +3930,8 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["blocked_users"] == [
-            jsonify_dict(user_4.serialize(user_1)),
-            jsonify_dict(user_2.serialize(user_1)),
+            jsonify_dict(user_4.serialize(current_user=user_1)),
+            jsonify_dict(user_2.serialize(current_user=user_1)),
         ]
         assert data["pagination"] == {
             'has_next': False,
@@ -3963,7 +3967,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["blocked_users"] == [
-            jsonify_dict(user_4.serialize(user_1)),
+            jsonify_dict(user_4.serialize(current_user=user_1)),
         ]
         assert data["pagination"] == {
             'has_next': True,
@@ -3999,7 +4003,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["blocked_users"] == [
-            jsonify_dict(user_2.serialize(user_1)),
+            jsonify_dict(user_2.serialize(current_user=user_1)),
         ]
         assert data["pagination"] == {
             'has_next': False,

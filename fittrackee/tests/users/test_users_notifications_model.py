@@ -1257,7 +1257,7 @@ class TestNotificationForReport(NotificationTestCase):
 
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
-            user_1_admin
+            current_user=user_1_admin
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
@@ -1320,7 +1320,7 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
 
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
-            user_1_admin
+            current_user=user_1_admin
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False

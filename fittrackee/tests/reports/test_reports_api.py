@@ -1735,7 +1735,7 @@ class TestPatchReport(ReportTestCase):
         date_string = self.get_date_string(date=now)
         assert data["report"]["resolved_at"] == date_string
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data["report"]["updated_at"] == date_string
         assert len(data["report"]["comments"]) == 2
@@ -1804,7 +1804,7 @@ class TestPatchReport(ReportTestCase):
             date=resolved_time
         )
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_2_admin.serialize(user_1_admin)
+            user_2_admin.serialize(current_user=user_1_admin)
         )
         assert data["report"]["updated_at"] == self.get_date_string(
             date=comment_time

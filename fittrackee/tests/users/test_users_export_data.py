@@ -29,7 +29,7 @@ class TestUserDataExporterGetData:
 
         user_data = exporter.get_user_info()
 
-        assert user_data == user_1.serialize(user_1)
+        assert user_data == user_1.serialize(current_user=user_1)
 
     def test_it_returns_empty_list_when_user_has_no_workouts(
         self, app: Flask, user_1: User

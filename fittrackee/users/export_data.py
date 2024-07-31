@@ -35,7 +35,7 @@ class UserDataExporter:
         )
 
     def get_user_info(self) -> Dict:
-        return self.user.serialize(self.user)
+        return self.user.serialize(current_user=self.user)
 
     def get_user_workouts_data(self) -> List[Dict]:
         workouts_data = []
