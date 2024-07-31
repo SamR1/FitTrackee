@@ -103,7 +103,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert workout_cycling_user_2.suspension_action is None
 
-    def test_serialize_for_workout_without_gpx(
+    def test_it_serializes_workout_without_gpx(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -112,46 +112,46 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout = workout_cycling_user_1
 
-        serialized_workout = workout.serialize(user=user_1)
+        serialized_workout = workout.serialize(user=user_1, light=False)
 
-        assert serialized_workout['ascent'] is None
-        assert serialized_workout['ave_speed'] == float(workout.ave_speed)
-        assert serialized_workout['bounds'] == []
-        assert 'creation_date' in serialized_workout
-        assert serialized_workout['descent'] is None
-        assert serialized_workout['distance'] == float(workout.distance)
-        assert serialized_workout['duration'] == str(workout.duration)
-        assert serialized_workout['id'] == workout.short_id
-        assert serialized_workout['equipments'] == []
-        assert serialized_workout['likes_count'] == 0
-        assert serialized_workout['liked'] is False
-        assert serialized_workout['map'] is None
-        assert serialized_workout['max_alt'] is None
-        assert serialized_workout['max_speed'] == float(workout.max_speed)
-        assert serialized_workout['min_alt'] is None
-        assert serialized_workout['suspended_at'] is None
-        assert serialized_workout['modification_date'] is None
-        assert serialized_workout['moving'] == str(workout.moving)
-        assert serialized_workout['next_workout'] is None
-        assert serialized_workout['notes'] is None
-        assert serialized_workout['pauses'] is None
-        assert serialized_workout['previous_workout'] is None
-        assert serialized_workout['records'] == [
-            record.serialize() for record in workout.records
-        ]
-        assert serialized_workout['segments'] == []
-        assert serialized_workout['sport_id'] == workout.sport_id
-        assert serialized_workout['title'] == workout.title
-        assert serialized_workout['user'] == user_1.serialize()
-        assert serialized_workout['weather_end'] is None
-        assert serialized_workout['weather_start'] is None
-        assert serialized_workout['with_gpx'] is False
-        assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
-        assert 'suspended' not in serialized_workout
-        assert serialized_workout['suspended_at'] is None
-        assert 'suspension' not in serialized_workout
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout.ave_speed),
+            'bounds': [],
+            'creation_date': workout.creation_date,
+            'descent': None,
+            'distance': float(workout.distance),
+            'duration': str(workout.duration),
+            'id': workout.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': None,
+            'previous_workout': None,
+            'records': [record.serialize() for record in workout.records],
+            'segments': [],
+            'sport_id': workout.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout.workout_date,
+            'workout_visibility': workout.workout_visibility.value,
+            'with_gpx': False,
+        }
 
-    def test_serialize_for_workout_without_gpx_and_with_ascent_and_descent(
+    def test_it_serializes_workout_without_gpx_and_with_ascent_and_descent(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -162,43 +162,46 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.ascent = 0
         workout.descent = 10
 
-        serialized_workout = workout.serialize(user=user_1)
-        assert serialized_workout['ascent'] == workout.ascent
-        assert serialized_workout['ave_speed'] == float(workout.ave_speed)
-        assert serialized_workout['bounds'] == []
-        assert 'creation_date' in serialized_workout
-        assert serialized_workout['descent'] == workout.descent
-        assert serialized_workout['distance'] == float(workout.distance)
-        assert serialized_workout['duration'] == str(workout.duration)
-        assert serialized_workout['equipments'] == []
-        assert serialized_workout['id'] == workout.short_id
-        assert serialized_workout['map'] is None
-        assert serialized_workout['max_alt'] is None
-        assert serialized_workout['max_speed'] == float(workout.max_speed)
-        assert serialized_workout['min_alt'] is None
-        assert serialized_workout['suspended_at'] is None
-        assert serialized_workout['modification_date'] is not None
-        assert serialized_workout['moving'] == str(workout.moving)
-        assert serialized_workout['next_workout'] is None
-        assert serialized_workout['notes'] is None
-        assert serialized_workout['pauses'] is None
-        assert serialized_workout['previous_workout'] is None
-        assert serialized_workout['records'] == [
-            record.serialize() for record in workout.records
-        ]
-        assert serialized_workout['segments'] == []
-        assert serialized_workout['sport_id'] == workout.sport_id
-        assert serialized_workout['title'] == workout.title
-        assert serialized_workout['user'] == user_1.serialize()
-        assert serialized_workout['weather_end'] is None
-        assert serialized_workout['weather_start'] is None
-        assert serialized_workout['with_gpx'] is False
-        assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
-        assert 'suspended' not in serialized_workout
-        assert serialized_workout['suspended_at'] is None
-        assert 'suspension' not in serialized_workout
+        serialized_workout = workout.serialize(user=user_1, light=False)
 
-    def test_serialize_for_workout_with_gpx(
+        assert serialized_workout == {
+            'ascent': float(workout.ascent),
+            'ave_speed': float(workout.ave_speed),
+            'bounds': [],
+            'creation_date': workout.creation_date,
+            'descent': float(workout.descent),
+            'distance': float(workout.distance),
+            'duration': str(workout.duration),
+            'id': workout.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout.max_speed),
+            'min_alt': None,
+            'modification_date': workout.modification_date,
+            'moving': str(workout.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': None,
+            'previous_workout': None,
+            'records': [record.serialize() for record in workout.records],
+            'segments': [],
+            'sport_id': workout.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout.workout_date,
+            'workout_visibility': workout.workout_visibility.value,
+            'with_gpx': False,
+        }
+
+    def test_it_serializes_workout_with_gpx(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -207,63 +210,47 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout = self.update_workout(workout_cycling_user_1)
+        workout.ascent = 0
+        workout.descent = 10
 
-        serialized_workout = workout.serialize(user=user_1)
-        assert serialized_workout['ascent'] is None
-        assert serialized_workout['ave_speed'] == float(workout.ave_speed)
-        assert serialized_workout['bounds'] == [
-            float(bound) for bound in workout.bounds
-        ]
-        assert 'creation_date' in serialized_workout
-        assert serialized_workout['descent'] is None
-        assert serialized_workout['distance'] == float(workout.distance)
-        assert serialized_workout['duration'] == str(workout.duration)
-        assert serialized_workout['equipments'] == []
-        assert serialized_workout['id'] == workout.short_id
-        assert serialized_workout['map'] is None
-        assert serialized_workout['max_alt'] is None
-        assert serialized_workout['max_speed'] == float(workout.max_speed)
-        assert serialized_workout['min_alt'] is None
-        assert serialized_workout['suspended_at'] is None
-        assert serialized_workout['modification_date'] is not None
-        assert serialized_workout['moving'] == str(workout.moving)
-        assert serialized_workout['next_workout'] is None
-        assert serialized_workout['notes'] is None
-        assert serialized_workout['pauses'] == str(workout.pauses)
-        assert serialized_workout['previous_workout'] is None
-        assert serialized_workout['records'] == [
-            record.serialize() for record in workout.records
-        ]
-        assert serialized_workout['segments'] == [
-            segment.serialize() for segment in workout.segments
-        ]
-        assert serialized_workout['sport_id'] == workout.sport_id
-        assert serialized_workout['title'] == workout.title
-        assert serialized_workout['user'] == user_1.serialize()
-        assert serialized_workout['weather_end'] is None
-        assert serialized_workout['weather_start'] is None
-        assert serialized_workout['with_gpx'] is True
-        assert str(serialized_workout['workout_date']) == '2018-01-01 00:00:00'
-        assert 'suspended' not in serialized_workout
-        assert serialized_workout['suspended_at'] is None
-        assert 'suspension' not in serialized_workout
+        serialized_workout = workout.serialize(user=user_1, light=False)
 
-    def test_serializer_returns_map_related_data(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout = self.update_workout(
-            workout_cycling_user_1, map_id=random_string()
-        )
-
-        serialized_workout = workout.serialize(user=user_1)
-
-        assert serialized_workout['map'] == workout.map
-        assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['with_gpx'] is True
+        assert serialized_workout == {
+            'ascent': float(workout.ascent),
+            'ave_speed': float(workout.ave_speed),
+            'bounds': workout.bounds,
+            'creation_date': workout.creation_date,
+            'descent': float(workout.descent),
+            'distance': float(workout.distance),
+            'duration': str(workout.duration),
+            'id': workout.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout.max_speed),
+            'min_alt': None,
+            'modification_date': workout.modification_date,
+            'moving': str(workout.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': str(workout.pauses),
+            'previous_workout': None,
+            'records': [record.serialize() for record in workout.records],
+            'segments': [segment.serialize() for segment in workout.segments],
+            'sport_id': workout.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout.workout_date,
+            'workout_visibility': workout.workout_visibility.value,
+            'with_gpx': True,
+        }
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility,'
@@ -333,7 +320,10 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_cycling_user_1.calculated_map_visibility
             == expected_map_visibility
         )
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
+
         assert (
             serialized_workout['map_visibility']
             == expected_map_visibility.value
@@ -358,16 +348,211 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             user_2_admin, user_1, workout_cycling_user_1
         )
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
-
-        assert (
-            serialized_workout["suspended_at"]
-            == workout_cycling_user_1.suspended_at
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
         )
-        assert serialized_workout["suspended"] is True
-        assert serialized_workout[
-            "suspension"
-        ] == expected_admin_action.serialize(user_1, full=False)
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': workout_cycling_user_1.creation_date,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': workout_cycling_user_1.modification_date,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': None,
+            'previous_workout': None,
+            'records': [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': True,
+            'suspended_at': workout_cycling_user_1.suspended_at,
+            'suspension': expected_admin_action.serialize(user_1, full=False),
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }
+
+    def test_it_serializes_minimal_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': workout_cycling_user_1.modification_date,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }
+
+    def test_it_serializes_minimal_workout_with_gpx(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout = self.update_workout(workout_cycling_user_1)
+        workout.ascent = 0
+        workout.descent = 10
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': float(workout_cycling_user_1.ascent),
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': float(workout_cycling_user_1.descent),
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': True,
+        }
+
+    def test_it_serializes_minimal_suspended_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        self.create_admin_workout_suspension_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': True,
+            'suspended_at': workout_cycling_user_1.suspended_at,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }
 
     def test_workout_segment_model(
         self,
@@ -392,7 +577,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_running_user_1.serialize(user=user_1)
+        serialized_workout = workout_running_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert (
             serialized_workout['previous_workout']
@@ -408,7 +595,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert (
             serialized_workout['next_workout']
@@ -425,7 +614,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert serialized_workout['equipments'] == [
             equipment_bike_user_1.serialize()
@@ -543,7 +734,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert serialized_workout['likes_count'] == 2
 
@@ -561,7 +754,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert serialized_workout['liked'] is False
 
@@ -580,7 +775,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_1)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
 
         assert serialized_workout['liked'] is True
 
@@ -598,7 +795,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         add_follower(user_1, user_2)
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user=user_2)
+            workout_cycling_user_1.serialize(user=user_2, light=False)
 
     def test_serializer_does_not_return_notes(
         self,
@@ -611,7 +808,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['notes'] is None
 
@@ -649,7 +848,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user=user_2)
+        serialized_workout = workout.serialize(user=user_2, light=False)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -689,7 +888,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         add_follower(user_1, user_2)
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user=user_2)
+        serialized_workout = workout.serialize(user=user_2, light=False)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -713,7 +912,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['next_workout'] is None
 
@@ -730,7 +931,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_running_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
-        serialized_workout = workout_running_user_1.serialize(user=user_2)
+        serialized_workout = workout_running_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['previous_workout'] is None
 
@@ -745,7 +948,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert 'suspended_at' not in serialized_workout
 
@@ -777,7 +982,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(
-                user=user_2, for_report=input_for_report
+                user=user_2, for_report=input_for_report, light=False
             )
 
     def test_serialize_returns_suspended_workout_when_user_commented_workout(
@@ -801,11 +1006,12 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_3)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_3, light=False
+        )
 
         assert serialized_workout == {
             'ascent': None,
-            'ave_speed': None,
             'bounds': [],
             'creation_date': None,
             'descent': None,
@@ -818,7 +1024,6 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             'map': None,
             'map_visibility': None,
             'max_alt': None,
-            'max_speed': None,
             'min_alt': None,
             'modification_date': None,
             'moving': None,
@@ -836,7 +1041,68 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             'weather_start': None,
             'with_gpx': False,
             'workout_date': workout_cycling_user_1.workout_date,
-            'workout_visibility': workout_cycling_user_1.workout_visibility,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+        }
+
+    def test_it_serializes_minimal_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        add_follower(user_1, user_3)
+        self.create_comment(
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_3, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': False,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
         }
 
 
@@ -861,7 +1127,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = input_workout_visibility
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(user=user_2)
+            workout_cycling_user_1.serialize(user=user_2, light=False)
 
     def test_serializer_does_not_return_notes(
         self,
@@ -874,7 +1140,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['notes'] is None
 
@@ -892,7 +1160,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(user=user_2)
+        serialized_workout = workout.serialize(user=user_2, light=False)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -928,7 +1196,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(user=user_2)
+        serialized_workout = workout.serialize(user=user_2, light=False)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
@@ -952,7 +1220,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['next_workout'] is None
 
@@ -968,7 +1238,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_running_user_1.serialize(user=user_2)
+        serialized_workout = workout_running_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert serialized_workout['previous_workout'] is None
 
@@ -982,7 +1254,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_2)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
 
         assert 'suspended_at' not in serialized_workout
 
@@ -1005,7 +1279,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(
-                user=user_2, for_report=input_for_report
+                user=user_2, for_report=input_for_report, light=False
             )
 
     def test_serialize_returns_suspended_workout_when_user_commented_workout(
@@ -1026,11 +1300,12 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
-        serialized_workout = workout_cycling_user_1.serialize(user=user_3)
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_3, light=False
+        )
 
         assert serialized_workout == {
             'ascent': None,
-            'ave_speed': None,
             'bounds': [],
             'creation_date': None,
             'descent': None,
@@ -1043,7 +1318,6 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'map': None,
             'map_visibility': None,
             'max_alt': None,
-            'max_speed': None,
             'min_alt': None,
             'modification_date': None,
             'moving': None,
@@ -1062,6 +1336,62 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'with_gpx': False,
             'workout_date': workout_cycling_user_1.workout_date,
             'workout_visibility': workout_cycling_user_1.workout_visibility,
+        }
+
+    def test_it_serializes_minimal_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_3, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': False,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
         }
 
 
@@ -1099,7 +1429,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
 
-        serialized_workout = workout_cycling_user_1.serialize()
+        serialized_workout = workout_cycling_user_1.serialize(light=False)
 
         assert serialized_workout['notes'] is None
 
@@ -1116,7 +1446,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize()
+        serialized_workout = workout.serialize(light=False)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -1208,7 +1538,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         db.session.add(like)
         db.session.commit()
 
-        serialized_workout = workout_cycling_user_1.serialize()
+        serialized_workout = workout_cycling_user_1.serialize(light=False)
 
         assert serialized_workout['liked'] is False
         assert serialized_workout['likes_count'] == 1
@@ -1245,6 +1575,60 @@ class TestWorkoutModelAsUnauthenticatedUser(
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(for_report=input_for_report)
 
+    def test_it_serializes_minimal_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_comment(
+            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+        )
+
+        serialized_workout = workout_cycling_user_1.serialize(light=True)
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_1.distance),
+            'duration': str(workout_cycling_user_1.duration),
+            'id': workout_cycling_user_1.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_1.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_1.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_1.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_1.sport_id,
+            'suspended': False,
+            'title': None,
+            'user': user_1.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_1.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_1.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }
+
 
 class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
     @pytest.mark.parametrize(
@@ -1267,7 +1651,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_2.serialize(user=user_1_admin)
+            workout_cycling_user_2.serialize(user=user_1_admin, light=False)
 
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
@@ -1289,48 +1673,47 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user=user_1_admin, for_report=True
+            user=user_1_admin, for_report=True, light=False
         )
 
-        assert serialized_workout['ascent'] == workout_cycling_user_2.ascent
-        assert serialized_workout['ave_speed'] == float(
-            workout_cycling_user_2.ave_speed
-        )
-        assert serialized_workout['bounds'] == []
-        assert 'creation_date' in serialized_workout
-        assert serialized_workout['descent'] == workout_cycling_user_2.descent
-        assert serialized_workout['distance'] == float(
-            workout_cycling_user_2.distance
-        )
-        assert serialized_workout['duration'] == str(
-            workout_cycling_user_2.duration
-        )
-        assert serialized_workout['id'] == workout_cycling_user_2.short_id
-        assert serialized_workout['map'] is None
-        assert serialized_workout['max_alt'] is None
-        assert serialized_workout['max_speed'] == float(
-            workout_cycling_user_2.max_speed
-        )
-        assert serialized_workout['min_alt'] is None
-        assert serialized_workout['modification_date'] is not None
-        assert serialized_workout['moving'] == str(
-            workout_cycling_user_2.moving
-        )
-        assert serialized_workout['next_workout'] is None
-        assert serialized_workout['notes'] is None
-        assert serialized_workout['pauses'] is None
-        assert serialized_workout['previous_workout'] is None
-        assert serialized_workout['records'] == []
-        assert serialized_workout['segments'] == []
-        assert (
-            serialized_workout['sport_id'] == workout_cycling_user_2.sport_id
-        )
-        assert serialized_workout['title'] == workout_cycling_user_2.title
-        assert serialized_workout['user'] == user_2.serialize()
-        assert serialized_workout['weather_end'] is None
-        assert serialized_workout['weather_start'] is None
-        assert serialized_workout['with_gpx'] is False
-        assert str(serialized_workout['workout_date']) == '2018-01-23 00:00:00'
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'bounds': [],
+            'creation_date': workout_cycling_user_2.creation_date,
+            'descent': None,
+            'distance': float(workout_cycling_user_2.distance),
+            'duration': str(workout_cycling_user_2.duration),
+            'id': workout_cycling_user_2.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_2.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_2.max_speed),
+            'min_alt': None,
+            'modification_date': workout_cycling_user_2.modification_date,
+            'moving': str(workout_cycling_user_2.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_2.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_2.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_2.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_2.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }
 
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
@@ -1357,49 +1740,47 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         )
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user=user_1_admin, for_report=True
+            user=user_1_admin, for_report=True, light=False
         )
 
-        assert serialized_workout['ascent'] == workout_cycling_user_2.ascent
-        assert serialized_workout['ave_speed'] == float(
-            workout_cycling_user_2.ave_speed
-        )
-        assert serialized_workout['bounds'] == workout_cycling_user_2.bounds
-        assert 'creation_date' in serialized_workout
-        assert serialized_workout['descent'] == workout_cycling_user_2.descent
-        assert serialized_workout['distance'] == float(
-            workout_cycling_user_2.distance
-        )
-        assert serialized_workout['duration'] == str(
-            workout_cycling_user_2.duration
-        )
-        assert serialized_workout['id'] == workout_cycling_user_2.short_id
-        assert serialized_workout['map'] == map_id
-        assert serialized_workout['max_alt'] is None
-        assert serialized_workout['max_speed'] == float(
-            workout_cycling_user_2.max_speed
-        )
-        assert serialized_workout['min_alt'] is None
-        assert serialized_workout['suspended_at'] is None
-        assert serialized_workout['modification_date'] is not None
-        assert serialized_workout['moving'] == str(
-            workout_cycling_user_2.moving
-        )
-        assert serialized_workout['next_workout'] is None
-        assert serialized_workout['notes'] is None
-        assert serialized_workout['pauses'] == '0:15:00'
-        assert serialized_workout['previous_workout'] is None
-        assert serialized_workout['records'] == []
-        assert serialized_workout['segments'] == []
-        assert (
-            serialized_workout['sport_id'] == workout_cycling_user_2.sport_id
-        )
-        assert serialized_workout['title'] == workout_cycling_user_2.title
-        assert serialized_workout['user'] == user_2.serialize()
-        assert serialized_workout['weather_end'] is None
-        assert serialized_workout['weather_start'] is None
-        assert serialized_workout['with_gpx'] is True
-        assert str(serialized_workout['workout_date']) == '2018-01-23 00:00:00'
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'bounds': workout_cycling_user_2.bounds,
+            'creation_date': workout_cycling_user_2.creation_date,
+            'descent': None,
+            'distance': float(workout_cycling_user_2.distance),
+            'duration': str(workout_cycling_user_2.duration),
+            'id': workout_cycling_user_2.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': map_id,
+            'map_visibility': workout_cycling_user_2.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_2.max_speed),
+            'min_alt': None,
+            'modification_date': workout_cycling_user_2.modification_date,
+            'moving': str(workout_cycling_user_2.moving),
+            'next_workout': None,
+            'notes': None,
+            'pauses': str(workout_cycling_user_2.pauses),
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_2.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_2.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_2.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_2.workout_visibility.value
+            ),
+            'with_gpx': True,
+        }
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
@@ -1418,7 +1799,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_2.serialize(user=user_1_admin)
+            workout_cycling_user_2.serialize(user=user_1_admin, light=False)
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
@@ -1437,10 +1818,61 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
         serialized_workout = workout_cycling_user_2.serialize(
-            user=user_1_admin, for_report=True
+            user=user_1_admin, for_report=True, light=False
         )
 
         assert (
             serialized_workout["suspended_at"]
             == workout_cycling_user_2.suspended_at
         )
+
+    def test_it_serializes_minimal_workout(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1_admin: User,
+        user_2: User,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        serialized_workout = workout_cycling_user_2.serialize(
+            user=user_1_admin, for_report=True, light=True
+        )
+
+        assert serialized_workout == {
+            'ascent': None,
+            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'bounds': [],
+            'creation_date': None,
+            'descent': None,
+            'distance': float(workout_cycling_user_2.distance),
+            'duration': str(workout_cycling_user_2.duration),
+            'id': workout_cycling_user_2.short_id,
+            'equipments': [],
+            'liked': False,
+            'likes_count': 0,
+            'map': None,
+            'map_visibility': workout_cycling_user_2.map_visibility.value,
+            'max_alt': None,
+            'max_speed': float(workout_cycling_user_2.max_speed),
+            'min_alt': None,
+            'modification_date': None,
+            'moving': str(workout_cycling_user_2.moving),
+            'next_workout': None,
+            'notes': '',
+            'pauses': None,
+            'previous_workout': None,
+            'records': [],
+            'segments': [],
+            'sport_id': workout_cycling_user_2.sport_id,
+            'suspended': False,
+            'suspended_at': None,
+            'title': None,
+            'user': user_2.serialize(),
+            'weather_end': None,
+            'weather_start': None,
+            'workout_date': workout_cycling_user_2.workout_date,
+            'workout_visibility': (
+                workout_cycling_user_2.workout_visibility.value
+            ),
+            'with_gpx': False,
+        }

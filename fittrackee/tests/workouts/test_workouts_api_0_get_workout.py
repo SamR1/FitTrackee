@@ -84,7 +84,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user=user_1)
+            workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
     def test_it_gets_owner_suspended_workout(
@@ -110,7 +110,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user=user_1)
+            workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
 

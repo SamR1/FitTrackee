@@ -16,6 +16,30 @@ from .mixins import WorkoutApiTestCaseMixin
 
 
 class TestGetWorkouts(WorkoutApiTestCaseMixin):
+    def test_it_gets_minimal_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_1.serialize(user=user_1, light=True)
+        )
+
     def test_it_gets_all_workouts_for_authenticated_user(
         self,
         app: Flask,

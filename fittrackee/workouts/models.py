@@ -34,6 +34,32 @@ if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User
 
+
+EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {
+    'title': '',
+    'moving': None,
+    'distance': None,
+    'duration': None,
+    'min_alt': None,
+    'max_alt': None,
+    'descent': None,
+    'ascent': None,
+    'map_visibility': None,
+}
+EMPTY_WORKOUT_VALUES: Dict = {
+    'creation_date': None,
+    'modification_date': None,
+    'pauses': None,
+    'equipments': [],
+    'records': [],
+    'segments': [],
+    'weather_start': None,
+    'weather_end': None,
+    'notes': '',
+    'likes_count': 0,
+    'liked': False,
+}
+
 record_types = [
     'AS',  # 'Best Average Speed'
     'FD',  # 'Farthest Distance'
@@ -324,7 +350,21 @@ class Workout(BaseModel):
         can_see_map_data: Optional[bool] = None,
         for_report: bool = False,
         additional_data: bool = False,
+        light: bool = True,
     ) -> Dict:
+        """
+        Used by Workout serializer and data export
+
+        - can_see_map_data: if user can see map related data
+        - for_report: privacy levels are overridden on report
+        - additional_data is False when:
+          - workout is not suspended
+          - user is workout owner
+            or workout is displayed in report and current user is an admin
+        - light: when true, only workouts data needed for workout lists
+          and timeline
+        """
+        for_report = for_report and user is not None and user.admin
         if can_see_map_data is None:
             can_see_map_data = can_view(
                 self,
@@ -332,89 +372,73 @@ class Workout(BaseModel):
                 user=user,
                 for_report=for_report,
             )
-        if additional_data:
-            return {
-                'id': self.short_id,  # WARNING: client use uuid as id
-                'sport_id': self.sport_id,
-                'title': self.title,
-                'creation_date': self.creation_date,
-                'modification_date': self.modification_date,
-                'workout_date': self.workout_date,
-                'duration': (
-                    None if self.duration is None else str(self.duration)
-                ),
-                'pauses': str(self.pauses) if self.pauses else None,
-                'moving': None if self.moving is None else str(self.moving),
-                'distance': (
-                    None if self.distance is None else float(self.distance)
-                ),
-                'min_alt': (
-                    None if self.min_alt is None else float(self.min_alt)
-                ),
-                'max_alt': (
-                    None if self.max_alt is None else float(self.max_alt)
-                ),
-                'descent': (
-                    None if self.descent is None else float(self.descent)
-                ),
-                'ascent': None if self.ascent is None else float(self.ascent),
-                'max_speed': (
-                    None if self.max_speed is None else float(self.max_speed)
-                ),
-                'ave_speed': (
-                    None if self.ave_speed is None else float(self.ave_speed)
-                ),
-                'equipments': [
-                    equipment.serialize() for equipment in self.equipments
-                ],
-                'records': (
-                    []
-                    if for_report
-                    else [record.serialize() for record in self.records]
-                ),
-                'segments': (
-                    [segment.serialize() for segment in self.segments]
-                    if can_see_map_data
-                    else []
-                ),
-                'weather_start': self.weather_start,
-                'weather_end': self.weather_end,
-                'notes': (
-                    self.notes if user and user.id == self.user_id else None
-                ),
-                'map_visibility': self.calculated_map_visibility.value,
-                'workout_visibility': self.workout_visibility.value,
-                'likes_count': self.likes.count(),
-                'liked': self.liked_by(user) if user else False,
-            }
 
-        return {
+        workout_data = {
             'id': self.short_id,  # WARNING: client use uuid as id
             'sport_id': self.sport_id,
-            'title': '',
-            'creation_date': None,
-            'modification_date': None,
             'workout_date': self.workout_date,
-            'duration': None,
-            'pauses': None,
-            'moving': None,
-            'distance': None,
-            'min_alt': None,
-            'max_alt': None,
-            'descent': None,
-            'ascent': None,
-            'max_speed': None,
-            'ave_speed': None,
-            'equipments': [],
-            'records': [],
-            'segments': [],
-            'weather_start': None,
-            'weather_end': None,
-            'notes': '',
-            'map_visibility': None,
             'workout_visibility': self.workout_visibility.value,
-            'likes_count': 0,
-            'liked': False,
+        }
+
+        if not additional_data:
+            return {
+                **workout_data,
+                **EMPTY_MINIMAL_WORKOUT_VALUES,
+                **EMPTY_WORKOUT_VALUES,
+            }
+
+        workout_data = {
+            **workout_data,
+            **EMPTY_WORKOUT_VALUES,
+            'title': self.title,
+            'moving': None if self.moving is None else str(self.moving),
+            'distance': (
+                None if self.distance is None else float(self.distance)
+            ),
+            'duration': (
+                None if self.duration is None else str(self.duration)
+            ),
+            'ave_speed': (
+                None if self.ave_speed is None else float(self.ave_speed)
+            ),
+            'max_speed': (
+                None if self.max_speed is None else float(self.max_speed)
+            ),
+            'min_alt': None if self.min_alt is None else float(self.min_alt),
+            'max_alt': None if self.max_alt is None else float(self.max_alt),
+            'descent': None if self.descent is None else float(self.descent),
+            'ascent': None if self.ascent is None else float(self.ascent),
+            'map_visibility': self.calculated_map_visibility.value,
+        }
+
+        if light:
+            return workout_data
+
+        return {
+            **workout_data,
+            'creation_date': self.creation_date,
+            'modification_date': self.modification_date,
+            'pauses': str(self.pauses) if self.pauses else None,
+            'equipments': [
+                equipment.serialize() for equipment in self.equipments
+            ],
+            'records': (
+                []
+                if for_report
+                else [record.serialize() for record in self.records]
+            ),
+            'segments': (
+                [segment.serialize() for segment in self.segments]
+                if can_see_map_data
+                else []
+            ),
+            'weather_start': self.weather_start,
+            'weather_end': self.weather_end,
+            'notes': (
+                self.notes if user and user.id == self.user_id else None
+            ),
+            'likes_count': self.likes.count(),
+            'liked': self.liked_by(user) if user else False,
         }
 
     def serialize(
@@ -423,7 +447,9 @@ class Workout(BaseModel):
         user: Optional['User'] = None,
         params: Optional[Dict] = None,
         for_report: bool = False,
+        light: bool = True,  # for workouts list and timeline
     ) -> Dict:
+        for_report = for_report and user is not None and user.admin
         if not can_view(
             self, "workout_visibility", user=user, for_report=for_report
         ):
@@ -431,7 +457,38 @@ class Workout(BaseModel):
         can_see_map_data = can_view(
             self, "calculated_map_visibility", user=user, for_report=for_report
         )
-        is_owner = user and user.id == self.user_id
+        is_owner = user is not None and user.id == self.user_id
+        is_workout_suspended = self.suspended_at is not None
+        additional_data = not is_workout_suspended or for_report or is_owner
+
+        workout = self.get_workout_data(
+            user,
+            can_see_map_data=can_see_map_data,
+            for_report=for_report,
+            additional_data=additional_data,
+            light=light,
+        )
+
+        workout["map"] = (
+            self.map_id
+            if self.map and can_see_map_data and additional_data
+            else None
+        )
+        workout["with_gpx"] = (
+            self.gpx is not None and can_see_map_data and additional_data
+        )
+        workout["suspended"] = is_workout_suspended
+        workout["user"] = self.user.serialize()
+
+        if is_owner or for_report:
+            workout["suspended_at"] = self.suspended_at
+
+        if light:
+            workout["next_workout"] = None
+            workout["previous_workout"] = None
+            workout["bounds"] = []
+            return workout
+
         if is_owner:
             date_from = params.get('from') if params else None
             date_to = params.get('to') if params else None
@@ -558,21 +615,16 @@ class Workout(BaseModel):
                 .order_by(Workout.workout_date.asc())
                 .first()
             )
+
+            if self.suspension_action:
+                workout["suspension"] = self.suspension_action.serialize(
+                    current_user=user,  # type: ignore
+                    full=False,
+                )
+
         else:
             next_workout = None
             previous_workout = None
-
-        additional_data = (
-            self.suspended_at is None
-            or for_report
-            or (user is not None and user.id == self.user_id)
-        )
-        workout = self.get_workout_data(
-            user,
-            can_see_map_data=can_see_map_data,
-            for_report=for_report,
-            additional_data=additional_data,
-        )
 
         workout["next_workout"] = (
             next_workout.short_id if next_workout else None
@@ -585,24 +637,6 @@ class Workout(BaseModel):
             if self.bounds and can_see_map_data and additional_data
             else []
         )
-        workout["user"] = self.user.serialize()
-        workout["map"] = (
-            self.map_id
-            if self.map and can_see_map_data and additional_data
-            else None
-        )
-        workout["with_gpx"] = (
-            self.gpx is not None and can_see_map_data and additional_data
-        )
-
-        if self.suspended_at:
-            workout['suspended'] = True
-            if user and user.id == self.user_id and self.suspension_action:
-                workout["suspension"] = self.suspension_action.serialize(
-                    current_user=user, full=False
-                )
-        if is_owner or (user and user.admin and for_report):
-            workout["suspended_at"] = self.suspended_at
         return workout
 
     @classmethod

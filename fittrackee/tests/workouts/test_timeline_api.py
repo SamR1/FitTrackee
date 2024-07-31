@@ -10,7 +10,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..utils import OAUTH_SCOPES
+from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 
 
@@ -66,6 +66,30 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         )
 
         self.assert_no_workout_returned(response)
+
+    def test_it_gets_minimal_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0] == jsonify_dict(
+            workout_cycling_user_1.serialize(user=user_1, light=True)
+        )
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',

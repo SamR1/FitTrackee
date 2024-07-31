@@ -462,7 +462,7 @@ def get_workout(
     """
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
     }
 
 
@@ -1111,7 +1111,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 'status': 'created',
                 'data': {
                     'workouts': [
-                        new_workout.serialize(user=auth_user)
+                        new_workout.serialize(user=auth_user, light=False)
                         for new_workout in new_workouts
                     ]
                 },
@@ -1324,7 +1324,11 @@ def post_workout_no_gpx(
         return (
             {
                 'status': 'created',
-                'data': {'workouts': [new_workout.serialize(user=auth_user)]},
+                'data': {
+                    'workouts': [
+                        new_workout.serialize(user=auth_user, light=False)
+                    ]
+                },
             },
             201,
         )
@@ -1546,7 +1550,9 @@ def update_workout(
 
         return {
             'status': 'success',
-            'data': {'workouts': [workout.serialize(user=auth_user)]},
+            'data': {
+                'workouts': [workout.serialize(user=auth_user, light=False)]
+            },
         }
 
     except InvalidEquipmentsException as e:
@@ -1654,7 +1660,7 @@ def undo_workout_like(
 
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
     }, 200
 
 

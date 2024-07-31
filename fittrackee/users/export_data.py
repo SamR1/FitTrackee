@@ -41,7 +41,7 @@ class UserDataExporter:
         workouts_data = []
         for workout in self.user.workouts:
             workout_data = workout.get_workout_data(
-                self.user, additional_data=True
+                self.user, additional_data=True, light=False
             )
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
