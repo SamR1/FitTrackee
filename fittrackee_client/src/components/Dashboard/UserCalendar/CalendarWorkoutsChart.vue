@@ -159,9 +159,6 @@
         top: 52px;
         left: 0;
         min-width: 60px;
-        @media screen and (max-width: $small-limit) {
-          min-width: 70px;
-        }
 
         margin-bottom: 20px;
         padding: 10px 10px;
@@ -169,6 +166,10 @@
         display: flex;
         flex-wrap: wrap;
         z-index: 1000;
+
+        @media screen and (max-width: $small-limit) {
+          min-width: 70px;
+        }
 
         .calendar-more-close {
           position: absolute;

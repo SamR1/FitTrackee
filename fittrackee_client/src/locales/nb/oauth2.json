@@ -18,7 +18,7 @@
   "COPY_TO_CLIPBOARD": "kopier til utklippstavlen",
   "DELETE_APP": "Slett program",
   "NEW_APP": "Legg til et program",
-  "NO_APP": "Fant ikke program.",
+  "NO_APP": "Fant ikke program!",
   "NO_APPS": "ingen programmer",
   "NO_DESCRIPTION": "ingen beskrivelse",
   "REVOKE_ALL_TOKENS": "Tilbakekall alle symboler",

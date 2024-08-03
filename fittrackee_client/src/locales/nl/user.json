@@ -13,11 +13,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Data exporteren",
     "DOWNLOAD_ARCHIVE": "Archief downloaden",
-    "GENERATING_LINK": "link aanmaken...",
+    "GENERATING_LINK": "link aanmaken…",
     "ONLY_ONE_EXPORT_PER_DAY": "Je kan 1 keer per 24h een archief aanvragen",
     "STATUS": {
       "errored": "fout (gelieve een nieuw archief aan te vragen)",
-      "in_progress": "Bezig met verwerken..."
+      "in_progress": "Bezig met verwerken…"
     }
   },
   "FILTER_ON_USERNAME": "Filter op gebruikersnaam",
