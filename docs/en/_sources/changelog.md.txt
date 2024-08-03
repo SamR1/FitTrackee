@@ -1,5 +1,42 @@
 # Change log
 
+## Version 0.8.6 (2024/08/03)
+
+### Translations
+
+* [PR#590](https://github.com/SamR1/FitTrackee/pull/590) - Translations update (Italian)
+* [PR#591](https://github.com/SamR1/FitTrackee/pull/591) - Translations update (Galician)
+* [PR#592](https://github.com/SamR1/FitTrackee/pull/592) - Translations update (German, Dutch)
+* [PR#593](https://github.com/SamR1/FitTrackee/pull/593) - Translations update (German)
+* [fb10602](https://github.com/SamR1/FitTrackee/commit/fb10602c47c426c432f528a1ecaf0b2dd4759e93) - update and fix translations
+ 
+Translation status:
+- Basque: 98%
+- Czech: 73%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 99%
+- Italian: 82%
+- Norwegian Bokmål: 52%
+- Polish: 92%
+- Portuguese: 98%
+- Spanish: 100%
+
+### Misc
+
+* [PR#595](https://github.com/SamR1/FitTrackee/pull/595) - CI - speed up tests
+
+
+Thanks to the contributors:
+- @ConfusedAlex
+- @lukasitaly
+- @simontb
+- @slothje
+- @xmgz
+
+
 ## Version 0.8.5 (2024/06/29)
 
 ### Features and enhancements
