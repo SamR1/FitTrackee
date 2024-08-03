@@ -46,13 +46,18 @@ USER_LINK_TEMPLATE = (
 NOTIFICATION_TYPES = [
     'comment_like',
     'comment_reply',
+    'comment_suspension',
+    'comment_unsuspension',
     'follow',
     'follow_request',
     'mention',
     'report',
     'suspension_appeal',
+    'user_warning',
     'workout_comment',
     'workout_like',
+    'workout_suspension',
+    'workout_unsuspension',
 ]
 
 
@@ -708,7 +713,12 @@ class User(BaseModel):
             .first()
         )
 
-    def serialize(self, current_user: Optional['User'] = None) -> Dict:
+    def serialize(
+        self,
+        *,
+        current_user: Optional['User'] = None,
+        light: bool = True,
+    ) -> Dict:
         if current_user is None:
             role = None
         else:
@@ -719,6 +729,40 @@ class User(BaseModel):
                 if current_user.admin
                 else UserRole.USER
             )
+
+        serialized_user = {
+            'admin': self.admin,
+            'created_at': self.created_at,
+            'is_remote': self.is_remote,
+            'nb_workouts': self.workouts_count,
+            'picture': self.picture is not None,
+            'username': self.username,
+        }
+        if self.is_remote:
+            serialized_user['fullname'] = f'@{self.fullname}'
+            serialized_user['followers'] = self.actor.stats.followers
+            serialized_user['following'] = self.actor.stats.following
+            serialized_user['profile_link'] = self.actor.profile_url
+        else:
+            serialized_user['followers'] = self.followers.count()
+            serialized_user['following'] = self.following.count()
+
+        if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
+            serialized_user['suspended_at'] = self.suspended_at
+            serialized_user['is_active'] = self.is_active
+        if role == UserRole.ADMIN:
+            serialized_user['email'] = self.email
+
+        if current_user is not None and role != UserRole.AUTH_USER:
+            serialized_user['follows'] = self.follows(current_user)
+            serialized_user['is_followed_by'] = self.is_followed_by(
+                current_user
+            )
+            serialized_user['blocked'] = self.is_blocked_by(current_user)
+
+        if light:
+            return serialized_user
+
         sports = []
         if self.workouts_count > 0:  # type: ignore
             sports = (
@@ -730,30 +774,13 @@ class User(BaseModel):
             )
 
         serialized_user = {
-            'admin': self.admin,
+            **serialized_user,
             'bio': self.bio,
             'birth_date': self.birth_date,
-            'created_at': self.created_at,
             'first_name': self.first_name,
-            'followers': self.followers.count(),
-            'following': self.following.count(),
-            'is_active': self.is_active,
-            'is_remote': self.is_remote,
             'last_name': self.last_name,
             'location': self.location,
-            'nb_workouts': self.workouts_count,
-            'picture': self.picture is not None,
-            'suspended_at': self.suspended_at,
-            'username': self.username,
         }
-        if self.is_remote:
-            serialized_user['fullname'] = f'@{self.fullname}'
-            serialized_user['followers'] = self.actor.stats.followers
-            serialized_user['following'] = self.actor.stats.following
-            serialized_user['profile_link'] = self.actor.profile_url
-        else:
-            serialized_user['followers'] = self.followers.count()
-            serialized_user['following'] = self.following.count()
 
         if role is not None:
             total = (0, '0:00:00', 0)
@@ -782,7 +809,6 @@ class User(BaseModel):
             serialized_user['total_duration'] = str(total[1])
 
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
-            serialized_user['email'] = self.email
             serialized_user['email_to_confirm'] = self.email_to_confirm
 
         if role == UserRole.AUTH_USER:
@@ -817,13 +843,6 @@ class User(BaseModel):
                     ),
                 },
             }
-
-        if current_user is not None and role != UserRole.AUTH_USER:
-            serialized_user['follows'] = self.follows(current_user)
-            serialized_user['is_followed_by'] = self.is_followed_by(
-                current_user
-            )
-            serialized_user['blocked'] = self.is_blocked_by(current_user)
 
         return serialized_user
 
@@ -1058,11 +1077,24 @@ class Notification(BaseModel):
                 },
             }
 
-        from_user = User.query.filter_by(id=self.from_user_id).first()
+        if self.event_type in [
+            "comment_suspension",
+            "comment_unsuspension",
+            "user_warning",
+            "workout_suspension",
+            "workout_unsuspension",
+        ]:
+            from_user = None
+        else:
+            from_user = User.query.filter_by(id=self.from_user_id).first()
         to_user = User.query.filter_by(id=self.to_user_id).first()
         serialized_notification = {
             **serialized_notification,
-            "from": from_user.serialize(current_user=to_user),
+            "from": (
+                from_user.serialize(current_user=to_user)
+                if from_user
+                else None
+            ),
         }
 
         if self.event_type == "workout_like":
@@ -1100,5 +1132,37 @@ class Notification(BaseModel):
             serialized_notification["report"] = report.serialize(
                 current_user=to_user
             )
+
+        if self.event_type in [
+            "comment_suspension",
+            "comment_unsuspension",
+            "user_warning",
+            "workout_suspension",
+            "workout_unsuspension",
+        ]:
+            from fittrackee.administration.models import AdminAction
+            from fittrackee.reports.models import Report
+
+            admin_action = AdminAction.query.filter_by(
+                id=self.event_object_id
+            ).first()
+            serialized_notification["admin_action"] = admin_action.serialize(
+                current_user=to_user
+            )
+            report = Report.query.filter_by(id=admin_action.report_id).first()
+            if report.object_type == "comment":
+                comment = Comment.query.filter_by(
+                    id=report.reported_comment_id
+                ).first()
+                serialized_notification["comment"] = comment.serialize(
+                    user=to_user
+                )
+            elif report.object_type == "workout":
+                workout = Workout.query.filter_by(
+                    id=report.reported_workout_id
+                ).first()
+                serialized_notification["workout"] = workout.serialize(
+                    user=to_user
+                )
 
         return serialized_notification

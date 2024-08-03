@@ -1,7 +1,13 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
-import type { ISuspension, IUserProfile, TPrivacyLevels } from '@/types/user'
+import type { TCoordinates } from '@/types/map'
+import type {
+  IUserAdminAction,
+  IUserLightProfile,
+  IUserProfile,
+  TPrivacyLevels,
+} from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -84,7 +90,7 @@ export interface IWorkout {
   sport_id: number
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: ISuspension
+  suspension?: IUserAdminAction
   title: string
   user: IUserProfile
   weather_end: IWeather | null
@@ -194,17 +200,16 @@ export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
 }
 
-export type TCoordinatesKeys = 'latitude' | 'longitude'
-
-export type TCoordinates = {
-  [key in TCoordinatesKeys]: number | null
-}
-
 export interface IWorkoutChartData {
   distance_labels: unknown[]
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
   coordinates: TCoordinates[]
+}
+
+export interface IDuration {
+  days: string
+  duration: string
 }
 
 export interface IComment {
@@ -218,11 +223,11 @@ export interface IComment {
   reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: ISuspension
+  suspension?: IUserAdminAction
   text: string | null
   text_html: string | null
   text_visibility: TPrivacyLevels
-  user: IUserProfile
+  user: IUserLightProfile
   workout_id: string
 }
 
@@ -241,5 +246,6 @@ export interface ICommentPayload {
 
 export interface IAppealPayload {
   objectId: string
+  objectType: 'comment' | 'workout'
   text: string
 }

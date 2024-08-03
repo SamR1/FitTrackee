@@ -28,7 +28,6 @@
     user: IUserProfile
   }
   const props = defineProps<Props>()
-
   const { user } = toRefs(props)
 </script>
 

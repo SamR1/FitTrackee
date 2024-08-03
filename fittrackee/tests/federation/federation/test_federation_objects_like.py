@@ -4,7 +4,7 @@ from fittrackee.federation.constants import AP_CTX
 from fittrackee.federation.objects.like import LikeObject
 from fittrackee.users.models import User
 
-from ...comments.utils import CommentMixin
+from ...comments.mixins import CommentMixin
 
 
 class TestLikeObject(CommentMixin):

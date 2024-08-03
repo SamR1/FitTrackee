@@ -13,8 +13,8 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from .mixins import WorkoutApiTestCaseMixin
 from .utils import post_a_workout
 
 
@@ -70,7 +70,7 @@ def assert_workout_data_with_gpx(
     assert records[4]['value'] == 5.12
 
 
-class TestEditWorkoutWithGpx(ApiTestCaseMixin):
+class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
     def test_it_updates_title_for_a_workout_with_gpx(
         self,
         app: Flask,
@@ -707,7 +707,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_updates_a_workout_wo_gpx(
         self,
         app: Flask,
@@ -1478,7 +1478,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
 
-class TestUpdateVisibility(ApiTestCaseMixin):
+class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_workout_visibility',
         [

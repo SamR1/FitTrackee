@@ -31,7 +31,10 @@
                 })
               }}
             </time>
-            <VisibilityIcon :visibility="workout.workout_visibility" />
+            <VisibilityIcon
+              v-if="workout.workout_visibility"
+              :visibility="workout.workout_visibility"
+            />
           </div>
         </div>
         <div v-if="user.is_remote" class="user-remote-fullname">
@@ -132,18 +135,15 @@
 
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
   import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
   import type { ISport } from '@/types/sports'
   import type { IUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
-  import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
@@ -158,14 +158,11 @@
     workout: () => ({}) as IWorkout,
     sport: () => ({}) as ISport,
   })
-
-  const store = useStore()
-
   const { dateFormat, sport, timezone, user, useImperialUnits, workout } =
     toRefs(props)
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
+
+  const { locale } = useApp()
+
   const workoutDateWithTZ = computed(() =>
     formatDate(workout.value.workout_date, timezone.value, dateFormat.value)
   )

@@ -1,22 +1,14 @@
-from datetime import datetime
 from typing import Dict, Tuple, Union
 
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
 from fittrackee.administration.models import (
-    COMMENT_ACTION_TYPES,
     OBJECTS_ADMIN_ACTION_TYPES,
-    USER_ACTION_TYPES,
-    WORKOUT_ACTION_TYPES,
-    AdminAction,
     AdminActionAppeal,
 )
-from fittrackee.administration.reports_service import ReportService
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -31,15 +23,20 @@ from fittrackee.users.exceptions import (
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Workout
 
 from .exceptions import (
+    InvalidAdminActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
+    UserWarningExistsException,
 )
 from .models import REPORT_OBJECT_TYPES, Report
+from .reports_email_service import (
+    ReportEmailService,
+)
+from .reports_service import ReportService
 
 reports_blueprint = Blueprint('reports', __name__)
 
@@ -205,14 +202,14 @@ def update_report(
 
 
 @reports_blueprint.route(
-    "/reports/<int:report_id>/admin_actions", methods=["POST"]
+    "/reports/<int:report_id>/admin-actions", methods=["POST"]
 )
 @require_auth(scopes=["reports:write"], as_admin=True)
 def create_admin_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     data = request.get_json()
-    action_type = data.get("action_type")
+    action_type = data.get("action_type", "")
     reason = data.get("reason")
     if not data or not action_type:
         return InvalidPayloadErrorResponse()
@@ -220,69 +217,36 @@ def create_admin_action(
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
     report = Report.query.filter_by(id=report_id).first()
-    if not report or (
-        not auth_user.admin and report.reported_by != auth_user.id
-    ):
+    if not report:
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
-        if action_type in USER_ACTION_TYPES:
-            username = data.get("username")
-            if not username:
-                return InvalidPayloadErrorResponse("'username' is missing")
-            reported_user = report.reported_user
-            if not reported_user or username != reported_user.username:
-                return InvalidPayloadErrorResponse("invalid 'username'")
+        action = report_service.create_admin_action(
+            report=report,
+            admin_user=auth_user,
+            action_type=action_type,
+            reason=reason,
+            data=data,
+        )
+        db.session.flush()
 
-            user_manager_service = UserManagerService(
-                username=username, admin_user_id=auth_user.id
-            )
-            user, _, _ = user_manager_service.update(
-                suspended=action_type == "user_suspension",
-                report_id=report_id,
-                reason=reason,
+        if current_app.config['CAN_SEND_EMAILS']:
+            admin_action_email_service = ReportEmailService()
+            admin_action_email_service.send_admin_action_email(
+                report, action_type, reason, action
             )
 
-        if action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
-            object_type = action_type.split("_")[0]
-            object_type_column = f"{object_type}_id"
-            object_id = data.get(object_type_column)
-            if not object_id:
-                return InvalidPayloadErrorResponse(
-                    f"'{object_type_column}' is missing"
-                )
-            reported_object = getattr(report, f"reported_{object_type}")
-            if not reported_object or reported_object.short_id != object_id:
-                return InvalidPayloadErrorResponse(
-                    f"invalid '{object_type_column}'"
-                )
-
-            now = datetime.utcnow()
-            if "_suspension" in action_type:
-                if reported_object.suspended_at:
-                    return InvalidPayloadErrorResponse(
-                        f"{object_type} '{object_id}' already suspended"
-                    )
-                reported_object.suspended_at = now
-            else:
-                reported_object.suspended_at = None
-            admin_action = AdminAction(
-                admin_user_id=auth_user.id,
-                action_type=action_type,
-                created_at=now,
-                report_id=report_id,
-                reason=reason,
-                user_id=reported_object.user_id,
-                **{object_type_column: reported_object.id},
-            )
-            db.session.add(admin_action)
-            db.session.commit()
+        db.session.commit()
 
         return {
             "status": "success",
             "report": report.serialize(auth_user, full=True),
         }, 200
-    except UserAlreadySuspendedException as e:
+    except (
+        InvalidAdminActionException,
+        UserAlreadySuspendedException,
+        UserWarningExistsException,
+    ) as e:
         return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(
@@ -313,44 +277,7 @@ def process_appeal(
         return InvalidPayloadErrorResponse()
 
     try:
-        appeal.admin_user_id = auth_user.id
-        appeal.approved = data["approved"]
-        appeal.reason = data["reason"]
-        appeal.updated_at = datetime.utcnow()
-
-        if data["approved"]:
-            action = appeal.action
-            if action.action_type == "user_suspension":
-                user_manager_service = UserManagerService(
-                    username=appeal.user.username, admin_user_id=auth_user.id
-                )
-                user, _, _ = user_manager_service.update(
-                    suspended=False, report_id=appeal.action.report_id
-                )
-            if action.action_type == "comment_suspension":
-                admin_action = AdminAction(
-                    admin_user_id=auth_user.id,
-                    action_type="comment_unsuspension",
-                    comment_id=action.comment_id,
-                    created_at=datetime.now(),
-                    report_id=action.report_id,
-                    user_id=action.user_id,
-                )
-                db.session.add(admin_action)
-                comment = Comment.query.filter_by(id=action.comment_id).first()
-                comment.suspended_at = None
-            if action.action_type == "workout_suspension":
-                admin_action = AdminAction(
-                    admin_user_id=auth_user.id,
-                    action_type="workout_unsuspension",
-                    created_at=datetime.now(),
-                    report_id=action.report_id,
-                    user_id=action.user_id,
-                    workout_id=action.workout_id,
-                )
-                db.session.add(admin_action)
-                workout = Workout.query.filter_by(id=action.workout_id).first()
-                workout.suspended_at = None
+        report_service.process_appeal(appeal, auth_user, data)
         db.session.commit()
         return {
             "status": "success",

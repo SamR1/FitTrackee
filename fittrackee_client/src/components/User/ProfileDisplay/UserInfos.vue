@@ -17,7 +17,7 @@
       @cancelAction="updateDisplayModal('')"
       @keydown.esc="updateDisplayModal('')"
     />
-    <div class="info-box success-message" v-if="isSuccess">
+    <div class="info-box success-message" v-if="usersSuccess">
       {{
         $t(
           `admin.${
@@ -168,10 +168,8 @@
 
   import ReportForm from '@/components/Common/ReportForm.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
+  import useApp from '@/composables/useApp'
   import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import type { IDisplayOptions, TAppConfig } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { TLanguage } from '@/types/locales'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
@@ -186,23 +184,25 @@
   const props = withDefaults(defineProps<Props>(), {
     fromAdmin: false,
   })
+  const { authUser, user, fromAdmin } = toRefs(props)
 
   const store = useStore()
 
-  const { authUser, user, fromAdmin } = toRefs(props)
-  const language: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const displayOptions: ComputedRef<IDisplayOptions> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
-  )
+  const { appConfig, appLanguage, displayOptions, errorMessages } = useApp()
+
+  const displayModal: Ref<string> = ref('')
+  const formErrors: Ref<boolean> = ref(false)
+  const displayUserEmailForm: Ref<boolean> = ref(false)
+  const newUserEmail: Ref<string> = ref('')
+  const currentAction: Ref<string> = ref('')
+
   const currentUserReporting: ComputedRef<boolean> = computed(
     () => store.getters[USERS_STORE.GETTERS.USER_CURRENT_REPORTING]
   )
   const reportStatus: ComputedRef<string | null> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
-  const registrationDate = computed(() =>
+  const registrationDate: ComputedRef<string> = computed(() =>
     user.value.created_at
       ? formatDate(
           user.value.created_at,
@@ -211,28 +211,18 @@
         )
       : ''
   )
-  const birthDate = computed(() =>
+  const birthDate: ComputedRef<string> = computed(() =>
     user.value.birth_date
       ? format(
           new Date(user.value.birth_date),
-          `${getDateFormat(displayOptions.value.dateFormat, language.value)}`,
-          { locale: localeFromLanguage[language.value] }
+          `${getDateFormat(displayOptions.value.dateFormat, appLanguage.value)}`,
+          { locale: localeFromLanguage[appLanguage.value] }
         )
       : ''
   )
-  const isSuccess = computed(
+  const usersSuccess = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const displayModal: Ref<string> = ref('')
-  const formErrors = ref(false)
-  const displayUserEmailForm: Ref<boolean> = ref(false)
-  const newUserEmail: Ref<string> = ref('')
-  const currentAction: Ref<string> = ref('')
 
   function updateDisplayModal(value: string) {
     displayModal.value = value
@@ -285,10 +275,8 @@
     store.commit(USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING, true)
   }
 
-  onUnmounted(() => resetErrorsAndSuccess())
-
   watch(
-    () => isSuccess.value,
+    () => usersSuccess.value,
     (newIsSuccess) => {
       if (newIsSuccess) {
         updateDisplayModal('')
@@ -296,6 +284,8 @@
       }
     }
   )
+
+  onUnmounted(() => resetErrorsAndSuccess())
 </script>
 
 <style lang="scss" scoped>

@@ -1,6 +1,5 @@
 <template>
   <div class="table-selects">
-    <slot name="additionalFilters"></slot>
     <label>
       {{ $t('common.SELECTS.ORDER_BY.LABEL') }}:
       <select
@@ -55,10 +54,10 @@
     message: string
   }
   const props = defineProps<Props>()
+  const { order_by, query, sort, message } = toRefs(props)
 
   const emit = defineEmits(['updateSelect'])
 
-  const { order_by, query, sort, message } = toRefs(props)
   const perPage = [10, 25, 50, 100]
 
   function onSelectUpdate(event: Event) {

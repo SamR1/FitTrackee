@@ -9,7 +9,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
 from fittrackee import BaseModel, db
-from fittrackee.users.models import User
+from fittrackee.users.models import Notification, User
 from fittrackee.utils import encode_uuid
 
 from .exceptions import (
@@ -27,6 +27,7 @@ REPORT_ACTION_TYPES = [
 USER_ACTION_TYPES = [
     "user_suspension",
     "user_unsuspension",
+    "user_warning",
 ]
 COMMENT_ACTION_TYPES = [
     "comment_suspension",
@@ -51,7 +52,7 @@ class AdminAction(BaseModel):
         unique=True,
         nullable=False,
     )
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     admin_user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
@@ -166,17 +167,23 @@ class AdminAction(BaseModel):
             "id": self.short_id,
             "reason": self.reason,
         }
+
+        if current_user.admin:
+            action["admin_user"] = self.admin_user.serialize(
+                current_user=current_user
+            )
+            action["user"] = (
+                self.user.serialize(current_user=current_user)
+                if self.user
+                else None
+            )
         if not full:
             return action
 
         if current_user.admin:
             action = {
                 **action,
-                "admin_user": self.admin_user.serialize(current_user),
                 "report_id": self.report_id,
-                "user": (
-                    self.user.serialize(current_user) if self.user else None
-                ),
                 "comment": (
                     self.comment.serialize(user=current_user, for_report=True)
                     if self.comment_id
@@ -266,8 +273,9 @@ class AdminActionAppeal(BaseModel):
     ):
         action = AdminAction.query.filter_by(id=action_id).first()
         if action.action_type not in [
-            "user_suspension",
             "comment_suspension",
+            "user_suspension",
+            "user_warning",
             "workout_suspension",
         ]:
             raise InvalidAdminActionAppealException()
@@ -295,16 +303,41 @@ class AdminActionAppeal(BaseModel):
         }
         if current_user.admin:
             appeal["admin_user"] = (
-                self.admin_user.serialize(current_user)
+                self.admin_user.serialize(current_user=current_user)
                 if self.admin_user
                 else None
             )
-            appeal["user"] = self.user.serialize(current_user)
+            appeal["user"] = self.user.serialize(current_user=current_user)
         return appeal
 
 
+@listens_for(AdminAction, 'after_insert')
+def on_admin_insert(
+    mapper: Mapper, connection: Connection, new_action: AdminAction
+) -> None:
+    @listens_for(db.Session, 'after_flush', once=True)
+    def receive_after_flush(session: Session, context: Connection) -> None:
+        from fittrackee.administration.models import (
+            COMMENT_ACTION_TYPES,
+            WORKOUT_ACTION_TYPES,
+        )
+
+        if (
+            new_action.action_type
+            in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES + ["user_warning"]
+        ):
+            notification = Notification(
+                from_user_id=new_action.admin_user_id,
+                to_user_id=new_action.user_id,
+                created_at=new_action.created_at,
+                event_type=new_action.action_type,
+                event_object_id=new_action.id,
+            )
+            session.add(notification)
+
+
 @listens_for(AdminActionAppeal, 'after_insert')
-def on_report_insert(
+def on_admin_action_appeal_insert(
     mapper: Mapper, connection: Connection, new_appeal: AdminActionAppeal
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)

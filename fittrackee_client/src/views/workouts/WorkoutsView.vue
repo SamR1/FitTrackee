@@ -3,7 +3,7 @@
     <div class="container items-list-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters
-          :sports="translatedSports"
+          :translatedSports="translatedSports"
           :authUser="authUser"
           @filter="toggleFilters"
         />
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="list-container">
-        <WorkoutsList :user="authUser" :sports="translatedSports" />
+        <WorkoutsList :user="authUser" :translatedSports="translatedSports" />
       </div>
     </div>
   </div>

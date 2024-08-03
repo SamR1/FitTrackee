@@ -2,11 +2,10 @@ from datetime import datetime
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import bcrypt, db
 from fittrackee.administration.models import AdminAction
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.reports.models import Report
 from fittrackee.users.exceptions import (
     InvalidEmailException,
@@ -17,6 +16,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.users_service import UserManagerService
 
 from ..utils import random_email, random_string
 
@@ -281,7 +281,7 @@ class TestUserManagerServiceUserUpdate:
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             _, user_updated, _ = user_manager_service.update(
                 suspended=True, report_id=report.id
             )
@@ -300,7 +300,7 @@ class TestUserManagerServiceUserUpdate:
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             _, user_updated, _ = user_manager_service.update(
                 suspended=True, report_id=report.id
             )
@@ -367,7 +367,7 @@ class TestUserManagerServiceUserUpdate:
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             user_manager_service.update(
                 suspended=input_suspended,
                 report_id=report.id,

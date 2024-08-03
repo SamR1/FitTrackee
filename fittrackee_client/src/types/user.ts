@@ -2,7 +2,7 @@ import type { LocationQueryValue } from 'vue-router'
 
 import type { IPagePayload, TPaginationPayload } from '@/types/api'
 import type { TLanguage } from '@/types/locales'
-import type { IRecord } from '@/types/workouts'
+import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
 export type TPrivacyLevels =
   | 'private'
@@ -13,35 +13,38 @@ export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 
-export interface IUserProfile {
+export interface IUserLightProfile {
   admin: boolean
-  bio: string | null
-  birth_date: string | null
   blocked: boolean
   created_at: string
-  email?: string
-  email_to_confirm?: string
-  is_active: boolean
-  first_name: string | null
   followers: IUserProfile[]
   following: IUserProfile[]
   follows: string
   fullname?: string
+  is_active?: boolean
   is_followed_by: string
   is_remote: boolean
+  nb_workouts: number
+  picture: string | boolean
+  suspended_at?: string | null
+  username: string
+}
+
+export interface IUserProfile extends IUserLightProfile {
+  bio: string | null
+  birth_date: string | null
+  email?: string
+  email_to_confirm?: string
+  first_name: string | null
   last_name: string | null
   location: string | null
   nb_sports?: number
-  nb_workouts: number
-  picture: string | boolean
   profile_link?: string
   records: IRecord[]
   sports_list: number[]
-  suspended_at: string | null
   total_ascent: number
   total_distance: number
   total_duration: string
-  username: string
 }
 
 export interface IAuthUserProfile extends IUserProfile {
@@ -186,7 +189,7 @@ export interface IFollowRequestsActionPayload {
   getFollowRequests?: boolean
 }
 
-export interface ISuspensionAppeal {
+export interface IAdminActionAppeal {
   approved: boolean | null
   created_at: string
   id: string
@@ -195,11 +198,21 @@ export interface ISuspensionAppeal {
   updated_at: string
 }
 
-export interface ISuspension {
+export interface IUserAdminAction {
   action_type: string
-  appeal: ISuspensionAppeal
+  appeal: IAdminActionAppeal
+  comment?: IComment | null
   created_at: string
   id: string
   reason: string
   user?: IUserProfile
+  workout?: IWorkout | null
 }
+
+export interface IUserAppealPayload {
+  actionId: string
+  actionType: 'user_suspension' | 'user_warning'
+  text: string
+}
+
+export type TToken = string | LocationQueryValue | LocationQueryValue[]

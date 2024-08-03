@@ -6,27 +6,6 @@
         {{ $t('workouts.WORKOUT', user.nb_workouts) }}
       </span>
     </div>
-    <div class="user-stat" v-if="'total_distance' in user">
-      <Distance
-        :distance="user.total_distance"
-        unitFrom="km"
-        :digits="0"
-        :displayUnit="false"
-        :useImperialUnits="authUser ? authUser.imperial_units : false"
-      />
-      <span class="stat-label">
-        {{ authUser.imperial_units ? 'miles' : 'km' }}
-      </span>
-    </div>
-    <div
-      class="user-stat"
-      v-if="'nb_sports' in user && user.nb_sports !== undefined"
-    >
-      <span class="stat-number">{{ user.nb_sports }}</span>
-      <span class="stat-label">
-        {{ $t('workouts.SPORT', user.nb_sports) }}
-      </span>
-    </div>
     <div class="user-stat">
       <router-link
         v-if="displayLinks"
@@ -58,32 +37,29 @@
 
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
 
-  import { AUTH_USER_STORE } from '@/store/constants'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
+  import useAuthUser from '@/composables/useAuthUser'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
 
   interface Props {
-    user: IUserProfile
+    user: IUserLightProfile
   }
   const props = defineProps<Props>()
-
   const { user } = toRefs(props)
-  const store = useStore()
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
+  const { authUser } = useAuthUser()
+
   const displayLinks = computed(() =>
     user.value.username === authUser?.value.username
       ? !authUser?.value.suspended_at
       : true
   )
+
   function getURL(
-    user: IUserProfile,
+    user: IUserLightProfile,
     authUser: IAuthUserProfile,
     currentPath: string
-  ) {
+  ): string {
     if (user.is_remote) {
       return `users/${user.fullname}`
     }

@@ -122,7 +122,7 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         assert data['data']['users'][0] == jsonify_dict(
-            remote_user.serialize(user_1)
+            remote_user.serialize(current_user=user_1)
         )
         assert data['pagination'] == {
             'has_next': False,

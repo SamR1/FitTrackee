@@ -11,7 +11,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
-from ..comments.utils import CommentMixin
+from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
@@ -517,8 +517,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
@@ -727,8 +727,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
@@ -988,8 +988,8 @@ class TestUserNotifications(
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_1.username}",
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,

@@ -34,7 +34,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(remote_user)
+            workout_cycling_user_1.serialize(user=remote_user)
 
     def test_it_raises_exception_when_workout_visibility_is_local_follower_only(  # noqa
         self,
@@ -48,7 +48,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
 
         with pytest.raises(WorkoutForbiddenException):
-            workout_cycling_user_1.serialize(remote_user)
+            workout_cycling_user_1.serialize(user=remote_user)
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
@@ -85,7 +85,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             workout_cycling_user_1, map_id=random_string()
         )
 
-        serialized_workout = workout.serialize(remote_user)
+        serialized_workout = workout.serialize(user=remote_user, light=False)
 
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
@@ -128,7 +128,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         workout_cycling_user_1.map_visibility = input_map_visibility
         workout = self.update_workout(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize(remote_user)
+        serialized_workout = workout.serialize(user=remote_user)
 
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []

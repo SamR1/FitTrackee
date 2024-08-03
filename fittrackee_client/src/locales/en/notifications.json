@@ -21,12 +21,20 @@
     "ALL": "all",
     "comment_like": "likes on comments",
     "comment_reply": "comments replies",
+    "comment_suspension": "comment suspensions",
     "follow": "follow",
     "follow_request": "follow requests",
     "mention": "mentions",
     "report": "reports",
+    "user_warning": "warnings",
     "workout_comment": "comments on workouts",
-    "workout_like": "likes on workouts"
+    "workout_like": "likes on workouts",
+    "workout_suspension": "workout suspensions"
   },
-  "UNREAD": "Unread"
+  "UNREAD": "Unread",
+  "YOU_RECEIVED_A_WARNING": "You received a warning",
+  "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Your comment has been suspended",
+  "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "Your suspension of this comment has been lifted",
+  "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Your workout has been suspended",
+  "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "Your suspension of this workout has been lifted"
 }

@@ -9,8 +9,8 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
+from ...comments.mixins import CommentMixin
 from ...comments.test_comments_api import GetWorkoutCommentsTestCase
-from ...comments.utils import CommentMixin
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 from ...utils import jsonify_dict
 

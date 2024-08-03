@@ -45,7 +45,6 @@
     required?: boolean
     autocomplete: string
   }
-
   const props = withDefaults(defineProps<Props>(), {
     checkStrength: false,
     disabled: false,
@@ -63,10 +62,10 @@
     required,
   } = toRefs(props)
 
+  const emit = defineEmits(['updatePassword', 'passwordError'])
+
   const showPassword: Ref<boolean> = ref(false)
   const passwordValue: Ref<string> = ref('')
-
-  const emit = defineEmits(['updatePassword', 'passwordError'])
 
   function togglePassword() {
     showPassword.value = !showPassword.value

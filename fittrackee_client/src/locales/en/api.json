@@ -37,6 +37,7 @@
     "successfully registered": "Successfully registered.",
     "the number of files in the archive exceeds the limit": "The number of files in the archive exceeds the limit.",
     "user already suspended": "The user is already suspended.",
+    "user already warned": "The user is already warned.",
     "user does not exist": "User does not exist.",
     "valid email must be provided for admin contact": "A valid email must be provided for administrator contact",
     "workout already suspended": "The workout is already suspended.",

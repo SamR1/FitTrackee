@@ -25,7 +25,7 @@
           :query="query"
         />
         <table>
-          <thead :class="{ smaller: 'de' === currentLanguage }">
+          <thead :class="{ smaller: 'de' === appLanguage }">
             <tr>
               <th class="sport-col" />
               <th>{{ capitalize($t('workouts.WORKOUT', 1)) }}</th>
@@ -45,13 +45,13 @@
                   {{ $t('workouts.SPORT', 1) }}
                 </span>
                 <SportImage
-                  v-if="sports.length > 0"
+                  v-if="translatedSports.length > 0"
                   :title="
-                    sports.filter((s) => s.id === workout.sport_id)[0]
+                    translatedSports.filter((s) => s.id === workout.sport_id)[0]
                       .translatedLabel
                   "
-                  :sport-label="getSportLabel(workout, sports)"
-                  :color="getSportColor(workout, sports)"
+                  :sport-label="getSportLabel(workout, translatedSports)"
+                  :color="getSportColor(workout, translatedSports)"
                 />
               </td>
               <td
@@ -177,12 +177,9 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import {
-    AUTH_USER_STORE,
-    EQUIPMENTS_STORE,
-    ROOT_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { EQUIPMENTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IPagination } from '@/types/api'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -196,43 +193,38 @@
 
   interface Props {
     user: IAuthUserProfile
-    sports: ITranslatedSport[]
+    translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
+  const { user, translatedSports } = toRefs(props)
 
-  const store = useStore()
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
 
-  const { user, sports } = toRefs(props)
   const orderByList: string[] = [
     'ave_speed',
     'distance',
     'duration',
     'workout_date',
   ]
+
+  const { appLanguage } = useApp()
+  const { isAuthUserSuspended } = useAuthUser()
+
+  let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
+
+  const hoverWorkoutId: Ref<string | null> = ref(null)
+
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
   )
-  const currentLanguage: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-  let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
-  const hoverWorkoutId: Ref<string | null> = ref(null)
-
-  onBeforeMount(() => {
-    loadWorkouts(query)
-    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
-  })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
-    if (!isSuspended.value) {
+    if (!isAuthUserSuspended.value) {
       store.dispatch(
         WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
         user.value.imperial_units ? getConvertedPayload(payload) : payload
@@ -248,7 +240,6 @@
     query = getWorkoutsQuery(newQuery)
     router.push({ path: '/workouts', query })
   }
-
   function getWorkoutsQuery(newQuery: LocationQuery): TWorkoutsPayload {
     const workoutQuery = getQuery(
       newQuery,
@@ -269,7 +260,6 @@
       })
     return workoutQuery
   }
-
   function getConvertedPayload(payload: TWorkoutsPayload): TWorkoutsPayload {
     const convertedPayload: TWorkoutsPayload = {
       ...payload,
@@ -281,7 +271,6 @@
     })
     return convertedPayload
   }
-
   function onHover(workoutId: string | null) {
     hoverWorkoutId.value = workoutId
   }
@@ -293,6 +282,11 @@
       loadWorkouts(query)
     }
   )
+
+  onBeforeMount(() => {
+    loadWorkouts(query)
+    store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
 </script>
 
 <style lang="scss" scoped>

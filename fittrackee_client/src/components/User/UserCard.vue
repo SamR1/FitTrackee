@@ -30,12 +30,12 @@
     />
     <AlertMessage
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
-      v-if="!user.is_active"
+      v-if="'is_active' in user && !user.is_active"
     />
     <AlertMessage
       message="user.ACCOUNT_SUSPENDED_AT"
       :param="suspensionDate"
-      v-if="user.suspended_at !== null"
+      v-if="'suspended_at' in user && user.suspended_at !== null"
     />
     <ErrorMessage
       :message="errorMessages"
@@ -54,29 +54,25 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
-  import { ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
+  import useApp from '@/composables/useApp'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
   import { getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
-    user: IUserProfile
+    user: IUserLightProfile
     updatedUser?: string | null
     from?: string
     hideRelationship?: boolean
   }
   const props = defineProps<Props>()
+  const { authUser, from, hideRelationship, updatedUser, user } = toRefs(props)
 
-  const store = useStore()
+  const emit = defineEmits(['updatedUserRelationship'])
 
-  const { from } = toRefs(props)
+  const { errorMessages } = useApp()
 
-  const { authUser, updatedUser, user, hideRelationship } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at
       ? formatDate(
@@ -86,8 +82,6 @@
         )
       : null
   )
-
-  const emit = defineEmits(['updatedUserRelationship'])
 
   function emitUser(username: string) {
     emit('updatedUserRelationship', username)

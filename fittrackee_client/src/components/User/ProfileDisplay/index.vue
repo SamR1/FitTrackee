@@ -2,25 +2,17 @@
   <div id="user-profile">
     <UserHeader :user="user" />
     <div class="box">
-      <UserProfileTabs
-        v-if="tabs.includes(tab)"
-        :tabs="tabs"
-        :selectedTab="tab"
-        :edition="false"
-      />
+      <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="false" />
       <router-view :user="user"></router-view>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useStore } from 'vuex'
+  import { toRefs } from 'vue'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'
 
   interface Props {
@@ -28,27 +20,9 @@
     tab: string
   }
   const props = defineProps<Props>()
-
   const { user, tab } = toRefs(props)
 
-  const store = useStore()
-
-  const isSuspended: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
-  )
-  const tabs = computed(() =>
-    isSuspended.value
-      ? ['PROFILE', 'PREFERENCES', 'APPS']
-      : [
-          'PROFILE',
-          'PREFERENCES',
-          'SPORTS',
-          'EQUIPMENTS',
-          'FOLLOW-REQUESTS',
-          'BLOCKED-USERS',
-          'APPS',
-        ]
-  )
+  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS']
 </script>
 
 <style lang="scss" scoped>

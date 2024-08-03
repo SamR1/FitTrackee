@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.users.models import User
@@ -38,7 +38,7 @@ class TestWorkoutLikeModel:
         workout_cycling_user_1: Workout,
     ) -> None:
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             like = WorkoutLike(
                 user_id=user_2.id,
                 workout_id=workout_cycling_user_1.id,

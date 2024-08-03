@@ -43,21 +43,19 @@
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
+  import useApp from '@/composables/useApp'
+  import { OAUTH2_STORE } from '@/store/constants'
   import type { IOAuth2Client } from '@/types/oauth'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const store = useStore()
 
+  const { errorMessages } = useApp()
+
   const client: ComputedRef<IOAuth2Client> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENT]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onBeforeMount(() => loadApp())
 
   function loadApp() {
     if (route.query.client_id && typeof route.query.client_id === 'string') {
@@ -67,7 +65,6 @@
       )
     }
   }
-
   function authorizeApp() {
     store.dispatch(OAUTH2_STORE.ACTIONS.AUTHORIZE_CLIENT, {
       client_id: `${route.query.client_id}`,
@@ -85,6 +82,8 @@
       }`,
     })
   }
+
+  onBeforeMount(() => loadApp())
 </script>
 
 <style scoped lang="scss">

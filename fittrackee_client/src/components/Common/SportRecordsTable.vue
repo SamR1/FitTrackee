@@ -26,7 +26,6 @@
     record: ICardRecord
   }
   const props = defineProps<Props>()
-
   const { record } = toRefs(props)
 </script>
 

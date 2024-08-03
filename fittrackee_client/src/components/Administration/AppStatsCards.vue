@@ -34,8 +34,8 @@
     appStatistics: IAppStatistics
   }
   const props = defineProps<Props>()
-
   const { appStatistics } = toRefs(props)
+
   const uploadDirSize = computed(() =>
     getReadableFileSize(appStatistics.value.uploads_dir_size)
   )

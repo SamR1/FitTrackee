@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-  import { inject, toRefs } from 'vue'
+  import { toRefs } from 'vue'
 
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
@@ -46,6 +46,7 @@
   import Snowshoes from '@/components/Common/Images/SportImage/Snowshoes.vue'
   import Trail from '@/components/Common/Images/SportImage/Trail.vue'
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
+  import useSports from '@/composables/useSports'
 
   interface Props {
     sportLabel: string
@@ -55,7 +56,7 @@
   const props = withDefaults(defineProps<Props>(), {
     title: '',
   })
-
   const { color, sportLabel, title } = toRefs(props)
-  const sportColors = inject('sportColors') as Record<string, string>
+
+  const { sportColors } = useSports()
 </script>

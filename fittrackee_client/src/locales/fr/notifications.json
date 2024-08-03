@@ -21,12 +21,20 @@
     "ALL": "toutes",
     "comment_like": "likes sur un commentaire",
     "comment_reply": "réponses à un commentaire",
+    "comment_suspension": "commentaires suspendus",
     "follow": "abonnements",
     "follow_request": "demandes d'abonnement",
     "mention": "mentions",
     "report": "signalements",
+    "user_warning": "avertissements",
     "workout_comment": "commentaires sur une séance",
-    "workout_like": "likes sur une séance"
+    "workout_like": "likes sur une séance",
+    "workout_suspension": "séances suspendues"
   },
-  "UNREAD": "Non lues"
+  "UNREAD": "Non lues",
+  "YOU_RECEIVED_A_WARNING": "Vous avez reçu un avertissement",
+  "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Votre commentaire a été suspendu",
+  "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "La suspension de votre commentaire a été levée",
+  "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Votre séance a été suspendue",
+  "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "La suspension de votre séance a été levée"
 }

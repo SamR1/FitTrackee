@@ -32,6 +32,7 @@ import type {
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
   IUserSportPreferencesResetPayload,
+  IUserAppealPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -296,13 +297,19 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.APPEAL](
     context: ActionContext<IAuthUserState, IRootState>,
-    appealText: string
+    appealPayload: IUserAppealPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    console.log(appealPayload)
+    const url =
+      appealPayload.actionType === 'user_suspension'
+        ? 'auth/account/suspension/appeal'
+        : `auth/account/warning/${appealPayload.actionId}/appeal`
+    console.log(url)
     authApi
-      .post('auth/account/suspension/appeal', { text: appealText })
+      .post(url, { text: appealPayload.text })
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
@@ -663,6 +670,33 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
       .catch((error) => {
         handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_USER_WARNING](
+    context: ActionContext<IAuthUserState, IRootState>,
+    actionId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get(`auth/account/warning/${actionId}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING,
+            res.data.user_warning
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
       })
       .finally(() =>
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)

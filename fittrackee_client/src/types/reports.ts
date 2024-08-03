@@ -1,8 +1,13 @@
-import type { ISuspensionAppeal, IUserProfile } from '@/types/user'
+import type {
+  IAdminActionAppeal,
+  IUserLightProfile,
+  IUserProfile,
+} from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export interface IReport {
   id: number
+  is_reported_user_warned: boolean
   created_at: string
   note: string
   object_type: string
@@ -18,13 +23,13 @@ export interface IReport {
 
 export interface IAdminAction {
   action_type: string
-  admin_user: IUserProfile
-  appeal: ISuspensionAppeal | null
+  admin_user: IUserLightProfile
+  appeal: IAdminActionAppeal | null
   created_at: string
   id: number
   reason: string | null
   report_id: number | null
-  user: IUserProfile | null
+  user: IUserLightProfile | null
 }
 
 export interface IReportComment {
@@ -47,6 +52,11 @@ export interface IReportPayload {
   from?: string
 }
 
+export interface IGetReportPayload {
+  reportId: number
+  loader: 'REPORT' | 'REPORT_UPDATE'
+}
+
 export interface IReportCommentPayload {
   reportId: number
   comment: string
@@ -57,6 +67,7 @@ export type TReportAction =
   | 'ADD_COMMENT'
   | 'MARK_AS_RESOLVED'
   | 'MARK_AS_UNRESOLVED'
+  | 'SEND_WARNING_EMAIL'
   | 'SUSPEND_ACCOUNT'
   | 'SUSPEND_CONTENT'
   | 'UNSUSPEND_ACCOUNT'

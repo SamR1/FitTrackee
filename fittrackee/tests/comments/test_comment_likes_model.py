@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.comments.models import CommentLike
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 
 class TestCommentLikeModel(CommentMixin):
@@ -20,9 +20,7 @@ class TestCommentLikeModel(CommentMixin):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         created_at = datetime.utcnow()
 
         like = CommentLike(
@@ -43,11 +41,9 @@ class TestCommentLikeModel(CommentMixin):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             like = CommentLike(user_id=user_2.id, comment_id=comment.id)
 
         assert like.user_id == user_2.id
@@ -62,9 +58,7 @@ class TestCommentLikeModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
         db.session.commit()

@@ -12,6 +12,7 @@
   import type { Ref } from 'vue'
 
   import Error from '@/components/Common/Error.vue'
+
   interface Props {
     target?: string
   }
@@ -19,10 +20,9 @@
     target: 'PAGE',
   })
   const { target } = toRefs(props)
-  const timer = ref<number | undefined>()
-  const errorDisplayed: Ref<boolean> = ref(false)
 
-  onMounted(() => displayError())
+  const timer: Ref<number | undefined> = ref()
+  const errorDisplayed: Ref<boolean> = ref(false)
 
   function displayError() {
     timer.value = setTimeout(() => {
@@ -30,6 +30,7 @@
     }, 500)
   }
 
+  onMounted(() => displayError())
   onUnmounted(() => {
     if (timer.value) {
       clearTimeout(timer.value)

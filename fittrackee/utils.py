@@ -1,14 +1,46 @@
 import time
-from datetime import timedelta
-from typing import Optional
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Optional
 from uuid import UUID
 
 import humanize
 import nh3
+import pytz
 import shortuuid
+from babel.dates import format_datetime
 from sqlalchemy.sql import text
 
 from fittrackee import db
+from fittrackee.languages import LANGUAGES_DATE_STRING
+from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
+from fittrackee.users.utils.language import get_language
+
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
+
+
+def get_date_string_for_user(date_to_format: datetime, user: "User") -> str:
+    """
+    Note: date_to_format is a naive datetime
+    """
+    user_language = get_language(user.language)
+    user_timezone = user.timezone if user.timezone else USER_TIMEZONE
+    user_date_format = (
+        user.date_format if user.date_format else USER_DATE_FORMAT
+    )
+
+    date_format = (
+        LANGUAGES_DATE_STRING[user_language]
+        if user_date_format == "date_string"
+        else user_date_format
+    )
+    return format_datetime(
+        pytz.utc.localize(date_to_format).astimezone(
+            pytz.timezone(user_timezone)
+        ),
+        format=f"{date_format} - HH:mm:ss",
+        locale=user_language,
+    )
 
 
 def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:

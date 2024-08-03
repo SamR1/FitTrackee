@@ -10,6 +10,7 @@ from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES
 
 
+@pytest.mark.disable_autouse_update_records_patch
 class TestGetRecords(ApiTestCaseMixin):
     def test_it_returns_error_when_user_is_suspended(
         self,

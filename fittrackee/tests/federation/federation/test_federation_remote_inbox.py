@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 from _pytest.logging import LogCaptureFixture
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee.federation.inbox import send_to_inbox
 from fittrackee.federation.signature import VALID_SIG_DATE_FORMAT
@@ -36,7 +36,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
         digest = self.random_string()
         generate_digest_mock.return_value = digest
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             send_to_inbox(
                 sender=actor_1,
                 activity={'foo': 'bar'},
@@ -76,7 +76,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
         digest = self.random_string()
         generate_digest_mock.return_value = digest
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             send_to_inbox(
                 sender=actor_1,
                 activity=activity,

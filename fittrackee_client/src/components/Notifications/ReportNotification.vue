@@ -30,7 +30,6 @@
   interface Props {
     report: IReportForAdmin
   }
-
   const props = defineProps<Props>()
   const { report } = toRefs(props)
 </script>

@@ -7,16 +7,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import type { ComputedRef } from 'vue'
-
   import UsersList from '@/components/Users/UsersList.vue'
-  import { AUTH_USER_STORE } from '@/store/constants'
-  import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
+  import useAuthUser from '@/composables/useAuthUser'
 
-  const store = useStore()
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser } = useAuthUser()
 </script>

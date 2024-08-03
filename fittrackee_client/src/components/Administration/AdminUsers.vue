@@ -153,7 +153,7 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import type { Reactive, ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
@@ -161,14 +161,11 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
-  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type {
-    IAuthUserProfile,
-    IUserProfile,
-    TUsersPayload,
-  } from '@/types/user'
+  import type { IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -178,7 +175,10 @@
   const route = useRoute()
   const router = useRouter()
 
-  const orderByList: string[] = [
+  const { errorMessages } = useApp()
+  const { authUser } = useAuthUser()
+
+  const orderByList = [
     'is_active',
     'admin',
     'created_at',
@@ -186,22 +186,17 @@
     'workouts_count',
   ]
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(
+
+  let query: Reactive<TPaginationPayload> = reactive(
     getQuery(route.query, orderByList, defaultOrderBy)
   )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onBeforeMount(() => loadUsers(query))
 
   function loadUsers(queryParams: TUsersPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
@@ -209,7 +204,6 @@
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)
   }
-
   function updateUser(username: string, admin: boolean) {
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
@@ -230,10 +224,6 @@
     )
   }
 
-  onUnmounted(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
-  })
-
   watch(
     () => route.query,
     (newQuery: LocationQuery) => {
@@ -241,6 +231,11 @@
       loadUsers(query)
     }
   )
+
+  onBeforeMount(() => loadUsers(query))
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -129,7 +129,6 @@
     useImperialUnits: boolean
   }
   const props = defineProps<Props>()
-
   const { useImperialUnits, workoutObject } = toRefs(props)
 </script>
 

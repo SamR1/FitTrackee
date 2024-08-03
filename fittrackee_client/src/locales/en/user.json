@@ -18,11 +18,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Data export",
     "DOWNLOAD_ARCHIVE": "Download archive",
-    "GENERATING_LINK": "generating link...",
+    "GENERATING_LINK": "generating link…",
     "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
     "STATUS": {
       "errored": "errored (please request another export)",
-      "in_progress": "in progres..."
+      "in_progress": "in progres…"
     }
   },
   "FILTER_ON_USERNAME": "Filter on username",
@@ -39,6 +39,7 @@
   "NEW_PASSWORD": "New password",
   "NO_SPORT_FOUND": "No sport found.",
   "NO_USERS_FOUND": "No users found.",
+  "NO_WARNING_FOUND": "No warning found.",
   "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", only {0} from this instance are displayed",
   "PASSWORD": "Password",
   "PASSWORD_FORGOTTEN": "Forgot password?",
@@ -199,5 +200,7 @@
   "USER_PICTURE": "user picture",
   "YOU": "you",
   "YOU_CAN_APPEAL_ONCE": "You can appeal only once.",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}."
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}.",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Your account has been suspended",
+  "WARNING_REASON": "Warning reason"
 }

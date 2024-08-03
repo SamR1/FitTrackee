@@ -8,7 +8,11 @@
         </div>
         <label class="form-items">
           {{ $t('user.PROFILE.LANGUAGE') }}
-          <select id="language" v-model="userForm.language" :disabled="loading">
+          <select
+            id="language"
+            v-model="userForm.language"
+            :disabled="authUserLoading"
+          >
             <option
               v-for="lang in availableLanguages"
               :value="lang.value"
@@ -23,7 +27,7 @@
           <select
             id="use_dark_mode"
             v-model="userForm.use_dark_mode"
-            :disabled="loading"
+            :disabled="authUserLoading"
           >
             <option
               v-for="mode in useDarkMode"
@@ -38,7 +42,7 @@
           {{ $t('user.PROFILE.TIMEZONE') }}
           <TimezoneDropdown
             :input="userForm.timezone"
-            :disabled="loading"
+            :disabled="authUserLoading"
             @updateTimezone="(e) => updateValue('timezone', e)"
           />
         </label>
@@ -47,7 +51,7 @@
           <select
             id="date_format"
             v-model="userForm.date_format"
-            :disabled="loading"
+            :disabled="authUserLoading"
           >
             <option
               v-for="dateFormat in dateFormatOptions"
@@ -69,7 +73,7 @@
                 :id="start.label"
                 :name="start.label"
                 :checked="start.value === userForm.weekm"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="updateValue('weekm', start.value)"
               />
               <span class="checkbox-label">
@@ -95,7 +99,7 @@
                 :id="status.label"
                 :name="status.label"
                 :checked="status.value === userForm.manually_approves_followers"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="
                   updateValue('manually_approves_followers', status.value)
                 "
@@ -124,7 +128,7 @@
                 :checked="
                   status.value === userForm.hide_profile_in_users_directory
                 "
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="
                   updateValue('hide_profile_in_users_directory', status.value)
                 "
@@ -149,7 +153,7 @@
                 :id="unit.label"
                 :name="unit.label"
                 :checked="unit.value === userForm.imperial_units"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="updateValue('imperial_units', unit.value)"
               />
               <span class="checkbox-label">
@@ -169,7 +173,7 @@
                 :id="status.label"
                 :name="status.label"
                 :checked="status.value === userForm.display_ascent"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="updateValue('display_ascent', status.value)"
               />
               <span class="checkbox-label">
@@ -192,7 +196,7 @@
                 :id="status.label"
                 :name="status.label"
                 :checked="status.value === userForm.start_elevation_at_zero"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="updateValue('start_elevation_at_zero', status.value)"
               />
               <span class="checkbox-label">
@@ -212,7 +216,7 @@
                 :id="status.label"
                 :name="status.label"
                 :checked="status.value === userForm.use_raw_gpx_speed"
-                :disabled="loading"
+                :disabled="authUserLoading"
                 @input="updateValue('use_raw_gpx_speed', status.value)"
               />
               <span class="checkbox-label">
@@ -232,7 +236,7 @@
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
-            :disabled="loading"
+            :disabled="authUserLoading"
             @change="updateMapVisibility"
           >
             <option v-for="level in privacyLevels" :value="level" :key="level">
@@ -252,7 +256,7 @@
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
-            :disabled="loading"
+            :disabled="authUserLoading"
           >
             <option
               v-for="level in mapPrivacyLevels"
@@ -287,14 +291,18 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, onMounted, onUnmounted } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, reactive, onMounted, onUnmounted, toRefs } from 'vue'
+  import type { ComputedRef, Reactive } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
+  import type {
+    IUserPreferencesPayload,
+    IAuthUserProfile,
+    TPrivacyLevels,
+  } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages } from '@/utils/locales'
@@ -309,24 +317,13 @@
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const store = useStore()
 
-  const userForm: IUserPreferencesPayload = reactive({
-    date_format: 'dd/MM/yyyy',
-    display_ascent: true,
-    hide_profile_in_users_directory: true,
-    imperial_units: false,
-    language: 'en',
-    manually_approves_followers: true,
-    map_visibility: 'private',
-    start_elevation_at_zero: false,
-    timezone: 'Europe/Paris',
-    use_dark_mode: false,
-    use_raw_gpx_speed: false,
-    weekm: false,
-    workouts_visibility: 'private',
-  })
+  const { appConfig, errorMessages } = useApp()
+  const { authUserLoading } = useAuthUser()
+
   const weekStart = [
     {
       label: 'SUNDAY',
@@ -411,33 +408,37 @@
       value: false,
     },
   ]
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const dateFormatOptions = computed(() =>
-    availableDateFormatOptions(
-      new Date().toUTCString(),
-      props.user.timezone,
-      userForm.language
-    )
+
+  const userForm: Reactive<IUserPreferencesPayload> = reactive({
+    date_format: 'dd/MM/yyyy',
+    display_ascent: true,
+    hide_profile_in_users_directory: true,
+    imperial_units: false,
+    language: 'en',
+    manually_approves_followers: true,
+    map_visibility: 'private',
+    start_elevation_at_zero: false,
+    timezone: 'Europe/Paris',
+    use_dark_mode: false,
+    use_raw_gpx_speed: false,
+    weekm: false,
+    workouts_visibility: 'private',
+  })
+
+  const dateFormatOptions: ComputedRef<Record<string, string>[]> = computed(
+    () =>
+      availableDateFormatOptions(
+        new Date().toUTCString(),
+        user.value.timezone,
+        userForm.language
+      )
   )
   const privacyLevels = computed(() =>
     getPrivacyLevels(appConfig.value.federation_enabled)
   )
-  const mapPrivacyLevels = computed(() =>
+  const mapPrivacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
   )
-
-  onMounted(() => {
-    if (props.user) {
-      updateUserForm(props.user)
-    }
-  })
 
   function updateUserForm(user: IAuthUserProfile) {
     userForm.display_ascent = user.display_ascent
@@ -481,6 +482,11 @@
     )
   }
 
+  onMounted(() => {
+    if (user.value) {
+      updateUserForm(user.value)
+    }
+  })
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })

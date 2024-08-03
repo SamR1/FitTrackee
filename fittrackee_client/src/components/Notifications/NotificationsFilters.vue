@@ -55,37 +55,39 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { ref, watch } from 'vue'
+  import type { Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
-  import type { LocationQuery } from 'vue-router'
+  import type { LocationQuery, LocationQueryValue } from 'vue-router'
 
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { TNotificationType } from '@/types/notifications'
-  import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const router = useRouter()
-  const store = useStore()
   const { t } = useI18n()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+  const { authUser } = useAuthUser()
+
   const notificationTypes: TNotificationType[] = [
     'follow',
     'follow_request',
     'comment_like',
     'comment_reply',
+    'comment_suspension',
     'mention',
     'report',
+    'user_warning',
     'workout_comment',
     'workout_like',
+    'workout_suspension',
   ]
   let params: LocationQuery = Object.assign({}, route.query)
-  const notificationsStatus = ref(getStatusFromQuery(route.query))
+
+  const notificationsStatus: Ref<LocationQueryValue | LocationQueryValue[]> =
+    ref(getStatusFromQuery(route.query))
+
   function getStatusFromQuery(query: LocationQuery) {
     return 'status' in query ? query.status : null
   }

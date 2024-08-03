@@ -88,7 +88,7 @@ def get_app(
                 current_app.config['UPLOAD_FOLDER'],
                 ignore_errors=True,
             )
-            return app
+            return app  # type: ignore
 
 
 @pytest.fixture

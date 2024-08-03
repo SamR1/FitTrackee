@@ -49,25 +49,24 @@
   import { toRefs } from 'vue'
 
   import { USERS_STORE } from '@/store/constants'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { isAuthUser, getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
-    user: IUserProfile
+    user: IUserLightProfile
     from: string
     displayFollowsYou?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     displayFollowsYou: false,
   })
-
-  const store = useStore()
-
   const { authUser, from, user, displayFollowsYou } = toRefs(props)
 
   const emit = defineEmits(['updatedUser'])
+
+  const store = useStore()
 
   function updateRelationship(username: string, following: boolean) {
     emit('updatedUser', username)

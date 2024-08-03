@@ -38,21 +38,16 @@
 
 <script setup lang="ts">
   import { computed, ref, onBeforeMount, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import {
-    AUTH_USER_STORE,
-    ROOT_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
-  import type { TLanguage } from '@/types/locales'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getDateFormat } from '@/utils/dates'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
@@ -62,14 +57,19 @@
   const props = defineProps<Props>()
   const { sports, authUser } = toRefs(props)
 
+  const { dateFormat } = useAuthUser()
+
   const store = useStore()
 
-  const page = ref(1)
   const per_page = 5
-  const initWorkoutsCount =
+
+  const page: Ref<number> = ref(1)
+
+  const initWorkoutsCount: ComputedRef<number> = computed(() =>
     authUser.value.nb_workouts >= per_page
       ? per_page
       : authUser.value.nb_workouts
+  )
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
   )
@@ -78,17 +78,9 @@
       ? workouts.value[workouts.value.length - 1].previous_workout !== null
       : false
   )
-  const appLanguage: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const dateFormat: ComputedRef<string> = computed(() =>
-    getDateFormat(authUser.value.date_format, appLanguage.value)
-  )
   const isSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
-
-  onBeforeMount(() => loadWorkouts())
 
   function loadWorkouts() {
     if (!isSuspended.value) {
@@ -109,6 +101,8 @@
       })
     }
   }
+
+  onBeforeMount(() => loadWorkouts())
 </script>
 
 <style lang="scss" scoped>

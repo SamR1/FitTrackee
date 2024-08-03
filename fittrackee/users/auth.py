@@ -18,8 +18,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
-from fittrackee.administration.models import AdminActionAppeal
-from fittrackee.administration.users_service import UserManagerService
+from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -47,7 +46,8 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.utils import get_readable_duration
+from fittrackee.users.users_service import UserManagerService
+from fittrackee.utils import decode_short_id, get_readable_duration
 from fittrackee.workouts.models import Sport
 
 from .exceptions import UserControlsException, UserCreationException
@@ -73,14 +73,14 @@ BLOCKED_USERS_PER_PAGE = 5
 
 def send_account_confirmation_email(user: User) -> None:
     if current_app.config['CAN_SEND_EMAILS']:
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         email_data = {
             'username': user.username,
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore  # noqa
             'browser_name': request.user_agent.browser,  # type: ignore
             'account_confirmation_url': (
-                f'{ui_url}/account-confirmation'
+                f'{fittrackee_url}/account-confirmation'
                 f'?token={user.confirmation_token}'
             ),
         }
@@ -402,7 +402,10 @@ def get_authenticated_user_profile(
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
     """
-    return {'status': 'success', 'data': auth_user.serialize(auth_user)}
+    return {
+        'status': 'success',
+        'data': auth_user.serialize(current_user=auth_user, light=False),
+    }
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
@@ -569,7 +572,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user profile updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -757,14 +760,14 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             user_data = {
                 'language': get_language(auth_user.language),
                 'email': auth_user.email,
             }
             data = {
                 'username': auth_user.username,
-                'fittrackee_url': ui_url,
+                'fittrackee_url': fittrackee_url,
                 'operating_system': request.user_agent.platform,
                 'browser_name': request.user_agent.browser,
             }
@@ -786,7 +789,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     **data,
                     **{
                         'email_confirmation_url': (
-                            f'{ui_url}/email-update'
+                            f'{fittrackee_url}/email-update'
                             f'?token={auth_user.confirmation_token}'
                         )
                     },
@@ -800,7 +803,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user account updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -1029,7 +1032,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user preferences updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -1439,7 +1442,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     user = User.query.filter(User.email == email).first()
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         user_language = get_language(user.language)
         email_data = {
             'expiration_delay': get_readable_duration(
@@ -1448,9 +1451,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             ),
             'username': user.username,
             'password_reset_url': (
-                f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
+                f'{fittrackee_url}/password-reset?token={password_reset_token}'  # noqa
             ),
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore
             'browser_name': request.user_agent.browser,  # type: ignore
         }
@@ -2058,7 +2061,8 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
     return {
         "status": "success",
         "blocked_users": [
-            user.serialize(auth_user) for user in paginated_relations.items
+            user.serialize(current_user=auth_user)
+            for user in paginated_relations.items
         ],
         "pagination": {
             "has_next": paginated_relations.has_next,
@@ -2102,6 +2106,62 @@ def appeal_user_suspension(
     try:
         appeal = AdminActionAppeal(
             action_id=auth_user.suspension_action.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route(
+    "/auth/account/warning/<string:action_short_id>", methods=["GET"]
+)
+@require_auth(scopes=['profile:read'])
+def get_user_warning(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    warning_action = AdminAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not warning_action:
+        return NotFoundErrorResponse("no warning found")
+
+    return {
+        "status": "success",
+        "user_warning": warning_action.serialize(
+            current_user=auth_user, full=True
+        ),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/warning/<string:action_short_id>/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'])
+def appeal_user_warning(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    warning_action = AdminAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not warning_action:
+        return NotFoundErrorResponse("no warning found")
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = AdminActionAppeal(
+            action_id=warning_action.id,
             user_id=auth_user.id,
             text=text,
         )

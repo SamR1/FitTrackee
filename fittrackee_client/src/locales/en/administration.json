@@ -28,7 +28,7 @@
       "ADD_COMMENT": "Add a comment",
       "MARK_AS_RESOLVED": "Mark as resolved",
       "MARK_AS_UNRESOLVED": "Mark as unresolved",
-      "SEND_EMAIL": "Send an email",
+      "SEND_WARNING_EMAIL": "Send a warning",
       "SUSPEND_ACCOUNT": "Suspend user account",
       "SUSPEND_CONTENT": "Suspend content",
       "UNSUSPEND_ACCOUNT": "Unsuspend user account",
@@ -64,6 +64,7 @@
       "report_resolution": "The report has been marked as resolved by {1} {2}.",
       "user_suspension": "{0} has been suspended by {1} {2}.",
       "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
+      "user_warning": "A warning has been sent to {0} by {1} {2}.",
       "workout_suspension": "The workout has been suspended by {1} {2}.",
       "workout_unsuspension": "The workout suspension has been lifted by {1} {2}."
     },
@@ -79,6 +80,8 @@
       "ADD_COMMENT": "Add comment, action taken or any other useful information.",
       "INFORMATION_VISIBLE_TO_USER": "This information will be visible to the user.",
       "MARK_AS_RESOLVED": "Indicate the reason for resolution.",
+      "MARK_AS_UNRESOLVED": "Indicate the reason for non-resolution.",
+      "SEND_WARNING_EMAIL": "Indicate the reason for warning (not mandatory).",
       "SUSPEND": "Indicate the reason for suspension (not mandatory).",
       "UNSUSPEND": "Add a comment (not mandatory).",
       "UPDATE_APPEAL": "Indicate the reason for this appeal processing."

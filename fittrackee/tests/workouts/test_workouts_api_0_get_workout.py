@@ -8,12 +8,12 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.tests.comments.utils import CommentMixin
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
-from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from .mixins import WorkoutApiTestCaseMixin
 
 
 class GetWorkoutGpxAsFollowerMixin:
@@ -38,7 +38,7 @@ class GetWorkoutGpxPublicVisibilityMixin:
         workout.map_visibility = map_visibility
 
 
-class GetWorkoutTestCase(ApiTestCaseMixin):
+class GetWorkoutTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}'
 
 
@@ -84,7 +84,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user_1)
+            workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
     def test_it_gets_owner_suspended_workout(
@@ -110,7 +110,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_1.serialize(user_1)
+            workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
 
@@ -202,7 +202,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_2.serialize(user_1)
+            workout_cycling_user_2.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(
@@ -349,7 +349,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0] == jsonify_dict(
-            workout_cycling_user_2.serialize(user_1)
+            workout_cycling_user_2.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(
@@ -552,7 +552,7 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         )
 
 
-class GetWorkoutGpxTestCase(ApiTestCaseMixin):
+class GetWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/gpx'
 
 
@@ -934,7 +934,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         assert data['data']['gpx'] == gpx_content
 
 
-class GetGetWorkoutChartDataTestCase(ApiTestCaseMixin):
+class GetGetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/chart_data'
 
 
@@ -1308,7 +1308,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         assert data['data']['chart_data'] == chart_data
 
 
-class GetWorkoutSegmentGpxTestCase(ApiTestCaseMixin):
+class GetWorkoutSegmentGpxTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/gpx/segment/{segment_id}'
 
 
@@ -1738,7 +1738,7 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
 
 
-class GetWorkoutSegmentChartDataTestCase(ApiTestCaseMixin):
+class GetWorkoutSegmentChartDataTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/chart_data/segment/{segment_id}'
 
 
@@ -2144,7 +2144,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         assert data['data']['chart_data'] == chart_data
 
 
-class TestGetWorkoutMap(ApiTestCaseMixin):
+class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
     def test_it_returns_404_if_workout_has_no_map(self, app: Flask) -> None:
         client = app.test_client()
         response = client.get(
@@ -2200,7 +2200,7 @@ class TestGetWorkoutMap(ApiTestCaseMixin):
         self.assert_404_with_message(response, 'Map file does not exist')
 
 
-class TestWorkoutScope(ApiTestCaseMixin):
+class TestWorkoutScope(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:read': True}.items(),
@@ -2243,7 +2243,7 @@ class TestWorkoutScope(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class DownloadWorkoutGpxTestCase(ApiTestCaseMixin):
+class DownloadWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/gpx/download'
 
 

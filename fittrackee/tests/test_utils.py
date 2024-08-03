@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 
 import pytest
@@ -5,7 +6,12 @@ from flask import Flask
 
 from fittrackee.files import display_readable_file_size
 from fittrackee.request import UserAgent
-from fittrackee.utils import clean_input, get_readable_duration
+from fittrackee.users.models import User
+from fittrackee.utils import (
+    clean_input,
+    get_date_string_for_user,
+    get_readable_duration,
+)
 
 
 class TestDisplayReadableFileSize:
@@ -118,3 +124,54 @@ class TestSanitizeInput:
         self, app: Flask, input_comment: str, expected_comment: str
     ) -> None:
         assert clean_input(input_comment) == expected_comment
+
+
+class TestGetDateStringForUser:
+    @pytest.mark.parametrize(
+        'language, date_format, timezone, expected_date_string',
+        [
+            ('en', 'MM/dd/yyyy', 'America/New_York', '07/14/2024 - 07:32:47'),
+            ('fr', 'dd/MM/yyyy', 'Europe/Paris', '14/07/2024 - 13:32:47'),
+            (None, 'yyyy-MM-dd', 'Europe/Paris', '2024-07-14 - 13:32:47'),
+            ('en', 'MM/dd/yyyy', None, '07/14/2024 - 13:32:47'),
+            ('en', None, 'Europe/Paris', '07/14/2024 - 13:32:47'),
+            (
+                'en',
+                'date_string',
+                'America/New_York',
+                'Jul. 14, 2024 - 07:32:47',
+            ),
+            ('cs', 'date_string', 'Europe/Paris', '14. čvc 2024 - 13:32:47'),
+            ('de', 'date_string', 'Europe/Paris', '14. Juli 2024 - 13:32:47'),
+            ('en', 'date_string', 'Europe/Paris', 'Jul. 14, 2024 - 13:32:47'),
+            ('es', 'date_string', 'Europe/Paris', '14 jul 2024 - 13:32:47'),
+            ('eu', 'date_string', 'Europe/Paris', '2024 uzt. 14 - 13:32:47'),
+            ('fr', 'date_string', 'Europe/Paris', '14 juil. 2024 - 13:32:47'),
+            ('gl', 'date_string', 'Europe/Paris', '14 xul. 2024 - 13:32:47'),
+            ('it', 'date_string', 'Europe/Paris', '14 lug 2024 - 13:32:47'),
+            ('nb', 'date_string', 'Europe/Paris', '14. juli 2024 - 13:32:47'),
+            ('nl', 'date_string', 'Europe/Paris', '14 jul. 2024 - 13:32:47'),
+            ('pl', 'date_string', 'Europe/Paris', '14 lip 2024 - 13:32:47'),
+            ('pt', 'date_string', 'Europe/Paris', '14 jul. 2024 - 13:32:47'),
+            (None, 'date_string', 'Europe/Paris', 'Jul. 14, 2024 - 13:32:47'),
+        ],
+    )
+    def test_it_returns_date_string_with_user_preferences(
+        self,
+        app: Flask,
+        user_1: 'User',
+        language: Union[str, None],
+        date_format: str,
+        timezone: Union[str, None],
+        expected_date_string: str,
+    ) -> None:
+        naive_datetime = datetime(
+            year=2024, month=7, day=14, hour=11, minute=32, second=47
+        )
+        user_1.language = language
+        user_1.date_format = date_format
+        user_1.timezone = timezone
+
+        date_string = get_date_string_for_user(naive_datetime, user_1)
+
+        assert date_string == expected_date_string

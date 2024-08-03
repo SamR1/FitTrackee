@@ -12,11 +12,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Export dat",
     "DOWNLOAD_ARCHIVE": "Stáhnout archiv",
-    "GENERATING_LINK": "generování odkazu...",
+    "GENERATING_LINK": "generování odkazu…",
     "ONLY_ONE_EXPORT_PER_DAY": "Archiv lze požadovat po 24 hodinách",
     "STATUS": {
       "errored": "selhalo (prosím vyžádejte si další export)",
-      "in_progress": "probíhá..."
+      "in_progress": "probíhá…"
     }
   },
   "FILTER_ON_USERNAME": "Filtr na uživatelské jméno",

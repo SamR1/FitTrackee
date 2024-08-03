@@ -26,7 +26,6 @@
   const props = withDefaults(defineProps<Props>(), {
     notes: () => '',
   })
-
   const { notes } = toRefs(props)
 </script>
 

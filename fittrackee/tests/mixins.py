@@ -403,16 +403,37 @@ class UserModerationMixin(RandomMixin):
         self,
         admin_user: User,
         user: User,
+        *,
         action_type: Optional[str] = None,
         report_id: Optional[int] = None,
+        comment_id: Optional[int] = None,
+        workout_id: Optional[int] = None,
     ) -> AdminAction:
         if action_type in REPORT_ACTION_TYPES and not report_id:
             report_id = self.create_report(admin_user, user).id
         admin_action = AdminAction(
             admin_user_id=admin_user.id,
             action_type=action_type if action_type else "user_suspension",
+            comment_id=(
+                comment_id
+                if (
+                    comment_id
+                    and action_type
+                    and action_type.startswith("comment_")
+                )
+                else None
+            ),
             report_id=report_id,
             user_id=user.id,
+            workout_id=(
+                workout_id
+                if (
+                    workout_id
+                    and action_type
+                    and action_type.startswith("workout_")
+                )
+                else None
+            ),
         )
         db.session.add(admin_action)
         db.session.commit()
@@ -427,7 +448,7 @@ class UserModerationMixin(RandomMixin):
         if not report_id:
             report_id = self.create_user_report(admin, user).id
         admin_action = self.create_admin_action(
-            admin, user, "user_suspension", report_id
+            admin, user, action_type="user_suspension", report_id=report_id
         )
         user.suspended_at = datetime.utcnow()
         db.session.commit()

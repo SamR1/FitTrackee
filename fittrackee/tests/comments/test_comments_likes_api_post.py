@@ -12,7 +12,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
 from ..utils import OAUTH_SCOPES
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 
 class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):

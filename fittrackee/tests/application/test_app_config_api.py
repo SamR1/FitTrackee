@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
 from typing import Optional
-from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.application.models import AppConfig
@@ -445,10 +445,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         privacy_policy = self.random_string()
         privacy_policy_date = datetime.utcnow()
 
-        with patch(
-            'fittrackee.application.app_config.datetime'
-        ) as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=privacy_policy_date)
+        with travel(privacy_policy_date, tick=False):
             response = client.patch(
                 '/api/config',
                 content_type='application/json',

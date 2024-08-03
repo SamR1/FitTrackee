@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
@@ -11,7 +11,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from .utils import CommentMixin
+from .mixins import CommentMixin
 
 ALL_VISIBILITIES = [
     PrivacyLevel.PUBLIC,
@@ -28,10 +28,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         created_at = datetime.utcnow()
 
         mention = Mention(
@@ -49,12 +46,9 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         now = datetime.utcnow()
-        with freeze_time(now):
+        with travel(now, tick=False):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
 
         assert mention.created_at == now
@@ -67,9 +61,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         mention = Mention(comment_id=comment.id, user_id=user_1.id)
         db.session.add(mention)
         db.session.commit()
@@ -92,9 +84,7 @@ class TestMentionModel(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        comment = self.create_comment(
-            user=user_1, workout=workout_cycling_user_1
-        )
+        comment = self.create_comment(user_1, workout_cycling_user_1)
         mention = Mention(comment_id=comment.id, user_id=user_1.id)
         db.session.add(mention)
         db.session.commit()
@@ -124,8 +114,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_2.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )
@@ -151,8 +141,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
@@ -180,8 +170,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PRIVATE,
         )

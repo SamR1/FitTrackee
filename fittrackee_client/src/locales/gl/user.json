@@ -6,18 +6,18 @@
   "ALREADY_HAVE_ACCOUNT": "Xa tes unha conta?",
   "CONFIRM_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta? Todos os datos serán borrados, e non poderás restablecelos.",
   "CURRENT_PASSWORD": "Contrasinal actual",
-  "EMAIL": "Email",
+  "EMAIL": "Correo Electrónico",
   "EMAIL_INFO": "Escribe un enderezo válido.",
   "EMAIL_UPDATE": "Actualizar correo",
   "ENTER_PASSWORD": "Escribe un contrasinal",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Exportar datos",
     "DOWNLOAD_ARCHIVE": "Descargar arquivo",
-    "GENERATING_LINK": "creando ligazón...",
+    "GENERATING_LINK": "creando ligazón…",
     "ONLY_ONE_EXPORT_PER_DAY": "Podes solicitar un arquivo cada 24 horas",
     "STATUS": {
       "errored": "fallou (solicita outra exportación)",
-      "in_progress": "en progreso..."
+      "in_progress": "en progreso…"
     }
   },
   "FILTER_ON_USERNAME": "Filtrar por identificador",

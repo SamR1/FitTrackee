@@ -57,7 +57,7 @@
     toRefs,
     watch,
   } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
@@ -71,7 +71,6 @@
     authUser: IAuthUserProfile
     withParent?: boolean
   }
-
   const props = withDefaults(defineProps<Props>(), {
     withParent: false,
   })
@@ -79,6 +78,8 @@
 
   const route = useRoute()
   const store = useStore()
+
+  const timer: Ref<number | undefined> = ref()
 
   const comments: ComputedRef<IComment[]> = computed(() => getComments())
   const commentToDelete: ComputedRef<boolean> = computed(
@@ -96,15 +97,6 @@
   const commentId: ComputedRef<string> = computed(
     () => route.params.commentId as string
   )
-  const timer = ref<number | undefined>()
-
-  onMounted(() => {
-    nextTick(() => {
-      if (commentId.value) {
-        scrollToComment(commentId.value)
-      }
-    })
-  })
 
   function getComments(): IComment[] {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
@@ -158,6 +150,7 @@
       }
     }, 500)
   }
+
   watch(
     () => workoutData.value.comments,
     () => {
@@ -165,6 +158,13 @@
     }
   )
 
+  onMounted(() => {
+    nextTick(() => {
+      if (commentId.value) {
+        scrollToComment(commentId.value)
+      }
+    })
+  })
   onUnmounted(() => {
     if (timer.value) {
       clearTimeout(timer.value)

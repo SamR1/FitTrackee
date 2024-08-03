@@ -17,6 +17,7 @@ class CommentMixin(RandomMixin):
         self,
         user: User,
         workout: Workout,
+        /,
         text: Optional[str] = None,
         text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
         created_at: Optional[datetime] = None,

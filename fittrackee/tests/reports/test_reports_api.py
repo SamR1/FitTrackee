@@ -1,17 +1,15 @@
 import json
 from datetime import datetime, timedelta
 from typing import Dict, List
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import (
-    COMMENT_ACTION_TYPES,
     USER_ACTION_TYPES,
-    WORKOUT_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
@@ -21,10 +19,10 @@ from fittrackee.reports.models import Report, ReportComment
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..comments.utils import CommentMixin
+from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from ..workouts.utils import WorkoutMixin
+from ..workouts.mixins import WorkoutMixin
 
 
 class ReportTestCase(
@@ -1688,7 +1686,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1722,7 +1720,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1737,7 +1735,7 @@ class TestPatchReport(ReportTestCase):
         date_string = self.get_date_string(date=now)
         assert data["report"]["resolved_at"] == date_string
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data["report"]["updated_at"] == date_string
         assert len(data["report"]["comments"]) == 2
@@ -1757,7 +1755,7 @@ class TestPatchReport(ReportTestCase):
         now = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1790,7 +1788,7 @@ class TestPatchReport(ReportTestCase):
         comment_time = datetime.utcnow()
         comment = self.random_string()
 
-        with freeze_time(comment_time):
+        with travel(comment_time, tick=False):
             response = client.patch(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -1806,7 +1804,7 @@ class TestPatchReport(ReportTestCase):
             date=resolved_time
         )
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_2_admin.serialize(user_1_admin)
+            user_2_admin.serialize(current_user=user_1_admin)
         )
         assert data["report"]["updated_at"] == self.get_date_string(
             date=comment_time
@@ -1816,9 +1814,9 @@ class TestPatchReport(ReportTestCase):
 
 
 class TestPostReportAdminAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
-    def test_it_returns_error_if_user_is_not_authenticated(
+    def test_it_returns_401_if_user_is_not_authenticated(
         self,
         app: Flask,
         user_1: User,
@@ -1836,7 +1834,7 @@ class TestPostReportAdminAction(ReportTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_error_if_user_has_no_admin_rights(
+    def test_it_returns_403_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         report = self.create_report(user_1, reported_object=user_2)
@@ -1919,16 +1917,14 @@ class TestPostReportAdminAction(ReportTestCase):
 
 
 class TestPostReportAdminActionForUserAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
-    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
     def test_it_returns_400_when_username_is_missing_on_user_admin_action(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
-        input_action_type: str,
     ) -> None:
         report = self.create_report(user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1938,9 +1934,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         response = client.post(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            json={
-                "action_type": input_action_type,
-            },
+            json={"action_type": "user_suspension"},
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1995,7 +1989,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2012,7 +2006,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             == now
         )
 
-    def test_it_returns_error_when_when_user_already_suspended(
+    def test_it_returns_400_when_when_user_already_suspended(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(user_3, reported_object=user_2)
@@ -2021,58 +2015,110 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "user_suspension",
-                    "username": user_2.username,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_suspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         self.assert_400(
             response, f"user '{user_2.username}' already suspended"
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    def test_it_returns_400_when_when_user_already_warned(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="user_warning",
+            report_id=report.id,
+        )
+        db.session.commit()
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "user already warned")
+
+    def test_it_reactivates_user(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_unsuspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        assert (
+            User.query.filter_by(username=user_2.username).first().suspended_at
+            is None
+        )
+
+    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
     def test_it_creates_admin_action(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
-        input_reason: Dict,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(user_3, reported_object=user_2)
+        if input_action_type == "user_unsuspension":
+            user_2.suspended_at = datetime.utcnow()
+            db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "user_suspension",
-                    "username": user_2.username,
-                    **input_reason,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": input_action_type,
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
-        admin_action = AdminAction.query.filter_by(
-            admin_user_id=user_1_admin.id, user_id=user_2.id
-        ).first()
-        assert admin_action.action_type == "user_suspension"
-        assert admin_action.created_at == now
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.report_id == report.id
+        assert (
+            AdminAction.query.filter_by(
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+                action_type=input_action_type,
+            ).first()
+            is not None
+        )
 
     def test_it_returns_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -2088,19 +2134,17 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "user_suspension",
-                    "username": user_2.username,
-                    "reason": self.random_string(),
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_suspension",
+                "username": user_2.username,
+                "reason": self.random_string(),
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
@@ -2149,11 +2193,116 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
         self.assert_403(response, 'error, registration is disabled')
 
+    def test_it_sends_an_email_on_user_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_suspension_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_suspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_suspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_on_user_reactivation(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_unsuspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_on_user_warning(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_warning_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_warning_email_mock.send.assert_called_once()
+
+    def test_it_does_not_send_when_email_sending_is_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_suspension_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_suspension",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        user_suspension_email_mock.send.assert_not_called()
+
 
 class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
-    @pytest.mark.parametrize('input_action_type', WORKOUT_ACTION_TYPES)
     def test_it_returns_400_when_workout_id_is_missing_on_workout_admin_action(
         self,
         app: Flask,
@@ -2162,7 +2311,6 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_action_type: str,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
@@ -2175,9 +2323,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         response = client.post(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            json={
-                "action_type": input_action_type,
-            },
+            json={"action_type": "workout_suspension"},
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2259,7 +2405,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2278,7 +2424,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
             == now
         )
 
-    def test_it_returns_error_when_when_workout_already_suspended(
+    def test_it_returns_400_when_when_workout_already_suspended(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2296,18 +2442,16 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "workout_suspension",
-                    "workout_id": workout_cycling_user_2.short_id,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_suspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         self.assert_400(
             response,
@@ -2331,18 +2475,16 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
             app, user_1_admin.email
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "workout_unsuspension",
-                    "workout_id": workout_cycling_user_2.short_id,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_unsuspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         assert (
@@ -2352,7 +2494,6 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
             is None
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_creates_admin_action(
         self,
         app: Flask,
@@ -2361,7 +2502,6 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_reason: Dict,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
@@ -2370,30 +2510,24 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "workout_suspension",
-                    "workout_id": workout_cycling_user_2.short_id,
-                    **input_reason,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_suspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
-        admin_action = AdminAction.query.filter_by(
-            admin_user_id=user_1_admin.id, user_id=user_2.id
-        ).first()
-        assert admin_action.action_type == "workout_suspension"
-        assert admin_action.created_at == now
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == workout_cycling_user_2.user_id
-        assert admin_action.workout_id == workout_cycling_user_2.id
+        assert (
+            AdminAction.query.filter_by(
+                admin_user_id=user_1_admin.id, user_id=user_2.id
+            ).first()
+            is not None
+        )
 
     def test_it_returns_report(
         self,
@@ -2411,18 +2545,16 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "workout_suspension",
-                    "workout_id": workout_cycling_user_2.short_id,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_suspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
@@ -2432,11 +2564,105 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
             updated_report.serialize(user_1_admin, full=True)
         )
 
+    def test_it_sends_an_email_on_workout_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_suspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = self.create_report(
+            user_3, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_suspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout_suspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_on_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = self.create_report(
+            user_3, reported_object=workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_unsuspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_does_not_send_an_email_when_email_sending_is_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_suspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        report = self.create_report(
+            user_3, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "workout_suspension",
+                "workout_id": workout_cycling_user_2.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout_suspension_email_mock.send.assert_not_called()
+
 
 class TestPostReportAdminActionForCommentAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin_actions"
+    route = "/api/reports/{report_id}/admin-actions"
 
-    @pytest.mark.parametrize('input_action_type', COMMENT_ACTION_TYPES)
     def test_it_returns_400_when_comment_id_is_missing_on_comment_admin_action(
         self,
         app: Flask,
@@ -2445,7 +2671,6 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_action_type: str,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
@@ -2459,9 +2684,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         response = client.post(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            json={
-                "action_type": input_action_type,
-            },
+            json={"action_type": "comment_suspension"},
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2546,7 +2769,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2562,7 +2785,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             Comment.query.filter_by(id=comment.id).first().suspended_at == now
         )
 
-    def test_it_returns_error_when_when_comment_already_suspended(
+    def test_it_returns_400_when_when_comment_already_suspended(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2583,7 +2806,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         db.session.commit()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2617,25 +2840,22 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             app, user_1_admin.email
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "comment_unsuspension",
-                    "comment_id": comment.short_id,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_unsuspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         assert (
             Comment.query.filter_by(id=comment.id).first().suspended_at is None
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_creates_admin_action(
         self,
         app: Flask,
@@ -2644,7 +2864,6 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_reason: Dict,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
@@ -2654,30 +2873,24 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.post(
-                self.route.format(report_id=report.id),
-                content_type="application/json",
-                json={
-                    "action_type": "comment_suspension",
-                    "comment_id": comment.short_id,
-                    **input_reason,
-                },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_suspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
-        admin_action = AdminAction.query.filter_by(
-            admin_user_id=user_1_admin.id, user_id=user_3.id
-        ).first()
-        assert admin_action.action_type == "comment_suspension"
-        assert admin_action.comment_id == comment.id
-        assert admin_action.created_at == now
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == comment.user_id
+        assert (
+            AdminAction.query.filter_by(
+                admin_user_id=user_1_admin.id, user_id=user_3.id
+            ).first()
+            is not None
+        )
 
     def test_it_returns_report(
         self,
@@ -2698,7 +2911,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 self.route.format(report_id=report.id),
                 content_type="application/json",
@@ -2716,6 +2929,116 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_admin, full=True)
         )
+
+    def test_it_sends_an_email_on_comment_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_suspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        report = self.create_report(user_2, reported_object=comment)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_suspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        comment_suspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_on_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        report = self.create_report(user_2, reported_object=comment)
+        comment.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_unsuspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        comment_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_does_not_send_email_when_email_sending_id_disabled(
+        self,
+        app_wo_email_activation: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_suspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.PUBLIC,
+            with_mentions=True,
+        )
+        report = self.create_report(user_2, reported_object=comment)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_wo_email_activation, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "comment_suspension",
+                "comment_id": comment.short_id,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        comment_suspension_email_mock.send.assert_not_called()
 
 
 class TestProcessAdminActionAppeal(
@@ -2803,7 +3126,7 @@ class TestProcessAdminActionAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
-    def test_it_processes_user_appeal(
+    def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
         suspension_action = self.create_user_suspension_action(
@@ -2813,15 +3136,13 @@ class TestProcessAdminActionAppeal(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
 
-        with freeze_time(now):
-            response = client.patch(
-                self.route.format(appeal_id=appeal.short_id),
-                data=json.dumps(input_data),
-                content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
         assert response.status_code == 200
         assert response.json == {
@@ -2829,59 +3150,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-
-    def test_it_unsuspends_user_when_appeal_is_approved(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": "ok"}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert user_2.suspended_at is None
-
-    def test_it_creates_unsuspended_user_action_when_appeal_is_approved(
-        self, app: Flask, user_1_admin: User, user_2: User
-    ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": "ok"}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                report_id=suspension_action.report_id,
-                action_type="user_unsuspension",
-                admin_user_id=user_1_admin.id,
-                user_id=user_2.id,
-                reason=None,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -2915,16 +3185,13 @@ class TestProcessAdminActionAppeal(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        now = datetime.utcnow()
-        comment_suspended_at = comment.suspended_at
 
-        with freeze_time(now):
-            response = client.patch(
-                self.route.format(appeal_id=appeal.short_id),
-                data=json.dumps(input_data),
-                content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
-            )
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
         assert response.status_code == 200
         assert response.json == {
@@ -2932,58 +3199,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-        assert comment.suspended_at == (
-            None if input_data["approved"] else comment_suspended_at
-        )
-
-    def test_it_creates_unsuspended_comment_action_when_appeal_is_approved(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_3,
-            workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
-        )
-        suspension_action = self.create_admin_comment_suspension_action(
-            user_1_admin, user_3, comment
-        )
-        db.session.flush()
-        appeal = self.create_action_appeal(suspension_action.id, user_3)
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        reason = self.random_string()
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": reason}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                action_type="comment_unsuspension",
-                admin_user_id=user_1_admin.id,
-                comment_id=comment.id,
-                reason=None,
-                report_id=suspension_action.report_id,
-                user_id=user_3.id,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3005,7 +3222,6 @@ class TestProcessAdminActionAppeal(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
-        workout_suspended_at = workout_cycling_user_2.suspended_at
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3014,7 +3230,7 @@ class TestProcessAdminActionAppeal(
         )
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.patch(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
@@ -3028,52 +3244,8 @@ class TestProcessAdminActionAppeal(
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
-        assert appeal.admin_user_id == user_1_admin.id
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
-        assert appeal.updated_at == now
-        assert workout_cycling_user_2.suspended_at == (
-            None if input_data["approved"] else workout_suspended_at
-        )
-
-    def test_it_creates_unsuspended_workout_action_when_appeal_is_approved(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        suspension_action = self.create_admin_workout_suspension_action(
-            user_1_admin, user_2, workout_cycling_user_2
-        )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
-        db.session.flush()
-        appeal = self.create_action_appeal(suspension_action.id, user_2)
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-        reason = self.random_string()
-
-        client.patch(
-            self.route.format(appeal_id=appeal.short_id),
-            data=json.dumps({"approved": True, "reason": reason}),
-            content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        assert (
-            AdminAction.query.filter_by(
-                action_type="workout_unsuspension",
-                admin_user_id=user_1_admin.id,
-                reason=None,
-                report_id=suspension_action.report_id,
-                user_id=user_2.id,
-                workout_id=workout_cycling_user_2.id,
-            ).first()
-            is not None
-        )
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

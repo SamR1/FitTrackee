@@ -54,7 +54,7 @@ def get_workout_datetime(
     if workout_date.tzinfo is None:
         naive_workout_date = workout_date
         if user_timezone and with_timezone:
-            pytz.utc.localize(naive_workout_date)
+            # pytz.utc.localize(naive_workout_date)
             workout_date_with_user_tz = pytz.utc.localize(
                 naive_workout_date
             ).astimezone(pytz.timezone(user_timezone))

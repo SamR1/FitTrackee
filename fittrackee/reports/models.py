@@ -7,6 +7,7 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 
 from fittrackee import BaseModel, db
+from fittrackee.administration.models import AdminAction
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.users.models import User
@@ -122,6 +123,17 @@ class Report(BaseModel):
             return self.reported_workout
         return None
 
+    @property
+    def is_reported_user_warned(self) -> bool:
+        return (
+            AdminAction.query.filter_by(
+                action_type="user_warning",
+                report_id=self.id,
+                user_id=self.reported_user_id,
+            ).first()
+            is not None
+        )
+
     def __init__(
         self,
         note: str,
@@ -168,7 +180,9 @@ class Report(BaseModel):
 
         try:
             reported_workout = (
-                self.reported_workout.serialize(current_user, for_report=True)
+                self.reported_workout.serialize(
+                    user=current_user, for_report=True
+                )
                 if self.reported_workout
                 else None
             )
@@ -178,17 +192,20 @@ class Report(BaseModel):
         report = {
             "created_at": self.created_at,
             "id": self.id,
+            "is_reported_user_warned": self.is_reported_user_warned,
             "note": self.note,
             "object_type": self.object_type,
             "reported_by": (
-                self.reporter.serialize(current_user)
+                self.reporter.serialize(current_user=current_user)
                 if self.reported_by
                 else None
             ),
             "reported_comment": reported_comment,
             "reported_user": (
                 self.reported_user.serialize(
-                    current_user if self.object_type == 'user' else None
+                    current_user=current_user
+                    if self.object_type == 'user'
+                    else None
                 )
                 if self.reported_user_id
                 else None
@@ -200,7 +217,7 @@ class Report(BaseModel):
         if current_user.admin:
             if full:
                 report["admin_actions"] = [
-                    action.serialize(current_user)
+                    action.serialize(current_user, full=False)
                     for action in self.admin_actions
                 ]
                 report["comments"] = [
@@ -210,7 +227,7 @@ class Report(BaseModel):
             report["resolved_by"] = (
                 None
                 if self.resolved_by is None
-                else self.resolver.serialize(current_user)
+                else self.resolver.serialize(current_user=current_user)
             )
             report["updated_at"] = self.updated_at
         return report
@@ -282,5 +299,5 @@ class ReportComment(BaseModel):
             "comment": self.comment,
             "id": self.id,
             "report_id": self.report_id,
-            "user": self.user.serialize(current_user),
+            "user": self.user.serialize(current_user=current_user),
         }

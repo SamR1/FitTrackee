@@ -7,4 +7,6 @@ export const reportsState: IReportsState = {
   reports: [],
   pagination: <IPagination>{},
   reportStatus: null,
+  reportLoading: false,
+  reportUpdateLoading: false,
 }

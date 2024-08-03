@@ -70,7 +70,7 @@
         {{ $t('buttons.EDIT') }}
       </button>
       <button
-        :disabled="loading"
+        :disabled="authUserLoading"
         class="danger"
         @click.prevent="updateDisplayModal(true)"
       >
@@ -103,7 +103,9 @@
   import { useRoute } from 'vue-router'
 
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
   import { ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -114,19 +116,15 @@
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
-
-  const store = useStore()
-  const route = useRoute()
-
   const { translatedSports } = toRefs(props)
-  const {
-    displayModal,
-    errorMessages,
-    loading,
-    sportColors,
-    resetSport,
-    updateDisplayModal,
-  } = userSportComponent()
+
+  const route = useRoute()
+  const store = useStore()
+
+  const { errorMessages } = useApp()
+  const { displayModal, sportColors, resetSport, updateDisplayModal } =
+    useSports()
+  const { authUserLoading } = useAuthUser()
 
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
@@ -145,17 +143,18 @@
     return filteredSportList[0]
   }
 
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
   watch(
-    () => loading.value,
+    () => authUserLoading.value,
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         updateDisplayModal(false)
       }
     }
   )
+
+  onUnmounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
 <style scoped lang="scss">

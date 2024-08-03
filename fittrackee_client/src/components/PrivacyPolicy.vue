@@ -28,28 +28,15 @@
   import { capitalize, computed } from 'vue'
   import type { ComputedRef } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { TLanguage } from '@/types/locales'
-  import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { dateStringFormats, formatDate } from '@/utils/dates'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { formatDate } from '@/utils/dates'
   import { linkifyAndClean } from '@/utils/inputs'
 
-  const store = useStore()
+  const { appConfig } = useApp()
+  const { dateFormat, timezone } = useAuthUser()
+
   const fittrackeePrivatePolicyDate = 'Sun, 26 Feb 2023 17:00:00 GMT'
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const language: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const dateFormat = computed(() => getDateFormat())
-  const timezone = computed(() => getTimezone())
-  const privatePolicyDate = computed(() => getPolicyDate())
   const paragraphs = [
     'DATA_COLLECTED',
     'INFORMATION_USAGE',
@@ -61,16 +48,8 @@
     'CHANGES_TO_OUR_PRIVACY_POLICY',
   ]
 
-  function getTimezone() {
-    return authUser.value.timezone
-      ? authUser.value.timezone
-      : Intl.DateTimeFormat().resolvedOptions().timeZone
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : 'Europe/Paris'
-  }
-  function getDateFormat() {
-    return dateStringFormats[language.value]
-  }
+  const privatePolicyDate: ComputedRef<string> = computed(() => getPolicyDate())
+
   function getPolicyDate() {
     return formatDate(
       appConfig.value.privacy_policy && appConfig.value.privacy_policy_date

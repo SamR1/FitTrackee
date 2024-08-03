@@ -48,16 +48,16 @@
     index: number
   }
   const props = defineProps<Props>()
+  const { colors, datasets, index, sports, workouts } = toRefs(props)
+
   let tabbableElementIndex = 0
 
-  const { colors, datasets, index, sports, workouts } = toRefs(props)
   const isHidden = ref(true)
 
   function isWorkoutsMorePaneDisplayed() {
     const pane = document.getElementById(`workouts-pane-${index.value}`)
     return pane?.children && pane?.children.length > 0 ? pane : null
   }
-
   async function togglePane(event: Event) {
     event.preventDefault()
     event.stopPropagation()
@@ -159,9 +159,6 @@
         top: 52px;
         left: 0;
         min-width: 60px;
-        @media screen and (max-width: $small-limit) {
-          min-width: 70px;
-        }
 
         margin-bottom: 20px;
         padding: 10px 10px;
@@ -169,6 +166,10 @@
         display: flex;
         flex-wrap: wrap;
         z-index: 1000;
+
+        @media screen and (max-width: $small-limit) {
+          min-width: 70px;
+        }
 
         .calendar-more-close {
           position: absolute;

@@ -1,10 +1,10 @@
 <template>
-  <div v-if="suspension.id" class="appeal description-list">
-    <dl v-if="suspension.reason">
-      <dt>{{ $t('user.SUSPENSION_REASON') }}:</dt>
-      <dd>{{ suspension.reason }}</dd>
+  <div v-if="adminAction.id" class="appeal description-list">
+    <dl v-if="adminAction.reason">
+      <dt>{{ $t(`user.${actionTitle}_REASON`) }}:</dt>
+      <dd>{{ adminAction.reason }}</dd>
     </dl>
-    <div v-if="success || suspension.appeal" class="appeal-submitted">
+    <div v-if="success || adminAction.appeal" class="appeal-submitted">
       <div
         class="info-box"
         :class="{ 'success-message': success, 'appeal-success': success }"
@@ -21,7 +21,7 @@
           </button>
         </span>
       </div>
-      <div v-if="suspension.action_type === 'user_suspension'">
+      <div v-if="adminAction.action_type.startsWith('user_')">
         <slot name="cancelButton"></slot>
       </div>
     </div>
@@ -43,14 +43,19 @@
         </div>
       </div>
       <div class="form-select-buttons">
-        <div v-if="loading && appealText">
-          <Loader />
-        </div>
-        <div class="report-buttons" v-else>
+        <div class="report-buttons">
           <button class="confirm" type="submit" :disabled="!appealText">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <slot name="cancelButton"></slot>
+
+          <div class="action-loading">
+            <i
+              v-if="loading && appealText"
+              class="fa fa-spinner fa-pulse"
+              aria-hidden="true"
+            />
+          </div>
         </div>
       </div>
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -59,29 +64,34 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs } from 'vue'
+  import { computed, onUnmounted, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { ISuspension } from '@/types/user'
+  import type { IUserAdminAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
-    suspension: ISuspension
+    adminAction: IUserAdminAction
     loading: boolean
     success: boolean
   }
   const props = defineProps<Props>()
 
-  const { loading, success } = toRefs(props)
+  const { adminAction, loading, success } = toRefs(props)
 
   const store = useStore()
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appealText: Ref<string> = ref('')
+  const actionTitle: ComputedRef<string> = computed(() =>
+    adminAction.value.action_type.includes('_suspension')
+      ? 'SUSPENSION'
+      : 'WARNING'
+  )
 
   const emit = defineEmits(['submitForm', 'hideMessage'])
 
@@ -91,6 +101,11 @@
   function submit() {
     emit('submitForm', appealText.value)
   }
+
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, null)
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
+  })
 </script>
 
 <style scoped lang="scss">

@@ -8,7 +8,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ...comments.utils import CommentMixin
+from ...comments.mixins import CommentMixin
 
 
 class TestCommentWithMentionSerializeVisibility(CommentMixin):
@@ -25,8 +25,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_2.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )
@@ -60,8 +60,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=(
                 f"@{user_3.username} {remote_user.fullname} "
                 f"{self.random_string()}"
@@ -93,8 +93,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
@@ -124,8 +124,8 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             PrivacyLevel.FOLLOWERS_AND_REMOTE
         )
         comment = self.create_comment(
-            user=user_1,
-            workout=workout_cycling_user_1,
+            user_1,
+            workout_cycling_user_1,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=PrivacyLevel.PRIVATE,
         )
@@ -150,8 +150,8 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=(
                 f"@{user_3.username} {self.random_string()} "
                 f"@{remote_user.fullname}"
@@ -172,8 +172,8 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )
@@ -191,8 +191,8 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.create_comment(
-            user=user_2,
-            workout=workout_cycling_user_1,
+            user_2,
+            workout_cycling_user_1,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=PrivacyLevel.PUBLIC,
         )

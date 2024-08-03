@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
-from freezegun import freeze_time
 from sqlalchemy.dialects.postgresql import insert
+from time_machine import travel
 
 from fittrackee import VERSION, db
 from fittrackee.administration.models import AdminActionAppeal
@@ -21,9 +21,9 @@ from fittrackee.users.models import (
 )
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import BaseTestMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .utils import WorkoutMixin
+from .mixins import WorkoutApiTestCaseMixin, WorkoutMixin
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
@@ -254,7 +254,7 @@ def assert_files_are_deleted(
     )
 
 
-class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
+class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -1569,7 +1569,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, BaseTestMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -2359,7 +2359,7 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
+class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     def test_it_adds_workouts_with_zip_archive(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -2837,7 +2837,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             )
 
 
-class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
+class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
     def workout_assertion(
         self, app: Flask, user_1: User, gpx_file: str, with_segments: bool
     ) -> None:
@@ -3135,7 +3135,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert 'data' not in data
 
 
-class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -3204,7 +3204,7 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'new test with notes' == data['data']['workouts'][0]['notes']
 
 
-class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
+class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx_with_timezone(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -3365,7 +3365,7 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
 
 
 class TestPostWorkoutSuspensionAppeal(
-    ApiTestCaseMixin, WorkoutMixin, BaseTestMixin
+    WorkoutApiTestCaseMixin, WorkoutMixin, BaseTestMixin
 ):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -3517,7 +3517,7 @@ class TestPostWorkoutSuspensionAppeal(
         text = self.random_string()
         now = datetime.utcnow()
 
-        with freeze_time(now):
+        with travel(now, tick=False):
             response = client.post(
                 f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
                 content_type='application/json',

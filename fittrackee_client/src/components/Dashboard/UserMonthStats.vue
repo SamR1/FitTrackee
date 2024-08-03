@@ -18,7 +18,8 @@
 
 <script setup lang="ts">
   import { endOfMonth, startOfMonth } from 'date-fns'
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import StatChart from '@/components/Common/StatsChart/index.vue'
   import type { ISport } from '@/types/sports'
@@ -30,8 +31,8 @@
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
-
   const { sports, user } = toRefs(props)
+
   const date = new Date()
   const chartParams: IStatisticsDateParams = {
     duration: 'week',
@@ -39,7 +40,9 @@
     end: endOfMonth(date),
     statsType: 'total',
   }
-  const selectedSportIds = sports.value.map((sport) => sport.id)
+  const selectedSportIds: ComputedRef<number[]> = computed(() =>
+    sports.value.map((sport) => sport.id)
+  )
 </script>
 
 <style lang="scss" scoped>

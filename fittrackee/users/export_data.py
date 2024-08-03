@@ -35,13 +35,13 @@ class UserDataExporter:
         )
 
     def get_user_info(self) -> Dict:
-        return self.user.serialize(self.user)
+        return self.user.serialize(current_user=self.user)
 
     def get_user_workouts_data(self) -> List[Dict]:
         workouts_data = []
         for workout in self.user.workouts:
             workout_data = workout.get_workout_data(
-                self.user, additional_data=True
+                self.user, additional_data=True, light=False
             )
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
@@ -132,11 +132,11 @@ def export_user_data(export_request_id: int) -> None:
             db.session.commit()
 
             if current_app.config['CAN_SEND_EMAILS']:
-                ui_url = current_app.config['UI_URL']
+                fittrackee_url = current_app.config['UI_URL']
                 email_data = {
                     'username': user.username,
-                    'fittrackee_url': ui_url,
-                    'account_url': f'{ui_url}/profile/edit/account',
+                    'fittrackee_url': fittrackee_url,
+                    'account_url': f'{fittrackee_url}/profile/edit/account',
                 }
                 user_data = {
                     'language': get_language(user.language),

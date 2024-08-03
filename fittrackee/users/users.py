@@ -7,7 +7,6 @@ from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import asc, desc, exc, func, nullslast
 
 from fittrackee import appLog, db, limiter
-from fittrackee.administration.users_service import UserManagerService
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -30,6 +29,7 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
@@ -85,7 +85,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
                 return EMPTY_USERS_RESPONSE
             return {
                 'status': 'success',
-                'data': {'users': [user.serialize(auth_user)]},
+                'data': {'users': [user.serialize(current_user=auth_user)]},
                 'pagination': {
                     'has_next': False,
                     'has_prev': False,
@@ -140,7 +140,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     users = users_pagination.items
     return {
         'status': 'success',
-        'data': {'users': [user.serialize(auth_user) for user in users]},
+        'data': {
+            'users': [user.serialize(current_user=auth_user) for user in users]
+        },
         'pagination': {
             'has_next': users_pagination.has_next,
             'has_prev': users_pagination.has_prev,
@@ -569,7 +571,11 @@ def get_single_user(
                 return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
-                'data': {'users': [user.serialize(auth_user)]},
+                'data': {
+                    'users': [
+                        user.serialize(current_user=auth_user, light=False)
+                    ]
+                },
             }
     except (ValueError, UserNotFoundException):
         pass
@@ -773,7 +779,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         if current_app.config['CAN_SEND_EMAILS']:
             user_language = get_language(user.language)
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             if reset_password:
                 user_data = {
                     'language': user_language,
@@ -783,7 +789,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                     user_data,
                     {
                         'username': user.username,
-                        'fittrackee_url': ui_url,
+                        'fittrackee_url': fittrackee_url,
                     },
                 )
                 password_reset_token = user.encode_password_reset_token(
@@ -800,10 +806,10 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                         ),
                         'username': user.username,
                         'password_reset_url': (
-                            f'{ui_url}/password-reset?'
+                            f'{fittrackee_url}/password-reset?'
                             f'token={password_reset_token}'
                         ),
-                        'fittrackee_url': ui_url,
+                        'fittrackee_url': fittrackee_url,
                     },
                 )
 
@@ -814,9 +820,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 }
                 email_data = {
                     'username': user.username,
-                    'fittrackee_url': ui_url,
+                    'fittrackee_url': fittrackee_url,
                     'email_confirmation_url': (
-                        f'{ui_url}/email-update'
+                        f'{fittrackee_url}/email-update'
                         f'?token={user.confirmation_token}'
                     ),
                 }
@@ -824,7 +830,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
         return {
             'status': 'success',
-            'data': {'users': [user.serialize(auth_user)]},
+            'data': {
+                'users': [user.serialize(current_user=auth_user, light=False)]
+            },
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
@@ -1125,7 +1133,8 @@ def get_user_relationships(
         'status': 'success',
         'data': {
             relation: [
-                user.serialize(auth_user) for user in paginated_relations.items
+                user.serialize(current_user=auth_user)
+                for user in paginated_relations.items
             ]
         },
         'pagination': {

@@ -21,10 +21,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, inject, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import useSports from '@/composables/useSports'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import { translateSports } from '@/utils/sports'
 
@@ -35,15 +36,16 @@
   const props = withDefaults(defineProps<Props>(), {
     selectedSportIds: () => [],
   })
+  const { selectedSportIds, userSports } = toRefs(props)
 
   const emit = defineEmits(['selectedSportIdsUpdate'])
 
   const { t } = useI18n()
 
-  const sportColors = inject('sportColors') as Record<string, string>
-  const { selectedSportIds } = toRefs(props)
+  const { sportColors } = useSports()
+
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(props.userSports, t)
+    translateSports(userSports.value, t)
   )
 
   function updateSelectedSportIds(sportId: number) {

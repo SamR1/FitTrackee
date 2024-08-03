@@ -35,16 +35,11 @@
     equipmentSports: () => [],
     disabled: false,
   })
+  const { equipmentSports, name, sports } = toRefs(props)
+
   const emit = defineEmits(['updatedValues'])
 
-  const { equipmentSports, name, sports } = toRefs(props)
   const selectedSports: Ref<ITranslatedSport[]> = ref([])
-
-  onBeforeMount(() => {
-    if (equipmentSports.value) {
-      selectedSports.value = equipmentSports.value
-    }
-  })
 
   function updateSelectedSports(sportsList: ITranslatedSport[]) {
     emit(
@@ -60,6 +55,12 @@
       updateSelectedSports(newEquipmentSports)
     }
   )
+
+  onBeforeMount(() => {
+    if (equipmentSports.value) {
+      selectedSports.value = equipmentSports.value
+    }
+  })
 </script>
 
 <style scoped lang="scss">
