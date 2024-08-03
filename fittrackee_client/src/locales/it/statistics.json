@@ -1,8 +1,22 @@
 {
+  "AVERAGE": "Media",
+  "DATES": "Date",
   "STATISTICS": "Statistiche",
+  "STATISTICS_CHARTS": {
+    "month": "Statistiche mensili",
+    "week": "Statistiche settimanali",
+    "year": "Statistiche annuali"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistiche su tutti gli allenamenti:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statistiche sugli ultimi {count} allenamenti:",
+  "STATISTICS_TYPES": {
+    "by_sport": "per sport",
+    "by_time": "per periodo di tempo"
+  },
   "TIME_FRAMES": {
     "month": "mese",
     "week": "settimana",
     "year": "anno"
-  }
+  },
+  "WORKOUTS_AVERAGE": "numero medio di allenamenti"
 }

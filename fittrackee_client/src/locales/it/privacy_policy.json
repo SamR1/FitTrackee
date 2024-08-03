@@ -1,1 +1,36 @@
-{}
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Puoi richiedere la cancellazione del tuo account in qualsiasi momento andando a questo indirizzo (dopo aver effettuato l'accesso) e cliccando sul pulsante \"Elimina il mio account\" nella sezione modifica account.",
+      "TITLE": "Eliminazione dell'account"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Se decidiamo di modificare la nostra politica sulla privacy, pubblicheremo tali modifiche su questa pagina.\n\nQuesto documento è sotto licenza [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) . Originariamente adattato dalla politica sulla privacy di [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Modifiche alla nostra Politica sulla Privacy"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Le seguenti informazioni vengono raccolte:\n- Informazioni sull'account (nome utente, indirizzo e-mail e password). È inoltre possibile inserire informazioni aggiuntive sul profilo come nome, cognome, data di nascita, posizione, biografia e caricare un'immagine del profilo.\n- File [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Questi file contengono dati relativi alle tue attività (coordinate geografiche, data, distanza, durata, velocità massima e media, altitudine, frequenza cardiaca…). Se non desideri esporre alcuni dati, puliscili prima di caricarli o aggiungi allenamenti senza file GPX.\n- Dati degli allenamenti (sport, titolo, data, durata, distanza, dislivello in salita, dislivello in discesa, note).\n- Informazioni tecniche (nome del browser e sistema operativo).",
+      "TITLE": "Quali informazioni raccogliamo?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "Non vendiamo, scambiamo o trasferiamo in alcun modo a terzi le tue informazioni personali identificabili.\n\nCiò non include terze parti di fiducia che ci aiutano a gestire il nostro sito e a fornirti assistenza, purché tali parti accettino di mantenere riservate queste informazioni.\n\nPotremmo inoltre divulgare le tue informazioni quando riteniamo che la divulgazione sia appropriata per ottemperare alla legge, far rispettare le politiche del nostro sito o proteggere i nostri diritti, la nostra proprietà o la nostra sicurezza.\n\nQuando autorizzi un'applicazione di terze parti a utilizzare il tuo account, a seconda dello scopo delle autorizzazioni che approvi, potrebbe accedere alle informazioni del tuo profilo o ai tuoi allenamenti. Le applicazioni non possono mai accedere alla tua password.",
+      "TITLE": "Divulgamo informazioni a terze parti esterne?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Implementiamo una varietà di misure di sicurezza per mantenere la sicurezza delle tue informazioni personali quando inserisci, invii o accedi alle tue informazioni personali.",
+      "TITLE": "Come proteggiamo le tue informazioni?"
+    },
+    "INFORMATION_USAGE": {
+      "TITLE": "Per cosa utilizziamo le tue informazioni?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "TITLE": "Utilizzo del sito da parte dei bambini"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "Utilizzando il nostro sito, acconsenti alla nostra politica sulla privacy del sito web.",
+      "TITLE": "Il tuo consenso"
+    }
+  },
+  "LAST_UPDATE": "Ultimo aggiornamento",
+  "TITLE": "politica sulla privacy"
+}

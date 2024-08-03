@@ -13,11 +13,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Data export",
     "DOWNLOAD_ARCHIVE": "Download archive",
-    "GENERATING_LINK": "generating link...",
+    "GENERATING_LINK": "generating link…",
     "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
     "STATUS": {
       "errored": "errored (please request another export)",
-      "in_progress": "in progres..."
+      "in_progress": "in progres…"
     }
   },
   "FILTER_ON_USERNAME": "Filter on username",

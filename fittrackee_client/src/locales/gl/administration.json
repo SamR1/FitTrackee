@@ -11,7 +11,7 @@
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/eliminar dereitos de administración, eliminar a conta da usuaria.",
   "APPLICATION": "Aplicación",
   "APP_CONFIG": {
-    "ADMIN_CONTACT": "Email de contacto da administración",
+    "ADMIN_CONTACT": "Enderezo de contacto da administración",
     "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros con arquivos zip",
     "MAX_USERS_HELP": "Se 0, non hai límite de rexistros.",
     "MAX_USERS_LABEL": "Número máx. de usuarias activas",
@@ -25,10 +25,10 @@
   "BACK_TO_ADMIN": "Volver a admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta {0}? Borraranse todos os datos, non hai volta atrás.",
   "CONFIRM_USER_PASSWORD_RESET": "Tes certeza de querer restablecer o contrasinal de {0}?",
-  "CURRENT_EMAIL": "Email actual",
+  "CURRENT_EMAIL": "Enderezo actual",
   "DELETE_USER": "Eliminar usuaria",
   "EMAIL_SENDING_DISABLED": "O envío de correos está desactivado.",
-  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Des/Activar tipos de equipamento.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Activar/Desactivar tipos de equipamento.",
   "ENABLE_DISABLE_SPORTS": "Activar/desactivar deportes.",
   "EQUIPMENT_TYPES": {
     "TABLE": {
@@ -39,7 +39,7 @@
     },
     "TITLE": "Administración de equipamento"
   },
-  "NEW_EMAIL": "Novo email",
+  "NEW_EMAIL": "Novo enderezo de correo",
   "NO_TEXT_ENTERED": "Non escribiches texto",
   "PASSWORD_RESET_SUCCESSFUL": "Restableceuse o contrasinal.",
   "PRIVACY_POLICY_DESCRIPTION": "Engade a túa propia política de privacidade ou déixaa baleira para usar unha por defecto. Podes usar Markdown.",
@@ -56,7 +56,7 @@
     "TITLE": "Administrar deportes"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Actualizar configuración da aplicación.",
-  "UPDATE_USER_EMAIL": "Actualizar email",
+  "UPDATE_USER_EMAIL": "Actualizar correo electrónico",
   "USER": "usuaria | usuarias",
   "USERS": {
     "SELECTS": {
@@ -74,5 +74,5 @@
     },
     "TITLE": "Administración - Usuarias"
   },
-  "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de email."
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de correo."
 }

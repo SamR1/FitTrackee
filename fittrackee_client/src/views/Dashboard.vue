@@ -175,11 +175,11 @@
               color: var(--app-color);
             }
             &.is-selected {
+              color: var(--mobile-menu-selected-color);
+              background-color: var(--mobile-menu-selected-bgcolor);
               .fa-trophy {
                 color: var(--mobile-menu-selected-color);
               }
-              color: var(--mobile-menu-selected-color);
-              background-color: var(--mobile-menu-selected-bgcolor);
             }
           }
         }

@@ -1,1 +1,17 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Massimo 50 caratteri",
+  "ADD_A_NEW_EQUIPMENT": "Aggiungi una nuova attrezzatura",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Tutte le associazioni degli allenamenti saranno rimosse.",
+  "EDIT_EQUIPMENTS": "Modifica attrezzature",
+  "EQUIPMENT": "attrezzatura|attrezzature",
+  "EQUIPMENT_TYPE": "tipo di attrezzatura|tipi di attrezzatura",
+  "ERRORS": {
+    "inactive": "Attrezzatura '{equipmentLabel}' inattiva.",
+    "invalid": "Attrezzatura '{equipmentLabel}' non valida per questo sport.",
+    "not_found": "Attrezzatura non trovata."
+  },
+  "NEW_EQUIPMENT": "Nuova attrezzatura",
+  "NO_EQUIPMENT": "Nessuna attrezzatura trovata.",
+  "NO_EQUIPMENTS": "Nessuna attrezzatura",
+  "WITHOUT_EQUIPMENTS": "Senza attrezzature"
+}

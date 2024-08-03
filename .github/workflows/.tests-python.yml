@@ -24,9 +24,7 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_DB: fittrackee_test
-          POSTGRES_USER: fittrackee
-          POSTGRES_PASSWORD: fittrackee
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -43,6 +41,8 @@ jobs:
           pip install --quiet poetry
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
+      - name: Create test databases
+        run: python db/create_ci_test_db.py
       - name: Bandit
         if: matrix.python-version == '3.11'
         run: bandit -r fittrackee -c pyproject.toml
@@ -53,7 +53,7 @@ jobs:
         if: matrix.python-version == '3.11'
         run: mypy fittrackee
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
+        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   postgresql:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
@@ -64,9 +64,7 @@ jobs:
       postgres:
         image: postgres:${{ matrix.psql-version }}
         env:
-          POSTGRES_DB: fittrackee_test
-          POSTGRES_USER: fittrackee
-          POSTGRES_PASSWORD: fittrackee
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -83,8 +81,10 @@ jobs:
           pip install --quiet poetry
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
+      - name: Create test databases
+        run: python db/create_ci_test_db.py
       - name: Pytest
-        run: pytest fittrackee -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
+        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
   end2end:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
