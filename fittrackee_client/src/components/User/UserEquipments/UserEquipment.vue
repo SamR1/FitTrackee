@@ -268,6 +268,9 @@
       .sport-badge {
         display: flex;
         gap: $default-padding;
+        border: solid 1px var(--card-border-color);
+        border-radius: $border-radius;
+        padding: $default-padding * 0.75 $default-padding * 1.2;
         &.inactive {
           font-style: italic;
         }
@@ -276,9 +279,6 @@
           width: 20px;
           margin: 0;
         }
-        border: solid 1px var(--card-border-color);
-        border-radius: $border-radius;
-        padding: $default-padding * 0.75 $default-padding * 1.2;
       }
     }
     .duration-detail {
