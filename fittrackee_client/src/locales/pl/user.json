@@ -13,11 +13,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Eksport danych",
     "DOWNLOAD_ARCHIVE": "Pobierz archiwum",
-    "GENERATING_LINK": "generowanie linka...",
+    "GENERATING_LINK": "generowanie linka…",
     "ONLY_ONE_EXPORT_PER_DAY": "Możesz poprosić o archiwum w przeciągu 24 godzin",
     "STATUS": {
       "errored": "niepowodzenie (proszę zlecić kolejny eksport)",
-      "in_progress": "w trakcie..."
+      "in_progress": "w trakcie…"
     }
   },
   "FILTER_ON_USERNAME": "Filtruj po nazwie użytkownika",

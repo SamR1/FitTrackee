@@ -9,7 +9,7 @@
       "TITLE": "Mudanças na Política de Privacidade"
     },
     "DATA_COLLECTED": {
-      "CONTENT": "Coletamos as seguintes informações:\n- Informações da conta (nome de usuário, endereço de e-mail e senha). Também informações opcionais do seu perfil, como nome, sobrenome, data de nascimento, localização, biografia e imagem de perfil carregada.\n- Arquivos [GPX] (https://en.wikipedia.org/wiki/GPS_Exchange_Format). Estes arquivos contêm dados relacionados às suas atividades (coordenadas geográficas, data, distância, duração, velocidades máxima e média, altitude, frequência cardíaca...). Caso não queira expor esses dados, exclua-os antes de carregá-los ou adicione os treinos sem arquivo GPX.\n- Dados de treino (esporte, título, data, duração, distância, subida, descida, notas).\n- Informações técnicas (navegador e sistema operacional).",
+      "CONTENT": "Coletamos as seguintes informações:\n- Informações da conta (nome de usuário, endereço de e-mail e senha). Também informações opcionais do seu perfil, como nome, sobrenome, data de nascimento, localização, biografia e imagem de perfil carregada.\n- Arquivos [GPX] (https://en.wikipedia.org/wiki/GPS_Exchange_Format). Estes arquivos contêm dados relacionados às suas atividades (coordenadas geográficas, data, distância, duração, velocidades máxima e média, altitude, frequência cardíaca…). Caso não queira expor esses dados, exclua-os antes de carregá-los ou adicione os treinos sem arquivo GPX.\n- Dados de treino (esporte, título, data, duração, distância, subida, descida, notas).\n- Informações técnicas (navegador e sistema operacional).",
       "TITLE": "Quais são as informações que coletamos?"
     },
     "INFORMATION_DISCLOSURE": {

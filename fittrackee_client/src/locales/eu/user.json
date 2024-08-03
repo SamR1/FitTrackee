@@ -13,11 +13,11 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Datuak esportatzea",
     "DOWNLOAD_ARCHIVE": "Deskargatu artxiboa",
-    "GENERATING_LINK": "esteka sortzen...",
+    "GENERATING_LINK": "esteka sortzen…",
     "ONLY_ONE_EXPORT_PER_DAY": "24 orduero eskatu dezakezu artxiboa",
     "STATUS": {
       "errored": "huts egin du (eskatu beste esportazio bat)",
-      "in_progress": "jardunean..."
+      "in_progress": "jardunean…"
     }
   },
   "FILTER_ON_USERNAME": "Filtratu erabiltzaile-izenaren arabera",
