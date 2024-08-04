@@ -34,6 +34,9 @@
         <button class="small reject" value="reject">
           {{ $t('buttons.REJECT') }}
         </button>
+        <button class="small reject" type="button" @click="closeForm">
+          {{ $t('buttons.CANCEL') }}
+        </button>
       </div>
     </form>
     <div class="description-list" v-else>
@@ -85,7 +88,7 @@
   const props = defineProps<Props>()
   const { appeal, authUser } = toRefs(props)
 
-  const emit = defineEmits(['updateAppeal'])
+  const emit = defineEmits(['updateAppeal', 'closeAppeal'])
 
   const { locale } = useApp()
 
@@ -103,6 +106,9 @@
   }
   function updateReason(textareaData: ICustomTextareaData) {
     reason.value = textareaData.value
+  }
+  function closeForm() {
+    emit('closeAppeal')
   }
 </script>
 

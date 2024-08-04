@@ -239,6 +239,7 @@
                     :appeal="item.appeal"
                     :auth-user="authUser"
                     @updateAppeal="updateAppeal"
+                    @closeAppeal="toggleAppeal(item.appeal.id)"
                   />
                 </div>
               </div>
