@@ -19,7 +19,15 @@
         </router-link>
         {{ $t(getUserAction(notification.type)) }}
       </div>
-      <div>
+      <div class="notification-data-button">
+        <div class="notification-date">
+          {{
+            formatDistance(new Date(notification.created_at), new Date(), {
+              addSuffix: true,
+              locale,
+            })
+          }}
+        </div>
         <button
           class="mark-action"
           :title="
@@ -99,6 +107,7 @@
   </Card>
 </template>
 <script lang="ts" setup>
+  import { formatDistance } from 'date-fns'
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
@@ -106,6 +115,7 @@
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
+  import useApp from '@/composables/useApp'
   import type { INotification, TNotificationType } from '@/types/notifications'
   import type { IAuthUserProfile } from '@/types/user'
 
@@ -117,6 +127,8 @@
   const { authUser, notification } = toRefs(props)
 
   const emit = defineEmits(['reload', 'updateReadStatus'])
+
+  const { locale } = useApp()
 
   const icon: ComputedRef<string> = computed(() =>
     getIcon(notification.value.type)
@@ -212,6 +224,7 @@
       flex-direction: row;
       justify-content: space-between;
       flex-wrap: wrap;
+      align-items: center;
 
       .notification-icon {
         padding-right: 5px;
@@ -224,11 +237,16 @@
         box-shadow: none;
       }
 
-      ::v-deep(.workout-card) {
-        margin: 0;
+      .notification-data-button {
+        display: flex;
+        gap: $default-padding * 0.5;
+        align-items: center;
 
-        .box {
-          margin: $default-margin 0;
+        .notification-date {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+          white-space: nowrap;
         }
       }
     }
