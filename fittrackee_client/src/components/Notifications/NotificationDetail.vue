@@ -59,17 +59,9 @@
         {{ notification.admin_action.reason }}
       </div>
       <template
-        v-if="
-          displayCommentCard(notification.type) &&
-          notification.comment &&
-          notification.admin_action
-        "
+        v-if="displayCommentCard(notification.type) && notification.comment"
       >
         <CommentForUser
-          :action="notification.admin_action"
-          :display-appeal="
-            notification.admin_action?.action_type !== 'user_warning'
-          "
           :display-object-name="notification.type === 'user_warning'"
           :comment="notification.comment"
         />
@@ -136,7 +128,7 @@
   function updateReadStatus(notificationId: number, markedAsRead: boolean) {
     emit('updateReadStatus', { notificationId, markedAsRead })
   }
-  function displayCommentCard(notificationType: TNotificationType) {
+  function displayCommentCard(notificationType: TNotificationType): boolean {
     return (
       [
         'comment_like',
@@ -146,7 +138,7 @@
         'mention',
         'user_warning',
         'workout_comment',
-      ].includes(notificationType) && notification.value.comment
+      ].includes(notificationType) && notification.value.comment !== undefined
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
@@ -248,6 +240,14 @@
 
     .comment-box {
       padding: $default-padding * 0.5 $default-padding;
+    }
+
+    .appeal-link {
+      margin-left: $default-margin;
+    }
+
+    ::v-deep(.suspended.info-box) {
+      font-size: 0.9em;
     }
 
     &.read {

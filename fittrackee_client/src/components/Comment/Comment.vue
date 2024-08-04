@@ -108,12 +108,7 @@
           <i class="fa fa-comment-o" aria-hidden="true" />
         </button>
         <button
-          v-if="
-            !comment.suspended &&
-            !isCommentOwner(authUser, comment.user) &&
-            !isCommentReported() &&
-            reportStatus !== `comment-${comment.id}-created`
-          "
+          v-if="displayReportButton"
           class="transparent icon-button"
           @click="reportComment(comment)"
           :title="$t('workouts.COMMENTS.REPORT')"
@@ -218,7 +213,7 @@
     displayAppeal?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
-    displayAppeal: true,
+    displayAppeal: false,
     currentCommentEdition: null,
     forAdmin: false,
     forNotification: false,
@@ -258,6 +253,14 @@
       comment.value.user.username === authUser?.value.username &&
       comment.value.suspension !== undefined &&
       displayAppealForm.value !== comment.value.id
+  )
+  const displayReportButton: ComputedRef<boolean> = computed(
+    () =>
+      !forNotification.value &&
+      !comment.value.suspended &&
+      !isCommentOwner(authUser.value, comment.value.user) &&
+      !isCommentReported() &&
+      reportStatus.value !== `comment-${comment.value.id}-created`
   )
 
   function isCommentOwner(

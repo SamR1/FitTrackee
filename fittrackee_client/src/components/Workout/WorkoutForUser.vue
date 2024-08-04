@@ -14,6 +14,7 @@
     v-if="displayAppeal"
     :action="action"
     :workout="workout"
+    display-suspension-message
   />
 </template>
 
@@ -47,6 +48,8 @@
 </script>
 
 <style scoped lang="scss">
+  @import '~@/scss/vars';
+
   .notification-object {
     font-weight: bold;
     text-transform: capitalize;
@@ -54,5 +57,9 @@
 
   .workout-card {
     margin-bottom: 0;
+  }
+
+  .appeal-action {
+    margin: 0 $default-margin;
   }
 </style>
