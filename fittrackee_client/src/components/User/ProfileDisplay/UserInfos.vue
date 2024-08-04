@@ -32,7 +32,10 @@
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
       v-if="!user.is_active"
     />
-    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+    <ErrorMessage
+      :message="errorMessages"
+      v-if="errorMessages && !currentUserReporting"
+    />
     <div class="email-form form-box" v-if="displayUserEmailForm">
       <form
         :class="{ errors: formErrors }"

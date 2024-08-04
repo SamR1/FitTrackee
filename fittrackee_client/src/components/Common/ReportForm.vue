@@ -109,5 +109,8 @@
       margin: 0 10px;
       width: 15px;
     }
+    .error-message {
+      margin: $default-margin 0;
+    }
   }
 </style>
