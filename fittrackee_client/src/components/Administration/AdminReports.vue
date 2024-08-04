@@ -213,7 +213,7 @@
   const defaultOrderBy = 'created_at'
 
   let query: Reactive<TPaginationPayload> = reactive(
-    getQuery(route.query, orderByList, defaultOrderBy)
+    getQuery(route.query, orderByList, defaultOrderBy, { defaultSort: 'desc' })
   )
 
   const reports: ComputedRef<IReport[]> = computed(
