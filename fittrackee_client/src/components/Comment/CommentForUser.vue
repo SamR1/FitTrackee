@@ -7,6 +7,7 @@
       :comment="comment"
       :authUser="authUser"
       :display-appeal="false"
+      :hide-suspension-appeal="displayObjectName"
       comments-loading="null"
       :for-notification="true"
     />

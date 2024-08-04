@@ -4,7 +4,7 @@
       <i class="fa fa-info-circle" aria-hidden="true" />
       {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
       <button
-        v-if="!success && !displayAppealForm"
+        v-if="!success && !displayAppealForm && !hideSuspensionAppeal"
         class="transparent appeal-button"
         @click="displayAppealForm = `comment_${comment.id}`"
       >
@@ -18,7 +18,7 @@
       :success="success === `comment_${comment.id}`"
       :loading="appealLoading === `comment_${comment.id}`"
       @submitForm="(text) => submitAppeal(text, 'comment', comment.id)"
-      @hideMessage="displayAppealForm = `comment_${comment.id}`"
+      @hideMessage="displayAppealForm = null"
     >
       <template #cancelButton>
         <button @click="cancelAppeal()">
@@ -40,8 +40,11 @@
   interface Props {
     action: IUserAdminAction
     comment: IComment
+    hideSuspensionAppeal?: boolean
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    hideSuspensionAppeal: false,
+  })
   const { comment } = toRefs(props)
 
   const {

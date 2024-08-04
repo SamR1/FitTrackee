@@ -68,7 +68,7 @@
       </div>
       <CommentActionAppeal
         v-if="displayMakeAppeal && comment.suspended && comment.suspension"
-        :display-suspension-message="displayAppeal"
+        :hide-suspension-appeal="hideSuspensionAppeal"
         :action="comment.suspension"
         :comment="comment"
       />
@@ -211,6 +211,7 @@
     forNotification?: boolean
     forAdmin?: boolean
     displayAppeal?: boolean
+    hideSuspensionAppeal?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     displayAppeal: false,
@@ -218,6 +219,7 @@
     forAdmin: false,
     forNotification: false,
     workout: null,
+    hideSuspensionAppeal: false,
   })
   const {
     authUser,
