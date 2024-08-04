@@ -62,7 +62,7 @@
                   {{ $t('admin.APP_MODERATION.REPORTED_USER') }}
                 </th>
                 <th class="left-text">
-                  {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
+                  {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
                 </th>
                 <th class="left-text">
                   {{ $t('admin.APP_MODERATION.REPORTED_BY') }}
@@ -100,10 +100,14 @@
                 </td>
                 <td>
                   <span class="cell-heading">
-                    {{ $t('admin.APP_MODERATION.REPORTED_OBJECT') }}
+                    {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
                   </span>
                   <router-link :to="`/admin/reports/${report.id}`">
-                    {{ $t(objectTypes[report.object_type]) }}
+                    {{
+                      $t(
+                        getReportedContentType(objectTypes[report.object_type])
+                      )
+                    }}
                     <span v-if="getReportedObjectContent(report)">
                       ({{ getReportedObjectContent(report) }})
                     </span>
@@ -257,6 +261,9 @@
       authUser.value.timezone,
       authUser.value.date_format
     )
+  }
+  function getReportedContentType(contentType: string): string {
+    return contentType == 'user.USER' ? 'user.USER_PROFILE' : contentType
   }
   function getReportedObjectContent(report: IReport): string {
     let text: string | undefined
