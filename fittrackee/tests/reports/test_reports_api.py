@@ -330,7 +330,6 @@ class TestPostCommentReport(ReportTestCase):
         app: Flask,
         user_1: User,
         user_2: User,
-        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
@@ -361,6 +360,106 @@ class TestPostCommentReport(ReportTestCase):
         assert response.status_code == 201
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id == comment.id
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_comment_when_user_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(reporter=user_1, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="comment"
+        ).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id == comment.id
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_comment_when_workout_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="comment"
+        ).first()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -537,6 +636,99 @@ class TestPostWorkoutReport(ReportTestCase):
         assert new_report.resolved_by is None
         assert new_report.updated_at is None
 
+    def test_it_creates_report_for_workout_when_user_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_report(reporter=user_1, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="workout"
+        ).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id == workout_cycling_user_2.id
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_workout_when_comment_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(reporter=user_1, reported_object=comment)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="workout"
+        ).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id == workout_cycling_user_2.id
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
 
 class TestPostUserReport(ReportTestCase):
     object_type = "user"
@@ -619,7 +811,7 @@ class TestPostUserReport(ReportTestCase):
 
         self.assert_400(response, "user already suspended")
 
-    def test_it_returns_400_when_report_already_exist(
+    def test_it_returns_400_when_user_report_already_exist(
         self,
         app: Flask,
         user_1: User,
@@ -673,6 +865,51 @@ class TestPostUserReport(ReportTestCase):
         assert response.status_code == 201
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_user_when_content_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="user"
+        ).first()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id

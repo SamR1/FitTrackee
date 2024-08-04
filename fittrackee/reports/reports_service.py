@@ -55,6 +55,7 @@ class ReportService:
         existing_unresolved_report = Report.query.filter_by(
             reported_by=reporter.id,
             resolved=False,
+            object_type=object_type,
             **{f"reported_{object_type}_id": target_object.id},
         ).first()
         if existing_unresolved_report:
