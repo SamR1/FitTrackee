@@ -52,7 +52,7 @@ class TestAdminActionForReportModel(AdminActionTestCase):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
                 report_id=None,
             )
 
@@ -66,7 +66,7 @@ class TestAdminActionForReportModel(AdminActionTestCase):
         input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type=input_action_type,
@@ -172,7 +172,7 @@ class TestAdminActionForUserModel(AdminActionTestCase):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
             )
 
     @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
@@ -183,7 +183,7 @@ class TestAdminActionForUserModel(AdminActionTestCase):
         user_2: User,
         input_action_type: str,
     ) -> None:
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type=input_action_type,
@@ -207,7 +207,7 @@ class TestAdminActionForUserModel(AdminActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type="user_suspension",
@@ -284,7 +284,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
                 user_id=user_2.id,
             )
 
@@ -302,7 +302,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
                 workout_id=workout_cycling_user_2.id,
             )
 
@@ -316,7 +316,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         workout_cycling_user_2: Workout,
         input_action_type: str,
     ) -> None:
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type=input_action_type,
@@ -349,7 +349,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type="workout_suspension",
@@ -379,7 +379,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="workout_suspension",
             admin_user_id=user_1_admin.id,
@@ -410,7 +410,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="workout_suspension",
             admin_user_id=user_1_admin.id,
@@ -447,7 +447,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
                 user_id=user_2.id,
             )
 
@@ -471,7 +471,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
                 comment_id=comment.id,
-                created_at=datetime.now(),
+                created_at=datetime.utcnow(),
             )
 
     @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
@@ -489,7 +489,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type=input_action_type,
@@ -524,7 +524,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type="comment_suspension",
@@ -559,7 +559,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="comment_suspension",
             admin_user_id=user_1_admin.id,
@@ -595,7 +595,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="comment_suspension",
             admin_user_id=user_1_admin.id,
@@ -1002,7 +1002,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
     ) -> None:
         appeal_text = self.random_string()
         admin_action = self.create_admin_action(user_1_admin, user_2)
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         appeal = AdminActionAppeal(
             action_id=admin_action.id,
@@ -1029,7 +1029,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         admin_action = self.create_admin_action(
             user_1_admin, user_2, action_type="user_warning"
         )
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
 
         appeal = AdminActionAppeal(
             action_id=admin_action.id,
@@ -1068,7 +1068,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         )
         db.session.add(admin_action)
         appeal_text = self.random_string()
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         db.session.flush()
 
         appeal = AdminActionAppeal(
@@ -1094,7 +1094,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
     ) -> None:
         appeal_text = self.random_string()
         admin_action = self.create_admin_action(user_1_admin, user_2)
-        now = datetime.now()
+        now = datetime.utcnow()
 
         with travel(now, tick=False):
             appeal = AdminActionAppeal(

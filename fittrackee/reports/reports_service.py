@@ -242,7 +242,7 @@ class ReportService:
                     admin_user_id=admin_user.id,
                     action_type="comment_unsuspension",
                     comment_id=action.comment_id,
-                    created_at=datetime.now(),
+                    created_at=datetime.utcnow(),
                     report_id=action.report_id,
                     user_id=action.user_id,
                 )
@@ -253,7 +253,7 @@ class ReportService:
                 admin_action = AdminAction(
                     admin_user_id=admin_user.id,
                     action_type="workout_unsuspension",
-                    created_at=datetime.now(),
+                    created_at=datetime.utcnow(),
                     report_id=action.report_id,
                     user_id=action.user_id,
                     workout_id=action.workout_id,

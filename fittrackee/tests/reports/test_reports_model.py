@@ -41,7 +41,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
@@ -76,7 +76,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
@@ -113,7 +113,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
 
         report = Report(
@@ -142,7 +142,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -176,7 +176,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -213,7 +213,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
 
         report = Report(
@@ -245,7 +245,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        report_created_at = datetime.now()
+        report_created_at = datetime.utcnow()
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -276,7 +276,7 @@ class TestReportModel(CommentMixin, RandomMixin):
     def test_it_creates_report_without_date(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        now = datetime.now()
+        now = datetime.utcnow()
         report_note = self.random_string()
 
         with travel(now, tick=False):
@@ -1128,7 +1128,7 @@ class TestReportCommentModel(ReportCommentTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.now()
+        created_at = datetime.utcnow()
         comment = self.random_string()
 
         report_comment = ReportComment(

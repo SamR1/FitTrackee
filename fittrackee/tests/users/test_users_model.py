@@ -726,7 +726,7 @@ class TestUserFollowingModel:
         user_1: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
         assert user_1.pending_follow_requests == []
 
     def test_user_approves_follow_request(
@@ -772,7 +772,7 @@ class TestUserFollowingModel:
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
 
         with pytest.raises(FollowRequestAlreadyProcessedError):
             user_1.approves_follow_request_from(user_2)
@@ -852,7 +852,7 @@ class TestUserFollowers:
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
 
         assert user_1.followers.all() == [user_2]
 
@@ -864,7 +864,7 @@ class TestUserFollowers:
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.now()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
         user_2.suspended_at = datetime.utcnow()
 
         assert user_1.followers.all() == []
@@ -894,7 +894,7 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
 
         assert user_1.following.all() == [user_2]
 
@@ -906,7 +906,7 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
         user_2.suspended_at = datetime.utcnow()
 
         assert user_1.following.all() == []

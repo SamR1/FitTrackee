@@ -63,7 +63,7 @@ class TestFollow(ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = False
-        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
