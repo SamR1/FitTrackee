@@ -278,6 +278,10 @@
         opacity: 0.5;
       }
 
+      ::v-deep(.suspended.info-box) {
+        opacity: 0.5;
+      }
+
       .mark-action {
         color: var(--app-color-lighter);
         &:hover {

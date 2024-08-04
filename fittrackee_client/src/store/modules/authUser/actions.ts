@@ -3,9 +3,11 @@ import type { ActionContext, ActionTree } from 'vuex'
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
 import router from '@/router'
+import store from '@/store'
 import {
   AUTH_USER_STORE,
   EQUIPMENTS_STORE,
+  NOTIFICATIONS_STORE,
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
@@ -166,8 +168,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
           context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
           context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
-          if (
-            res.data.data.suspended_at !== null &&
+
+          if (res.data.data.suspended_at === null) {
+            store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
+          } else if (
             !router.currentRoute.value.path.startsWith('/profile') &&
             !router.currentRoute.value.meta.allowedToSuspendedUser
           ) {
