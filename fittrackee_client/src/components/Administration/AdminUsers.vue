@@ -1,7 +1,7 @@
 <template>
   <div id="admin-users" class="admin-card">
     <Card>
-      <template #title>{{ capitalize($t('admin.USER', 0)) }}</template>
+      <template #title>{{ capitalize($t('user.USER', 0)) }}</template>
       <template #content>
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
@@ -32,6 +32,7 @@
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
                 <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -97,11 +98,22 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
+                    {{ $t('user.SUSPENDED') }}
+                  </span>
+                  <i
+                    :class="`fa fa${
+                      user.suspended_at !== null ? '-check' : ''
+                    }-square-o`"
+                    aria-hidden="true"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
                   <button
                     :class="{ danger: user.admin }"
-                    :disabled="user.username === authUser.username"
+                    :disabled="isAdminButtonDisabled(user)"
                     @click="updateUser(user.username, !user.admin)"
                   >
                     {{
@@ -141,7 +153,7 @@
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import type { Reactive, ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
@@ -149,10 +161,11 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
-  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IUserProfile, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -161,7 +174,10 @@
   const route = useRoute()
   const router = useRouter()
 
-  const orderByList: string[] = [
+  const { errorMessages } = useApp()
+  const { authUser } = useAuthUser()
+
+  const orderByList = [
     'is_active',
     'admin',
     'created_at',
@@ -169,30 +185,24 @@
     'workouts_count',
   ]
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(
+
+  let query: Reactive<TPaginationPayload> = reactive(
     getQuery(route.query, orderByList, defaultOrderBy)
   )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
 
-  onBeforeMount(() => loadUsers(query))
-
-  function loadUsers(queryParams: TPaginationPayload) {
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  function loadUsers(queryParams: TUsersPayload) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
   }
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)
   }
-
   function updateUser(username: string, admin: boolean) {
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
@@ -206,10 +216,11 @@
     }
     router.push({ path: '/admin/users', query })
   }
-
-  onUnmounted(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
-  })
+  function isAdminButtonDisabled(user: IUserProfile) {
+    return (
+      user.username === authUser.value.username || user.suspended_at !== null
+    )
+  }
 
   watch(
     () => route.query,
@@ -218,6 +229,11 @@
       loadUsers(query)
     }
   )
+
+  onBeforeMount(() => loadUsers(query))
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -151,8 +151,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, ref, toRefs, watch } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { computed, onBeforeMount, toRefs, watch } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
 
@@ -163,7 +163,11 @@
   import type { TStatisticsForSport } from '@/types/statistics'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
-  import type { ICardRecord, IRecordsBySports } from '@/types/workouts'
+  import type {
+    ICardRecord,
+    IDuration,
+    IRecordsBySports,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getDuration, getTotalDuration } from '@/utils/duration'
   import { getRecordsBySports, sortRecords } from '@/utils/records'
@@ -174,18 +178,25 @@
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { authUser, sports } = toRefs(props)
 
   const route = useRoute()
   const router = useRouter()
   const store = useStore()
   const { t } = useI18n()
 
-  const { authUser, sports } = toRefs(props)
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(sports.value, t, 'all')
   )
-  const sportIds: number[] = translatedSports.value.map((s) => s.id)
-  const sportId: Ref<number> = ref(sportIds[0])
+  const sportIds: ComputedRef<number[]> = computed(() =>
+    translatedSports.value.map((s) => s.id)
+  )
+  const sportId: ComputedRef<number> = computed(() =>
+    route.query.sport_id &&
+    sportIds.value.includes(+route.query.sport_id as number)
+      ? +route.query.sport_id
+      : sportIds.value[0]
+  )
   const sportRecords: ComputedRef<IRecordsBySports> = computed(() =>
     getRecordsBySports(
       authUser.value.records,
@@ -206,22 +217,20 @@
   const totalWorkouts: ComputedRef<number> = computed(
     () => store.getters.TOTAL_WORKOUTS
   )
-  const distanceUnitTo: TUnit = authUser.value.imperial_units
-    ? units['km'].defaultTarget
-    : 'km'
-  const ascentUnitTo: TUnit = authUser.value.imperial_units
-    ? units['m'].defaultTarget
-    : 'm'
+  const distanceUnitTo: ComputedRef<TUnit> = computed(() =>
+    authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
+  )
+  const ascentUnitTo: ComputedRef<TUnit> = computed(() =>
+    authUser.value.imperial_units ? units['m'].defaultTarget : 'm'
+  )
   const loading: ComputedRef<boolean> = computed(
     () => store.getters.STATS_LOADING
   )
-  const totalDuration = computed(() =>
+  const totalDuration: ComputedRef<IDuration> = computed(() =>
     sportStatistics.value
       ? getDuration(sportStatistics.value.total_duration, t)
       : { days: '', duration: '' }
   )
-
-  onBeforeMount(() => getSportsStatistics())
 
   function convertedDistance(
     value: number | undefined,
@@ -238,10 +247,6 @@
       : value
   }
   function getSportsStatistics() {
-    sportId.value =
-      route.query.sport_id && sportIds.includes(+route.query.sport_id as number)
-        ? +route.query.sport_id
-        : sportIds[0]
     store.dispatch(STATS_STORE.ACTIONS.GET_USER_SPORT_STATS, {
       username: authUser.value.username,
       sportId: sportId.value,
@@ -275,6 +280,8 @@
       getSportsStatistics()
     }
   )
+
+  onBeforeMount(() => getSportsStatistics())
 </script>
 
 <style scoped lang="scss">

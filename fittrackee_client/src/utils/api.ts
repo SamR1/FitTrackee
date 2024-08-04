@@ -55,6 +55,12 @@ export const getQuery = (
   } else {
     delete query.notes
   }
+  if (typeof locationQuery.object_type === 'string') {
+    query.object_type = locationQuery.object_type
+  }
+  if (typeof locationQuery.resolved === 'string') {
+    query.resolved = locationQuery.resolved
+  }
 
   return query
 }

@@ -38,7 +38,6 @@
     useImperialUnits: boolean
   }
   const props = defineProps<Props>()
-
   const { segments, useImperialUnits } = toRefs(props)
 </script>
 

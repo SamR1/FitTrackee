@@ -29,7 +29,6 @@
     sportTranslatedLabel: string
   }
   const props = defineProps<Props>()
-
   const { records, sportTranslatedLabel } = toRefs(props)
 
   const { t } = useI18n()

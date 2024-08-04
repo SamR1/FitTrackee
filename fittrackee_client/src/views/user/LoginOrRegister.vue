@@ -21,7 +21,6 @@
     action: string
   }
   const props = defineProps<Props>()
-
   const { action } = toRefs(props)
 </script>
 

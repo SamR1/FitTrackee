@@ -9,10 +9,20 @@ import {
   EquipmentsMutation,
 } from '@/store/modules/equipments/enums'
 import {
+  NotificationsActions,
+  NotificationsGetters,
+  NotificationsMutations,
+} from '@/store/modules/notifications/enums'
+import {
   OAuth2Actions,
   OAuth2Getters,
   OAuth2Mutations,
 } from '@/store/modules/oauth2/enums'
+import {
+  ReportsActions,
+  ReportsGetters,
+  ReportsMutations,
+} from '@/store/modules/reports/enums'
 import {
   RootActions,
   RootGetters,
@@ -62,10 +72,23 @@ export const AUTH_USER_STORE = {
   GETTERS: AuthUserGetters,
   MUTATIONS: AuthUserMutations,
 }
+
 export const OAUTH2_STORE = {
   ACTIONS: OAuth2Actions,
   GETTERS: OAuth2Getters,
   MUTATIONS: OAuth2Mutations,
+}
+
+export const NOTIFICATIONS_STORE = {
+  ACTIONS: NotificationsActions,
+  GETTERS: NotificationsGetters,
+  MUTATIONS: NotificationsMutations,
+}
+
+export const REPORTS_STORE = {
+  ACTIONS: ReportsActions,
+  GETTERS: ReportsGetters,
+  MUTATIONS: ReportsMutations,
 }
 
 export const USERS_STORE = {

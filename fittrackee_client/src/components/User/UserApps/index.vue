@@ -15,10 +15,9 @@
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const store = useStore()
-
-  const { user } = toRefs(props)
 
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)

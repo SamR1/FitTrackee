@@ -20,8 +20,8 @@
     tab: string
   }
   const props = defineProps<Props>()
-
   const { user, tab } = toRefs(props)
+
   const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS']
 </script>
 

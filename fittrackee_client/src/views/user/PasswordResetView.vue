@@ -12,22 +12,22 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, onBeforeMount } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { toRefs, onBeforeMount } from 'vue'
+  import { useRouter } from 'vue-router'
 
   import PasswordEmailSent from '@/components/User/PasswordReset/PasswordActionDone.vue'
   import PasswordResetRequest from '@/components/User/PasswordReset/PasswordResetForm.vue'
+  import useAuthUser from '@/composables/useAuthUser'
 
   interface Props {
     action: string
   }
   const props = defineProps<Props>()
+  const { action } = toRefs(props)
 
-  const route = useRoute()
   const router = useRouter()
 
-  const { action } = toRefs(props)
-  const token = computed(() => route.query.token as string)
+  const { token } = useAuthUser()
 
   onBeforeMount(() => {
     if (props.action === 'reset' && !token.value) {

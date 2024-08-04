@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs } from 'vue'
+  import { computed, type ComputedRef, toRefs } from 'vue'
 
   import CalendarWorkout from '@/components/Dashboard/UserCalendar/CalendarWorkout.vue'
   import CalendarWorkoutsChart from '@/components/Dashboard/UserCalendar/CalendarWorkoutsChart.vue'
@@ -57,11 +57,15 @@
     index: number
   }
   const props = defineProps<Props>()
-
   const { displayHARecord, index, sports, workouts } = toRefs(props)
-  const chartDatasets = computed(() => getDonutDatasets(props.workouts))
-  const colors = computed(() => sportIdColors(props.sports))
+
   const displayedWorkoutCount = 6
+
+  const chartDatasets: ComputedRef<Record<number, Record<string, number>>> =
+    computed(() => getDonutDatasets(props.workouts))
+  const colors: ComputedRef<Record<number, string>> = computed(() =>
+    sportIdColors(props.sports)
+  )
 </script>
 
 <style lang="scss">

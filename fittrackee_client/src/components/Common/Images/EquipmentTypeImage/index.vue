@@ -14,8 +14,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, type ComputedRef, toRefs } from 'vue'
-  import { useStore } from 'vuex'
+  import { toRefs } from 'vue'
 
   import Bike from '@/components/Common/Images/EquipmentTypeImage/Bike.vue'
   import BikeTrainer from '@/components/Common/Images/EquipmentTypeImage/BikeTrainer.vue'
@@ -23,22 +22,14 @@
   import Shoes from '@/components/Common/Images/EquipmentTypeImage/Shoes.vue'
   import Skis from '@/components/Common/Images/EquipmentTypeImage/Skis.vue'
   import Snowshoes from '@/components/Common/Images/EquipmentTypeImage/Snowshoes.vue'
-  import { ROOT_STORE } from '@/store/constants'
-  import { getDarkTheme } from '@/utils'
+  import useApp from '@/composables/useApp'
 
   interface Props {
     equipmentTypeLabel: string
     title: string
   }
   const props = defineProps<Props>()
-
-  const store = useStore()
-
-  const darkMode: ComputedRef<boolean | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
-  )
-  const darkTheme: ComputedRef<boolean> = computed(() =>
-    getDarkTheme(darkMode.value)
-  )
   const { equipmentTypeLabel, title } = toRefs(props)
+
+  const { darkTheme } = useApp()
 </script>
