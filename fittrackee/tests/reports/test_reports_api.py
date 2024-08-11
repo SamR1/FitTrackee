@@ -3368,6 +3368,28 @@ class TestProcessAdminActionAppeal(
 
         self.assert_400(response)
 
+    def test_it_returns_400_when_user_already_unsuspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = None
+        db.session.commit()
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "user account has already been reactivated")
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3451,6 +3473,42 @@ class TestProcessAdminActionAppeal(
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
+    def test_it_returns_400_when_comment_already_unsuspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.flush()
+        comment.suspended_at = None
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "comment has already been reactivated")
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3495,6 +3553,36 @@ class TestProcessAdminActionAppeal(
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_returns_400_when_workout_already_unsuspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        workout_cycling_user_2.suspended_at = None
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "workout has already been reactivated")
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

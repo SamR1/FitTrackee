@@ -27,6 +27,7 @@
         "
         @updateValue="updateReason"
       />
+      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="appeal-actions-buttons">
         <button class="small approve" value="approve">
           {{ $t('buttons.APPROVE') }}
@@ -90,7 +91,7 @@
 
   const emit = defineEmits(['updateAppeal', 'closeAppeal'])
 
-  const { locale } = useApp()
+  const { errorMessages, locale } = useApp()
 
   const reason: Ref<string> = ref('')
 
@@ -139,6 +140,10 @@
         display: flex;
         gap: 5px;
       }
+    }
+
+    .error-message {
+      margin: $default-margin 0;
     }
   }
 </style>
