@@ -4,5 +4,4 @@
 
 {% endif %}{{ _('Comment:') }} {{ text }}
 
-{{ _('Link:') }} {{ comment_url }}
-{% endblock %}
+{{ _('Link:') }} {{ comment_url }}{% endblock %}

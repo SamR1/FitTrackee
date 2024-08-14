@@ -1,4 +1,4 @@
 {% extends "layout.txt" %}{% block content %}{{ _('Your account has been reactivated') }}.
-{{ _('You can now use all the features on FitTrackee') }}.
+{{ _('You can now use all the features on FitTrackee') }}.{% if reason %}
 
-{% if reason %}{{ _('Reason:') }} {{ reason }}{% endif %}{% endblock %}
+{{ _('Reason:') }} {{ reason }}{% endif %}{% endblock %}

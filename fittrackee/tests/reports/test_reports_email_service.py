@@ -86,6 +86,7 @@ class TestReportEmailServiceForUserReactivation(
                 'username': user_3.username,
                 'fittrackee_url': app.config['UI_URL'],
                 'reason': input_reason.get('reason'),
+                'without_user_action': True,
             },
         )
 
@@ -511,6 +512,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'text': report.reported_comment.handle_mentions()[0],
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
                 'username': user_3.username,
+                'without_user_action': True,
             },
         )
 
@@ -558,6 +560,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
                 'text': report.reported_comment.handle_mentions()[0],
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
                 'username': user_3.username,
+                'without_user_action': True,
             },
         )
 
@@ -696,6 +699,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'title': workout_cycling_user_2.title,
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
                 'username': user_2.username,
+                'without_user_action': True,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
@@ -746,6 +750,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
                 'title': workout_cycling_user_2.title,
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
                 'username': user_2.username,
+                'without_user_action': True,
                 'workout_date': get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
