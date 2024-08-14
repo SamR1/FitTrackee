@@ -3,7 +3,7 @@ import type { ComputedRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 import useApp from '@/composables/useApp'
-import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
+import { AUTH_USER_STORE } from '@/store/constants'
 import type { IAuthUserProfile, TToken } from '@/types/user'
 import { useStore } from '@/use/useStore'
 import { getDateFormat } from '@/utils/dates'
@@ -21,7 +21,7 @@ export default function useAuthUser() {
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
   )
   const authUserSuccess = computed(
-    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
   const dateFormat: ComputedRef<string> = computed(() =>
     getDateFormat(authUser.value.date_format, appLanguage.value)

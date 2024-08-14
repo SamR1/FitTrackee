@@ -306,12 +306,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    console.log(appealPayload)
     const url =
       appealPayload.actionType === 'user_suspension'
         ? 'auth/account/suspension/appeal'
         : `auth/account/warning/${appealPayload.actionId}/appeal`
-    console.log(url)
     authApi
       .post(url, { text: appealPayload.text })
       .then((res) => {
