@@ -10,7 +10,7 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Dataeksport",
     "DOWNLOAD_ARCHIVE": "Last ned arkiv",
-    "GENERATING_LINK": "genererer lenke …",
+    "GENERATING_LINK": "genererer lenke…",
     "STATUS": {
       "in_progress": "underveis …"
     }
