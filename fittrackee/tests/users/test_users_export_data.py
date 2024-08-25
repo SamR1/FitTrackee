@@ -599,7 +599,7 @@ class UserDataExportTestCase:
     ) -> UserDataExport:
         user_data_export = UserDataExport(
             user_id=user.id,
-            created_at=datetime.now() - timedelta(days=days),
+            created_at=datetime.utcnow() - timedelta(days=days),
         )
         db.session.add(user_data_export)
         user_data_export.completed = completed

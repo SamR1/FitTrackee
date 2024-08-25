@@ -284,5 +284,7 @@ def process_appeal(
             "appeal": appeal.serialize(auth_user),
         }
 
+    except InvalidAdminActionException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

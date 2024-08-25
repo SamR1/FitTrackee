@@ -503,7 +503,9 @@ class TestNotificationForWorkoutAdminAction(
         workout_cycling_user_2: Workout,
         input_admin_action: str,
     ) -> None:
-        report = self.create_report(user_3, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
 
         admin_action = self.create_admin_action(
             user_1_admin,
@@ -533,7 +535,9 @@ class TestNotificationForWorkoutAdminAction(
         workout_cycling_user_2: Workout,
         input_admin_action: str,
     ) -> None:
-        report = self.create_report(user_3, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
         admin_action = self.create_admin_action(
             user_1_admin,
             user_2,
@@ -798,7 +802,7 @@ class TestNotificationForCommentAdminAction(
         input_admin_action: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
-        report = self.create_report(user_2, comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
 
         admin_action = self.create_admin_action(
             user_1_admin,
@@ -829,7 +833,7 @@ class TestNotificationForCommentAdminAction(
         input_admin_action: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
-        report = self.create_report(user_2, comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
@@ -1306,7 +1310,7 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
     def test_it_serializes_suspension_appeal_notification(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         suspension_action = self.create_user_suspension_action(
             user_1_admin, user_2, report.id
         )
@@ -1342,7 +1346,7 @@ class TestNotificationForUserWarning(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report = self.create_report(user_2, user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
 
         admin_action = self.create_admin_action(
             user_1_admin,
@@ -1368,7 +1372,7 @@ class TestNotificationForUserWarning(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report = self.create_report(user_2, user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
@@ -1403,7 +1407,9 @@ class TestNotificationForUserWarning(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report = self.create_report(user_3, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
 
         admin_action = self.create_admin_action(
             user_1_admin,
@@ -1430,7 +1436,9 @@ class TestNotificationForUserWarning(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report = self.create_report(user_3, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
         admin_action = self.create_admin_action(
             user_1_admin,
             user_2,
@@ -1468,7 +1476,7 @@ class TestNotificationForUserWarning(
         workout_cycling_user_2: Workout,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
-        report = self.create_report(user_2, comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
 
         admin_action = self.create_admin_action(
             user_1_admin,
@@ -1496,7 +1504,7 @@ class TestNotificationForUserWarning(
         workout_cycling_user_2: Workout,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
-        report = self.create_report(user_2, comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,

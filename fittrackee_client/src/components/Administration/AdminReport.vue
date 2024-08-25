@@ -239,6 +239,7 @@
                     :appeal="item.appeal"
                     :auth-user="authUser"
                     @updateAppeal="updateAppeal"
+                    @closeAppeal="toggleAppeal(item.appeal.id)"
                   />
                 </div>
               </div>
@@ -456,6 +457,7 @@
     })
   }
   function displayTextArea(action: TReportAction | null = null) {
+    resetErrorAndForms()
     currentAction.value = action
     displayReportCommentTextarea.value = true
   }
@@ -598,6 +600,7 @@
   function toggleAppeal(appealId: string) {
     if (displayedAppeals.value.includes(appealId)) {
       displayedAppeals.value.splice(displayedAppeals.value.indexOf(appealId), 1)
+      store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     } else {
       displayedAppeals.value.push(appealId)
     }
@@ -628,6 +631,10 @@
           )}`
     }
     return `${placeholder}${information}`
+  }
+  function resetErrorAndForms() {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    displayedAppeals.value = []
   }
 
   watch(

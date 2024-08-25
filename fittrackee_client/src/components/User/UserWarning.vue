@@ -6,8 +6,6 @@
     <div>{{ $t('notifications.YOU_RECEIVED_A_WARNING') }}.</div>
     <template v-if="userWarning.comment">
       <CommentForUser
-        :action="userWarning"
-        :display-appeal="false"
         :display-object-name="true"
         :comment="userWarning.comment"
       />

@@ -55,6 +55,7 @@ class ReportService:
         existing_unresolved_report = Report.query.filter_by(
             reported_by=reporter.id,
             resolved=False,
+            object_type=object_type,
             **{f"reported_{object_type}_id": target_object.id},
         ).first()
         if existing_unresolved_report:
@@ -228,36 +229,64 @@ class ReportService:
         appeal.reason = data["reason"]
         appeal.updated_at = datetime.utcnow()
 
+        action = appeal.action
+        content = None
+        content_type = ''
+        if action.action_type.startswith("comment_"):
+            content = Comment.query.filter_by(id=action.comment_id).first()
+            content_type = "comment"
+        elif action.action_type.startswith("workout_"):
+            content = Workout.query.filter_by(id=action.workout_id).first()
+            content_type = "workout"
+
         if data["approved"]:
-            action = appeal.action
             if action.action_type == "user_suspension":
+                if not appeal.user.suspended_at:
+                    raise InvalidAdminActionException(
+                        "user account has already been reactivated"
+                    )
+
                 user_manager_service = UserManagerService(
                     username=appeal.user.username, admin_user_id=admin_user.id
                 )
                 user, _, _ = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
-            if action.action_type == "comment_suspension":
+            if (
+                action.action_type
+                in ["comment_suspension", "workout_suspension"]
+                and content
+            ):
+                if not content.suspended_at:
+                    raise InvalidAdminActionException(
+                        f"{content_type} has already been reactivated"
+                    )
+                content_id = {f"{content_type}_id": content.id}
                 admin_action = AdminAction(
                     admin_user_id=admin_user.id,
-                    action_type="comment_unsuspension",
-                    comment_id=action.comment_id,
-                    created_at=datetime.now(),
+                    action_type=f"{content_type}_unsuspension",
+                    created_at=datetime.utcnow(),
                     report_id=action.report_id,
                     user_id=action.user_id,
+                    **content_id,
                 )
                 db.session.add(admin_action)
-                comment = Comment.query.filter_by(id=action.comment_id).first()
-                comment.suspended_at = None
-            if action.action_type == "workout_suspension":
-                admin_action = AdminAction(
-                    admin_user_id=admin_user.id,
-                    action_type="workout_unsuspension",
-                    created_at=datetime.now(),
-                    report_id=action.report_id,
-                    user_id=action.user_id,
-                    workout_id=action.workout_id,
+                content.suspended_at = None
+        else:
+            if (
+                action.action_type == "user_suspension"
+                and not appeal.user.suspended_at
+            ):
+                if not appeal.user.suspended_at:
+                    raise InvalidAdminActionException(
+                        "user account has been reactivated after appeal"
+                    )
+            if (
+                action.action_type
+                in ["comment_suspension", "workout_suspension"]
+                and content
+                and not content.suspended_at
+            ):
+                raise InvalidAdminActionException(
+                    f"{content_type} has been reactivated after appeal"
                 )
-                db.session.add(admin_action)
-                workout = Workout.query.filter_by(id=action.workout_id).first()
-                workout.suspended_at = None

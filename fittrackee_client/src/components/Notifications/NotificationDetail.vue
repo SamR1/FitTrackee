@@ -19,7 +19,15 @@
         </router-link>
         {{ $t(getUserAction(notification.type)) }}
       </div>
-      <div>
+      <div class="notification-data-button">
+        <div class="notification-date">
+          {{
+            formatDistance(new Date(notification.created_at), new Date(), {
+              addSuffix: true,
+              locale,
+            })
+          }}
+        </div>
         <button
           class="mark-action"
           :title="
@@ -59,17 +67,9 @@
         {{ notification.admin_action.reason }}
       </div>
       <template
-        v-if="
-          displayCommentCard(notification.type) &&
-          notification.comment &&
-          notification.admin_action
-        "
+        v-if="displayCommentCard(notification.type) && notification.comment"
       >
         <CommentForUser
-          :action="notification.admin_action"
-          :display-appeal="
-            notification.admin_action?.action_type !== 'user_warning'
-          "
           :display-object-name="notification.type === 'user_warning'"
           :comment="notification.comment"
         />
@@ -107,6 +107,7 @@
   </Card>
 </template>
 <script lang="ts" setup>
+  import { formatDistance } from 'date-fns'
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
@@ -114,6 +115,7 @@
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
+  import useApp from '@/composables/useApp'
   import type { INotification, TNotificationType } from '@/types/notifications'
   import type { IAuthUserProfile } from '@/types/user'
 
@@ -126,6 +128,8 @@
 
   const emit = defineEmits(['reload', 'updateReadStatus'])
 
+  const { locale } = useApp()
+
   const icon: ComputedRef<string> = computed(() =>
     getIcon(notification.value.type)
   )
@@ -136,7 +140,7 @@
   function updateReadStatus(notificationId: number, markedAsRead: boolean) {
     emit('updateReadStatus', { notificationId, markedAsRead })
   }
-  function displayCommentCard(notificationType: TNotificationType) {
+  function displayCommentCard(notificationType: TNotificationType): boolean {
     return (
       [
         'comment_like',
@@ -146,7 +150,7 @@
         'mention',
         'user_warning',
         'workout_comment',
-      ].includes(notificationType) && notification.value.comment
+      ].includes(notificationType) && notification.value.comment !== undefined
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
@@ -220,6 +224,7 @@
       flex-direction: row;
       justify-content: space-between;
       flex-wrap: wrap;
+      align-items: center;
 
       .notification-icon {
         padding-right: 5px;
@@ -232,11 +237,16 @@
         box-shadow: none;
       }
 
-      ::v-deep(.workout-card) {
-        margin: 0;
+      .notification-data-button {
+        display: flex;
+        gap: $default-padding * 0.5;
+        align-items: center;
 
-        .box {
-          margin: $default-margin 0;
+        .notification-date {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+          white-space: nowrap;
         }
       }
     }
@@ -248,6 +258,14 @@
 
     .comment-box {
       padding: $default-padding * 0.5 $default-padding;
+    }
+
+    .appeal-link {
+      margin-left: $default-margin;
+    }
+
+    ::v-deep(.suspended.info-box) {
+      font-size: 0.9em;
     }
 
     &.read {
@@ -275,6 +293,10 @@
       }
 
       ::v-deep(.sport-img) {
+        opacity: 0.5;
+      }
+
+      ::v-deep(.suspended.info-box) {
         opacity: 0.5;
       }
 

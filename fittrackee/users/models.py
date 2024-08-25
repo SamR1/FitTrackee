@@ -534,7 +534,7 @@ class User(BaseModel):
         if follow_request.updated_at is not None:
             raise FollowRequestAlreadyProcessedError()
         follow_request.is_approved = approved
-        follow_request.updated_at = datetime.now()
+        follow_request.updated_at = datetime.utcnow()
         db.session.commit()
 
         if current_app.config['FEDERATION_ENABLED'] and user.actor.is_remote:

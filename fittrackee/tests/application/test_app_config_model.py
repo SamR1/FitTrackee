@@ -97,7 +97,7 @@ class TestConfigModel:
     def test_it_returns_privacy_policy(self, app: Flask) -> None:
         app_config = AppConfig.query.first()
         privacy_policy = random_string()
-        privacy_policy_date = datetime.now()
+        privacy_policy_date = datetime.utcnow()
         app_config.privacy_policy = privacy_policy
         app_config.privacy_policy_date = privacy_policy_date
 

@@ -304,7 +304,7 @@ class TestPostCommentReport(ReportTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        self.create_report(user_1, comment)
+        self.create_report(reporter=user_1, reported_object=comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -330,7 +330,6 @@ class TestPostCommentReport(ReportTestCase):
         app: Flask,
         user_1: User,
         user_2: User,
-        user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
@@ -361,6 +360,106 @@ class TestPostCommentReport(ReportTestCase):
         assert response.status_code == 201
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id == comment.id
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_comment_when_user_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(reporter=user_1, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="comment"
+        ).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id == comment.id
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_comment_when_workout_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=comment.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="comment"
+        ).first()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -473,7 +572,9 @@ class TestPostWorkoutReport(ReportTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        self.create_report(user_1, workout_cycling_user_2)
+        self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -524,6 +625,99 @@ class TestPostWorkoutReport(ReportTestCase):
         assert response.status_code == 201
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id == workout_cycling_user_2.id
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_workout_when_user_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        self.create_report(reporter=user_1, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="workout"
+        ).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id == workout_cycling_user_2.id
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_workout_when_comment_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        self.create_report(reporter=user_1, reported_object=comment)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=workout_cycling_user_2.short_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="workout"
+        ).first()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -617,13 +811,13 @@ class TestPostUserReport(ReportTestCase):
 
         self.assert_400(response, "user already suspended")
 
-    def test_it_returns_400_when_report_already_exist(
+    def test_it_returns_400_when_user_report_already_exist(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
     ) -> None:
-        self.create_report(user_1, user_2)
+        self.create_report(reporter=user_1, reported_object=user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -671,6 +865,51 @@ class TestPostUserReport(ReportTestCase):
         assert response.status_code == 201
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        assert new_report.note == report_note
+        assert new_report.object_type == self.object_type
+        assert new_report.reported_by == user_1.id
+        assert new_report.reported_comment_id is None
+        assert new_report.reported_user_id == user_2.id
+        assert new_report.reported_workout_id is None
+        assert new_report.resolved is False
+        assert new_report.resolved_at is None
+        assert new_report.resolved_by is None
+        assert new_report.updated_at is None
+
+    def test_it_creates_report_for_user_when_content_report_exists_for_same_user(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        report_note = self.random_string()
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=report_note,
+                    object_id=user_2.username,
+                    object_type=self.object_type,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "created"}
+        new_report = Report.query.filter_by(
+            reported_by=user_1.id, object_type="user"
+        ).first()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -1349,7 +1588,9 @@ class TestGetReportsAsUser(ReportTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         self.create_reports(user_2, user_3, user_4, workout_cycling_user_2)
-        report = self.create_report(user_1, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1383,7 +1624,9 @@ class TestGetReportsAsUser(ReportTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         self.create_reports(user_2, user_3, user_4, workout_cycling_user_2)
-        report = self.create_report(user_1, workout_cycling_user_2)
+        report = self.create_report(
+            reporter=user_1, reported_object=workout_cycling_user_2
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1472,7 +1715,9 @@ class TestGetReportAsAdmin(GetReportTestCase):
     def test_it_returns_report_from_authenticated_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        report = self.create_report(user_1_admin, reported_object=user_2)
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1493,7 +1738,7 @@ class TestGetReportAsAdmin(GetReportTestCase):
     def test_it_returns_report_from_another_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_2, reported_object=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1516,7 +1761,7 @@ class TestGetReportAsUser(GetReportTestCase):
     def test_it_returns_report_from_authenticated_user(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        report = self.create_report(user_1, reported_object=user_2)
+        report = self.create_report(reporter=user_1, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1535,7 +1780,7 @@ class TestGetReportAsUser(GetReportTestCase):
     def test_it_does_not_return_report_from_another_user(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_2, reported_object=user_3)
+        report = self.create_report(reporter=user_2, reported_object=user_3)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1554,7 +1799,7 @@ class TestGetReportAsUnauthenticatedUser(GetReportTestCase):
     def test_it_returns_401_when_user_is_not_authenticated(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        report = self.create_report(user_1, reported_object=user_2)
+        report = self.create_report(reporter=user_1, reported_object=user_2)
         client = app.test_client()
 
         response = client.get(
@@ -1578,7 +1823,7 @@ class TestGetReportOAuth2Scopes(GetReportTestCase):
         client_scope: str,
         can_access: bool,
     ) -> None:
-        report = self.create_report(user_1, reported_object=user_2)
+        report = self.create_report(reporter=user_1, reported_object=user_2)
         (
             client,
             oauth_client,
@@ -1622,7 +1867,7 @@ class TestPatchReport(ReportTestCase):
     def test_it_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        report = self.create_report(user_1, reported_object=user_2)
+        report = self.create_report(reporter=user_1, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1662,7 +1907,7 @@ class TestPatchReport(ReportTestCase):
     def test_it_returns_400_when_comment_is_missing(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1679,7 +1924,7 @@ class TestPatchReport(ReportTestCase):
     def test_it_adds_a_comment(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1706,7 +1951,7 @@ class TestPatchReport(ReportTestCase):
     def test_it_resolves_a_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         report_comment = ReportComment(
             comment=self.random_string(),
             report_id=report.id,
@@ -1744,7 +1989,7 @@ class TestPatchReport(ReportTestCase):
     def test_it_marks_a_report_as_unresolved(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         report.resolved = True
         report.resolved_at = datetime.utcnow()
         report.resolved_by = user_1_admin.id
@@ -1776,7 +2021,9 @@ class TestPatchReport(ReportTestCase):
     def test_it_adds_comment_one_resolved_report(
         self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2_admin)
+        report = self.create_report(
+            reporter=user_3, reported_object=user_2_admin
+        )
         report.resolved = True
         resolved_time = datetime.utcnow()
         report.resolved_at = resolved_time
@@ -1837,7 +2084,7 @@ class TestPostReportAdminAction(ReportTestCase):
     def test_it_returns_403_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        report = self.create_report(user_1, reported_object=user_2)
+        report = self.create_report(reporter=user_1, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1879,7 +2126,7 @@ class TestPostReportAdminAction(ReportTestCase):
     def test_it_returns_400_when_action_type_is_missing(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1898,7 +2145,7 @@ class TestPostReportAdminAction(ReportTestCase):
     def test_it_returns_400_when_action_type_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1926,7 +2173,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_2: User,
         user_3: User,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1943,7 +2190,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_returns_400_when_username_is_invalid_on_user_admin_action(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1963,7 +2210,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_returns_400_when_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1983,7 +2230,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_suspends_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2009,7 +2256,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_returns_400_when_when_user_already_suspended(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2033,7 +2280,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_returns_400_when_when_user_already_warned(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2060,7 +2307,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_reactivates_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2092,7 +2339,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_3: User,
         input_action_type: str,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         if input_action_type == "user_unsuspension":
             user_2.suspended_at = datetime.utcnow()
             db.session.commit()
@@ -2123,7 +2370,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
     def test_it_returns_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         report_comment = ReportComment(
             comment=self.random_string(),
             report_id=report.id,
@@ -2161,7 +2408,9 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_2: User,
         user_3: User,
     ) -> None:
-        report = self.create_report(user_1_admin, user_2)
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_3_users_max, user_1_admin.email
         )
@@ -2201,7 +2450,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_3: User,
         user_suspension_email_mock: MagicMock,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2227,7 +2476,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_3: User,
         user_unsuspension_email_mock: MagicMock,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2255,7 +2504,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_3: User,
         user_warning_email_mock: MagicMock,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2281,7 +2530,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_3: User,
         user_suspension_email_mock: MagicMock,
     ) -> None:
-        report = self.create_report(user_3, reported_object=user_2)
+        report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
@@ -2314,7 +2563,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2340,7 +2589,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2369,7 +2618,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2398,7 +2647,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2435,7 +2684,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2469,7 +2718,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2505,7 +2754,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2540,7 +2789,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2576,7 +2825,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2607,7 +2856,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2640,7 +2889,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         report = self.create_report(
-            user_3, reported_object=workout_cycling_user_2
+            reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
@@ -2676,7 +2925,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2703,7 +2952,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2733,7 +2982,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2763,7 +3012,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2798,7 +3047,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2835,7 +3084,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2869,7 +3118,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2905,7 +3154,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2948,7 +3197,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -2984,7 +3233,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3022,7 +3271,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             text_visibility=PrivacyLevel.PUBLIC,
             with_mentions=True,
         )
-        report = self.create_report(user_2, reported_object=comment)
+        report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
@@ -3119,6 +3368,28 @@ class TestProcessAdminActionAppeal(
 
         self.assert_400(response)
 
+    def test_it_returns_400_when_user_already_unsuspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        user_2.suspended_at = None
+        db.session.commit()
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "user account has already been reactivated")
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3202,6 +3473,42 @@ class TestProcessAdminActionAppeal(
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
+    def test_it_returns_400_when_comment_already_unsuspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.flush()
+        comment.suspended_at = None
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "comment has already been reactivated")
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3246,6 +3553,36 @@ class TestProcessAdminActionAppeal(
         appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_returns_400_when_workout_already_unsuspended(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        workout_cycling_user_2.suspended_at = None
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "workout has already been reactivated")
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

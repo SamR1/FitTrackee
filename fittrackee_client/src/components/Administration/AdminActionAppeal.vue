@@ -27,12 +27,16 @@
         "
         @updateValue="updateReason"
       />
+      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="appeal-actions-buttons">
         <button class="small approve" value="approve">
           {{ $t('buttons.APPROVE') }}
         </button>
         <button class="small reject" value="reject">
           {{ $t('buttons.REJECT') }}
+        </button>
+        <button class="small reject" type="button" @click="closeForm">
+          {{ $t('buttons.CANCEL') }}
         </button>
       </div>
     </form>
@@ -85,9 +89,9 @@
   const props = defineProps<Props>()
   const { appeal, authUser } = toRefs(props)
 
-  const emit = defineEmits(['updateAppeal'])
+  const emit = defineEmits(['updateAppeal', 'closeAppeal'])
 
-  const { locale } = useApp()
+  const { errorMessages, locale } = useApp()
 
   const reason: Ref<string> = ref('')
 
@@ -103,6 +107,9 @@
   }
   function updateReason(textareaData: ICustomTextareaData) {
     reason.value = textareaData.value
+  }
+  function closeForm() {
+    emit('closeAppeal')
   }
 </script>
 
@@ -133,6 +140,10 @@
         display: flex;
         gap: 5px;
       }
+    }
+
+    .error-message {
+      margin: $default-margin 0;
     }
   }
 </style>

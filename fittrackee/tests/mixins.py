@@ -383,6 +383,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
 class UserModerationMixin(RandomMixin):
     def create_report(
         self,
+        *,
         reporter: User,
         reported_object: Union[Comment, User, Workout],
         note: Optional[str] = None,
@@ -410,7 +411,9 @@ class UserModerationMixin(RandomMixin):
         workout_id: Optional[int] = None,
     ) -> AdminAction:
         if action_type in REPORT_ACTION_TYPES and not report_id:
-            report_id = self.create_report(admin_user, user).id
+            report_id = self.create_report(
+                reporter=admin_user, reported_object=user
+            ).id
         admin_action = AdminAction(
             admin_user_id=admin_user.id,
             action_type=action_type if action_type else "user_suspension",

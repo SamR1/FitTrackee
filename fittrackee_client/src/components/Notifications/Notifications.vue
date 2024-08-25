@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, onBeforeMount, onUnmounted, watch } from 'vue'
+  import { computed, reactive, onUnmounted, watch, onBeforeMount } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
   import { useRoute } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
@@ -100,6 +100,15 @@
     (newQuery: LocationQuery) => {
       query = getNotificationsQuery(newQuery)
       loadNotifications(query)
+    }
+  )
+
+  watch(
+    () => isAuthUserSuspended.value,
+    (isSuspended: boolean) => {
+      if (!isSuspended) {
+        loadNotifications(query)
+      }
     }
   )
 

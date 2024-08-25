@@ -1613,7 +1613,7 @@ class TestReportServiceProcessAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
-    def test_it_process_user_suspension_appeal(
+    def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
         suspension_action = self.create_user_suspension_action(
@@ -1692,6 +1692,46 @@ class TestReportServiceProcessAppeal(
             is not None
         )
 
+    def test_it_raises_error_on_appeal_approval_when_user_is_already_reactivated(  # noqa
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        user_2.suspended_at = None
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="user account has already been reactivated",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+    def test_it_raises_error_on_appeal_reject_when_user_has_been_reactivated(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        suspension_action = self.create_user_suspension_action(
+            user_1_admin, user_2
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        user_2.suspended_at = None
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="user account has been reactivated after appeal",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": False, "reason": "not ok"},
+            )
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -1699,7 +1739,7 @@ class TestReportServiceProcessAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
-    def test_it_process_comment_suspension_appeal(
+    def test_it_processes_comment_suspension_appeal(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1784,6 +1824,76 @@ class TestReportServiceProcessAppeal(
             is not None
         )
 
+    def test_it_raises_error_on_appeal_approval_when_comment_is_already_reactivated(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.flush()
+        comment.suspended_at = None
+        db.session.commit()
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="comment has already been reactivated",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+    def test_it_raises_error_on_appeal_reject_when_comment_has_been_reactivated(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_suspension_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.flush()
+        comment.suspended_at = None
+        db.session.commit()
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="comment has been reactivated after appeal",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": False, "reason": "not ok"},
+            )
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -1791,7 +1901,7 @@ class TestReportServiceProcessAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
-    def test_it_process_workout_suspension_appeal(
+    def test_it_processes_workout_suspension_appeal(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1867,3 +1977,59 @@ class TestReportServiceProcessAppeal(
             ).first()
             is not None
         )
+
+    def test_it_raises_error_on_appeal_approval_when_workout_is_already_reactivated(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="workout has already been reactivated",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+    def test_it_raises_error_on_appeal_reject_when_workout_has_been_reactivated(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        suspension_action = self.create_admin_workout_suspension_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        report_service = ReportService()
+
+        with pytest.raises(
+            InvalidAdminActionException,
+            match="workout has been reactivated after appeal",
+        ):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": False, "reason": "not ok"},
+            )

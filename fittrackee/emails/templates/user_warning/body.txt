@@ -11,5 +11,4 @@
 {{ _('Link:') }} {{ workout_url }}
 
 {% endif %}{{ _('If you think this is an error, you can appeal:') }}
-{{ appeal_url }}
-{% endblock %}
+{{ appeal_url }}{% endblock %}

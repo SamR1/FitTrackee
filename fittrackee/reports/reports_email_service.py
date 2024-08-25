@@ -116,6 +116,7 @@ class ReportEmailService:
         admin_action: Optional[AdminAction],
     ) -> None:
         user_data, email_data, _ = self._get_email_data(report, reason)
+        email_data["without_user_action"] = True
         user_unsuspension_email.send(user_data, email_data)
 
     def _send_user_warning_email(
@@ -184,6 +185,7 @@ class ReportEmailService:
             report.reported_user,
             fittrackee_url,
         )
+        email_data["without_user_action"] = True
         comment_unsuspension_email.send(user_data, email_data)
 
     def _send_workout_suspension_email(
@@ -220,6 +222,7 @@ class ReportEmailService:
             report.reported_user,
             fittrackee_url,
         )
+        email_data["without_user_action"] = True
         workout_unsuspension_email.send(user_data, email_data)
 
     def send_admin_action_email(

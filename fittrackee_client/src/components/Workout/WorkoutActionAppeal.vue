@@ -11,7 +11,7 @@
         {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
       </template>
       <button
-        v-if="!success"
+        v-if="!success && !displayAppealForm"
         class="transparent appeal-button"
         @click="displayAppealForm = objectTypeId"
       >

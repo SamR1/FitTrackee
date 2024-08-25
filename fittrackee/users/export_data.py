@@ -151,7 +151,7 @@ def export_user_data(export_request_id: int) -> None:
 
 def clean_user_data_export(days: int) -> Dict:
     counts = {"deleted_requests": 0, "deleted_archives": 0, "freed_space": 0}
-    limit = datetime.now() - timedelta(days=days)
+    limit = datetime.utcnow() - timedelta(days=days)
     export_requests = UserDataExport.query.filter(
         UserDataExport.created_at < limit,
         UserDataExport.completed == True,  # noqa

@@ -7,6 +7,7 @@
       :comment="comment"
       :authUser="authUser"
       :display-appeal="false"
+      :hide-suspension-appeal="displayObjectName"
       comments-loading="null"
       :for-notification="true"
     />
@@ -18,12 +19,9 @@
 
   import Comment from '@/components/Comment/Comment.vue'
   import useAuthUser from '@/composables/useAuthUser'
-  import type { IUserAdminAction } from '@/types/user'
   import type { IComment } from '@/types/workouts'
 
   interface Props {
-    action: IUserAdminAction
-    displayAppeal: boolean
     comment: IComment
     displayObjectName: boolean
   }
@@ -39,15 +37,5 @@
   .notification-object {
     font-weight: bold;
     text-transform: capitalize;
-  }
-  .appeal-action {
-    .appeal {
-      padding: 0 $default-padding;
-    }
-
-    .appeal-button {
-      padding: 0 $default-padding;
-      font-size: 0.9em;
-    }
   }
 </style>
