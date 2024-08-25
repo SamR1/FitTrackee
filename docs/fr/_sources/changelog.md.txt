@@ -1,5 +1,43 @@
 # Change log
 
+## Version 0.8.7 (2024/08/25)
+
+### Features and enhancements
+
+* [#604](https://github.com/SamR1/FitTrackee/issues/604) - New sport: Swimrun
+
+### Bugs Fixed
+
+* [PR#598](https://github.com/SamR1/FitTrackee/pull/598) - CLI - fix limit for user data export cleanup
+
+### Translations
+
+* [PR#600](https://github.com/SamR1/FitTrackee/pull/600) - Translations update (Galician)
+* [PR#603](https://github.com/SamR1/FitTrackee/pull/603) - Translations update (Basque)
+
+ 
+Translation status:
+- Basque: 99%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 98%
+- Italian: 82%
+- Norwegian Bokmål: 52%
+- Polish: 91%
+- Portuguese: 98%
+- Spanish: 99%
+
+
+Thanks to the contributors:
+- @erral
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.8.6 (2024/08/03)
 
 ### Translations
