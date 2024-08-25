@@ -1,13 +1,22 @@
 {
+  "AVERAGE": "Batazbestekoa",
+  "DATES": "Datak",
   "STATISTICS": "Estatistikak",
   "STATISTICS_CHARTS": {
     "month": "Hileroko estatistikak",
     "week": "Asteroko estatistikak",
     "year": "Urteroko estatistikak"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Saio guztien estatistikak:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Azken {count} saioen estatistikak:",
+  "STATISTICS_TYPES": {
+    "by_sport": "kirolka",
+    "by_time": "denbora tarteka"
+  },
   "TIME_FRAMES": {
     "month": "hilabetea",
     "week": "astea",
     "year": "urtea"
-  }
+  },
+  "WORKOUTS_AVERAGE": "batazbesteko saio kopurua"
 }
