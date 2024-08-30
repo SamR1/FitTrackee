@@ -17,6 +17,7 @@
     "MAX_USERS_LABEL": "Max. počet aktivních uživatelů",
     "NO_CONTACT_EMAIL": "žádný kontaktní e-mail",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. velikost nahrávaných souborů (v MB)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Nula znamená bez omezení počtu cvičení.",
     "TITLE": "Nastavení aplikace",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. velikost zip archivu (v MB)"
   },
