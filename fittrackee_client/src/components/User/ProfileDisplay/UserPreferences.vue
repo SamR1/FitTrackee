@@ -83,7 +83,7 @@
     () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
   )
   const userLanguage = computed(() =>
-    props.user.language
+    props.user.language && props.user.language in languageLabels
       ? languageLabels[props.user.language]
       : languageLabels['en']
   )
