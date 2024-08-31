@@ -7,6 +7,7 @@
       </template>
       <template #content>
         <SportRecordsTable
+          :class="{ 'max-width': maxWidth }"
           v-for="record in getTranslatedRecords(records.records)"
           :record="record"
           :key="record.id"
@@ -17,11 +18,14 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import SportRecordsTable from '@/components/Common/SportRecordsTable.vue'
+  import { ROOT_STORE } from '@/store/constants'
   import type { ICardRecord, IRecord, IRecordsBySport } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
   import { sortRecords } from '@/utils/records'
 
   interface Props {
@@ -32,7 +36,13 @@
 
   const { records, sportTranslatedLabel } = toRefs(props)
 
+  const store = useStore()
   const { t } = useI18n()
+
+  const language: ComputedRef<string> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
+  )
+  const maxWidth: ComputedRef<boolean> = computed(() => language.value === 'bg')
 
   function getTranslatedRecords(records: IRecord[]): ICardRecord[] {
     const translatedRecords: ICardRecord[] = []
@@ -96,6 +106,15 @@
           .sport-img {
             height: 22px;
             width: 22px;
+          }
+        }
+      }
+      @media screen and (max-width: $x-small-limit) {
+        .card-content {
+          .record.max-width {
+            .record-type {
+              max-width: 40%;
+            }
           }
         }
       }
