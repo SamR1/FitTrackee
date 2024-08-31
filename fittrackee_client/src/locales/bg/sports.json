@@ -1,1 +1,56 @@
-{}
+{
+  "Cycling (Sport)": {
+    "LABEL": "Колоездене (спорт)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Колоездене (транспорт)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Колоездене (трекинг)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Колоездене (виртуално)"
+  },
+  "Hiking": {
+    "LABEL": "Туризъм"
+  },
+  "Mountain Biking": {
+    "LABEL": "Планинско колоездене"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Планинско колоездене (електрическо)"
+  },
+  "Mountaineering": {
+    "LABEL": "Алпинизъм"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Плуване в открити води"
+  },
+  "Paragliding": {
+    "LABEL": "Парапланеризъм"
+  },
+  "Rowing": {
+    "LABEL": "Гребане"
+  },
+  "Running": {
+    "LABEL": "Бягане"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Ски (алпийски)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Ски (бягане)"
+  },
+  "Snowshoes": {
+    "LABEL": "Снегоходки"
+  },
+  "Swimrun": {
+    "LABEL": "Суимрън"
+  },
+  "Trail": {
+    "LABEL": "Трейл"
+  },
+  "Walking": {
+    "LABEL": "Ходене"
+  }
+}
