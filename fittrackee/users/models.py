@@ -49,6 +49,7 @@ NOTIFICATION_TYPES = [
     'report',
     'suspension_appeal',
     'user_warning',
+    'user_warning_appeal',
     'workout_comment',
     'workout_like',
     'workout_suspension',
@@ -964,11 +965,15 @@ class Notification(BaseModel):
                 user=to_user
             )
 
-        if self.event_type in ["report", "suspension_appeal"]:
+        if self.event_type in [
+            "report",
+            "suspension_appeal",
+            "user_warning_appeal",
+        ]:
             from fittrackee.administration.models import AdminActionAppeal
             from fittrackee.reports.models import Report
 
-            if self.event_type == "suspension_appeal":
+            if self.event_type in ["suspension_appeal", "user_warning_appeal"]:
                 appeal = AdminActionAppeal.query.filter_by(
                     id=self.event_object_id
                 ).first()

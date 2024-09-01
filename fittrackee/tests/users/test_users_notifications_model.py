@@ -1529,3 +1529,79 @@ class TestNotificationForUserWarning(
         assert serialized_notification["type"] == "user_warning"
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
+
+
+class TestNotificationForUserWarningAppeal(
+    NotificationTestCase, UserModerationMixin
+):
+    def test_it_does_not_create_notification_when_admin_is_inactive(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        admin_action = self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="user_warning",
+            report_id=report.id,
+        )
+        self.create_action_appeal(admin_action.id, user_2, with_commit=False)
+        user_1_admin.is_active = False
+        db.session.commit()
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type='user_warning_appeal',
+        ).first()
+        assert notification is None
+
+    def test_it_creates_notification_on_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        admin_action = self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="user_warning",
+            report_id=report.id,
+        )
+        appeal = self.create_action_appeal(admin_action.id, user_2)
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type='user_warning_appeal',
+        ).first()
+        assert notification.created_at == appeal.created_at
+        assert notification.marked_as_read is False
+        assert notification.event_object_id == appeal.id
+
+    def test_it_serializes_user_warning_appeal_notification(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        admin_action = self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="user_warning",
+            report_id=report.id,
+        )
+        self.create_action_appeal(admin_action.id, user_2)
+        notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1_admin.id,
+            event_type='user_warning_appeal',
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_2.serialize(
+            current_user=user_1_admin
+        )
+        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["report"] == report.serialize(
+            user_1_admin
+        )
+        assert serialized_notification["type"] == "user_warning_appeal"

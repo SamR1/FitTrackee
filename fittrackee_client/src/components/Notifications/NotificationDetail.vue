@@ -82,8 +82,9 @@
       />
       <ReportNotification
         v-else-if="
-          ['report', 'suspension_appeal'].includes(notification.type) &&
-          notification.report
+          ['report', 'suspension_appeal', 'user_warning_appeal'].includes(
+            notification.type
+          ) && notification.report
         "
         :report="notification.report"
       />
@@ -176,6 +177,8 @@
         return 'notifications.APPEALED_SUSPENSION'
       case 'user_warning':
         return 'notifications.YOU_RECEIVED_A_WARNING'
+      case 'user_warning_appeal':
+        return 'notifications.APPEALED_USER_WARNING'
       case 'workout_comment':
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':

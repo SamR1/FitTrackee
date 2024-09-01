@@ -13,6 +13,7 @@ export type TNotificationType =
   | 'report'
   | 'suspension_appeal'
   | 'user_warning'
+  | 'user_warning_appeal'
   | 'workout_comment'
   | 'workout_suspension'
   | 'workout_unsuspension'

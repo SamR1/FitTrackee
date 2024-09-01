@@ -349,11 +349,17 @@ def on_admin_action_appeal_insert(
             User.id != new_appeal.user_id,
             User.is_active == True,  # noqa
         ).all():
-            notification = Notification(
-                from_user_id=new_appeal.user_id,
-                to_user_id=admin.id,
-                created_at=new_appeal.created_at,
-                event_type='suspension_appeal',
-                event_object_id=new_appeal.id,
-            )
-            session.add(notification)
+            admin_action = AdminAction.query.filter_by().first()
+            if admin_action:
+                notification = Notification(
+                    from_user_id=new_appeal.user_id,
+                    to_user_id=admin.id,
+                    created_at=new_appeal.created_at,
+                    event_type=(
+                        'user_warning_appeal'
+                        if admin_action.action_type == 'user_warning'
+                        else 'suspension_appeal'
+                    ),
+                    event_object_id=new_appeal.id,
+                )
+                session.add(notification)
