@@ -1,5 +1,6 @@
 import type { Locale } from 'date-fns'
 import {
+  bg,
   cs,
   de,
   enUS,
@@ -14,13 +15,13 @@ import {
   pt,
 } from 'date-fns/locale'
 
-import createI18n from '@/i18n'
 import type { TLanguage } from '@/types/locales'
 
 export const isLanguageSupported = (
   language: string
 ): language is TLanguage => {
   return [
+    'bg',
     'cs',
     'de',
     'en',
@@ -37,6 +38,7 @@ export const isLanguageSupported = (
 }
 
 export const localeFromLanguage: Record<TLanguage, Locale> = {
+  bg: bg,
   cs: cs,
   de: de,
   en: enUS,
@@ -52,21 +54,21 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  cs: 'Česky (72%)',
-  de: 'Deutsch (98%)',
+  bg: 'български',
+  cs: 'Česky (73%)',
+  de: 'Deutsch',
   en: 'English',
-  es: 'Español (99%)',
+  es: 'Español',
   eu: 'Euskara (99%)',
   fr: 'Français',
-  gl: 'Galego (99%)',
+  gl: 'Galego',
   it: 'Italiano (82%)',
-  nb: 'Norsk bokmål (52%)',
   nl: 'Nederlands (99%)',
+  nb: 'Norsk bokmål (52%)',
   pl: 'Polski (91%)',
   pt: 'Português (98%)',
 }
 
-const { availableLocales } = createI18n.global
-export const availableLanguages = availableLocales.map((l) => {
-  return { label: languageLabels[l], value: l }
+export const availableLanguages = Object.keys(languageLabels).map((l) => {
+  return { label: languageLabels[l as TLanguage], value: l }
 })

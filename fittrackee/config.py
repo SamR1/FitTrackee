@@ -18,6 +18,7 @@ XDIST_WORKER = (
     else ''
 )
 SUPPORTED_LANGUAGES = [
+    'bg',  # Bulgarian
     'cs',  # Czech
     'de',  # German
     'en',  # English

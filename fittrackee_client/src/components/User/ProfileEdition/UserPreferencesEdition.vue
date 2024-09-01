@@ -194,7 +194,7 @@
   import type { IUserPreferencesPayload, IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
-  import { availableLanguages } from '@/utils/locales'
+  import { availableLanguages, languageLabels } from '@/utils/locales'
 
   interface Props {
     user: IAuthUserProfile
@@ -306,7 +306,8 @@
       ? user.use_raw_gpx_speed
       : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
-    userForm.language = user.language ? user.language : 'en'
+    userForm.language =
+      user.language && user.language in languageLabels ? user.language : 'en'
     userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
     userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
     userForm.weekm = user.weekm ? user.weekm : false
