@@ -11,7 +11,7 @@
     :timezone="timezone"
   />
   <WorkoutActionAppeal
-    v-if="displayAppeal"
+    v-if="action && displayAppeal"
     :action="action"
     :workout="workout"
     display-suspension-message
@@ -31,7 +31,7 @@
   import type { IWorkout } from '@/types/workouts'
 
   interface Props {
-    action: IUserAdminAction
+    action?: IUserAdminAction
     displayAppeal: boolean
     displayObjectName: boolean
     workout: IWorkout

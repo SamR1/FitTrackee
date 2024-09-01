@@ -251,6 +251,9 @@
       }
     }
 
+    ::v-deep(.box) {
+      margin: $default-margin 0;
+    }
     .notification-reason {
       font-weight: bold;
       text-transform: capitalize;
