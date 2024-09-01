@@ -24,10 +24,18 @@
       :loading="authUserLoading"
       @submitForm="submitAppeal"
     >
-      <template #cancelButton>
-        <button @click="$router.push('/profile')">
-          {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
-        </button>
+      <template #additionalButtons>
+        <div class="additional-buttons">
+          <button @click="$router.push('/profile')">
+            {{ $t('user.PROFILE.TABS.PROFILE') }}
+          </button>
+          <button
+            class="notification-button"
+            @click="$router.push('/notifications')"
+          >
+            {{ $t('notifications.NOTIFICATIONS', 0) }}
+          </button>
+        </div>
       </template>
     </ActionAppeal>
   </div>
@@ -36,7 +44,10 @@
       {{ $t('user.NO_WARNING_FOUND') }}
     </div>
     <button @click="$router.push('/profile')">
-      {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
+      {{ $t('user.PROFILE.TABS.PROFILE') }}
+    </button>
+    <button @click="$router.push('/notifications')">
+      {{ $t('notifications.NOTIFICATIONS', 0) }}
     </button>
   </div>
 </template>
@@ -100,5 +111,13 @@
 
   ::v-deep(.notification-object) {
     margin-top: $default-padding;
+  }
+
+  .additional-buttons {
+    display: flex;
+    gap: $default-padding;
+    button {
+      text-transform: capitalize;
+    }
   }
 </style>

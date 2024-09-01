@@ -20,7 +20,7 @@
       @submitForm="(text) => submitAppeal(text, 'comment', comment.id)"
       @hideMessage="displayAppealForm = null"
     >
-      <template #cancelButton>
+      <template #additionalButtons>
         <button @click="cancelAppeal()">
           {{ $t('buttons.CANCEL') }}
         </button>
