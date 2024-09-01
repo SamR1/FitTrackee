@@ -15,7 +15,6 @@ import {
   pt,
 } from 'date-fns/locale'
 
-import createI18n from '@/i18n'
 import type { TLanguage } from '@/types/locales'
 
 export const isLanguageSupported = (
@@ -56,13 +55,13 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 
 export const languageLabels: Record<TLanguage, string> = {
   bg: 'български',
-  cs: 'Česky (72%)',
-  de: 'Deutsch (98%)',
+  cs: 'Česky (73%)',
+  de: 'Deutsch',
   en: 'English',
-  es: 'Español (99%)',
+  es: 'Español',
   eu: 'Euskara (99%)',
   fr: 'Français',
-  gl: 'Galego (99%)',
+  gl: 'Galego',
   it: 'Italiano (82%)',
   nl: 'Nederlands (99%)',
   nb: 'Norsk bokmål (52%)',
@@ -70,7 +69,6 @@ export const languageLabels: Record<TLanguage, string> = {
   pt: 'Português (98%)',
 }
 
-const { availableLocales } = createI18n.global
-export const availableLanguages = availableLocales.map((l) => {
-  return { label: languageLabels[l], value: l }
+export const availableLanguages = Object.keys(languageLabels).map((l) => {
+  return { label: languageLabels[l as TLanguage], value: l }
 })
