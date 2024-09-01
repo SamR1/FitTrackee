@@ -1,0 +1,20 @@
+{
+  "Bike": {
+    "LABEL": "Колело"
+  },
+  "Bike Trainer": {
+    "LABEL": "Велотренажор"
+  },
+  "Kayak_Boat": {
+    "LABEL": "Каяк/Лодка"
+  },
+  "Shoes": {
+    "LABEL": "Обувки"
+  },
+  "Skis": {
+    "LABEL": "Ски"
+  },
+  "Snowshoes": {
+    "LABEL": "Снегоходки"
+  }
+}

@@ -123,6 +123,10 @@
 
     .chart-arrow {
       cursor: pointer;
+
+      @media screen and (max-width: $x-small-limit) {
+        padding: 6px;
+      }
     }
   }
   .stats-type {

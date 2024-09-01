@@ -305,7 +305,7 @@
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
-  import { availableLanguages } from '@/utils/locales'
+  import { availableLanguages, languageLabels } from '@/utils/locales'
   import {
     getPrivacyLevels,
     getPrivacyLevelForLabel,
@@ -449,7 +449,8 @@
       ? user.use_raw_gpx_speed
       : false
     userForm.imperial_units = user.imperial_units ? user.imperial_units : false
-    userForm.language = user.language ? user.language : 'en'
+    userForm.language =
+      user.language && user.language in languageLabels ? user.language : 'en'
     userForm.manually_approves_followers =
       'manually_approves_followers' in user
         ? user.manually_approves_followers
