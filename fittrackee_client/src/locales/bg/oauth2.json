@@ -1,0 +1,38 @@
+{
+  "ADD_A_NEW_APP": "Добавяне на ново OAuth2 приложение",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Тайна",
+    "DESCRIPTION": "Описание на приложението",
+    "ISSUE_AT": "Издадено на",
+    "NAME": "Име на приложението",
+    "REDIRECT_URL": "URL за пренасочване",
+    "SCOPE": {
+      "LABEL": "Скоуп",
+      "application:write_DESCRIPTION": "предоставя достъп за запис до конфигурацията на приложението.",
+      "equipments:read_DESCRIPTION": "предоставя достъп за четене до крайни точки на <code>оборудване</code>.",
+      "equipments:write_DESCRIPTION": "предоставя достъп за запис до крайни точки на <code>оборудване</code>.",
+      "profile:read_DESCRIPTION": "предоставя достъп за четене до крайни точки за <code>auth</code>.",
+      "profile:write_DESCRIPTION": "предоставя достъп за запис до крайни точки за <code>auth</code>.",
+      "users:read_DESCRIPTION": "предоставя достъп за четене на крайни точки на <code>потребители</code>.",
+      "users:write_DESCRIPTION": "предоставя достъп за запис на крайни точки на <code>потребители</code>.",
+      "workouts:read_DESCRIPTION": "дава достъп за четене до крайни точки на <code>тренировки</code>.",
+      "workouts:write_DESCRIPTION": "дава достъп за запис до крайни точки на <code>тренировки</code>."
+    },
+    "URL": "URL адрес на приложението"
+  },
+  "APPS_LIST": "OAuth2 приложения",
+  "APP_CREATED_SUCCESSFULLY": "Приложението е създадено успешно. Не забравяйте да копирате тайната сега, тя няма да се покаже отново.",
+  "APP_DELETION_CONFIRMATION": "Сигурни ли сте, че искате да изтриете това приложение?",
+  "APP_REQUESTING_ACCESS": "Приложението {0} иска:",
+  "AUTHORIZE_APP": "Упълномощавате ли {0} да използва вашия акаунт?",
+  "COPY_TO_CLIPBOARD": "копирайте в клипборда",
+  "DELETE_APP": "Изтриване на приложението",
+  "NEW_APP": "Добавяне на приложение",
+  "NO_APP": "Приложението не е намерено!",
+  "NO_APPS": "няма приложения",
+  "NO_DESCRIPTION": "няма описание",
+  "REVOKE_ALL_TOKENS": "Отменете всички токени",
+  "TOKENS_REVOCATION_CONFIRMATION": "Сигурни ли сте, че искате да отмените всички токени?",
+  "TOKENS_REVOKED": "Всички съществуващи свързани токени са отменени."
+}

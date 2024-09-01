@@ -114,6 +114,7 @@
   import { format } from 'date-fns'
   import { computed, ref, toRefs, watch, onBeforeMount } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import Chart from '@/components/Common/StatsChart/Chart.vue'
   import { STATS_STORE } from '@/store/constants'
@@ -127,7 +128,6 @@
     IStatisticsParams,
     TStatisticsType,
     TStatisticsTimeFrame,
-    IStatisticsWorkoutsAverageChartData,
   } from '@/types/statistics'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -166,6 +166,7 @@
   } = toRefs(props)
 
   const store = useStore()
+  const { t } = useI18n()
 
   const displayedData: Ref<TStatisticsDatasetKeys> = ref('total_distance')
 
@@ -214,10 +215,9 @@
   const statsType: ComputedRef<TStatisticsType> = computed(
     () => chartParams.value.statsType
   )
-  const workoutsAverageDataset: ComputedRef<IStatisticsWorkoutsAverageChartData> =
-    computed(() =>
-      getWorkoutsAverageDatasets(formattedStats.value.datasets.total_workouts)
-    )
+  const workoutsAverageDataset = computed(() =>
+    getWorkoutsAverageDatasets(formattedStats.value.datasets.total_workouts, t)
+  )
 
   function getStatistics(apiParams: IStatisticsParams) {
     store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {

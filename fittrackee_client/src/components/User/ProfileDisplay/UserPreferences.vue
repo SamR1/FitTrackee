@@ -111,7 +111,7 @@
   const { dateFormat, timezone } = useAuthUser()
 
   const userLanguage: ComputedRef<string> = computed(() =>
-    user.value.language
+    user.value.language && user.value.language in languageLabels
       ? languageLabels[user.value.language]
       : languageLabels['en']
   )
