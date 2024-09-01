@@ -302,8 +302,19 @@ const getAverage = (values: (number | null)[]): number => {
   return +average.toFixed(1)
 }
 
+const sortDatasets = (a: IChartDataset, b: IChartDataset): number => {
+  const datasetALabel = a.label.toLowerCase()
+  const datasetBLabel = b.label.toLowerCase()
+  return datasetALabel > datasetBLabel
+    ? 1
+    : datasetALabel < datasetBLabel
+      ? -1
+      : 0
+}
+
 export const getWorkoutsAverageDatasets = (
-  total_workouts: IChartDataset[]
+  totalWorkouts: IChartDataset[],
+  t: CallableFunction
 ): IStatisticsWorkoutsAverageChartData => {
   const labels: string[] = []
   const workoutsAverageDataset: IChartDataset = {
@@ -312,16 +323,22 @@ export const getWorkoutsAverageDatasets = (
     data: [],
   }
   let all_workouts: number[] = []
-  for (const sport of total_workouts) {
-    workoutsAverageDataset.data.push(getAverage(sport.data))
-    workoutsAverageDataset.backgroundColor.push(sport.backgroundColor[0])
-    labels.push(sport.label)
+  const sortedTotalWorkouts = totalWorkouts
+    .map((dataset) => {
+      dataset.label = t(`sports.${dataset.label}.LABEL`)
+      return dataset
+    })
+    .sort(sortDatasets)
+  for (const dataset of sortedTotalWorkouts) {
+    workoutsAverageDataset.data.push(getAverage(dataset.data))
+    workoutsAverageDataset.backgroundColor.push(dataset.backgroundColor[0])
+    labels.push(dataset.label)
     if (all_workouts.length > 0) {
       all_workouts = all_workouts.map(
-        (value, index) => value + (sport.data[index] || 0)
+        (value, index) => value + (dataset.data[index] || 0)
       )
     } else {
-      all_workouts = sport.data.map((value) => value || 0)
+      all_workouts = dataset.data.map((value) => value || 0)
     }
   }
   return {
