@@ -1,0 +1,37 @@
+{
+  "ABOUT": "за",
+  "ACTION": "действие",
+  "ACTIVE": "активно",
+  "CONFIRMATION": "Потвърждение",
+  "CONTACT": "контакт",
+  "DAY": "ден | дни",
+  "DESCRIPTION": "Описание",
+  "DISPLAYED": "Показано",
+  "DOCUMENTATION": "документация",
+  "HERE": "тук",
+  "HIDDEN": "Скрито",
+  "HOME": "Начало",
+  "HOURS": "час|часове",
+  "INACTIVE": "неактивен",
+  "LABEL": "етикет",
+  "MINUTES": "минута|минути",
+  "NEXT": "следващ",
+  "NO_DESCRIPTION": "няма описание",
+  "PREVIOUS": "предишен",
+  "SECONDS": "секунда|секунди",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "възходящ",
+      "DESC": "низходящ",
+      "LABEL": "сортиране"
+    },
+    "ORDER_BY": {
+      "LABEL": "подреди по"
+    },
+    "PER_PAGE": {
+      "LABEL": "на страница"
+    }
+  },
+  "TOTAL": "Общо",
+  "TOTAL_DURATION_WITH_PAUSES": "обща продължителност с паузите"
+}

@@ -1,5 +1,83 @@
 # Change log
 
+## Version 0.8.8 (2024/09/01)
+
+**FitTrackee** is now available in Bulgarian.
+
+### Bugs Fixed
+
+* [#614](https://github.com/SamR1/FitTrackee/issues/614) - Labels are not translated on workouts average chart
+
+### Translations
+
+* [PR#607](https://github.com/SamR1/FitTrackee/pull/607) - Translations update (German)
+* [#608](https://github.com/SamR1/FitTrackee/issues/608) - [translations request] Bulgarian
+* [PR#609](https://github.com/SamR1/FitTrackee/pull/609) - Translations update (Galician and Spanish)
+* [PR#612](https://github.com/SamR1/FitTrackee/pull/612) - Translations update (Bulgarian and Czech)
+
+ 
+Translation status:
+- Basque: 99%
+- Bulgarian: 100%
+- Czech: 73%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 82%
+- Norwegian Bokmål: 52%
+- Polish: 91%
+- Portuguese: 98%
+- Spanish: 100%
+
+
+Thanks to the contributors:
+- @gallegonovato
+- @jmlich
+- @mara21
+- @qwerty287
+- @xmgz
+
+
+## Version 0.8.7 (2024/08/25)
+
+### Features and enhancements
+
+* [#604](https://github.com/SamR1/FitTrackee/issues/604) - New sport: Swimrun
+
+### Bugs Fixed
+
+* [PR#598](https://github.com/SamR1/FitTrackee/pull/598) - CLI - fix limit for user data export cleanup
+
+### Translations
+
+* [PR#600](https://github.com/SamR1/FitTrackee/pull/600) - Translations update (Galician)
+* [PR#603](https://github.com/SamR1/FitTrackee/pull/603) - Translations update (Basque)
+
+ 
+Translation status:
+- Basque: 99%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 98%
+- Italian: 82%
+- Norwegian Bokmål: 52%
+- Polish: 91%
+- Portuguese: 98%
+- Spanish: 99%
+
+
+Thanks to the contributors:
+- @erral
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.8.6 (2024/08/03)
 
 ### Translations

@@ -20,7 +20,7 @@ import {
   getWorkoutsAverageDatasets,
 } from '@/utils/statistics'
 
-const { locale } = createI18n.global
+const { locale, t } = createI18n.global
 
 describe('getDateKeys (week starting Sunday)', () => {
   const testsParams = [
@@ -2577,8 +2577,36 @@ describe("updateChartParams when time frame is 'week')", () => {
   })
 })
 
-describe('getDatasets', () => {
+describe('getWorkoutsAverageDatasets', () => {
+  const inputTotalWorkouts: IChartDataset[] = [
+    {
+      label: 'Cycling (Sport)',
+      backgroundColor: ['#4c9792'],
+      data: [2, 0, 2, 0, 2, 0, 0, 2, 2, 0],
+      type: 'bar',
+    },
+    {
+      label: 'Cycling (Transport)',
+      backgroundColor: ['#88af98'],
+      data: [2, 0, 1, 0, 3, 4, 1, 2, 0, 1],
+      type: 'bar',
+    },
+    {
+      label: 'Hiking',
+      backgroundColor: ['#bb757c'],
+      data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      type: 'bar',
+    },
+    {
+      label: 'Running',
+      backgroundColor: ['#835b83'],
+      data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      type: 'bar',
+    },
+  ]
+
   it('returns workouts average datasets when total_workouts is an empty array', () => {
+    locale.value = 'en'
     const expected: IStatisticsWorkoutsAverageChartData = {
       datasets: {
         workouts_average: [
@@ -2592,35 +2620,11 @@ describe('getDatasets', () => {
       labels: [],
       workoutsAverage: 0,
     }
-    expect(getWorkoutsAverageDatasets([])).toStrictEqual(expected)
+
+    expect(getWorkoutsAverageDatasets([], t)).toStrictEqual(expected)
   })
   it('returns workouts average datasets when total_workouts is not empty', () => {
-    const inputTotalWorkouts: IChartDataset[] = [
-      {
-        label: 'Cycling (Sport)',
-        backgroundColor: ['#4c9792'],
-        data: [2, 0, 2, 0, 2, 0, 0, 2, 2, 0],
-        type: 'bar',
-      },
-      {
-        label: 'Cycling (Transport)',
-        backgroundColor: ['#88af98'],
-        data: [2, 0, 1, 0, 3, 4, 1, 2, 0, 1],
-        type: 'bar',
-      },
-      {
-        label: 'Hiking',
-        backgroundColor: ['#bb757c'],
-        data: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        type: 'bar',
-      },
-      {
-        label: 'Running',
-        backgroundColor: ['#835b83'],
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        type: 'bar',
-      },
-    ]
+    locale.value = 'en'
     const expected: IStatisticsWorkoutsAverageChartData = {
       labels: ['Cycling (Sport)', 'Cycling (Transport)', 'Hiking', 'Running'],
       datasets: {
@@ -2634,7 +2638,28 @@ describe('getDatasets', () => {
       },
       workoutsAverage: 3.4,
     }
-    expect(getWorkoutsAverageDatasets(inputTotalWorkouts)).toStrictEqual(
+
+    expect(getWorkoutsAverageDatasets(inputTotalWorkouts, t)).toStrictEqual(
+      expected
+    )
+  })
+  it('returns workouts average datasets with translated labels', () => {
+    locale.value = 'fr'
+    const expected: IStatisticsWorkoutsAverageChartData = {
+      labels: ['Course', 'Randonnée', 'Vélo (Sport)', 'Vélo (Transport)'],
+      datasets: {
+        workouts_average: [
+          {
+            label: 'workouts_average',
+            backgroundColor: ['#835b83', '#bb757c', '#4c9792', '#88af98'],
+            data: [0, 1, 1, 1.4],
+          },
+        ],
+      },
+      workoutsAverage: 3.4,
+    }
+
+    expect(getWorkoutsAverageDatasets(inputTotalWorkouts, t)).toStrictEqual(
       expected
     )
   })

@@ -1,0 +1,18 @@
+{
+  "50_CHARACTERS_MAX": "максимум 50 знака",
+  "ADD_A_NEW_EQUIPMENT": "Добави ново оборудване",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Всички асоциации с тренировки ще бъдат премахнати.",
+  "DEFAULT_FOR_SPORTS": "По подразбиране за спорт",
+  "EDIT_EQUIPMENTS": "Редактирайте оборудването",
+  "EQUIPMENT": "оборудване|оборудване",
+  "EQUIPMENT_TYPE": "вид оборудване|видове оборудване",
+  "ERRORS": {
+    "inactive": "Оборудване '{equipmentLabel}' е неактивно.",
+    "invalid": "Оборнудване '{equipmentLabel}' е несъвместимо с този спорт.",
+    "not_found": "Оборудването не е намерено."
+  },
+  "NEW_EQUIPMENT": "Ново оборудване",
+  "NO_EQUIPMENT": "Не е намерено оборудване.",
+  "NO_EQUIPMENTS": "Няма оборудване",
+  "WITHOUT_EQUIPMENTS": "без оборудване"
+}

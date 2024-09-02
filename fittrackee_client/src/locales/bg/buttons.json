@@ -1,0 +1,21 @@
+{
+  "ACCOUNT-CONFIRMATION-RESEND": "Повторно изпращане на имейл за потвърждение",
+  "AUTHORIZE": "Оторизирайте",
+  "BACK": "Назад",
+  "CANCEL": "Отказ",
+  "CLEAR_FILTER": "Изчисти филтри",
+  "DELETE": "Изтрий",
+  "DELETE_MY_ACCOUNT": "Изтрий акаунта си",
+  "DISABLE": "Деактивиране",
+  "EDIT": "Промени",
+  "ENABLE": "Активиране",
+  "FILTER": "Филтър",
+  "LOGIN": "Вход",
+  "NO": "Не",
+  "REFRESH_TOTALS": "Обнови тоталите",
+  "REGISTER": "Регистриране",
+  "REQUEST_DATA_EXPORT": "Заяви експортиране на данни",
+  "RESET": "Нулирай",
+  "SUBMIT": "Изпрати",
+  "YES": "Да"
+}

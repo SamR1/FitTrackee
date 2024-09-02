@@ -12,7 +12,7 @@ With the default configuration, `Open Street Map <https://www.openstreetmap.org>
 
 Workouts
 ^^^^^^^^
-- 17 sports are supported:
+- 18 sports are supported:
      - Cycling (Sport)
      - Cycling (Transport)
      - Cycling (Trekking)  (*new in 0.7.27*)
@@ -28,6 +28,7 @@ Workouts
      - Skiing (Alpine) (*new in 0.5.0*)
      - Skiing (Cross Country)  (*new in 0.5.0*)
      - Snowshoes (*new in 0.5.2*)
+     - Swimrun (*new in 0.8.7*)
      - Trail (*new in 0.5.0*)
      - Walking
 
@@ -38,6 +39,7 @@ Workouts
      - Paragliding
      - Skiing (Cross Country)
      - Snowshoes
+     - Swimrun
      - Trail
      - Walking
 
@@ -45,7 +47,8 @@ Workouts
   It can be overridden in user preferences.
 
 .. note::
-  Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
+  | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
+  | Swimrun is displayed as a single activity with no difference between segments for now.
 
 - Dashboard with month calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the user preferences). The calendar displays up to 100 workouts.
 - Workout creation by uploading manually a gpx file or a zip archive containing a limited number of gpx files (related data are stored in database in metric system).
@@ -289,6 +292,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Basque (*new in 0.7.31*)
 - Czech (*new in 0.8.1*)
 - Portuguese (*new in 0.8.4*)
+- Bulgarian (*new in 0.8.8*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 

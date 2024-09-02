@@ -8,7 +8,14 @@ from fittrackee.workouts.models import Sport
 from .exceptions import InvalidEquipmentException, InvalidEquipmentsException
 
 SPORT_EQUIPMENT_TYPES = {
-    "Shoes": ["Hiking", "Mountaineering", "Running", "Trail", "Walking"],
+    "Shoes": [
+        "Hiking",
+        "Mountaineering",
+        "Running",
+        "Swimrun",
+        "Trail",
+        "Walking",
+    ],
     "Bike": [
         "Cycling (Sport)",
         "Cycling (Transport)",

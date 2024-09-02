@@ -2,7 +2,7 @@
 **A simple self-hosted workout/activity tracker.**  
 
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
-[![Python Version](https://img.shields.io/badge/python-3.8+-brightgreen.svg)](https://python.org)
+[![Python Version](https://img.shields.io/pypi/pyversions/fittrackee.svg)](https://python.org)
 [![Flask Version](https://img.shields.io/badge/flask-3.0-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code formatter: ruff](https://img.shields.io/badge/code%20formatter-ruff-d7ff64)](https://docs.astral.sh/ruff/) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
