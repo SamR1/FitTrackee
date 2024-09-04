@@ -1,10 +1,14 @@
 {
+  "AVERAGE": "Średnia",
+  "DATES": "Daty",
   "STATISTICS": "Statystyki",
   "STATISTICS_CHARTS": {
     "month": "Miesięczne statystyki",
     "week": "Tygodniowe statystyki",
     "year": "Roczne statystyki"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statystyki dotyczące wszystkich treningów:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statystyki z ostatnich {count} treningów:",
   "TIME_FRAMES": {
     "month": "miesiąc",
     "week": "tydzień",
