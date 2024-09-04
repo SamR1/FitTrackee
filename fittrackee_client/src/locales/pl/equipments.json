@@ -4,5 +4,9 @@
   "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Wszystkie połączenia z treningami zostaną usunięte.",
   "DEFAULT_FOR_SPORTS": "Domyślny dla sportów",
   "EDIT_EQUIPMENTS": "Edytuj sprzęty",
-  "EQUIPMENT": "sprzęt|sprzęty"
+  "EQUIPMENT": "sprzęt|sprzęty",
+  "EQUIPMENT_TYPE": "typ sprzętu|typy sprzętu",
+  "ERRORS": {
+    "inactive": "Sprzęt '{equipmentLabel}' nieaktywny."
+  }
 }
