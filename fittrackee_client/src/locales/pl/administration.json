@@ -17,6 +17,8 @@
     "MAX_USERS_LABEL": "Maks. liczba aktywnych użytkowników",
     "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość nadesłanych plików (w Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Zero oznacza brak limitu ćwiczeń.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Maksymalna ilość treningów do statystyk sportu",
     "TITLE": "Konfiguracja aplikacji",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość archiwum zip (w Mb)"
   },
@@ -26,9 +28,11 @@
   "CURRENT_EMAIL": "Aktualny e-mail",
   "DELETE_USER": "Usuń użytkownika",
   "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Włącz/wyłącz typy sprzętu.",
   "ENABLE_DISABLE_SPORTS": "Włącz/wyłącz sporty.",
   "EQUIPMENT_TYPES": {
     "TABLE": {
+      "ACTIVE": "Aktywny",
       "HAS_EQUIPMENTS": "sprzęt istnieje",
       "IMAGE": "Obraz",
       "LABEL": "Nazwa"
