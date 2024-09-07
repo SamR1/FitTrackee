@@ -1036,6 +1036,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 ``{"sport_id": 1, "notes": "", "equipment_ids": []}``).
                 Double quotes in notes must be escaped.
 
+                The maximum length of notes is 500 characters. Otherwise, they
+                will be truncated.
+
                 For `equipment_ids`, the id of the equipment to associate with
                 this workout.
                 **Note**: for now only one equipment can be associated.
@@ -1249,7 +1252,8 @@ def post_workout_no_gpx(
         **Note**: for now only one equipment can be associated.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
-    :<json string notes: notes (not mandatory)
+    :<json string notes: notes (not mandatory, max length: 500
+        characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
     :<json string title: workout title (not mandatory)
     :<json string workout_date: workout date, in user timezone
@@ -1457,7 +1461,8 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
-    :<json string notes: notes
+    :<json string notes: notes (max length: 500 characters, otherwise they
+        will be truncated)
     :<json integer sport_id: workout sport id
     :<json string title: workout title
     :<json array of strings equipment_ids:

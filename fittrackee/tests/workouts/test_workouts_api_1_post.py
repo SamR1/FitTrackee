@@ -16,7 +16,7 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import NOTES_MAX_CHARACTERS, Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -575,7 +575,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         [
             ('empty notes', ''),
             ('short notes', 'test workout'),
-            ('notes with special characters', "test \n'workout'"),
+            ('notes with special characters', "test \n'workout'©"),
         ],
     )
     def test_it_adds_a_workout_with_gpx_notes(
@@ -608,6 +608,36 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_adds_a_workout_with_gpx_notes_exceeding_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        notes = self.random_string(length=NOTES_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=f'{{"sport_id": 1, "notes": "{notes}"}}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == notes[:-1]
 
     def test_it_adds_a_workout_with_equipments(
         self,
@@ -1671,6 +1701,64 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+    def test_it_adds_a_workout_with_notes(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        notes = "test"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    notes=notes,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == notes
+
+    def test_it_adds_a_workout_with_notes_exceeding_length_limit(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        notes = self.random_string(length=NOTES_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    notes=notes,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == notes[:-1]
 
     def test_it_adds_a_workout_with_equipments(
         self,

@@ -34,6 +34,7 @@ record_types = [
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
+NOTES_MAX_CHARACTERS = 500
 
 
 def update_records(
@@ -223,7 +224,8 @@ class Workout(BaseModel):
     map_id = db.Column(db.String(50), index=True, nullable=True)
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
-    notes = db.Column(db.String(500), nullable=True)
+    notes = db.Column(db.String(NOTES_MAX_CHARACTERS), nullable=True)
+
     segments = db.relationship(
         'WorkoutSegment',
         lazy=True,

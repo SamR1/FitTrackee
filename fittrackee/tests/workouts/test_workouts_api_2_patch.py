@@ -10,7 +10,7 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import NOTES_MAX_CHARACTERS, Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -99,7 +99,7 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
             ('notes with special characters', 'test \nworkout'),
         ],
     )
-    def test_it_adds_notes_to_a_workout_with_gpx(
+    def test_it_updates_notes_for_a_workout_with_gpx(
         self,
         app: Flask,
         input_description: str,
@@ -124,6 +124,32 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
+
+    def test_it_updates_notes_with_notes_exceeding_length_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        notes = self.random_string(length=NOTES_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"notes": notes},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['notes'] == notes[:-1]
 
     def test_it_empties_workout_notes(
         self,
@@ -669,19 +695,9 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert records[3]['workout_date'] == 'Tue, 15 May 2018 15:05:00 GMT'
         assert records[3]['value'] == 8.0
 
-    @pytest.mark.parametrize(
-        'input_description,input_notes',
-        [
-            ('empty notes', ''),
-            ('short notes', 'test workout'),
-            ('notes with special characters', 'test \nworkout'),
-        ],
-    )
-    def test_it_adds_notes_to_a_workout_wo_gpx(
+    def test_it_updates_notes_for_a_workout_wo_gpx(
         self,
         app: Flask,
-        input_description: str,
-        input_notes: str,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
@@ -690,11 +706,12 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        notes = self.random_string()
 
         response = client.patch(
             f'/api/workouts/{workout_short_id}',
             content_type='application/json',
-            data=json.dumps(dict(notes=input_notes)),
+            json={"notes": notes},
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -702,33 +719,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['notes'] == input_notes
-
-    def test_it_empties_workout_notes(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_short_id = workout_cycling_user_1.short_id
-        workout_cycling_user_1.notes = uuid4().hex
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            f'/api/workouts/{workout_short_id}',
-            content_type='application/json',
-            data=json.dumps(dict(notes='')),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['notes'] == ''
+        assert data['data']['workouts'][0]['notes'] == notes
 
     def test_it_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
         self,
