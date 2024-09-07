@@ -11,8 +11,14 @@
   "HERE": "tutaj",
   "HIDDEN": "Ukryty",
   "HOME": "Dom",
+  "HOURS": "godzina|godzin",
+  "INACTIVE": "nieaktywny",
+  "LABEL": "etykieta",
+  "MINUTES": "minuta|minuty",
   "NEXT": "następna",
+  "NO_DESCRIPTION": "brak opisu",
   "PREVIOUS": "poprzednia",
+  "SECONDS": "sekunda|sekund",
   "SELECTS": {
     "ORDER": {
       "ASC": "rosnąco",
