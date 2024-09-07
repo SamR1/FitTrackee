@@ -140,7 +140,9 @@ class EmailService:
             'port': 25 if parsed_url.port is None else parsed_url.port,
             'use_tls': parsed_url.query == 'tls=True',
             'use_ssl': parsed_url.query == 'ssl=True',
-            'username': username,
+            'username': (
+                unquote(username) if isinstance(username, str) else username
+            ),
             'password': (
                 unquote(password) if isinstance(password, str) else password
             ),
