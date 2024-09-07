@@ -10,7 +10,12 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import NOTES_MAX_CHARACTERS, Sport, Workout
+from fittrackee.workouts.models import (
+    NOTES_MAX_CHARACTERS,
+    TITLE_MAX_CHARACTERS,
+    Sport,
+    Workout,
+)
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -65,7 +70,7 @@ def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
 
 
 class TestEditWorkoutWithGpx(ApiTestCaseMixin):
-    def test_it_updates_title_for_a_workout_with_gpx(
+    def test_it_updates_sport_and_title_for_a_workout_with_gpx(
         self,
         app: Flask,
         user_1: User,
@@ -90,6 +95,30 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert sport_2_running.id == data['data']['workouts'][0]['sport_id']
         assert data['data']['workouts'][0]['title'] == 'Workout test'
         assert_workout_data_with_gpx(data, sport_2_running.id)
+
+    def test_it_updates_title_when_it_exceeds_max_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+        title = self.random_string(TITLE_MAX_CHARACTERS + 1)
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={'title': title},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['title'] == title[:-1]
 
     @pytest.mark.parametrize(
         'input_description,input_notes',
@@ -720,6 +749,32 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == notes
+
+    def test_it_updates_title_when_it_exceeds_max_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        title = self.random_string(TITLE_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={'title': title},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['title'] == title[:-1]
 
     def test_it_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
         self,

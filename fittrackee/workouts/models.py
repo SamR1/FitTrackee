@@ -35,6 +35,7 @@ record_types = [
     'MS',  # 'Max speed'
 ]
 NOTES_MAX_CHARACTERS = 500
+TITLE_MAX_CHARACTERS = 255
 
 
 def update_records(
@@ -202,7 +203,7 @@ class Workout(BaseModel):
     sport_id = db.Column(
         db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
     )
-    title = db.Column(db.String(255), nullable=True)
+    title = db.Column(db.String(TITLE_MAX_CHARACTERS), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
     creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     modification_date = db.Column(

@@ -16,7 +16,12 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
-from fittrackee.workouts.models import NOTES_MAX_CHARACTERS, Sport, Workout
+from fittrackee.workouts.models import (
+    NOTES_MAX_CHARACTERS,
+    TITLE_MAX_CHARACTERS,
+    Sport,
+    Workout,
+)
 
 from ..mixins import ApiTestCaseMixin, CallArgsMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -284,6 +289,41 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
+        assert_workout_data_with_gpx(data)
+
+    def test_it_adds_a_workout_with_gpx_file_and_title_exceeding_limits(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_w_title_exceeding_limit: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_w_title_exceeding_limit)),
+                    'example.gpx',
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            len(data['data']['workouts'][0]['title']) == TITLE_MAX_CHARACTERS
+        )
         assert_workout_data_with_gpx(data)
 
     def test_it_adds_a_workout_with_gpx_file_raw_speed(
@@ -1416,6 +1456,67 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert_workout_data_wo_gpx(data)
+
+    def test_it_adds_a_workout_without_gpx_and_title(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        title = self.random_string()
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    title=title,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['title'] == title
+
+    def test_it_adds_a_workout_without_gpx_and_title_exceeding_limit(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        title = self.random_string(length=TITLE_MAX_CHARACTERS + 1)
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    title=title,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['title']
+            == title[:TITLE_MAX_CHARACTERS]
+        )
 
     @pytest.mark.parametrize(
         'input_ascent, input_descent',

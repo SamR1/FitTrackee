@@ -1032,6 +1032,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
+                If <name> tag exists, it will be used as title (max length: 255
+                characters, otherwise it will be truncated)
     :form data: sport id, equipment id and notes (example:
                 ``{"sport_id": 1, "notes": "", "equipment_ids": []}``).
                 Double quotes in notes must be escaped.
@@ -1255,7 +1257,8 @@ def post_workout_no_gpx(
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title (not mandatory)
+    :<json string title: workout title (not mandatory, max length: 255
+        characters, otherwise it will be truncated)
     :<json string workout_date: workout date, in user timezone
         (format: ``%Y-%m-%d %H:%M``)
 
@@ -1464,7 +1467,8 @@ def update_workout(
     :<json string notes: notes (max length: 500 characters, otherwise they
         will be truncated)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title
+    :<json string title: workout title (max length: 255 characters, otherwise
+        it will be truncated)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
