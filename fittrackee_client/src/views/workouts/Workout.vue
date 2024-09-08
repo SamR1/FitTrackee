@@ -19,14 +19,20 @@
             :displaySegment="displaySegment"
             @getCoordinates="updateCoordinates"
           />
+          <WorkoutContent
+            v-if="!displaySegment"
+            content-type="DESCRIPTION"
+            :content="workoutData.workout.description"
+          />
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
             :useImperialUnits="authUser.imperial_units"
           />
-          <WorkoutNotes
+          <WorkoutContent
             v-if="!displaySegment"
-            :notes="workoutData.workout.notes"
+            content-type="NOTES"
+            :content="workoutData.workout.notes"
           />
           <div id="bottom" />
         </div>
@@ -46,7 +52,7 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
-  import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
+  import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import {
     AUTH_USER_STORE,

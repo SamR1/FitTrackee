@@ -5,6 +5,7 @@
       :name="name"
       :maxLength="charLimit"
       :disabled="disabled"
+      :rows="rows"
       v-model="text"
       @input="updateText"
     />
@@ -22,11 +23,13 @@
     charLimit?: number
     disabled?: boolean
     input?: string | null
+    rows?: number
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
     disabled: false,
     input: '',
+    rows: 2,
   })
 
   const emit = defineEmits(['updateValue'])
