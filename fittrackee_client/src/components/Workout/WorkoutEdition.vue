@@ -1,7 +1,7 @@
 <template>
   <div
     id="workout-edition"
-    class="center-card with-margin"
+    class="center-card"
     :class="{ 'center-form': workout && workout.with_gpx }"
   >
     <Card>
@@ -100,6 +100,7 @@
                   @invalid="invalidateForm"
                   :disabled="loading"
                   v-model="workoutForm.title"
+                  maxlength="255"
                 />
               </div>
               <div v-if="!withGpx">
@@ -275,6 +276,17 @@
                 </select>
               </div>
               <div class="form-item">
+                <label for="notes"> {{ $t('workouts.DESCRIPTION') }}: </label>
+                <CustomTextArea
+                  name="description"
+                  :input="workoutForm.description"
+                  :disabled="loading"
+                  :charLimit="10000"
+                  :rows="5"
+                  @updateValue="updateDescription"
+                />
+              </div>
+              <div class="form-item">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
@@ -385,6 +397,7 @@
     workoutAscent: '',
     workoutDescent: '',
     equipment_id: '',
+    description: '',
   })
   const withGpx = ref(
     workout.value.id ? workout.value.with_gpx : isCreation.value
@@ -428,6 +441,9 @@
   function updateNotes(value: string) {
     workoutForm.notes = value
   }
+  function updateDescription(value: string) {
+    workoutForm.description = value
+  }
   function updateWithGpx() {
     withGpx.value = !withGpx.value
     formErrors.value = false
@@ -440,6 +456,7 @@
   function formatWorkoutForm(workout: IWorkout) {
     workoutForm.sport_id = `${workout.sport_id}`
     workoutForm.title = workout.title
+    workoutForm.description = workout.description
     workoutForm.notes = workout.notes
     workoutForm.equipment_id =
       workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
@@ -527,6 +544,7 @@
   function updateWorkout() {
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
+      description: workoutForm.description,
       notes: workoutForm.notes,
       equipment_ids:
         workoutForm.equipment_id &&
@@ -731,10 +749,6 @@
       margin-bottom: 0;
       &.center-form {
         margin: 50px auto;
-      }
-
-      &.with-margin {
-        margin-top: 0;
       }
     }
 

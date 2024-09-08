@@ -60,6 +60,7 @@ export interface IWorkout {
   bounds: number[]
   creation_date: string
   descent: number | null
+  description: string
   distance: number
   duration: string
   equipments: IEquipment[]
@@ -123,6 +124,7 @@ export interface IWorkoutForm {
   ascent?: number | null
   descent?: number | null
   equipment_ids: string[]
+  description: string
 }
 
 export interface IWorkoutPayload {

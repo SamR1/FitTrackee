@@ -186,11 +186,13 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       throw new Error('No file part')
     }
     const notes = payload.notes.replace(/"/g, '\\"')
+    const description = payload.description.replace(/"/g, '\\"')
     const form = new FormData()
     form.append('file', payload.file)
     form.append(
       'data',
       `{"sport_id": ${payload.sport_id}, "notes": "${notes}",` +
+        ` "description": "${description}",` +
         ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}]}`
     )
     authApi
