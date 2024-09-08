@@ -111,6 +111,21 @@ class TestEmailServiceUrlParser(CallArgsMixin):
         assert parsed_email['use_tls'] is False
         assert parsed_email['use_ssl'] is True
 
+    def test_it_parses_email_url_with_encoded_username(self) -> None:
+        username = "user_name@example.com"
+        password = "12345678"
+        encoded_username = quote(username)
+        url = f"smtp://{encoded_username}:{password}@localhost:465?ssl=True"
+
+        parsed_email = email_service.parse_email_url(url)
+
+        assert parsed_email['username'] == username
+        assert parsed_email['password'] == password
+        assert parsed_email['host'] == 'localhost'
+        assert parsed_email['port'] == 465
+        assert parsed_email['use_tls'] is False
+        assert parsed_email['use_ssl'] is True
+
 
 class TestEmailServiceSend(CallArgsMixin):
     email_data = {
