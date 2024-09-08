@@ -1,3 +1,4 @@
+import email.utils as email_utils
 import logging
 import smtplib
 import ssl
@@ -32,6 +33,9 @@ class EmailMessage:
         message['Subject'] = self.subject
         message['From'] = self.sender
         message['To'] = self.recipient
+        message['Message-ID'] = email_utils.make_msgid(
+            domain=self.sender.split("@")[-1]
+        )
         part1 = MIMEText(self.text, 'plain')
         part2 = MIMEText(self.html, 'html')
         message.attach(part1)

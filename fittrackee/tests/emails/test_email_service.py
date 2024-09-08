@@ -1,3 +1,4 @@
+from email import utils
 from unittest.mock import Mock, patch
 from urllib.parse import quote
 
@@ -27,12 +28,31 @@ class TestEmailMessage:
             """,
             text='Hello !',
         )
-        message_data = message.generate_message()
+
+        with patch.object(utils, 'make_msgid', return_value='message_id'):
+            message_data = message.generate_message()
+
         assert message_data.get('From') == 'fittrackee@example.com'
         assert message_data.get('To') == 'test@test.com'
         assert message_data.get('Subject') == 'Fittrackee - test email'
+        assert message_data.get('Message-ID') == 'message_id'
         message_string = message_data.as_string()
         assert 'Hello !' in message_string
+
+    def test_it_calls_make_msgid_with_sender_domain(self) -> None:
+        sender = 'fittrackee@example.com'
+        message = EmailMessage(
+            sender=sender,
+            recipient='test@test.com',
+            subject='Fittrackee - test email',
+            html='test',
+            text='test',
+        )
+
+        with patch.object(utils, 'make_msgid') as make_msgid_mock:
+            message.generate_message()
+
+        make_msgid_mock.assert_called_once_with(domain=sender.split("@")[-1])
 
 
 class TestEmailServiceUrlParser(CallArgsMixin):
