@@ -17,6 +17,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.workouts.models import (
+    DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -39,6 +40,7 @@ def assert_workout_data_with_gpx(data: Dict) -> None:
     assert data['data']['workouts'][0]['ascent'] == 0.4
     assert data['data']['workouts'][0]['ave_speed'] == 4.61
     assert data['data']['workouts'][0]['descent'] == 23.4
+    assert data['data']['workouts'][0]['description'] is None
     assert data['data']['workouts'][0]['distance'] == 0.32
     assert data['data']['workouts'][0]['max_alt'] == 998.0
     assert data['data']['workouts'][0]['max_speed'] == 5.12
@@ -107,6 +109,7 @@ def assert_workout_data_with_gpx_segments(data: Dict) -> None:
     assert data['data']['workouts'][0]['ascent'] == 0.4
     assert data['data']['workouts'][0]['ave_speed'] == 4.59
     assert data['data']['workouts'][0]['descent'] == 23.4
+    assert data['data']['workouts'][0]['description'] is None
     assert data['data']['workouts'][0]['distance'] == 0.3
     assert data['data']['workouts'][0]['max_alt'] == 998.0
     assert data['data']['workouts'][0]['max_speed'] == 5.25
@@ -192,6 +195,7 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert data['data']['workouts'][0]['ascent'] is None
     assert data['data']['workouts'][0]['ave_speed'] == 10.0
     assert data['data']['workouts'][0]['descent'] is None
+    assert data['data']['workouts'][0]['description'] is None
     assert data['data']['workouts'][0]['distance'] == 10.0
     assert data['data']['workouts'][0]['max_alt'] is None
     assert data['data']['workouts'][0]['max_speed'] == 10.0
@@ -678,6 +682,102 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == notes[:-1]
+
+    def test_it_returns_400_when_quotes_are_not_escaped_in_description(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{{"sport_id": 1, "description": "test "workout""}}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'input_test_description,input_description',
+        [
+            ('empty description', ''),
+            ('short description', 'test workout'),
+            ('description with special characters', "test \n'workout'©"),
+        ],
+    )
+    def test_it_adds_a_workout_with_gpx_and_description(
+        self,
+        input_test_description: str,
+        input_description: str,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "description": "{input_description}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == input_description
+
+    def test_it_adds_a_workout_with_gpx_and_description_exceeding_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        description = self.random_string(length=DESCRIPTION_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=f'{{"sport_id": 1, "description": "{description}"}}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == description[:-1]
 
     def test_it_adds_a_workout_with_equipments(
         self,
@@ -1861,6 +1961,64 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == notes[:-1]
 
+    def test_it_adds_a_workout_with_description(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        description = "test"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    description=description,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == description
+
+    def test_it_adds_a_workout_with_description_exceeding_length_limit(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        description = self.random_string(length=DESCRIPTION_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    description=description,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == description[:-1]
+
     def test_it_adds_a_workout_with_equipments(
         self,
         app: Flask,
@@ -2210,6 +2368,7 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             assert data['data']['workouts'][0]['ascent'] == 0.4
             assert data['data']['workouts'][0]['ave_speed'] == 4.61
             assert data['data']['workouts'][0]['descent'] == 23.4
+            assert data['data']['workouts'][0]['description'] is None
             assert data['data']['workouts'][0]['distance'] == 0.32
             assert data['data']['workouts'][0]['max_alt'] == 998.0
             assert data['data']['workouts'][0]['max_speed'] == 5.12

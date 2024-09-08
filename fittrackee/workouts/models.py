@@ -34,6 +34,7 @@ record_types = [
     'LD',  # 'Longest Duration'
     'MS',  # 'Max speed'
 ]
+DESCRIPTION_MAX_CHARACTERS = 10000
 NOTES_MAX_CHARACTERS = 500
 TITLE_MAX_CHARACTERS = 255
 
@@ -226,6 +227,9 @@ class Workout(BaseModel):
     weather_start = db.Column(JSON, nullable=True)
     weather_end = db.Column(JSON, nullable=True)
     notes = db.Column(db.String(NOTES_MAX_CHARACTERS), nullable=True)
+    description = db.Column(
+        db.String(DESCRIPTION_MAX_CHARACTERS), nullable=True
+    )
 
     segments = db.relationship(
         'WorkoutSegment',
@@ -296,6 +300,7 @@ class Workout(BaseModel):
             'weather_start': self.weather_start,
             'weather_end': self.weather_end,
             'notes': self.notes,
+            'description': self.description,
         }
 
     def serialize(self, params: Optional[Dict] = None) -> Dict:

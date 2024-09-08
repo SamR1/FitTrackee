@@ -17,6 +17,7 @@ from fittrackee.users.models import User, UserSportPreference
 
 from ..exceptions import InvalidGPXException, WorkoutException
 from ..models import (
+    DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -144,6 +145,11 @@ def create_workout(
         if workout_data.get('notes') is None
         else workout_data['notes'][:NOTES_MAX_CHARACTERS]
     )
+    new_workout.description = (
+        None
+        if workout_data.get('description') is None
+        else workout_data['description'][:DESCRIPTION_MAX_CHARACTERS]
+    )
 
     if title is not None and title != '':
         new_workout.title = title[:TITLE_MAX_CHARACTERS]
@@ -231,6 +237,10 @@ def edit_workout(
         workout.title = workout_data['title'][:TITLE_MAX_CHARACTERS]
     if workout_data.get('notes') is not None:
         workout.notes = workout_data['notes'][:NOTES_MAX_CHARACTERS]
+    if workout_data.get('description') is not None:
+        workout.description = workout_data['description'][
+            :DESCRIPTION_MAX_CHARACTERS
+        ]
     if workout_data.get('equipments_list') is not None:
         workout.equipments = workout_data.get('equipments_list')
     if not workout.gpx:

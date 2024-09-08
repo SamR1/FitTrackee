@@ -11,6 +11,7 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import (
+    DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -33,6 +34,7 @@ def assert_workout_data_with_gpx(data: Dict, sport_id: int) -> None:
     assert data['data']['workouts'][0]['ascent'] == 0.4
     assert data['data']['workouts'][0]['ave_speed'] == 4.61
     assert data['data']['workouts'][0]['descent'] == 23.4
+    assert data['data']['workouts'][0]['description'] is None
     assert data['data']['workouts'][0]['distance'] == 0.32
     assert data['data']['workouts'][0]['max_alt'] == 998.0
     assert data['data']['workouts'][0]['max_speed'] == 5.12
@@ -205,6 +207,92 @@ class TestEditWorkoutWithGpx(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == ''
+
+    @pytest.mark.parametrize(
+        'input_test_description,input_description',
+        [
+            ('empty description', ''),
+            ('short description', 'test workout'),
+            ('description with special characters', 'test \nworkout'),
+        ],
+    )
+    def test_it_updates_description_for_a_workout_with_gpx(
+        self,
+        app: Flask,
+        input_test_description: str,
+        input_description: str,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(description=input_description)),
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == input_description
+
+    def test_it_updates_description_with_description_exceeding_length_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(app, gpx_file)
+        description = self.random_string(length=DESCRIPTION_MAX_CHARACTERS + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"description": description},
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == description[:-1]
+
+    def test_it_empties_workout_description(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
+        token, workout_short_id = post_a_workout(
+            app, gpx_file, description=self.random_string()
+        )
+        client = app.test_client()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            data=json.dumps(dict(description='')),
+            headers=dict(Authorization=f'Bearer {token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == ''
 
     def test_it_raises_403_when_editing_a_workout_from_different_user(
         self,
@@ -689,6 +777,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['ascent'] is None
         assert data['data']['workouts'][0]['ave_speed'] == 8.0
         assert data['data']['workouts'][0]['descent'] is None
+        assert data['data']['workouts'][0]['description'] is None
         assert data['data']['workouts'][0]['distance'] == 8.0
         assert data['data']['workouts'][0]['max_alt'] is None
         assert data['data']['workouts'][0]['max_speed'] == 8.0
@@ -749,6 +838,32 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == notes
+
+    def test_it_updates_description_for_a_workout_wo_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        description = self.random_string()
+
+        response = client.patch(
+            f'/api/workouts/{workout_short_id}',
+            content_type='application/json',
+            json={"description": description},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['description'] == description
 
     def test_it_updates_title_when_it_exceeds_max_limit(
         self,
@@ -849,6 +964,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['ascent'] is None
         assert data['data']['workouts'][0]['ave_speed'] == 8.0
         assert data['data']['workouts'][0]['descent'] is None
+        assert data['data']['workouts'][0]['description'] is None
         assert data['data']['workouts'][0]['distance'] == 8.0
         assert data['data']['workouts'][0]['max_alt'] is None
         assert data['data']['workouts'][0]['max_speed'] == 8.0
@@ -916,6 +1032,7 @@ class TestEditWorkoutWithoutGpx(ApiTestCaseMixin):
         assert data['data']['workouts'][0]['ascent'] is None
         assert data['data']['workouts'][0]['ave_speed'] == 20.0
         assert data['data']['workouts'][0]['descent'] is None
+        assert data['data']['workouts'][0]['description'] is None
         assert data['data']['workouts'][0]['distance'] == 20.0
         assert data['data']['workouts'][0]['max_alt'] is None
         assert data['data']['workouts'][0]['max_speed'] == 20.0
