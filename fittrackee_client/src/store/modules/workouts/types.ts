@@ -15,6 +15,9 @@ import type {
   IWorkoutData,
   IWorkoutPayload,
   IWorkoutForm,
+  IWorkoutContentPayload,
+  IWorkoutContentType,
+  IWorkoutContentEdition,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -23,6 +26,7 @@ export interface IWorkoutsState {
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
   pagination: IPagination
+  workoutContent: IWorkoutContentEdition
 }
 
 export interface IWorkoutsActions {
@@ -54,6 +58,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_CONTENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutContentPayload
+  ): void
   [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
@@ -68,6 +76,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CALENDAR_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
+    state: IWorkoutsState
+  ): IWorkoutContentEdition
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
   [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
     state: IWorkoutsState
@@ -95,6 +106,18 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
     state: S,
     chartDate: IWorkoutApiChartData[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT](
+    state: S,
+    workout: IWorkout
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_TYPE](
+    state: S,
+    contentType: IWorkoutContentType | ''
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](

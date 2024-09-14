@@ -13,4 +13,8 @@ export const workoutsState: IWorkoutsState = {
     workout: <IWorkout>{},
     chartData: [],
   },
+  workoutContent: {
+    loading: false,
+    contentType: '',
+  },
 }

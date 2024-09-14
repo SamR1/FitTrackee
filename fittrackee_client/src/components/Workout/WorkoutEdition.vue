@@ -2,7 +2,10 @@
   <div
     id="workout-edition"
     class="center-card"
-    :class="{ 'center-form': workout && workout.with_gpx }"
+    :class="{
+      'center-form': workout && workout.with_gpx,
+      'with-margin': !isCreation,
+    }"
   >
     <Card>
       <template #title>{{
@@ -275,8 +278,10 @@
                   </option>
                 </select>
               </div>
-              <div class="form-item">
-                <label for="notes"> {{ $t('workouts.DESCRIPTION') }}: </label>
+              <div class="form-item" v-if="isCreation">
+                <label for="description">
+                  {{ $t('workouts.DESCRIPTION') }}:
+                </label>
                 <CustomTextArea
                   name="description"
                   :input="workoutForm.description"
@@ -286,7 +291,7 @@
                   @updateValue="updateDescription"
                 />
               </div>
-              <div class="form-item">
+              <div class="form-item" v-if="isCreation">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
@@ -749,6 +754,10 @@
       margin-bottom: 0;
       &.center-form {
         margin: 50px auto;
+      }
+
+      &.with-margin {
+        margin-top: 0;
       }
     }
 

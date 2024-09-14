@@ -21,8 +21,10 @@
           />
           <WorkoutContent
             v-if="!displaySegment"
+            :workout-id="workoutData.workout.id"
             content-type="DESCRIPTION"
             :content="workoutData.workout.description"
+            :loading="workoutData.loading"
           />
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
@@ -31,8 +33,10 @@
           />
           <WorkoutContent
             v-if="!displaySegment"
+            :workout-id="workoutData.workout.id"
             content-type="NOTES"
             :content="workoutData.workout.notes"
+            :loading="workoutData.loading"
           />
           <div id="bottom" />
         </div>
