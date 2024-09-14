@@ -133,6 +133,19 @@ export interface IWorkoutPayload {
   data?: IWorkoutForm
 }
 
+export type IWorkoutContentType = 'NOTES' | 'DESCRIPTION'
+
+export interface IWorkoutContentEdition {
+  loading: boolean
+  contentType: IWorkoutContentType | ''
+}
+
+export interface IWorkoutContentPayload {
+  workoutId: string | string[]
+  content: string
+  contentType: IWorkoutContentType
+}
+
 export type TWorkoutsPayload = TPaginationPayload & {
   from?: string
   to?: string
