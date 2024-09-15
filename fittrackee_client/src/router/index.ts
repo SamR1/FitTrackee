@@ -58,7 +58,7 @@ const getTabFromPath = (path: string): string => {
   return tab === '' ? 'PROFILE' : tab.split('/')[0].toUpperCase()
 }
 
-const routes: Array<RouteRecordRaw> = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Dashboard',
