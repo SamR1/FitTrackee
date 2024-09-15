@@ -106,10 +106,8 @@
           <div
             v-else
             v-html="
-              snarkdown(
-                linkifyAndClean(
-                  appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
-                )
+              convertToMarkdown(
+                appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
               )
             "
             class="textarea-content"
@@ -130,12 +128,10 @@
           <div
             v-else
             v-html="
-              snarkdown(
-                linkifyAndClean(
-                  appData.privacy_policy
-                    ? appData.privacy_policy
-                    : $t('admin.NO_TEXT_ENTERED')
-                )
+              convertToMarkdown(
+                appData.privacy_policy
+                  ? appData.privacy_policy
+                  : $t('admin.NO_TEXT_ENTERED')
               )
             "
             class="textarea-content"
@@ -167,7 +163,6 @@
 </template>
 
 <script setup lang="ts">
-  import snarkdown from 'snarkdown'
   import { capitalize, computed, reactive, onBeforeMount, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRouter } from 'vue-router'
@@ -177,7 +172,7 @@
   import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
-  import { linkifyAndClean } from '@/utils/inputs'
+  import { convertToMarkdown } from '@/utils/inputs'
 
   interface Props {
     appConfig: TAppConfig

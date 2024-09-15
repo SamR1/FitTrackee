@@ -5,7 +5,7 @@
       "TITLE": "Kontua ezabatzea"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Gure pribatutasun politika aldatzen baduzu, aldaketa horiek hemen jarriko ditugu.\n\nDokumentu hau [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) lizentziapean dago. [Discourse](https://github.com/discourse/discourse) proiektuaren pribatutasun politikatik egokitu dugu.",
+      "CONTENT": "Gure pribatutasun politika aldatzen baduzu, aldaketa horiek hemen jarriko ditugu.\nDokumentu hau [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) lizentziapean dago. [Discourse](https://github.com/discourse/discourse) proiektuaren pribatutasun politikatik egokitu dugu.",
       "TITLE": "Gure Pribatutasun Politikaren aldaketak"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "Ze informazio biltzen dugu?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Ez dugu zu pertsonalki identifikatzen zaituen informaziorik hirugarrenekin saldu, negoziatu edo transferitzen.\n\nHonek ez ditu barne hartzen webgune hau martxan izateko behar-beharrezko diren hirugarrenak, beti ere informazio hori konfidentzialtasunez gordetzeko ados badaude.\n\nEra berean, zure informazioa besteren bati eman diezaiokegu legeak horrela agintzen badu, zure politika betetzen dela bermatzeko, gure edo besteen eskubideak, jabetza edo segurtasuna babesteko.\n\nHirugarren aplikazio bati zure kontua erabiltzeko baimena ematen diozuenean, ematen duzun baimenaren arabera, zure profileko informazioa edo entrenamenduak atzi ditzake. Aplikazioek ez dute sekula zure pasahitza ikusiko.",
+      "CONTENT": "Ez dugu zu pertsonalki identifikatzen zaituen informaziorik hirugarrenekin saldu, negoziatu edo transferitzen.\nHonek ez ditu barne hartzen webgune hau martxan izateko behar-beharrezko diren hirugarrenak, beti ere informazio hori konfidentzialtasunez gordetzeko ados badaude.\nEra berean, zure informazioa besteren bati eman diezaiokegu legeak horrela agintzen badu, zure politika betetzen dela bermatzeko, gure edo besteen eskubideak, jabetza edo segurtasuna babesteko.\nHirugarren aplikazio bati zure kontua erabiltzeko baimena ematen diozuenean, ematen duzun baimenaren arabera, zure profileko informazioa edo entrenamenduak atzi ditzake. Aplikazioek ez dute sekula zure pasahitza ikusiko.",
       "TITLE": "Kanpoko norbaiti informazioren bat ematen diogu?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "Zertarako erabiltzen ditugu zure datuak?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Zerbitzari hau EBean edo EEAn badago: gure webgunea eta zerbitzuak gutxienez 16 urte dituzten pertsonentzat dira. 16 urtez beherakoa bazara, eta [DBEO](https://eu.wikipedia.org/wiki/Datuak_Babesteko_Erregelamendu_Orokorra) (Datuak Babesteko Erregelamendu Orokorrak) dioenari jarraiki ez erabili webgune hau.\n\nZerbitzaru hau AEBn badago: gure webgunea, produktuak eta zerbitzuak, gutxienez 13 urte dituzten pertsonentzat dira. 13 urtez azpikoa bazara [HOPBL](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Haurren Online Pribatutasuna Babesteko Legea) dioenari jarraiki ez erabili webgune hau.\n\nLege betebeharrak desberdinak izan daitezke zerbitzaria beste tokiren baten badago.",
+      "CONTENT": "Zerbitzari hau EBean edo EEAn badago: gure webgunea eta zerbitzuak gutxienez 16 urte dituzten pertsonentzat dira. 16 urtez beherakoa bazara, eta [DBEO](https://eu.wikipedia.org/wiki/Datuak_Babesteko_Erregelamendu_Orokorra) (Datuak Babesteko Erregelamendu Orokorrak) dioenari jarraiki ez erabili webgune hau.\nZerbitzaru hau AEBn badago: gure webgunea, produktuak eta zerbitzuak, gutxienez 13 urte dituzten pertsonentzat dira. 13 urtez azpikoa bazara [HOPBL](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Haurren Online Pribatutasuna Babesteko Legea) dioenari jarraiki ez erabili webgune hau.\nLege betebeharrak desberdinak izan daitezke zerbitzaria beste tokiren baten badago.",
       "TITLE": "Zerbitzua adingabeek erabiltzea"
     },
     "YOUR_CONSENT": {
