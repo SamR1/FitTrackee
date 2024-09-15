@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { linkifyAndClean } from '@/utils/inputs'
+import { linkifyAndClean, cleanInput } from '@/utils/inputs'
 
 describe('linkifyAndClean (clean input remains unchanged)', () => {
   const testInputs = [
@@ -24,7 +24,7 @@ describe('linkifyAndClean (URL is linkified)', () => {
   })
 })
 
-describe('linkifyAndClean (input sanitization)', () => {
+describe('sanitization', () => {
   const testsParams = [
     {
       description: 'it escapes "script" tags',
@@ -59,11 +59,13 @@ describe('linkifyAndClean (input sanitization)', () => {
     },
   ]
 
-  testsParams.map((testParams) => {
-    it(testParams.description, () => {
-      expect(linkifyAndClean(testParams.inputString)).toBe(
-        testParams.expectedString
-      )
+  const functionsToTest: CallableFunction[] = [cleanInput, linkifyAndClean]
+
+  functionsToTest.map((f) =>
+    testsParams.map((testParams) => {
+      it(`${f.name} - ${testParams.description}`, () => {
+        expect(f(testParams.inputString)).toBe(testParams.expectedString)
+      })
     })
-  })
+  )
 })

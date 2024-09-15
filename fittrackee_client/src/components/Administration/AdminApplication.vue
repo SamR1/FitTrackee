@@ -106,8 +106,8 @@
           <div
             v-else
             v-html="
-              snarkdown(
-                linkifyAndClean(
+              marked.parse(
+                cleanInput(
                   appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
                 )
               )
@@ -130,8 +130,8 @@
           <div
             v-else
             v-html="
-              snarkdown(
-                linkifyAndClean(
+              marked.parse(
+                cleanInput(
                   appData.privacy_policy
                     ? appData.privacy_policy
                     : $t('admin.NO_TEXT_ENTERED')
@@ -167,7 +167,7 @@
 </template>
 
 <script setup lang="ts">
-  import snarkdown from 'snarkdown'
+  import { marked } from 'marked'
   import { capitalize, computed, reactive, onBeforeMount, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRouter } from 'vue-router'
@@ -177,7 +177,7 @@
   import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
-  import { linkifyAndClean } from '@/utils/inputs'
+  import { cleanInput } from '@/utils/inputs'
 
   interface Props {
     appConfig: TAppConfig
