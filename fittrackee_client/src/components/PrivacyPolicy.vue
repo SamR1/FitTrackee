@@ -8,7 +8,7 @@
       <time>{{ privatePolicyDate }}</time>
     </p>
     <template v-if="appConfig.privacy_policy">
-      <div v-html="marked.parse(cleanInput(appConfig.privacy_policy))" />
+      <div v-html="convertToMarkdown(appConfig.privacy_policy)" />
     </template>
     <template v-else>
       <template v-for="paragraph in paragraphs" :key="paragraph">
@@ -17,7 +17,7 @@
         </h2>
         <p
           v-html="
-            marked.parse($t(`privacy_policy.CONTENT.${paragraph}.CONTENT`))
+            convertToMarkdown($t(`privacy_policy.CONTENT.${paragraph}.CONTENT`))
           "
         />
       </template>
@@ -26,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { marked } from 'marked'
   import { capitalize, computed } from 'vue'
   import type { ComputedRef } from 'vue'
 
@@ -36,7 +35,7 @@
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { dateStringFormats, formatDate } from '@/utils/dates'
-  import { cleanInput } from '@/utils/inputs'
+  import { convertToMarkdown } from '@/utils/inputs'
 
   const store = useStore()
   const fittrackeePrivatePolicyDate = 'Sun, 26 Feb 2023 17:00:00 GMT'

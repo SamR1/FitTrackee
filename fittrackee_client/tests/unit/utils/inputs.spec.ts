@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { linkifyAndClean, cleanInput } from '@/utils/inputs'
+import { convertToMarkdown, linkifyAndClean } from '@/utils/inputs'
 
 describe('linkifyAndClean (clean input remains unchanged)', () => {
   const testInputs = [
@@ -24,7 +24,7 @@ describe('linkifyAndClean (URL is linkified)', () => {
   })
 })
 
-describe('sanitization', () => {
+describe('linkifyAndClean (input sanitization)', () => {
   const testsParams = [
     {
       description: 'it escapes "script" tags',
@@ -42,7 +42,7 @@ describe('sanitization', () => {
       expectedString: '&lt;p&gt;test',
     },
     {
-      description: 'it removes css classe',
+      description: 'it removes css class',
       inputString: '<div class="active">test</div>',
       expectedString: '&lt;div&gt;test&lt;/div&gt;',
     },
@@ -59,13 +59,80 @@ describe('sanitization', () => {
     },
   ]
 
-  const functionsToTest: CallableFunction[] = [cleanInput, linkifyAndClean]
-
-  functionsToTest.map((f) =>
-    testsParams.map((testParams) => {
-      it(`${f.name} - ${testParams.description}`, () => {
-        expect(f(testParams.inputString)).toBe(testParams.expectedString)
-      })
+  testsParams.map((testParams) => {
+    it(testParams.description, () => {
+      expect(linkifyAndClean(testParams.inputString)).toBe(
+        testParams.expectedString
+      )
     })
-  )
+  })
+})
+
+describe('convertToMarkdown', () => {
+  const testInputs: Record<string, string>[] = [
+    {
+      inputString: 'just a **text**',
+      expectedString: '<p>just a <strong>text</strong></p>\n',
+    },
+    {
+      inputString: '_italic_',
+      expectedString: '<p><em>italic</em></p>\n',
+    },
+    {
+      inputString: 'http://www.example.com',
+      expectedString:
+        '<p><a href="http://www.example.com">http://www.example.com</a></p>\n',
+    },
+    {
+      inputString: '[example](http://www.example.com)',
+      expectedString: '<p><a href="http://www.example.com">example</a></p>\n',
+    },
+    {
+      inputString:
+        '<a href="http://www.example.com">http://www.example.com</a>',
+      expectedString:
+        '<p><a href="http://www.example.com">http://www.example.com</a></p>\n',
+    },
+  ]
+
+  testInputs.map((testInput) => {
+    it(`it returns input as html: '${testInput.inputString}'`, () => {
+      expect(convertToMarkdown(testInput.inputString)).toBe(
+        testInput.expectedString
+      )
+    })
+  })
+})
+
+describe('convertToMarkdown (sanitization)', () => {
+  const testInputs: Record<string, string>[] = [
+    {
+      description: 'it removes script',
+      inputString: "test <script>alert('evil!')</script>",
+      expectedString: '<p>test </p>\n',
+    },
+    {
+      description: 'it removes css class',
+      inputString: '<div class="active">test</div>',
+      expectedString: '<div>test</div>',
+    },
+    {
+      description: 'it removes style attribute',
+      inputString: '<div style="display:none;">test</div>',
+      expectedString: '<div>test</div>',
+    },
+    {
+      description: 'it closes single tags',
+      inputString: '<p><strong>test',
+      expectedString: '<p><strong>test</strong></p>',
+    },
+  ]
+
+  testInputs.map((testInput) => {
+    it(`${testInput.description}: '${testInput.inputString}'`, () => {
+      expect(convertToMarkdown(testInput.inputString)).toBe(
+        testInput.expectedString
+      )
+    })
+  })
 })

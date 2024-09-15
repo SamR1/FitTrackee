@@ -5,7 +5,7 @@
       "TITLE": "Eliminación de la cuenta"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Si decidimos cambiar nuestra política de privacidad, anunciaremos los cambios en esta página.\n\nEste documento está bajo licencia [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado de la política de privacidad original de [Discourse](https://github.com/discourse/discourse).",
+      "CONTENT": "Si decidimos cambiar nuestra política de privacidad, anunciaremos los cambios en esta página.\nEste documento está bajo licencia [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado de la política de privacidad original de [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Cambios en la Política de Privacidad"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "¿Qué información recopilamos?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "No vendemos, negociamos o transferimos de otro modo a terceras partes los datos que te identifican personalmente.\n\nEsto no incluye a terceras partes que nos ayudan a gestionar nuestra web y darte servicio, siempre que esas terceras partes mantengan el compromiso de confidencialidad.\n\nPodríamos también liberar esta información si al hacerlo creemos que estamos cumpliendo con la ley, reforzando las políticas de nuestra web o protegiendo nuestros y vuestros derechos, propiedad o seguridad.\n\nCuando autorizas a una aplicación de terceros a usar tu cuenta, dependiendo del ámbito de los permisos concedidos, ésta podría acceder a la información de tu perfil o entrenamientos. Las aplicaciones nunca tienen acceso a tu contraseña.",
+      "CONTENT": "No vendemos, negociamos o transferimos de otro modo a terceras partes los datos que te identifican personalmente.\nEsto no incluye a terceras partes que nos ayudan a gestionar nuestra web y darte servicio, siempre que esas terceras partes mantengan el compromiso de confidencialidad.\nPodríamos también liberar esta información si al hacerlo creemos que estamos cumpliendo con la ley, reforzando las políticas de nuestra web o protegiendo nuestros y vuestros derechos, propiedad o seguridad.\nCuando autorizas a una aplicación de terceros a usar tu cuenta, dependiendo del ámbito de los permisos concedidos, ésta podría acceder a la información de tu perfil o entrenamientos. Las aplicaciones nunca tienen acceso a tu contraseña.",
       "TITLE": "¿Mostramos algún tipo de información a terceras partes externas?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "¿Para qué utilizamos tus datos?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Si este servidor está en la UE o el AEE: nuestra web y servicios están dirigidos a personas de al menos 16 años de edad. Si no tienes 16 años cumplidos, por requerimiento de la [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation) no uses este sitio web.\n\nSi este servidor está en EEUU de América: nuestra web, productos y servicios están orientados a personas de al menos 13 años de edad. Si no tienes 13 cumplidos, por requerimiento de la [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) no uses esta web.\n\nLos requerimientos legales pueden ser diferentes si este servidor se encuentra en otros lugares.",
+      "CONTENT": "Si este servidor está en la UE o el AEE: nuestra web y servicios están dirigidos a personas de al menos 16 años de edad. Si no tienes 16 años cumplidos, por requerimiento de la [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation) no uses este sitio web.\nSi este servidor está en EEUU de América: nuestra web, productos y servicios están orientados a personas de al menos 13 años de edad. Si no tienes 13 cumplidos, por requerimiento de la [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) no uses esta web.\nLos requerimientos legales pueden ser diferentes si este servidor se encuentra en otros lugares.",
       "TITLE": "Uso de esta web por menores"
     },
     "YOUR_CONSENT": {
