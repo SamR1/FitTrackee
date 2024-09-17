@@ -44,7 +44,7 @@ pyopenssl = "^24.2.1"
 pytz = "^2024.1"
 shortuuid = "^1.0.13"
 staticmap = "^0.5.7"
-sqlalchemy = "=1.4.53"
+sqlalchemy = "^1.4.54"
 ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
