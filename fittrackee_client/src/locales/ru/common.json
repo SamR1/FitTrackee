@@ -1,1 +1,21 @@
-{}
+{
+  "CONFIRMATION": "Подтверждение",
+  "CONTACT": "контакт",
+  "DAY": "день | дни",
+  "DESCRIPTION": "Описание",
+  "DISPLAYED": "Показано",
+  "DOCUMENTATION": "документация",
+  "HOURS": "час|часы",
+  "MINUTES": "минута|минуты",
+  "NO_DESCRIPTION": "нет описания",
+  "SECONDS": "секунда|секунды",
+  "SELECTS": {
+    "ORDER_BY": {
+      "LABEL": "сортировать по"
+    },
+    "PER_PAGE": {
+      "LABEL": "на страницу"
+    }
+  },
+  "TOTAL": "Всего"
+}
