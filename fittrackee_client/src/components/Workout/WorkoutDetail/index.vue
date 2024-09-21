@@ -281,6 +281,7 @@
     ::v-deep(.card) {
       margin: 0 $default-margin;
       width: 100%;
+      margin-bottom: 0;
       .card-title {
         padding: $default-padding $default-padding * 1.5;
         .report-submitted {

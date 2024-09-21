@@ -17,6 +17,10 @@ export const workoutsState: IWorkoutsState = {
     currentCommentEdition: <ICurrentCommentEdition>{},
     currentReporting: false,
   },
+  workoutContent: {
+    loading: false,
+    contentType: '',
+  },
   success: null,
   appealLoading: null,
 }

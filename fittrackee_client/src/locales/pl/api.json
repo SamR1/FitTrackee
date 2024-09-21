@@ -6,6 +6,8 @@
     "at least one file in zip archive exceeds size limit, please check the archive": "Co najmniej jeden plik zip przekracza limit wielkości, sprawdź archiwum.",
     "completed request already exists": "Ukończony wniosek eksportu już istnieje.",
     "email: valid email must be provided": "E-mail: należy podać poprawny adres.",
+    "equipment already exists with the same label": "Sprzęt z taką samą etykietą już istnieje.",
+    "equipment type is inactive": "Typ sprzętu jest nieaktywny.",
     "error during gpx file parsing": "Błąd podczas parsowania pliku gpx.",
     "error during gpx processing": "Błąd podczas procesowania pliku gpx.",
     "error on getting configuration": "Błąd przy pobieraniu konfiguracji.",

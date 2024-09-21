@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.8.8</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.8.9</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.8
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.9
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.8
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.9
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -385,9 +385,17 @@
 <li><p>Un <a class="reference external" href="features.html#equipments">équipement</a> peut être associé à une séance (<em>nouveau dans la version 0.8.0</em>). Pour le moment, un seul équipement peut être associé.</p></li>
 <li><p>Les segments peuvent être affichés.</p></li>
 <li><p>Le fichier gpx peut être téléchargé (<em>nouveau dans la version 0.5.1</em>)</p></li>
-<li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une note.</p></li>
+<li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une description (<em>nouveau dans la version 0.8.9</em>) et une note.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Le champ « Description » est plus long que le champ « Notes » et il aura la même visibilité que la séance dans une prochaine version (cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/125">#125</a>). Le champ « Notes » restera privé.</div>
+</div>
+</div>
+<ul class="simple">
 <li><dl class="simple">
-<dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul class="simple">
+<dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul>
 <li><dl class="simple">
 <dt>totaux :</dt><dd><ul>
 <li><p>distance totale</p></li>
@@ -416,7 +424,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Statistiques de l’utilisateur pour un sport (<em>nouveau dans la version in 0.8.5</em>)</dt><dd><ul class="simple">
+<dt>Statistiques de l’utilisateur pour un sport (<em>nouveau dans la version in 0.8.5</em>)</dt><dd><ul>
 <li><p>nombre total de séances</p></li>
 <li><p>distance (total et moyenne)</p></li>
 <li><p>durée (total et moyenne)</p></li>
@@ -463,6 +471,7 @@
 <li><p>le sport (seuls les sports comportant des séances sont affichés dans la liste déroulante)</p></li>
 <li><p>équipement (seuls les équipements associés des séances sont affichés dans la liste déroulante) (<em>nouveau dans la version 0.8.0</em>)</p></li>
 <li><p>le titre (<em>nouveau dans la version 0.7.15</em>)</p></li>
+<li><p>description (<em>nouveau dans la version 0.8.9</em>)</p></li>
 <li><p>notes (<em>nouveau dans la version 0.8.0</em>)</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
@@ -845,7 +854,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c10b5f71"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6573db68"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

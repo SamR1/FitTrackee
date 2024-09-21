@@ -11,6 +11,7 @@ import type {
   ICurrentCommentEdition,
   IWorkout,
   IWorkoutApiChartData,
+  IWorkoutContentType,
 } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
@@ -79,6 +80,24 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     loading: boolean
   ) {
     state.workoutData.loading = loading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT](
+    state: IWorkoutsState,
+    workout: IWorkout
+  ) {
+    state.workoutData.workout = workout
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_LOADING](
+    state: IWorkoutsState,
+    loading: boolean
+  ) {
+    state.workoutContent.loading = loading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_TYPE](
+    state: IWorkoutsState,
+    contentType: IWorkoutContentType | ''
+  ) {
+    state.workoutContent.contentType = contentType
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS](state: IWorkoutsState) {
     state.calendar_workouts = []

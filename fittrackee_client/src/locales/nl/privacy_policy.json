@@ -5,7 +5,7 @@
       "TITLE": "Account verwijderen"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Eventuele aanpassingen aan het privacybeleid zullen op deze pagina worden weergegeven.\n\nDit document valt onder volgende licentie [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Een aanpassing van dit origineel privacybeleid [Discourse](https://github.com/discourse/discourse).",
+      "CONTENT": "Eventuele aanpassingen aan het privacybeleid zullen op deze pagina worden weergegeven.\nDit document valt onder volgende licentie [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Een aanpassing van dit origineel privacybeleid [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Aanpassingen aan ons Privacybeleid"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "Welke informatie wordt er door ons verzameld?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Persoonlijke informatie wordt niet verkocht, geruild of op enige manier doorgegeven aan derden/andere instanties.\n\nDe uitzondering hierop zijn derden die vertrouwd worden en hebben ingestemd om uw gegevens niet te delen. Dit zijn bijvoorbeeld website administrators en vertrouwde applicaties.\n\nWanneer je een app van derden linkt aan je gebruikersaccount, kan het naargelang de toegestane rechten toegang krijgen tot je profiel informatie en activiteiten. Apps hebben nooit toegang tot uw wachtwoord.\n\nMogelijk kan er informatie worden gedeeld wanneer dit nodig is om aan de wetgeving te voldoen, wanneer de regels van ons beleid dienen afgedwongen te worden, of om onze of anderen hun rechten, eigendom of veiligheid te beschermen.",
+      "CONTENT": "Persoonlijke informatie wordt niet verkocht, geruild of op enige manier doorgegeven aan derden/andere instanties.\nDe uitzondering hierop zijn derden die vertrouwd worden en hebben ingestemd om uw gegevens niet te delen. Dit zijn bijvoorbeeld website administrators en vertrouwde applicaties.\nWanneer je een app van derden linkt aan je gebruikersaccount, kan het naargelang de toegestane rechten toegang krijgen tot je profiel informatie en activiteiten. Apps hebben nooit toegang tot uw wachtwoord.\nMogelijk kan er informatie worden gedeeld wanneer dit nodig is om aan de wetgeving te voldoen, wanneer de regels van ons beleid dienen afgedwongen te worden, of om onze of anderen hun rechten, eigendom of veiligheid te beschermen.",
       "TITLE": "Wordt er informatie met derden gedeeld?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "Waarvoor wordt de opgegeven informatie gebruikt?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Als de server zich in de EU of EEA bevindt: Deze site en zijn services zijn gericht op personen van minstens 16 jaar oud. Als u onder de 16 jaar bent, volgens naleving van de [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation), gelieve deze site niet te gebruiken.\n\nAls de server zich in de USA bevindt: Deze site en zijn services zijn gericht op personen van minstens 13 jaar oud. Als u onder de 13 jaar bent, volgens naleving van de [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), gelieve deze site niet te gebruiken.\n\nWetgeving kan verschillen als de server zich op een andere plaats bevindt.",
+      "CONTENT": "Als de server zich in de EU of EEA bevindt: Deze site en zijn services zijn gericht op personen van minstens 16 jaar oud. Als u onder de 16 jaar bent, volgens naleving van de [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (General Data Protection Regulation), gelieve deze site niet te gebruiken.\nAls de server zich in de USA bevindt: Deze site en zijn services zijn gericht op personen van minstens 13 jaar oud. Als u onder de 13 jaar bent, volgens naleving van de [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), gelieve deze site niet te gebruiken.\nWetgeving kan verschillen als de server zich op een andere plaats bevindt.",
       "TITLE": "Gebruik door minderjarigen"
     },
     "YOUR_CONSENT": {

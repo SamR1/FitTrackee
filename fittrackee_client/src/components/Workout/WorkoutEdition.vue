@@ -1,8 +1,11 @@
 <template>
   <div
     id="workout-edition"
-    class="center-card with-margin"
-    :class="{ 'center-form': workout && workout.with_gpx }"
+    class="center-card"
+    :class="{
+      'center-form': workout && workout.with_gpx,
+      'with-margin': !isCreation,
+    }"
   >
     <Card>
       <template #title>{{
@@ -100,6 +103,7 @@
                   @invalid="invalidateForm"
                   :disabled="loading"
                   v-model="workoutForm.title"
+                  maxlength="255"
                 />
               </div>
               <div v-if="!withGpx">
@@ -311,7 +315,20 @@
                   </option>
                 </select>
               </div>
-              <div class="form-item">
+              <div class="form-item" v-if="isCreation">
+                <label for="description">
+                  {{ $t('workouts.DESCRIPTION') }}:
+                </label>
+                <CustomTextArea
+                  name="description"
+                  :input="workoutForm.description"
+                  :disabled="loading"
+                  :charLimit="10000"
+                  :rows="5"
+                  @updateValue="updateDescription"
+                />
+              </div>
+              <div class="form-item" v-if="isCreation">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
@@ -412,6 +429,7 @@
     workoutAscent: '',
     workoutDescent: '',
     equipment_id: '',
+    description: '',
     mapVisibility: authUser.value.map_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
   })
@@ -472,6 +490,9 @@
   function updateNotes(textareaData: ICustomTextareaData) {
     workoutForm.notes = textareaData.value
   }
+  function updateDescription(value: string) {
+    workoutForm.description = value
+  }
   function updateWithGpx() {
     withGpx.value = !withGpx.value
     formErrors.value = false
@@ -484,6 +505,7 @@
   function formatWorkoutForm(workout: IWorkout) {
     workoutForm.sport_id = `${workout.sport_id}`
     workoutForm.title = workout.title
+    workoutForm.description = workout.description
     workoutForm.notes = workout.notes
     workoutForm.equipment_id =
       workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
@@ -582,6 +604,7 @@
   function updateWorkout() {
     const payload: IWorkoutForm = {
       sport_id: +workoutForm.sport_id,
+      description: workoutForm.description,
       notes: workoutForm.notes,
       equipment_ids:
         workoutForm.equipment_id &&

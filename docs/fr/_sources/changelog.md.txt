@@ -1,5 +1,62 @@
 # Change log
 
+## Version 0.8.9 (2024/09/21)
+
+This release introduces a new field: the workout description.  
+This field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see [#125](https://github.com/SamR1/FitTrackee/issues/125)). The "Notes" field will remain private.
+
+### Features and enhancements
+
+* [#610](https://github.com/SamR1/FitTrackee/issues/610) - Add a description field to workout
+
+### Bugs Fixed
+
+* [#621](https://github.com/SamR1/FitTrackee/issues/621) - email username may contain special characters
+* [#622](https://github.com/SamR1/FitTrackee/issues/622) - Fix email sending by adding 'Message-ID'
+
+### Translations
+
+* [PR#616](https://github.com/SamR1/FitTrackee/pull/616) - Translations update (Dutch)
+* [PR#617](https://github.com/SamR1/FitTrackee/pull/617) - Translations update (Italian)
+* [PR#618](https://github.com/SamR1/FitTrackee/pull/618) - Translations update (Polish)
+* [PR#620](https://github.com/SamR1/FitTrackee/pull/620) - Translations update (Polish)
+* [PR#624](https://github.com/SamR1/FitTrackee/pull/624) - Translations update (Spanish)
+* [PR#625](https://github.com/SamR1/FitTrackee/pull/625) - Translations update (Galician and Basque)
+* [PR#626](https://github.com/SamR1/FitTrackee/pull/626) - Translations update (German)
+* [PR#631](https://github.com/SamR1/FitTrackee/pull/631) - Translations update (Basque)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 99%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 82%
+- Norwegian Bokmål: 52%
+- Polish: 99%
+- Portuguese: 97%
+- Spanish: 100%
+
+### Misc
+
+* [PR#628](https://github.com/SamR1/FitTrackee/pull/628) - Replace markdown library
+
+
+Thanks to the contributors:
+- @boosterl
+- @byakurau
+- @dotlambda
+- @erral
+- @gallegonovato
+- @qwerty287
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.8.8 (2024/09/01)
 
 **FitTrackee** is now available in Bulgarian.

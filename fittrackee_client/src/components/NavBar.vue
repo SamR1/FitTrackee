@@ -229,7 +229,7 @@
   #nav {
     background: var(--nav-bar-background-color);
     display: flex;
-    padding: 15px 10px;
+    padding: 15px 10px 10px;
 
     a {
       text-decoration: none;
