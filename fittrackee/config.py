@@ -31,6 +31,7 @@ SUPPORTED_LANGUAGES = [
     'nl',  # Dutch
     'pl',  # Polish
     'pt',  # Portuguese
+    # 'ru',  # Russian
 ]
 
 
