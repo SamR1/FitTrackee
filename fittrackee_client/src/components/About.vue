@@ -101,9 +101,11 @@
   .about-text {
     margin-top: 200px;
     margin-right: 100px;
+    padding-bottom: 40px;
     @media screen and (max-width: $small-limit) {
       margin-top: 0;
       margin-right: 0;
+      padding-bottom: 0;
     }
     .fa-padding {
       padding-right: $default-padding;

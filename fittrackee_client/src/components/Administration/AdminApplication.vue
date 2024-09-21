@@ -106,9 +106,9 @@
           <div
             v-else
             v-html="
-              convertToMarkdown(
-                appData.about ? appData.about : $t('admin.NO_TEXT_ENTERED')
-              )
+              appData.about
+                ? convertToMarkdown(appData.about)
+                : $t('admin.NO_TEXT_ENTERED')
             "
             class="textarea-content"
           />
@@ -128,11 +128,9 @@
           <div
             v-else
             v-html="
-              convertToMarkdown(
-                appData.privacy_policy
-                  ? appData.privacy_policy
-                  : $t('admin.NO_TEXT_ENTERED')
-              )
+              appData.privacy_policy
+                ? convertToMarkdown(appData.privacy_policy)
+                : $t('admin.NO_TEXT_ENTERED')
             "
             class="textarea-content"
           />
