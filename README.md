@@ -6,7 +6,7 @@
 [![Flask Version](https://img.shields.io/badge/flask-3.0-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code formatter: ruff](https://img.shields.io/badge/code%20formatter-ruff-d7ff64)](https://docs.astral.sh/ruff/) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
-[![Vue Version](https://img.shields.io/badge/vue-3.4-brightgreen.svg)](https://v3.vuejs.org/) 
+[![Vue Version](https://img.shields.io/badge/vue-3.5-brightgreen.svg)](https://v3.vuejs.org/) 
 [![code formatter: prettier](https://img.shields.io/badge/code%20formatter-prettier-ff69b4.svg)](https://github.com/prettier/prettier) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)

@@ -1043,7 +1043,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id and notes, for example:
+    :form data: sport id, equipment id, description and notes, for example:
        `{"sport_id": 1, "notes": "", "description": "", "equipment_ids": []}`.
        Double quotes in notes and description must be escaped.
 
