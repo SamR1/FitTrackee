@@ -48,19 +48,18 @@
       </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
-        <div v-html="snarkdown(linkifyAndClean(appConfig.about))" />
+        <div v-html="convertToMarkdown(appConfig.about)" />
       </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import snarkdown from 'snarkdown'
   import { computed, capitalize } from 'vue'
   import type { ComputedRef } from 'vue'
 
   import useApp from '@/composables/useApp'
-  import { linkifyAndClean } from '@/utils/inputs'
+  import { convertToMarkdown } from '@/utils/inputs'
 
   const { appConfig, appLanguage } = useApp()
 
@@ -95,9 +94,11 @@
   .about-text {
     margin-top: 200px;
     margin-right: 100px;
+    padding-bottom: 40px;
     @media screen and (max-width: $small-limit) {
       margin-top: 0;
       margin-right: 0;
+      padding-bottom: 0;
     }
     .fa-padding {
       padding-right: $default-padding;

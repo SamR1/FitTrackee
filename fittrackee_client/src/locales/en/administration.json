@@ -85,7 +85,8 @@
       "UNSUSPEND": "Add a comment (not mandatory).",
       "UPDATE_APPEAL": "Indicate the reason for this appeal processing."
     },
-    "TITLE": "Moderation"
+    "TITLE": "Moderation",
+    "VIEW_REPORT": "View report"
   },
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",

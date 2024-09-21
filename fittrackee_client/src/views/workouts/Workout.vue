@@ -28,14 +28,24 @@
             :displaySegment="displaySegment"
             @getCoordinates="updateCoordinates"
           />
+          <WorkoutContent
+            v-if="!displaySegment"
+            :workout-id="workoutData.workout.id"
+            content-type="DESCRIPTION"
+            :content="workoutData.workout.description"
+            :loading="workoutData.loading"
+          />
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
             :useImperialUnits="authUser ? authUser.imperial_units : false"
           />
-          <WorkoutNotes
-            v-if="!displaySegment && isWorkoutOwner"
-            :notes="workoutData.workout.notes"
+          <WorkoutContent
+            v-if="!displaySegment"
+            :workout-id="workoutData.workout.id"
+            content-type="NOTES"
+            :content="workoutData.workout.notes"
+            :loading="workoutData.loading"
           />
           <Comments
             v-if="!displaySegment"
@@ -61,7 +71,7 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
-  import WorkoutNotes from '@/components/Workout/WorkoutDetail/WorkoutNotes.vue'
+  import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
   import useAuthUser from '@/composables/useAuthUser'

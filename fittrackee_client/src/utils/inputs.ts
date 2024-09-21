@@ -64,3 +64,8 @@ export const replaceUsername = (
     text.substring(position + 1 + usernameQuery.length)
   )
 }
+
+export const convertToMarkdown = (input: string): string => {
+  const markdown = marked.parse(input, { breaks: true })
+  return sanitizeHtml(markdown as string)
+}

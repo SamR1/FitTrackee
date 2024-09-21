@@ -83,7 +83,8 @@
       "UNSUSPEND": "Ajouter un commentaire (non obligatoire).",
       "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours."
     },
-    "TITLE": "Modération"
+    "TITLE": "Modération",
+    "VIEW_REPORT": "voir le report"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",

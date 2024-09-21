@@ -3293,7 +3293,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
 class TestProcessAdminActionAppeal(
     CommentMixin, WorkoutMixin, UserModerationMixin, ApiTestCaseMixin
 ):
-    route = '/api/suspensions/appeals/{appeal_id}'
+    route = '/api/appeals/{appeal_id}'
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User

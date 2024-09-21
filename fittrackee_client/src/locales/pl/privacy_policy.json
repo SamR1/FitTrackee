@@ -5,7 +5,7 @@
       "TITLE": "Usuwanie konta"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Jeśli zdecydujemy się zmienić naszą politykę prywatności, umieścimy zmiany na tej stronie.\n\nTen dokument jest na licencji [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Oryginalnie zaczerpnięty z polityki prywatności [Discourse](https://github.com/discourse/discourse).",
+      "CONTENT": "Jeśli zdecydujemy się zmienić naszą politykę prywatności, umieścimy zmiany na tej stronie.\nTen dokument jest na licencji [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Oryginalnie zaczerpnięty z polityki prywatności [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Zmiany w naszej polityce prywatności"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "Jakie informacje zbieramy?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Nie sprzedajemy, nie handlujemy, ani w żaden sposób nie przekazujemy na zewnątrz twoich prywatnych danych, które by pozwoliły na twoją identyfikację.\n\nTo nie dotyczy zaufanych partnerów, którzy pomagają nam utrzymywać ten serwis i oferować ci usługi, o ile zgodzili się oni utrzymywać te informacje w tajemnicy.\n\nMożemy też udostępnić twoje dane kiedy uznamy, że jest to stosowne, aby być zgodnym z prawem. Możemy to też zrobić w celu wymuszenia polityki naszej strony lub by chronić nasze/czyjeś prawa, własność lub bezpieczeństwo.\n\nJeśli zezwolisz zewnętrznej aplikacji, aby używała twojego konta, to zależnie od zakresu uprawnień, na jaki zezwolisz, może ona uzyskać dostęp do informacji z twojego profilu lub do twoich treningów. Aplikacje nigdy nie mają dostępu do twojego hasła.",
+      "CONTENT": "Nie sprzedajemy, nie handlujemy, ani w żaden sposób nie przekazujemy na zewnątrz twoich prywatnych danych, które by pozwoliły na twoją identyfikację.\nTo nie dotyczy zaufanych partnerów, którzy pomagają nam utrzymywać ten serwis i oferować ci usługi, o ile zgodzili się oni utrzymywać te informacje w tajemnicy.\nMożemy też udostępnić twoje dane kiedy uznamy, że jest to stosowne, aby być zgodnym z prawem. Możemy to też zrobić w celu wymuszenia polityki naszej strony lub by chronić nasze/czyjeś prawa, własność lub bezpieczeństwo.\nJeśli zezwolisz zewnętrznej aplikacji, aby używała twojego konta, to zależnie od zakresu uprawnień, na jaki zezwolisz, może ona uzyskać dostęp do informacji z twojego profilu lub do twoich treningów. Aplikacje nigdy nie mają dostępu do twojego hasła.",
       "TITLE": "Czy udostępniamy jakieś informacje zewnętrznym instytucjom?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "Do czego używamy twoich danych?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Jeśli ten serwer znajduje się w Unii Europejskiej lub Europejskim Obszarze Gospodarczym: Nasza strona i usługi są przeznaczone dla ludzi w wieku co najmniej 16 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [GDPR](https://pl.wikipedia.org/wiki/Og%C3%B3lne_rozporz%C4%85dzenie_o_ochronie_danych) (Ogólne rozporządzenie o ochronie danych) nie używaj tej strony.\n\nJeśli ten serwer znajduje się w USA: Nasza strona, produkty i usługi są skierowane do ludzi w wieku co najmniej 13 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [COPPA](https://pl.wikipedia.org/wiki/Children%E2%80%99s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) nie używaj tej strony.\n\nWymagania prawne mogę być inne, jeśli ten serwer znajduje się w innej jurysdykcji.",
+      "CONTENT": "Jeśli ten serwer znajduje się w Unii Europejskiej lub Europejskim Obszarze Gospodarczym: Nasza strona i usługi są przeznaczone dla ludzi w wieku co najmniej 16 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [GDPR](https://pl.wikipedia.org/wiki/Og%C3%B3lne_rozporz%C4%85dzenie_o_ochronie_danych) (Ogólne rozporządzenie o ochronie danych) nie używaj tej strony.\nJeśli ten serwer znajduje się w USA: Nasza strona, produkty i usługi są skierowane do ludzi w wieku co najmniej 13 lat. Jeśli jesteś poniżej tego wieku, to według wymagań [COPPA](https://pl.wikipedia.org/wiki/Children%E2%80%99s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act) nie używaj tej strony.\nWymagania prawne mogę być inne, jeśli ten serwer znajduje się w innej jurysdykcji.",
       "TITLE": "Używanie strony przez dzieci"
     },
     "YOUR_CONSENT": {

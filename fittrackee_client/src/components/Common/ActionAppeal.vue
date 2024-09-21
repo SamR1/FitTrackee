@@ -22,7 +22,7 @@
         </span>
       </div>
       <div v-if="adminAction.action_type.startsWith('user_')">
-        <slot name="cancelButton"></slot>
+        <slot name="additionalButtons"></slot>
       </div>
     </div>
     <form v-else @submit.prevent="submit">

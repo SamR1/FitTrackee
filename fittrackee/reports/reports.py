@@ -257,9 +257,7 @@ def create_admin_action(
         )
 
 
-@reports_blueprint.route(
-    '/suspensions/appeals/<string:appeal_id>', methods=["PATCH"]
-)
+@reports_blueprint.route('/appeals/<string:appeal_id>', methods=["PATCH"])
 @require_auth(scopes=['users:write'], as_admin=True)
 def process_appeal(
     auth_user: User, appeal_id: str

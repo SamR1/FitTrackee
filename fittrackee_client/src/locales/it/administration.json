@@ -1,4 +1,7 @@
 {
+  "ABOUT": {
+    "TEXT": "Informazioni dettagliate sull'istanza"
+  },
   "ACTION": "Azione",
   "ACTIVATE_USER_ACCOUNT": "Attiva account",
   "ACTIVE": "Attivo",

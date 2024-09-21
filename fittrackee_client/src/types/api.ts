@@ -14,6 +14,7 @@ export type TPaginationPayload = {
   page?: number
   q?: string
   notes?: string
+  description?: string
   object_type?: string
   resolved?: string
 }

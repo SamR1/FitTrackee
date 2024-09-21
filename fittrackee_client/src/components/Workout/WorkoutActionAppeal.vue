@@ -26,7 +26,7 @@
       @submitForm="(text) => submitAppeal(text, 'workout', workout.id)"
       @hideMessage="displayAppealForm = null"
     >
-      <template #cancelButton>
+      <template #additionalButtons>
         <button @click="cancelAppeal()">
           {{ $t('buttons.CANCEL') }}
         </button>

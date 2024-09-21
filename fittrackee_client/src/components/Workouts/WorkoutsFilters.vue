@@ -106,6 +106,21 @@
               </div>
             </div>
             <div class="form-item form-item-text">
+              <label for="notes"> {{ $t('workouts.DESCRIPTION') }}:</label>
+              <div class="form-inputs-group">
+                <input
+                  id="description"
+                  class="text"
+                  name="description"
+                  :value="$route.query.description"
+                  @change="handleFilterChange"
+                  placeholder=""
+                  type="text"
+                  @keyup.enter="onFilter"
+                />
+              </div>
+            </div>
+            <div class="form-item form-item-text">
               <label for="notes"> {{ $t('workouts.NOTES') }}:</label>
               <div class="form-inputs-group">
                 <input
@@ -344,7 +359,7 @@
         .form-items-group {
           display: flex;
           flex-direction: column;
-          padding: $default-padding * 0.25 $default-padding * 0.5;
+          padding: 0 $default-padding * 0.5;
 
           .form-item {
             display: flex;
@@ -386,7 +401,7 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      margin: $default-margin * 0.5;
+      margin: 0 $default-margin * 0.5;
 
       button {
         margin-top: $default-margin;

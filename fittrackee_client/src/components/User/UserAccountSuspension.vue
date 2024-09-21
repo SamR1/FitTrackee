@@ -10,7 +10,7 @@
       :loading="authUserLoading"
       @submitForm="submitAppeal"
     >
-      <template #cancelButton>
+      <template #additionalButtons>
         <button @click="$router.push('/profile')">
           {{ $t('user.PROFILE.BACK_TO_PROFILE') }}
         </button>

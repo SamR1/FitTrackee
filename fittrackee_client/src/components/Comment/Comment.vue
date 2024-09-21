@@ -77,7 +77,7 @@
       />
       <div class="comment-actions" v-if="!forAdmin">
         <button
-          v-if="!comment.suspended"
+          v-if="!comment.suspended && !forNotification"
           class="transparent icon-button likes"
           @click="forNotification ? null : updateLike(comment)"
           :disabled="forNotification"

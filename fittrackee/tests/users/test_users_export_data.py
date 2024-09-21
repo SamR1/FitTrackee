@@ -80,6 +80,7 @@ class TestUserDataExporterGetData:
                 'weather_end': None,
                 'notes': workout_cycling_user_1.notes,
                 'equipments': [],
+                'description': None,
                 'liked': workout_cycling_user_1.liked_by(user_1),
                 'likes_count': workout_cycling_user_1.likes.count(),
                 'map_visibility': (
@@ -132,6 +133,7 @@ class TestUserDataExporterGetData:
                 'weather_end': None,
                 'notes': workout.notes,
                 'equipments': [],
+                'description': None,
                 'liked': workout.liked_by(user_1),
                 'likes_count': workout.likes.count(),
                 'map_visibility': workout.calculated_map_visibility.value,

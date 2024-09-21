@@ -20,6 +20,9 @@ import type {
   ICommentPayload,
   ICurrentCommentEdition,
   IAppealPayload,
+  IWorkoutContentPayload,
+  IWorkoutContentType,
+  IWorkoutContentEdition,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -28,6 +31,7 @@ export interface IWorkoutsState {
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
   pagination: IPagination
+  workoutContent: IWorkoutContentEdition
   success: null | string
   appealLoading: null | string
 }
@@ -60,6 +64,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_CONTENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutContentPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -118,6 +126,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
+    state: IWorkoutsState
+  ): IWorkoutContentEdition
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
   [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
     state: IWorkoutsState
@@ -149,6 +160,18 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
     state: S,
     chartDate: IWorkoutApiChartData[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT](
+    state: S,
+    workout: IWorkout
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_TYPE](
+    state: S,
+    contentType: IWorkoutContentType | ''
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](

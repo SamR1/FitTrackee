@@ -12,6 +12,7 @@ def post_a_workout(
     app: Flask,
     gpx_file: str,
     notes: Optional[str] = None,
+    description: Optional[str] = None,
     workout_visibility: Optional[PrivacyLevel] = None,
 ) -> Tuple[str, str]:
     client = app.test_client()
@@ -24,6 +25,8 @@ def post_a_workout(
     workout_data = '{"sport_id": 1'
     if notes is not None:
         workout_data += f', "notes": "{notes}"'
+    if description is not None:
+        workout_data += f', "description": "{description}"'
     if workout_visibility is not None:
         workout_data += f', "workout_visibility": "{workout_visibility.value}"'
     workout_data += '}'
