@@ -1,1 +1,22 @@
-{}
+{
+  "ACCOUNT-CONFIRMATION-RESEND": "Отправить письмо с подтверждением",
+  "AUTHORIZE": "Разрешить",
+  "BACK": "Назад",
+  "CANCEL": "Отмена",
+  "CLEAR_FILTER": "Очистить фильтры",
+  "DELETE": "Удалить",
+  "DELETE_MY_ACCOUNT": "Удалить аккаунт",
+  "DISABLE": "Отключить",
+  "EDIT": "Редактировать",
+  "ENABLE": "Включить",
+  "FILTER": "Фильтр",
+  "HIDE": "Скрыть",
+  "LOGIN": "Войти",
+  "NO": "Нет",
+  "READ_MORE": "Подробнее",
+  "REGISTER": "Зарегистрироваться",
+  "REQUEST_DATA_EXPORT": "Экспорт данных",
+  "RESET": "Сбросить",
+  "SUBMIT": "Отправить",
+  "YES": "Да"
+}
