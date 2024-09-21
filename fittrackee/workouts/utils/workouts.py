@@ -16,7 +16,14 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 
 from ..exceptions import InvalidGPXException, WorkoutException
-from ..models import Sport, Workout, WorkoutSegment
+from ..models import (
+    DESCRIPTION_MAX_CHARACTERS,
+    NOTES_MAX_CHARACTERS,
+    TITLE_MAX_CHARACTERS,
+    Sport,
+    Workout,
+    WorkoutSegment,
+)
 from .gpx import get_gpx_info
 from .maps import generate_map, get_map_hash
 
@@ -133,10 +140,19 @@ def create_workout(
         distance=distance,
         duration=duration,
     )
-    new_workout.notes = workout_data.get('notes')
+    new_workout.notes = (
+        None
+        if workout_data.get('notes') is None
+        else workout_data['notes'][:NOTES_MAX_CHARACTERS]
+    )
+    new_workout.description = (
+        None
+        if workout_data.get('description') is None
+        else workout_data['description'][:DESCRIPTION_MAX_CHARACTERS]
+    )
 
     if title is not None and title != '':
-        new_workout.title = title
+        new_workout.title = title[:TITLE_MAX_CHARACTERS]
     else:
         sport = Sport.query.filter_by(id=new_workout.sport_id).first()
         fmt = "%Y-%m-%d %H:%M:%S"
@@ -218,9 +234,13 @@ def edit_workout(
     if workout_data.get('sport_id'):
         workout.sport_id = workout_data.get('sport_id')
     if workout_data.get('title'):
-        workout.title = workout_data.get('title')
+        workout.title = workout_data['title'][:TITLE_MAX_CHARACTERS]
     if workout_data.get('notes') is not None:
-        workout.notes = workout_data.get('notes')
+        workout.notes = workout_data['notes'][:NOTES_MAX_CHARACTERS]
+    if workout_data.get('description') is not None:
+        workout.description = workout_data['description'][
+            :DESCRIPTION_MAX_CHARACTERS
+        ]
     if workout_data.get('equipments_list') is not None:
         workout.equipments = workout_data.get('equipments_list')
     if not workout.gpx:

@@ -11,6 +11,7 @@ import type {
 } from '@/store/modules/workouts/types'
 import type {
   IWorkout,
+  IWorkoutContentPayload,
   IWorkoutForm,
   IWorkoutPayload,
   TWorkoutsPayload,
@@ -176,6 +177,36 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
   },
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_CONTENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutContentPayload
+  ): void {
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_LOADING, true)
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_TYPE,
+      payload.contentType
+    )
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    const data = {
+      [payload.contentType === 'NOTES' ? 'notes' : 'description']:
+        payload.content,
+    }
+    authApi
+      .patch(`workouts/${payload.workoutId}`, data)
+      .then((res) => {
+        const workout: IWorkout = res.data.data.workouts[0]
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT, workout)
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(
+          WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT_LOADING,
+          false
+        )
+      )
+  },
   [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
@@ -186,11 +217,13 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       throw new Error('No file part')
     }
     const notes = payload.notes.replace(/"/g, '\\"')
+    const description = payload.description.replace(/"/g, '\\"')
     const form = new FormData()
     form.append('file', payload.file)
     form.append(
       'data',
       `{"sport_id": ${payload.sport_id}, "notes": "${notes}",` +
+        ` "description": "${description}",` +
         ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}]}`
     )
     authApi

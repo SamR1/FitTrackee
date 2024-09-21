@@ -105,6 +105,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
+                "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
@@ -218,6 +219,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                             equipments will be returned)
     :query string notes: any part (or all) of the workout notes,
                          notes matching is case-insensitive
+    :query string description: any part of the workout description;
+                         description matching is case-insensitive
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -250,6 +253,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         sport_id = params.get('sport_id')
         title = params.get('title')
         notes = params.get('notes')
+        description = params.get('description')
         if 'equipment_id' in params:
             if params['equipment_id'] == "none":
                 equipment_id = "none"
@@ -272,6 +276,11 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.sport_id == sport_id if sport_id else True,
                 Workout.title.ilike(f"%{title}%") if title else True,
                 Workout.notes.ilike(f"%{notes}%") if notes else True,
+                (
+                    Workout.description.ilike(f"%{description}%")
+                    if description
+                    else True
+                ),
                 Workout.workout_date >= date_from if date_from else True,
                 (
                     Workout.workout_date < date_to + timedelta(seconds=1)
@@ -397,6 +406,7 @@ def get_workout(
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 18:57:14 GMT",
                 "descent": null,
+                "description": null,
                 "distance": 12,
                 "duration": "0:45:00",
                 "equipments": [],
@@ -965,6 +975,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
+                "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
@@ -1032,17 +1043,21 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id and notes (example:
-                ``{"sport_id": 1, "notes": "", "equipment_ids": []}``).
-                Double quotes in notes must be escaped.
+    :form data: sport id, equipment id, description and notes, for example:
+       `{"sport_id": 1, "notes": "", "description": "", "equipment_ids": []}`.
+       Double quotes in notes and description must be escaped.
 
-                For `equipment_ids`, the id of the equipment to associate with
-                this workout.
-                **Note**: for now only one equipment can be associated.
-                If not provided and default equipment exists for sport,
-                default equipment will be associated.
+       The maximum length of notes is 500 characters and that of the
+       description is 10000 characters.
+       Otherwise, they will be truncated.
 
-                Notes and equipment ids are not mandatory.
+       For `equipment_ids`, the id of the equipment to associate with
+       this workout.
+       **Note**: for now only one equipment can be associated.
+       If not provided and default equipment exists for sport,
+       default equipment will be associated.
+
+       Notes, description and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1172,6 +1187,7 @@ def post_workout_no_gpx(
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
+                "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
@@ -1242,6 +1258,8 @@ def post_workout_no_gpx(
            must be provided with descent)
     :<json float descent: workout descent (not mandatory,
            must be provided with ascent)
+    :<json string description: workout description (not mandatory,
+           max length: 10000 characters, otherwise it will be truncated)
     :<json float distance: workout distance in km
     :<json integer duration: workout duration in seconds
     :<json array of strings equipment_ids:
@@ -1249,9 +1267,11 @@ def post_workout_no_gpx(
         **Note**: for now only one equipment can be associated.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
-    :<json string notes: notes (not mandatory)
+    :<json string notes: notes (not mandatory, max length: 500
+        characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title (not mandatory)
+    :<json string title: workout title (not mandatory, max length: 255
+        characters, otherwise it will be truncated)
     :<json string workout_date: workout date, in user timezone
         (format: ``%Y-%m-%d %H:%M``)
 
@@ -1381,6 +1401,7 @@ def update_workout(
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
+                "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
@@ -1453,13 +1474,17 @@ def update_workout(
         (only for workout without gpx, must be provided with descent)
     :<json float descent: workout descent
         (only for workout without gpx, must be provided with ascent)
+    :<json string description: workout description (max length: 10000
+        characters, otherwise it will be truncated)
     :<json float distance: workout distance in km
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
-    :<json string notes: notes
+    :<json string notes: notes (max length: 500 characters, otherwise they
+        will be truncated)
     :<json integer sport_id: workout sport id
-    :<json string title: workout title
+    :<json string title: workout title (max length: 255 characters, otherwise
+        it will be truncated)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).

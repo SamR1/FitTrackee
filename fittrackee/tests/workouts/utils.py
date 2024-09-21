@@ -6,7 +6,10 @@ from flask import Flask
 
 
 def post_a_workout(
-    app: Flask, gpx_file: str, notes: Optional[str] = None
+    app: Flask,
+    gpx_file: str,
+    notes: Optional[str] = None,
+    description: Optional[str] = None,
 ) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
@@ -18,6 +21,8 @@ def post_a_workout(
     workout_data = '{"sport_id": 1'
     if notes is not None:
         workout_data += f', "notes": "{notes}"'
+    if description is not None:
+        workout_data += f', "description": "{description}"'
     workout_data += '}'
     response = client.post(
         '/api/workouts',
