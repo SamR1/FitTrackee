@@ -108,6 +108,7 @@ export const dateStringFormats: Record<TLanguage, string> = {
   nl: 'd MMM yyyy',
   pl: 'd MMM yyyy',
   pt: 'd MMM yyyy',
+  // ru: 'd MMMM yyyy',
 }
 
 export const getDateFormat = (
