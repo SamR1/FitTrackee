@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-07-24 11:45+0200\n"
+"POT-Creation-Date: 2024-09-22 17:58+0200\n"
 "PO-Revision-Date: 2022-07-02 18:25+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.15.0\n"
+"Generated-By: Babel 2.16.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -109,7 +109,6 @@ msgstr "Your comment has been suspended"
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
-#: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
 msgstr "Your comment has been suspended, it is no longer visible"
 
@@ -152,6 +151,8 @@ msgstr "Appeal"
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:5
 #: fittrackee/emails/templates/user_warning/body.html:7
 #: fittrackee/emails/templates/user_warning/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.html:6
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:3
 msgid "Comment:"
 msgstr "Comment:"
 
@@ -169,6 +170,8 @@ msgstr "The suspension on your comment has been lifted, it is visible again"
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:7
 #: fittrackee/emails/templates/user_warning/body.txt:7
 #: fittrackee/emails/templates/user_warning/body.txt:11
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:10
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:7
 msgid "Link:"
 msgstr "Link:"
@@ -387,10 +390,25 @@ msgstr "You received a warning"
 
 #: fittrackee/emails/templates/user_warning/body.html:23
 #: fittrackee/emails/templates/user_warning/body.txt:9
+#: fittrackee/emails/templates/user_warning_lifting/body.html:22
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:8
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:5
 msgid "Workout:"
 msgstr "Workout:"
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
+#, fuzzy, python-format
+msgid "Warning for %(username)s lifted"
+msgstr "Warning for %(username)s"
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:3
+#: fittrackee/emails/templates/user_warning_lifting/body.html:4
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:1
+#, fuzzy
+msgid "Your warning has been lifted"
+msgstr "Your account has been reactivated"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
@@ -399,6 +417,7 @@ msgstr "Your workout has been suspended"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
 msgstr "Your workout has been suspended, it is no longer visible"
 

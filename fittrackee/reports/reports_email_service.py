@@ -10,6 +10,7 @@ from fittrackee.emails.tasks import (
     user_suspension_email,
     user_unsuspension_email,
     user_warning_email,
+    user_warning_lifting_email,
     workout_suspension_email,
     workout_unsuspension_email,
 )
@@ -150,6 +151,36 @@ class ReportEmailService:
             f"{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal"
         )
         user_warning_email.send(user_data, email_data)
+
+    def _send_user_warning_lifting_email(
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        admin_action: Optional[AdminAction],
+    ) -> None:
+        user_data, email_data, fittrackee_url = self._get_email_data(
+            report, reason, with_user_image=True
+        )
+        if not admin_action:
+            raise InvalidAdminActionException("invalid action action")
+
+        if report.reported_comment_id:
+            email_data = self._get_comment_email_data(
+                email_data,
+                report.reported_comment,
+                report.reported_user,
+                fittrackee_url,
+            )
+        elif report.reported_workout_id:
+            email_data = self._get_workout_email_data(
+                email_data,
+                report.reported_workout,
+                report.reported_user,
+                fittrackee_url,
+            )
+        email_data["without_user_action"] = True
+        user_warning_lifting_email.send(user_data, email_data)
 
     def _send_comment_suspension_email(
         self,

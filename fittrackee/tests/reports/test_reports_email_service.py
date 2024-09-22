@@ -372,6 +372,216 @@ class TestReportEmailServiceForUserWarning(
         )
 
 
+class TestReportEmailServiceForUserWarningLifting(
+    ReportServiceCreateAdminActionMixin
+):
+    def test_it_sends_an_email_on_user_warning_for_user_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        user_3.suspended_at = datetime.utcnow()
+        db.session.flush()
+        report_email_service = ReportEmailService()
+        user_warning = report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning_lifting",
+            reason=None,
+            data={"username": user_3.username},
+        )
+        db.session.flush()
+
+        report_email_service.send_admin_action_email(
+            report, "user_warning_lifting", None, user_warning
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'username': user_3.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'without_user_action': True,
+            },
+        )
+
+    def test_it_sends_an_email_on_user_warning_for_comment_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report_email_service = ReportEmailService()
+        user_warning = report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning_lifting",
+            reason=None,
+            data={"username": user_3.username},
+        )
+        db.session.flush()
+
+        report_email_service.send_admin_action_email(
+            report, "user_warning_lifting", None, user_warning
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'comment_url': (
+                    f'{app.config["UI_URL"]}/workouts'
+                    f'/{workout_cycling_user_2.short_id}'
+                    f'/comments/{report.reported_comment.short_id}'
+                ),
+                'created_at': get_date_string_for_user(
+                    report.reported_comment.created_at, user_3
+                ),
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'text': report.reported_comment.handle_mentions()[0],
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_3.username,
+                'without_user_action': True,
+            },
+        )
+
+    def test_it_sends_an_email_on_user_warning_for_workout_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report_email_service = ReportEmailService()
+        user_warning = report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning_lifting",
+            reason=None,
+            data={"username": user_2.username},
+        )
+        db.session.flush()
+
+        report_email_service.send_admin_action_email(
+            report, "user_warning_lifting", None, user_warning
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'fittrackee_url': app.config['UI_URL'],
+                'map': None,
+                'reason': None,
+                'title': workout_cycling_user_2.title,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_2.username,
+                'workout_date': get_date_string_for_user(
+                    workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
+                ),
+                'without_user_action': True,
+            },
+        )
+
+    def test_it_sends_an_email_on_user_warning_for_workout_with_gpx_report(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.map_id = self.random_short_id()
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report_email_service = ReportEmailService()
+        user_warning = report_service.create_admin_action(
+            report=report,
+            admin_user=user_1_admin,
+            action_type="user_warning_lifting",
+            reason=None,
+            data={"username": user_2.username},
+        )
+        db.session.flush()
+
+        report_email_service.send_admin_action_email(
+            report, "user_warning_lifting", None, user_warning
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'fittrackee_url': app.config['UI_URL'],
+                'map': (
+                    f'{app.config["UI_URL"]}/api/workouts/map'
+                    f'/{workout_cycling_user_2.map_id}'
+                ),
+                'reason': None,
+                'title': workout_cycling_user_2.title,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'username': user_2.username,
+                'workout_date': get_date_string_for_user(
+                    workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
+                ),
+                'without_user_action': True,
+            },
+        )
+
+
 class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_comment_suspension(
