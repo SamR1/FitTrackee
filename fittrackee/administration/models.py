@@ -24,10 +24,13 @@ REPORT_ACTION_TYPES = [
     "report_reopening",
     "report_resolution",
 ]
-USER_ACTION_TYPES = [
+REPORT_USER_ACTION_TYPES = [
     "user_suspension",
     "user_unsuspension",
     "user_warning",
+]
+USER_ACTION_TYPES = REPORT_USER_ACTION_TYPES + [
+    "user_warning_lifting",
 ]
 COMMENT_ACTION_TYPES = [
     "comment_suspension",
@@ -312,7 +315,7 @@ class AdminActionAppeal(BaseModel):
 
 
 @listens_for(AdminAction, 'after_insert')
-def on_admin_insert(
+def on_admin_action_insert(
     mapper: Mapper, connection: Connection, new_action: AdminAction
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
@@ -324,7 +327,9 @@ def on_admin_insert(
 
         if (
             new_action.action_type
-            in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES + ["user_warning"]
+            in COMMENT_ACTION_TYPES
+            + WORKOUT_ACTION_TYPES
+            + ["user_warning", "user_warning_lifting"]
         ):
             notification = Notification(
                 from_user_id=new_action.admin_user_id,

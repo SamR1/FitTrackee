@@ -50,6 +50,7 @@ NOTIFICATION_TYPES = [
     'suspension_appeal',
     'user_warning',
     'user_warning_appeal',
+    'user_warning_lifting',
     'workout_comment',
     'workout_like',
     'workout_suspension',
@@ -932,6 +933,7 @@ class Notification(BaseModel):
             "comment_suspension",
             "comment_unsuspension",
             "user_warning",
+            "user_warning_lifting",
             "workout_suspension",
             "workout_unsuspension",
         ]:
@@ -992,6 +994,7 @@ class Notification(BaseModel):
             "comment_suspension",
             "comment_unsuspension",
             "user_warning",
+            "user_warning_lifting",
             "workout_suspension",
             "workout_unsuspension",
         ]:

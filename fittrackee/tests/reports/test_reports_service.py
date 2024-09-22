@@ -1739,6 +1739,66 @@ class TestReportServiceProcessAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
+    def test_it_processes_user_warning_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        warning_action = self.create_user_warning_action(user_1_admin, user_2)
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data=input_data,
+            )
+
+        updated_appeal = AdminActionAppeal.query.filter_by(
+            id=appeal.id
+        ).first()
+        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.approved is input_data["approved"]
+        assert updated_appeal.reason == input_data["reason"]
+        assert updated_appeal.updated_at == now
+
+    def test_it_creates_user_warning_lifting_action_when_appeal_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        warning_action = self.create_user_warning_action(user_1_admin, user_2)
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        report_service = ReportService()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            report_service.process_appeal(
+                appeal=appeal,
+                admin_user=user_1_admin,
+                data={"approved": True, "reason": "ok"},
+            )
+
+        assert (
+            AdminAction.query.filter_by(
+                report_id=warning_action.report_id,
+                action_type="user_warning_lifting",
+                admin_user_id=user_1_admin.id,
+                user_id=user_2.id,
+                reason=None,
+                created_at=now,
+            ).first()
+            is not None
+        )
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
     def test_it_processes_comment_suspension_appeal(
         self,
         app: Flask,

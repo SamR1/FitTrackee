@@ -456,6 +456,20 @@ class UserModerationMixin(RandomMixin):
         db.session.commit()
         return admin_action
 
+    def create_user_warning_action(
+        self,
+        admin: User,
+        user: User,
+        report_id: Optional[int] = None,
+    ) -> AdminAction:
+        if not report_id:
+            report_id = self.create_user_report(admin, user).id
+        admin_action = self.create_admin_action(
+            admin, user, action_type="user_warning", report_id=report_id
+        )
+        db.session.commit()
+        return admin_action
+
     def create_action_appeal(
         self, action_id: int, user: User, with_commit: bool = True
     ) -> AdminActionAppeal:

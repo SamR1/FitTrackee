@@ -145,7 +145,7 @@ class ReportService:
             if username != reported_user.username:
                 raise InvalidAdminActionException("invalid 'username'")
 
-            if action_type == "user_warning":
+            if action_type.startswith("user_warning"):
                 user = User.query.filter_by(username=username).first()
 
                 existing_admin_action = AdminAction.query.filter_by(
@@ -252,6 +252,15 @@ class ReportService:
                 user, _, _ = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
+            if action.action_type == "user_warning":
+                admin_action = AdminAction(
+                    admin_user_id=admin_user.id,
+                    action_type="user_warning_lifting",
+                    created_at=datetime.utcnow(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                )
+                db.session.add(admin_action)
             if (
                 action.action_type
                 in ["comment_suspension", "workout_suspension"]

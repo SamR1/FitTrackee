@@ -976,15 +976,18 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
                 text=self.random_string(),
             )
 
-    def test_it_raises_error_when_action_is_invalid(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_unsuspension', 'user_warning_lifting']
+    )
+    def test_it_raises_error_when_user_action_is_invalid(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
-        user_3: User,
+        input_action_type: str,
     ) -> None:
         admin_action = self.create_admin_action(
-            user_1_admin, user_2, action_type="user_unsuspension"
+            user_1_admin, user_2, action_type=input_action_type
         )
 
         with pytest.raises(InvalidAdminActionAppealException):
@@ -1045,6 +1048,93 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         assert appeal.reason is None
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
+
+    def test_it_raises_error_when_workout_action_is_invalid(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        admin_action = self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="workout_unsuspension",
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(admin_action)
+
+        with pytest.raises(InvalidAdminActionAppealException):
+            AdminActionAppeal(
+                action_id=admin_action.id,
+                user_id=user_2.id,
+                text=self.random_string(),
+            )
+
+    def test_it_creates_appeal_for_workout_suspension_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        admin_action = AdminAction(
+            action_type="workout_suspension",
+            admin_user_id=user_1_admin.id,
+            workout_id=workout_cycling_user_2.id,
+            user_id=user_2.id,
+        )
+        db.session.add(admin_action)
+        appeal_text = self.random_string()
+        created_at = datetime.utcnow()
+        db.session.flush()
+
+        appeal = AdminActionAppeal(
+            action_id=admin_action.id,
+            user_id=user_2.id,
+            text=appeal_text,
+            created_at=created_at,
+        )
+
+        assert appeal.action_id == admin_action.id
+        assert appeal.admin_user_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == created_at
+        assert appeal.reason is None
+        assert appeal.updated_at is None
+        assert appeal.user_id == user_2.id
+
+    def test_it_raises_error_when_comment_action_is_invalid(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        admin_action = self.create_admin_action(
+            user_1_admin,
+            user_2,
+            action_type="comment_unsuspension",
+            comment_id=comment.id,
+        )
+        db.session.add(admin_action)
+
+        with pytest.raises(InvalidAdminActionAppealException):
+            AdminActionAppeal(
+                action_id=admin_action.id,
+                user_id=user_2.id,
+                text=self.random_string(),
+            )
 
     def test_it_creates_appeal_for_comment_suspension_action(
         self,

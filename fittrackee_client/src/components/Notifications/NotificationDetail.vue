@@ -70,7 +70,7 @@
         v-if="displayCommentCard(notification.type) && notification.comment"
       >
         <CommentForUser
-          :display-object-name="notification.type === 'user_warning'"
+          :display-object-name="notification.type.startsWith('user_warning')"
           :comment="notification.comment"
         />
       </template>
@@ -92,10 +92,21 @@
         <WorkoutForUser
           :action="notification.admin_action"
           :display-appeal="notification.type !== 'user_warning'"
-          :display-object-name="notification.type === 'user_warning'"
+          :display-object-name="notification.type.startsWith('user_warning')"
           :workout="notification.workout"
         />
       </template>
+      <div
+        class="auth-user"
+        v-if="notification.admin_action?.action_type === 'user_warning_lifting'"
+      >
+        <UserPicture :user="authUser" />
+        <div class="user-name">
+          <router-link :to="`/users/${authUser.username}`">
+            {{ authUser.username }}
+          </router-link>
+        </div>
+      </div>
       <div v-if="notification.admin_action?.action_type === 'user_warning'">
         <router-link
           class="appeal-link"
@@ -115,6 +126,7 @@
   import CommentForUser from '@/components/Comment/CommentForUser.vue'
   import RelationshipDetail from '@/components/Notifications/RelationshipDetail.vue'
   import ReportNotification from '@/components/Notifications/ReportNotification.vue'
+  import UserPicture from '@/components/User/UserPicture.vue'
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
   import useApp from '@/composables/useApp'
   import type { INotification, TNotificationType } from '@/types/notifications'
@@ -150,6 +162,7 @@
         'comment_unsuspension',
         'mention',
         'user_warning',
+        'user_warning_lifting',
         'workout_comment',
       ].includes(notificationType) && notification.value.comment !== undefined
     )
@@ -179,6 +192,8 @@
         return 'notifications.YOU_RECEIVED_A_WARNING'
       case 'user_warning_appeal':
         return 'notifications.APPEALED_USER_WARNING'
+      case 'user_warning_lifting':
+        return 'notifications.YOUR_WARNING_HAS_BEEN_LIFTED'
       case 'workout_comment':
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':
@@ -209,6 +224,7 @@
       case 'report':
       case 'suspension_appeal':
       case 'user_warning':
+      case 'user_warning_lifting':
       case 'workout_suspension':
       case 'workout_unsuspension':
         return 'flag'
@@ -257,6 +273,23 @@
     ::v-deep(.box) {
       margin: $default-margin 0;
     }
+
+    .auth-user {
+      display: flex;
+      align-items: center;
+      .user-picture {
+        min-width: initial;
+        padding: 0 $default-padding;
+        img {
+          height: 60px;
+          width: 60px;
+        }
+        .no-picture {
+          font-size: 3.8em;
+        }
+      }
+    }
+
     .notification-reason {
       font-weight: bold;
       text-transform: capitalize;

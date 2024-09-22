@@ -1337,7 +1337,10 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
 class TestNotificationForUserWarning(
     NotificationTestCase, UserModerationMixin
 ):
-    def test_it_creates_notification_on_user_warning_on_user_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_creates_notification_on_user_action_on_user_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1345,13 +1348,14 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
 
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
 
@@ -1361,9 +1365,12 @@ class TestNotificationForUserWarning(
         ).first()
         assert notification.created_at == admin_action.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == "user_warning"
+        assert notification.event_type == input_action_type
 
-    def test_it_serializes_user_warning_notification_on_user_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_serializes_user_action_notification_on_user_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1371,12 +1378,13 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
@@ -1393,12 +1401,15 @@ class TestNotificationForUserWarning(
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["type"] == "user_warning"
+        assert serialized_notification["type"] == input_action_type
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
-    def test_it_creates_notification_on_user_warning_on_workout_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_creates_notification_on_user_action_on_workout_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1406,6 +1417,7 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
@@ -1414,7 +1426,7 @@ class TestNotificationForUserWarning(
         admin_action = self.create_admin_action(
             user_1_admin,
             user_2,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
 
@@ -1425,9 +1437,12 @@ class TestNotificationForUserWarning(
         assert notification.created_at == admin_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_object_id == workout_cycling_user_2.id
-        assert notification.event_type == "user_warning"
+        assert notification.event_type == input_action_type
 
-    def test_it_serializes_user_warning_notification_on_workout_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_serializes_user_action_notification_on_workout_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1435,6 +1450,7 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
@@ -1442,7 +1458,7 @@ class TestNotificationForUserWarning(
         admin_action = self.create_admin_action(
             user_1_admin,
             user_2,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
@@ -1459,14 +1475,17 @@ class TestNotificationForUserWarning(
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["type"] == "user_warning"
+        assert serialized_notification["type"] == input_action_type
         assert serialized_notification[
             "workout"
         ] == workout_cycling_user_2.serialize(user=user_2)
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
 
-    def test_it_creates_notification_on_user_warning_on_comment_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_creates_notification_on_user_action_on_comment_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1474,6 +1493,7 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
@@ -1481,7 +1501,7 @@ class TestNotificationForUserWarning(
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
 
@@ -1492,9 +1512,12 @@ class TestNotificationForUserWarning(
         assert notification.created_at == admin_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_object_id == comment.id
-        assert notification.event_type == "user_warning"
+        assert notification.event_type == input_action_type
 
-    def test_it_serializes_user_warning_notification_on_comment_report(
+    @pytest.mark.parametrize(
+        'input_action_type', ['user_warning', 'user_warning_lifting']
+    )
+    def test_it_serializes_user_action_notification_on_comment_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1502,13 +1525,14 @@ class TestNotificationForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        input_action_type: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
         admin_action = self.create_admin_action(
             user_1_admin,
             user_3,
-            action_type="user_warning",
+            action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
@@ -1526,7 +1550,7 @@ class TestNotificationForUserWarning(
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["type"] == "user_warning"
+        assert serialized_notification["type"] == input_action_type
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 

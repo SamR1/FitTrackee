@@ -213,7 +213,10 @@ def create_admin_action(
     reason = data.get("reason")
     if not data or not action_type:
         return InvalidPayloadErrorResponse()
-    if action_type not in OBJECTS_ADMIN_ACTION_TYPES:
+    if (
+        action_type == "user_warning_lifting"
+        or action_type not in OBJECTS_ADMIN_ACTION_TYPES
+    ):
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
     report = Report.query.filter_by(id=report_id).first()

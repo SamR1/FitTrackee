@@ -9,7 +9,7 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.administration.models import (
-    USER_ACTION_TYPES,
+    REPORT_USER_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
@@ -2166,6 +2166,27 @@ class TestPostReportAdminAction(ReportTestCase):
 class TestPostReportAdminActionForUserAction(ReportTestCase):
     route = "/api/reports/{report_id}/admin-actions"
 
+    def test_it_returns_400_when_action_type_is_user_warning_lifting(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        """'user_warning_lifting' is created on appeal processing"""
+        report = self.create_report(reporter=user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning_lifting",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "invalid 'action_type'")
+
     def test_it_returns_400_when_username_is_missing_on_user_admin_action(
         self,
         app: Flask,
@@ -2330,7 +2351,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             is None
         )
 
-    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
+    @pytest.mark.parametrize('input_action_type', REPORT_USER_ACTION_TYPES)
     def test_it_creates_admin_action(
         self,
         app: Flask,

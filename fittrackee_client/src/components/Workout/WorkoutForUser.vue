@@ -14,7 +14,7 @@
     v-if="action && displayAppeal"
     :action="action"
     :workout="workout"
-    display-suspension-message
+    :display-suspension-message="action.action_type === 'workout_suspension'"
   />
 </template>
 
