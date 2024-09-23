@@ -1,3 +1,4 @@
+import email.utils as email_utils
 import logging
 import smtplib
 import ssl
@@ -32,6 +33,9 @@ class EmailMessage:
         message['Subject'] = self.subject
         message['From'] = self.sender
         message['To'] = self.recipient
+        message['Message-ID'] = email_utils.make_msgid(
+            domain=self.sender.split("@")[-1]
+        )
         part1 = MIMEText(self.text, 'plain')
         part2 = MIMEText(self.html, 'html')
         message.attach(part1)
@@ -140,7 +144,9 @@ class EmailService:
             'port': 25 if parsed_url.port is None else parsed_url.port,
             'use_tls': parsed_url.query == 'tls=True',
             'use_ssl': parsed_url.query == 'ssl=True',
-            'username': username,
+            'username': (
+                unquote(username) if isinstance(username, str) else username
+            ),
             'password': (
                 unquote(password) if isinstance(password, str) else password
             ),

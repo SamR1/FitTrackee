@@ -55,6 +55,11 @@ export const getQuery = (
   } else {
     delete query.notes
   }
+  if (typeof locationQuery.description === 'string') {
+    query.description = locationQuery.description
+  } else {
+    delete query.description
+  }
 
   return query
 }

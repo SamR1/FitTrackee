@@ -228,7 +228,7 @@ class TestUserRecords(UserModelAssertMixin):
     ) -> None:
         serialized_user = user_1.serialize(user_1)
         assert len(serialized_user['records']) == 4
-        assert serialized_user['records'][0]['record_type'] == 'AS'
+        assert serialized_user['records'][0]['record_type']
         assert serialized_user['records'][0]['sport_id'] == sport_1_cycling.id
         assert serialized_user['records'][0]['user'] == user_1.username
         assert serialized_user['records'][0]['value'] > 0

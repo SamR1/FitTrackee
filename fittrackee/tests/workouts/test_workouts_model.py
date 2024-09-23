@@ -53,6 +53,7 @@ class TestWorkoutModel:
         assert serialized_workout['bounds'] == []
         assert 'creation_date' in serialized_workout
         assert serialized_workout['descent'] is None
+        assert serialized_workout['description'] is None
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['id'] == workout.short_id
@@ -96,6 +97,7 @@ class TestWorkoutModel:
         assert serialized_workout['bounds'] == []
         assert 'creation_date' in serialized_workout
         assert serialized_workout['descent'] == workout.descent
+        assert serialized_workout['description'] is None
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['equipments'] == []
@@ -144,6 +146,7 @@ class TestWorkoutModel:
         ]
         assert 'creation_date' in serialized_workout
         assert serialized_workout['descent'] is None
+        assert serialized_workout['description'] is None
         assert serialized_workout['distance'] == float(workout.distance)
         assert serialized_workout['duration'] == str(workout.duration)
         assert serialized_workout['equipments'] == []

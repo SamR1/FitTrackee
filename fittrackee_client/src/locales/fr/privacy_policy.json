@@ -5,7 +5,7 @@
       "TITLE": "Suppression du compte"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Si nous décidons de changer notre politique de confidentialité, nous afficherons ces modifications sur cette page.\n\nCe document est sous licence [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptée de la politique de confidentialité de [Discourse](https://github.com/discourse/discourse).",
+      "CONTENT": "Si nous décidons de changer notre politique de confidentialité, nous afficherons ces modifications sur cette page.\nCe document est sous licence [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptée de la politique de confidentialité de [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Modifications de notre politique de confidentialité"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "Quelles sont les informations que nous recueillons ?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Nous ne vendons pas, ni échangeons ou même transférons vos renseignements personnelles à des tiers.\n\nCeci n’inclut pas les tiers de confiance qui nous aident à exploiter notre site ou vous servir, tant que ces parties conviennent à garder ces informations confidentielles.\n\nNous pouvons également divulguer vos informations lorsque nous croyons nécessaire de se conformer à la loi, appliquer nos politiques de site, ou la nôtre ou d’autres droits, la propriété ou la sécurité.\n\nSi vous autorisez une application tierce à utiliser votre compte, selon le périmètre des permissions accordées, elle pourra avoir accès à vos informations de profil ou vos activités. Les applications tierces ne peuvent jamais accéder à votre mot de passe.",
+      "CONTENT": "Nous ne vendons pas, ni échangeons ou même transférons vos renseignements personnelles à des tiers.\nCeci n’inclut pas les tiers de confiance qui nous aident à exploiter notre site ou vous servir, tant que ces parties conviennent à garder ces informations confidentielles.\nNous pouvons également divulguer vos informations lorsque nous croyons nécessaire de se conformer à la loi, appliquer nos politiques de site, ou la nôtre ou d’autres droits, la propriété ou la sécurité.\nSi vous autorisez une application tierce à utiliser votre compte, selon le périmètre des permissions accordées, elle pourra avoir accès à vos informations de profil ou vos activités. Les applications tierces ne peuvent jamais accéder à votre mot de passe.",
       "TITLE": "Divulguons-nous des informations à des tiers ?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "Comment utilisons-nous vos informations ?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Si ce serveur est localisé dans l'Union Européenne (UE) ou l'Espace Economique Européen (EEA) : notre site et nos services sont tous destinés aux personnes âgées d'au moins 16 ans. Si vous avez moins de 16 ans, conformément aux exigences du [RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es) (Règlement général sur la protection des données), n'utilisez pas ce site.\n\nSi ce serveur se trouve aux États-Unis : notre site et nos services sont tous destinés à des personnes âgées d'au moins 13 ans. Si vous avez moins de 13 ans, conformément aux exigences de la loi [COPPA](https://fr.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), n'utilisez pas ce site.\n\nLes exigences légales peuvent être différentes si ce serveur se trouve dans une autre juridiction.",
+      "CONTENT": "Si ce serveur est localisé dans l'Union Européenne (UE) ou l'Espace Economique Européen (EEA) : notre site et nos services sont tous destinés aux personnes âgées d'au moins 16 ans. Si vous avez moins de 16 ans, conformément aux exigences du [RGPD](https://fr.wikipedia.org/wiki/R%C3%A8glement_g%C3%A9n%C3%A9ral_sur_la_protection_des_donn%C3%A9es) (Règlement général sur la protection des données), n'utilisez pas ce site.\nSi ce serveur se trouve aux États-Unis : notre site et nos services sont tous destinés à des personnes âgées d'au moins 13 ans. Si vous avez moins de 13 ans, conformément aux exigences de la loi [COPPA](https://fr.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), n'utilisez pas ce site.\nLes exigences légales peuvent être différentes si ce serveur se trouve dans une autre juridiction.",
       "TITLE": "Protection des mineurs"
     },
     "YOUR_CONSENT": {

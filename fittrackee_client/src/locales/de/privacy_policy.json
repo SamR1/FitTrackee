@@ -5,7 +5,7 @@
       "TITLE": "Account löschen"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Wenn wir uns dazu entschließen, unsere Datenschutzrichtlinie zu ändern, werden wir die Änderungen auf dieser Seite posten.\n\nDieses Dokument ist unter der [CC-BY-SA-Lizenz](https://creativecommons.org/licenses/by-sa/4.0/). Angepasst von der Datenschutzrichtlinie von [Discourse](https://github.com/discourse/discourse).",
+      "CONTENT": "Wenn wir uns dazu entschließen, unsere Datenschutzrichtlinie zu ändern, werden wir die Änderungen auf dieser Seite posten.\nDieses Dokument ist unter der [CC-BY-SA-Lizenz](https://creativecommons.org/licenses/by-sa/4.0/). Angepasst von der Datenschutzrichtlinie von [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Änderungen unserer Datenschutzrichtlinie"
     },
     "DATA_COLLECTED": {
@@ -13,7 +13,7 @@
       "TITLE": "Welche Informationen sammeln wir?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Wir verkaufen deine personenbezogenen Informationen nicht und übertragen sie auch nicht an Dritte.\n\nDies enthält nicht vertrauliche Dritte die uns beim Betreiben dieser Seiten helfen, solange diese Parteien zustimmen, die Informationen vertraulich zu behandeln.\n\nWir können auch Informationen preisgeben, wenn wir denken, dass dieses Preisgeben angemessen ist, um mit dem Gesetz übereinzustimmen, unsere Seitenrichtlinien durchzusetzen oder um unsere oder die Rechte und Sicherheit anderer zu schützen.\n\nWenn du einer Anwendung von Dritten die Berechtigung gibst, deinen Account zu nutzen, abhängig von den Berechtigungen, denen du zustimmst, können sie möglicherweise auf Profilinformationen oder Workouts zugreifen. Anwendungen können niemals dein Passwort einsehen.",
+      "CONTENT": "Wir verkaufen deine personenbezogenen Informationen nicht und übertragen sie auch nicht an Dritte.\nDies enthält nicht vertrauliche Dritte die uns beim Betreiben dieser Seiten helfen, solange diese Parteien zustimmen, die Informationen vertraulich zu behandeln.\nWir können auch Informationen preisgeben, wenn wir denken, dass dieses Preisgeben angemessen ist, um mit dem Gesetz übereinzustimmen, unsere Seitenrichtlinien durchzusetzen oder um unsere oder die Rechte und Sicherheit anderer zu schützen.\nWenn du einer Anwendung von Dritten die Berechtigung gibst, deinen Account zu nutzen, abhängig von den Berechtigungen, denen du zustimmst, können sie möglicherweise auf Profilinformationen oder Workouts zugreifen. Anwendungen können niemals dein Passwort einsehen.",
       "TITLE": "Geben wir Informationen an Außenstehende weiter?"
     },
     "INFORMATION_PROTECTION": {
@@ -25,7 +25,7 @@
       "TITLE": "Für was verwenden wir deine Informationen?"
     },
     "SITE_USAGE_BY_CHILDREN": {
-      "CONTENT": "Wenn dieser Server in der EU oder EEA steht: Unsere Seite und Services sind für Personen, die mindestens 16 Jahre alt sind. Wenn du unter 16 bist, benutze diese Seite gemäß den Bestimmungen der [DSGVO](https://de.wikipedia.org/wiki/Datenschutz-Grundverordnung) (Datenschutz-Grundverordnung) nicht.\n\nWenn dieser Server in den USA steht: Unsere Seite und Services sind für Personen, die mindestens 13 Jahre alt sind. Wenn du unter 13 bist, benutze diese Seite gemäß den Bestimmungen der [COPPA](https://de.wikipedia.org/wiki/Children%E2%80%99s_Online_Privacy_Protection_Act) (Children’s Online Privacy Protection Act) nicht.\n\nGesetzliche Anforderungen können in anderen Rechtsbereichen anders sein.",
+      "CONTENT": "Wenn dieser Server in der EU oder EEA steht: Unsere Seite und Services sind für Personen, die mindestens 16 Jahre alt sind. Wenn du unter 16 bist, benutze diese Seite gemäß den Bestimmungen der [DSGVO](https://de.wikipedia.org/wiki/Datenschutz-Grundverordnung) (Datenschutz-Grundverordnung) nicht.\nWenn dieser Server in den USA steht: Unsere Seite und Services sind für Personen, die mindestens 13 Jahre alt sind. Wenn du unter 13 bist, benutze diese Seite gemäß den Bestimmungen der [COPPA](https://de.wikipedia.org/wiki/Children%E2%80%99s_Online_Privacy_Protection_Act) (Children’s Online Privacy Protection Act) nicht.\nGesetzliche Anforderungen können in anderen Rechtsbereichen anders sein.",
       "TITLE": "Seitennutzung durch Kinder"
     },
     "YOUR_CONSENT": {

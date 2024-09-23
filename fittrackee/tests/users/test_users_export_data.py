@@ -81,6 +81,7 @@ class TestUserDataExporterGetData:
                 'weather_end': None,
                 'notes': workout_cycling_user_1.notes,
                 'equipments': [],
+                'description': None,
             }
         ]
 
@@ -125,6 +126,7 @@ class TestUserDataExporterGetData:
                 'weather_end': None,
                 'notes': workout.notes,
                 'equipments': [],
+                'description': None,
             }
         ]
 

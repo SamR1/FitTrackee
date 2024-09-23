@@ -109,8 +109,10 @@
   "WITHOUT_GPX": "bez pliku .gpx",
   "WITH_GPX": "z plikiem .gpx",
   "WORKOUT": "trening | treningi",
+  "WORKOUT_CHART": "wykres prędkości i wysokości treningu",
   "WORKOUT_DATE": "data treningu",
   "WORKOUT_DELETION_CONFIRMATION": "Na pewno usunąć ten trening?",
+  "WORKOUT_MAP": "mapa treningu",
   "ZIP_ARCHIVE": "plik .zip",
   "ZIP_ARCHIVE_DESCRIPTION": "lub .zip zawierający pliki .gpx"
 }

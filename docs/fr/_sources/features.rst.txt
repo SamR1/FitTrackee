@@ -71,7 +71,12 @@ Workouts
 - An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
 - Segments can be displayed.
 - Workout gpx file can be downloaded (*new in 0.5.1*)
-- Workout edition and deletion. User can add a note.
+- Workout edition and deletion. User can add a description (*new in 0.8.9*) and a note.
+
+.. note::
+  | This "Description" field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see `#125 <https://github.com/SamR1/FitTrackee/issues/125>`__). The "Notes" field will remain private.
+
+
 - User statistics, by time period (week, month, year) and sport:
     - totals:
         - total distance
@@ -116,6 +121,7 @@ Workouts
         - sports (only sports with workouts are displayed in sport dropdown)
         - equipment (only equipments with workouts are displayed in equipment dropdown) (*new in 0.8.0*)
         - title (*new in 0.7.15*)
+        - description (*new in 0.8.9*)
         - notes (*new in 0.8.0*)
         - distance
         - duration

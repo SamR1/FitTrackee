@@ -4,7 +4,7 @@
   "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Entrenamenduen lotura guztiak ezabatuko dira.",
   "DEFAULT_FOR_SPORTS": "Kirolentzat lehenetsia",
   "EDIT_EQUIPMENTS": "Editatu ekipamendua",
-  "EQUIPMENT": "ekipamendu|ekipamendu",
+  "EQUIPMENT": "ekipamendua|ekipamenduak",
   "EQUIPMENT_TYPE": "ekipamendu mota|ekipamendu mota",
   "ERRORS": {
     "inactive": "'{equipmentLabel}' ekipamendu inaktibo.",

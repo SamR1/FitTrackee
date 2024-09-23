@@ -60,6 +60,7 @@ export interface IWorkout {
   bounds: number[]
   creation_date: string
   descent: number | null
+  description: string
   distance: number
   duration: string
   equipments: IEquipment[]
@@ -123,12 +124,26 @@ export interface IWorkoutForm {
   ascent?: number | null
   descent?: number | null
   equipment_ids: string[]
+  description: string
 }
 
 export interface IWorkoutPayload {
   workoutId: string | string[]
   segmentId?: string | string[]
   data?: IWorkoutForm
+}
+
+export type IWorkoutContentType = 'NOTES' | 'DESCRIPTION'
+
+export interface IWorkoutContentEdition {
+  loading: boolean
+  contentType: IWorkoutContentType | ''
+}
+
+export interface IWorkoutContentPayload {
+  workoutId: string | string[]
+  content: string
+  contentType: IWorkoutContentType
 }
 
 export type TWorkoutsPayload = TPaginationPayload & {

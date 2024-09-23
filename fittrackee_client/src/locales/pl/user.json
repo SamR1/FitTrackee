@@ -77,6 +77,17 @@
       "MIN_ALT": "Najmniejsza wysokość",
       "ZERO": "Zero"
     },
+    "EQUIPMENTS": {
+      "ACTION": "akcja",
+      "CONFIRM_EQUIPMENT_DELETION": "Czy na pewno chcesz usunąć ten sprzęt {0}?",
+      "DESCRIPTION": "opis",
+      "DISABLED_BY_ADMIN": "wyłączone przez administratora",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Ten sprzęt jest powiązany z treningami.",
+      "IS_ACTIVE": "aktywny",
+      "LABEL": "etykieta",
+      "YOUR_EQUIPMENTS": "Twoje sprzęty"
+    },
+    "EQUIPMENTS_EDITION": "Edycja sprzętów",
     "ERRORED_EMAIL_UPDATE": "Proszę {0} by znów zmienić swój adres e-mail lub skontaktować się z administratorem",
     "FIRST_DAY_OF_WEEK": "Pierwszy dzień tygodnia",
     "FIRST_NAME": "Imię",
@@ -96,6 +107,8 @@
     "SPORT": {
       "ACTION": "akcja",
       "COLOR": "kolor",
+      "CONFIRM_SPORT_RESET": "Czy na pewno chcesz zresetować ten sport?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Czy na pewno chcesz zresetować ten sport? Wszystkie domyślne sprzęty zostaną usunięte.",
       "DEFAULT_EQUIPMENTS": "Domyślny sprzęt | Domyślne sprzęty",
       "DISABLED_BY_ADMIN": "wyłączone przez administratora",
       "IS_ACTIVE": "aktywny",
@@ -111,6 +124,7 @@
     "TABS": {
       "ACCOUNT": "konto",
       "APPS": "aplikacje",
+      "EQUIPMENTS": "sprzęty",
       "PICTURE": "zdjęcie",
       "PREFERENCES": "ustawienia",
       "PRIVACY-POLICY": "polityka prywatności",

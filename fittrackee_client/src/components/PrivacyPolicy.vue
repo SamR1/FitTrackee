@@ -8,7 +8,7 @@
       <time>{{ privatePolicyDate }}</time>
     </p>
     <template v-if="appConfig.privacy_policy">
-      <div v-html="snarkdown(linkifyAndClean(appConfig.privacy_policy))" />
+      <div v-html="convertToMarkdown(appConfig.privacy_policy)" />
     </template>
     <template v-else>
       <template v-for="paragraph in paragraphs" :key="paragraph">
@@ -16,7 +16,9 @@
           {{ $t(`privacy_policy.CONTENT.${paragraph}.TITLE`) }}
         </h2>
         <p
-          v-html="snarkdown($t(`privacy_policy.CONTENT.${paragraph}.CONTENT`))"
+          v-html="
+            convertToMarkdown($t(`privacy_policy.CONTENT.${paragraph}.CONTENT`))
+          "
         />
       </template>
     </template>
@@ -24,7 +26,6 @@
 </template>
 
 <script lang="ts" setup>
-  import snarkdown from 'snarkdown'
   import { capitalize, computed } from 'vue'
   import type { ComputedRef } from 'vue'
 
@@ -34,7 +35,7 @@
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { dateStringFormats, formatDate } from '@/utils/dates'
-  import { linkifyAndClean } from '@/utils/inputs'
+  import { convertToMarkdown } from '@/utils/inputs'
 
   const store = useStore()
   const fittrackeePrivatePolicyDate = 'Sun, 26 Feb 2023 17:00:00 GMT'
