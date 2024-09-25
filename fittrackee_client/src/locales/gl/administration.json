@@ -8,7 +8,7 @@
   "ACTIVE": "Activa",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administración",
-  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/eliminar dereitos de administración, eliminar a conta da usuaria.",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Engadir/eliminar permiso de administración, eliminar a conta da usuaria.",
   "APPLICATION": "Aplicación",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Enderezo de contacto da administración",

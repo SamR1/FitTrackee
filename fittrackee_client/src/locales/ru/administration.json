@@ -1,1 +1,55 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "Любая дополнительная информация, которая может быть полезна вашим пользователям. Можно использовать синтаксис Markdown.",
+    "TEXT": "Подробная информация"
+  },
+  "ADMIN": "Админ",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Добавить/удалить права администратора, удалить учетную запись пользователя.",
+  "APPLICATION": "Приложение",
+  "APP_CONFIG": {
+    "MAX_USERS_HELP": "Если 0, нет ограничений на регистрацию.",
+    "MAX_USERS_LABEL": "Макс. количество активных пользователей",
+    "STATS_WORKOUTS_LIMIT_HELP": "Если 0, нет ограничений на количество тренировок.",
+    "TITLE": "Конфигурация приложения",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Макс. размер zip архива (в Мб)"
+  },
+  "CONFIRM_USER_PASSWORD_RESET": "Вы уверены, что хотите сбросить пароль {0}?",
+  "CURRENT_EMAIL": "Текущая электронная почта",
+  "DELETE_USER": "Удалить пользователя",
+  "EMAIL_SENDING_DISABLED": "Отправка электронной почты отключена.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Включить/отключить типы снаряжения.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "HAS_EQUIPMENTS": "снаряжение существует",
+      "IMAGE": "Изображение"
+    },
+    "TITLE": "Управление снаряжением"
+  },
+  "PASSWORD_RESET_SUCCESSFUL": "Пароль был сброшен.",
+  "REGISTRATION_DISABLED": "Регистрация в настоящее время отключена.",
+  "REGISTRATION_ENABLED": "Регистрация в настоящее время включена.",
+  "RESET_USER_PASSWORD": "Сброс пароля",
+  "SPORTS": {
+    "TABLE": {
+      "IMAGE": "Изображение"
+    }
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Обновить конфигурацию приложения.",
+  "UPDATE_USER_EMAIL": "Обновить электронную почту",
+  "USER": "пользователь | пользователи",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ADMIN": "статус администратора",
+        "CREATED_AT": "дата регистрации",
+        "USERNAME": "имя пользователя",
+        "WORKOUTS_COUNT": "количество тренировок"
+      }
+    },
+    "TABLE": {
+      "ADD_ADMIN_RIGHTS": "Добавить права администратора",
+      "REMOVE_ADMIN_RIGHTS": "Удалить права администратора"
+    }
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Адрес электронной почты был обновлен."
+}
