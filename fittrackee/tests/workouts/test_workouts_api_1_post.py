@@ -3755,7 +3755,7 @@ class TestPostWorkoutSuspensionAppeal(
         input_data: Dict,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        self.create_admin_workout_suspension_action(
+        self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.commit()
@@ -3781,7 +3781,7 @@ class TestPostWorkoutSuspensionAppeal(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        action = self.create_admin_workout_suspension_action(
+        action = self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.commit()
@@ -3817,7 +3817,7 @@ class TestPostWorkoutSuspensionAppeal(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        action = self.create_admin_workout_suspension_action(
+        action = self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.flush()

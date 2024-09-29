@@ -358,7 +358,7 @@ def upgrade():
         sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('admin_user_id', sa.Integer(), nullable=True),
-        sa.Column('report_id', sa.Integer(), nullable=True),
+        sa.Column('report_id', sa.Integer(), nullable=False),
         sa.Column('comment_id', sa.Integer(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=True),
         sa.Column('workout_id', sa.Integer(), nullable=True),

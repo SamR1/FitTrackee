@@ -66,7 +66,6 @@ class AdminAction(BaseModel):
         db.Integer,
         db.ForeignKey("reports.id", ondelete="CASCADE"),
         index=True,
-        nullable=True,
     )
     user_id = db.Column(
         db.Integer,
@@ -121,16 +120,15 @@ class AdminAction(BaseModel):
         self,
         action_type: str,
         admin_user_id: int,
+        report_id: int,
+        *,
         user_id: Optional[int] = None,
-        report_id: Optional[int] = None,
         comment_id: Optional[int] = None,
         workout_id: Optional[int] = None,
         reason: Optional[str] = None,
         created_at: Optional[datetime] = None,
     ):
         if action_type not in ADMIN_ACTION_TYPES:
-            raise InvalidAdminActionException()
-        if action_type in REPORT_ACTION_TYPES and not report_id:
             raise InvalidAdminActionException()
         if action_type in OBJECTS_ADMIN_ACTION_TYPES and not user_id:
             raise InvalidAdminActionException()

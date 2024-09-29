@@ -110,7 +110,7 @@ class UserManagerService:
         if suspended is False:
             user.suspended_at = None
             user_updated = True
-        if self.admin_user_id and suspended is not None:
+        if self.admin_user_id and report_id and suspended is not None:
             admin_action = AdminAction(
                 admin_user_id=self.admin_user_id,
                 action_type=(

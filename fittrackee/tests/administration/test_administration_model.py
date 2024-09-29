@@ -39,23 +39,12 @@ class TestAdminActionModel(AdminActionTestCase):
             AdminAction(
                 admin_user_id=user_1_admin.id,
                 action_type=self.random_string(),
+                report_id=self.create_user_report(user_1_admin, user_2).id,
                 user_id=user_1_admin.id,
             )
 
 
 class TestAdminActionForReportModel(AdminActionTestCase):
-    @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
-    def test_it_raises_error_when_no_report_given_for_report_admin_action(
-        self, app: Flask, user_1_admin: User, input_action_type: str
-    ) -> None:
-        with pytest.raises(InvalidAdminActionException):
-            AdminAction(
-                action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
-                report_id=None,
-            )
-
     @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
     def test_it_creates_report_admin_action_for_a_given_type(
         self,
@@ -166,44 +155,23 @@ class TestAdminActionForReportModel(AdminActionTestCase):
 class TestAdminActionForUserModel(AdminActionTestCase):
     @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
     def test_it_raises_error_when_no_user_given_for_user_admin_action(
-        self, app: Flask, user_1_admin: User, input_action_type: str
-    ) -> None:
-        with pytest.raises(InvalidAdminActionException):
-            AdminAction(
-                action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
-            )
-
-    @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
-    def test_it_creates_user_admin_action_without_report(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         input_action_type: str,
     ) -> None:
-        created_at = datetime.utcnow()
+        with pytest.raises(InvalidAdminActionException):
+            AdminAction(
+                action_type=input_action_type,
+                admin_user_id=user_1_admin.id,
+                created_at=datetime.utcnow(),
+                report_id=self.create_report(
+                    reporter=user_1_admin, reported_object=user_2
+                ).id,
+            )
 
-        admin_action = AdminAction(
-            action_type=input_action_type,
-            admin_user_id=user_1_admin.id,
-            created_at=created_at,
-            user_id=user_2.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        assert admin_action.action_type == input_action_type
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id is None
-        assert admin_action.created_at == created_at
-        assert admin_action.reason is None
-        assert admin_action.report_id is None
-        assert admin_action.user_id == user_2.id
-        assert admin_action.workout is None
-
-    def test_it_creates_user_admin_action_with_report(
+    def test_it_creates_user_admin_action(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
@@ -231,12 +199,16 @@ class TestAdminActionForUserModel(AdminActionTestCase):
     def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        ).id
         action_type = "user_suspension"
         now = datetime.utcnow()
         admin_action = AdminAction(
             action_type=action_type,
             admin_user_id=user_1_admin.id,
             created_at=now,
+            report_id=report_id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -250,7 +222,7 @@ class TestAdminActionForUserModel(AdminActionTestCase):
         assert admin_action.comment_id is None
         assert admin_action.created_at == now
         assert admin_action.reason is None
-        assert admin_action.report_id is None
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_2.id
         assert admin_action.workout is None
 
@@ -260,6 +232,9 @@ class TestAdminActionForUserModel(AdminActionTestCase):
         admin_action = AdminAction(
             action_type="user_suspension",
             admin_user_id=user_1_admin.id,
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -279,12 +254,18 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         user_1_admin: User,
         user_2: User,
         input_action_type: str,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
     ) -> None:
         with pytest.raises(InvalidAdminActionException):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
+                report_id=self.create_report(
+                    reporter=user_1_admin,
+                    reported_object=workout_cycling_user_2,
+                ).id,
                 user_id=user_2.id,
             )
 
@@ -303,41 +284,14 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
+                report_id=self.create_report(
+                    reporter=user_1_admin,
+                    reported_object=workout_cycling_user_2,
+                ).id,
                 workout_id=workout_cycling_user_2.id,
             )
 
-    @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
-    def test_it_creates_workout_admin_action_without_report(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        input_action_type: str,
-    ) -> None:
-        created_at = datetime.utcnow()
-
-        admin_action = AdminAction(
-            action_type=input_action_type,
-            admin_user_id=user_1_admin.id,
-            created_at=created_at,
-            user_id=user_2.id,
-            workout_id=workout_cycling_user_2.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        assert admin_action.action_type == input_action_type
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id is None
-        assert admin_action.created_at == created_at
-        assert admin_action.reason is None
-        assert admin_action.report_id is None
-        assert admin_action.user_id == user_2.id
-        assert admin_action.workout_id == workout_cycling_user_2.id
-
-    def test_it_creates_workout_admin_action_with_report(
+    def test_it_creates_workout_admin_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -346,16 +300,16 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report = self.create_report(
+        report_id = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
-        )
+        ).id
         created_at = datetime.utcnow()
 
         admin_action = AdminAction(
             action_type="workout_suspension",
             admin_user_id=user_1_admin.id,
             created_at=created_at,
-            report_id=report.id,
+            report_id=report_id,
             user_id=user_2.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -367,7 +321,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
-        assert admin_action.report_id == report.id
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_2.id
         assert admin_action.workout_id == workout_cycling_user_2.id
 
@@ -379,11 +333,15 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=workout_cycling_user_2
+        ).id
         created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="workout_suspension",
             admin_user_id=user_1_admin.id,
             created_at=created_at,
+            report_id=report_id,
             user_id=user_2.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -398,7 +356,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
-        assert admin_action.report_id is None
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_2.id
         assert admin_action.workout_id == workout_cycling_user_2.id
 
@@ -410,11 +368,15 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=workout_cycling_user_2
+        ).id
         created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="workout_suspension",
             admin_user_id=user_1_admin.id,
             created_at=created_at,
+            report_id=report_id,
             user_id=user_2.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -429,7 +391,7 @@ class TestAdminActionForWorkoutModel(AdminActionTestCase):
         assert admin_action.comment_id is None
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
-        assert admin_action.report_id is None
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_2.id
         assert admin_action.workout_id is None
 
@@ -441,13 +403,24 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         app: Flask,
         user_1_admin: User,
         user_2: User,
+        user_3: User,
         input_action_type: str,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
     ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        report_id = self.create_report(
+            reporter=user_2, reported_object=comment
+        ).id
         with pytest.raises(InvalidAdminActionException):
             AdminAction(
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
+                report_id=report_id,
                 user_id=user_2.id,
             )
 
@@ -471,46 +444,13 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
                 action_type=input_action_type,
                 admin_user_id=user_1_admin.id,
                 comment_id=comment.id,
+                report_id=self.create_report(
+                    reporter=user_2, reported_object=comment
+                ).id,
                 created_at=datetime.utcnow(),
             )
 
-    @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
-    def test_it_creates_comment_admin_action_without_report(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        input_action_type: str,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
-        )
-        created_at = datetime.utcnow()
-
-        admin_action = AdminAction(
-            action_type=input_action_type,
-            admin_user_id=user_1_admin.id,
-            comment_id=comment.id,
-            created_at=created_at,
-            user_id=user_3.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        assert admin_action.action_type == input_action_type
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == created_at
-        assert admin_action.comment_id == comment.id
-        assert admin_action.reason is None
-        assert admin_action.report_id is None
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
-
-    def test_it_creates_comment_admin_action_with_report(
+    def test_it_creates_comment_admin_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -523,7 +463,9 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
-        report = self.create_report(reporter=user_2, reported_object=comment)
+        report_id = self.create_report(
+            reporter=user_2, reported_object=comment
+        ).id
         created_at = datetime.utcnow()
 
         admin_action = AdminAction(
@@ -531,7 +473,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
             admin_user_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
-            report_id=report.id,
+            report_id=report_id,
             user_id=user_3.id,
         )
         db.session.add(admin_action)
@@ -542,7 +484,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         assert admin_action.created_at == created_at
         assert admin_action.comment_id == comment.id
         assert admin_action.reason is None
-        assert admin_action.report_id == report.id
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
 
@@ -559,12 +501,16 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
+        report_id = self.create_report(
+            reporter=user_2, reported_object=comment
+        ).id
         created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="comment_suspension",
             admin_user_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
+            report_id=report_id,
             user_id=user_3.id,
         )
         db.session.add(admin_action)
@@ -578,7 +524,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         assert admin_action.comment_id == comment.id
         assert admin_action.created_at == created_at
         assert admin_action.reason is None
-        assert admin_action.report_id is None
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
 
@@ -595,12 +541,16 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         comment = self.create_comment(
             user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
         )
+        report_id = self.create_report(
+            reporter=user_2, reported_object=comment
+        ).id
         created_at = datetime.utcnow()
         admin_action = AdminAction(
             action_type="comment_suspension",
             admin_user_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
+            report_id=report_id,
             user_id=user_3.id,
         )
         db.session.add(admin_action)
@@ -614,7 +564,7 @@ class TestAdminActionForCommentsModel(CommentMixin, AdminActionTestCase):
         assert admin_action.created_at == created_at
         assert admin_action.comment_id is None
         assert admin_action.reason is None
-        assert admin_action.report_id is None
+        assert admin_action.report_id == report_id
         assert admin_action.user_id == user_3.id
         assert admin_action.workout_id is None
 
@@ -626,6 +576,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -643,12 +596,16 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
             'user': user_2.serialize(current_user=user_1_admin),
         }
 
-    def test_it_returns_serialized_user_admin_action_without_report(
+    def test_it_returns_serialized_user_admin_action(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        ).id
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=report_id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -664,44 +621,22 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] is None
+        assert serialized_action['report_id'] == report_id
         assert serialized_action['user'] == user_2.serialize(
             current_user=user_1_admin
         )
         assert serialized_action['workout'] is None
 
-    def test_it_returns_serialized_admin_action_with_report(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
-    ) -> None:
-        report = self.create_report(reporter=user_2, reported_object=user_3)
-        admin_action = AdminAction(
-            action_type="report_resolution",
-            admin_user_id=user_1_admin.id,
-            report_id=report.id,
-        )
-        db.session.add(admin_action)
-        db.session.commit()
-
-        serialized_action = admin_action.serialize(user_1_admin)
-
-        assert serialized_action['action_type'] == admin_action.action_type
-        assert serialized_action['admin_user'] == user_1_admin.serialize(
-            current_user=user_1_admin
-        )
-        assert serialized_action['comment'] is None
-        assert serialized_action['created_at'] == admin_action.created_at
-        assert serialized_action['id'] == admin_action.short_id
-        assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] == report.id
-        assert serialized_action['user'] is None
-        assert serialized_action['workout'] is None
-
     def test_it_returns_serialized_admin_action_with_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        ).id
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=report_id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -725,7 +660,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['comment'] is None
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] is None
+        assert serialized_action['report_id'] == report_id
         assert serialized_action['user'] == user_2.serialize(
             current_user=user_1_admin
         )
@@ -737,6 +672,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -760,6 +698,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -790,6 +731,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
             user_id=user_2.id,
         )
 
@@ -804,13 +748,12 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         user_2: User,
         input_action_type: str,
     ) -> None:
-        report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
-        )
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type=input_action_type,
-            report_id=report.id,
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=user_2
+            ).id,
         )
 
         with pytest.raises(AdminActionForbiddenException):
@@ -828,6 +771,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
             admin_user_id=user_1_admin.id,
             action_type="workout_suspension",
             user_id=user_2.id,
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=workout_cycling_user_2
+            ).id,
             workout_id=workout_cycling_user_2.id,
         )
         db.session.add(admin_action)
@@ -853,9 +799,13 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=workout_cycling_user_2
+        ).id
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="workout_suspension",
+            report_id=report_id,
             user_id=user_2.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -872,7 +822,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] is None
+        assert serialized_action['report_id'] == report_id
         assert serialized_action['user'] == user_2.serialize(
             current_user=user_1_admin
         )
@@ -898,6 +848,9 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="comment_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=comment
+            ).id,
             user_id=user_3.id,
             comment_id=comment.id,
         )
@@ -931,10 +884,14 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=comment
+        ).id
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="comment_suspension",
             comment_id=comment.id,
+            report_id=report_id,
             user_id=user_3.id,
         )
         db.session.add(admin_action)
@@ -952,7 +909,7 @@ class TestAdminActionSerializer(CommentMixin, AdminActionTestCase):
         assert serialized_action['created_at'] == admin_action.created_at
         assert serialized_action['id'] == admin_action.short_id
         assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] is None
+        assert serialized_action['report_id'] == report_id
         assert serialized_action['user'] == user_3.serialize(
             current_user=user_1_admin
         )
@@ -967,7 +924,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
         user_3: User,
     ) -> None:
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
 
         with pytest.raises(InvalidAdminActionAppealUserException):
             AdminActionAppeal(
@@ -986,7 +943,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
         input_action_type: str,
     ) -> None:
-        admin_action = self.create_admin_action(
+        admin_action = self.create_admin_user_action(
             user_1_admin, user_2, action_type=input_action_type
         )
 
@@ -1004,7 +961,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         created_at = datetime.utcnow()
 
         appeal = AdminActionAppeal(
@@ -1029,7 +986,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        admin_action = self.create_admin_action(
+        admin_action = self.create_admin_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         created_at = datetime.utcnow()
@@ -1058,13 +1015,14 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        admin_action = self.create_admin_action(
+        admin_action = self.create_admin_workout_action(
             user_1_admin,
             user_2,
+            workout_cycling_user_2,
             action_type="workout_unsuspension",
-            workout_id=workout_cycling_user_2.id,
         )
         db.session.add(admin_action)
+        db.session.flush()
 
         with pytest.raises(InvalidAdminActionAppealException):
             AdminActionAppeal(
@@ -1081,11 +1039,8 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        admin_action = AdminAction(
-            action_type="workout_suspension",
-            admin_user_id=user_1_admin.id,
-            workout_id=workout_cycling_user_2.id,
-            user_id=user_2.id,
+        admin_action = self.create_admin_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.add(admin_action)
         appeal_text = self.random_string()
@@ -1121,13 +1076,11 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        admin_action = self.create_admin_action(
-            user_1_admin,
-            user_2,
-            action_type="comment_unsuspension",
-            comment_id=comment.id,
+        admin_action = self.create_admin_comment_action(
+            user_1_admin, user_2, comment, action_type="comment_unsuspension"
         )
         db.session.add(admin_action)
+        db.session.flush()
 
         with pytest.raises(InvalidAdminActionAppealException):
             AdminActionAppeal(
@@ -1150,11 +1103,8 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        admin_action = AdminAction(
-            action_type="comment_suspension",
-            admin_user_id=user_1_admin.id,
-            comment_id=comment.id,
-            user_id=user_2.id,
+        admin_action = self.create_admin_comment_action(
+            user_1_admin, user_2, comment
         )
         db.session.add(admin_action)
         appeal_text = self.random_string()
@@ -1183,7 +1133,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         now = datetime.utcnow()
 
         with travel(now, tick=False):
@@ -1206,7 +1156,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = AdminActionAppeal(
             action_id=admin_action.id, user_id=user_2.id, text=appeal_text
         )
@@ -1225,7 +1175,7 @@ class TestAdminActionAppealModel(CommentMixin, AdminActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = AdminActionAppeal(
             action_id=admin_action.id, user_id=user_2.id, text=appeal_text
         )
@@ -1247,7 +1197,7 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
     def test_it_returns_serialized_appeal_for_admin(
         self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
     ) -> None:
-        admin_action = self.create_admin_action(user_1_admin, user_3)
+        admin_action = self.create_admin_user_action(user_1_admin, user_3)
         appeal = AdminActionAppeal(
             action_id=admin_action.id,
             user_id=user_3.id,
@@ -1272,7 +1222,7 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
     def test_it_returns_serialized_appeal_for_appeal_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = AdminActionAppeal(
             action_id=admin_action.id,
             user_id=user_2.id,
@@ -1295,7 +1245,7 @@ class TestAdminActionAppealSerializer(AdminActionTestCase):
     def test_it_raises_error_when_user_is_not_appeal_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        admin_action = self.create_admin_action(user_1_admin, user_2)
+        admin_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = AdminActionAppeal(
             action_id=admin_action.id,
             user_id=user_2.id,

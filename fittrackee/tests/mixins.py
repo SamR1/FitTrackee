@@ -13,7 +13,6 @@ from werkzeug.test import TestResponse
 
 from fittrackee import db
 from fittrackee.administration.models import (
-    REPORT_ACTION_TYPES,
     AdminAction,
     AdminActionAppeal,
 )
@@ -399,20 +398,16 @@ class ReportMixin(RandomMixin):
     def create_user_report(self, reporter: User, user: User) -> Report:
         return self.create_report(reporter=reporter, reported_object=user)
 
+    @staticmethod
     def create_admin_action(
-        self,
         admin_user: User,
         user: User,
+        report_id: int,
         *,
         action_type: Optional[str] = None,
-        report_id: Optional[int] = None,
         comment_id: Optional[int] = None,
         workout_id: Optional[int] = None,
     ) -> AdminAction:
-        if action_type in REPORT_ACTION_TYPES and not report_id:
-            report_id = self.create_report(
-                reporter=admin_user, reported_object=user
-            ).id
         admin_action = AdminAction(
             admin_user_id=admin_user.id,
             action_type=action_type if action_type else "user_suspension",
@@ -448,8 +443,9 @@ class ReportMixin(RandomMixin):
         action_type: str = "user_suspension",
         report_id: Optional[int] = None,
     ) -> AdminAction:
-        if not report_id:
-            report_id = self.create_user_report(admin, user).id
+        report_id = (
+            report_id if report_id else self.create_user_report(admin, user).id
+        )
         admin_action = self.create_admin_action(
             admin, user, action_type=action_type, report_id=report_id
         )
@@ -459,21 +455,27 @@ class ReportMixin(RandomMixin):
         db.session.commit()
         return admin_action
 
-    @staticmethod
-    def create_admin_workout_suspension_action(
-        admin: User, user: User, workout: Workout
+    def create_admin_workout_action(
+        self,
+        admin: User,
+        user: User,
+        workout: Workout,
+        action_type: str = "workout_suspension",
     ) -> AdminAction:
         admin_action = AdminAction(
-            action_type="workout_suspension",
+            action_type=action_type,
             admin_user_id=admin.id,
+            report_id=self.create_report(
+                reporter=admin, reported_object=workout
+            ).id,
             workout_id=workout.id,
             user_id=user.id,
         )
         db.session.add(admin_action)
         return admin_action
 
-    @staticmethod
     def create_admin_comment_action(
+        self,
         admin: User,
         user: User,
         comment: Comment,
@@ -483,6 +485,9 @@ class ReportMixin(RandomMixin):
             action_type=action_type,
             admin_user_id=admin.id,
             comment_id=comment.id,
+            report_id=self.create_report(
+                reporter=admin, reported_object=comment
+            ).id,
             user_id=user.id,
         )
         db.session.add(admin_action)

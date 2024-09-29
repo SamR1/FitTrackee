@@ -27,6 +27,8 @@ from fittrackee.users.models import (
 )
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import ReportMixin
+
 
 class TestUserModel:
     def test_it_returns_username_in_string_value(
@@ -1232,13 +1234,17 @@ class TestBlockedByUsers:
         assert set(user_1.get_blocked_by_user_ids()) == {user_2.id, user_3.id}
 
 
-class TestUsersWithSuspensions:
+class TestUsersWithSuspensions(ReportMixin):
     def test_suspension_action_is_none_when_no_suspension_for_given_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
+        action_type = "user_suspension"
         admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
-            action_type="user_suspension",
+            action_type=action_type,
+            report_id=self.create_admin_user_action(
+                user_1_admin, user_2, action_type
+            ).id,
             user_id=user_2.id,
         )
         db.session.add(admin_action)
@@ -1250,18 +1256,23 @@ class TestUsersWithSuspensions:
     def test_suspension_action_is_last_suspension_action_when_user_is_suspended(  # noqa
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_user_report(user_1_admin, user_2).id
         for n in range(2):
+            action_type = (
+                "user_suspension" if n % 2 == 0 else "user_unsuspension"
+            )
             admin_action = AdminAction(
                 admin_user_id=user_1_admin.id,
-                action_type=(
-                    "user_suspension" if n % 2 == 0 else "user_unsuspension"
-                ),
+                action_type=action_type,
+                report_id=report_id,
                 user_id=user_2.id,
             )
             db.session.add(admin_action)
+            db.session.flush()
         expected_admin_action = AdminAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=report_id,
             user_id=user_2.id,
         )
         user_2.suspended_at = datetime.utcnow()
@@ -1273,12 +1284,17 @@ class TestUsersWithSuspensions:
     def test_suspension_action_is_none_when_user_is_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        ).id
         for n in range(2):
+            action_type = (
+                "user_suspension" if n % 2 == 0 else "user_unsuspension"
+            )
             admin_action = AdminAction(
                 admin_user_id=user_1_admin.id,
-                action_type=(
-                    "user_suspension" if n % 2 == 0 else "user_unsuspension"
-                ),
+                action_type=action_type,
+                report_id=report_id,
                 user_id=user_2.id,
             )
             db.session.add(admin_action)

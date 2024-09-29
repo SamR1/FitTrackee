@@ -79,7 +79,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        expected_admin_action = self.create_admin_workout_suspension_action(
+        expected_admin_action = self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -96,7 +96,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.create_admin_workout_suspension_action(
+        self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = None
@@ -347,7 +347,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        expected_admin_action = self.create_admin_workout_suspension_action(
+        expected_admin_action = self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
 
@@ -511,7 +511,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        self.create_admin_workout_suspension_action(
+        self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
 
@@ -1005,7 +1005,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        self.create_admin_workout_suspension_action(
+        self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
@@ -1299,7 +1299,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         self.create_comment(
             user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
-        self.create_admin_workout_suspension_action(
+        self.create_admin_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()

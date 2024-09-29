@@ -1965,7 +1965,7 @@ class TestReportServiceProcessAppeal(
         input_data: Dict,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -2003,7 +2003,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -2041,7 +2041,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.flush()
@@ -2069,7 +2069,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_admin_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.flush()
