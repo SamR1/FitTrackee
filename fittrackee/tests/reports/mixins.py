@@ -6,7 +6,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
 
 
-class ReportServiceCreateAdminActionMixin(CommentMixin):
+class ReportServiceCreateReportActionMixin(CommentMixin):
     def create_report_for_user(
         self,
         report_service: ReportService,

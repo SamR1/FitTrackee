@@ -11,9 +11,9 @@ from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import VERSION, db
-from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.models import Equipment
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
     User,
     UserSportPreference,
@@ -3801,7 +3801,9 @@ class TestPostWorkoutSuspensionAppeal(
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = AdminActionAppeal.query.filter_by(action_id=action.id).first()
+        appeal = ReportActionAppeal.query.filter_by(
+            action_id=action.id
+        ).first()
         assert appeal.admin_user_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
@@ -3821,7 +3823,7 @@ class TestPostWorkoutSuspensionAppeal(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.flush()
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=action.id,
             user_id=user_1.id,
             text=self.random_string(),

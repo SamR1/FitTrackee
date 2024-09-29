@@ -1,5 +1,5 @@
 import type {
-  IAdminActionAppeal,
+  IReportActionAppeal,
   IUserLightProfile,
   IUserProfile,
 } from '@/types/user'
@@ -21,10 +21,10 @@ export interface IReport {
   updated_at: string
 }
 
-export interface IAdminAction {
+export interface IReportAction {
   action_type: string
   admin_user: IUserLightProfile
-  appeal: IAdminActionAppeal | null
+  appeal: IReportActionAppeal | null
   created_at: string
   id: number
   reason: string | null
@@ -41,7 +41,7 @@ export interface IReportComment {
 }
 
 export interface IReportForAdmin extends IReport {
-  admin_actions?: IAdminAction[]
+  report_actions?: IReportAction[]
   comments?: IReportComment[]
 }
 
@@ -80,7 +80,7 @@ export interface IAppealPayload {
   reportId: number
 }
 
-export interface IReportAdminActionPayload {
+export interface IReportActionPayload {
   action_type: string
   reason?: string | null
   report_id: number

@@ -8,9 +8,9 @@ from time_machine import travel
 from werkzeug import Response
 
 from fittrackee import db
-from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.comments.models import Comment, Mention
 from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -3108,7 +3108,9 @@ class TestPostWorkoutCommentSuspensionAppeal(
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = AdminActionAppeal.query.filter_by(action_id=action.id).first()
+        appeal = ReportActionAppeal.query.filter_by(
+            action_id=action.id
+        ).first()
         assert appeal.admin_user_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
@@ -3134,7 +3136,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             user_2_admin, user_1, comment
         )
         db.session.flush()
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=action.id,
             user_id=user_1.id,
             text=self.random_string(),

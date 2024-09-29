@@ -4,10 +4,6 @@ from flask import Blueprint, current_app, request
 from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    OBJECTS_ADMIN_ACTION_TYPES,
-    AdminActionAppeal,
-)
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -25,14 +21,19 @@ from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import (
-    InvalidAdminActionException,
+    InvalidReportActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
     UserWarningExistsException,
 )
-from .models import REPORT_OBJECT_TYPES, Report
+from .models import (
+    OBJECTS_ACTION_TYPES,
+    REPORT_OBJECT_TYPES,
+    Report,
+    ReportActionAppeal,
+)
 from .reports_email_service import (
     ReportEmailService,
 )
@@ -215,7 +216,7 @@ def create_admin_action(
         return InvalidPayloadErrorResponse()
     if (
         action_type == "user_warning_lifting"
-        or action_type not in OBJECTS_ADMIN_ACTION_TYPES
+        or action_type not in OBJECTS_ACTION_TYPES
     ):
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
@@ -246,7 +247,7 @@ def create_admin_action(
             "report": report.serialize(auth_user, full=True),
         }, 200
     except (
-        InvalidAdminActionException,
+        InvalidReportActionException,
         UserAlreadySuspendedException,
         UserWarningExistsException,
     ) as e:
@@ -266,7 +267,7 @@ def process_appeal(
     auth_user: User, appeal_id: str
 ) -> Union[Dict, HttpResponse]:
     appeal_uuid = decode_short_id(appeal_id)
-    appeal = AdminActionAppeal.query.filter_by(uuid=appeal_uuid).first()
+    appeal = ReportActionAppeal.query.filter_by(uuid=appeal_uuid).first()
 
     if not appeal:
         return NotFoundErrorResponse(
@@ -302,7 +303,7 @@ def process_appeal(
             "appeal": appeal.serialize(auth_user),
         }
 
-    except InvalidAdminActionException as e:
+    except InvalidReportActionException as e:
         return InvalidPayloadErrorResponse(str(e))
     except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

@@ -5,8 +5,7 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import bcrypt, db
-from fittrackee.administration.models import AdminAction
-from fittrackee.reports.models import Report
+from fittrackee.reports.models import Report, ReportAction
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     MissingAdminIdException,
@@ -378,14 +377,14 @@ class TestUserManagerServiceUserUpdate:
                 reason=reason,
             )
 
-        admin_action = AdminAction.query.filter_by(
+        report_action = ReportAction.query.filter_by(
             admin_user_id=user_1_admin.id,
             action_type=expected_action_action,
             user_id=user_2.id,
         ).first()
-        assert admin_action.created_at == now
-        assert admin_action.reason == reason
-        assert admin_action.report_id == report.id
+        assert report_action.created_at == now
+        assert report_action.reason == reason
+        assert report_action.report_id == report.id
 
 
 class TestUserManagerServiceUserCreation:

@@ -17,7 +17,7 @@ from fittrackee.utils import encode_uuid
 from .exceptions import CommentForbiddenException
 
 if TYPE_CHECKING:
-    from fittrackee.administration.models import AdminAction
+    from fittrackee.reports.models import ReportAction
     from fittrackee.users.models import User
 
 
@@ -148,18 +148,18 @@ class Comment(BaseModel):
         return encode_uuid(self.uuid)
 
     @property
-    def suspension_action(self) -> Optional['AdminAction']:
+    def suspension_action(self) -> Optional['ReportAction']:
         if self.suspended_at is None:
             return None
 
-        from fittrackee.administration.models import AdminAction
+        from fittrackee.reports.models import ReportAction
 
         return (
-            AdminAction.query.filter(
-                AdminAction.comment_id == self.id,
-                AdminAction.action_type == "comment_suspension",
+            ReportAction.query.filter(
+                ReportAction.comment_id == self.id,
+                ReportAction.action_type == "comment_suspension",
             )
-            .order_by(AdminAction.created_at.desc())
+            .order_by(ReportAction.created_at.desc())
             .first()
         )
 

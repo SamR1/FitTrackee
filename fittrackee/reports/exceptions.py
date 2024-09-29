@@ -1,19 +1,41 @@
-class InvalidAdminActionException(Exception): ...
+class InvalidReportActionAppealException(Exception):
+    pass
 
 
-class InvalidReportException(Exception): ...
+class InvalidReportActionAppealUserException(Exception):
+    pass
 
 
-class InvalidReporterException(Exception): ...
+class InvalidReportActionException(Exception):
+    pass
 
 
-class ReportNotFoundException(Exception): ...
+class InvalidReportException(Exception):
+    pass
 
 
-class ReportCommentForbiddenException(Exception): ...
+class InvalidReporterException(Exception):
+    pass
 
 
-class ReportForbiddenException(Exception): ...
+class ReportActionAppealForbiddenException(Exception):
+    pass
+
+
+class ReportActionForbiddenException(Exception):
+    pass
+
+
+class ReportCommentForbiddenException(Exception):
+    pass
+
+
+class ReportForbiddenException(Exception):
+    pass
+
+
+class ReportNotFoundException(Exception):
+    pass
 
 
 class SuspendedObjectException(Exception):
@@ -22,4 +44,5 @@ class SuspendedObjectException(Exception):
         self.object_type = object_type
 
 
-class UserWarningExistsException(Exception): ...
+class UserWarningExistsException(Exception):
+    pass

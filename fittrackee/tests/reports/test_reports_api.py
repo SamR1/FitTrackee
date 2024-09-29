@@ -8,14 +8,15 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    REPORT_USER_ACTION_TYPES,
-    AdminAction,
-    AdminActionAppeal,
-)
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.reports.models import Report, ReportComment
+from fittrackee.reports.models import (
+    USER_ACTION_TYPES,
+    Report,
+    ReportAction,
+    ReportActionAppeal,
+    ReportComment,
+)
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
@@ -2059,7 +2060,7 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["comments"][0]["comment"] == comment
 
 
-class TestPostReportAdminAction(ReportTestCase):
+class TestPostReportAction(ReportTestCase):
     route = "/api/reports/{report_id}/admin-actions"
 
     def test_it_returns_401_if_user_is_not_authenticated(
@@ -2162,7 +2163,7 @@ class TestPostReportAdminAction(ReportTestCase):
         self.assert_400(response, "invalid 'action_type'")
 
 
-class TestPostReportAdminActionForUserAction(ReportTestCase):
+class TestPostReportActionForUserAction(ReportTestCase):
     route = "/api/reports/{report_id}/admin-actions"
 
     def test_it_returns_400_when_action_type_is_user_warning_lifting(
@@ -2350,7 +2351,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
             is None
         )
 
-    @pytest.mark.parametrize('input_action_type', REPORT_USER_ACTION_TYPES)
+    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
     def test_it_creates_admin_action(
         self,
         app: Flask,
@@ -2379,7 +2380,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id,
                 user_id=user_2.id,
                 action_type=input_action_type,
@@ -2569,7 +2570,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_suspension_email_mock.send.assert_not_called()
 
 
-class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
+class TestPostReportActionForWorkoutAction(ReportTestCase):
     route = "/api/reports/{report_id}/admin-actions"
 
     def test_it_returns_400_when_workout_id_is_missing_on_workout_admin_action(
@@ -2792,7 +2793,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id, user_id=user_2.id
             ).first()
             is not None
@@ -2929,7 +2930,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         workout_suspension_email_mock.send.assert_not_called()
 
 
-class TestPostReportAdminActionForCommentAction(ReportTestCase):
+class TestPostReportActionForCommentAction(ReportTestCase):
     route = "/api/reports/{report_id}/admin-actions"
 
     def test_it_returns_400_when_comment_id_is_missing_on_comment_admin_action(
@@ -3155,7 +3156,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id, user_id=user_3.id
             ).first()
             is not None
@@ -3310,7 +3311,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment_suspension_email_mock.send.assert_not_called()
 
 
-class TestProcessAdminActionAppeal(
+class TestProcessReportActionAppeal(
     CommentMixin, ReportMixin, ApiTestCaseMixin
 ):
     route = '/api/appeals/{appeal_id}'
@@ -3434,7 +3435,7 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3471,7 +3472,7 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3547,7 +3548,7 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3628,7 +3629,7 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 

@@ -6,19 +6,22 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
-    InvalidAdminActionException,
+    InvalidReportActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
     UserWarningExistsException,
 )
-from fittrackee.reports.models import ReportComment
+from fittrackee.reports.models import (
+    ReportAction,
+    ReportActionAppeal,
+    ReportComment,
+)
 from fittrackee.reports.reports_service import ReportService
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import (
@@ -30,7 +33,7 @@ from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin, ReportMixin
-from .mixins import ReportServiceCreateAdminActionMixin
+from .mixins import ReportServiceCreateReportActionMixin
 
 
 class TestReportServiceCreateForComment(CommentMixin):
@@ -582,7 +585,7 @@ class TestReportServiceUpdate(CommentMixin):
             report_comment=self.random_string(),
         )
 
-        assert AdminAction.query.filter_by(report_id=report.id).count() == 0
+        assert ReportAction.query.filter_by(report_id=report.id).count() == 0
 
     def test_it_marks_report_as_resolved(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -638,7 +641,7 @@ class TestReportServiceUpdate(CommentMixin):
                 resolved=True,
             )
 
-        report_action = AdminAction.query.filter_by(
+        report_action = ReportAction.query.filter_by(
             report_id=report.id
         ).first()
         assert report_action.action_type == "report_resolution"
@@ -706,7 +709,7 @@ class TestReportServiceUpdate(CommentMixin):
                 resolved=False,
             )
 
-        report_action = AdminAction.query.filter_by(
+        report_action = ReportAction.query.filter_by(
             report_id=report.id
         ).first()
         assert report_action.action_type == "report_reopening"
@@ -733,7 +736,7 @@ class TestReportServiceUpdate(CommentMixin):
                 resolved=False,
             )
 
-        assert AdminAction.query.filter_by(report_id=report.id).count() == 0
+        assert ReportAction.query.filter_by(report_id=report.id).count() == 0
 
     def test_it_updates_resolved_report_when_adding_comment(
         self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
@@ -780,7 +783,9 @@ class TestReportServiceUpdate(CommentMixin):
         assert updated_report.updated_at == comment_time
 
 
-class TestReportServiceCreateAdminAction(ReportServiceCreateAdminActionMixin):
+class TestReportServiceCreateReportAction(
+    ReportServiceCreateReportActionMixin
+):
     def test_it_raises_exception_when_reported_user_does_not_exist(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -792,7 +797,7 @@ class TestReportServiceCreateAdminAction(ReportServiceCreateAdminActionMixin):
         db.session.flush()
 
         with pytest.raises(
-            InvalidAdminActionException, match="invalid 'username'"
+            InvalidReportActionException, match="invalid 'username'"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -810,7 +815,7 @@ class TestReportServiceCreateAdminAction(ReportServiceCreateAdminActionMixin):
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="invalid action type"
+            InvalidReportActionException, match="invalid action type"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -820,8 +825,8 @@ class TestReportServiceCreateAdminAction(ReportServiceCreateAdminActionMixin):
             )
 
 
-class TestReportServiceCreateAdminActionForUser(
-    ReportServiceCreateAdminActionMixin
+class TestReportServiceCreateReportActionForUser(
+    ReportServiceCreateReportActionMixin
 ):
     def test_it_raises_exception_when_username_is_missing(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -832,7 +837,7 @@ class TestReportServiceCreateAdminActionForUser(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="'username' is missing"
+            InvalidReportActionException, match="'username' is missing"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -850,7 +855,7 @@ class TestReportServiceCreateAdminActionForUser(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="invalid 'username'"
+            InvalidReportActionException, match="invalid 'username'"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -951,15 +956,17 @@ class TestReportServiceCreateAdminActionForUser(
                 data={"username": user_3.username},
             )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_suspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.comment_id is None
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_suspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.comment_id is None
+        assert report_action.reason == input_reason.get("reason")
+        assert report_action.report_id == report.id
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
     def test_it_creates_admin_action_for_user_reactivation(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -978,14 +985,16 @@ class TestReportServiceCreateAdminActionForUser(
             data={"username": user_3.username},
         )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_unsuspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id is None
-        assert admin_action.reason is None
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_unsuspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.comment_id is None
+        assert report_action.reason is None
+        assert report_action.report_id == report.id
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
     def test_it_creates_admin_action_for_user_warning_on_user_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -1002,14 +1011,16 @@ class TestReportServiceCreateAdminActionForUser(
             data={"username": user_3.username},
         )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_warning"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id is None
-        assert admin_action.reason is None
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_warning"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.comment_id is None
+        assert report_action.reason is None
+        assert report_action.report_id == report.id
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
     def test_it_creates_admin_action_for_user_warning_on_comment_report(
         self,
@@ -1035,14 +1046,16 @@ class TestReportServiceCreateAdminActionForUser(
             data={"username": user_3.username},
         )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_warning"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id == report.reported_comment_id
-        assert admin_action.reason is None
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_warning"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.comment_id == report.reported_comment_id
+        assert report_action.reason is None
+        assert report_action.report_id == report.id
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
     def test_it_creates_admin_action_for_user_warning_on_workout_report(
         self,
@@ -1067,14 +1080,16 @@ class TestReportServiceCreateAdminActionForUser(
             data={"username": user_2.username},
         )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_warning"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.comment_id is None
-        assert admin_action.reason is None
-        assert admin_action.report_id == report.id
-        assert admin_action.user_id == user_2.id
-        assert admin_action.workout_id == report.reported_workout_id
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_warning"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.comment_id is None
+        assert report_action.reason is None
+        assert report_action.report_id == report.id
+        assert report_action.user_id == user_2.id
+        assert report_action.workout_id == report.reported_workout_id
 
     def test_it_raises_exception_when_user_warning_already_exists_for_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -1130,18 +1145,20 @@ class TestReportServiceCreateAdminActionForUser(
             data={"username": user_3.username},
         )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "user_warning"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.report_id == report.id
-        assert admin_action.comment_id is None
-        assert admin_action.reason is None
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "user_warning"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.report_id == report.id
+        assert report_action.comment_id is None
+        assert report_action.reason is None
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
 
-class TestReportServiceCreateAdminActionForComment(
-    ReportServiceCreateAdminActionMixin
+class TestReportServiceCreateReportActionForComment(
+    ReportServiceCreateReportActionMixin
 ):
     def test_it_raises_exception_when_report_is_invalid(
         self,
@@ -1160,7 +1177,7 @@ class TestReportServiceCreateAdminActionForComment(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="'comment_id' is missing"
+            InvalidReportActionException, match="'comment_id' is missing"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -1187,7 +1204,7 @@ class TestReportServiceCreateAdminActionForComment(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="invalid 'comment_id'"
+            InvalidReportActionException, match="invalid 'comment_id'"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -1216,7 +1233,7 @@ class TestReportServiceCreateAdminActionForComment(
         db.session.flush()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match=(
                 f"comment '{report.reported_comment.short_id}' "
                 "already suspended"
@@ -1291,14 +1308,16 @@ class TestReportServiceCreateAdminActionForComment(
                 data={"comment_id": report.reported_comment.short_id},
             )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "comment_suspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.comment_id == report.reported_comment_id
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "comment_suspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.comment_id == report.reported_comment_id
+        assert report_action.reason == input_reason.get("reason")
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
     def test_it_unsuspends_comment(
         self,
@@ -1363,18 +1382,20 @@ class TestReportServiceCreateAdminActionForComment(
                 data={"comment_id": report.reported_comment.short_id},
             )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "comment_unsuspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.comment_id == report.reported_comment_id
-        assert admin_action.reason is None
-        assert admin_action.user_id == user_3.id
-        assert admin_action.workout_id is None
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "comment_unsuspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.comment_id == report.reported_comment_id
+        assert report_action.reason is None
+        assert report_action.user_id == user_3.id
+        assert report_action.workout_id is None
 
 
-class TestReportServiceCreateAdminActionForWorkout(
-    ReportServiceCreateAdminActionMixin
+class TestReportServiceCreateReportActionForWorkout(
+    ReportServiceCreateReportActionMixin
 ):
     def test_it_raises_exception_when_report_is_invalid(
         self,
@@ -1394,7 +1415,7 @@ class TestReportServiceCreateAdminActionForWorkout(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="'workout_id' is missing"
+            InvalidReportActionException, match="'workout_id' is missing"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -1420,7 +1441,7 @@ class TestReportServiceCreateAdminActionForWorkout(
         )
 
         with pytest.raises(
-            InvalidAdminActionException, match="invalid 'workout_id'"
+            InvalidReportActionException, match="invalid 'workout_id'"
         ):
             report_service.create_admin_action(
                 report=report,
@@ -1448,7 +1469,7 @@ class TestReportServiceCreateAdminActionForWorkout(
         db.session.flush()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match=(
                 f"workout '{report.reported_workout.short_id}' "
                 "already suspended"
@@ -1521,14 +1542,16 @@ class TestReportServiceCreateAdminActionForWorkout(
                 data={"workout_id": report.reported_workout.short_id},
             )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "workout_suspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.comment_id is None
-        assert admin_action.reason == input_reason.get("reason")
-        assert admin_action.user_id == user_2.id
-        assert admin_action.workout_id == report.reported_workout_id
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "workout_suspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.comment_id is None
+        assert report_action.reason == input_reason.get("reason")
+        assert report_action.user_id == user_2.id
+        assert report_action.workout_id == report.reported_workout_id
 
     def test_it_unsuspends_workout(
         self,
@@ -1592,18 +1615,20 @@ class TestReportServiceCreateAdminActionForWorkout(
                 data={"workout_id": report.reported_workout.short_id},
             )
 
-        admin_action = AdminAction.query.filter_by(report_id=report.id).first()
-        assert admin_action.action_type == "workout_unsuspension"
-        assert admin_action.admin_user_id == user_1_admin.id
-        assert admin_action.created_at == now
-        assert admin_action.comment_id is None
-        assert admin_action.reason is None
-        assert admin_action.user_id == user_2.id
-        assert admin_action.workout_id is report.reported_workout_id
+        report_action = ReportAction.query.filter_by(
+            report_id=report.id
+        ).first()
+        assert report_action.action_type == "workout_unsuspension"
+        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.created_at == now
+        assert report_action.comment_id is None
+        assert report_action.reason is None
+        assert report_action.user_id == user_2.id
+        assert report_action.workout_id is report.reported_workout_id
 
 
 class TestReportServiceProcessAppeal(
-    ReportServiceCreateAdminActionMixin, ReportMixin
+    ReportServiceCreateReportActionMixin, ReportMixin
 ):
     @pytest.mark.parametrize(
         "input_data",
@@ -1627,7 +1652,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = AdminActionAppeal.query.filter_by(
+        updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
         assert updated_appeal.admin_user_id == user_1_admin.id
@@ -1674,7 +1699,7 @@ class TestReportServiceProcessAppeal(
             )
 
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 report_id=suspension_action.report_id,
                 action_type="user_unsuspension",
                 admin_user_id=user_1_admin.id,
@@ -1694,7 +1719,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="user account has already been reactivated",
         ):
             report_service.process_appeal(
@@ -1712,7 +1737,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="user account has been reactivated after appeal",
         ):
             report_service.process_appeal(
@@ -1745,7 +1770,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = AdminActionAppeal.query.filter_by(
+        updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
         assert updated_appeal.admin_user_id == user_1_admin.id
@@ -1774,7 +1799,7 @@ class TestReportServiceProcessAppeal(
             )
 
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 report_id=warning_action.report_id,
                 action_type="user_warning_lifting",
                 admin_user_id=user_1_admin.id,
@@ -1825,7 +1850,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = AdminActionAppeal.query.filter_by(
+        updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
         assert updated_appeal.admin_user_id == user_1_admin.id
@@ -1867,7 +1892,7 @@ class TestReportServiceProcessAppeal(
         )
 
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id,
                 action_type="comment_unsuspension",
                 comment_id=comment.id,
@@ -1903,7 +1928,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="comment has already been reactivated",
         ):
             report_service.process_appeal(
@@ -1938,7 +1963,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="comment has been reactivated after appeal",
         ):
             report_service.process_appeal(
@@ -1983,7 +2008,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = AdminActionAppeal.query.filter_by(
+        updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
         assert updated_appeal.admin_user_id == user_1_admin.id
@@ -2020,7 +2045,7 @@ class TestReportServiceProcessAppeal(
         )
 
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 action_type="workout_unsuspension",
                 admin_user_id=user_1_admin.id,
                 reason=None,
@@ -2050,7 +2075,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="workout has already been reactivated",
         ):
             report_service.process_appeal(
@@ -2078,7 +2103,7 @@ class TestReportServiceProcessAppeal(
         report_service = ReportService()
 
         with pytest.raises(
-            InvalidAdminActionException,
+            InvalidReportActionException,
             match="workout has been reactivated after appeal",
         ):
             report_service.process_appeal(

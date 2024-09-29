@@ -1099,8 +1099,8 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_2_admin: User,
         user_3: User,
     ) -> None:
-        admin_action = self.create_admin_user_action(user_2_admin, user_3)
-        self.create_action_appeal(admin_action.id, user_3)
+        report_action = self.create_admin_user_action(user_2_admin, user_3)
+        self.create_action_appeal(report_action.id, user_3)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1422,10 +1422,10 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_2_admin: User,
         user_3: User,
     ) -> None:
-        admin_action = self.create_admin_user_action(user_2_admin, user_3)
+        report_action = self.create_admin_user_action(user_2_admin, user_3)
         Notification.query.update({Notification.marked_as_read: True})
         db.session.commit()
-        self.create_action_appeal(admin_action.id, user_3)
+        self.create_action_appeal(report_action.id, user_3)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )

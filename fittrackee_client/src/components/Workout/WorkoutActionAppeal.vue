@@ -20,7 +20,7 @@
     </div>
     <ActionAppeal
       v-if="displayAppealForm"
-      :admin-action="action"
+      :report-action="action"
       :success="success === objectTypeId"
       :loading="appealLoading === objectTypeId"
       @submitForm="(text) => submitAppeal(text, 'workout', workout.id)"
@@ -41,11 +41,11 @@
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import useAppeal from '@/composables/useAppeal'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
 
   interface Props {
-    action: IUserAdminAction
+    action: IUserReportAction
     workout: IWorkout
     displaySuspensionMessage?: boolean
   }

@@ -5,7 +5,7 @@
   <div v-else-if="accountSuspension.id">
     <div>{{ $t('user.YOUR_ACCOUNT_HAS_BEEN_SUSPENDED') }}.</div>
     <ActionAppeal
-      :admin-action="accountSuspension"
+      :report-action="accountSuspension"
       :success="authUserSuccess"
       :loading="authUserLoading"
       @submitForm="submitAppeal"
@@ -34,7 +34,7 @@
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -43,7 +43,7 @@
 
   const appealText: Ref<string> = ref('')
 
-  const accountSuspension: ComputedRef<IUserAdminAction> = computed(
+  const accountSuspension: ComputedRef<IUserReportAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION]
   )
 

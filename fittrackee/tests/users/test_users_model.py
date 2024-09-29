@@ -7,8 +7,8 @@ from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
 from fittrackee.equipments.models import Equipment
+from fittrackee.reports.models import ReportAction
 from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
     BlockUserException,
@@ -1239,7 +1239,7 @@ class TestUsersWithSuspensions(ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         action_type = "user_suspension"
-        admin_action = AdminAction(
+        report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type=action_type,
             report_id=self.create_admin_user_action(
@@ -1247,7 +1247,7 @@ class TestUsersWithSuspensions(ReportMixin):
             ).id,
             user_id=user_2.id,
         )
-        db.session.add(admin_action)
+        db.session.add(report_action)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
 
@@ -1261,15 +1261,15 @@ class TestUsersWithSuspensions(ReportMixin):
             action_type = (
                 "user_suspension" if n % 2 == 0 else "user_unsuspension"
             )
-            admin_action = AdminAction(
+            report_action = ReportAction(
                 admin_user_id=user_1_admin.id,
                 action_type=action_type,
                 report_id=report_id,
                 user_id=user_2.id,
             )
-            db.session.add(admin_action)
+            db.session.add(report_action)
             db.session.flush()
-        expected_admin_action = AdminAction(
+        expected_admin_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=report_id,
@@ -1291,13 +1291,13 @@ class TestUsersWithSuspensions(ReportMixin):
             action_type = (
                 "user_suspension" if n % 2 == 0 else "user_unsuspension"
             )
-            admin_action = AdminAction(
+            report_action = ReportAction(
                 admin_user_id=user_1_admin.id,
                 action_type=action_type,
                 report_id=report_id,
                 user_id=user_2.id,
             )
-            db.session.add(admin_action)
+            db.session.add(report_action)
         db.session.commit()
 
         assert user_2.suspension_action is None

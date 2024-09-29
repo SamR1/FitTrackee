@@ -183,7 +183,7 @@ export interface IFollowRequestsActionPayload {
   getFollowRequests?: boolean
 }
 
-export interface IAdminActionAppeal {
+export interface IReportActionAppeal {
   approved: boolean | null
   created_at: string
   id: string
@@ -192,9 +192,9 @@ export interface IAdminActionAppeal {
   updated_at: string
 }
 
-export interface IUserAdminAction {
+export interface IUserReportAction {
   action_type: string
-  appeal: IAdminActionAppeal
+  appeal: IReportActionAppeal
   comment?: IComment | null
   created_at: string
   id: string

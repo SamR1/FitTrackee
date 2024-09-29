@@ -31,7 +31,7 @@ from .roles import UserRole
 from .utils.token import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
-    from fittrackee.administration.models import AdminAction
+    from fittrackee.reports.models import ReportAction
 
 USER_LINK_TEMPLATE = (
     '<a href="{profile_url}" target="_blank" rel="noopener noreferrer">'
@@ -558,18 +558,18 @@ class User(BaseModel):
         ]
 
     @property
-    def suspension_action(self) -> Optional['AdminAction']:
+    def suspension_action(self) -> Optional['ReportAction']:
         if self.suspended_at is None:
             return None
 
-        from fittrackee.administration.models import AdminAction
+        from fittrackee.reports.models import ReportAction
 
         return (
-            AdminAction.query.filter(
-                AdminAction.user_id == self.id,
-                AdminAction.action_type == "user_suspension",
+            ReportAction.query.filter(
+                ReportAction.user_id == self.id,
+                ReportAction.action_type == "user_suspension",
             )
-            .order_by(AdminAction.created_at.desc())
+            .order_by(ReportAction.created_at.desc())
             .first()
         )
 
@@ -972,11 +972,10 @@ class Notification(BaseModel):
             "suspension_appeal",
             "user_warning_appeal",
         ]:
-            from fittrackee.administration.models import AdminActionAppeal
-            from fittrackee.reports.models import Report
+            from fittrackee.reports.models import Report, ReportActionAppeal
 
             if self.event_type in ["suspension_appeal", "user_warning_appeal"]:
-                appeal = AdminActionAppeal.query.filter_by(
+                appeal = ReportActionAppeal.query.filter_by(
                     id=self.event_object_id
                 ).first()
                 report = Report.query.filter_by(
@@ -998,16 +997,15 @@ class Notification(BaseModel):
             "workout_suspension",
             "workout_unsuspension",
         ]:
-            from fittrackee.administration.models import AdminAction
-            from fittrackee.reports.models import Report
+            from fittrackee.reports.models import Report, ReportAction
 
-            admin_action = AdminAction.query.filter_by(
+            report_action = ReportAction.query.filter_by(
                 id=self.event_object_id
             ).first()
-            serialized_notification["admin_action"] = admin_action.serialize(
+            serialized_notification["report_action"] = report_action.serialize(
                 current_user=to_user
             )
-            report = Report.query.filter_by(id=admin_action.report_id).first()
+            report = Report.query.filter_by(id=report_action.report_id).first()
             if report.object_type == "comment":
                 comment = Comment.query.filter_by(
                     id=report.reported_comment_id

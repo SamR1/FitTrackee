@@ -60,11 +60,11 @@
       </div>
     </template>
     <template #content>
-      <div v-if="notification.admin_action?.reason">
+      <div v-if="notification.report_action?.reason">
         <span class="notification-reason">
           {{ $t('admin.APP_MODERATION.REASON') }}:
         </span>
-        {{ notification.admin_action.reason }}
+        {{ notification.report_action.reason }}
       </div>
       <template
         v-if="displayCommentCard(notification.type) && notification.comment"
@@ -88,9 +88,9 @@
         "
         :report="notification.report"
       />
-      <template v-else-if="notification.workout && notification.admin_action">
+      <template v-else-if="notification.workout && notification.report_action">
         <WorkoutForUser
-          :action="notification.admin_action"
+          :action="notification.report_action"
           :display-appeal="notification.type !== 'user_warning'"
           :display-object-name="notification.type.startsWith('user_warning')"
           :workout="notification.workout"
@@ -98,7 +98,9 @@
       </template>
       <div
         class="auth-user"
-        v-if="notification.admin_action?.action_type === 'user_warning_lifting'"
+        v-if="
+          notification.report_action?.action_type === 'user_warning_lifting'
+        "
       >
         <UserPicture :user="authUser" />
         <div class="user-name">
@@ -107,10 +109,10 @@
           </router-link>
         </div>
       </div>
-      <div v-if="notification.admin_action?.action_type === 'user_warning'">
+      <div v-if="notification.report_action?.action_type === 'user_warning'">
         <router-link
           class="appeal-link"
-          :to="`profile/warning/${notification.admin_action.id}/appeal`"
+          :to="`profile/warning/${notification.report_action.id}/appeal`"
         >
           {{ $t('user.APPEAL') }}
         </router-link>

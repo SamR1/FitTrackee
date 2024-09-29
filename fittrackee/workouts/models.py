@@ -30,9 +30,10 @@ from .utils.convert import convert_in_duration, convert_value_to_integer
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
 
-    from fittrackee.administration.models import AdminAction
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User
+
+    from ..reports.models import ReportAction
 
 
 EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {
@@ -334,18 +335,18 @@ class Workout(BaseModel):
         return user in self.likes.all()
 
     @property
-    def suspension_action(self) -> Optional['AdminAction']:
+    def suspension_action(self) -> Optional['ReportAction']:
         if self.suspended_at is None:
             return None
 
-        from fittrackee.administration.models import AdminAction
+        from fittrackee.reports.models import ReportAction
 
         return (
-            AdminAction.query.filter(
-                AdminAction.workout_id == self.id,
-                AdminAction.action_type == "workout_suspension",
+            ReportAction.query.filter(
+                ReportAction.workout_id == self.id,
+                ReportAction.action_type == "workout_suspension",
             )
-            .order_by(AdminAction.created_at.desc())
+            .order_by(ReportAction.created_at.desc())
             .first()
         )
 

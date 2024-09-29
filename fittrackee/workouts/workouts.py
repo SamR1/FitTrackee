@@ -18,7 +18,6 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
-from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -45,6 +44,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 
+from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
 from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
 from .utils.convert import convert_in_duration
@@ -1709,7 +1709,7 @@ def appeal_comment_suspension(
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=suspension_action.id, user_id=auth_user.id, text=text
         )
         db.session.add(appeal)

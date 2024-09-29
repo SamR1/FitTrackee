@@ -18,7 +18,6 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
-from fittrackee.administration.models import AdminAction, AdminActionAppeal
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -50,6 +49,7 @@ from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import decode_short_id, get_readable_duration
 from fittrackee.workouts.models import Sport
 
+from ..reports.models import ReportAction, ReportActionAppeal
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
@@ -2092,7 +2092,7 @@ def appeal_user_suspension(
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=auth_user.suspension_action.id,
             user_id=auth_user.id,
             text=text,
@@ -2114,7 +2114,7 @@ def appeal_user_suspension(
 def get_user_warning(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
-    warning_action = AdminAction.query.filter_by(
+    warning_action = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()
 
@@ -2137,7 +2137,7 @@ def get_user_warning(
 def appeal_user_warning(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
-    warning_action = AdminAction.query.filter_by(
+    warning_action = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()
 
@@ -2148,7 +2148,7 @@ def appeal_user_warning(
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=warning_action.id,
             user_id=auth_user.id,
             text=text,

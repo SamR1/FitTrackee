@@ -2,7 +2,6 @@ from typing import Dict, Optional, Tuple
 
 from flask import current_app
 
-from fittrackee.administration.models import AdminAction
 from fittrackee.comments.models import Comment
 from fittrackee.emails.tasks import (
     comment_suspension_email,
@@ -19,8 +18,8 @@ from fittrackee.users.utils.language import get_language
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Workout
 
-from .exceptions import InvalidAdminActionException
-from .models import Report
+from .exceptions import InvalidReportActionException
+from .models import Report, ReportAction
 
 
 class ReportEmailService:
@@ -101,7 +100,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason
@@ -114,7 +113,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, _ = self._get_email_data(report, reason)
         email_data["without_user_action"] = True
@@ -125,13 +124,13 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
         )
-        if not admin_action:
-            raise InvalidAdminActionException("invalid action action")
+        if not report_action:
+            raise InvalidReportActionException("invalid action action")
 
         if report.reported_comment_id:
             email_data = self._get_comment_email_data(
@@ -148,7 +147,7 @@ class ReportEmailService:
                 fittrackee_url,
             )
         email_data["appeal_url"] = (
-            f"{fittrackee_url}/profile/warning/{admin_action.short_id}/appeal"
+            f"{fittrackee_url}/profile/warning/{report_action.short_id}/appeal"
         )
         user_warning_email.send(user_data, email_data)
 
@@ -157,13 +156,13 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
         )
-        if not admin_action:
-            raise InvalidAdminActionException("invalid action action")
+        if not report_action:
+            raise InvalidReportActionException("invalid action action")
 
         if report.reported_comment_id:
             email_data = self._get_comment_email_data(
@@ -187,7 +186,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -205,7 +204,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -224,7 +223,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -242,7 +241,7 @@ class ReportEmailService:
         *,
         report: Report,
         reason: Optional[str],
-        admin_action: Optional[AdminAction],
+        report_action: Optional[ReportAction],
     ) -> None:
         user_data, email_data, fittrackee_url = self._get_email_data(
             report, reason, with_user_image=True
@@ -261,11 +260,11 @@ class ReportEmailService:
         report: Report,
         action_type: str,
         reason: Optional[str],
-        admin_action: Optional[
-            AdminAction
+        report_action: Optional[
+            ReportAction
         ] = None,  # needed only for user warning
     ) -> None:
         send_email_func = getattr(self, f"_send_{action_type}_email")
         send_email_func(
-            report=report, reason=reason, admin_action=admin_action
+            report=report, reason=reason, report_action=report_action
         )

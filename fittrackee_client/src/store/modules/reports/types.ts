@@ -12,7 +12,7 @@ import type {
   IAppealPayload,
   IReportForAdmin,
   IReport,
-  IReportAdminActionPayload,
+  IReportActionPayload,
   IReportCommentPayload,
   IReportPayload,
   IGetReportPayload,
@@ -45,7 +45,7 @@ export interface IReportsActions {
   ): void
   [REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION](
     context: ActionContext<IReportsState, IRootState>,
-    payload: IReportAdminActionPayload
+    payload: IReportActionPayload
   ): void
   [REPORTS_STORE.ACTIONS.SUBMIT_REPORT](
     context: ActionContext<IReportsState, IRootState>,

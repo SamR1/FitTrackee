@@ -5,9 +5,9 @@ from flask import Blueprint, request
 from sqlalchemy import exc
 
 from fittrackee import db
-from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.oauth2.server import require_auth
 from fittrackee.privacy_levels import PrivacyLevel, can_view
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -235,7 +235,7 @@ def appeal_comment_suspension(
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=suspension_action.id, user_id=auth_user.id, text=text
         )
         db.session.add(appeal)

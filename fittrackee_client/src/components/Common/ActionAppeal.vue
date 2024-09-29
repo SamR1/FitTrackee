@@ -1,10 +1,10 @@
 <template>
-  <div v-if="adminAction.id" class="appeal description-list">
-    <dl v-if="adminAction.reason">
+  <div v-if="reportAction.id" class="appeal description-list">
+    <dl v-if="reportAction.reason">
       <dt>{{ $t(`user.${actionTitle}_REASON`) }}:</dt>
-      <dd>{{ adminAction.reason }}</dd>
+      <dd>{{ reportAction.reason }}</dd>
     </dl>
-    <div v-if="success || adminAction.appeal" class="appeal-submitted">
+    <div v-if="success || reportAction.appeal" class="appeal-submitted">
       <div
         class="info-box"
         :class="{ 'success-message': success, 'appeal-success': success }"
@@ -21,7 +21,7 @@
           </button>
         </span>
       </div>
-      <div v-if="adminAction.action_type.startsWith('user_')">
+      <div v-if="reportAction.action_type.startsWith('user_')">
         <slot name="additionalButtons"></slot>
       </div>
     </div>
@@ -70,17 +70,17 @@
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   interface Props {
-    adminAction: IUserAdminAction
+    reportAction: IUserReportAction
     loading: boolean
     success: boolean
   }
   const props = defineProps<Props>()
 
-  const { adminAction, loading, success } = toRefs(props)
+  const { reportAction, loading, success } = toRefs(props)
 
   const store = useStore()
 
@@ -88,7 +88,7 @@
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   const appealText: Ref<string> = ref('')
   const actionTitle: ComputedRef<string> = computed(() =>
-    adminAction.value.action_type.includes('_suspension')
+    reportAction.value.action_type.includes('_suspension')
       ? 'SUSPENSION'
       : 'WARNING'
   )

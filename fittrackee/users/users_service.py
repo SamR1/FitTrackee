@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 from sqlalchemy import func
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
+from fittrackee.reports.models import ReportAction
 from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
 from fittrackee.users.exceptions import (
     InvalidEmailException,
@@ -69,10 +69,10 @@ class UserManagerService:
         suspended: Optional[bool] = None,
         report_id: Optional[int] = None,
         reason: Optional[str] = None,
-    ) -> Tuple[User, bool, Optional[str], Optional[AdminAction]]:
+    ) -> Tuple[User, bool, Optional[str], Optional[ReportAction]]:
         user_updated = False
         new_password = None
-        admin_action = None
+        report_action = None
         user = self._get_user()
         if suspended is not None:
             if self.admin_user_id is None:
@@ -111,7 +111,7 @@ class UserManagerService:
             user.suspended_at = None
             user_updated = True
         if self.admin_user_id and report_id and suspended is not None:
-            admin_action = AdminAction(
+            report_action = ReportAction(
                 admin_user_id=self.admin_user_id,
                 action_type=(
                     "user_suspension" if suspended else "user_unsuspension"
@@ -121,10 +121,10 @@ class UserManagerService:
                 reason=reason,
                 user_id=user.id,
             )
-            db.session.add(admin_action)
+            db.session.add(report_action)
 
         db.session.commit()
-        return user, user_updated, new_password, admin_action
+        return user, user_updated, new_password, report_action
 
     def create_user(
         self,

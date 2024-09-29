@@ -16,7 +16,7 @@ import type { TPaginationPayload } from '@/types/api'
 import type {
   IAppealPayload,
   IGetReportPayload,
-  IReportAdminActionPayload,
+  IReportActionPayload,
   IReportCommentPayload,
   IReportPayload,
 } from '@/types/reports'
@@ -105,7 +105,7 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
     },
     [REPORTS_STORE.ACTIONS.SUBMIT_ADMIN_ACTION](
       context: ActionContext<IReportsState, IRootState>,
-      payload: IReportAdminActionPayload
+      payload: IReportActionPayload
     ): void {
       context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
       context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)

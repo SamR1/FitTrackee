@@ -5,13 +5,13 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    COMMENT_ACTION_TYPES,
-    WORKOUT_ACTION_TYPES,
-)
 from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.reports.models import Report
+from fittrackee.reports.models import (
+    COMMENT_ACTION_TYPES,
+    WORKOUT_ACTION_TYPES,
+    Report,
+)
 from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -216,7 +216,7 @@ class TestNotificationForFollowRequest:
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow_request"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
@@ -242,7 +242,7 @@ class TestNotificationForFollowRequest:
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
@@ -348,7 +348,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         assert serialized_notification[
             "workout"
         ] == workout_cycling_user_1.serialize(user=user_1)
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
 
@@ -484,12 +484,14 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "workout_comment"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
 
-class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
+class TestNotificationForWorkoutReportAction(
+    NotificationTestCase, ReportMixin
+):
     @pytest.mark.parametrize("input_admin_action", WORKOUT_ACTION_TYPES)
     def test_it_creates_notification_on_comment_admin_action(
         self,
@@ -505,7 +507,7 @@ class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
 
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type=input_admin_action,
@@ -518,7 +520,7 @@ class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
             to_user_id=user_2.id,
             event_object_id=workout_cycling_user_2.id,
         ).first()
-        assert notification.created_at == admin_action.created_at
+        assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == input_admin_action
 
@@ -536,7 +538,7 @@ class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type=input_admin_action,
@@ -552,8 +554,8 @@ class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
         serialized_notification = notification.serialize()
 
         assert serialized_notification[
-            "admin_action"
-        ] == admin_action.serialize(user_2)
+            "report_action"
+        ] == report_action.serialize(user_2)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
@@ -676,7 +678,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "comment_reply"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
@@ -780,12 +782,14 @@ class TestNotificationForCommentLike(NotificationTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "comment_like"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
 
-class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
+class TestNotificationForCommentReportAction(
+    NotificationTestCase, ReportMixin
+):
     @pytest.mark.parametrize("input_admin_action", COMMENT_ACTION_TYPES)
     def test_it_creates_notification_on_comment_admin_action(
         self,
@@ -800,7 +804,7 @@ class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
 
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_admin_action,
@@ -813,7 +817,7 @@ class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
             to_user_id=user_3.id,
             event_object_id=comment.id,
         ).first()
-        assert notification.created_at == admin_action.created_at
+        assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == input_admin_action
 
@@ -830,7 +834,7 @@ class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_admin_action,
@@ -846,8 +850,8 @@ class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
         serialized_notification = notification.serialize()
 
         assert serialized_notification[
-            "admin_action"
-        ] == admin_action.serialize(user_3)
+            "report_action"
+        ] == report_action.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["comment"] == comment.serialize(user_3)
         assert serialized_notification["from"] is None
@@ -1015,7 +1019,7 @@ class TestNotificationForMention(NotificationTestCase):
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "mention"
-        assert "admin_action" not in serialized_notification
+        assert "report_action" not in serialized_notification
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
@@ -1342,7 +1346,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
 
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1353,7 +1357,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             from_user_id=user_1_admin.id,
             to_user_id=user_3.id,
         ).first()
-        assert notification.created_at == admin_action.created_at
+        assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == input_action_type
 
@@ -1371,7 +1375,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1385,8 +1389,8 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         serialized_notification = notification.serialize()
 
         assert serialized_notification[
-            "admin_action"
-        ] == admin_action.serialize(user_3)
+            "report_action"
+        ] == report_action.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
@@ -1413,7 +1417,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
 
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type=input_action_type,
@@ -1424,7 +1428,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             from_user_id=user_1_admin.id,
             to_user_id=user_2.id,
         ).first()
-        assert notification.created_at == admin_action.created_at
+        assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_object_id == workout_cycling_user_2.id
         assert notification.event_type == input_action_type
@@ -1445,7 +1449,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type=input_action_type,
@@ -1459,8 +1463,8 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         serialized_notification = notification.serialize()
 
         assert serialized_notification[
-            "admin_action"
-        ] == admin_action.serialize(user_2)
+            "report_action"
+        ] == report_action.serialize(user_2)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
@@ -1488,7 +1492,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
 
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1499,7 +1503,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             from_user_id=user_1_admin.id,
             to_user_id=user_3.id,
         ).first()
-        assert notification.created_at == admin_action.created_at
+        assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
         assert notification.event_object_id == comment.id
         assert notification.event_type == input_action_type
@@ -1519,7 +1523,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1533,8 +1537,8 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         serialized_notification = notification.serialize()
 
         assert serialized_notification[
-            "admin_action"
-        ] == admin_action.serialize(user_3)
+            "report_action"
+        ] == report_action.serialize(user_3)
         assert serialized_notification["comment"] == comment.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
@@ -1550,13 +1554,13 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
             report_id=report.id,
         )
-        self.create_action_appeal(admin_action.id, user_2, with_commit=False)
+        self.create_action_appeal(report_action.id, user_2, with_commit=False)
         user_1_admin.is_active = False
         db.session.commit()
 
@@ -1571,13 +1575,13 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
             report_id=report.id,
         )
-        appeal = self.create_action_appeal(admin_action.id, user_2)
+        appeal = self.create_action_appeal(report_action.id, user_2)
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
@@ -1592,13 +1596,13 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        admin_action = self.create_admin_action(
+        report_action = self.create_admin_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
             report_id=report.id,
         )
-        self.create_action_appeal(admin_action.id, user_2)
+        self.create_action_appeal(report_action.id, user_2)
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
             to_user_id=user_1_admin.id,

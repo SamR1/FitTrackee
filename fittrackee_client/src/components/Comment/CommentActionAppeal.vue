@@ -14,7 +14,7 @@
 
     <ActionAppeal
       v-if="displayAppealForm"
-      :admin-action="action"
+      :report-action="action"
       :success="success === `comment_${comment.id}`"
       :loading="appealLoading === `comment_${comment.id}`"
       @submitForm="(text) => submitAppeal(text, 'comment', comment.id)"
@@ -34,11 +34,11 @@
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import useAppeal from '@/composables/useAppeal'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import type { IComment } from '@/types/workouts'
 
   interface Props {
-    action: IUserAdminAction
+    action: IUserReportAction
     comment: IComment
     hideSuspensionAppeal?: boolean
   }

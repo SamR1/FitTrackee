@@ -12,11 +12,11 @@ from fittrackee.users.models import User
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Sport, Workout
 
-from .mixins import ReportServiceCreateAdminActionMixin
+from .mixins import ReportServiceCreateReportActionMixin
 
 
 class TestReportEmailServiceForUserSuspension(
-    ReportServiceCreateAdminActionMixin
+    ReportServiceCreateReportActionMixin
 ):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_suspension(
@@ -53,7 +53,7 @@ class TestReportEmailServiceForUserSuspension(
 
 
 class TestReportEmailServiceForUserReactivation(
-    ReportServiceCreateAdminActionMixin
+    ReportServiceCreateReportActionMixin
 ):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_reactivation(
@@ -92,7 +92,7 @@ class TestReportEmailServiceForUserReactivation(
 
 
 class TestReportEmailServiceForUserWarning(
-    ReportServiceCreateAdminActionMixin
+    ReportServiceCreateReportActionMixin
 ):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_warning_for_user_report(
@@ -373,7 +373,7 @@ class TestReportEmailServiceForUserWarning(
 
 
 class TestReportEmailServiceForUserWarningLifting(
-    ReportServiceCreateAdminActionMixin
+    ReportServiceCreateReportActionMixin
 ):
     def test_it_sends_an_email_on_user_warning_for_user_report(
         self,
@@ -582,7 +582,7 @@ class TestReportEmailServiceForUserWarningLifting(
         )
 
 
-class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
+class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_comment_suspension(
         self,
@@ -775,7 +775,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateAdminActionMixin):
         )
 
 
-class TestReportEmailServiceForWorkout(ReportServiceCreateAdminActionMixin):
+class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_workout_suspension(
         self,
