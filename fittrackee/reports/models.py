@@ -232,11 +232,7 @@ class Report(BaseModel):
             ),
             "reported_comment": reported_comment,
             "reported_user": (
-                self.reported_user.serialize(
-                    current_user=current_user
-                    if self.object_type == 'user'
-                    else None
-                )
+                self.reported_user.serialize(current_user=current_user)
                 if self.reported_user_id
                 else None
             ),

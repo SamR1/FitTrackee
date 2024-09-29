@@ -76,6 +76,11 @@
                       {{ $t('admin.DELETED_USER') }}
                     </span>
                   </template>
+                  <AlertMessage
+                    v-else-if="report.reported_user?.suspended_at !== null"
+                    message="user.ACCOUNT_SUSPENDED_AT"
+                    :param="reportedUserSuspensionDate"
+                  />
                 </template>
               </Card>
               <Card class="report-detail-card">
@@ -330,7 +335,7 @@
                   }"
                   @click="
                     displayTextArea(
-                      `${report.reported_user.suspended_at === null ? '' : 'UN'}SUSPEND_ACCOUNT`
+                      `${report.reported_user.suspended_at ? 'UN' : ''}SUSPEND_ACCOUNT`
                     )
                   "
                 >
@@ -448,7 +453,15 @@
         currentAction.value
       )
   )
-
+  const reportedUserSuspensionDate: ComputedRef<string | null> = computed(() =>
+    report.value.reported_user?.suspended_at
+      ? formatDate(
+          report.value.reported_user?.suspended_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
+      : null
+  )
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, {
       reportId: +route.params.reportId,
