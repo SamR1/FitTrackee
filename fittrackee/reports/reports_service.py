@@ -240,6 +240,7 @@ class ReportService:
             content = Workout.query.filter_by(id=action.workout_id).first()
             content_type = "workout"
 
+        new_report_action = None
         if data["approved"]:
             if action.action_type == "user_suspension":
                 if not appeal.user.suspended_at:
@@ -250,19 +251,18 @@ class ReportService:
                 user_manager_service = UserManagerService(
                     username=appeal.user.username, admin_user_id=admin_user.id
                 )
-                user, _, _, _ = user_manager_service.update(
+                user, _, _, new_report_action = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
             if action.action_type == "user_warning":
-                report_action = ReportAction(
+                new_report_action = ReportAction(
                     admin_user_id=admin_user.id,
                     action_type="user_warning_lifting",
                     created_at=datetime.utcnow(),
                     report_id=action.report_id,
                     user_id=action.user_id,
                 )
-                db.session.add(report_action)
-                return report_action
+                db.session.add(new_report_action)
             if (
                 action.action_type
                 in ["comment_suspension", "workout_suspension"]
@@ -273,7 +273,7 @@ class ReportService:
                         f"{content_type} has already been reactivated"
                     )
                 content_id = {f"{content_type}_id": content.id}
-                report_action = ReportAction(
+                new_report_action = ReportAction(
                     admin_user_id=admin_user.id,
                     action_type=f"{content_type}_unsuspension",
                     created_at=datetime.utcnow(),
@@ -281,7 +281,7 @@ class ReportService:
                     user_id=action.user_id,
                     **content_id,
                 )
-                db.session.add(report_action)
+                db.session.add(new_report_action)
                 content.suspended_at = None
         else:
             if (
@@ -301,4 +301,4 @@ class ReportService:
                 raise InvalidReportActionException(
                     f"{content_type} has been reactivated after appeal"
                 )
-        return None
+        return new_report_action

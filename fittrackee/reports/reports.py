@@ -280,21 +280,18 @@ def process_appeal(
         return InvalidPayloadErrorResponse()
 
     try:
-        user_warning_lifting_action = report_service.process_appeal(
+        new_report_action = report_service.process_appeal(
             appeal, auth_user, data
         )
         db.session.flush()
 
-        if (
-            user_warning_lifting_action
-            and current_app.config['CAN_SEND_EMAILS']
-        ):
+        if new_report_action and current_app.config['CAN_SEND_EMAILS']:
             admin_action_email_service = ReportEmailService()
             admin_action_email_service.send_admin_action_email(
-                user_warning_lifting_action.report,
-                "user_warning_lifting",
+                new_report_action.report,
+                new_report_action.action_type,
                 reason,
-                user_warning_lifting_action,
+                new_report_action,
             )
 
         db.session.commit()

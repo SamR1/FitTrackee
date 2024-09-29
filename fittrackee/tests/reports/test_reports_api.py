@@ -3439,6 +3439,33 @@ class TestProcessReportActionAppeal(
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
+    def test_it_sends_an_email_when_appeal_on_user_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        suspension_action = self.create_admin_user_action(
+            user_1_admin, user_2, report_id=report.id
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        user_unsuspension_email_mock.send.assert_called_once()
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3552,6 +3579,41 @@ class TestProcessReportActionAppeal(
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
+    def test_it_sends_an_email_when_appeal_on_comment_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_admin_comment_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        comment_unsuspension_email_mock.send.assert_called_once()
+
     def test_it_returns_400_when_comment_already_unsuspended(
         self,
         app: Flask,
@@ -3632,6 +3694,35 @@ class TestProcessReportActionAppeal(
         appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_workout_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        suspension_action = self.create_admin_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        workout_unsuspension_email_mock.send.assert_called_once()
 
     def test_it_returns_400_when_workout_already_unsuspended(
         self,
