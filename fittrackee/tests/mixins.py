@@ -379,7 +379,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         )
 
 
-class UserModerationMixin(RandomMixin):
+class ReportMixin(RandomMixin):
     def create_report(
         self,
         *,
@@ -441,33 +441,71 @@ class UserModerationMixin(RandomMixin):
         db.session.commit()
         return admin_action
 
-    def create_user_suspension_action(
+    def create_admin_user_action(
         self,
         admin: User,
         user: User,
+        action_type: str = "user_suspension",
         report_id: Optional[int] = None,
     ) -> AdminAction:
         if not report_id:
             report_id = self.create_user_report(admin, user).id
         admin_action = self.create_admin_action(
-            admin, user, action_type="user_suspension", report_id=report_id
+            admin, user, action_type=action_type, report_id=report_id
         )
-        user.suspended_at = datetime.utcnow()
+        user.suspended_at = (
+            datetime.utcnow() if action_type == "user_suspension" else None
+        )
         db.session.commit()
         return admin_action
 
-    def create_user_warning_action(
-        self,
+    @staticmethod
+    def create_admin_workout_suspension_action(
+        admin: User, user: User, workout: Workout
+    ) -> AdminAction:
+        admin_action = AdminAction(
+            action_type="workout_suspension",
+            admin_user_id=admin.id,
+            workout_id=workout.id,
+            user_id=user.id,
+        )
+        db.session.add(admin_action)
+        return admin_action
+
+    @staticmethod
+    def create_admin_comment_action(
         admin: User,
         user: User,
-        report_id: Optional[int] = None,
+        comment: Comment,
+        action_type: str = "comment_suspension",
     ) -> AdminAction:
-        if not report_id:
-            report_id = self.create_user_report(admin, user).id
-        admin_action = self.create_admin_action(
-            admin, user, action_type="user_warning", report_id=report_id
+        admin_action = AdminAction(
+            action_type=action_type,
+            admin_user_id=admin.id,
+            comment_id=comment.id,
+            user_id=user.id,
         )
-        db.session.commit()
+        db.session.add(admin_action)
+        comment.suspended_at = (
+            datetime.utcnow() if action_type == "comment_suspension" else None
+        )
+        return admin_action
+
+    def create_admin_comment_actions(
+        self, admin: User, user: User, comment: Comment
+    ) -> AdminAction:
+        for n in range(2):
+            action_type = (
+                "comment_suspension" if n % 2 == 0 else "comment_unsuspension"
+            )
+            admin_action = self.create_admin_comment_action(
+                admin, user, comment, action_type
+            )
+            db.session.add(admin_action)
+        admin_action = self.create_admin_comment_action(
+            admin, user, comment, "comment_suspension"
+        )
+        db.session.add(admin_action)
         return admin_action
 
     def create_action_appeal(

@@ -14,7 +14,7 @@ from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import CommentMixin
 
@@ -2906,7 +2906,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
 
 class TestPostWorkoutCommentSuspensionAppeal(
-    ApiTestCaseMixin, BaseTestMixin, CommentMixin
+    ApiTestCaseMixin, BaseTestMixin, ReportMixin, CommentMixin
 ):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -3058,9 +3058,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        self.create_admin_comment_suspension_action(
-            user_2_admin, user_1, comment
-        )
+        self.create_admin_comment_action(user_2_admin, user_1, comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3090,7 +3088,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        action = self.create_admin_comment_suspension_action(
+        action = self.create_admin_comment_action(
             user_2_admin, user_1, comment
         )
         db.session.commit()
@@ -3132,7 +3130,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        action = self.create_admin_comment_suspension_action(
+        action = self.create_admin_comment_action(
             user_2_admin, user_1, comment
         )
         db.session.flush()

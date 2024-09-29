@@ -23,7 +23,7 @@ from fittrackee.users.models import (
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.workouts.models import Sport
 
-from ..mixins import ApiTestCaseMixin, UserModerationMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 USER_AGENT = (
@@ -4038,7 +4038,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class UserSuspensionTestCase(UserModerationMixin, ApiTestCaseMixin): ...
+class UserSuspensionTestCase(ReportMixin, ApiTestCaseMixin): ...
 
 
 class TestGetUserSuspension(UserSuspensionTestCase):

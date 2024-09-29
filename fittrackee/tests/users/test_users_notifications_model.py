@@ -16,7 +16,7 @@ from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
-from ..mixins import UserModerationMixin
+from ..mixins import ReportMixin
 from ..utils import random_int, random_string
 
 
@@ -489,9 +489,7 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         assert "workout" not in serialized_notification
 
 
-class TestNotificationForWorkoutAdminAction(
-    NotificationTestCase, UserModerationMixin
-):
+class TestNotificationForWorkoutAdminAction(NotificationTestCase, ReportMixin):
     @pytest.mark.parametrize("input_admin_action", WORKOUT_ACTION_TYPES)
     def test_it_creates_notification_on_comment_admin_action(
         self,
@@ -787,9 +785,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
         assert "workout" not in serialized_notification
 
 
-class TestNotificationForCommentAdminAction(
-    NotificationTestCase, UserModerationMixin
-):
+class TestNotificationForCommentAdminAction(NotificationTestCase, ReportMixin):
     @pytest.mark.parametrize("input_admin_action", COMMENT_ACTION_TYPES)
     def test_it_creates_notification_on_comment_admin_action(
         self,
@@ -1271,13 +1267,11 @@ class TestNotificationForReport(NotificationTestCase):
         assert serialized_notification["type"] == "report"
 
 
-class TestNotificationForSuspensionAppeal(UserModerationMixin):
+class TestNotificationForSuspensionAppeal(ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         self.create_action_appeal(
             suspension_action.id, user_2, with_commit=False
         )
@@ -1293,9 +1287,7 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
     def test_it_creates_notification_on_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
 
         notification = Notification.query.filter_by(
@@ -1311,8 +1303,8 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2, report.id
+        suspension_action = self.create_admin_user_action(
+            user_1_admin, user_2, report_id=report.id
         )
         self.create_action_appeal(suspension_action.id, user_2)
         notification = Notification.query.filter_by(
@@ -1334,9 +1326,7 @@ class TestNotificationForSuspensionAppeal(UserModerationMixin):
         assert serialized_notification["type"] == "suspension_appeal"
 
 
-class TestNotificationForUserWarning(
-    NotificationTestCase, UserModerationMixin
-):
+class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     @pytest.mark.parametrize(
         'input_action_type', ['user_warning', 'user_warning_lifting']
     )
@@ -1555,9 +1545,7 @@ class TestNotificationForUserWarning(
         assert "workout" not in serialized_notification
 
 
-class TestNotificationForUserWarningAppeal(
-    NotificationTestCase, UserModerationMixin
-):
+class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:

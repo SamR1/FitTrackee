@@ -18,7 +18,7 @@ from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, UserModerationMixin
+from ..mixins import RandomMixin, ReportMixin
 
 
 class TestReportModel(CommentMixin, RandomMixin):
@@ -1120,7 +1120,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         }
 
 
-class ReportCommentTestCase(CommentMixin, UserModerationMixin): ...
+class ReportCommentTestCase(CommentMixin, ReportMixin): ...
 
 
 class TestReportCommentModel(ReportCommentTestCase):

@@ -27,9 +27,9 @@ from fittrackee.workouts.models import (
     Workout,
 )
 
-from ..mixins import BaseTestMixin
+from ..mixins import BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from .mixins import WorkoutApiTestCaseMixin, WorkoutMixin
+from .mixins import WorkoutApiTestCaseMixin
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
@@ -3639,7 +3639,7 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
 
 
 class TestPostWorkoutSuspensionAppeal(
-    WorkoutApiTestCaseMixin, WorkoutMixin, BaseTestMixin
+    WorkoutApiTestCaseMixin, ReportMixin, BaseTestMixin
 ):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,

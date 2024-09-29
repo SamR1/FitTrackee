@@ -12,10 +12,11 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import ReportMixin
 from .mixins import CommentMixin
 
 
-class TestWorkoutCommentModel(CommentMixin):
+class TestWorkoutCommentModel(ReportMixin, CommentMixin):
     def test_comment_model(
         self,
         app: Flask,
@@ -151,12 +152,19 @@ class TestWorkoutCommentModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_2, workout_cycling_user_1)
-        self.create_admin_comment_actions(user_1_admin, user_2, comment)
+        self.create_admin_comment_action(
+            user_1_admin, user_2, comment, "comment_suspension"
+        )
+        self.create_admin_comment_action(
+            user_1_admin, user_2, comment, "comment_unsuspension"
+        )
 
         assert comment.suspension_action is None
 
 
-class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
+class TestWorkoutCommentModelSerializeForCommentOwner(
+    ReportMixin, CommentMixin
+):
     @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
         'input_visibility',

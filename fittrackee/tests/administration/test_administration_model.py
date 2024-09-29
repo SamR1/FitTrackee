@@ -25,10 +25,10 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import UserModerationMixin
+from ..mixins import ReportMixin
 
 
-class AdminActionTestCase(UserModerationMixin): ...
+class AdminActionTestCase(ReportMixin): ...
 
 
 class TestAdminActionModel(AdminActionTestCase):

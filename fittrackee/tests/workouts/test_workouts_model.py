@@ -13,13 +13,13 @@ from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
+from ..mixins import ReportMixin
 from ..utils import random_string
-from .mixins import WorkoutMixin
 from .utils import add_follower
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class WorkoutModelTestCase(WorkoutMixin):
+class WorkoutModelTestCase(ReportMixin):
     @staticmethod
     def update_workout(
         workout: Workout,

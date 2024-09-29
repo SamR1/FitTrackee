@@ -20,13 +20,12 @@ from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
+from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from ..workouts.mixins import WorkoutMixin
 
 
 class ReportTestCase(
-    CommentMixin, UserModerationMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ReportMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     route = "/api/reports"
 
@@ -3312,7 +3311,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
 
 
 class TestProcessAdminActionAppeal(
-    CommentMixin, WorkoutMixin, UserModerationMixin, ApiTestCaseMixin
+    CommentMixin, ReportMixin, ApiTestCaseMixin
 ):
     route = '/api/appeals/{appeal_id}'
 
@@ -3372,9 +3371,7 @@ class TestProcessAdminActionAppeal(
     def test_it_returns_error_when_data_are_missing(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3392,9 +3389,7 @@ class TestProcessAdminActionAppeal(
     def test_it_returns_400_when_user_already_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3421,9 +3416,7 @@ class TestProcessAdminActionAppeal(
     def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3458,8 +3451,8 @@ class TestProcessAdminActionAppeal(
         report = self.create_report(
             reporter=user_1_admin, reported_object=user_2
         )
-        warning_action = self.create_user_warning_action(
-            user_1_admin, user_2, report.id
+        warning_action = self.create_admin_user_action(
+            user_1_admin, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3492,8 +3485,8 @@ class TestProcessAdminActionAppeal(
         report = self.create_report(
             reporter=user_1_admin, reported_object=user_2
         )
-        warning_action = self.create_user_warning_action(
-            user_1_admin, user_2, report.id
+        warning_action = self.create_admin_user_action(
+            user_1_admin, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3532,7 +3525,7 @@ class TestProcessAdminActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3573,7 +3566,7 @@ class TestProcessAdminActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()

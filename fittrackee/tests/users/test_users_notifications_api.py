@@ -12,13 +12,11 @@ from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, UserModerationMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
-class TestUserNotifications(
-    CommentMixin, UserModerationMixin, ApiTestCaseMixin
-):
+class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
     route = "/api/notifications"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1101,7 +1099,7 @@ class TestUserNotifications(
         user_2_admin: User,
         user_3: User,
     ) -> None:
-        admin_action = self.create_user_suspension_action(user_2_admin, user_3)
+        admin_action = self.create_admin_user_action(user_2_admin, user_3)
         self.create_action_appeal(admin_action.id, user_3)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -1327,9 +1325,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestUserNotificationsStatus(
-    CommentMixin, UserModerationMixin, ApiTestCaseMixin
-):
+class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
     route = "/api/notifications/unread"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1426,7 +1422,7 @@ class TestUserNotificationsStatus(
         user_2_admin: User,
         user_3: User,
     ) -> None:
-        admin_action = self.create_user_suspension_action(user_2_admin, user_3)
+        admin_action = self.create_admin_user_action(user_2_admin, user_3)
         Notification.query.update({Notification.marked_as_read: True})
         db.session.commit()
         self.create_action_appeal(admin_action.id, user_3)

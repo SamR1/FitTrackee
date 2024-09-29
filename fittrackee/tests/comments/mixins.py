@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Optional
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
@@ -38,42 +37,3 @@ class CommentMixin(RandomMixin):
             comment.create_mentions()
         db.session.commit()
         return comment
-
-    @staticmethod
-    def create_admin_comment_suspension_action(
-        admin: User, user: User, comment: Comment
-    ) -> AdminAction:
-        admin_action = AdminAction(
-            action_type="comment_suspension",
-            admin_user_id=admin.id,
-            comment_id=comment.id,
-            user_id=user.id,
-        )
-        db.session.add(admin_action)
-        comment.suspended_at = datetime.utcnow()
-        return admin_action
-
-    @staticmethod
-    def create_admin_comment_actions(
-        admin: User, user: User, comment: Comment
-    ) -> AdminAction:
-        for n in range(2):
-            admin_action = AdminAction(
-                action_type=(
-                    "comment_suspension"
-                    if n % 2 == 0
-                    else "comment_unsuspension"
-                ),
-                admin_user_id=admin.id,
-                comment_id=comment.id,
-                user_id=user.id,
-            )
-            db.session.add(admin_action)
-        admin_action = AdminAction(
-            action_type="comment_suspension",
-            admin_user_id=admin.id,
-            comment_id=comment.id,
-            user_id=user.id,
-        )
-        db.session.add(admin_action)
-        return admin_action

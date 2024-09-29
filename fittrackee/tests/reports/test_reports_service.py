@@ -29,8 +29,7 @@ from fittrackee.users.models import User
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, UserModerationMixin
-from ..workouts.mixins import WorkoutMixin
+from ..mixins import RandomMixin, ReportMixin
 from .mixins import ReportServiceCreateAdminActionMixin
 
 
@@ -1604,7 +1603,7 @@ class TestReportServiceCreateAdminActionForWorkout(
 
 
 class TestReportServiceProcessAppeal(
-    ReportServiceCreateAdminActionMixin, UserModerationMixin, WorkoutMixin
+    ReportServiceCreateAdminActionMixin, ReportMixin
 ):
     @pytest.mark.parametrize(
         "input_data",
@@ -1616,9 +1615,7 @@ class TestReportServiceProcessAppeal(
     def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1644,9 +1641,7 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1666,9 +1661,7 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1695,9 +1688,7 @@ class TestReportServiceProcessAppeal(
     def test_it_raises_error_on_appeal_approval_when_user_is_already_reactivated(  # noqa
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         user_2.suspended_at = None
         report_service = ReportService()
@@ -1715,9 +1706,7 @@ class TestReportServiceProcessAppeal(
     def test_it_raises_error_on_appeal_reject_when_user_has_been_reactivated(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
-            user_1_admin, user_2
-        )
+        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         user_2.suspended_at = None
         report_service = ReportService()
@@ -1742,7 +1731,9 @@ class TestReportServiceProcessAppeal(
     def test_it_processes_user_warning_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        warning_action = self.create_user_warning_action(user_1_admin, user_2)
+        warning_action = self.create_admin_user_action(
+            user_1_admin, user_2, "user_warning"
+        )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1768,7 +1759,9 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        warning_action = self.create_user_warning_action(user_1_admin, user_2)
+        warning_action = self.create_admin_user_action(
+            user_1_admin, user_2, "user_warning"
+        )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1815,7 +1808,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         comment_suspended_at = comment.suspended_at
@@ -1858,7 +1851,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -1899,7 +1892,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -1934,7 +1927,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_admin_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
