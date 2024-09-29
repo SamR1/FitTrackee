@@ -1363,6 +1363,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             'is_followed_by': user_2.is_followed_by(user_1),
             'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
+            'suspended_at': user_2.suspended_at,
             'username': user_2.username,
         }
 
@@ -1378,5 +1379,6 @@ class TestUserLightSerializer(UserModelAssertMixin):
             'following': user_2.following.count(),
             'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
+            'suspended_at': user_2.suspended_at,
             'username': user_2.username,
         }

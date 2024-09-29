@@ -597,10 +597,10 @@ class User(BaseModel):
             'following': self.following.count(),
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
+            'suspended_at': self.suspended_at,
             'username': self.username,
         }
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
-            serialized_user['suspended_at'] = self.suspended_at
             serialized_user['is_active'] = self.is_active
         if role == UserRole.ADMIN:
             serialized_user['email'] = self.email

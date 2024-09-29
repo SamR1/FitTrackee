@@ -13,7 +13,7 @@
     <AlertMessage
       message="user.ACCOUNT_SUSPENDED_AT"
       :param="suspensionDate"
-      v-if="user.suspended_at !== null"
+      v-if="'suspended_at' in user && user.suspended_at !== null"
     >
       <template #additionalMessage v-if="displayMakeAppeal">
         <router-link to="/profile/suspension" class="appeal-link">
