@@ -69,9 +69,10 @@ class UserManagerService:
         suspended: Optional[bool] = None,
         report_id: Optional[int] = None,
         reason: Optional[str] = None,
-    ) -> Tuple[User, bool, Optional[str]]:
+    ) -> Tuple[User, bool, Optional[str], Optional[AdminAction]]:
         user_updated = False
         new_password = None
+        admin_action = None
         user = self._get_user()
         if suspended is not None:
             if self.admin_user_id is None:
@@ -123,7 +124,7 @@ class UserManagerService:
             db.session.add(admin_action)
 
         db.session.commit()
-        return user, user_updated, new_password
+        return user, user_updated, new_password, admin_action
 
     def create_user(
         self,

@@ -173,7 +173,7 @@ class ReportService:
                 user_manager_service = UserManagerService(
                     username=username, admin_user_id=admin_user.id
                 )
-                user, _, _ = user_manager_service.update(
+                user, _, _, _ = user_manager_service.update(
                     suspended=action_type == "user_suspension",
                     report_id=report.id,
                     reason=reason,
@@ -223,7 +223,7 @@ class ReportService:
     @staticmethod
     def process_appeal(
         appeal: AdminActionAppeal, admin_user: User, data: Dict
-    ) -> None:
+    ) -> Optional[AdminAction]:
         appeal.admin_user_id = admin_user.id
         appeal.approved = data["approved"]
         appeal.reason = data["reason"]
@@ -249,7 +249,7 @@ class ReportService:
                 user_manager_service = UserManagerService(
                     username=appeal.user.username, admin_user_id=admin_user.id
                 )
-                user, _, _ = user_manager_service.update(
+                user, _, _, _ = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
             if action.action_type == "user_warning":
@@ -261,6 +261,7 @@ class ReportService:
                     user_id=action.user_id,
                 )
                 db.session.add(admin_action)
+                return admin_action
             if (
                 action.action_type
                 in ["comment_suspension", "workout_suspension"]
@@ -299,3 +300,4 @@ class ReportService:
                 raise InvalidAdminActionException(
                     f"{content_type} has been reactivated after appeal"
                 )
+        return None

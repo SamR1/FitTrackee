@@ -46,14 +46,14 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update()
+        _, user_updated, _, _ = user_manager_service.update()
 
         assert user_updated is False
 
     def test_it_returns_user(self, app: Flask, user_1: User) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        user, _, _ = user_manager_service.update()
+        user, _, _, _ = user_manager_service.update()
 
         assert user == user_1
 
@@ -71,7 +71,7 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(is_admin=True)
+        _, user_updated, _, _ = user_manager_service.update(is_admin=True)
 
         assert user_updated is True
 
@@ -82,7 +82,7 @@ class TestUserManagerServiceUserUpdate:
             username=user_1_admin.username
         )
 
-        _, user_updated, _ = user_manager_service.update(is_admin=True)
+        _, user_updated, _, _ = user_manager_service.update(is_admin=True)
 
         assert user_1_admin.admin is True
         assert user_updated is True
@@ -95,7 +95,7 @@ class TestUserManagerServiceUserUpdate:
             username=inactive_user.username
         )
 
-        _, user_updated, _ = user_manager_service.update(
+        _, user_updated, _, _ = user_manager_service.update(
             is_admin=True, activate=input_activate
         )
 
@@ -111,7 +111,7 @@ class TestUserManagerServiceUserUpdate:
             username=inactive_user.username
         )
 
-        _, user_updated, _ = user_manager_service.update(activate=True)
+        _, user_updated, _, _ = user_manager_service.update(activate=True)
 
         assert inactive_user.is_active is True
         assert user_updated is True
@@ -121,7 +121,7 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(activate=False)
+        _, user_updated, _, _ = user_manager_service.update(activate=False)
 
         assert user_1.is_active is False
         assert user_1.confirmation_token is None
@@ -134,7 +134,7 @@ class TestUserManagerServiceUserUpdate:
             username=inactive_user.username
         )
 
-        _, user_updated, _ = user_manager_service.update(activate=True)
+        _, user_updated, _, _ = user_manager_service.update(activate=True)
 
         assert inactive_user.confirmation_token is None
         assert user_updated is True
@@ -144,7 +144,7 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(activate=True)
+        _, user_updated, _, _ = user_manager_service.update(activate=True)
 
         assert user_1.is_active is True
         assert user_updated is True
@@ -153,7 +153,9 @@ class TestUserManagerServiceUserUpdate:
         previous_password = user_1.password
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(reset_password=True)
+        _, user_updated, _, _ = user_manager_service.update(
+            reset_password=True
+        )
 
         assert user_1.password != previous_password
         assert user_updated is True
@@ -161,7 +163,7 @@ class TestUserManagerServiceUserUpdate:
     def test_new_password_is_encrypted(self, app: Flask, user_1: User) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, new_password = user_manager_service.update(
+        _, user_updated, new_password, _ = user_manager_service.update(
             reset_password=True
         )
 
@@ -194,7 +196,9 @@ class TestUserManagerServiceUserUpdate:
         current_email = user_1.email
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(new_email=new_email)
+        _, user_updated, _, _ = user_manager_service.update(
+            new_email=new_email
+        )
 
         assert user_1.email == current_email
         assert user_1.email_to_confirm == new_email
@@ -205,7 +209,7 @@ class TestUserManagerServiceUserUpdate:
         new_email = random_email()
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _ = user_manager_service.update(
+        _, user_updated, _, _ = user_manager_service.update(
             new_email=new_email, with_confirmation=False
         )
 
@@ -282,7 +286,7 @@ class TestUserManagerServiceUserUpdate:
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            _, user_updated, _ = user_manager_service.update(
+            _, user_updated, _, _ = user_manager_service.update(
                 suspended=True, report_id=report.id
             )
 
@@ -301,7 +305,7 @@ class TestUserManagerServiceUserUpdate:
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            _, user_updated, _ = user_manager_service.update(
+            _, user_updated, _, _ = user_manager_service.update(
                 suspended=True, report_id=report.id
             )
 
@@ -320,7 +324,7 @@ class TestUserManagerServiceUserUpdate:
             admin_user_id=user_2_admin.id,
         )
 
-        _, user_updated, _ = user_manager_service.update(
+        _, user_updated, _, _ = user_manager_service.update(
             suspended=False, report_id=report.id
         )
 
@@ -339,7 +343,7 @@ class TestUserManagerServiceUserUpdate:
             admin_user_id=user_2_admin.id,
         )
 
-        _, user_updated, _ = user_manager_service.update(
+        _, user_updated, _, _ = user_manager_service.update(
             suspended=None, report_id=report.id
         )
 

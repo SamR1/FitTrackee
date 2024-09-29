@@ -3452,6 +3452,70 @@ class TestProcessAdminActionAppeal(
             {"approved": False, "reason": "not ok"},
         ],
     )
+    def test_it_processes_user_warning_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        warning_action = self.create_user_warning_action(
+            user_1_admin, user_2, report.id
+        )
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_user_warning_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        warning_action = self.create_user_warning_action(
+            user_1_admin, user_2, report.id
+        )
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
     def test_it_processes_comment_suspension_appeal(
         self,
         app: Flask,

@@ -99,7 +99,7 @@ def manage_user(
     with app.app_context():
         try:
             user_manager_service = UserManagerService(username)
-            _, is_user_updated, password = user_manager_service.update(
+            _, is_user_updated, password, _ = user_manager_service.update(
                 is_admin=set_admin,
                 with_confirmation=False,
                 activate=activate if activate else None,

@@ -274,11 +274,28 @@ def process_appeal(
         )
 
     data = request.get_json()
-    if not data or "approved" not in data or not data.get("reason"):
+    reason = data.get("reason")
+    if not data or "approved" not in data or not reason:
         return InvalidPayloadErrorResponse()
 
     try:
-        report_service.process_appeal(appeal, auth_user, data)
+        user_warning_lifting_action = report_service.process_appeal(
+            appeal, auth_user, data
+        )
+        db.session.flush()
+
+        if (
+            user_warning_lifting_action
+            and current_app.config['CAN_SEND_EMAILS']
+        ):
+            admin_action_email_service = ReportEmailService()
+            admin_action_email_service.send_admin_action_email(
+                user_warning_lifting_action.report,
+                "user_warning_lifting",
+                reason,
+                user_warning_lifting_action,
+            )
+
         db.session.commit()
         return {
             "status": "success",
