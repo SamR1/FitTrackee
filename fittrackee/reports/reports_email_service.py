@@ -255,7 +255,7 @@ class ReportEmailService:
         email_data["without_user_action"] = True
         workout_unsuspension_email.send(user_data, email_data)
 
-    def send_admin_action_email(
+    def send_report_action_email(
         self,
         report: Report,
         action_type: str,

@@ -1080,27 +1080,27 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         )
         db.session.add(report)
         db.session.flush()
-        admin_action_1 = ReportAction(
+        report_action_1 = ReportAction(
             action_type="user_suspension",
             admin_user_id=user_1_admin.id,
             report_id=report.id,
             user_id=user_3.id,
         )
-        db.session.add(admin_action_1)
-        admin_action_2 = ReportAction(
+        db.session.add(report_action_1)
+        report_action_2 = ReportAction(
             action_type="report_resolution",
             admin_user_id=user_1_admin.id,
             report_id=report.id,
         )
-        db.session.add(admin_action_2)
+        db.session.add(report_action_2)
         db.session.commit()
 
         serialized_report = report.serialize(user_1_admin, full=True)
 
         assert serialized_report == {
             "report_actions": [
-                admin_action_1.serialize(user_1_admin, full=False),
-                admin_action_2.serialize(user_1_admin, full=False),
+                report_action_1.serialize(user_1_admin, full=False),
+                report_action_2.serialize(user_1_admin, full=False),
             ],
             "created_at": report.created_at,
             "comments": [],

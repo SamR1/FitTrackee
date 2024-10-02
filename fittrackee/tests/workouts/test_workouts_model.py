@@ -79,13 +79,13 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        expected_admin_action = self.create_admin_workout_action(
+        expected_report_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
         assert (
-            workout_cycling_user_2.suspension_action == expected_admin_action
+            workout_cycling_user_2.suspension_action == expected_report_action
         )
 
     def test_suspension_action_is_none_when_comment_is_unsuspended(
@@ -96,7 +96,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.create_admin_workout_action(
+        self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = None
@@ -347,7 +347,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        expected_admin_action = self.create_admin_workout_action(
+        expected_report_action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
 
@@ -386,7 +386,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'sport_id': workout_cycling_user_1.sport_id,
             'suspended': True,
             'suspended_at': workout_cycling_user_1.suspended_at,
-            'suspension': expected_admin_action.serialize(user_1, full=False),
+            'suspension': expected_report_action.serialize(user_1, full=False),
             'title': None,
             'user': user_1.serialize(),
             'weather_end': None,
@@ -511,7 +511,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        self.create_admin_workout_action(
+        self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
 
@@ -1005,7 +1005,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        self.create_admin_workout_action(
+        self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
@@ -1299,7 +1299,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         self.create_comment(
             user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
-        self.create_admin_workout_action(
+        self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()

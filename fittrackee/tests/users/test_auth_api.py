@@ -4078,7 +4078,7 @@ class TestGetUserSuspension(UserSuspensionTestCase):
     def test_it_returns_user_suspension(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(user_1_admin, user_2)
+        action = self.create_report_user_action(user_1_admin, user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4163,7 +4163,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
     def test_it_returns_400_when_no_text_provided(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        self.create_admin_user_action(user_1_admin, user_2)
+        self.create_report_user_action(user_1_admin, user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4182,7 +4182,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
     def test_user_can_appeal_user_suspension(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(user_1_admin, user_2)
+        action = self.create_report_user_action(user_1_admin, user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4213,7 +4213,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
     def test_user_can_appeal_user_suspension_only_once(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(user_1_admin, user_2)
+        action = self.create_report_user_action(user_1_admin, user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         appeal = ReportActionAppeal(
@@ -4299,7 +4299,7 @@ class TestGetUserWarning(UserSuspensionTestCase):
     def test_it_returns_404_when_warning_is_for_another_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_3, action_type="user_warning"
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4320,7 +4320,7 @@ class TestGetUserWarning(UserSuspensionTestCase):
     def test_it_returns_user_warning(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4405,7 +4405,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
     def test_it_returns_400_when_no_text_provided(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         db.session.commit()
@@ -4425,7 +4425,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
     def test_user_can_appeal_user_warning(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4456,7 +4456,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
     def test_user_can_appeal_user_warning_only_once(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         appeal = ReportActionAppeal(
@@ -4492,7 +4492,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
         client_scope: str,
         can_access: bool,
     ) -> None:
-        action = self.create_admin_user_action(
+        action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         (

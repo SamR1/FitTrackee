@@ -568,7 +568,7 @@ class TestReportServiceUpdate(CommentMixin):
         assert report_comment.created_at == now
         assert report_comment.user_id == user_1_admin.id
 
-    def test_it_does_not_create_admin_action_on_report_comment(
+    def test_it_does_not_create_report_action_on_report_comment(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_service = ReportService()
@@ -799,14 +799,14 @@ class TestReportServiceCreateReportAction(
         with pytest.raises(
             InvalidReportActionException, match="invalid 'username'"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
                 data={"username": user_3.username},
             )
 
-    def test_it_raises_exception_when_admin_action_is_invalid(
+    def test_it_raises_exception_when_report_action_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_service = ReportService()
@@ -817,7 +817,7 @@ class TestReportServiceCreateReportAction(
         with pytest.raises(
             InvalidReportActionException, match="invalid action type"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type=self.random_string(),
@@ -839,7 +839,7 @@ class TestReportServiceCreateReportActionForUser(
         with pytest.raises(
             InvalidReportActionException, match="'username' is missing"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
@@ -857,7 +857,7 @@ class TestReportServiceCreateReportActionForUser(
         with pytest.raises(
             InvalidReportActionException, match="invalid 'username'"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
@@ -874,7 +874,7 @@ class TestReportServiceCreateReportActionForUser(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
@@ -901,7 +901,7 @@ class TestReportServiceCreateReportActionForUser(
             UserAlreadySuspendedException,
             match=f"user '{user_3.username}' already suspended",
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
@@ -919,7 +919,7 @@ class TestReportServiceCreateReportActionForUser(
         user_3.suspended_at = datetime.utcnow()
         db.session.flush()
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_unsuspension",
@@ -933,7 +933,7 @@ class TestReportServiceCreateReportActionForUser(
         )
 
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
-    def test_it_creates_admin_action_for_user_suspension(
+    def test_it_creates_report_action_for_user_suspension(
         self,
         app: Flask,
         user_1_admin: User,
@@ -948,7 +948,7 @@ class TestReportServiceCreateReportActionForUser(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_suspension",
@@ -968,7 +968,7 @@ class TestReportServiceCreateReportActionForUser(
         assert report_action.user_id == user_3.id
         assert report_action.workout_id is None
 
-    def test_it_creates_admin_action_for_user_reactivation(
+    def test_it_creates_report_action_for_user_reactivation(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_service = ReportService()
@@ -978,7 +978,7 @@ class TestReportServiceCreateReportActionForUser(
         user_3.suspended_at = datetime.utcnow()
         db.session.flush()
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_unsuspension",
@@ -996,7 +996,7 @@ class TestReportServiceCreateReportActionForUser(
         assert report_action.user_id == user_3.id
         assert report_action.workout_id is None
 
-    def test_it_creates_admin_action_for_user_warning_on_user_report(
+    def test_it_creates_report_action_for_user_warning_on_user_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_service = ReportService()
@@ -1004,7 +1004,7 @@ class TestReportServiceCreateReportActionForUser(
             report_service, reporter=user_2, reported_user=user_3
         )
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -1022,7 +1022,7 @@ class TestReportServiceCreateReportActionForUser(
         assert report_action.user_id == user_3.id
         assert report_action.workout_id is None
 
-    def test_it_creates_admin_action_for_user_warning_on_comment_report(
+    def test_it_creates_report_action_for_user_warning_on_comment_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1039,7 +1039,7 @@ class TestReportServiceCreateReportActionForUser(
             workout=workout_cycling_user_2,
         )
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -1057,7 +1057,7 @@ class TestReportServiceCreateReportActionForUser(
         assert report_action.user_id == user_3.id
         assert report_action.workout_id is None
 
-    def test_it_creates_admin_action_for_user_warning_on_workout_report(
+    def test_it_creates_report_action_for_user_warning_on_workout_report(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1073,7 +1073,7 @@ class TestReportServiceCreateReportActionForUser(
             workout=workout_cycling_user_2,
         )
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -1098,7 +1098,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -1109,14 +1109,14 @@ class TestReportServiceCreateReportActionForUser(
             UserWarningExistsException,
             match="user already warned",
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="user_warning",
                 data={"username": user_3.username},
             )
 
-    def test_it_creates_admin_action_for_user_warning_when_warning_exists_for_another_report(  # noqa
+    def test_it_creates_report_action_for_user_warning_when_warning_exists_for_another_report(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -1131,14 +1131,14 @@ class TestReportServiceCreateReportActionForUser(
         another_report = self.create_report_for_user(
             report_service, reporter=user_4, reported_user=user_3
         )
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=another_report,
             admin_user=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
 
-        report_service.create_admin_action(
+        report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -1179,7 +1179,7 @@ class TestReportServiceCreateReportActionForComment(
         with pytest.raises(
             InvalidReportActionException, match="'comment_id' is missing"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_suspension",
@@ -1206,7 +1206,7 @@ class TestReportServiceCreateReportActionForComment(
         with pytest.raises(
             InvalidReportActionException, match="invalid 'comment_id'"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_suspension",
@@ -1239,7 +1239,7 @@ class TestReportServiceCreateReportActionForComment(
                 "already suspended"
             ),
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_suspension",
@@ -1265,7 +1265,7 @@ class TestReportServiceCreateReportActionForComment(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_suspension",
@@ -1280,7 +1280,7 @@ class TestReportServiceCreateReportActionForComment(
         )
 
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
-    def test_it_creates_admin_action_for_comment_suspension(
+    def test_it_creates_report_action_for_comment_suspension(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1300,7 +1300,7 @@ class TestReportServiceCreateReportActionForComment(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 reason=input_reason.get("reason"),
@@ -1340,7 +1340,7 @@ class TestReportServiceCreateReportActionForComment(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_unsuspension",
@@ -1354,7 +1354,7 @@ class TestReportServiceCreateReportActionForComment(
             is None
         )
 
-    def test_it_creates_admin_action_for_comment_unsuspension(
+    def test_it_creates_report_action_for_comment_unsuspension(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1375,7 +1375,7 @@ class TestReportServiceCreateReportActionForComment(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="comment_unsuspension",
@@ -1417,7 +1417,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with pytest.raises(
             InvalidReportActionException, match="'workout_id' is missing"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_suspension",
@@ -1443,7 +1443,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with pytest.raises(
             InvalidReportActionException, match="invalid 'workout_id'"
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_suspension",
@@ -1475,7 +1475,7 @@ class TestReportServiceCreateReportActionForWorkout(
                 "already suspended"
             ),
         ):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_suspension",
@@ -1500,7 +1500,7 @@ class TestReportServiceCreateReportActionForWorkout(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_suspension",
@@ -1515,7 +1515,7 @@ class TestReportServiceCreateReportActionForWorkout(
         )
 
     @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
-    def test_it_creates_admin_action_for_workout_suspension(
+    def test_it_creates_report_action_for_workout_suspension(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1534,7 +1534,7 @@ class TestReportServiceCreateReportActionForWorkout(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 reason=input_reason.get("reason"),
@@ -1573,7 +1573,7 @@ class TestReportServiceCreateReportActionForWorkout(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_unsuspension",
@@ -1587,7 +1587,7 @@ class TestReportServiceCreateReportActionForWorkout(
             is None
         )
 
-    def test_it_creates_admin_action_for_workout_unsuspension(
+    def test_it_creates_report_action_for_workout_unsuspension(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1608,7 +1608,7 @@ class TestReportServiceCreateReportActionForWorkout(
         now = datetime.utcnow()
 
         with travel(now, tick=False):
-            report_service.create_admin_action(
+            report_service.create_report_action(
                 report=report,
                 admin_user=user_1_admin,
                 action_type="workout_unsuspension",
@@ -1640,7 +1640,9 @@ class TestReportServiceProcessAppeal(
     def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1666,7 +1668,9 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1686,7 +1690,9 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
         now = datetime.utcnow()
@@ -1713,7 +1719,9 @@ class TestReportServiceProcessAppeal(
     def test_it_raises_error_on_appeal_approval_when_user_is_already_reactivated(  # noqa
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         user_2.suspended_at = None
         report_service = ReportService()
@@ -1731,7 +1739,9 @@ class TestReportServiceProcessAppeal(
     def test_it_raises_error_on_appeal_reject_when_user_has_been_reactivated(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         user_2.suspended_at = None
         report_service = ReportService()
@@ -1756,7 +1766,7 @@ class TestReportServiceProcessAppeal(
     def test_it_processes_user_warning_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        warning_action = self.create_admin_user_action(
+        warning_action = self.create_report_user_action(
             user_1_admin, user_2, "user_warning"
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
@@ -1784,7 +1794,7 @@ class TestReportServiceProcessAppeal(
         user_1_admin: User,
         user_2: User,
     ) -> None:
-        warning_action = self.create_admin_user_action(
+        warning_action = self.create_report_user_action(
             user_1_admin, user_2, "user_warning"
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
@@ -1833,7 +1843,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         comment_suspended_at = comment.suspended_at
@@ -1876,7 +1886,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -1917,7 +1927,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -1952,7 +1962,7 @@ class TestReportServiceProcessAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -1990,7 +2000,7 @@ class TestReportServiceProcessAppeal(
         input_data: Dict,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -2028,7 +2038,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -2066,7 +2076,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.flush()
@@ -2094,7 +2104,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.flush()

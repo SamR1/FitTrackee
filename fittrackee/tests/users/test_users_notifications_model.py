@@ -492,8 +492,8 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
 class TestNotificationForWorkoutReportAction(
     NotificationTestCase, ReportMixin
 ):
-    @pytest.mark.parametrize("input_admin_action", WORKOUT_ACTION_TYPES)
-    def test_it_creates_notification_on_comment_admin_action(
+    @pytest.mark.parametrize("input_report_action", WORKOUT_ACTION_TYPES)
+    def test_it_creates_notification_on_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -501,16 +501,16 @@ class TestNotificationForWorkoutReportAction(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_admin_action: str,
+        input_report_action: str,
     ) -> None:
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
 
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
-            action_type=input_admin_action,
+            action_type=input_report_action,
             report_id=report.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -522,9 +522,9 @@ class TestNotificationForWorkoutReportAction(
         ).first()
         assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == input_admin_action
+        assert notification.event_type == input_report_action
 
-    @pytest.mark.parametrize("input_admin_action", WORKOUT_ACTION_TYPES)
+    @pytest.mark.parametrize("input_report_action", WORKOUT_ACTION_TYPES)
     def test_it_serializes_comment_action_notification(
         self,
         app: Flask,
@@ -533,15 +533,15 @@ class TestNotificationForWorkoutReportAction(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_admin_action: str,
+        input_report_action: str,
     ) -> None:
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
-            action_type=input_admin_action,
+            action_type=input_report_action,
             report_id=report.id,
             workout_id=workout_cycling_user_2.id,
         )
@@ -560,7 +560,7 @@ class TestNotificationForWorkoutReportAction(
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["type"] == input_admin_action
+        assert serialized_notification["type"] == input_report_action
         assert serialized_notification[
             "workout"
         ] == workout_cycling_user_2.serialize(user=user_2)
@@ -790,8 +790,8 @@ class TestNotificationForCommentLike(NotificationTestCase):
 class TestNotificationForCommentReportAction(
     NotificationTestCase, ReportMixin
 ):
-    @pytest.mark.parametrize("input_admin_action", COMMENT_ACTION_TYPES)
-    def test_it_creates_notification_on_comment_admin_action(
+    @pytest.mark.parametrize("input_report_action", COMMENT_ACTION_TYPES)
+    def test_it_creates_notification_on_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -799,15 +799,15 @@ class TestNotificationForCommentReportAction(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_admin_action: str,
+        input_report_action: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
 
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
-            action_type=input_admin_action,
+            action_type=input_report_action,
             report_id=report.id,
             comment_id=comment.id,
         )
@@ -819,9 +819,9 @@ class TestNotificationForCommentReportAction(
         ).first()
         assert notification.created_at == report_action.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == input_admin_action
+        assert notification.event_type == input_report_action
 
-    @pytest.mark.parametrize("input_admin_action", COMMENT_ACTION_TYPES)
+    @pytest.mark.parametrize("input_report_action", COMMENT_ACTION_TYPES)
     def test_it_serializes_comment_action_notification(
         self,
         app: Flask,
@@ -830,14 +830,14 @@ class TestNotificationForCommentReportAction(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_admin_action: str,
+        input_report_action: str,
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
-            action_type=input_admin_action,
+            action_type=input_report_action,
             report_id=report.id,
             comment_id=comment.id,
         )
@@ -857,7 +857,7 @@ class TestNotificationForCommentReportAction(
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
-        assert serialized_notification["type"] == input_admin_action
+        assert serialized_notification["type"] == input_report_action
         assert "report" not in serialized_notification
         assert "workout" not in serialized_notification
 
@@ -1275,7 +1275,9 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         self.create_action_appeal(
             suspension_action.id, user_2, with_commit=False
         )
@@ -1291,7 +1293,9 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
     def test_it_creates_notification_on_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
 
         notification = Notification.query.filter_by(
@@ -1307,7 +1311,7 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        suspension_action = self.create_admin_user_action(
+        suspension_action = self.create_report_user_action(
             user_1_admin, user_2, report_id=report.id
         )
         self.create_action_appeal(suspension_action.id, user_2)
@@ -1346,7 +1350,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
 
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1375,7 +1379,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1417,7 +1421,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
 
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
             action_type=input_action_type,
@@ -1449,7 +1453,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
             action_type=input_action_type,
@@ -1492,7 +1496,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
 
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1523,7 +1527,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     ) -> None:
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_3,
             action_type=input_action_type,
@@ -1554,7 +1558,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
@@ -1575,7 +1579,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
@@ -1596,7 +1600,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             user_1_admin,
             user_2,
             action_type="user_warning",

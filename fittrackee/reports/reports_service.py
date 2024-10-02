@@ -123,7 +123,7 @@ class ReportService:
         return report
 
     @staticmethod
-    def create_admin_action(
+    def create_report_action(
         *,
         report: Report,
         admin_user: User,
@@ -149,12 +149,12 @@ class ReportService:
             if action_type.startswith("user_warning"):
                 user = User.query.filter_by(username=username).first()
 
-                existing_admin_action = ReportAction.query.filter_by(
+                existing_report_action = ReportAction.query.filter_by(
                     action_type=action_type,
                     report_id=report.id,
                     user_id=user.id,
                 ).first()
-                if existing_admin_action:
+                if existing_report_action:
                     raise UserWarningExistsException("user already warned")
 
                 report_action = ReportAction(

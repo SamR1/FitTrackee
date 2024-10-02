@@ -34,7 +34,7 @@ class TestReportEmailServiceForUserSuspension(
         )
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_suspension", input_reason.get("reason")
         )
 
@@ -73,7 +73,7 @@ class TestReportEmailServiceForUserReactivation(
         db.session.flush()
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_unsuspension", input_reason.get("reason")
         )
 
@@ -111,7 +111,7 @@ class TestReportEmailServiceForUserWarning(
         user_3.suspended_at = datetime.utcnow()
         db.session.flush()
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -120,7 +120,7 @@ class TestReportEmailServiceForUserWarning(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning", input_reason.get("reason"), user_warning
         )
 
@@ -159,7 +159,7 @@ class TestReportEmailServiceForUserWarning(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -168,7 +168,7 @@ class TestReportEmailServiceForUserWarning(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning", None, user_warning
         )
 
@@ -216,7 +216,7 @@ class TestReportEmailServiceForUserWarning(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -226,7 +226,7 @@ class TestReportEmailServiceForUserWarning(
         db.session.delete(workout_cycling_user_2)
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning", None, user_warning
         )
 
@@ -272,7 +272,7 @@ class TestReportEmailServiceForUserWarning(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -281,7 +281,7 @@ class TestReportEmailServiceForUserWarning(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning", None, user_warning
         )
 
@@ -329,7 +329,7 @@ class TestReportEmailServiceForUserWarning(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning",
@@ -338,7 +338,7 @@ class TestReportEmailServiceForUserWarning(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning", None, user_warning
         )
 
@@ -390,7 +390,7 @@ class TestReportEmailServiceForUserWarningLifting(
         user_3.suspended_at = datetime.utcnow()
         db.session.flush()
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning_lifting",
@@ -399,7 +399,7 @@ class TestReportEmailServiceForUserWarningLifting(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning_lifting", None, user_warning
         )
 
@@ -435,7 +435,7 @@ class TestReportEmailServiceForUserWarningLifting(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning_lifting",
@@ -444,7 +444,7 @@ class TestReportEmailServiceForUserWarningLifting(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning_lifting", None, user_warning
         )
 
@@ -488,7 +488,7 @@ class TestReportEmailServiceForUserWarningLifting(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning_lifting",
@@ -497,7 +497,7 @@ class TestReportEmailServiceForUserWarningLifting(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning_lifting", None, user_warning
         )
 
@@ -542,7 +542,7 @@ class TestReportEmailServiceForUserWarningLifting(
             workout=workout_cycling_user_2,
         )
         report_email_service = ReportEmailService()
-        user_warning = report_service.create_admin_action(
+        user_warning = report_service.create_report_action(
             report=report,
             admin_user=user_1_admin,
             action_type="user_warning_lifting",
@@ -551,7 +551,7 @@ class TestReportEmailServiceForUserWarningLifting(
         )
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "user_warning_lifting", None, user_warning
         )
 
@@ -604,7 +604,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         )
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "comment_suspension", input_reason.get("reason")
         )
 
@@ -651,7 +651,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         db.session.delete(workout_cycling_user_2)
         db.session.flush()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "comment_suspension", None
         )
 
@@ -699,7 +699,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         db.session.flush()
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "comment_unsuspension", input_reason.get("reason")
         )
 
@@ -748,7 +748,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         db.session.flush()
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "comment_unsuspension", None
         )
 
@@ -796,7 +796,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         )
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "workout_suspension", input_reason.get("reason")
         )
 
@@ -842,7 +842,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         )
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "workout_suspension", None
         )
 
@@ -893,7 +893,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         db.session.flush()
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "workout_unsuspension", input_reason.get("reason")
         )
 
@@ -941,7 +941,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         db.session.flush()
         report_email_service = ReportEmailService()
 
-        report_email_service.send_admin_action_email(
+        report_email_service.send_report_action_email(
             report, "workout_unsuspension", None
         )
 

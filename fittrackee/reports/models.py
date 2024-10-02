@@ -391,12 +391,12 @@ class ReportAction(BaseModel):
     comment = db.relationship(
         'Comment',
         lazy=True,
-        backref=db.backref('comment_admin_action', lazy='select'),
+        backref=db.backref('comment_report_action', lazy='select'),
     )
     workout = db.relationship(
         'Workout',
         lazy=True,
-        backref=db.backref('workout_admin_action', lazy='select'),
+        backref=db.backref('workout_report_action', lazy='select'),
     )
 
     def __init__(
@@ -594,7 +594,7 @@ class ReportActionAppeal(BaseModel):
 
 
 @listens_for(ReportAction, 'after_insert')
-def on_admin_action_insert(
+def on_report_action_insert(
     mapper: Mapper, connection: Connection, new_action: ReportAction
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
@@ -616,7 +616,7 @@ def on_admin_action_insert(
 
 
 @listens_for(ReportActionAppeal, 'after_insert')
-def on_admin_action_appeal_insert(
+def on_report_action_appeal_insert(
     mapper: Mapper, connection: Connection, new_appeal: ReportActionAppeal
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)

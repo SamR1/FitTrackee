@@ -136,12 +136,12 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_2, workout_cycling_user_1)
-        expected_admin_action = self.create_admin_comment_actions(
+        expected_report_action = self.create_report_comment_actions(
             user_1_admin, user_2, comment
         )
         comment.suspended_at = datetime.utcnow()
 
-        assert comment.suspension_action == expected_admin_action
+        assert comment.suspension_action == expected_report_action
 
     def test_suspension_action_is_none_when_comment_is_unsuspended(
         self,
@@ -152,10 +152,10 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_2, workout_cycling_user_1)
-        self.create_admin_comment_action(
+        self.create_report_comment_action(
             user_1_admin, user_2, comment, "comment_suspension"
         )
-        self.create_admin_comment_action(
+        self.create_report_comment_action(
             user_1_admin, user_2, comment, "comment_unsuspension"
         )
 
@@ -284,7 +284,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
         comment = self.create_comment(user_1, workout_cycling_user_2)
-        expected_admin_action = self.create_admin_comment_actions(
+        expected_report_action = self.create_report_comment_actions(
             user_2_admin, user_1, comment
         )
         comment.suspended_at = datetime.utcnow()
@@ -302,7 +302,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             'mentions': [],
             'suspended': True,
             'suspended_at': comment.suspended_at,
-            'suspension': expected_admin_action.serialize(user_1, full=False),
+            'suspension': expected_report_action.serialize(user_1, full=False),
             'modification_date': comment.modification_date,
             'reply_to': comment.reply_to,
             'replies': [],

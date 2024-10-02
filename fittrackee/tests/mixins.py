@@ -395,7 +395,7 @@ class ReportMixin(RandomMixin):
         return self.create_report(reporter=reporter, reported_object=user)
 
     @staticmethod
-    def create_admin_action(
+    def create_report_action(
         admin_user: User,
         user: User,
         report_id: int,
@@ -432,7 +432,7 @@ class ReportMixin(RandomMixin):
         db.session.commit()
         return report_action
 
-    def create_admin_user_action(
+    def create_report_user_action(
         self,
         admin: User,
         user: User,
@@ -442,7 +442,7 @@ class ReportMixin(RandomMixin):
         report_id = (
             report_id if report_id else self.create_user_report(admin, user).id
         )
-        report_action = self.create_admin_action(
+        report_action = self.create_report_action(
             admin, user, action_type=action_type, report_id=report_id
         )
         user.suspended_at = (
@@ -451,7 +451,7 @@ class ReportMixin(RandomMixin):
         db.session.commit()
         return report_action
 
-    def create_admin_workout_action(
+    def create_report_workout_action(
         self,
         admin: User,
         user: User,
@@ -470,7 +470,7 @@ class ReportMixin(RandomMixin):
         db.session.add(report_action)
         return report_action
 
-    def create_admin_comment_action(
+    def create_report_comment_action(
         self,
         admin: User,
         user: User,
@@ -492,18 +492,18 @@ class ReportMixin(RandomMixin):
         )
         return report_action
 
-    def create_admin_comment_actions(
+    def create_report_comment_actions(
         self, admin: User, user: User, comment: Comment
     ) -> ReportAction:
         for n in range(2):
             action_type = (
                 "comment_suspension" if n % 2 == 0 else "comment_unsuspension"
             )
-            report_action = self.create_admin_comment_action(
+            report_action = self.create_report_comment_action(
                 admin, user, comment, action_type
             )
             db.session.add(report_action)
-        report_action = self.create_admin_comment_action(
+        report_action = self.create_report_comment_action(
             admin, user, comment, "comment_suspension"
         )
         db.session.add(report_action)
@@ -512,12 +512,12 @@ class ReportMixin(RandomMixin):
     def create_action_appeal(
         self, action_id: int, user: User, with_commit: bool = True
     ) -> ReportActionAppeal:
-        admin_action_appeal = ReportActionAppeal(
+        report_action_appeal = ReportActionAppeal(
             action_id=action_id,
             user_id=user.id,
             text=self.random_string(),
         )
-        db.session.add(admin_action_appeal)
+        db.session.add(report_action_appeal)
         if with_commit:
             db.session.commit()
-        return admin_action_appeal
+        return report_action_appeal

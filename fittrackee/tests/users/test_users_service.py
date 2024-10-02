@@ -354,7 +354,7 @@ class TestUserManagerServiceUserUpdate:
         'input_suspended, expected_action_action',
         [(True, "user_suspension"), (False, "user_unsuspension")],
     )
-    def test_it_creates_admin_action_when_updated_suspended_status(
+    def test_it_creates_report_action_when_updated_suspended_status(
         self,
         app: Flask,
         user_1_admin: User,

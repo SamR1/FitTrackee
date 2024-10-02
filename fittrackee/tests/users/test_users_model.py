@@ -1242,7 +1242,7 @@ class TestUsersWithSuspensions(ReportMixin):
         report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type=action_type,
-            report_id=self.create_admin_user_action(
+            report_id=self.create_report_user_action(
                 user_1_admin, user_2, action_type
             ).id,
             user_id=user_2.id,
@@ -1269,17 +1269,17 @@ class TestUsersWithSuspensions(ReportMixin):
             )
             db.session.add(report_action)
             db.session.flush()
-        expected_admin_action = ReportAction(
+        expected_report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=report_id,
             user_id=user_2.id,
         )
         user_2.suspended_at = datetime.utcnow()
-        db.session.add(expected_admin_action)
+        db.session.add(expected_report_action)
         db.session.commit()
 
-        assert user_2.suspension_action == expected_admin_action
+        assert user_2.suspension_action == expected_report_action
 
     def test_suspension_action_is_none_when_user_is_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User

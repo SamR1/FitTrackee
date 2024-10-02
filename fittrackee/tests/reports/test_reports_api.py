@@ -2061,7 +2061,7 @@ class TestPatchReport(ReportTestCase):
 
 
 class TestPostReportAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+    route = "/api/reports/{report_id}/actions"
 
     def test_it_returns_401_if_user_is_not_authenticated(
         self,
@@ -2164,7 +2164,7 @@ class TestPostReportAction(ReportTestCase):
 
 
 class TestPostReportActionForUserAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+    route = "/api/reports/{report_id}/actions"
 
     def test_it_returns_400_when_action_type_is_user_warning_lifting(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -2187,7 +2187,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         self.assert_400(response, "invalid 'action_type'")
 
-    def test_it_returns_400_when_username_is_missing_on_user_admin_action(
+    def test_it_returns_400_when_username_is_missing_on_user_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2208,7 +2208,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         self.assert_400(response, "'username' is missing")
 
-    def test_it_returns_400_when_username_is_invalid_on_user_admin_action(
+    def test_it_returns_400_when_username_is_invalid_on_user_report_action(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
@@ -2305,7 +2305,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        self.create_admin_action(
+        self.create_report_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
@@ -2352,7 +2352,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
     @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2571,9 +2571,9 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
 
 class TestPostReportActionForWorkoutAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+    route = "/api/reports/{report_id}/actions"
 
-    def test_it_returns_400_when_workout_id_is_missing_on_workout_admin_action(
+    def test_it_returns_400_when_workout_id_is_missing_on_workout_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -2599,7 +2599,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
 
         self.assert_400(response, "'workout_id' is missing")
 
-    def test_it_returns_400_when_workout_is_invalid_on_workout_admin_action(
+    def test_it_returns_400_when_workout_is_invalid_on_workout_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2764,7 +2764,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             is None
         )
 
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2931,9 +2931,9 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
 
 
 class TestPostReportActionForCommentAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+    route = "/api/reports/{report_id}/actions"
 
-    def test_it_returns_400_when_comment_id_is_missing_on_comment_admin_action(
+    def test_it_returns_400_when_comment_id_is_missing_on_comment_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -2960,7 +2960,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 
         self.assert_400(response, "'comment_id' is missing")
 
-    def test_it_returns_400_when_comment_is_invalid_on_comment_admin_action(
+    def test_it_returns_400_when_comment_is_invalid_on_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -3126,7 +3126,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             Comment.query.filter_by(id=comment.id).first().suspended_at is None
         )
 
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -3372,7 +3372,9 @@ class TestProcessReportActionAppeal(
     def test_it_returns_error_when_data_are_missing(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3390,7 +3392,9 @@ class TestProcessReportActionAppeal(
     def test_it_returns_400_when_user_already_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3417,7 +3421,9 @@ class TestProcessReportActionAppeal(
     def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_admin_user_action(user_1_admin, user_2)
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2
+        )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -3449,7 +3455,7 @@ class TestProcessReportActionAppeal(
         report = self.create_report(
             reporter=user_1_admin, reported_object=user_2
         )
-        suspension_action = self.create_admin_user_action(
+        suspension_action = self.create_report_user_action(
             user_1_admin, user_2, report_id=report.id
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
@@ -3479,7 +3485,7 @@ class TestProcessReportActionAppeal(
         report = self.create_report(
             reporter=user_1_admin, reported_object=user_2
         )
-        warning_action = self.create_admin_user_action(
+        warning_action = self.create_report_user_action(
             user_1_admin, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
@@ -3513,7 +3519,7 @@ class TestProcessReportActionAppeal(
         report = self.create_report(
             reporter=user_1_admin, reported_object=user_2
         )
-        warning_action = self.create_admin_user_action(
+        warning_action = self.create_report_user_action(
             user_1_admin, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
@@ -3553,7 +3559,7 @@ class TestProcessReportActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3595,7 +3601,7 @@ class TestProcessReportActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3629,7 +3635,7 @@ class TestProcessReportActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3666,7 +3672,7 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -3704,7 +3710,7 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2: Workout,
         workout_unsuspension_email_mock: MagicMock,
     ) -> None:
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -3732,7 +3738,7 @@ class TestProcessReportActionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        suspension_action = self.create_admin_workout_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()

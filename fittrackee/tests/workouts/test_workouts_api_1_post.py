@@ -3720,7 +3720,7 @@ class TestPostWorkoutSuspensionAppeal(
 
         self.assert_400(response, error_message="workout is not suspended")
 
-    def test_it_returns_400_if_suspended_workout_has_no_admin_action(
+    def test_it_returns_400_if_suspended_workout_has_no_report_action(
         self,
         app: Flask,
         user_1: User,
@@ -3755,7 +3755,7 @@ class TestPostWorkoutSuspensionAppeal(
         input_data: Dict,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        self.create_admin_workout_action(
+        self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.commit()
@@ -3781,7 +3781,7 @@ class TestPostWorkoutSuspensionAppeal(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        action = self.create_admin_workout_action(
+        action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.commit()
@@ -3819,7 +3819,7 @@ class TestPostWorkoutSuspensionAppeal(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.utcnow()
-        action = self.create_admin_workout_action(
+        action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
         db.session.flush()

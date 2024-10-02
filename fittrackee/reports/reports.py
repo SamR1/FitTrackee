@@ -202,11 +202,9 @@ def update_report(
     }, 200
 
 
-@reports_blueprint.route(
-    "/reports/<int:report_id>/admin-actions", methods=["POST"]
-)
+@reports_blueprint.route("/reports/<int:report_id>/actions", methods=["POST"])
 @require_auth(scopes=["reports:write"], as_admin=True)
-def create_admin_action(
+def create_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     data = request.get_json()
@@ -225,7 +223,7 @@ def create_admin_action(
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
-        action = report_service.create_admin_action(
+        action = report_service.create_report_action(
             report=report,
             admin_user=auth_user,
             action_type=action_type,
@@ -235,8 +233,8 @@ def create_admin_action(
         db.session.flush()
 
         if current_app.config['CAN_SEND_EMAILS']:
-            admin_action_email_service = ReportEmailService()
-            admin_action_email_service.send_admin_action_email(
+            report_action_email_service = ReportEmailService()
+            report_action_email_service.send_report_action_email(
                 report, action_type, reason, action
             )
 
@@ -286,8 +284,8 @@ def process_appeal(
         db.session.flush()
 
         if new_report_action and current_app.config['CAN_SEND_EMAILS']:
-            admin_action_email_service = ReportEmailService()
-            admin_action_email_service.send_admin_action_email(
+            report_action_email_service = ReportEmailService()
+            report_action_email_service.send_report_action_email(
                 new_report_action.report,
                 new_report_action.action_type,
                 reason,

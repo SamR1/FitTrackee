@@ -47,7 +47,7 @@ class TestReportActionModel(ReportActionTestCase):
 
 class TestReportActionForReportModel(ReportActionTestCase):
     @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
-    def test_it_creates_report_admin_action_for_a_given_type(
+    def test_it_creates_report_report_action_for_a_given_type(
         self,
         app: Flask,
         user_1_admin: User,
@@ -155,7 +155,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
 
 class TestReportActionForUserModel(ReportActionTestCase):
     @pytest.mark.parametrize("input_action_type", ALL_USER_ACTION_TYPES)
-    def test_it_raises_error_when_no_user_given_for_user_admin_action(
+    def test_it_raises_error_when_no_user_given_for_user_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -172,7 +172,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
                 ).id,
             )
 
-    def test_it_creates_user_admin_action(
+    def test_it_creates_user_report_action(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
@@ -227,7 +227,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         assert report_action.user_id == user_2.id
         assert report_action.workout is None
 
-    def test_it_deletes_admin_action_when_user_is_deleted(
+    def test_it_deletes_report_action_when_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_action = ReportAction(
@@ -249,7 +249,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
 
 class TestReportActionForWorkoutModel(ReportActionTestCase):
     @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
-    def test_it_raises_error_when_no_workout_id_given_for_workout_admin_action(
+    def test_it_raises_error_when_no_workout_id_given_for_workout_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -271,7 +271,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
             )
 
     @pytest.mark.parametrize("input_action_type", WORKOUT_ACTION_TYPES)
-    def test_it_raises_error_when_no_user_id_given_for_workout_admin_action(
+    def test_it_raises_error_when_no_user_id_given_for_workout_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -292,7 +292,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
                 workout_id=workout_cycling_user_2.id,
             )
 
-    def test_it_creates_workout_admin_action(
+    def test_it_creates_workout_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -399,7 +399,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
 
 class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
     @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
-    def test_it_raises_error_when_no_comment_id_given_for_comment_admin_action(
+    def test_it_raises_error_when_no_comment_id_given_for_comment_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -426,7 +426,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
             )
 
     @pytest.mark.parametrize("input_action_type", COMMENT_ACTION_TYPES)
-    def test_it_raises_error_when_no_user_id_given_for_comment_admin_action(
+    def test_it_raises_error_when_no_user_id_given_for_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -451,7 +451,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
                 created_at=datetime.utcnow(),
             )
 
-    def test_it_creates_comment_admin_action(
+    def test_it_creates_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -571,7 +571,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
 
 
 class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
-    def test_it_returns_minimal_serialized_admin_action(
+    def test_it_returns_minimal_serialized_report_action(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_action = ReportAction(
@@ -597,7 +597,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             'user': user_2.serialize(current_user=user_1_admin),
         }
 
-    def test_it_returns_serialized_user_admin_action(
+    def test_it_returns_serialized_user_report_action(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_id = self.create_report(
@@ -628,7 +628,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         )
         assert serialized_action['workout'] is None
 
-    def test_it_returns_serialized_admin_action_with_appeal(
+    def test_it_returns_serialized_report_action_with_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_id = self.create_report(
@@ -760,7 +760,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         with pytest.raises(ReportActionForbiddenException):
             report_action.serialize(user_2)
 
-    def test_it_returns_serialized_workout_admin_action_for_user(
+    def test_it_returns_serialized_workout_report_action_for_user(
         self,
         app: Flask,
         user_1_admin: User,
@@ -792,7 +792,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             "workout": workout_cycling_user_2.serialize(user=user_2),
         }
 
-    def test_it_returns_serialized_workout_admin_action_for_admin(
+    def test_it_returns_serialized_workout_report_action_for_admin(
         self,
         app: Flask,
         user_1_admin: User,
@@ -833,7 +833,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             user=user_1_admin, for_report=True
         )
 
-    def test_it_returns_serialized_comment_admin_action_for_user(
+    def test_it_returns_serialized_comment_report_action_for_user(
         self,
         app: Flask,
         user_1_admin: User,
@@ -870,7 +870,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             "workout": None,
         }
 
-    def test_it_returns_serialized_comment_admin_action_for_admin(
+    def test_it_returns_serialized_comment_report_action_for_admin(
         self,
         app: Flask,
         user_1_admin: User,
@@ -918,14 +918,14 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
 
 
 class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
-    def test_it_raises_error_when_user_is_not_admin_action_user(
+    def test_it_raises_error_when_user_is_not_report_action_user(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
         user_3: User,
     ) -> None:
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
 
         with pytest.raises(InvalidReportActionAppealUserException):
             ReportActionAppeal(
@@ -944,7 +944,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
         input_action_type: str,
     ) -> None:
-        report_action = self.create_admin_user_action(
+        report_action = self.create_report_user_action(
             user_1_admin, user_2, action_type=input_action_type
         )
 
@@ -962,7 +962,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         created_at = datetime.utcnow()
 
         appeal = ReportActionAppeal(
@@ -987,7 +987,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        report_action = self.create_admin_user_action(
+        report_action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
         created_at = datetime.utcnow()
@@ -1016,7 +1016,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        report_action = self.create_admin_workout_action(
+        report_action = self.create_report_workout_action(
             user_1_admin,
             user_2,
             workout_cycling_user_2,
@@ -1040,7 +1040,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        report_action = self.create_admin_workout_action(
+        report_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         db.session.add(report_action)
@@ -1077,7 +1077,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        report_action = self.create_admin_comment_action(
+        report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment, action_type="comment_unsuspension"
         )
         db.session.add(report_action)
@@ -1104,7 +1104,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
             workout_cycling_user_1,
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
-        report_action = self.create_admin_comment_action(
+        report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment
         )
         db.session.add(report_action)
@@ -1134,7 +1134,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         now = datetime.utcnow()
 
         with travel(now, tick=False):
@@ -1157,7 +1157,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         appeal = ReportActionAppeal(
             action_id=report_action.id, user_id=user_2.id, text=appeal_text
         )
@@ -1176,7 +1176,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         user_2: User,
     ) -> None:
         appeal_text = self.random_string()
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         appeal = ReportActionAppeal(
             action_id=report_action.id, user_id=user_2.id, text=appeal_text
         )
@@ -1198,7 +1198,7 @@ class TestReportActionAppealSerializer(ReportActionTestCase):
     def test_it_returns_serialized_appeal_for_admin(
         self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
     ) -> None:
-        report_action = self.create_admin_user_action(user_1_admin, user_3)
+        report_action = self.create_report_user_action(user_1_admin, user_3)
         appeal = ReportActionAppeal(
             action_id=report_action.id,
             user_id=user_3.id,
@@ -1223,7 +1223,7 @@ class TestReportActionAppealSerializer(ReportActionTestCase):
     def test_it_returns_serialized_appeal_for_appeal_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         appeal = ReportActionAppeal(
             action_id=report_action.id,
             user_id=user_2.id,
@@ -1246,7 +1246,7 @@ class TestReportActionAppealSerializer(ReportActionTestCase):
     def test_it_raises_error_when_user_is_not_appeal_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        report_action = self.create_admin_user_action(user_1_admin, user_2)
+        report_action = self.create_report_user_action(user_1_admin, user_2)
         appeal = ReportActionAppeal(
             action_id=report_action.id,
             user_id=user_2.id,

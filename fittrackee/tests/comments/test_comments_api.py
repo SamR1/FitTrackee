@@ -3008,7 +3008,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             response, error_message="workout comment is not suspended"
         )
 
-    def test_it_returns_400_if_suspended_comment_has_no_admin_action(
+    def test_it_returns_400_if_suspended_comment_has_no_report_action(
         self,
         app: Flask,
         user_1: User,
@@ -3058,7 +3058,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        self.create_admin_comment_action(user_2_admin, user_1, comment)
+        self.create_report_comment_action(user_2_admin, user_1, comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3088,7 +3088,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        action = self.create_admin_comment_action(
+        action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )
         db.session.commit()
@@ -3132,7 +3132,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
-        action = self.create_admin_comment_action(
+        action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )
         db.session.flush()
