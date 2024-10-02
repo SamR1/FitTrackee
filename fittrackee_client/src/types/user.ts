@@ -184,12 +184,14 @@ export interface IFollowRequestsActionPayload {
 }
 
 export interface IReportActionAppeal {
+  admin_user: IUserLightProfile | null
   approved: boolean | null
   created_at: string
   id: string
   reason: string | null
   text: string
   updated_at: string
+  user: IUserLightProfile
 }
 
 export interface IUserReportAction {

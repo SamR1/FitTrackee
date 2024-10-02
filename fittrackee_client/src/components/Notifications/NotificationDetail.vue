@@ -110,7 +110,17 @@
         </div>
       </div>
       <div v-if="notification.report_action?.action_type === 'user_warning'">
+        <div
+          class="info-box appeal-in-progress"
+          v-if="notification.report_action?.appeal?.approved === null"
+        >
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t(`user.APPEAL_IN_PROGRESS`) }}
+          </span>
+        </div>
         <router-link
+          v-else-if="!notification.report_action?.appeal"
           class="appeal-link"
           :to="`profile/warning/${notification.report_action.id}/appeal`"
         >
@@ -348,6 +358,10 @@
           color: var(--button-confirm-bg-color);
         }
       }
+    }
+
+    .appeal-in-progress {
+      margin-top: $default-margin * 0.5;
     }
   }
 </style>

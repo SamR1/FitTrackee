@@ -13,7 +13,7 @@
           <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t(`user.APPEAL_${success ? 'SUBMITTED' : 'IN_PROGRESS'}`) }}
           <button
-            v-if="!success"
+            v-if="!success && $route.name != 'AuthUserAccountSuspension'"
             class="transparent hide-button"
             @click="emit('hideMessage')"
           >
