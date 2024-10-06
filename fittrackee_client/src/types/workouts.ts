@@ -116,7 +116,7 @@ export interface IWorkoutObject {
 export interface IWorkoutForm {
   sport_id: number | null
   notes: string
-  title?: string
+  title: string
   workout_date?: string
   distance?: number
   duration?: number

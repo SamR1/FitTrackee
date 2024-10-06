@@ -131,7 +131,13 @@ def create_workout(
         else timedelta(seconds=workout_data['duration'])
     )
     distance = gpx_data['distance'] if gpx_data else workout_data['distance']
-    title = gpx_data['name'] if gpx_data else workout_data.get('title', '')
+    title = (
+        workout_data.get('title', '')
+        if workout_data.get('title', '')
+        else gpx_data['name']
+        if gpx_data
+        else ''
+    )
 
     new_workout = Workout(
         user_id=user.id,
