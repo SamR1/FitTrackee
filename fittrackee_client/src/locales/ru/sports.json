@@ -1,0 +1,38 @@
+{
+  "Cycling (Sport)": {
+    "LABEL": "Велосипед (спорт)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Велосипед (транспорт)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Велосипед (треккинг)"
+  },
+  "Hiking": {
+    "LABEL": "Хайкинг"
+  },
+  "Mountain Biking": {
+    "LABEL": "Горный велосипед"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Горный велосипед (электро)"
+  },
+  "Paragliding": {
+    "LABEL": "Парапланеризм"
+  },
+  "Rowing": {
+    "LABEL": "Гребля"
+  },
+  "Running": {
+    "LABEL": "Бег"
+  },
+  "Snowshoes": {
+    "LABEL": "Снегоступы"
+  },
+  "Swimrun": {
+    "LABEL": "Свимран"
+  },
+  "Walking": {
+    "LABEL": "Ходьба"
+  }
+}

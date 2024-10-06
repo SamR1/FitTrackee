@@ -273,12 +273,13 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     }
     const notes = payload.notes.replace(/"/g, '\\"')
     const description = payload.description.replace(/"/g, '\\"')
+    const title = payload.title.replace(/"/g, '\\"')
     const form = new FormData()
     form.append('file', payload.file)
     form.append(
       'data',
       `{"sport_id": ${payload.sport_id}, "notes": "${notes}",` +
-        ` "description": "${description}",` +
+        ` "description": "${description}", "title": "${title}", ` +
         ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}],` +
         ` "workout_visibility": "${payload.workout_visibility}",` +
         ` "map_visibility": "${payload.map_visibility}"}`

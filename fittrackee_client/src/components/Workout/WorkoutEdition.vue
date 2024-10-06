@@ -93,8 +93,10 @@
                   </div>
                 </div>
               </div>
-              <div class="form-item" v-else>
-                <label for="title"> {{ $t('workouts.TITLE') }}: </label>
+              <div class="form-item">
+                <label for="title">
+                  {{ $t('workouts.TITLE') }}{{ isCreation ? '' : '*' }}:
+                </label>
                 <input
                   id="title"
                   name="title"
@@ -105,6 +107,12 @@
                   v-model="workoutForm.title"
                   maxlength="255"
                 />
+                <div class="field-help" v-if="withGpx && isCreation">
+                  <span class="info-box">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.TITLE_FIELD_HELP') }}
+                  </span>
+                </div>
               </div>
               <div v-if="!withGpx">
                 <div class="workout-date-duration">
@@ -327,6 +335,12 @@
                   :rows="5"
                   @updateValue="updateDescription"
                 />
+                <div class="field-help" v-if="withGpx && isCreation">
+                  <span class="info-box">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.DESCRIPTION_FIELD_HELP') }}
+                  </span>
+                </div>
               </div>
               <div class="form-item" v-if="isCreation">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
@@ -566,7 +580,6 @@
   }
   function formatPayload(payload: IWorkoutForm) {
     payloadErrorMessages.value = []
-    payload.title = workoutForm.title
     payload.duration =
       +workoutForm.workoutDurationHour * 3600 +
       +workoutForm.workoutDurationMinutes * 60 +
@@ -611,11 +624,11 @@
         equipmentsForSelect.value.find((e) => e.id === workoutForm.equipment_id)
           ? [workoutForm.equipment_id]
           : [],
+      title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
-        payload.title = workoutForm.title
         payload.map_visibility = workoutForm.mapVisibility
       } else {
         formatPayload(payload)
@@ -756,7 +769,8 @@
             .form-item {
               display: flex;
               flex-direction: column;
-              padding: $default-padding;
+              padding: $default-padding * 0.5 $default-padding $default-padding *
+                0.25;
 
               .workout-date-time {
                 display: flex;
@@ -789,8 +803,9 @@
           .form-buttons {
             display: flex;
             justify-content: flex-end;
+            padding: $default-padding $default-padding * 0.5 0;
             button {
-              margin: $default-padding * 0.5;
+              margin: $default-margin * 0.5;
             }
           }
 
@@ -798,6 +813,7 @@
             display: flex;
             justify-content: space-around;
             margin-top: $default-margin;
+            padding: $default-padding * 0.75 $default-padding;
             div {
               display: flex;
               @media screen and (max-width: $medium-limit) {
@@ -808,6 +824,11 @@
                 padding: 0 $default-padding * 2;
               }
             }
+          }
+
+          .field-help {
+            display: flex;
+            margin-top: $default-margin * 0.5;
           }
 
           .workout-data {

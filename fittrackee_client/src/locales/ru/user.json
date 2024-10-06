@@ -1,0 +1,87 @@
+{
+  "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Не получили инструкций?",
+  "ACCOUNT_CONFIRMATION_SENT": "Проверьте почту. На указанный адрес было отправлено новое письмо с подтверждением.",
+  "ADMIN": "Админ",
+  "CURRENT_PASSWORD": "Текущий пароль",
+  "EMAIL_UPDATE": "Обновление электронной почты",
+  "ENTER_PASSWORD": "Введите пароль",
+  "EXPORT_REQUEST": {
+    "DATA_EXPORT": "Экспорт данных",
+    "DOWNLOAD_ARCHIVE": "Скачать архив"
+  },
+  "HIDE_PASSWORD": "скрыть пароль",
+  "I_WANT_TO_DELETE_MY_ACCOUNT": "Я хочу удалить свой аккаунт",
+  "LANGUAGE": "Язык | Языки",
+  "LAST_PRIVACY_POLICY_TO_VALIDATE": "Политика конфиденциальности была обновлена, пожалуйста, {0} ее прежде чем продолжить.",
+  "LOGIN": "Войти",
+  "LOGOUT": "Выход",
+  "LOGOUT_CONFIRMATION": "Вы уверены, что хотите выйти?",
+  "NEW_PASSWORD": "Новый пароль",
+  "PASSWORD": "Пароль",
+  "PASSWORD_FORGOTTEN": "Забыли пароль?",
+  "PASSWORD_INFO": "Требуется не менее 8 символов.",
+  "PASSWORD_RESET": "Сброс пароля",
+  "PASSWORD_STRENGTH": {
+    "GOOD": "хороший",
+    "STRONG": "надежный",
+    "WEAK": "слабый"
+  },
+  "PROFILE": {
+    "BACK_TO_PROFILE": "Назад к профилю",
+    "BIRTH_DATE": "Дата рождения",
+    "DATE_FORMAT": "Формат отображения даты",
+    "EDIT": "Редактировать профиль",
+    "ELEVATION_CHART_START": {
+      "MIN_ALT": "Минимальная высота"
+    },
+    "EQUIPMENTS": {
+      "CONFIRM_EQUIPMENT_DELETION": "Вы уверены, что хотите удалить снаряжение {0}?",
+      "DESCRIPTION": "описание",
+      "YOUR_EQUIPMENTS": "Ваше снаряжение"
+    },
+    "FIRST_DAY_OF_WEEK": "Первый день недели",
+    "FIRST_NAME": "Имя",
+    "INTERFACE": "Интерфейс",
+    "LANGUAGE": "Язык",
+    "LAST_NAME": "Фамилия",
+    "LOCATION": "Местоположение",
+    "MONDAY": "Понедельник",
+    "PICTURE": "Изображение",
+    "PICTURE_REMOVE": "Удалить изображение",
+    "PRIVACY-POLICY_EDITION": "Политика конфиденциальности",
+    "REGISTRATION_DATE": "Дата регистрации",
+    "SPORT": {
+      "COLOR": "цвет"
+    },
+    "SUCCESSFUL_REGISTRATION": "Ваш аккаунт был успешно создан.",
+    "SUCCESSFUL_UPDATE": "Ваш аккаунт был успешно обновлен.",
+    "SUNDAY": "Воскресенье",
+    "TABS": {
+      "APPS": "приложения",
+      "EQUIPMENTS": "снаряжение",
+      "PRIVACY-POLICY": "политика конфиденциальности",
+      "PROFILE": "профиль"
+    },
+    "THEME_MODE": {
+      "LABEL": "Тема",
+      "VALUES": {
+        "DARK": "Темная",
+        "LIGHT": "Светлая"
+      }
+    },
+    "UNITS": {
+      "LABEL": "Единицы измерения расстояния",
+      "METRIC": "Метрическая система (м, км, м/с, °C)"
+    }
+  },
+  "READ_AND_ACCEPT_PRIVACY_POLICY": "Я прочитал(а) и согласен(а) с {0}.",
+  "REGISTER": "Зарегистрироваться",
+  "REGISTER_DISABLED": "Извините, регистрация отключена.",
+  "RESET_PASSWORD": "Сбросить пароль",
+  "REVIEW": "обзор",
+  "SHOW_PASSWORD": "показать пароль",
+  "THIS_USER_ACCOUNT_IS_INACTIVE": "Эта учетная запись пользователя неактивна.",
+  "USERNAME": "Имя пользователя",
+  "USERNAME_INFO": "требуется от 3 до 30 символов, допускаются только буквы, цифры и символ подчеркивания «_».",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Вы приняли {0}."
+}

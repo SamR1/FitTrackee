@@ -12,6 +12,7 @@ LANGUAGES_DATE_STRING = {
     "nl": "d MMM. yyyy",  # Dutch
     "pl": "d MMM yyyy",  # Polish
     "pt": "d MMM yyyy",  # Portuguese
+    # "ru": "d MMM yyyy",  # Russian
 }
 
 SUPPORTED_LANGUAGES = list(LANGUAGES_DATE_STRING.keys())

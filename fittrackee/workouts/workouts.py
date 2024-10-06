@@ -1034,13 +1034,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id, description and notes, for example:
-       `{"sport_id": 1, "notes": "", "description": "", "equipment_ids": []}`.
-       Double quotes in notes and description must be escaped.
+    :form data: sport id, equipment id, description, title and notes,
+       for example:
+       ``{"sport_id": 1, "notes": "", "title": "", "description": "",
+       "equipment_ids": []}``.
+       Double quotes in notes, description and title must be escaped.
 
-       The maximum length of notes is 500 characters and that of the
-       description is 10000 characters.
-       Otherwise, they will be truncated.
+       The maximum length is 500 characters for notes, 10000 characters for
+       description and 255 for title. Otherwise, they will be truncated.
+       When description and title are provided, they replace the description
+       and title from gpx file.
 
        For `equipment_ids`, the id of the equipment to associate with
        this workout.
@@ -1048,7 +1051,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description and equipment ids are not mandatory.
+       Notes, description, and title and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

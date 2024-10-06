@@ -1,0 +1,11 @@
+{
+  "DATES": "Даты",
+  "STATISTICS": "Статистика",
+  "STATISTICS_ON_ALL_WORKOUTS": "Статистика всех тренировок:",
+  "TIME_FRAMES": {
+    "month": "месяц",
+    "week": "неделя",
+    "year": "год"
+  },
+  "WORKOUTS_AVERAGE": "среднее количество тренировок"
+}

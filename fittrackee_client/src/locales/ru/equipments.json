@@ -1,0 +1,11 @@
+{
+  "50_CHARACTERS_MAX": "50 символов максимум",
+  "ADD_A_NEW_EQUIPMENT": "Добавить новое снаряжение",
+  "EDIT_EQUIPMENTS": "Редактировать снаряжения",
+  "ERRORS": {
+    "not_found": "Снаряжение не найдено."
+  },
+  "NEW_EQUIPMENT": "Новое снаряжение",
+  "NO_EQUIPMENTS": "Нет снаряжения",
+  "WITHOUT_EQUIPMENTS": "без снаряжения"
+}

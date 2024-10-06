@@ -13,6 +13,7 @@ import {
   nl,
   pl,
   pt,
+  // ru,
 } from 'date-fns/locale'
 
 import type { TLanguage } from '@/types/locales'
@@ -34,6 +35,7 @@ export const isLanguageSupported = (
     'nl',
     'pl',
     'pt',
+    // 'ru',
   ].includes(language)
 }
 
@@ -51,6 +53,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   nl: nl,
   pl: pl,
   pt: pt,
+  // ru: ru,
 }
 
 export const languageLabels: Record<TLanguage, string> = {
@@ -67,6 +70,7 @@ export const languageLabels: Record<TLanguage, string> = {
   nb: 'Norsk bokmål (52%)',
   pl: 'Polski (99%)',
   pt: 'Português (97%)',
+  // ru: 'Русский',
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {
