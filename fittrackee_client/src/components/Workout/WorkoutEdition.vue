@@ -94,7 +94,9 @@
                 </div>
               </div>
               <div class="form-item">
-                <label for="title"> {{ $t('workouts.TITLE') }}: </label>
+                <label for="title">
+                  {{ $t('workouts.TITLE') }}{{ isCreation ? '' : '*' }}:
+                </label>
                 <input
                   id="title"
                   name="title"
@@ -105,7 +107,7 @@
                   v-model="workoutForm.title"
                   maxlength="255"
                 />
-                <div class="filed-help" v-if="withGpx && isCreation">
+                <div class="field-help" v-if="withGpx && isCreation">
                   <span class="info-box">
                     <i class="fa fa-info-circle" aria-hidden="true" />
                     {{ $t('workouts.TITLE_FIELD_HELP') }}
@@ -296,6 +298,12 @@
                   :rows="5"
                   @updateValue="updateDescription"
                 />
+                <div class="field-help" v-if="withGpx && isCreation">
+                  <span class="info-box">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.DESCRIPTION_FIELD_HELP') }}
+                  </span>
+                </div>
               </div>
               <div class="form-item" v-if="isCreation">
                 <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
@@ -738,7 +746,7 @@
             }
           }
 
-          .filed-help {
+          .field-help {
             display: flex;
             margin-top: $default-margin * 0.5;
           }
