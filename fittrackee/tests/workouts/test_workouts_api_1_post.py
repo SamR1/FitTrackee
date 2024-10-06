@@ -481,6 +481,36 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         )
         assert_workout_data_with_gpx(data)
 
+    def test_it_adds_a_workout_with_provided_title(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        title = "some title"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=f'{{"sport_id": 1, "title": "{title}"}}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert data['data']['workouts'][0]['title'] == title
+
     def test_it_adds_a_workout_with_gpx_without_name_timezone(
         self,
         app: Flask,

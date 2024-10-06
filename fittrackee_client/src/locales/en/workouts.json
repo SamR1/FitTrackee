@@ -68,6 +68,7 @@
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
   "TITLE": "title",
+  "TITLE_FIELD_HELP": "if provided, the title replaces that of the gpx file.",
   "TO": "to",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",

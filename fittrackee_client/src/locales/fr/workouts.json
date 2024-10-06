@@ -68,6 +68,7 @@
   "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
   "TITLE": "titre",
+  "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier gpx.",
   "TO": "jusqu'au",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
