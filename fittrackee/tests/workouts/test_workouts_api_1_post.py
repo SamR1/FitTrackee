@@ -898,7 +898,10 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         response = client.post(
             '/api/workouts',
             data=dict(
-                file=(BytesIO(str.encode(gpx_file_with_description)), 'example.gpx'),
+                file=(
+                    BytesIO(str.encode(gpx_file_with_description)),
+                    'example.gpx',
+                ),
                 data=f'{{"sport_id": 1, "description": "{description}"}}',
             ),
             headers=dict(
