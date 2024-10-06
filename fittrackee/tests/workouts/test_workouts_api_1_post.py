@@ -888,7 +888,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        gpx_file: str,
+        gpx_file_with_description: str,
     ) -> None:
         description = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -898,7 +898,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         response = client.post(
             '/api/workouts',
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file_with_description)), 'example.gpx'),
                 data=f'{{"sport_id": 1, "description": "{description}"}}',
             ),
             headers=dict(
