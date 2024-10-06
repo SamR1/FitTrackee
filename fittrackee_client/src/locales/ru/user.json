@@ -1,7 +1,10 @@
 {
+  "ACCOUNT_CONFIRMATION": "Подтверждение аккаунта",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Не получили инструкций?",
   "ACCOUNT_CONFIRMATION_SENT": "Проверьте почту. На указанный адрес было отправлено новое письмо с подтверждением.",
   "ADMIN": "Админ",
+  "ALREADY_HAVE_ACCOUNT": "Уже есть аккаунт?",
+  "CONFIRM_ACCOUNT_DELETION": "Вы уверены, что хотите удалить аккаунт? Вся информация будет удалена и это действие нельзя будет отменить.",
   "CURRENT_PASSWORD": "Текущий пароль",
   "EMAIL_UPDATE": "Обновление электронной почты",
   "ENTER_PASSWORD": "Введите пароль",
