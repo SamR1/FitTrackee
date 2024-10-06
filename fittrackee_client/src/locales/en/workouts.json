@@ -9,6 +9,7 @@
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
   "DESCRIPTION": "description",
+  "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the gpx file.",
   "DISPLAY_FILTERS": "display filters",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Download the workout",

@@ -9,6 +9,7 @@
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
   "DESCRIPTION": "description",
+  "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier gpx.",
   "DISPLAY_FILTERS": "afficher les filtres",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Télécharger la séance",
