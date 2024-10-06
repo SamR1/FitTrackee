@@ -58,8 +58,4 @@
   .workout-card {
     margin-bottom: 0;
   }
-
-  .appeal-action {
-    margin: 0 $default-margin;
-  }
 </style>

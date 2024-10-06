@@ -26,7 +26,7 @@
       @submitForm="(text) => submitAppeal(text, 'workout', workout.id)"
       @hideMessage="displayAppealForm = null"
     >
-      <template #additionalButtons>
+      <template #cancelButton>
         <button @click="cancelAppeal()">
           {{ $t('buttons.CANCEL') }}
         </button>
@@ -71,10 +71,6 @@
   @import '~@/scss/vars';
 
   .appeal-action {
-    .appeal {
-      padding: 0 $default-padding;
-    }
-
     .appeal-button {
       padding: 0 $default-padding;
       font-size: 0.9em;

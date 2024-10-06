@@ -11,7 +11,6 @@
         {{ $t('user.APPEAL') }}
       </button>
     </div>
-
     <ActionAppeal
       v-if="displayAppealForm"
       :report-action="action"
@@ -20,7 +19,7 @@
       @submitForm="(text) => submitAppeal(text, 'comment', comment.id)"
       @hideMessage="displayAppealForm = null"
     >
-      <template #additionalButtons>
+      <template #cancelButton>
         <button @click="cancelAppeal()">
           {{ $t('buttons.CANCEL') }}
         </button>
@@ -64,10 +63,6 @@
     text-transform: capitalize;
   }
   .appeal-action {
-    .appeal {
-      padding: 0 $default-padding;
-    }
-
     .appeal-button {
       padding: 0 $default-padding;
       font-size: 0.9em;

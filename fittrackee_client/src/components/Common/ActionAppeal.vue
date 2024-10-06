@@ -48,7 +48,6 @@
             {{ $t('buttons.SUBMIT') }}
           </button>
           <slot name="cancelButton"></slot>
-
           <div class="action-loading">
             <i
               v-if="loading && appealText"
