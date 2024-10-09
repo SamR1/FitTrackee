@@ -1,7 +1,13 @@
 {
+  "AVERAGE": "Среднее",
   "DATES": "Даты",
   "STATISTICS": "Статистика",
+  "STATISTICS_CHARTS": {
+    "month": "Ежемесячная статистика",
+    "week": "Еженедельная статистика"
+  },
   "STATISTICS_ON_ALL_WORKOUTS": "Статистика всех тренировок:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Статистика по последним {count} тренировкам:",
   "TIME_FRAMES": {
     "month": "месяц",
     "week": "неделя",

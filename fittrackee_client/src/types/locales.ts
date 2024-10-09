@@ -12,4 +12,4 @@ export type TLanguage =
   | 'nl'
   | 'pl'
   | 'pt'
-// | 'ru'  // disabled for now
+  | 'ru'

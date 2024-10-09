@@ -1051,7 +1051,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description, and title and equipment ids are not mandatory.
+       Notes, description, title and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 

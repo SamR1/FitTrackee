@@ -13,7 +13,7 @@ import nbMessages from '@/locales/nb/nb'
 import nlMessages from '@/locales/nl/nl'
 import plMessages from '@/locales/pl/pl'
 import ptMessages from '@/locales/pt/pt'
-// import ruMessages from '@/locales/ru/ru'
+import ruMessages from '@/locales/ru/ru'
 
 export default createI18n({
   legacy: false,
@@ -34,6 +34,6 @@ export default createI18n({
     nl: nlMessages,
     pl: plMessages,
     pt: ptMessages,
-    // ru: ruMessages,
+    ru: ruMessages,
   },
 })

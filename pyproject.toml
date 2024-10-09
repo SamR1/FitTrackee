@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.8.9"
+version = "0.8.10"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -49,7 +49,7 @@ sqlalchemy = "=1.4.54"
 ua-parser = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.7.9"
+bandit = "^1.7.10"
 furo = "^2024.8.6"
 mypy = "^1.11.2"
 pytest = "^8.3.3"
@@ -59,7 +59,7 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.6.6"
+ruff = "^0.6.9"
 selenium = "4.20.0"
 sphinx = "^7.1"
 sphinx-copybutton = "^0.5.2"
