@@ -1,9 +1,11 @@
 {
   "ADD_A_NEW_APP": "Добавить новое OAuth2 приложение",
   "APP": {
+    "CLIENT_ID": "Id",
     "CLIENT_SECRET": "Секрет",
     "DESCRIPTION": "Описание приложения",
     "NAME": "Название приложения",
+    "REDIRECT_URL": "URL перенаправления",
     "SCOPE": {
       "application:write_DESCRIPTION": "предоставить доступ к конфигурации приложения."
     }
