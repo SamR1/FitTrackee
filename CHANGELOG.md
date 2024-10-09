@@ -1,5 +1,48 @@
 # Change log
 
+## Version 0.8.10 (2024/10/09)
+
+### Features and enhancements
+
+* [#635](https://github.com/SamR1/FitTrackee/issues/635) - Add ability to replace gpx title when adding a workout
+* [#636](https://github.com/SamR1/FitTrackee/issues/636) - Get description from gpx file if present 
+
+### Translations
+
+* [#629](https://github.com/SamR1/FitTrackee/issues/629) - [Translation Request] Russian
+* [PR#633](https://github.com/SamR1/FitTrackee/pull/633) - Translations update (Russian, Dutch, Italian, Galician)
+* [PR#637](https://github.com/SamR1/FitTrackee/pull/637) - Translations update (Spanish, Russian, German and Galician)
+
+Translation status:
+- Basque: 99%
+- Bulgarian: 98%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 81%
+- Norwegian Bokmål: 52%
+- Polish: 98%
+- Portuguese: 97%
+- Russian: 61%
+- Spanish: 100%
+
+### Misc
+
+* [PR#634](https://github.com/SamR1/FitTrackee/pull/634) - CI - add PostgreSQL 17
+
+
+Thanks to the contributors:
+- @boosterl
+- @gallegonovato
+- @qwerty287
+- @Shura0
+- @sikmir
+- @xmgz
+
+
 ## Version 0.8.9 (2024/09/21)
 
 This release introduces a new field: the workout description.  

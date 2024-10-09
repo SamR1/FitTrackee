@@ -62,6 +62,14 @@ Workouts
 .. note::
   | For now, **FitTrackee** has no importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
 
+- | If the name is present in the gpx file (``<name></name>``), it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
+  | User can add title while uploading gpx file (*new in 0.8.10*).
+- | The user can add description (*new in 0.8.9*) and note.
+
+.. note::
+  | This "Description" field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see `#125 <https://github.com/SamR1/FitTrackee/issues/125>`__). The "Notes" field will remain private.
+
+- If present and no description is provided by the user, the description from the gpx file (``<desc></desc>``) is used as the workout description (*new in 0.8.10*).
 - | A workout can even be created without gpx (the user must enter date, time, duration and distance).
   | Ascent and descent can also be provided (*new in 0.7.10*).
 - | A workout with a gpx file can be displayed with map and charts (speed and elevation (if the gpx file contains elevation data, *updated in 0.7.20*)).
@@ -71,12 +79,7 @@ Workouts
 - An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
 - Segments can be displayed.
 - Workout gpx file can be downloaded (*new in 0.5.1*)
-- Workout edition and deletion. User can add a description (*new in 0.8.9*) and a note.
-
-.. note::
-  | This "Description" field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see `#125 <https://github.com/SamR1/FitTrackee/issues/125>`__). The "Notes" field will remain private.
-
-
+- Workout edition and deletion.
 - User statistics, by time period (week, month, year) and sport:
     - totals:
         - total distance
@@ -299,6 +302,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Czech (*new in 0.8.1*)
 - Portuguese (*new in 0.8.4*)
 - Bulgarian (*new in 0.8.8*)
+- Russian (*new in 0.8.10*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
 
