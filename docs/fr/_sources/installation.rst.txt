@@ -39,7 +39,7 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python >= 3.8.1
+    - Python >= 3.8.1, <3.13
     - PostgreSQL 12+
 - optional
     - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
@@ -529,13 +529,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.8.9):
+-  Download the last release (for now, it is the release v0.8.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.9.tar.gz
-   $ tar -xzf v0.8.9.tar.gz
-   $ mv FitTrackee-0.8.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.10.tar.gz
+   $ tar -xzf v0.8.10.tar.gz
+   $ mv FitTrackee-0.8.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -666,13 +666,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.8.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.8.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.9.tar.gz
-   $ tar -xzf v0.8.9.tar.gz
-   $ cp -R FitTrackee-0.8.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.10.tar.gz
+   $ tar -xzf v0.8.10.tar.gz
+   $ cp -R FitTrackee-0.8.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

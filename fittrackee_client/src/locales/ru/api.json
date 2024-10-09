@@ -1,0 +1,30 @@
+{
+  "ERROR": {
+    "<time> is missing in gpx file": "<time> элемент отсутствует в .gpx файле.",
+    "Network Error": "Ошибка сети.",
+    "UNKNOWN": "Ошибка. Пожалуйста, попробуйте снова или свяжитесь с администратором.",
+    "at least one file in zip archive exceeds size limit, please check the archive": "По крайней мере один файл в zip архиве превышает допустимый размер, пожалуйста, проверьте архив.",
+    "completed request already exists": "Заполненный запрос на экспорт уже существует.",
+    "email: valid email must be provided": "Электронная почта: необходимо указать действительный адрес электронной почты.",
+    "equipment already exists with the same label": "Инвентарь уже существует.",
+    "equipment type is inactive": "Тип экипировки не активен.",
+    "error during gpx file parsing": "Ошибка при разборе gpx файла.",
+    "error during gpx processing": "Ошибка при обработке gpx.",
+    "error on getting configuration": "Ошибка при получении конфигурации.",
+    "error when saving workout": "Ошибка при сохранении тренировки.",
+    "error when updating configuration": "Ошибка при обновлении конфигурации",
+    "error, please try again or contact the administrator": "Ошибка, пожалуйста, попробуйте еще раз или свяжитесь с администратором.",
+    "error, registration is disabled": "Ошибка, регистрация отключена.",
+    "file extension not allowed": "Недопустимое расширение файла.",
+    "file size is greater than the allowed size": "Размер файла больше допустимого.",
+    "new email must be different than current email": "Новая электронная почта должна отличаться от текущей",
+    "no tracks in gpx file": "Нет трека (<trk>) в .gpx файле.",
+    "ongoing request exists": "Запрос на экспорт данных уже существует.",
+    "sorry, that username is already taken": "Извините, это имя пользователя уже занято.",
+    "successfully registered": "Успешно зарегистрированы.",
+    "the number of files in the archive exceeds the limit": "Количество файлов в архиве превышает допустимое.",
+    "user does not exist": "Пользователь не существует.",
+    "you can not delete your account, no other user has admin rights": "Вы не можете удалить свою учетную запись, ни один другой пользователь не имеет прав администратора.",
+    "you do not have permissions": "У вас нет прав."
+  }
+}

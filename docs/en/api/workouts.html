@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Troubleshooting" href="../troubleshooting/index.html" /><link rel="prev" title="Users" href="users.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Workouts - FitTrackee 0.8.9 documentation</title>
+        <title>Workouts - FitTrackee 0.8.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.8.9
+      <a href="../index.html"><div class="brand">FitTrackee 0.8.10
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.9
+  <span class="sidebar-brand-text">FitTrackee 0.8.10
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -1002,18 +1002,21 @@ description matching is case-insensitive</p></li>
 <dt class="field-odd">Form Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – gpx file (allowed extensions: .gpx, .zip)</p></li>
-<li><p><strong>data</strong> – <p>sport id, equipment id, description and notes, for example:
-<cite>{“sport_id”: 1, “notes”: “”, “description”: “”, “equipment_ids”: []}</cite>.
-Double quotes in notes and description must be escaped.</p>
-<p>The maximum length of notes is 500 characters and that of the
-description is 10000 characters.
-Otherwise, they will be truncated.</p>
+<li><p><strong>data</strong> – <p>sport id, equipment id, description, title and notes,
+for example:
+<code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;title&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;&quot;,</span>
+<span class="pre">&quot;equipment_ids&quot;:</span> <span class="pre">[]}</span></code>.
+Double quotes in notes, description and title must be escaped.</p>
+<p>The maximum length is 500 characters for notes, 10000 characters for
+description and 255 for title. Otherwise, they will be truncated.
+When description and title are provided, they replace the description
+and title from gpx file.</p>
 <p>For <cite>equipment_ids</cite>, the id of the equipment to associate with
 this workout.
 <strong>Note</strong>: for now only one equipment can be associated.
 If not provided and default equipment exists for sport,
 default equipment will be associated.</p>
-<p>Notes, description and equipment ids are not mandatory.</p>
+<p>Notes, description, title and equipment ids are not mandatory.</p>
 </p></li>
 </ul>
 </dd>
@@ -1444,7 +1447,7 @@ If an empty array, equipment for this workout will be removed.</p></li>
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=edff376a"></script>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=4628b18e"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
