@@ -44,6 +44,7 @@
   import { useRoute } from 'vue-router'
 
   import type { IDropdownOption, TDropdownOptions } from '@/types/forms'
+
   interface Props {
     options: TDropdownOptions
     selected: string
@@ -59,7 +60,8 @@
   })
 
   const route = useRoute()
-  const isOpen = ref(false)
+
+  const isOpen: Ref<boolean> = ref(false)
   const dropdownButton: Ref<HTMLButtonElement | null> = ref(null)
   const focusOptionIndex: Ref<number> = ref(
     getIndexFromOptionValue(selected.value)

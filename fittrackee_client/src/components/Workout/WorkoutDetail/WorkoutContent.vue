@@ -47,7 +47,7 @@
             v-html="
               displayedContent && displayedContent !== ''
                 ? linkifyAndClean(displayedContent)
-                : $t(`workouts.NO_${contentType}`)
+                : $t(`common.NO_${contentType}`)
             "
           />
           <button

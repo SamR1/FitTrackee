@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('Your account has been reactivated') }}{% endblock %}
+{% block preheader %}{{ _('Your account has been reactivated') }}. {{ _('You can now use all the features on FitTrackee') }}.{% endblock %}
+{% block content %}<p>{{ _('Your account has been reactivated') }}. {{ _('You can now use all the features on FitTrackee') }}.</p>
+                        {% if reason %}<p>{{ _('Reason:') }} {{ reason }}</p>{% endif %}{% endblock %}

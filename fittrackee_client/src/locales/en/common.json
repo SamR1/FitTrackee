@@ -8,16 +8,22 @@
   "DESCRIPTION": "Description",
   "DISPLAYED": "Displayed",
   "DOCUMENTATION": "documentation",
+  "EDITED": "edited",
   "HERE": "here",
   "HIDDEN": "Hidden",
+  "HIDE": "Hide",
   "HOME": "Home",
   "HOURS": "hour|hours",
   "INACTIVE": "inactive",
   "LABEL": "label",
+  "LAST_UPDATED_ON": "Last updated on",
   "MINUTES": "minute|minutes",
   "NEXT": "next",
-  "NO_DESCRIPTION": "no description",
+  "NO_DESCRIPTION": "No description",
+  "NO_NOTES": "No notes",
   "PREVIOUS": "previous",
+  "REPORT_PLACEHOLDER": "specify the reason for reporting",
+  "REPORT_SUBMITTED": "Report submitted.",
   "SECONDS": "second|seconds",
   "SELECTS": {
     "ORDER": {
@@ -33,5 +39,6 @@
     }
   },
   "TOTAL": "Total",
-  "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses"
+  "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses",
+  "TYPE": "type"
 }

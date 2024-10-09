@@ -1,23 +1,29 @@
 import secrets
+from datetime import datetime
 from typing import Optional, Tuple
 
 from sqlalchemy import func
 
 from fittrackee import db
-
-from ..exceptions import (
+from fittrackee.reports.models import ReportAction
+from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
+from fittrackee.users.exceptions import (
     InvalidEmailException,
+    MissingAdminIdException,
+    MissingReportIdException,
+    UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
     UserNotFoundException,
 )
-from ..models import User
-from ..utils.controls import is_valid_email, register_controls
+from fittrackee.users.models import User
+from fittrackee.users.utils.controls import is_valid_email, register_controls
 
 
 class UserManagerService:
-    def __init__(self, username: str):
+    def __init__(self, username: str, admin_user_id: Optional[int] = None):
         self.username = username
+        self.admin_user_id = admin_user_id
 
     def _get_user(self) -> User:
         user = User.query.filter_by(username=self.username).first()
@@ -25,15 +31,11 @@ class UserManagerService:
             raise UserNotFoundException()
         return user
 
-    def _update_admin_rights(self, user: User, is_admin: bool) -> None:
-        user.admin = is_admin
-        if is_admin:
-            self._activate_user(user)
-
     @staticmethod
-    def _activate_user(user: User) -> None:
-        user.is_active = True
-        user.confirmation_token = None
+    def _update_active_status(user: User, active_status: bool) -> None:
+        user.is_active = active_status
+        if active_status:
+            user.confirmation_token = None
 
     @staticmethod
     def _reset_user_password(user: User) -> str:
@@ -60,21 +62,32 @@ class UserManagerService:
     def update(
         self,
         is_admin: Optional[bool] = None,
-        activate: bool = False,
+        activate: Optional[bool] = None,
         reset_password: bool = False,
         new_email: Optional[str] = None,
         with_confirmation: bool = True,
-    ) -> Tuple[User, bool, Optional[str]]:
+        suspended: Optional[bool] = None,
+        report_id: Optional[int] = None,
+        reason: Optional[str] = None,
+    ) -> Tuple[User, bool, Optional[str], Optional[ReportAction]]:
         user_updated = False
         new_password = None
+        report_action = None
         user = self._get_user()
+        if suspended is not None:
+            if self.admin_user_id is None:
+                raise MissingAdminIdException()
+            if report_id is None:
+                raise MissingReportIdException()
 
         if is_admin is not None:
-            self._update_admin_rights(user, is_admin)
+            user.admin = is_admin
+            if is_admin:
+                activate = True
             user_updated = True
 
-        if activate:
-            self._activate_user(user)
+        if activate is not None:
+            self._update_active_status(user, activate)
             user_updated = True
 
         if reset_password:
@@ -85,8 +98,33 @@ class UserManagerService:
             self._update_user_email(user, new_email, with_confirmation)
             user_updated = True
 
+        now = datetime.utcnow()
+        if suspended is True:
+            if user.suspended_at:
+                raise UserAlreadySuspendedException(
+                    f"user '{user.username}' already suspended"
+                )
+            user.suspended_at = now
+            user.admin = False
+            user_updated = True
+        if suspended is False:
+            user.suspended_at = None
+            user_updated = True
+        if self.admin_user_id and report_id and suspended is not None:
+            report_action = ReportAction(
+                admin_user_id=self.admin_user_id,
+                action_type=(
+                    "user_suspension" if suspended else "user_unsuspension"
+                ),
+                created_at=now,
+                report_id=report_id,
+                reason=reason,
+                user_id=user.id,
+            )
+            db.session.add(report_action)
+
         db.session.commit()
-        return user, user_updated, new_password
+        return user, user_updated, new_password, report_action
 
     def create_user(
         self,
@@ -123,8 +161,8 @@ class UserManagerService:
             return None, None
 
         new_user = User(username=self.username, email=email, password=password)
-        new_user.timezone = 'Europe/Paris'
-        new_user.date_format = 'MM/dd/yyyy'
+        new_user.timezone = USER_TIMEZONE
+        new_user.date_format = USER_DATE_FORMAT
         new_user.confirmation_token = secrets.token_urlsafe(30)
         db.session.add(new_user)
         db.session.flush()

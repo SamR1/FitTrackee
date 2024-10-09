@@ -13,15 +13,15 @@
   import { toRefs } from 'vue'
 
   import UserAuthForm from '@/components/User/UserAuthForm.vue'
+  import type { TToken } from '@/types/user'
 
   interface Props {
     action: string
-    token?: string
+    token?: TToken
   }
   const props = withDefaults(defineProps<Props>(), {
     token: '',
   })
-
   const { action, token } = toRefs(props)
 </script>
 

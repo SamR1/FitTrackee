@@ -1,10 +1,46 @@
-class InvalidEmailException(Exception): ...
+class BlockUserException(Exception):
+    pass
 
 
-class UserControlsException(Exception): ...
+class FollowRequestAlreadyProcessedError(Exception):
+    pass
 
 
-class UserCreationException(Exception): ...
+class FollowRequestAlreadyRejectedError(Exception):
+    pass
 
 
-class UserNotFoundException(Exception): ...
+class InvalidEmailException(Exception):
+    pass
+
+
+class InvalidNotificationTypeException(Exception):
+    pass
+
+
+class MissingAdminIdException(Exception):
+    pass
+
+
+class MissingReportIdException(Exception):
+    pass
+
+
+class NotExistingFollowRequestError(Exception):
+    pass
+
+
+class UserAlreadySuspendedException(Exception):
+    pass
+
+
+class UserControlsException(Exception):
+    pass
+
+
+class UserCreationException(Exception):
+    pass
+
+
+class UserNotFoundException(Exception):
+    pass

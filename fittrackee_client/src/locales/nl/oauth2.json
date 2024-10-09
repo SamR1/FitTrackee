@@ -31,7 +31,6 @@
   "NEW_APP": "Voeg een app toe",
   "NO_APP": "App niet gevonden!",
   "NO_APPS": "geen apps",
-  "NO_DESCRIPTION": "geen beschrijving",
   "REVOKE_ALL_TOKENS": "Verwijder alle tokens",
   "TOKENS_REVOCATION_CONFIRMATION": "Weet u zeker dat u alle tokens wilt intrekken?",
   "TOKENS_REVOKED": "Alle bestaande tokens werden ingetrokken."

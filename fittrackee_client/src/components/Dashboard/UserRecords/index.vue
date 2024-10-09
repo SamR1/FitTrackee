@@ -2,7 +2,7 @@
   <div class="user-records-section">
     <div class="section-title">
       <i class="fa fa-trophy custom-fa-small" aria-hidden="true" />
-      {{ $t('workouts.RECORD', 2) }}
+      <span class="title">{{ $t('workouts.RECORD', 2) }}</span>
     </div>
     <div class="user-records">
       <div v-if="Object.keys(recordsBySport).length === 0" class="no-records">
@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, toRefs } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import RecordsCard from '@/components/Dashboard/UserRecords/RecordsCard.vue'
@@ -34,17 +34,18 @@
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const { t } = useI18n()
 
   const recordsBySport = computed(() =>
     getRecordsBySports(
-      props.user.records,
+      user.value.records,
       translateSports(props.sports, t),
-      props.user.timezone,
-      props.user.imperial_units,
-      props.user.display_ascent,
-      props.user.date_format
+      user.value.timezone,
+      user.value.imperial_units,
+      user.value.display_ascent,
+      user.value.date_format
     )
   )
 </script>
