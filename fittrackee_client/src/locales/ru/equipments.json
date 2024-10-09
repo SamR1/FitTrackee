@@ -1,0 +1,18 @@
+{
+  "50_CHARACTERS_MAX": "50 символов максимум",
+  "ADD_A_NEW_EQUIPMENT": "Добавить новое снаряжение",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Все ассоциации с тренировками будут удалены.",
+  "DEFAULT_FOR_SPORTS": "Спорт по умолчанию",
+  "EDIT_EQUIPMENTS": "Редактировать снаряжение",
+  "EQUIPMENT": "снаряжение|экипировка",
+  "EQUIPMENT_TYPE": "Тип снаряжения|экипировки",
+  "ERRORS": {
+    "inactive": "Снаряжение '{equipmentLabel}' не активно.",
+    "invalid": "Снаряжение '{equipmentLabel}' недействительно для этого вида спорта.",
+    "not_found": "Снаряжение не найдено."
+  },
+  "NEW_EQUIPMENT": "Новое снаряжение",
+  "NO_EQUIPMENT": "Снаряжение не найдено.",
+  "NO_EQUIPMENTS": "Нет снаряжения",
+  "WITHOUT_EQUIPMENTS": "без снаряжения"
+}

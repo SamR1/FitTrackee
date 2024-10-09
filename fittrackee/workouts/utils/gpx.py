@@ -90,7 +90,11 @@ def get_gpx_info(
     if gpx is None:
         raise InvalidGPXException('error', 'no tracks in gpx file')
 
-    gpx_data: Dict = {'name': gpx.tracks[0].name, 'segments': []}
+    gpx_data: Dict = {
+        'name': gpx.tracks[0].name,
+        'description': gpx.tracks[0].description,
+        'segments': [],
+    }
     max_speed = 0.0
     start: Optional[datetime] = None
     map_data = []

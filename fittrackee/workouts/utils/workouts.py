@@ -131,7 +131,20 @@ def create_workout(
         else timedelta(seconds=workout_data['duration'])
     )
     distance = gpx_data['distance'] if gpx_data else workout_data['distance']
-    title = gpx_data['name'] if gpx_data else workout_data.get('title', '')
+    title = (
+        workout_data.get('title', '')
+        if workout_data.get('title', '')
+        else gpx_data['name']
+        if gpx_data
+        else ''
+    )
+    description = (
+        workout_data.get('description', '')
+        if workout_data.get('description', '')
+        else gpx_data['description']
+        if gpx_data
+        else ''
+    )
 
     new_workout = Workout(
         user_id=user.id,
@@ -146,9 +159,7 @@ def create_workout(
         else workout_data['notes'][:NOTES_MAX_CHARACTERS]
     )
     new_workout.description = (
-        None
-        if workout_data.get('description') is None
-        else workout_data['description'][:DESCRIPTION_MAX_CHARACTERS]
+        description[:DESCRIPTION_MAX_CHARACTERS] if description else None
     )
 
     if title is not None and title != '':
