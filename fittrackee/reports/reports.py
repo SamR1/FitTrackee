@@ -4,10 +4,6 @@ from flask import Blueprint, current_app, request
 from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    OBJECTS_ADMIN_ACTION_TYPES,
-    AdminActionAppeal,
-)
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
@@ -25,14 +21,19 @@ from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
 from .exceptions import (
-    InvalidAdminActionException,
+    InvalidReportActionException,
     InvalidReporterException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
     UserWarningExistsException,
 )
-from .models import REPORT_OBJECT_TYPES, Report
+from .models import (
+    OBJECTS_ACTION_TYPES,
+    REPORT_OBJECT_TYPES,
+    Report,
+    ReportActionAppeal,
+)
 from .reports_email_service import (
     ReportEmailService,
 )
@@ -201,11 +202,9 @@ def update_report(
     }, 200
 
 
-@reports_blueprint.route(
-    "/reports/<int:report_id>/admin-actions", methods=["POST"]
-)
+@reports_blueprint.route("/reports/<int:report_id>/actions", methods=["POST"])
 @require_auth(scopes=["reports:write"], as_admin=True)
-def create_admin_action(
+def create_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     data = request.get_json()
@@ -213,7 +212,10 @@ def create_admin_action(
     reason = data.get("reason")
     if not data or not action_type:
         return InvalidPayloadErrorResponse()
-    if action_type not in OBJECTS_ADMIN_ACTION_TYPES:
+    if (
+        action_type == "user_warning_lifting"
+        or action_type not in OBJECTS_ACTION_TYPES
+    ):
         return InvalidPayloadErrorResponse("invalid 'action_type'")
 
     report = Report.query.filter_by(id=report_id).first()
@@ -221,7 +223,7 @@ def create_admin_action(
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
     try:
-        action = report_service.create_admin_action(
+        action = report_service.create_report_action(
             report=report,
             admin_user=auth_user,
             action_type=action_type,
@@ -231,8 +233,8 @@ def create_admin_action(
         db.session.flush()
 
         if current_app.config['CAN_SEND_EMAILS']:
-            admin_action_email_service = ReportEmailService()
-            admin_action_email_service.send_admin_action_email(
+            report_action_email_service = ReportEmailService()
+            report_action_email_service.send_report_action_email(
                 report, action_type, reason, action
             )
 
@@ -243,7 +245,7 @@ def create_admin_action(
             "report": report.serialize(auth_user, full=True),
         }, 200
     except (
-        InvalidAdminActionException,
+        InvalidReportActionException,
         UserAlreadySuspendedException,
         UserWarningExistsException,
     ) as e:
@@ -263,7 +265,7 @@ def process_appeal(
     auth_user: User, appeal_id: str
 ) -> Union[Dict, HttpResponse]:
     appeal_uuid = decode_short_id(appeal_id)
-    appeal = AdminActionAppeal.query.filter_by(uuid=appeal_uuid).first()
+    appeal = ReportActionAppeal.query.filter_by(uuid=appeal_uuid).first()
 
     if not appeal:
         return NotFoundErrorResponse(
@@ -271,18 +273,32 @@ def process_appeal(
         )
 
     data = request.get_json()
-    if not data or "approved" not in data or not data.get("reason"):
+    reason = data.get("reason")
+    if not data or "approved" not in data or not reason:
         return InvalidPayloadErrorResponse()
 
     try:
-        report_service.process_appeal(appeal, auth_user, data)
+        new_report_action = report_service.process_appeal(
+            appeal, auth_user, data
+        )
+        db.session.flush()
+
+        if new_report_action and current_app.config['CAN_SEND_EMAILS']:
+            report_action_email_service = ReportEmailService()
+            report_action_email_service.send_report_action_email(
+                new_report_action.report,
+                new_report_action.action_type,
+                reason,
+                new_report_action,
+            )
+
         db.session.commit()
         return {
             "status": "success",
             "appeal": appeal.serialize(auth_user),
         }
 
-    except InvalidAdminActionException as e:
+    except InvalidReportActionException as e:
         return InvalidPayloadErrorResponse(str(e))
     except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

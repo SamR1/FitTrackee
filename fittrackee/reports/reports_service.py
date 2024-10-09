@@ -4,13 +4,6 @@ from typing import Dict, Optional, Union
 from sqlalchemy import func
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    COMMENT_ACTION_TYPES,
-    USER_ACTION_TYPES,
-    WORKOUT_ACTION_TYPES,
-    AdminAction,
-    AdminActionAppeal,
-)
 from fittrackee.comments.models import Comment
 from fittrackee.comments.utils import get_comment
 from fittrackee.users.exceptions import UserNotFoundException
@@ -20,13 +13,21 @@ from fittrackee.workouts.models import Workout
 from fittrackee.workouts.utils.workouts import get_workout
 
 from .exceptions import (
-    InvalidAdminActionException,
+    InvalidReportActionException,
     InvalidReportException,
     ReportNotFoundException,
     SuspendedObjectException,
     UserWarningExistsException,
 )
-from .models import Report, ReportComment
+from .models import (
+    ALL_USER_ACTION_TYPES,
+    COMMENT_ACTION_TYPES,
+    WORKOUT_ACTION_TYPES,
+    Report,
+    ReportAction,
+    ReportActionAppeal,
+    ReportComment,
+)
 
 
 class ReportService:
@@ -97,7 +98,7 @@ class ReportService:
         if resolved is True and report.resolved_by is None:
             report.resolved_at = now
             report.resolved_by = admin_user.id
-            report_action = AdminAction(
+            report_action = ReportAction(
                 report_id=report.id,
                 admin_user_id=admin_user.id,
                 action_type="report_resolution",
@@ -107,7 +108,7 @@ class ReportService:
             report.resolved_at = None
             report.resolved_by = None
             if previous_resolved is True:
-                report_action = AdminAction(
+                report_action = ReportAction(
                     report_id=report.id,
                     admin_user_id=admin_user.id,
                     action_type="report_reopening",
@@ -122,41 +123,41 @@ class ReportService:
         return report
 
     @staticmethod
-    def create_admin_action(
+    def create_report_action(
         *,
         report: Report,
         admin_user: User,
         action_type: str,
         reason: Optional[str] = None,
         data: Dict,
-    ) -> Optional[AdminAction]:
+    ) -> Optional[ReportAction]:
         reported_user: User = report.reported_user
 
         # if reported user has been deleted after report creation
         if not reported_user:
-            raise InvalidAdminActionException("invalid 'username'")
+            raise InvalidReportActionException("invalid 'username'")
 
         now = datetime.utcnow()
-        admin_action = None
-        if action_type in USER_ACTION_TYPES:
+        report_action = None
+        if action_type in ALL_USER_ACTION_TYPES:
             username = data.get("username")
             if not username:
-                raise InvalidAdminActionException("'username' is missing")
+                raise InvalidReportActionException("'username' is missing")
             if username != reported_user.username:
-                raise InvalidAdminActionException("invalid 'username'")
+                raise InvalidReportActionException("invalid 'username'")
 
-            if action_type == "user_warning":
+            if action_type.startswith("user_warning"):
                 user = User.query.filter_by(username=username).first()
 
-                existing_admin_action = AdminAction.query.filter_by(
+                existing_report_action = ReportAction.query.filter_by(
                     action_type=action_type,
                     report_id=report.id,
                     user_id=user.id,
                 ).first()
-                if existing_admin_action:
+                if existing_report_action:
                     raise UserWarningExistsException("user already warned")
 
-                admin_action = AdminAction(
+                report_action = ReportAction(
                     admin_user_id=admin_user.id,
                     action_type=action_type,
                     created_at=now,
@@ -165,15 +166,15 @@ class ReportService:
                     user_id=user.id,
                 )
                 if report.reported_comment_id:
-                    admin_action.comment_id = report.reported_comment_id
+                    report_action.comment_id = report.reported_comment_id
                 elif report.reported_workout_id:
-                    admin_action.workout_id = report.reported_workout_id
-                db.session.add(admin_action)
+                    report_action.workout_id = report.reported_workout_id
+                db.session.add(report_action)
             else:
                 user_manager_service = UserManagerService(
                     username=username, admin_user_id=admin_user.id
                 )
-                user, _, _ = user_manager_service.update(
+                user, _, _, _ = user_manager_service.update(
                     suspended=action_type == "user_suspension",
                     report_id=report.id,
                     reason=reason,
@@ -184,18 +185,18 @@ class ReportService:
             object_type_column = f"{object_type}_id"
             object_id = data.get(object_type_column)
             if not object_id:
-                raise InvalidAdminActionException(
+                raise InvalidReportActionException(
                     f"'{object_type_column}' is missing"
                 )
             reported_object: Union[Comment, Workout] = getattr(
                 report, f"reported_{object_type}"
             )
             if not reported_object or reported_object.short_id != object_id:
-                raise InvalidAdminActionException(
+                raise InvalidReportActionException(
                     f"invalid '{object_type_column}'"
                 )
 
-            admin_action = AdminAction(
+            report_action = ReportAction(
                 admin_user_id=admin_user.id,
                 action_type=action_type,
                 created_at=now,
@@ -204,11 +205,11 @@ class ReportService:
                 user_id=reported_object.user_id,
                 **{object_type_column: reported_object.id},
             )
-            db.session.add(admin_action)
+            db.session.add(report_action)
 
             if "_suspension" in action_type:
                 if reported_object.suspended_at:
-                    raise InvalidAdminActionException(
+                    raise InvalidReportActionException(
                         f"{object_type} '{object_id}' already suspended"
                     )
                 reported_object.suspended_at = now
@@ -217,13 +218,13 @@ class ReportService:
                 reported_object.suspended_at = None
             db.session.flush()
         else:
-            raise InvalidAdminActionException("invalid action type")
-        return admin_action
+            raise InvalidReportActionException("invalid action type")
+        return report_action
 
     @staticmethod
     def process_appeal(
-        appeal: AdminActionAppeal, admin_user: User, data: Dict
-    ) -> None:
+        appeal: ReportActionAppeal, admin_user: User, data: Dict
+    ) -> Optional[ReportAction]:
         appeal.admin_user_id = admin_user.id
         appeal.approved = data["approved"]
         appeal.reason = data["reason"]
@@ -239,30 +240,40 @@ class ReportService:
             content = Workout.query.filter_by(id=action.workout_id).first()
             content_type = "workout"
 
+        new_report_action = None
         if data["approved"]:
             if action.action_type == "user_suspension":
                 if not appeal.user.suspended_at:
-                    raise InvalidAdminActionException(
+                    raise InvalidReportActionException(
                         "user account has already been reactivated"
                     )
 
                 user_manager_service = UserManagerService(
                     username=appeal.user.username, admin_user_id=admin_user.id
                 )
-                user, _, _ = user_manager_service.update(
+                user, _, _, new_report_action = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
+            if action.action_type == "user_warning":
+                new_report_action = ReportAction(
+                    admin_user_id=admin_user.id,
+                    action_type="user_warning_lifting",
+                    created_at=datetime.utcnow(),
+                    report_id=action.report_id,
+                    user_id=action.user_id,
+                )
+                db.session.add(new_report_action)
             if (
                 action.action_type
                 in ["comment_suspension", "workout_suspension"]
                 and content
             ):
                 if not content.suspended_at:
-                    raise InvalidAdminActionException(
+                    raise InvalidReportActionException(
                         f"{content_type} has already been reactivated"
                     )
                 content_id = {f"{content_type}_id": content.id}
-                admin_action = AdminAction(
+                new_report_action = ReportAction(
                     admin_user_id=admin_user.id,
                     action_type=f"{content_type}_unsuspension",
                     created_at=datetime.utcnow(),
@@ -270,7 +281,7 @@ class ReportService:
                     user_id=action.user_id,
                     **content_id,
                 )
-                db.session.add(admin_action)
+                db.session.add(new_report_action)
                 content.suspended_at = None
         else:
             if (
@@ -278,7 +289,7 @@ class ReportService:
                 and not appeal.user.suspended_at
             ):
                 if not appeal.user.suspended_at:
-                    raise InvalidAdminActionException(
+                    raise InvalidReportActionException(
                         "user account has been reactivated after appeal"
                     )
             if (
@@ -287,6 +298,7 @@ class ReportService:
                 and content
                 and not content.suspended_at
             ):
-                raise InvalidAdminActionException(
+                raise InvalidReportActionException(
                     f"{content_type} has been reactivated after appeal"
                 )
+        return new_report_action

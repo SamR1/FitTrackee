@@ -5,7 +5,6 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReporterException,
@@ -13,12 +12,12 @@ from fittrackee.reports.exceptions import (
     ReportCommentForbiddenException,
     ReportForbiddenException,
 )
-from fittrackee.reports.models import Report, ReportComment
+from fittrackee.reports.models import Report, ReportAction, ReportComment
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, UserModerationMixin
+from ..mixins import RandomMixin, ReportMixin
 
 
 class TestReportModel(CommentMixin, RandomMixin):
@@ -317,13 +316,13 @@ class TestReportModel(CommentMixin, RandomMixin):
             reported_by=user_3.id,
             reported_object=user_2,
         )
-        admin_action = AdminAction(
+        report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type="user_warning",
             report_id=report.id,
             user_id=user_2.id,
         )
-        db.session.add(admin_action)
+        db.session.add(report_action)
         db.session.flush()
 
         assert report.is_reported_user_warned is True
@@ -384,7 +383,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "comment",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": comment.serialize(user_1),
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -422,7 +421,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "comment",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": "_COMMENT_UNAVAILABLE_",
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -460,7 +459,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "comment",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -555,7 +554,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "workout",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": workout_cycling_user_2.serialize(
                 user=user_1, for_report=True
             ),
@@ -592,7 +591,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "workout",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": '_WORKOUT_UNAVAILABLE_',
             "resolved": False,
             "resolved_at": None,
@@ -627,7 +626,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "object_type": "workout",
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -710,7 +709,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "reported_comment": comment.serialize(
                 user_1_admin, for_report=True
             ),
-            "reported_user": user_3.serialize(),
+            "reported_user": user_3.serialize(current_user=user_1_admin),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -753,7 +752,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "object_type": "comment",
             "reported_by": user_2.serialize(current_user=user_1_admin),
             "reported_comment": None,
-            "reported_user": user_3.serialize(),
+            "reported_user": user_3.serialize(current_user=user_1_admin),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -861,7 +860,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "object_type": "workout",
             "reported_by": user_3.serialize(current_user=user_1_admin),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1_admin),
             "reported_workout": workout_cycling_user_2.serialize(
                 user=user_1_admin, for_report=True
             ),
@@ -901,7 +900,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "object_type": "workout",
             "reported_by": user_3.serialize(current_user=user_1_admin),
             "reported_comment": None,
-            "reported_user": user_2.serialize(),
+            "reported_user": user_2.serialize(current_user=user_1_admin),
             "reported_workout": None,
             "resolved": False,
             "resolved_at": None,
@@ -982,7 +981,7 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "updated_at": None,
         }
 
-    def test_it_does_not_return_serialized_object_with_admin_actions_when_flag_is_false(  # noqa
+    def test_it_does_not_return_serialized_object_with_report_actions_when_flag_is_false(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -996,13 +995,13 @@ class TestMinimalReportSerializerAsAdmin(CommentMixin, RandomMixin):
         )
         db.session.add(report)
         db.session.flush()
-        admin_action = AdminAction(
+        report_action = ReportAction(
             action_type="user_suspension",
             admin_user_id=user_1_admin.id,
             report_id=report.id,
             user_id=user_3.id,
         )
-        db.session.add(admin_action)
+        db.session.add(report_action)
         db.session.commit()
 
         serialized_report = report.serialize(user_1_admin, full=False)
@@ -1050,7 +1049,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         serialized_report = report.serialize(user_1_admin, full=True)
 
         assert serialized_report == {
-            "admin_actions": [],
+            "report_actions": [],
             "created_at": report.created_at,
             "comments": [report_comment.serialize(user_1_admin)],
             "id": report.id,
@@ -1067,7 +1066,7 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
             "updated_at": None,
         }
 
-    def test_it_returns_serialized_object_with_admin_actions(
+    def test_it_returns_serialized_object_with_report_actions(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1081,27 +1080,27 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         )
         db.session.add(report)
         db.session.flush()
-        admin_action_1 = AdminAction(
+        report_action_1 = ReportAction(
             action_type="user_suspension",
             admin_user_id=user_1_admin.id,
             report_id=report.id,
             user_id=user_3.id,
         )
-        db.session.add(admin_action_1)
-        admin_action_2 = AdminAction(
+        db.session.add(report_action_1)
+        report_action_2 = ReportAction(
             action_type="report_resolution",
             admin_user_id=user_1_admin.id,
             report_id=report.id,
         )
-        db.session.add(admin_action_2)
+        db.session.add(report_action_2)
         db.session.commit()
 
         serialized_report = report.serialize(user_1_admin, full=True)
 
         assert serialized_report == {
-            "admin_actions": [
-                admin_action_1.serialize(user_1_admin, full=False),
-                admin_action_2.serialize(user_1_admin, full=False),
+            "report_actions": [
+                report_action_1.serialize(user_1_admin, full=False),
+                report_action_2.serialize(user_1_admin, full=False),
             ],
             "created_at": report.created_at,
             "comments": [],
@@ -1120,7 +1119,8 @@ class TestFullReportSerializerAsAdmin(CommentMixin, RandomMixin):
         }
 
 
-class ReportCommentTestCase(CommentMixin, UserModerationMixin): ...
+class ReportCommentTestCase(CommentMixin, ReportMixin):
+    pass
 
 
 class TestReportCommentModel(ReportCommentTestCase):

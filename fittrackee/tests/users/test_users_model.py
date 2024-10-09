@@ -8,9 +8,9 @@ from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import AdminAction
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.exceptions import FederationDisabledException
+from fittrackee.reports.models import ReportAction
 from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
     BlockUserException,
@@ -28,6 +28,8 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.workouts.models import Sport, Workout
+
+from ..mixins import ReportMixin
 
 
 class TestUserModel:
@@ -1300,16 +1302,20 @@ class TestBlockedByUsers:
         assert set(user_1.get_blocked_by_user_ids()) == {user_2.id, user_3.id}
 
 
-class TestUsersWithSuspensions:
+class TestUsersWithSuspensions(ReportMixin):
     def test_suspension_action_is_none_when_no_suspension_for_given_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        admin_action = AdminAction(
+        action_type = "user_suspension"
+        report_action = ReportAction(
             admin_user_id=user_1_admin.id,
-            action_type="user_suspension",
+            action_type=action_type,
+            report_id=self.create_report_user_action(
+                user_1_admin, user_2, action_type
+            ).id,
             user_id=user_2.id,
         )
-        db.session.add(admin_action)
+        db.session.add(report_action)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
 
@@ -1318,38 +1324,48 @@ class TestUsersWithSuspensions:
     def test_suspension_action_is_last_suspension_action_when_user_is_suspended(  # noqa
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_user_report(user_1_admin, user_2).id
         for n in range(2):
-            admin_action = AdminAction(
+            action_type = (
+                "user_suspension" if n % 2 == 0 else "user_unsuspension"
+            )
+            report_action = ReportAction(
                 admin_user_id=user_1_admin.id,
-                action_type=(
-                    "user_suspension" if n % 2 == 0 else "user_unsuspension"
-                ),
+                action_type=action_type,
+                report_id=report_id,
                 user_id=user_2.id,
             )
-            db.session.add(admin_action)
-        expected_admin_action = AdminAction(
+            db.session.add(report_action)
+            db.session.flush()
+        expected_report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type="user_suspension",
+            report_id=report_id,
             user_id=user_2.id,
         )
         user_2.suspended_at = datetime.utcnow()
-        db.session.add(expected_admin_action)
+        db.session.add(expected_report_action)
         db.session.commit()
 
-        assert user_2.suspension_action == expected_admin_action
+        assert user_2.suspension_action == expected_report_action
 
     def test_suspension_action_is_none_when_user_is_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        report_id = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        ).id
         for n in range(2):
-            admin_action = AdminAction(
+            action_type = (
+                "user_suspension" if n % 2 == 0 else "user_unsuspension"
+            )
+            report_action = ReportAction(
                 admin_user_id=user_1_admin.id,
-                action_type=(
-                    "user_suspension" if n % 2 == 0 else "user_unsuspension"
-                ),
+                action_type=action_type,
+                report_id=report_id,
                 user_id=user_2.id,
             )
-            db.session.add(admin_action)
+            db.session.add(report_action)
         db.session.commit()
 
         assert user_2.suspension_action is None
@@ -1418,6 +1434,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             'is_remote': user_2.is_remote,
             'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
+            'suspended_at': user_2.suspended_at,
             'username': user_2.username,
         }
 
@@ -1434,5 +1451,6 @@ class TestUserLightSerializer(UserModelAssertMixin):
             'is_remote': user_2.is_remote,
             'nb_workouts': user_2.workouts_count,
             'picture': user_2.picture is not None,
+            'suspended_at': user_2.suspended_at,
             'username': user_2.username,
         }

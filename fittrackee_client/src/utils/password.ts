@@ -8,6 +8,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Galician
   // - Norwegian bokmål
   // - Portuguese (pt-PT)
+  // - Russian
   // fallback to english
   switch (language) {
     case 'fr':

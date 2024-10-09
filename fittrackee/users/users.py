@@ -769,7 +769,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         user_manager_service = UserManagerService(
             username=user_name, admin_user_id=auth_user.id
         )
-        user, _, _ = user_manager_service.update(
+        user, _, _, _ = user_manager_service.update(
             is_admin=user_data.get('admin'),
             activate=user_data.get('activate'),
             reset_password=reset_password,

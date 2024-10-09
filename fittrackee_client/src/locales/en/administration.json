@@ -64,6 +64,7 @@
       "user_suspension": "{0} has been suspended by {1} {2}.",
       "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
       "user_warning": "A warning has been sent to {0} by {1} {2}.",
+      "user_warning_lifting": "The {0} warning has been lifted by {1} {2}.",
       "workout_suspension": "The workout has been suspended by {1} {2}.",
       "workout_unsuspension": "The workout suspension has been lifted by {1} {2}."
     },

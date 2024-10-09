@@ -11,7 +11,7 @@
         {{ $t('workouts.SUSPENDED_BY_ADMIN') }}
       </template>
       <button
-        v-if="!success && !displayAppealForm"
+        v-if="displaySuspensionMessage && !success && !displayAppealForm"
         class="transparent appeal-button"
         @click="displayAppealForm = objectTypeId"
       >
@@ -20,13 +20,13 @@
     </div>
     <ActionAppeal
       v-if="displayAppealForm"
-      :admin-action="action"
+      :report-action="action"
       :success="success === objectTypeId"
       :loading="appealLoading === objectTypeId"
       @submitForm="(text) => submitAppeal(text, 'workout', workout.id)"
       @hideMessage="displayAppealForm = null"
     >
-      <template #additionalButtons>
+      <template #cancelButton>
         <button @click="cancelAppeal()">
           {{ $t('buttons.CANCEL') }}
         </button>
@@ -41,11 +41,11 @@
 
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import useAppeal from '@/composables/useAppeal'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
 
   interface Props {
-    action: IUserAdminAction
+    action: IUserReportAction
     workout: IWorkout
     displaySuspensionMessage?: boolean
   }
@@ -71,10 +71,6 @@
   @import '~@/scss/vars';
 
   .appeal-action {
-    .appeal {
-      padding: 0 $default-padding;
-    }
-
     .appeal-button {
       padding: 0 $default-padding;
       font-size: 0.9em;

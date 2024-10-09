@@ -19,7 +19,6 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db, limiter
-from fittrackee.administration.models import AdminActionAppeal
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -48,6 +47,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 
+from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
 from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
 from .utils.convert import convert_in_duration
@@ -1065,13 +1065,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id, description and notes, for example:
-       `{"sport_id": 1, "notes": "", "description": "", "equipment_ids": []}`.
-       Double quotes in notes and description must be escaped.
+    :form data: sport id, equipment id, description, title and notes,
+       for example:
+       ``{"sport_id": 1, "notes": "", "title": "", "description": "",
+       "equipment_ids": []}``.
+       Double quotes in notes, description and title must be escaped.
 
-       The maximum length of notes is 500 characters and that of the
-       description is 10000 characters.
-       Otherwise, they will be truncated.
+       The maximum length is 500 characters for notes, 10000 characters for
+       description and 255 for title. Otherwise, they will be truncated.
+       When description and title are provided, they replace the description
+       and title from gpx file.
 
        For `equipment_ids`, the id of the equipment to associate with
        this workout.
@@ -1079,7 +1082,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description and equipment ids are not mandatory.
+       Notes, description, title and equipment ids are not mandatory.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1808,7 +1811,7 @@ def appeal_comment_suspension(
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
-        appeal = AdminActionAppeal(
+        appeal = ReportActionAppeal(
             action_id=suspension_action.id, user_id=auth_user.id, text=text
         )
         db.session.add(appeal)

@@ -22,7 +22,7 @@ from fittrackee.users.models import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, UserModerationMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
@@ -1697,7 +1697,7 @@ class TestGetUserPicture(ApiTestCaseMixin):
         self.assert_404_with_entity(response, 'user')
 
 
-class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
+class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
     def test_it_returns_error_if_auth_user_has_no_admin_rights(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2197,7 +2197,7 @@ class TestUpdateUser(UserModerationMixin, ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteUser(UserModerationMixin, ApiTestCaseMixin):
+class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:

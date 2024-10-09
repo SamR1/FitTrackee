@@ -19,7 +19,7 @@
       />
     </template>
     <ActionAppeal
-      :admin-action="userWarning"
+      :report-action="userWarning"
       :success="authUserSuccess"
       :loading="authUserLoading"
       @submitForm="submitAppeal"
@@ -62,7 +62,7 @@
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -72,7 +72,7 @@
 
   const appealText: Ref<string> = ref('')
 
-  const userWarning: ComputedRef<IUserAdminAction> = computed(
+  const userWarning: ComputedRef<IUserReportAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_WARNING]
   )
 
@@ -97,7 +97,7 @@
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     store.commit(
       AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING,
-      {} as IUserAdminAction
+      {} as IUserReportAction
     )
   })
 </script>

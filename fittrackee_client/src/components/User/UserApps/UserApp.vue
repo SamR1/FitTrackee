@@ -67,7 +67,7 @@
           {{
             client.client_description
               ? client.client_description
-              : $t('oauth2.NO_DESCRIPTION')
+              : $t('common.NO_DESCRIPTION')
           }}
         </dd>
         <dt>{{ $t('oauth2.APP.URL') }}:</dt>

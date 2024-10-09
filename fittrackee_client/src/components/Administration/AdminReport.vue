@@ -76,6 +76,11 @@
                       {{ $t('admin.DELETED_USER') }}
                     </span>
                   </template>
+                  <AlertMessage
+                    v-else-if="report.reported_user?.suspended_at !== null"
+                    message="user.ACCOUNT_SUSPENDED_AT"
+                    :param="reportedUserSuspensionDate"
+                  />
                 </template>
               </Card>
               <Card class="report-detail-card">
@@ -232,7 +237,7 @@
                     <span>{{ $t('admin.APP_MODERATION.REASON') }}:</span>
                     {{ item.reason }}
                   </div>
-                  <AdminActionAppeal
+                  <ReportActionAppeal
                     v-if="
                       item.appeal && displayedAppeals.includes(item.appeal.id)
                     "
@@ -330,7 +335,7 @@
                   }"
                   @click="
                     displayTextArea(
-                      `${report.reported_user.suspended_at === null ? '' : 'UN'}SUSPEND_ACCOUNT`
+                      `${report.reported_user.suspended_at ? 'UN' : ''}SUSPEND_ACCOUNT`
                     )
                   "
                 >
@@ -380,7 +385,7 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
 
-  import AdminActionAppeal from '@/components/Administration/AdminActionAppeal.vue'
+  import ReportActionAppeal from '@/components/Administration/AdminReportActionAppeal.vue'
   import Comment from '@/components/Comment/Comment.vue'
   import Loader from '@/components/Common/Loader.vue'
   import NotFound from '@/components/Common/NotFound.vue'
@@ -394,12 +399,12 @@
   import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
-    IAdminAction,
+    IReportAction,
     IReportComment,
     IReportCommentPayload,
     IReportForAdmin,
     TReportAction,
-    IReportAdminActionPayload,
+    IReportActionPayload,
   } from '@/types/reports'
   import type { IComment, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -439,9 +444,8 @@
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_UPDATE_LOADING]
   )
   const displayReportCommentTextarea: Ref<boolean> = ref(false)
-  const reportsItems: ComputedRef<(IAdminAction | IReportComment)[]> = computed(
-    () => getActionsAndComments()
-  )
+  const reportsItems: ComputedRef<(IReportAction | IReportComment)[]> =
+    computed(() => getActionsAndComments())
   const isNoteMandatory: ComputedRef<boolean> = computed(
     () =>
       currentAction.value !== null &&
@@ -449,7 +453,15 @@
         currentAction.value
       )
   )
-
+  const reportedUserSuspensionDate: ComputedRef<string | null> = computed(() =>
+    report.value.reported_user?.suspended_at
+      ? formatDate(
+          report.value.reported_user?.suspended_at,
+          authUser.value.timezone,
+          authUser.value.date_format
+        )
+      : null
+  )
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, {
       reportId: +route.params.reportId,
@@ -513,7 +525,7 @@
   function updateUserSuspendedAt() {
     if (report.value.reported_user && currentAction.value) {
       const actionType = `user_${currentAction.value === 'SUSPEND_ACCOUNT' ? '' : 'un'}suspension`
-      const payload: IReportAdminActionPayload = {
+      const payload: IReportActionPayload = {
         action_type: actionType,
         report_id: report.value.id,
         username: report.value.reported_user.username,
@@ -529,7 +541,7 @@
       const actionType =
         `${report.value.reported_comment ? 'comment' : 'workout'}_` +
         `${currentAction.value?.startsWith('SUSPEND') ? '' : 'un'}suspension`
-      const payload: IReportAdminActionPayload = {
+      const payload: IReportActionPayload = {
         action_type: actionType,
         report_id: report.value.id,
       }
@@ -560,7 +572,7 @@
     }
   }
   function sendWarningEmail() {
-    const payload: IReportAdminActionPayload = {
+    const payload: IReportActionPayload = {
       action_type: 'user_warning',
       report_id: report.value.id,
       username: report.value.reported_user?.username,
@@ -582,18 +594,18 @@
     )
   }
   function sortCreatedAt(
-    a: IAdminAction | IReportComment,
-    b: IAdminAction | IReportComment
+    a: IReportAction | IReportComment,
+    b: IReportAction | IReportComment
   ): number {
     return compareAsc(new Date(a.created_at), new Date(b.created_at))
   }
-  function getActionsAndComments(): (IAdminAction | IReportComment)[] {
-    if (!report.value.admin_actions && !report.value.comments) {
+  function getActionsAndComments(): (IReportAction | IReportComment)[] {
+    if (!report.value.report_actions && !report.value.comments) {
       return []
     }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return [...report.value.admin_actions, ...report.value.comments].sort(
+    return [...report.value.report_actions, ...report.value.comments].sort(
       sortCreatedAt
     )
   }

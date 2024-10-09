@@ -14,7 +14,7 @@
     v-if="action && displayAppeal"
     :action="action"
     :workout="workout"
-    display-suspension-message
+    :display-suspension-message="action.action_type === 'workout_suspension'"
   />
 </template>
 
@@ -27,11 +27,11 @@
   import useAuthUser from '@/composables/useAuthUser'
   import useSports from '@/composables/useSports'
   import type { ISport } from '@/types/sports'
-  import type { IUserAdminAction } from '@/types/user'
+  import type { IUserReportAction } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
 
   interface Props {
-    action?: IUserAdminAction
+    action?: IUserReportAction
     displayAppeal: boolean
     displayObjectName: boolean
     workout: IWorkout
@@ -57,9 +57,5 @@
 
   .workout-card {
     margin-bottom: 0;
-  }
-
-  .appeal-action {
-    margin: 0 $default-margin;
   }
 </style>

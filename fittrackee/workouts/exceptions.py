@@ -1,16 +1,20 @@
 from fittrackee.exceptions import GenericException
 
 
-class InvalidGPXException(GenericException): ...
+class InvalidGPXException(GenericException):
+    pass
 
 
-class SportNotFoundException(Exception): ...
+class SportNotFoundException(Exception):
+    pass
 
 
-class WorkoutException(GenericException): ...
+class WorkoutException(GenericException):
+    pass
 
 
-class WorkoutGPXException(GenericException): ...
+class WorkoutGPXException(GenericException):
+    pass
 
 
 class WorkoutForbiddenException(GenericException):

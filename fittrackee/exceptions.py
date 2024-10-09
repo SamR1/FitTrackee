@@ -11,4 +11,5 @@ class GenericException(Exception):
         self.e = e
 
 
-class InvalidVisibilityException(Exception): ...
+class InvalidVisibilityException(Exception):
+    pass

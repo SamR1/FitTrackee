@@ -8,25 +8,25 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.administration.models import (
-    USER_ACTION_TYPES,
-    AdminAction,
-    AdminActionAppeal,
-)
 from fittrackee.comments.models import Comment
 from fittrackee.privacy_levels import PrivacyLevel
-from fittrackee.reports.models import Report, ReportComment
+from fittrackee.reports.models import (
+    USER_ACTION_TYPES,
+    Report,
+    ReportAction,
+    ReportActionAppeal,
+    ReportComment,
+)
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserModerationMixin
+from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
-from ..workouts.mixins import WorkoutMixin
 
 
 class ReportTestCase(
-    CommentMixin, UserModerationMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ReportMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     route = "/api/reports"
 
@@ -2060,8 +2060,8 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["comments"][0]["comment"] == comment
 
 
-class TestPostReportAdminAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+class TestPostReportAction(ReportTestCase):
+    route = "/api/reports/{report_id}/actions"
 
     def test_it_returns_401_if_user_is_not_authenticated(
         self,
@@ -2163,10 +2163,31 @@ class TestPostReportAdminAction(ReportTestCase):
         self.assert_400(response, "invalid 'action_type'")
 
 
-class TestPostReportAdminActionForUserAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+class TestPostReportActionForUserAction(ReportTestCase):
+    route = "/api/reports/{report_id}/actions"
 
-    def test_it_returns_400_when_username_is_missing_on_user_admin_action(
+    def test_it_returns_400_when_action_type_is_user_warning_lifting(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        """'user_warning_lifting' is created on appeal processing"""
+        report = self.create_report(reporter=user_3, reported_object=user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            json={
+                "action_type": "user_warning_lifting",
+                "username": user_2.username,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "invalid 'action_type'")
+
+    def test_it_returns_400_when_username_is_missing_on_user_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2187,7 +2208,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
         self.assert_400(response, "'username' is missing")
 
-    def test_it_returns_400_when_username_is_invalid_on_user_admin_action(
+    def test_it_returns_400_when_username_is_invalid_on_user_report_action(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
@@ -2284,7 +2305,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        self.create_admin_action(
+        self.create_report_action(
             user_1_admin,
             user_2,
             action_type="user_warning",
@@ -2331,7 +2352,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         )
 
     @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2359,7 +2380,7 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id,
                 user_id=user_2.id,
                 action_type=input_action_type,
@@ -2549,10 +2570,10 @@ class TestPostReportAdminActionForUserAction(ReportTestCase):
         user_suspension_email_mock.send.assert_not_called()
 
 
-class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+class TestPostReportActionForWorkoutAction(ReportTestCase):
+    route = "/api/reports/{report_id}/actions"
 
-    def test_it_returns_400_when_workout_id_is_missing_on_workout_admin_action(
+    def test_it_returns_400_when_workout_id_is_missing_on_workout_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -2578,7 +2599,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
 
         self.assert_400(response, "'workout_id' is missing")
 
-    def test_it_returns_400_when_workout_is_invalid_on_workout_admin_action(
+    def test_it_returns_400_when_workout_is_invalid_on_workout_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2743,7 +2764,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
             is None
         )
 
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -2772,7 +2793,7 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id, user_id=user_2.id
             ).first()
             is not None
@@ -2909,10 +2930,10 @@ class TestPostReportAdminActionForWorkoutAction(ReportTestCase):
         workout_suspension_email_mock.send.assert_not_called()
 
 
-class TestPostReportAdminActionForCommentAction(ReportTestCase):
-    route = "/api/reports/{report_id}/admin-actions"
+class TestPostReportActionForCommentAction(ReportTestCase):
+    route = "/api/reports/{report_id}/actions"
 
-    def test_it_returns_400_when_comment_id_is_missing_on_comment_admin_action(
+    def test_it_returns_400_when_comment_id_is_missing_on_comment_report_action(  # noqa
         self,
         app: Flask,
         user_1_admin: User,
@@ -2939,7 +2960,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
 
         self.assert_400(response, "'comment_id' is missing")
 
-    def test_it_returns_400_when_comment_is_invalid_on_comment_admin_action(
+    def test_it_returns_400_when_comment_is_invalid_on_comment_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -3105,7 +3126,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
             Comment.query.filter_by(id=comment.id).first().suspended_at is None
         )
 
-    def test_it_creates_admin_action(
+    def test_it_creates_report_action(
         self,
         app: Flask,
         user_1_admin: User,
@@ -3135,7 +3156,7 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            AdminAction.query.filter_by(
+            ReportAction.query.filter_by(
                 admin_user_id=user_1_admin.id, user_id=user_3.id
             ).first()
             is not None
@@ -3290,8 +3311,8 @@ class TestPostReportAdminActionForCommentAction(ReportTestCase):
         comment_suspension_email_mock.send.assert_not_called()
 
 
-class TestProcessAdminActionAppeal(
-    CommentMixin, WorkoutMixin, UserModerationMixin, ApiTestCaseMixin
+class TestProcessReportActionAppeal(
+    CommentMixin, ReportMixin, ApiTestCaseMixin
 ):
     route = '/api/appeals/{appeal_id}'
 
@@ -3351,7 +3372,7 @@ class TestProcessAdminActionAppeal(
     def test_it_returns_error_when_data_are_missing(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
+        suspension_action = self.create_report_user_action(
             user_1_admin, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
@@ -3371,7 +3392,7 @@ class TestProcessAdminActionAppeal(
     def test_it_returns_400_when_user_already_unsuspended(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
+        suspension_action = self.create_report_user_action(
             user_1_admin, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
@@ -3400,7 +3421,7 @@ class TestProcessAdminActionAppeal(
     def test_it_processes_user_suspension_appeal(
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
-        suspension_action = self.create_user_suspension_action(
+        suspension_action = self.create_report_user_action(
             user_1_admin, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
@@ -3420,9 +3441,100 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_user_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2, report_id=report.id
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        user_unsuspension_email_mock.send.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "input_data",
+        [
+            {"approved": True, "reason": "ok"},
+            {"approved": False, "reason": "not ok"},
+        ],
+    )
+    def test_it_processes_user_warning_appeal(
+        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        warning_action = self.create_report_user_action(
+            user_1_admin, user_2, "user_warning", report.id
+        )
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            data=json.dumps(input_data),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+        }
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        assert appeal.approved is input_data["approved"]
+        assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_user_warning_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_warning_lifting_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        warning_action = self.create_report_user_action(
+            user_1_admin, user_2, "user_warning", report.id
+        )
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        user_warning_lifting_email_mock.send.assert_called_once()
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3447,7 +3559,7 @@ class TestProcessAdminActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3469,9 +3581,44 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_comment_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        comment_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_report_comment_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        comment_unsuspension_email_mock.send.assert_called_once()
 
     def test_it_returns_400_when_comment_already_unsuspended(
         self,
@@ -3488,7 +3635,7 @@ class TestProcessAdminActionAppeal(
             workout_cycling_user_2,
             text_visibility=PrivacyLevel.PUBLIC,
         )
-        suspension_action = self.create_admin_comment_suspension_action(
+        suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
         )
         db.session.flush()
@@ -3525,7 +3672,7 @@ class TestProcessAdminActionAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -3550,9 +3697,38 @@ class TestProcessAdminActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
         }
-        appeal = AdminActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
+
+    def test_it_sends_an_email_when_appeal_on_workout_suspension_is_approved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_unsuspension_email_mock: MagicMock,
+    ) -> None:
+        suspension_action = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": True, "reason": "ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        workout_unsuspension_email_mock.send.assert_called_once()
 
     def test_it_returns_400_when_workout_already_unsuspended(
         self,
@@ -3562,7 +3738,7 @@ class TestProcessAdminActionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        suspension_action = self.create_admin_workout_suspension_action(
+        suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()

@@ -3,7 +3,7 @@ import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
 import type { TCoordinates } from '@/types/map'
 import type {
-  IUserAdminAction,
+  IUserReportAction,
   IUserLightProfile,
   IUserProfile,
   TPrivacyLevels,
@@ -91,7 +91,7 @@ export interface IWorkout {
   sport_id: number
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: IUserAdminAction
+  suspension?: IUserReportAction
   title: string
   user: IUserProfile
   weather_end: IWeather | null
@@ -137,7 +137,7 @@ export interface IWorkoutObject {
 export interface IWorkoutForm {
   sport_id: number | null
   notes: string
-  title?: string
+  title: string
   workout_date?: string
   distance?: number
   duration?: number
@@ -238,7 +238,7 @@ export interface IComment {
   reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
-  suspension?: IUserAdminAction
+  suspension?: IUserReportAction
   text: string | null
   text_html: string | null
   text_visibility: TPrivacyLevels

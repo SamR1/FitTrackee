@@ -79,11 +79,11 @@
   import CustomTextArea from '@/components/Common/CustomTextArea.vue'
   import useApp from '@/composables/useApp'
   import type { ICustomTextareaData } from '@/types/forms'
-  import type { IAdminActionAppeal, IAuthUserProfile } from '@/types/user'
+  import type { IReportActionAppeal, IAuthUserProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    appeal: IAdminActionAppeal
+    appeal: IReportActionAppeal
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()

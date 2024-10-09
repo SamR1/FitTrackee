@@ -24,7 +24,7 @@ import type {
   IUserAccountPayload,
   IUserAccountUpdatePayload,
   IExportRequest,
-  IUserAdminAction,
+  IUserReportAction,
   IUserAppealPayload,
 } from '@/types/user'
 
@@ -37,7 +37,7 @@ export interface IAuthUserState {
   exportRequest: IExportRequest | null
   followRequests: IUserProfile[]
   blockedUsers: IUserProfile[]
-  userAdminAction: IUserAdminAction
+  userReportAction: IUserReportAction
 }
 
 export interface IAuthUserActions {
@@ -205,11 +205,11 @@ export interface IAuthUserGetters {
 
   [AUTH_USER_STORE.GETTERS.ACCOUNT_SUSPENSION](
     state: IAuthUserState
-  ): IUserAdminAction
+  ): IUserReportAction
 
   [AUTH_USER_STORE.GETTERS.USER_WARNING](
     state: IAuthUserState
-  ): IUserAdminAction
+  ): IUserReportAction
 }
 
 export type TAuthUserMutations<S = IAuthUserState> = {
@@ -248,11 +248,11 @@ export type TAuthUserMutations<S = IAuthUserState> = {
   ): void
   [AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION](
     state: S,
-    accountSuspension: IUserAdminAction
+    accountSuspension: IUserReportAction
   ): void
   [AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING](
     state: S,
-    userWarning: IUserAdminAction
+    userWarning: IUserReportAction
   ): void
 }
 

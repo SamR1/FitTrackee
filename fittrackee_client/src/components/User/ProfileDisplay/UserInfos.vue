@@ -30,7 +30,7 @@
     </div>
     <AlertMessage
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
-      v-if="!user.is_remote && !user.is_active"
+      v-if="authUser?.admin && !user.is_remote && !user.is_active"
     />
     <ErrorMessage
       :message="errorMessages"

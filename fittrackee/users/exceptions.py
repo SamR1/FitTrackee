@@ -1,37 +1,50 @@
-class BlockUserException(Exception): ...
+class BlockUserException(Exception):
+    pass
 
 
-class FollowRequestAlreadyProcessedError(Exception): ...
+class FollowRequestAlreadyProcessedError(Exception):
+    pass
 
 
-class FollowRequestAlreadyRejectedError(Exception): ...
+class FollowRequestAlreadyRejectedError(Exception):
+    pass
 
 
-class InvalidEmailException(Exception): ...
+class InvalidEmailException(Exception):
+    pass
 
 
-class InvalidNotificationTypeException(Exception): ...
+class InvalidNotificationTypeException(Exception):
+    pass
 
 
-class MissingAdminIdException(Exception): ...
+class MissingAdminIdException(Exception):
+    pass
 
 
-class MissingReportIdException(Exception): ...
+class MissingReportIdException(Exception):
+    pass
 
 
-class InvalidUserException(Exception): ...
+class InvalidUserException(Exception):
+    pass
 
 
-class NotExistingFollowRequestError(Exception): ...
+class NotExistingFollowRequestError(Exception):
+    pass
 
 
-class UserAlreadySuspendedException(Exception): ...
+class UserAlreadySuspendedException(Exception):
+    pass
 
 
-class UserControlsException(Exception): ...
+class UserControlsException(Exception):
+    pass
 
 
-class UserCreationException(Exception): ...
+class UserCreationException(Exception):
+    pass
 
 
-class UserNotFoundException(Exception): ...
+class UserNotFoundException(Exception):
+    pass
