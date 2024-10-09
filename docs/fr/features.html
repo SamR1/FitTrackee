@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.8.9</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.8.10</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.9
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.10
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.9
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.10
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -368,6 +368,24 @@
 </div>
 <ul>
 <li><div class="line-block">
+<div class="line">Si le nom est présent dans le fichier gpx  (<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;&lt;/name&gt;</span></code>), il est utilisé comme titre de la séance. Sinon un titre est généré à partir du sport et de la date de la séance.</div>
+<div class="line">L’utilisateur peut ajouter un titre lors du téléversement du fichier gpx (<em>nouveau dans la version 0.8.10</em>)</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">L’utilisateur peut ajouter une description (<em>nouveau dans la version 0.8.9</em>) et une note.</div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Le champ « Description » est plus long que le champ « Notes » et il aura la même visibilité que la séance dans une prochaine version (cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/125">#125</a>). Le champ « Notes » restera privé.</div>
+</div>
+</div>
+<ul>
+<li><p>Si présente et qu’aucune description n’est fournie par l’utilisateur, la description du fichier gpx (<code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;&lt;/desc&gt;</span></code>) est utilisée comme description de la séance.</p></li>
+<li><div class="line-block">
 <div class="line">Une séance peut même être créée sans fichier gpx (l’utilisateur doit entrer la date, l’heure, la durée et la distance).</div>
 <div class="line">Les dénivelés positif et négatif peuvent être également fournis (<em>nouveau dans la version 0.7.10</em>).</div>
 </div>
@@ -385,17 +403,9 @@
 <li><p>Un <a class="reference external" href="features.html#equipments">équipement</a> peut être associé à une séance (<em>nouveau dans la version 0.8.0</em>). Pour le moment, un seul équipement peut être associé.</p></li>
 <li><p>Les segments peuvent être affichés.</p></li>
 <li><p>Le fichier gpx peut être téléchargé (<em>nouveau dans la version 0.5.1</em>)</p></li>
-<li><p>Edition et suppression d’une séance. L’utilisateur peut ajouter une description (<em>nouveau dans la version 0.8.9</em>) et une note.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">Le champ « Description » est plus long que le champ « Notes » et il aura la même visibilité que la séance dans une prochaine version (cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/125">#125</a>). Le champ « Notes » restera privé.</div>
-</div>
-</div>
-<ul class="simple">
+<li><p>Modification et suppression d’activité.</p></li>
 <li><dl class="simple">
-<dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul>
+<dt>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>totaux :</dt><dd><ul>
 <li><p>distance totale</p></li>
@@ -424,7 +434,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Statistiques de l’utilisateur pour un sport (<em>nouveau dans la version in 0.8.5</em>)</dt><dd><ul>
+<dt>Statistiques de l’utilisateur pour un sport (<em>nouveau dans la version in 0.8.5</em>)</dt><dd><ul class="simple">
 <li><p>nombre total de séances</p></li>
 <li><p>distance (total et moyenne)</p></li>
 <li><p>durée (total et moyenne)</p></li>
@@ -695,18 +705,19 @@
 <p>FitTrackee est disponible dans les langues suivantes (la langue peut être enregistrée dans les préférences de l’utilisateur) :</p>
 <ul class="simple">
 <li><p>Anglais</p></li>
-<li><p>French (<em>new in 0.2.3</em>)</p></li>
+<li><p>Français (<em>nouveau dans la version 0.2.3</em>)</p></li>
 <li><p>Allemand (<em>nouveau dans la version 0.6.9</em>)</p></li>
 <li><p>Néerlandais (<em>nouveau dans la version 0.7.8</em>)</p></li>
 <li><p>Italien (<em>nouveau dans la version 0.7.10</em>)</p></li>
-<li><p>Galician (<em>new in 0.7.15</em>)</p></li>
+<li><p>Galicien (<em>nouveau dans la version 0.7.15</em>)</p></li>
 <li><p>Espagnol (<em>nouveau dans la version 0.7.15</em>)</p></li>
 <li><p>Norvégien (Bokmål) (<em>nouveau dans la version 0.7.15</em>)</p></li>
 <li><p>Polonais (<em>nouveau dans la version 0.7.18</em>)</p></li>
 <li><p>Basque (<em>nouveau dans la version 0.7.31</em>)</p></li>
-<li><p>Tchèque (<em>nouveau dans la version in 0.8.1</em>)</p></li>
+<li><p>Tchèque (<em>nouveau dans la version 0.8.1</em>)</p></li>
 <li><p>Portugais (<em>nouveau dans la version 0.8.4</em>)</p></li>
 <li><p>Bulgare (<em>nouveau dans la version 0.8.8</em>)</p></li>
+<li><p>Russe (<em>nouveau dans la version 0.8.10</em>)</p></li>
 </ul>
 <p>Etat d’avancement de la traduction de l’application sur <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (peut différer de la version publiée) :</p>
 <figure class="align-default">
@@ -854,7 +865,7 @@
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6573db68"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=cea45d8c"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

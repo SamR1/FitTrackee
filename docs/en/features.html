@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.8.9 documentation</title>
+        <title>Features - FitTrackee 0.8.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.8.9
+      <a href="index.html"><div class="brand">FitTrackee 0.8.10
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.9
+  <span class="sidebar-brand-text">FitTrackee 0.8.10
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -368,6 +368,24 @@
 </div>
 <ul>
 <li><div class="line-block">
+<div class="line">If the name is present in the gpx file (<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;&lt;/name&gt;</span></code>), it is used as the workout title. Otherwise, a title is generated from the sport and workout date.</div>
+<div class="line">User can add title while uploading gpx file (<em>new in 0.8.10</em>).</div>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">The user can add description (<em>new in 0.8.9</em>) and note.</div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">This “Description” field is longer than the “Notes” field and will have the same visibility as the workout in a next version (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/125">#125</a>). The “Notes” field will remain private.</div>
+</div>
+</div>
+<ul>
+<li><p>If present and no description is provided by the user, the description from the gpx file (<code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;&lt;/desc&gt;</span></code>) is used as the workout description (<em>new in 0.8.10</em>).</p></li>
+<li><div class="line-block">
 <div class="line">A workout can even be created without gpx (the user must enter date, time, duration and distance).</div>
 <div class="line">Ascent and descent can also be provided (<em>new in 0.7.10</em>).</div>
 </div>
@@ -385,17 +403,9 @@
 <li><p>An <a class="reference external" href="features.html#equipments">equipment</a> can be associated with a workout (<em>new in 0.8.0</em>). For now, only one equipment can be associated.</p></li>
 <li><p>Segments can be displayed.</p></li>
 <li><p>Workout gpx file can be downloaded (<em>new in 0.5.1</em>)</p></li>
-<li><p>Workout edition and deletion. User can add a description (<em>new in 0.8.9</em>) and a note.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">This “Description” field is longer than the “Notes” field and will have the same visibility as the workout in a next version (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/125">#125</a>). The “Notes” field will remain private.</div>
-</div>
-</div>
-<ul class="simple">
+<li><p>Workout edition and deletion.</p></li>
 <li><dl class="simple">
-<dt>User statistics, by time period (week, month, year) and sport:</dt><dd><ul>
+<dt>User statistics, by time period (week, month, year) and sport:</dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>totals:</dt><dd><ul>
 <li><p>total distance</p></li>
@@ -424,7 +434,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>User statistics by sport (<em>new in 0.8.5</em>):</dt><dd><ul>
+<dt>User statistics by sport (<em>new in 0.8.5</em>):</dt><dd><ul class="simple">
 <li><p>total workouts</p></li>
 <li><p>distance (total and average)</p></li>
 <li><p>duration (total and average)</p></li>
@@ -708,6 +718,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>Czech (<em>new in 0.8.1</em>)</p></li>
 <li><p>Portuguese (<em>new in 0.8.4</em>)</p></li>
 <li><p>Bulgarian (<em>new in 0.8.8</em>)</p></li>
+<li><p>Russian (<em>new in 0.8.10</em>)</p></li>
 </ul>
 <p>Application translations status on <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (may differ from the released version):</p>
 <figure class="align-default">
@@ -855,7 +866,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=edff376a"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=4628b18e"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
