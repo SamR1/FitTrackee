@@ -35,6 +35,7 @@
     },
     "APPEAL": {
       "APPROVED": "This appeal has been approved {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "This appeal was approved by lifting the suspension.",
       "HIDE": "Hide appeal",
       "REASON_IS": "The reason is:",
       "REJECTED": "This appeal has been rejected {0}.",

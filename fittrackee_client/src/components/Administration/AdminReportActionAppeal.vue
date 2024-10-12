@@ -14,59 +14,66 @@
         })
       }}
     </span>
-    <form
-      v-if="appeal.approved === null"
-      @submit.prevent="updateAppeal"
-      class="appeal-actions"
-    >
-      <CustomTextArea
-        name="appeal-reason"
-        :required="true"
-        :placeholder="
-          $t('admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.UPDATE_APPEAL')
-        "
-        @updateValue="updateReason"
-      />
-      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-      <div class="appeal-actions-buttons">
-        <button class="small approve" value="approve">
-          {{ $t('buttons.APPROVE') }}
-        </button>
-        <button class="small reject" value="reject">
-          {{ $t('buttons.REJECT') }}
-        </button>
-        <button class="small reject" type="button" @click="closeForm">
-          {{ $t('buttons.CANCEL') }}
-        </button>
-      </div>
-    </form>
-    <div class="description-list" v-else>
-      <i18n-t
-        :keypath="`admin.APP_MODERATION.APPEAL.${appeal.approved ? 'APPROVED' : 'REJECTED'}`"
-        tag="p"
+    <template v-if="appeal.updated_at === null">
+      <form
+        v-if="appeal.approved === null"
+        @submit.prevent="updateAppeal"
+        class="appeal-actions"
       >
-        <span
-          class="report-action-date"
-          :title="
-            formatDate(
-              appeal.updated_at,
-              authUser.timezone,
-              authUser.date_format
-            )
+        <CustomTextArea
+          name="appeal-reason"
+          :required="true"
+          :placeholder="
+            $t('admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.UPDATE_APPEAL')
           "
+          @updateValue="updateReason"
+        />
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <div class="appeal-actions-buttons">
+          <button class="small approve" value="approve">
+            {{ $t('buttons.APPROVE') }}
+          </button>
+          <button class="small reject" value="reject">
+            {{ $t('buttons.REJECT') }}
+          </button>
+          <button class="small reject" type="button" @click="closeForm">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+        </div>
+      </form>
+      <div class="description-list" v-else>
+        <i18n-t
+          :keypath="`admin.APP_MODERATION.APPEAL.${appeal.approved ? 'APPROVED' : 'REJECTED'}`"
+          tag="p"
         >
-          {{
-            formatDistance(new Date(appeal.updated_at), new Date(), {
-              addSuffix: true,
-              locale,
-            })
-          }}
-        </span>
-      </i18n-t>
-      <dl>
-        <dt>{{ $t('admin.APP_MODERATION.APPEAL.REASON_IS') }}</dt>
-        <dd>{{ appeal.reason }}</dd>
-      </dl>
+          <span
+            class="report-action-date"
+            :title="
+              formatDate(
+                appeal.updated_at,
+                authUser.timezone,
+                authUser.date_format
+              )
+            "
+          >
+            {{
+              formatDistance(new Date(appeal.updated_at), new Date(), {
+                addSuffix: true,
+                locale,
+              })
+            }}
+          </span>
+        </i18n-t>
+        <dl>
+          <dt>{{ $t('admin.APP_MODERATION.APPEAL.REASON_IS') }}</dt>
+          <dd>{{ appeal.reason }}</dd>
+        </dl>
+      </div>
+    </template>
+    <div v-else-if="appeal.approved === null">
+      {{
+        $t('admin.APP_MODERATION.APPEAL.AUTOMATICALLY_APPROVED_BY_UNSUSPENSION')
+      }}
     </div>
   </div>
 </template>

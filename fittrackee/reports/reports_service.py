@@ -179,6 +179,20 @@ class ReportService:
                     report_id=report.id,
                     reason=reason,
                 )
+                if action_type == "user_unsuspension":
+                    appeal = (
+                        ReportActionAppeal.query.join(ReportAction)
+                        .filter(
+                            ReportAction.report_id == report.id,
+                            ReportAction.user_id == user.id,
+                            ReportAction.action_type == "user_suspension",
+                        )
+                        .first()
+                    )
+                    if appeal:
+                        appeal.approved = None
+                        appeal.updated_at = datetime.utcnow()
+                        db.session.flush()
 
         elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
             object_type = action_type.split("_")[0]
@@ -216,6 +230,20 @@ class ReportService:
 
             else:
                 reported_object.suspended_at = None
+                appeal = (
+                    ReportActionAppeal.query.join(ReportAction)
+                    .filter(
+                        ReportAction.report_id == report.id,
+                        ReportAction.user_id == reported_object.user_id,
+                        ReportAction.action_type
+                        == f"{object_type}_suspension",
+                    )
+                    .first()
+                )
+                if appeal:
+                    appeal.approved = None
+                    appeal.updated_at = datetime.utcnow()
+                    db.session.flush()
             db.session.flush()
         else:
             raise InvalidReportActionException("invalid action type")
