@@ -14,7 +14,6 @@ classifiers = [
     "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -24,7 +23,7 @@ classifiers = [
 exclude = ["fittrackee/tests"]
 
 [tool.poetry.dependencies]
-python = ">= 3.8.1, < 3.13"
+python = ">= 3.9, < 3.13"
 authlib = "=1.3.2"
 babel = "^2.11.0"
 click = "^8.1.7"
