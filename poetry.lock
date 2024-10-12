@@ -23,8 +23,6 @@ files = [
 ]
 
 [package.dependencies]
-importlib-metadata = {version = "*", markers = "python_version < \"3.9\""}
-importlib-resources = {version = "*", markers = "python_version < \"3.9\""}
 Mako = "*"
 SQLAlchemy = ">=1.3.0"
 typing-extensions = ">=4"
@@ -86,9 +84,6 @@ files = [
     {file = "babel-2.16.0-py3-none-any.whl", hash = "sha256:368b5b98b37c06b7daf6696391c3240c938b37767d4584413e8438c5c435fa8b"},
     {file = "babel-2.16.0.tar.gz", hash = "sha256:d1f3554ca26605fe173f3de0c65f750f5a42f924499bf134de6423582298e316"},
 ]
-
-[package.dependencies]
-pytz = {version = ">=2015.7", markers = "python_version < \"3.9\""}
 
 [package.extras]
 dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
@@ -2749,5 +2744,5 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">= 3.8.1, < 3.13"
-content-hash = "6b770e0b79a9c7c967f8c5974fdac089882751e11904c11c07efb7204c991255"
+python-versions = ">= 3.9, < 3.13"
+content-hash = "1cb8b087b8d7f5975addc751fddaaf5af48dafb132e67bd5f54db8ca166c9ee9"
