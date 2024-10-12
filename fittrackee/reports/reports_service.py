@@ -224,11 +224,15 @@ class ReportService:
             if "_suspension" in action_type:
                 if reported_object.suspended_at:
                     raise InvalidReportActionException(
-                        f"{object_type} '{object_id}' already suspended"
+                        f"{object_type} already suspended"
                     )
                 reported_object.suspended_at = now
 
             else:
+                if reported_object.suspended_at is None:
+                    raise InvalidReportActionException(
+                        f"{object_type} already reactivated"
+                    )
                 reported_object.suspended_at = None
                 appeal = (
                     ReportActionAppeal.query.join(ReportAction)
@@ -298,7 +302,7 @@ class ReportService:
             ):
                 if not content.suspended_at:
                     raise InvalidReportActionException(
-                        f"{content_type} has already been reactivated"
+                        f"{content_type} already reactivated"
                     )
                 content_id = {f"{content_type}_id": content.id}
                 new_report_action = ReportAction(

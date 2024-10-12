@@ -2294,9 +2294,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(
-            response, f"user '{user_2.username}' already suspended"
-        )
+        self.assert_400(response, "user account already suspended")
 
     def test_it_returns_400_when_when_user_already_warned(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -2725,7 +2723,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
 
         self.assert_400(
             response,
-            f"workout '{workout_cycling_user_2.short_id}' already suspended",
+            "workout already suspended",
         )
 
     def test_it_unsuspends_workout(
@@ -3089,7 +3087,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 
         self.assert_400(
             response,
-            f"comment '{comment.short_id}' already suspended",
+            "comment already suspended",
         )
 
     def test_it_unsuspends_comment(
@@ -3109,7 +3107,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.utcnow()
 
         response = client.post(
             self.route.format(report_id=report.id),
@@ -3654,7 +3652,7 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response, "comment has already been reactivated")
+        self.assert_400(response, "comment already reactivated")
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3758,7 +3756,7 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_400(response, "workout has already been reactivated")
+        self.assert_400(response, "workout already reactivated")
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

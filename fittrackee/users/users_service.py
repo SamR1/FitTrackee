@@ -11,6 +11,7 @@ from fittrackee.users.exceptions import (
     InvalidEmailException,
     MissingAdminIdException,
     MissingReportIdException,
+    UserAlreadyReactivatedException,
     UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
@@ -101,13 +102,13 @@ class UserManagerService:
         now = datetime.utcnow()
         if suspended is True:
             if user.suspended_at:
-                raise UserAlreadySuspendedException(
-                    f"user '{user.username}' already suspended"
-                )
+                raise UserAlreadySuspendedException()
             user.suspended_at = now
             user.admin = False
             user_updated = True
         if suspended is False:
+            if user.suspended_at is None:
+                raise UserAlreadyReactivatedException()
             user.suspended_at = None
             user_updated = True
         if self.admin_user_id and report_id and suspended is not None:

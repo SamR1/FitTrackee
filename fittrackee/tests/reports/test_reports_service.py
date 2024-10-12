@@ -25,6 +25,7 @@ from fittrackee.reports.models import (
 from fittrackee.reports.reports_service import ReportService
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import (
+    UserAlreadyReactivatedException,
     UserAlreadySuspendedException,
     UserNotFoundException,
 )
@@ -899,7 +900,7 @@ class TestReportServiceCreateReportActionForUser(
 
         with pytest.raises(
             UserAlreadySuspendedException,
-            match=f"user '{user_3.username}' already suspended",
+            match="user account already suspended",
         ):
             report_service.create_report_action(
                 report=report,
@@ -931,6 +932,27 @@ class TestReportServiceCreateReportActionForUser(
             User.query.filter_by(username=user_3.username).first().suspended_at
             is None
         )
+
+    def test_it_raises_exception_when_user_already_reactivated(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        db.session.flush()
+
+        with pytest.raises(
+            UserAlreadyReactivatedException,
+            match="user account already reactivated",
+        ):
+            report_service.create_report_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="user_unsuspension",
+                reason=None,
+                data={"username": user_3.username},
+            )
 
     def test_it_updates_existing_appeal_on_user_unsuspension(
         self,
@@ -1269,10 +1291,7 @@ class TestReportServiceCreateReportActionForComment(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=(
-                f"comment '{report.reported_comment.short_id}' "
-                "already suspended"
-            ),
+            match=("comment already suspended"),
         ):
             report_service.create_report_action(
                 report=report,
@@ -1388,6 +1407,35 @@ class TestReportServiceCreateReportActionForComment(
             .suspended_at
             is None
         )
+
+    def test_it_raises_error_when_comment_is_already_reactivated(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        db.session.flush()
+
+        with pytest.raises(
+            InvalidReportActionException,
+            match=("comment already reactivated"),
+        ):
+            report_service.create_report_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="comment_unsuspension",
+                data={"comment_id": report.reported_comment.short_id},
+            )
 
     def test_it_creates_report_action_for_comment_unsuspension(
         self,
@@ -1545,10 +1593,7 @@ class TestReportServiceCreateReportActionForWorkout(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=(
-                f"workout '{report.reported_workout.short_id}' "
-                "already suspended"
-            ),
+            match=("workout already suspended"),
         ):
             report_service.create_report_action(
                 report=report,
@@ -1661,6 +1706,34 @@ class TestReportServiceCreateReportActionForWorkout(
             .suspended_at
             is None
         )
+
+    def test_it_raises_error_when_workout_is_already_reactivated(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        db.session.flush()
+
+        with pytest.raises(
+            InvalidReportActionException,
+            match=("workout already reactivated"),
+        ):
+            report_service.create_report_action(
+                report=report,
+                admin_user=user_1_admin,
+                action_type="workout_unsuspension",
+                data={"workout_id": report.reported_workout.short_id},
+            )
 
     def test_it_creates_report_action_for_workout_unsuspension(
         self,
@@ -2053,7 +2126,7 @@ class TestReportServiceProcessAppeal(
 
         with pytest.raises(
             InvalidReportActionException,
-            match="comment has already been reactivated",
+            match="comment already reactivated",
         ):
             report_service.process_appeal(
                 appeal=appeal,
@@ -2200,7 +2273,7 @@ class TestReportServiceProcessAppeal(
 
         with pytest.raises(
             InvalidReportActionException,
-            match="workout has already been reactivated",
+            match="workout already reactivated",
         ):
             report_service.process_appeal(
                 appeal=appeal,

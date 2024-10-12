@@ -30,8 +30,14 @@ class NotExistingFollowRequestError(Exception):
     pass
 
 
+class UserAlreadyReactivatedException(Exception):
+    def __init__(self) -> None:
+        super().__init__("user account already reactivated")
+
+
 class UserAlreadySuspendedException(Exception):
-    pass
+    def __init__(self) -> None:
+        super().__init__("user account already suspended")
 
 
 class UserControlsException(Exception):

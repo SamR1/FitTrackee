@@ -13,6 +13,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.exceptions import (
+    UserAlreadyReactivatedException,
     UserAlreadySuspendedException,
     UserNotFoundException,
 )
@@ -246,6 +247,7 @@ def create_action(
         }, 200
     except (
         InvalidReportActionException,
+        UserAlreadyReactivatedException,
         UserAlreadySuspendedException,
         UserWarningExistsException,
     ) as e:
