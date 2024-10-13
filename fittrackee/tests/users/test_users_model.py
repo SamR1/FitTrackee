@@ -73,6 +73,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         self.assert_user_account(serialized_user, user_1)
+        assert serialized_user['email'] == user_1.email
         assert serialized_user['email_to_confirm'] == user_1.email_to_confirm
 
     def test_it_returns_user_profile_infos(
@@ -177,6 +178,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         )
 
         self.assert_user_account(serialized_user, user_2)
+        assert serialized_user['email'] == user_2.email
         assert serialized_user['email_to_confirm'] == user_2.email_to_confirm
 
     def test_it_returns_user_profile_infos(
@@ -244,6 +246,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
 
         assert serialized_user['admin'] == user_2.admin
         assert serialized_user['username'] == user_2.username
+        assert 'email' not in serialized_user
         assert 'email_to_confirm' not in serialized_user
         assert 'is_active' not in serialized_user
 
@@ -297,6 +300,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert serialized_user['admin'] == user_1.admin
         assert serialized_user['username'] == user_1.username
         assert 'blocked' not in serialized_user
+        assert 'email' not in serialized_user
         assert 'email_to_confirm' not in serialized_user
         assert 'is_active' not in serialized_user
 
