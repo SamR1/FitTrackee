@@ -604,6 +604,10 @@ class User(BaseModel):
             serialized_user['is_active'] = self.is_active
         if role == UserRole.ADMIN:
             serialized_user['email'] = self.email
+            if self.suspended_at and self.suspension_action:
+                serialized_user['suspension_report_id'] = (
+                    self.suspension_action.report_id
+                )
 
         if current_user is not None and role != UserRole.AUTH_USER:
             serialized_user['follows'] = self.follows(current_user)

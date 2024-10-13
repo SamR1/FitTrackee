@@ -29,7 +29,15 @@
       message="user.ACCOUNT_SUSPENDED_AT"
       :param="suspensionDate"
       v-if="'suspended_at' in user && user.suspended_at !== null"
-    />
+    >
+      <template #additionalMessage v-if="displayReportLink">
+        <i18n-t keypath="common.SEE_REPORT" tag="span">
+          <router-link :to="`/admin/reports/${user.suspension_report_id}`">
+            #{{ user.suspension_report_id }}
+          </router-link>
+        </i18n-t>
+      </template>
+    </AlertMessage>
     <ErrorMessage
       :message="errorMessages"
       v-if="
@@ -43,6 +51,7 @@
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
@@ -61,6 +70,8 @@
   const props = defineProps<Props>()
   const { authUser, from, hideRelationship, updatedUser, user } = toRefs(props)
 
+  const route = useRoute()
+
   const emit = defineEmits(['updatedUserRelationship'])
 
   const { errorMessages } = useApp()
@@ -73,6 +84,11 @@
           authUser.value.date_format
         )
       : null
+  )
+  const displayReportLink: ComputedRef<boolean> = computed(
+    () =>
+      authUser.value.admin &&
+      route.params.reportId != user.value.suspension_report_id?.toString()
   )
 
   function emitUser(username: string) {

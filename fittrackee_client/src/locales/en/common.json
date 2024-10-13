@@ -25,6 +25,7 @@
   "REPORT_PLACEHOLDER": "specify the reason for reporting",
   "REPORT_SUBMITTED": "Report submitted.",
   "SECONDS": "second|seconds",
+  "SEE_REPORT": "See report {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascending",
