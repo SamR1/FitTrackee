@@ -1,0 +1,6 @@
+{% extends "layout.txt" %}{% block content %}{{ _('Your account has been suspended') }}.
+{{ _('You can no longer use your account and your profile is no longer accessible') }}. {{ _('You can still log in to request an export of your data or delete your account') }}.
+
+{% if reason %}{{ _('Reason:') }} {{ reason }}
+
+{% endif %}{{ _('If you think this is an error, you can appeal:') }} {{ appeal_url }}{% endblock %}

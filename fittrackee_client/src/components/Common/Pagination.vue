@@ -63,7 +63,6 @@
     query: TWorkoutsPayload | TPaginationPayload | IOauth2ClientsPayload
   }
   const props = defineProps<Props>()
-
   const { pagination, path, query } = toRefs(props)
 
   function getQuery(page: number, cursor?: number): LocationQuery {

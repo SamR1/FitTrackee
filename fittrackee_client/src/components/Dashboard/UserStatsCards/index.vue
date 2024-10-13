@@ -38,44 +38,50 @@
   import StatCard from '@/components/Common/StatCard.vue'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
+  import type { IDuration } from '@/types/workouts'
   import { getDuration } from '@/utils/duration'
   import { convertDistance, units } from '@/utils/units'
+
   interface Props {
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const { t } = useI18n()
 
-  const { user } = toRefs(props)
+  const distanceUnitFrom: TUnit = 'km'
+  const ascentUnitFrom: TUnit = 'm'
 
-  const totalDuration = computed(() =>
+  const totalDuration: ComputedRef<IDuration> = computed(() =>
     getDuration(user.value.total_duration, t)
   )
-  const distanceUnitFrom: TUnit = 'km'
-  const distanceUnitTo: TUnit = user.value.imperial_units
-    ? units[distanceUnitFrom].defaultTarget
-    : distanceUnitFrom
+  const distanceUnitTo: ComputedRef<TUnit> = computed(() =>
+    user.value.imperial_units
+      ? units[distanceUnitFrom].defaultTarget
+      : distanceUnitFrom
+  )
   const totalDistance: ComputedRef<number> = computed(() =>
     user.value.imperial_units
       ? convertDistance(
           user.value.total_distance,
           distanceUnitFrom,
-          distanceUnitTo,
+          distanceUnitTo.value,
           2
         )
       : parseFloat(user.value.total_distance.toFixed(2))
   )
-  const ascentUnitFrom: TUnit = 'm'
-  const ascentUnitTo: TUnit = user.value.imperial_units
-    ? units[ascentUnitFrom].defaultTarget
-    : ascentUnitFrom
+  const ascentUnitTo: ComputedRef<TUnit> = computed(() =>
+    user.value.imperial_units
+      ? units[ascentUnitFrom].defaultTarget
+      : ascentUnitFrom
+  )
   const totalAscent: ComputedRef<number> = computed(() =>
     user.value.imperial_units
       ? convertDistance(
           user.value.total_ascent,
           ascentUnitFrom,
-          ascentUnitTo,
+          ascentUnitTo.value,
           2
         )
       : parseFloat(user.value.total_ascent.toFixed(2))

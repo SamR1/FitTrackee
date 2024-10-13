@@ -31,7 +31,6 @@
   "NEW_APP": "Ajouter une application",
   "NO_APP": "Application introuvable !",
   "NO_APPS": "pas de applications",
-  "NO_DESCRIPTION": "pas de description",
   "REVOKE_ALL_TOKENS": "Révoquer tous les jetons",
   "TOKENS_REVOCATION_CONFIRMATION": "Êtes-vous sûr de vouloir révoquer tous les jetons ?",
   "TOKENS_REVOKED": "Tous les jetons associés existants ont été révoqués."

@@ -101,16 +101,16 @@
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
 
-  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
-  import type {
-    IEquipmentError,
-    ITranslatedEquipmentType,
-  } from '@/types/equipments'
+  import useApp from '@/composables/useApp'
+  import { EQUIPMENTS_STORE } from '@/store/constants'
+  import type { ITranslatedEquipmentType } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { translateEquipmentTypes } from '@/utils/equipments'
 
-  const { t } = useI18n()
   const store = useStore()
+  const { t } = useI18n()
+
+  const { errorMessages } = useApp()
 
   const translatedEquipmentTypes: ComputedRef<ITranslatedEquipmentType[]> =
     computed(() =>
@@ -119,10 +119,6 @@
         t
       )
     )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onBeforeMount(() => loadEquipmentTypes())
 
   function loadEquipmentTypes() {
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
@@ -133,6 +129,8 @@
       isActive,
     })
   }
+
+  onBeforeMount(() => loadEquipmentTypes())
 </script>
 
 <style lang="scss" scoped>

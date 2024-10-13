@@ -6,15 +6,14 @@
 
 <script setup lang="ts">
   import type { ChartOptions, LayoutItem } from 'chart.js'
-  import { computed, type ComputedRef, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
   import { Bar } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
-  import { useStore } from 'vuex'
 
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
   import type { IChartDataset } from '@/types/chart'
   import type { TStatisticsDatasetKeys } from '@/types/statistics'
-  import { getDarkTheme } from '@/utils'
   import { formatTooltipValue } from '@/utils/tooltip'
   import { chartsColors } from '@/utils/workouts'
 
@@ -37,37 +36,31 @@
     useImperialUnits,
   } = toRefs(props)
 
-  const store = useStore()
   const { t } = useI18n()
 
-  const darkMode: ComputedRef<boolean | null> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
-  )
-  const darkTheme: ComputedRef<boolean> = computed(() =>
-    getDarkTheme(darkMode.value)
-  )
-  const lineColors = computed(() => ({
+  const { darkTheme } = useApp()
+
+  const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.line
       : chartsColors.ligthMode.line,
   }))
-  const textColors = computed(() => ({
+  const textColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.text
       : chartsColors.ligthMode.text,
   }))
-  const isLineChart = computed(
+  const isLineChart: ComputedRef<boolean> = computed(
     () =>
       displayedData.value !== 'average_workouts' &&
       displayedData.value.startsWith('average')
   )
-
   const chartData = computed(() => ({
     labels: labels.value,
     // workaround to avoid dataset modification
     datasets: JSON.parse(JSON.stringify(datasets.value)),
   }))
-  const options = computed<ChartOptions<'bar'>>(() => ({
+  const options: ComputedRef<ChartOptions<'bar'>> = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
     animation: false,

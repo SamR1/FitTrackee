@@ -1,9 +1,9 @@
 <template>
-  <div id="workouts" v-if="authUser.username" class="view">
-    <div class="container workouts-container">
+  <div id="workouts" v-if="authUser.username" class="view items-list-view">
+    <div class="container items-list-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters
-          :sports="translatedSports"
+          :translatedSports="translatedSports"
           :authUser="authUser"
           @filter="toggleFilters"
         />
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="list-container">
-        <WorkoutsList :user="authUser" :sports="translatedSports" />
+        <WorkoutsList :user="authUser" :translatedSports="translatedSports" />
       </div>
     </div>
   </div>
@@ -57,63 +57,3 @@
     hiddenFilters.value = !hiddenFilters.value
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
-  #workouts {
-    .workouts-container {
-      display: flex;
-      flex-direction: row;
-      @media screen and (max-width: $medium-limit) {
-        flex-direction: column;
-      }
-
-      .filters-container,
-      .list-container {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .filters-container {
-        width: 25%;
-        @media screen and (max-width: $medium-limit) {
-          width: 100%;
-
-          @media screen and (max-width: $small-limit) {
-            &.hidden {
-              display: none;
-            }
-          }
-        }
-      }
-
-      .display-filters {
-        display: none;
-        font-size: 0.8em;
-        padding: 0 $default-padding * 2;
-
-        span {
-          cursor: pointer;
-          font-weight: bold;
-          padding-left: $default-padding * 0.5;
-        }
-        .fa {
-          cursor: pointer;
-        }
-
-        @media screen and (max-width: $small-limit) {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-        }
-      }
-
-      .list-container {
-        width: 75%;
-        @media screen and (max-width: $medium-limit) {
-          width: 100%;
-        }
-      }
-    }
-  }
-</style>

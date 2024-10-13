@@ -9,7 +9,10 @@ from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.reports.models import Report
 from fittrackee.users.models import (
+    FollowRequest,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -18,16 +21,31 @@ from fittrackee.users.models import (
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
-class TestGetUser(ApiTestCaseMixin):
-    def test_it_returns_error_if_user_has_no_admin_rights(
-        self, app: Flask, user_1: User, user_2: User
+class TestGetUserAsAdmin(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users/not_existing',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_gets_single_user_without_workouts(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.get(
@@ -36,27 +54,66 @@ class TestGetUser(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_403(response)
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin, light=False)
+        )
 
-    def test_user_can_access_his_profile(
-        self, app: Flask, user_1: User, user_2: User
+    def test_it_gets_single_user_with_workouts(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_1_admin.email
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}',
+            f'/api/users/{user_2.username}',
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user['username'] == user_1.username
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin, light=False)
+        )
+
+    def test_it_gets_authenticated_user(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1_admin.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin, light=False)
+        )
 
     def test_it_gets_inactive_user(
         self, app: Flask, user_1_admin: User, inactive_user: User
@@ -76,11 +133,14 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(inactive_user.serialize(user_1_admin))
+        assert user == jsonify_dict(
+            inactive_user.serialize(current_user=user_1_admin, light=False)
+        )
 
-    def test_it_gets_single_user_without_workouts(
+    def test_it_gets_hidden_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
+        user_2.hide_profile_in_users_directory = True
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -96,49 +156,9 @@ class TestGetUser(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user == jsonify_dict(user_2.serialize(user_1_admin))
-
-    def test_it_gets_single_user_with_workouts(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2_admin: User,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_2_admin.email
+        assert user == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin, light=False)
         )
-
-        response = client.get(
-            f'/api/users/{user_1.username}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert data['status'] == 'success'
-        assert len(data['data']['users']) == 1
-        user = data['data']['users'][0]
-        assert user == jsonify_dict(user_1.serialize(user_2_admin))
-
-    def test_it_returns_error_if_user_does_not_exist(
-        self, app: Flask, user_1_admin: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.get(
-            '/api/users/not_existing',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_404_with_entity(response, 'user')
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -169,8 +189,44 @@ class TestGetUser(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestGetUsers(ApiTestCaseMixin):
-    def test_it_returns_error_if_user_has_no_admin_rights(
+class TestGetUserAsUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users/not_existing',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+    def test_it_does_not_get_inactive_user(
+        self, app: Flask, user_1: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+    def test_it_gets_single_user_without_workouts(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -178,15 +234,213 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users',
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(current_user=user_1, light=False)
+        )
+
+    def test_it_gets_single_user_with_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(current_user=user_1, light=False)
+        )
+
+    def test_it_gets_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(current_user=user_1, light=False)
+        )
+
+    def test_it_gets_hidden_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user == jsonify_dict(
+            user_2.serialize(current_user=user_1, light=False)
+        )
+
+
+class TestGetUserAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
         self.assert_403(response)
 
-    def test_it_get_users_list_regardless_their_account_status(
-        self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
+
+class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_does_not_exist(
+        self, app: Flask, user_1: User
     ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            '/api/users/not_existing',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+    def test_it_does_not_get_inactive_user(
+        self, app: Flask, user_1_admin: User, inactive_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users/{inactive_user.username}',
+            content_type='application/json',
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert 'not found' in data['status']
+        assert 'user does not exist' in data['message']
+
+    def test_it_gets_single_user_without_workouts(
+        self, app: Flask, user_2: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_2.serialize(light=False)
+        )
+
+    def test_it_gets_single_user_with_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(light=False)
+        )
+
+    def test_it_gets_hidden_user(self, app: Flask, user_1: User) -> None:
+        user_1.hide_profile_in_users_directory = True
+        client = app.test_client()
+
+        response = client.get(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user == jsonify_dict(user_1.serialize(light=False))
+
+
+class TestGetUsersAsAdmin(ApiTestCaseMixin):
+    def test_it_gets_users_list_without_inactive_hidden_and_suspended_users(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_4.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -196,18 +450,49 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(current_user=user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_gets_users_list_regardless_their_account_status(
+        self, app: Flask, user_1_admin: User, inactive_user: User, user_3: User
+    ) -> None:
+        inactive_user.hide_profile_in_users_directory = False
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_inactive=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert data['data']['users'][0] == jsonify_dict(
-            user_1_admin.serialize(user_1_admin)
+            user_1_admin.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][1] == jsonify_dict(
-            inactive_user.serialize(user_1_admin)
+            inactive_user.serialize(current_user=user_1_admin)
         )
         assert data['data']['users'][2] == jsonify_dict(
-            user_3.serialize(user_1_admin)
+            user_3.serialize(current_user=user_1_admin)
         )
         assert data['pagination'] == {
             'has_next': False,
@@ -217,7 +502,121 @@ class TestGetUsers(ApiTestCaseMixin):
             'total': 3,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 2)
+    def test_it_gets_users_list_regardless_their_hidden_profile_preference(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_hidden=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_regardless_suspended_status(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_all_users(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        inactive_user: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_inactive=true'
+            '&with_hidden=true&with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 4
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            inactive_user.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_3.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][3] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 4,
+        }
+
+
+class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
     def test_it_gets_first_page_on_users_list(
         self,
         app: Flask,
@@ -234,8 +633,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['pagination'] == {
@@ -246,7 +645,7 @@ class TestGetUsers(ApiTestCaseMixin):
             'total': 3,
         }
 
-    @patch('fittrackee.users.users.USER_PER_PAGE', 2)
+    @patch('fittrackee.users.users.USERS_PER_PAGE', 2)
     def test_it_gets_next_page_on_users_list(
         self,
         app: Flask,
@@ -263,8 +662,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert data['pagination'] == {
@@ -291,8 +690,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 0
         assert data['pagination'] == {
@@ -319,8 +718,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 2
         assert data['pagination'] == {
@@ -347,8 +746,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert data['pagination'] == {
@@ -371,8 +770,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -398,8 +797,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -425,8 +824,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -455,8 +854,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -485,8 +884,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -515,8 +914,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -542,12 +941,12 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -569,12 +968,12 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
-        assert 'toto' in data['data']['users'][0]['username']
-        assert 'sam' in data['data']['users'][1]['username']
+        assert 'sam' in data['data']['users'][0]['username']
+        assert 'toto' in data['data']['users'][1]['username']
         assert 'admin' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
@@ -596,13 +995,13 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
-        assert 'toto' in data['data']['users'][1]['username']
-        assert 'sam' in data['data']['users'][2]['username']
+        assert 'sam' in data['data']['users'][1]['username']
+        assert 'toto' in data['data']['users'][2]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -629,8 +1028,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -665,8 +1064,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'admin' in data['data']['users'][0]['username']
@@ -694,7 +1093,8 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active',
+            '/api/users?order_by=is_active&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -725,7 +1125,8 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=asc',
+            '/api/users?order_by=is_active&order=asc&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -756,7 +1157,8 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=is_active&order=desc',
+            '/api/users?order_by=is_active&order=desc&'
+            'with_inactive=true&with_hidden=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -774,6 +1176,116 @@ class TestGetUsers(ApiTestCaseMixin):
             'page': 1,
             'pages': 1,
             'total': 2,
+        }
+
+    def test_it_gets_users_list_ordered_by_suspension_date_with_default_order(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        # default order is ascending
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_2.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_3.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_suspension_date_ascending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&order=asc&'
+            'with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_2.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_3.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+    def test_it_gets_users_list_ordered_by_suspension_date_descending(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
+        user_3.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?order_by=suspended_at&order=desc&with_suspended=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0]['username'] == user_3.username
+        assert data['data']['users'][0]['suspended_at'] is not None
+        assert data['data']['users'][1]['username'] == user_2.username
+        assert data['data']['users'][1]['suspended_at'] is not None
+        assert data['data']['users'][2]['username'] == user_1_admin.username
+        assert data['data']['users'][2]['suspended_at'] is None
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
         }
 
     def test_it_gets_users_list_ordered_by_workouts_count_descending(
@@ -794,8 +1306,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 3
         assert 'toto' in data['data']['users'][0]['username']
@@ -820,15 +1332,15 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=toto',
+            f'/api/users?q={user_2.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
         assert data['pagination'] == {
             'has_next': False,
             'has_prev': False,
@@ -845,7 +1357,7 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=oto',
+            f'/api/users?q={user_2.username[1:]}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -853,7 +1365,7 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
 
     def test_it_filtering_on_username_is_case_insensitive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
@@ -863,7 +1375,7 @@ class TestGetUsers(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?q=TOTO',
+            f'/api/users?q={user_2.username.upper()}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -871,22 +1383,22 @@ class TestGetUsers(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-        assert 'toto' in data['data']['users'][0]['username']
+        assert user_2.username in data['data']['users'][0]['username']
 
-    def test_it_returns_empty_users_list_filtering_on_username(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    def test_it_does_not_return_inactive_user_by_default(
+        self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
 
         response = client.get(
-            '/api/users?q=not_existing',
+            f'/api/users?q={inactive_user.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 0
         assert data['pagination'] == {
@@ -897,7 +1409,70 @@ class TestGetUsers(ApiTestCaseMixin):
             'total': 0,
         }
 
-    def test_it_users_list_with_complex_query(
+    def test_it_returns_inactive_user(
+        self, app: Flask, user_1_admin: User, user_2: User, inactive_user: User
+    ) -> None:
+        inactive_user.hide_profile_in_users_directory = False
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users?q={inactive_user.username}&with_inactive=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        assert 'inactive' in data['data']['users'][0]['username']
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
+    @pytest.mark.parametrize(
+        'input_desc, input_username',
+        [
+            ('not existing user', 'not_existing'),
+            ('user account format', '@sam@example.com'),
+        ],
+    )
+    def test_it_returns_empty_users_list_filtering_on_username(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        input_desc: str,
+        input_username: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            f'/api/users?q={input_username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
+
+    def test_it_returns_users_list_with_complex_query(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -909,8 +1484,8 @@ class TestGetUsers(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         assert 'admin' in data['data']['users'][0]['username']
@@ -951,6 +1526,135 @@ class TestGetUsers(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
+class TestGetUsersAsUser(ApiTestCaseMixin):
+    @pytest.mark.parametrize(
+        'input_description, input_params',
+        [
+            ("without params", ""),
+            ("with inactive users", "?with_inactive=true"),
+            ("with hidden users", "?with_hidden=true"),
+            ("with suspended users", "?with_suspended=true"),
+            (
+                "all params",
+                "?with_hidden=true&with_inactive=true&with_suspended=true",
+            ),
+        ],
+    )
+    def test_it_gets_users_list_without_inactive_hidden_or_suspended_users(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        inactive_user: User,
+        user_3: User,
+        user_4: User,
+        input_description: str,
+        input_params: str,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_4.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/users{input_params}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_3.serialize(current_user=user_1)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_gets_users_list_with_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 3
+        assert data['data']['users'][0] == jsonify_dict(
+            user_3.serialize(current_user=user_1)
+        )
+
+        assert data['data']['users'][1] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
+        assert data['data']['users'][2] == jsonify_dict(
+            user_2.serialize(current_user=user_1)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 3,
+        }
+
+
+class TestGetUsersAsSuspendedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/users',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+
+class TestGetUsersAsUnauthenticatedUser(ApiTestCaseMixin):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            '/api/users',
+            content_type='application/json',
+        )
+
+        self.assert_401(response)
+
+
 class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
         self, app: Flask, user_1: User
@@ -971,7 +1675,23 @@ class TestGetUserPicture(ApiTestCaseMixin):
         self.assert_404_with_entity(response, 'user')
 
 
-class TestUpdateUser(ApiTestCaseMixin):
+class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
+    def test_it_returns_error_if_auth_user_has_no_admin_rights(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1.username}',
+            content_type='application/json',
+            data=json.dumps(dict(admin=True)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -1010,22 +1730,6 @@ class TestUpdateUser(ApiTestCaseMixin):
             in data['message']
         )
 
-    def test_it_returns_error_if_user_can_not_change_admin_rights(
-        self, app: Flask, user_1: User, user_2: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            f'/api/users/{user_2.username}',
-            content_type='application/json',
-            data=json.dumps(dict(admin=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_403(response)
-
     def test_it_adds_admin_rights_to_a_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -1045,7 +1749,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
+        assert user['email'] == user_2.email
         assert user['admin'] is True
 
     def test_it_removes_admin_rights_to_a_user(
@@ -1068,7 +1772,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
 
         user = data['data']['users'][0]
-        assert user['email'] == 'toto@toto.com'
+        assert user['email'] == user_2.email
         assert user['admin'] is False
 
     def test_it_does_not_send_email_when_only_admin_rights_update(
@@ -1138,7 +1842,7 @@ class TestUpdateUser(ApiTestCaseMixin):
             },
             {
                 'username': user_2.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
             },
         )
 
@@ -1198,9 +1902,9 @@ class TestUpdateUser(ApiTestCaseMixin):
                 ),
                 'username': user_2.username,
                 'password_reset_url': (
-                    'http://0.0.0.0:5000/password-reset?token=xxx'
+                    f'{app.config["UI_URL"]}/password-reset?token=xxx'
                 ),
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
             },
         )
 
@@ -1350,9 +2054,10 @@ class TestUpdateUser(ApiTestCaseMixin):
             },
             {
                 'username': user_2.username,
-                'fittrackee_url': 'http://0.0.0.0:5000',
+                'fittrackee_url': app.config["UI_URL"],
                 'email_confirmation_url': (
-                    f'http://0.0.0.0:5000/email-update?token={expected_token}'
+                    f'{app.config["UI_URL"]}/email-update'
+                    f'?token={expected_token}'
                 ),
             },
         )
@@ -1402,7 +2107,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert user['is_active'] is True
         assert inactive_user.confirmation_token is None
 
-    def test_it_can_only_activate_user_account(
+    def test_it_deactivates_user_account(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1422,8 +2127,23 @@ class TestUpdateUser(ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
         assert user['email'] == user_2.email
-        assert user['is_active'] is True
-        assert user_2.confirmation_token is None
+        assert user['is_active'] is False
+
+    def test_a_user_can_not_deactivate_his_own_user_account(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(activate=False)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     @pytest.mark.parametrize(
         'client_scope, can_access',
@@ -1455,7 +2175,7 @@ class TestUpdateUser(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestDeleteUser(ApiTestCaseMixin):
+class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
@@ -1470,6 +2190,20 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 204
         assert User.query.first() is None
+
+    def test_suspended_user_can_delete_its_own_account(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.delete(
+            f'/api/users/{suspended_user.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
 
     def test_user_with_workout_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1593,7 +2327,7 @@ class TestDeleteUser(ApiTestCaseMixin):
     def test_user_with_export_request_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        db.session.add(UserDataExport(user_1.id))
+        db.session.add(UserDataExport(user_id=user_1.id))
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1614,6 +2348,82 @@ class TestDeleteUser(ApiTestCaseMixin):
 
         assert response.status_code == 204
         assert User.query.first() is None
+
+    def test_user_with_notifications_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert Notification.query.first() is None
+
+    def test_user_with_reports_can_delete_its_own_account(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+        user_4: User,
+    ) -> None:
+        report_from_user_3 = self.create_report(
+            reporter=user_3, reported_object=user_1
+        )
+        report_from_user_1 = self.create_report(
+            reporter=user_1, reported_object=user_4
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        client.post(
+            '/api/auth/picture',
+            data=dict(file=(BytesIO(b'avatar'), 'avatar.png')),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert (
+            FollowRequest.query.filter_by(followed_user_id=user_1.id).first()
+            is None
+        )
+        assert set(Report.query.all()) == {
+            report_from_user_3,
+            report_from_user_1,
+        }
+        assert (
+            Notification.query.filter_by(to_user_id=user_2_admin.id).first()
+            is not None
+        )
 
     def test_user_can_not_delete_another_user_account(
         self, app: Flask, user_1: User, user_2: User
@@ -1753,6 +2563,238 @@ class TestDeleteUser(ApiTestCaseMixin):
         )
 
         self.assert_403(response, 'error, registration is disabled')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestBlockUser(ApiTestCaseMixin):
+    route = '/api/users/{username}/block'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_blocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1)
+
+    def test_it_removes_follow_request_if_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_1.is_followed_by(user_2) == 'false'
+
+    def test_user_can_not_block_itself(self, app: Flask, user_1: User) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'users:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestUnBlockUser(ApiTestCaseMixin):
+    route = '/api/users/{username}/unblock'
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_unblocks_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.blocks_user(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1) is False
+
+    def test_it_does_not_return_error_if_user_is_not_block(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert user_2.is_blocked_by(user_1) is False
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
@@ -127,6 +128,22 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         oauth_client = OAuth2Client.query.first()
         assert oauth_client is not None
 
+    def test_suspended_user_can_not_create_oauth_client(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            self.route,
+            data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_serialized_oauth_client(
         self, app: Flask, user_1: User
     ) -> None:
@@ -215,6 +232,30 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client = self.create_oauth2_client(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        user_1.suspended_at = datetime.utcnow()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'response_type': 'code',
+                'confirm': True,
+            },
+            headers=dict(
+                Authorization=f'Bearer {auth_token}',
+                content_type='multipart/form-data',
+            ),
+        )
+
+        self.assert_403(response)
 
     def test_it_returns_error_when_client_id_is_missing(
         self, app: Flask, user_1: User
@@ -610,6 +651,26 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
 
         self.assert_token_is_returned(response)
 
+    def test_it_returns_access_token_when_user_is_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client, code = self.create_authorized_oauth_client(app, user_1)
+        client = app.test_client()
+        user_1.suspended_at = datetime.utcnow()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': 'authorization_code',
+                'code': code,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        self.assert_token_is_returned(response)
+
 
 class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
     route = '/api/oauth/token'
@@ -740,6 +801,31 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
         ).first()
         assert new_token is not None
 
+    def test_it_returns_new_token_when_grant_is_refresh_token_and_user_is_suspended(  # noqa
+        self, app: Flask, user_1: User
+    ) -> None:
+        oauth_client, token = self.generate_token(app, user_1)
+        client = app.test_client()
+        user_1.suspended_at = datetime.utcnow()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'grant_type': 'refresh_token',
+                'refresh_token': token['refresh_token'],
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        data = self.assert_token_is_returned(response)
+        assert data['access_token'] != token['access_token']
+        new_token = OAuth2Token.query.filter_by(
+            access_token=token['access_token']
+        ).first()
+        assert new_token is not None
+
     def test_it_revokes_old_token(self, app: Flask, user_1: User) -> None:
         oauth_client, token = self.generate_token(app, user_1)
         client = app.test_client()
@@ -788,6 +874,33 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         ).first()
         assert token.access_token_revoked_at is not None
 
+    def test_it_revokes_user_token_when_user_is_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(app, user_1)
+        user_1.suspended_at = datetime.utcnow()
+
+        response = client.post(
+            self.route,
+            data={
+                'client_id': oauth_client.client_id,
+                'client_secret': oauth_client.client_secret,
+                'token': access_token,
+            },
+            headers=dict(content_type='multipart/form-data'),
+        )
+
+        assert response.status_code == 200
+        token = OAuth2Token.query.filter_by(
+            client_id=oauth_client.client_id
+        ).first()
+        assert token.access_token_revoked_at is not None
+
 
 class TestOAuthGetClients(ApiTestCaseMixin):
     route = '/api/oauth/apps'
@@ -818,6 +931,31 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['data']['clients'] == []
+
+    def test_it_returns_apps_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        self.create_oauth2_client(suspended_user)
+
+        response = client.get(
+            self.route,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert len(data['data']['clients']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
 
     def test_it_returns_pagination(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -978,6 +1116,33 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             == TEST_OAUTH_CLIENT_METADATA['client_uri']
         )
 
+    def test_it_returns_user_oauth_client_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        client_description = self.random_string()
+        oauth_client = self.create_oauth2_client(
+            suspended_user,
+            metadata={
+                **TEST_OAUTH_CLIENT_METADATA,
+                'client_description': client_description,
+            },
+        )
+        client_id = oauth_client.id
+        client_client_id = oauth_client.client_id
+
+        response = client.get(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['client']['client_id'] == client_client_id
+
     def test_it_does_not_return_oauth_client_from_another_user(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -1069,6 +1234,32 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             == TEST_OAUTH_CLIENT_METADATA['client_uri']
         )
 
+    def test_it_returns_user_oauth_client_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        client_description = self.random_string()
+        oauth_client = self.create_oauth2_client(
+            suspended_user,
+            metadata={
+                **TEST_OAUTH_CLIENT_METADATA,
+                'client_description': client_description,
+            },
+        )
+        client_client_id = oauth_client.client_id
+
+        response = client.get(
+            self.route.format(client_id=client_client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['client']['client_id'] == client_client_id
+
     def test_it_does_not_return_oauth_client_from_another_user(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -1123,6 +1314,25 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
             app, user_1.email
         )
         oauth_client = self.create_oauth2_client(user_1)
+        client_id = oauth_client.id
+
+        response = client.delete(
+            self.route.format(client_id=client_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        deleted_client = OAuth2Client.query.filter_by(id=client_id).first()
+        assert deleted_client is None
+
+    def test_it_deletes_user_oauth_client_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        oauth_client = self.create_oauth2_client(suspended_user)
         client_id = oauth_client.id
 
         response = client.delete(
@@ -1268,6 +1478,26 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         assert data['status'] == 'success'
         for token in tokens:
             assert token.is_revoked()
+
+    def test_it_revokes_client_tokens_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+        oauth_client = self.create_oauth2_client(suspended_user)
+        token = self.create_oauth2_token(oauth_client)
+
+        response = client.post(
+            self.route.format(client_id=oauth_client.id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'success'
+        assert token.is_revoked()
 
     def test_it_does_not_revoke_another_client_token(
         self, app: Flask, user_1: User

@@ -564,7 +564,7 @@ def get_application_stats(auth_user: User) -> Dict:
     """
 
     total_workouts = Workout.query.filter().count()
-    nb_users = User.query.filter().count()
+    nb_users = User.query.filter(User.is_active == True).count()  # noqa
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
         .group_by(Workout.sport_id)

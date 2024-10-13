@@ -15,26 +15,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, onUnmounted } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import type { LocationQueryValue } from 'vue-router'
+  import { onBeforeMount, onUnmounted } from 'vue'
+  import { useRouter } from 'vue-router'
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
 
-  const route = useRoute()
   const router = useRouter()
   const store = useStore()
 
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const token: ComputedRef<LocationQueryValue | LocationQueryValue[]> =
-    computed(() => route.query.token)
-
-  onBeforeMount(() => confirmAccount())
+  const { errorMessages } = useApp()
+  const { token } = useAuthUser()
 
   function confirmAccount() {
     if (token.value) {
@@ -46,6 +40,7 @@
     }
   }
 
+  onBeforeMount(() => confirmAccount())
   onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 

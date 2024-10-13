@@ -111,6 +111,7 @@
 
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
@@ -122,12 +123,12 @@
     displayHARecord: boolean
   }
   const props = defineProps<Props>()
-
   const { displayHARecord, workoutObject, useImperialUnits } = toRefs(props)
-  const withPause = computed(
+
+  const withPause: ComputedRef<boolean> = computed(
     () =>
-      props.workoutObject.pauses !== '0:00:00' &&
-      props.workoutObject.pauses !== null
+      workoutObject.value.pauses !== '0:00:00' &&
+      workoutObject.value.pauses !== null
   )
 </script>
 

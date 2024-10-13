@@ -1,1 +1,2 @@
-class InvalidOAuth2Scopes(Exception): ...
+class InvalidOAuth2Scopes(Exception):
+    pass

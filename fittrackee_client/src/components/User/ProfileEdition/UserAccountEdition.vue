@@ -10,7 +10,7 @@
     />
     <div class="profile-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-      <div class="info-box success-message" v-if="isSuccess">
+      <div class="info-box success-message" v-if="authUserSuccess">
         {{
           $t(
             `user.PROFILE.SUCCESSFUL_${
@@ -25,7 +25,7 @@
           <input
             id="email"
             v-model="userForm.email"
-            :disabled="loading"
+            :disabled="authUserLoading"
             :required="true"
             @invalid="invalidateForm"
             autocomplete="email"
@@ -35,7 +35,7 @@
           {{ $t('user.CURRENT_PASSWORD') }}*
           <PasswordInput
             id="password-field"
-            :disabled="loading"
+            :disabled="authUserLoading"
             :password="userForm.password"
             :required="true"
             @updatePassword="updatePassword"
@@ -47,7 +47,7 @@
           {{ $t('user.NEW_PASSWORD') }}
           <PasswordInput
             id="new-password-field"
-            :disabled="loading"
+            :disabled="authUserLoading"
             :checkStrength="true"
             :password="userForm.new_password"
             :isSuccess="false"
@@ -116,13 +116,13 @@
     watch,
     onUnmounted,
   } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import type { ComputedRef, Reactive, Ref } from 'vue'
 
   import authApi from '@/api/authApi'
   import PasswordInput from '@/components/Common/PasswordInput.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
   import type {
     IAuthUserProfile,
     IUserAccountPayload,
@@ -139,39 +139,26 @@
   const { user } = toRefs(props)
 
   const store = useStore()
-  const userForm: IUserAccountPayload = reactive({
+
+  const { appConfig, errorMessages } = useApp()
+  const { authUserLoading, authUserSuccess } = useAuthUser()
+
+  const userForm: Reactive<IUserAccountPayload> = reactive({
     email: '',
     password: '',
     new_password: '',
   })
-  const loading = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_LOADING]
-  )
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const isSuccess: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
-  )
-  const emailUpdate = ref(false)
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const formErrors = ref(false)
+  const emailUpdate: Ref<boolean> = ref(false)
+  const formErrors: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
+  const generatingLink: Ref<boolean> = ref(false)
+
   const exportRequest: ComputedRef<IExportRequest | null> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.EXPORT_REQUEST]
   )
   const exportRequestDate: ComputedRef<string | null> = computed(() =>
     getExportRequestDate()
   )
-  const generatingLink: Ref<boolean> = ref(false)
-
-  onMounted(() => {
-    if (props.user) {
-      store.dispatch(AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT)
-      updateUserForm(props.user)
-    }
-  })
 
   function invalidateForm() {
     formErrors.value = true
@@ -197,7 +184,6 @@
         )
       : null
   }
-
   function canRequestExport() {
     return exportRequestDate.value
       ? isBefore(new Date(exportRequestDate.value), subDays(new Date(), 1))
@@ -242,15 +228,10 @@
       .finally(() => (generatingLink.value = false))
   }
 
-  onUnmounted(() => {
-    store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
-
   watch(
-    () => isSuccess.value,
-    async (isSuccessValue) => {
-      if (isSuccessValue) {
+    () => authUserSuccess.value,
+    async (authUserSuccessValue) => {
+      if (authUserSuccessValue) {
         updatePassword('')
         updateNewPassword('')
         updateUserForm(user.value)
@@ -264,6 +245,17 @@
       updateUserForm(user.value)
     }
   )
+
+  onMounted(() => {
+    if (props.user) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.GET_REQUEST_DATA_EXPORT)
+      updateUserForm(props.user)
+    }
+  })
+  onUnmounted(() => {
+    store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+  })
 </script>
 
 <style lang="scss" scoped>
