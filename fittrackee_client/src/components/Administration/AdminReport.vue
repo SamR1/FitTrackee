@@ -322,7 +322,7 @@
                   {{ $t('admin.APP_MODERATION.ACTIONS.SEND_WARNING_EMAIL') }}
                 </button>
                 <button
-                  class="danger"
+                  :class="{ danger: reportedContent.suspended_at === null }"
                   v-if="!report.resolved && reportedContent"
                   @click="
                     displayTextArea(

@@ -30,8 +30,8 @@
       "SEND_WARNING_EMAIL": "Send a warning",
       "SUSPEND_ACCOUNT": "Suspend user account",
       "SUSPEND_CONTENT": "Suspend content",
-      "UNSUSPEND_ACCOUNT": "Unsuspend user account",
-      "UNSUSPEND_CONTENT": "Unsuspend content"
+      "UNSUSPEND_ACCOUNT": "Reactivate user account",
+      "UNSUSPEND_CONTENT": "Reactivate content"
     },
     "APPEAL": {
       "APPROVED": "This appeal has been approved {0}.",
