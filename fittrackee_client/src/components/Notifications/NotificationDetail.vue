@@ -321,17 +321,12 @@
 
     &.read {
       color: var(--app-color-lighter);
-
-      ::v-deep(.workout-card-title),
-      ::v-deep(.workout-comment),
-      ::v-deep(.follow-request) {
-        .user-picture {
-          img {
-            opacity: 0.5;
-          }
-          .no-picture {
-            color: var(--app-color-lighter);
-          }
+      ::v-deep(.user-picture) {
+        img {
+          opacity: 0.5;
+        }
+        .no-picture {
+          color: var(--app-color-lighter);
         }
       }
       ::v-deep(.workout-comment) {
