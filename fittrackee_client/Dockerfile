@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18-alpine
 
 MAINTAINER SamR1@users.noreply.github.com
 
@@ -18,7 +18,8 @@ ENV VITE_APP_API_URL $VITE_APP_API_URL
 # install dependencies
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
-RUN yarn install --silent
+RUN yarn install --silent  && yarn cache clean --force
+RUN npm run build
 
 # copy source
 COPY . /usr/src/app/
