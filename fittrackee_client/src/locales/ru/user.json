@@ -26,7 +26,11 @@
   "PASSWORD_RESET": "Сброс пароля",
   "PASSWORD_STRENGTH": {
     "GOOD": "хороший",
+    "LABEL": "надёжность пароля",
     "STRONG": "надежный",
+    "SUGGESTIONS": {
+      "repeated": "Избегайте повторяющихся слов и символов."
+    },
     "WEAK": "слабый"
   },
   "PROFILE": {
