@@ -138,7 +138,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 if auth_user.admin is False
                 else (
                     Report.reported_by == reporter.id
-                    if reporter_username
+                    if reporter and reporter_username
                     else True
                 )
             ),

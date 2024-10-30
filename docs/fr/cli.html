@@ -1,12 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="fr" data-content_root="">
+<html class="no-js" lang="fr" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Outils tiers" href="third_party_tools.html" /><link rel="prev" title="Installation" href="installation.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Interface de ligne de commande - Documentation FitTrackee 0.8.10</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>Interface de ligne de commande - Documentation FitTrackee 0.8.11</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.10
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.11
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.10
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.11
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -282,7 +282,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="command-line-interface">
-<h1>Interface de ligne de commande<a class="headerlink" href="#command-line-interface" title="Lien permanent vers cette rubrique">¶</a></h1>
+<h1>Interface de ligne de commande<a class="headerlink" href="#command-line-interface" title="Lien vers cette rubrique">¶</a></h1>
 <p>Une interface de ligne de commande (CLI) est disponible pour gérer la base de données, les jetons OAuth2 et les utilisateurs.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli
 Usage:<span class="w"> </span>ftcli<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
@@ -299,28 +299,28 @@ Commands:
 </pre></div>
 </div>
 <section id="database">
-<h2>Base de données<a class="headerlink" href="#database" title="Lien permanent vers cette rubrique">¶</a></h2>
+<h2>Base de données<a class="headerlink" href="#database" title="Lien vers cette rubrique">¶</a></h2>
 <section id="ftcli-db-drop">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">drop</span></code><a class="headerlink" href="#ftcli-db-drop" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">drop</span></code><a class="headerlink" href="#ftcli-db-drop" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.6.5.</span></p>
 </div>
 <p>Vider la base de données et supprimer les fichiers téléchargés, uniquement pour les environnements de développement.</p>
 </section>
 <section id="ftcli-db-upgrade">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">upgrade</span></code><a class="headerlink" href="#ftcli-db-upgrade" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">db</span> <span class="pre">upgrade</span></code><a class="headerlink" href="#ftcli-db-upgrade" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.6.5.</span></p>
 </div>
 <p>Appliquer les migrations.</p>
 </section>
 </section>
 <section id="oauth2">
-<h2>OAuth2<a class="headerlink" href="#oauth2" title="Lien permanent vers cette rubrique">¶</a></h2>
+<h2>OAuth2<a class="headerlink" href="#oauth2" title="Lien vers cette rubrique">¶</a></h2>
 <section id="ftcli-oauth2-clean">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">oauth2</span> <span class="pre">clean</span></code><a class="headerlink" href="#ftcli-oauth2-clean" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">oauth2</span> <span class="pre">clean</span></code><a class="headerlink" href="#ftcli-oauth2-clean" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.7.0.</span></p>
 </div>
 <p>Supprimer les jetons expirés depuis plus d’un certain nombre de jours</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -344,11 +344,11 @@ Commands:
 </section>
 </section>
 <section id="users">
-<h2>Utilisateurs<a class="headerlink" href="#users" title="Lien permanent vers cette rubrique">¶</a></h2>
+<h2>Utilisateurs<a class="headerlink" href="#users" title="Lien vers cette rubrique">¶</a></h2>
 <section id="ftcli-users-clean-archives">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_archives</span></code><a class="headerlink" href="#ftcli-users-clean-archives" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_archives</span></code><a class="headerlink" href="#ftcli-users-clean-archives" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.7.13.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.7.13.</span></p>
 </div>
 <p>Supprimer les demandes d’export et les archives associées créées depuis plus d’un certain nombre de jours.</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -371,9 +371,9 @@ Commands:
 </div>
 </section>
 <section id="ftcli-users-clean-tokens">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code><a class="headerlink" href="#ftcli-users-clean-tokens" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">clean_tokens</span></code><a class="headerlink" href="#ftcli-users-clean-tokens" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.7.0.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.7.0.</span></p>
 </div>
 <p>Supprimer les jetons de la liste noire expirés depuis plus d’un certain nombre de jours.</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -396,9 +396,9 @@ Commands:
 </div>
 </section>
 <section id="ftcli-users-create">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">create</span></code><a class="headerlink" href="#ftcli-users-create" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">create</span></code><a class="headerlink" href="#ftcli-users-create" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.7.15.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.7.15.</span></p>
 </div>
 <p>Créer un compte utilisateur.</p>
 <div class="admonition note">
@@ -441,9 +441,9 @@ Commands:
 </div>
 </section>
 <section id="ftcli-users-export-archives">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">export_archives</span></code><a class="headerlink" href="#ftcli-users-export-archives" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">export_archives</span></code><a class="headerlink" href="#ftcli-users-export-archives" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.7.13.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.7.13.</span></p>
 </div>
 <p>Traite les demandes d’export des données utilisateurs incomplètes. Peut être utilisé si redis n’est pas activé (pas de <em>workers</em> dramatiq en cours d’exécution).</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -466,9 +466,9 @@ Commands:
 </div>
 </section>
 <section id="ftcli-users-update">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">update</span></code><a class="headerlink" href="#ftcli-users-update" title="Lien permanent vers cette rubrique">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">update</span></code><a class="headerlink" href="#ftcli-users-update" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">Nouveau dans la version 0.6.5.</span></p>
+<p><span class="versionmodified added">Ajouté dans la version 0.6.5.</span></p>
 </div>
 <p>Modifier le compte d’un utilisateur (droits d’administration, statut actif, email et mot de passe).</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
@@ -593,12 +593,12 @@ Commands:
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=cea45d8c"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+</div><script src="_static/documentation_options.js?v=12f96ae1"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/translations.js?v=d99ca74e"></script>
+    <script src="_static/translations.js?v=041d0952"></script>
     </body>
 </html>
