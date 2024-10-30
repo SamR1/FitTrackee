@@ -17,6 +17,7 @@
     "error, registration is disabled": "Ошибка, регистрация отключена.",
     "file extension not allowed": "Недопустимое расширение файла.",
     "file size is greater than the allowed size": "Размер файла больше допустимого.",
+    "invalid token, please request a new token": "Неверный токен, пожалуйста, войдите снова.",
     "new email must be different than current email": "Новая электронная почта должна отличаться от текущей",
     "no tracks in gpx file": "Нет трека (<trk>) в .gpx файле.",
     "ongoing request exists": "Запрос на экспорт данных уже существует.",
