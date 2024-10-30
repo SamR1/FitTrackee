@@ -36,6 +36,7 @@
     },
     "APPEAL": {
       "APPROVED": "Ce recours a été approuvé {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Ce recours a été approuvé par la levée de la suspension.",
       "HIDE": "Masquer le recours",
       "REASON_IS": "La raison est :",
       "REJECTED": "Ce recours a été rejeté {0}.",

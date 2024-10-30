@@ -80,7 +80,17 @@
                     v-else-if="report.reported_user?.suspended_at !== null"
                     message="user.ACCOUNT_SUSPENDED_AT"
                     :param="reportedUserSuspensionDate"
-                  />
+                  >
+                    <template #additionalMessage v-if="displayReportLink">
+                      <i18n-t keypath="common.SEE_REPORT">
+                        <router-link
+                          :to="`/admin/reports/${report.reported_user?.suspension_report_id}`"
+                        >
+                          {{ report.reported_user?.suspension_report_id }}
+                        </router-link>
+                      </i18n-t>
+                    </template>
+                  </AlertMessage>
                 </template>
               </Card>
               <Card class="report-detail-card">
@@ -312,7 +322,7 @@
                   {{ $t('admin.APP_MODERATION.ACTIONS.SEND_WARNING_EMAIL') }}
                 </button>
                 <button
-                  class="danger"
+                  :class="{ danger: reportedContent.suspended_at === null }"
                   v-if="!report.resolved && reportedContent"
                   @click="
                     displayTextArea(
@@ -462,6 +472,12 @@
         )
       : null
   )
+  const displayReportLink: ComputedRef<boolean> = computed(
+    () =>
+      route.params.reportId !=
+      report.value.reported_user?.suspension_report_id?.toString()
+  )
+
   function loadReport() {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_REPORT, {
       reportId: +route.params.reportId,
@@ -657,6 +673,12 @@
     }
   )
   watch(
+    () => route.params.reportId,
+    () => {
+      loadReport()
+    }
+  )
+  watch(
     () => authUserSuccess.value,
     (newIsSuccess) => {
       if (newIsSuccess) {
@@ -701,6 +723,11 @@
     .report-detail-card,
     .report-action-and-comments {
       margin: $default-margin 0 $default-margin * 2;
+      @media screen and (max-width: $small-limit) {
+        ::v-deep(.card-content) {
+          padding: $default-padding;
+        }
+      }
     }
 
     .report-data {

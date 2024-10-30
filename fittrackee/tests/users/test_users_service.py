@@ -271,7 +271,7 @@ class TestUserManagerServiceUserUpdate:
 
         with pytest.raises(
             UserAlreadySuspendedException,
-            match=f"user '{user_1.username}' already suspended",
+            match="user account already suspended",
         ):
             user_manager_service.update(suspended=True, report_id=report.id)
 
@@ -364,10 +364,12 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         reason = random_string()
         report = self.generate_user_report(user_1_admin, user_2)
-
         user_manager_service = UserManagerService(
             admin_user_id=user_1_admin.id, username=user_2.username
         )
+        if input_suspended is False:
+            user_2.suspended_at = datetime.utcnow()
+            db.session.commit()
         now = datetime.utcnow()
 
         with travel(now, tick=False):

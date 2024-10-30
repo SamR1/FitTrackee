@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 from flask import current_app
@@ -150,7 +150,7 @@ class Comment(BaseModel):
     def __init__(
         self,
         user_id: int,
-        workout_id: int,
+        workout_id: Union[int, None],
         text: str,
         text_visibility: PrivacyLevel,
         created_at: Optional[datetime.datetime] = None,

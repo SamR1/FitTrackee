@@ -27,6 +27,7 @@ export interface IUserLightProfile {
   nb_workouts: number
   picture: string | boolean
   suspended_at?: string | null
+  suspension_report_id?: number
   username: string
 }
 

@@ -46,6 +46,7 @@ class UserModelAssertMixin:
         assert serialized_user['is_active'] == user.is_active
         assert serialized_user['username'] == user.username
         assert serialized_user['suspended_at'] is None
+        assert "suspension_report_id" not in serialized_user
 
     @staticmethod
     def assert_user_profile(serialized_user: Dict, user: User) -> None:
@@ -74,6 +75,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         self.assert_user_account(serialized_user, user_1)
+        assert serialized_user['email'] == user_1.email
         assert serialized_user['email_to_confirm'] == user_1.email_to_confirm
 
     def test_it_returns_user_profile_infos(
@@ -178,6 +180,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
         )
 
         self.assert_user_account(serialized_user, user_2)
+        assert serialized_user['email'] == user_2.email
         assert serialized_user['email_to_confirm'] == user_2.email_to_confirm
 
     def test_it_returns_user_profile_infos(
@@ -245,6 +248,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
 
         assert serialized_user['admin'] == user_2.admin
         assert serialized_user['username'] == user_2.username
+        assert 'email' not in serialized_user
         assert 'email_to_confirm' not in serialized_user
         assert 'is_active' not in serialized_user
 
@@ -298,6 +302,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         assert serialized_user['admin'] == user_1.admin
         assert serialized_user['username'] == user_1.username
         assert 'blocked' not in serialized_user
+        assert 'email' not in serialized_user
         assert 'email_to_confirm' not in serialized_user
         assert 'is_active' not in serialized_user
 
@@ -1369,6 +1374,48 @@ class TestUsersWithSuspensions(ReportMixin):
         db.session.commit()
 
         assert user_2.suspension_action is None
+
+    def test_serializer_returns_related_report_id_when_user_is_admin(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        action_type = "user_suspension"
+        report_action = ReportAction(
+            admin_user_id=user_1_admin.id,
+            action_type=action_type,
+            report_id=self.create_report_user_action(
+                user_1_admin, user_2, action_type
+            ).id,
+            user_id=user_2.id,
+        )
+        db.session.add(report_action)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        serialized_user = user_2.serialize(current_user=user_1_admin)
+
+        assert (
+            serialized_user["suspension_report_id"] == report_action.report_id
+        )
+
+    def test_serializer_does_not_return_related_report_id_when_user_is_not_admin(  # noqa
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        action_type = "user_suspension"
+        report_action = ReportAction(
+            admin_user_id=user_1_admin.id,
+            action_type=action_type,
+            report_id=self.create_report_user_action(
+                user_1_admin, user_2, action_type
+            ).id,
+            user_id=user_2.id,
+        )
+        db.session.add(report_action)
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+
+        serialized_user = user_2.serialize(current_user=user_3)
+
+        assert "suspension_report_id" not in serialized_user
 
 
 class TestUserLightSerializer(UserModelAssertMixin):

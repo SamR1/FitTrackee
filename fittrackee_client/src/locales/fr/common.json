@@ -25,6 +25,7 @@
   "REPORT_PLACEHOLDER": "préciser la raison du signalement",
   "REPORT_SUBMITTED": "Signalement envoyé.",
   "SECONDS": "seconde|secondes",
+  "SEE_REPORT": "Voir le signalement {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",

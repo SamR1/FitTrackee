@@ -58,6 +58,7 @@
           <table>
             <thead>
               <tr>
+                <th class="left-text">#</th>
                 <th class="left-text">
                   {{ $t('admin.APP_MODERATION.REPORTED_USER') }}
                 </th>
@@ -83,6 +84,11 @@
             <tbody>
               <tr v-for="report in reports" :key="report.created_at">
                 <td>
+                  <router-link :to="`/admin/reports/${report.id}`">
+                    {{ report.id }}
+                  </router-link>
+                </td>
+                <td>
                   <span class="cell-heading">
                     {{ $t('admin.APP_MODERATION.REPORTED_USER') }}
                   </span>
@@ -102,16 +108,12 @@
                   <span class="cell-heading">
                     {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
                   </span>
-                  <router-link :to="`/admin/reports/${report.id}`">
-                    {{
-                      $t(
-                        getReportedContentType(objectTypes[report.object_type])
-                      )
-                    }}
-                    <span v-if="getReportedObjectContent(report)">
-                      ({{ getReportedObjectContent(report) }})
-                    </span>
-                  </router-link>
+                  {{
+                    $t(getReportedContentType(objectTypes[report.object_type]))
+                  }}
+                  <span v-if="getReportedObjectContent(report)">
+                    ({{ getReportedObjectContent(report) }})
+                  </span>
                 </td>
                 <td>
                   <span class="cell-heading">

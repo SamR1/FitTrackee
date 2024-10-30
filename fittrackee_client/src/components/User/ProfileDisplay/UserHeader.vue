@@ -23,10 +23,22 @@
       :param="suspensionDate"
       v-if="'suspended_at' in user && user.suspended_at !== null"
     >
-      <template #additionalMessage v-if="displayMakeAppeal">
-        <router-link to="/profile/suspension" class="appeal-link">
+      <template
+        #additionalMessage
+        v-if="displayMakeAppeal || displayReportLink"
+      >
+        <router-link
+          to="/profile/suspension"
+          class="appeal-link"
+          v-if="displayMakeAppeal"
+        >
           {{ $t('user.APPEAL') }}
         </router-link>
+        <i18n-t keypath="common.SEE_REPORT" v-if="displayReportLink">
+          <router-link :to="`/admin/reports/${user.suspension_report_id}`">
+            {{ user.suspension_report_id }}
+          </router-link>
+        </i18n-t>
       </template>
     </AlertMessage>
   </div>
@@ -68,6 +80,9 @@
       user.value.suspended_at !== null &&
       route.name !== 'AuthUserAccountSuspension' &&
       user.value.username === authUser?.value.username
+  )
+  const displayReportLink: ComputedRef<boolean> = computed(
+    () => authUser.value.admin && user.value.suspension_report_id !== undefined
   )
 </script>
 

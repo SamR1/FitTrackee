@@ -179,6 +179,20 @@ class ReportService:
                     report_id=report.id,
                     reason=reason,
                 )
+                if action_type == "user_unsuspension":
+                    appeal = (
+                        ReportActionAppeal.query.join(ReportAction)
+                        .filter(
+                            ReportAction.report_id == report.id,
+                            ReportAction.user_id == user.id,
+                            ReportAction.action_type == "user_suspension",
+                        )
+                        .first()
+                    )
+                    if appeal:
+                        appeal.approved = None
+                        appeal.updated_at = datetime.utcnow()
+                        db.session.flush()
 
         elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
             object_type = action_type.split("_")[0]
@@ -210,12 +224,30 @@ class ReportService:
             if "_suspension" in action_type:
                 if reported_object.suspended_at:
                     raise InvalidReportActionException(
-                        f"{object_type} '{object_id}' already suspended"
+                        f"{object_type} already suspended"
                     )
                 reported_object.suspended_at = now
 
             else:
+                if reported_object.suspended_at is None:
+                    raise InvalidReportActionException(
+                        f"{object_type} already reactivated"
+                    )
                 reported_object.suspended_at = None
+                appeal = (
+                    ReportActionAppeal.query.join(ReportAction)
+                    .filter(
+                        ReportAction.report_id == report.id,
+                        ReportAction.user_id == reported_object.user_id,
+                        ReportAction.action_type
+                        == f"{object_type}_suspension",
+                    )
+                    .first()
+                )
+                if appeal:
+                    appeal.approved = None
+                    appeal.updated_at = datetime.utcnow()
+                    db.session.flush()
             db.session.flush()
         else:
             raise InvalidReportActionException("invalid action type")
@@ -270,7 +302,7 @@ class ReportService:
             ):
                 if not content.suspended_at:
                     raise InvalidReportActionException(
-                        f"{content_type} has already been reactivated"
+                        f"{content_type} already reactivated"
                     )
                 content_id = {f"{content_type}_id": content.id}
                 new_report_action = ReportAction(

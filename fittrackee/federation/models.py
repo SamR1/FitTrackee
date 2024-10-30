@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from flask import current_app
 from sqlalchemy.engine.base import Connection
@@ -56,7 +56,7 @@ class Domain(BaseModel):
         return self.name != current_app.config['AP_DOMAIN']
 
     @property
-    def software_current_version(self) -> bool:
+    def software_current_version(self) -> Union[str, None]:
         return self.software_version if self.is_remote else VERSION
 
     def serialize(self) -> Dict:

@@ -27,6 +27,7 @@
   @import '~@/scss/vars.scss';
   .alert-message {
     display: flex;
+    flex-wrap: wrap;
     gap: 3px;
     background: var(--alert-background-color);
     color: var(--alert-color);

@@ -13,6 +13,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.exceptions import (
+    UserAlreadyReactivatedException,
     UserAlreadySuspendedException,
     UserNotFoundException,
 )
@@ -137,7 +138,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 if auth_user.admin is False
                 else (
                     Report.reported_by == reporter.id
-                    if reporter_username
+                    if reporter and reporter_username
                     else True
                 )
             ),
@@ -246,6 +247,7 @@ def create_action(
         }, 200
     except (
         InvalidReportActionException,
+        UserAlreadyReactivatedException,
         UserAlreadySuspendedException,
         UserWarningExistsException,
     ) as e:

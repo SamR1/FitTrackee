@@ -1,12 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Installation - FitTrackee 0.8.10 documentation</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>Installation - FitTrackee 0.8.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.8.10
+      <a href="index.html"><div class="brand">FitTrackee 0.8.11
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.10
+  <span class="sidebar-brand-text">FitTrackee 0.8.11
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -282,7 +282,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
 <div class="line-block">
 <div class="line"><strong>FitTrackee</strong> can be installed via a single <a class="reference external" href="https://pypi.org/project/fittrackee/">Python package from PyPI</a> or from sources after cloning the repository.</div>
 </div>
@@ -302,7 +302,7 @@
 </div>
 </div>
 <section id="main-dependencies">
-<h2>Main dependencies<a class="headerlink" href="#main-dependencies" title="Permalink to this heading">¶</a></h2>
+<h2>Main dependencies<a class="headerlink" href="#main-dependencies" title="Link to this heading">¶</a></h2>
 <p>This application is written in Python (API) and Typescript (client):</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -334,11 +334,11 @@
 </div>
 </section>
 <section id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">¶</a></h2>
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><dl class="simple">
 <dt>mandatory</dt><dd><ul>
-<li><p>Python &gt;= 3.8.1, &lt;3.13</p></li>
+<li><p>Python 3.9+</p></li>
 <li><p>PostgreSQL 12+</p></li>
 </ul>
 </dd>
@@ -365,7 +365,7 @@
 </div>
 </section>
 <section id="environment-variables">
-<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this heading">¶</a></h2>
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -377,7 +377,7 @@ or the task processing library. They are not all mandatory depending on
 deployment method.</p>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-FLASK_APP">
-<span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">FLASK_APP</span></span><a class="headerlink" href="#envvar-FLASK_APP" title="Link to this definition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">Name of the module to import at flask run.</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">FLASK_APP</span></code> should contain <code class="docutils literal notranslate"><span class="pre">$(PWD)/fittrackee/__main__.py</span></code> with installation from sources, else <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code>.</div>
@@ -386,7 +386,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-HOST">
-<span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">HOST</span></span><a class="headerlink" href="#envvar-HOST" title="Link to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> host.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -397,7 +397,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-PORT">
-<span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PORT</span></span><a class="headerlink" href="#envvar-PORT" title="Link to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> port.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -408,7 +408,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_SETTINGS">
-<span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">APP_SETTINGS</span></span><a class="headerlink" href="#envvar-APP_SETTINGS" title="Link to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> configuration.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -419,7 +419,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_SECRET_KEY">
-<span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">APP_SECRET_KEY</span></span><a class="headerlink" href="#envvar-APP_SECRET_KEY" title="Link to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> secret key, must be initialized in production environment.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -429,7 +429,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_WORKERS">
-<span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">APP_WORKERS</span></span><a class="headerlink" href="#envvar-APP_WORKERS" title="Link to this definition">¶</a></dt>
 <dd><p>Number of workers spawned by <strong>Gunicorn</strong>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
@@ -440,18 +440,18 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_LOG">
-<span class="sig-name descname"><span class="pre">APP_LOG</span></span><a class="headerlink" href="#envvar-APP_LOG" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">APP_LOG</span></span><a class="headerlink" href="#envvar-APP_LOG" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p>Path to log file</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UPLOAD_FOLDER">
-<span class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></span><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">UPLOAD_FOLDER</span></span><a class="headerlink" href="#envvar-UPLOAD_FOLDER" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p><strong>Absolute path</strong> to the directory where <code class="docutils literal notranslate"><span class="pre">uploads</span></code> folder will be created.</p>
 <dl class="field-list simple">
@@ -470,7 +470,7 @@ deployment method.</p>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DATABASE_URL">
-<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><a class="headerlink" href="#envvar-DATABASE_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DATABASE_URL</span></span><a class="headerlink" href="#envvar-DATABASE_URL" title="Link to this definition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">Database URL with username and password, must be initialized in production environment.</div>
 <div class="line">For example in dev environment : <code class="docutils literal notranslate"><span class="pre">postgresql://fittrackee:fittrackee&#64;localhost:5432/fittrackee</span></code></div>
@@ -486,9 +486,9 @@ engine URL should begin with <code class="docutils literal notranslate"><span cl
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DATABASE_DISABLE_POOLING">
-<span class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></span><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DATABASE_DISABLE_POOLING</span></span><a class="headerlink" href="#envvar-DATABASE_DISABLE_POOLING" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p>Disable pooling if needed (when starting application with <strong>FitTrackee</strong> entry point and not directly with <strong>Gunicorn</strong>),
 see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork">SqlAlchemy documentation</a>.</p>
@@ -501,15 +501,15 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UI_URL">
-<span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Link to this definition">¶</a></dt>
 <dd><p><strong>FitTrackee</strong> URL, needed for links in emails.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-EMAIL_URL">
-<span class="sig-name descname"><span class="pre">EMAIL_URL</span></span><a class="headerlink" href="#envvar-EMAIL_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">EMAIL_URL</span></span><a class="headerlink" href="#envvar-EMAIL_URL" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
 <p>Email URL with credentials, see <a class="reference external" href="installation.html#emails">Emails</a>.</p>
 <div class="versionchanged">
@@ -532,18 +532,18 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-SENDER_EMAIL">
-<span class="sig-name descname"><span class="pre">SENDER_EMAIL</span></span><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">SENDER_EMAIL</span></span><a class="headerlink" href="#envvar-SENDER_EMAIL" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
 <p><strong>FitTrackee</strong> sender email address.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-REDIS_URL">
-<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">REDIS_URL</span></span><a class="headerlink" href="#envvar-REDIS_URL" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
 <p>Redis instance used by <strong>Dramatiq</strong> and <strong>Flask-Limiter</strong>.</p>
 <dl class="field-list simple">
@@ -555,18 +555,18 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WORKERS_PROCESSES">
-<span class="sig-name descname"><span class="pre">WORKERS_PROCESSES</span></span><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">WORKERS_PROCESSES</span></span><a class="headerlink" href="#envvar-WORKERS_PROCESSES" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
 <p>Number of processes used by <strong>Dramatiq</strong>.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
-<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.0.</span></p>
 </div>
 <p>API rate limits, see <a class="reference external" href="installation.html#api-rate-limits">API rate limits</a>.</p>
 <dl class="field-list simple">
@@ -578,9 +578,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-TILE_SERVER_URL">
-<span class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></span><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">TILE_SERVER_URL</span></span><a class="headerlink" href="#envvar-TILE_SERVER_URL" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <div class="line-block">
 <div class="line">Tile server URL (with api key if needed), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
@@ -601,9 +601,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-STATICMAP_SUBDOMAINS">
-<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">STATICMAP_SUBDOMAINS</span></span><a class="headerlink" href="#envvar-STATICMAP_SUBDOMAINS" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.6.10.</span></p>
+<p><span class="versionmodified added">Added in version 0.6.10.</span></p>
 </div>
 <div class="line-block">
 <div class="line">Some tile servers require a subdomain, see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</div>
@@ -618,9 +618,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-MAP_ATTRIBUTION">
-<span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">MAP_ATTRIBUTION</span></span><a class="headerlink" href="#envvar-MAP_ATTRIBUTION" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p>Map attribution (if using another tile server), see <a class="reference external" href="installation.html#map-tile-server">Map tile server</a>.</p>
 <dl class="field-list simple">
@@ -632,9 +632,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-DEFAULT_STATICMAP">
-<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DEFAULT_STATICMAP</span></span><a class="headerlink" href="#envvar-DEFAULT_STATICMAP" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.9.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.9.</span></p>
 </div>
 <div class="line-block">
 <div class="line">If <code class="docutils literal notranslate"><span class="pre">True</span></code>, it keeps using <strong>staticmap</strong> default tile server to generate static maps (OSM tile server since <strong>staticmap</strong> 0.5.6 (Komoot.de tile server before this version)).</div>
@@ -656,7 +656,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WEATHER_API_KEY">
-<span class="sig-name descname"><span class="pre">WEATHER_API_KEY</span></span><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">WEATHER_API_KEY</span></span><a class="headerlink" href="#envvar-WEATHER_API_KEY" title="Link to this definition">¶</a></dt>
 <dd><div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.4.0: </span>⚠️ replaces <code class="docutils literal notranslate"><span class="pre">WEATHER_API</span></code></p>
 </div>
@@ -665,16 +665,16 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-WEATHER_API_PROVIDER">
-<span class="sig-name descname"><span class="pre">WEATHER_API_PROVIDER</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-WEATHER_API_PROVIDER" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">WEATHER_API_PROVIDER</span> <span class="pre">🆕</span></span><a class="headerlink" href="#envvar-WEATHER_API_PROVIDER" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.11.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.11.</span></p>
 </div>
 <p>Provider for weather data (not mandatory), see <a class="reference external" href="installation.html#weather-data">Weather data</a>.</p>
 </dd></dl>
 
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-VITE_APP_API_URL">
-<span class="sig-name descname"><span class="pre">VITE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VITE_APP_API_URL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">VITE_APP_API_URL</span></span><a class="headerlink" href="#envvar-VITE_APP_API_URL" title="Link to this definition">¶</a></dt>
 <dd><div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.7.26: </span>⚠️ replaces <code class="docutils literal notranslate"><span class="pre">VUE_APP_API_URL</span></code></p>
 </div>
@@ -682,9 +682,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 
 </section>
 <section id="emails">
-<h2>Emails<a class="headerlink" href="#emails" title="Permalink to this heading">¶</a></h2>
+<h2>Emails<a class="headerlink" href="#emails" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.3.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
 <p>To send emails, a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided:</p>
 <ul class="simple">
@@ -732,9 +732,9 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 For instance with password <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, the encoded password will be: <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 </section>
 <section id="map-tile-server">
-<h2>Map tile server<a class="headerlink" href="#map-tile-server" title="Permalink to this heading">¶</a></h2>
+<h2>Map tile server<a class="headerlink" href="#map-tile-server" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p>Default tile server is now <strong>OpenStreetMap</strong>’s standard tile layer (if environment variables are not initialized).
 The tile server can be changed by updating <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> variables (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers">list of tile servers</a>).</p>
@@ -761,14 +761,14 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </ul>
 <p>The subdomain will be chosen randomly.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.23.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.23.</span></p>
 </div>
 <p>The default URL is updated: <strong>OpenStreetMap</strong>’s tile server no longer requires subdomains.</p>
 </section>
 <section id="api-rate-limits">
-<h2>API rate limits<a class="headerlink" href="#api-rate-limits" title="Permalink to this heading">¶</a></h2>
+<h2>API rate limits<a class="headerlink" href="#api-rate-limits" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.7.0.</span></p>
 </div>
 <div class="line-block">
 <div class="line">API rate limits are managed by <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, based on IP with fixed window strategy.</div>
@@ -805,7 +805,7 @@ Commands:
 </div>
 </section>
 <section id="weather-data">
-<h2>Weather data<a class="headerlink" href="#weather-data" title="Permalink to this heading">¶</a></h2>
+<h2>Weather data<a class="headerlink" href="#weather-data" title="Link to this heading">¶</a></h2>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.7.11.</span></p>
 </div>
@@ -823,7 +823,7 @@ Commands:
 <p><strong>DarkSky</strong> support is discontinued, since the service shut down on March 31, 2023.</p>
 </section>
 <section id="id2">
-<h2>Installation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -831,7 +831,7 @@ Commands:
 </div>
 </div>
 <section id="from-pypi">
-<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this heading">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Link to this heading">¶</a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -905,7 +905,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </section>
 <section id="from-sources">
-<h3>From sources<a class="headerlink" href="#from-sources" title="Permalink to this heading">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#from-sources" title="Link to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -923,7 +923,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <section id="dev-environment">
-<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Permalink to this heading">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#dev-environment" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Clone this repo:</p></li>
 </ul>
@@ -966,7 +966,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </section>
 <section id="production-environment">
-<h4>Production environment<a class="headerlink" href="#production-environment" title="Permalink to this heading">¶</a></h4>
+<h4>Production environment<a class="headerlink" href="#production-environment" title="Link to this heading">¶</a></h4>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -974,11 +974,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.8.10):</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.11):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.10.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.10.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.10<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.11.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.11.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.11<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1022,7 +1022,7 @@ database credentials</strong>):</p></li>
 </section>
 </section>
 <section id="upgrade">
-<h2>Upgrade<a class="headerlink" href="#upgrade" title="Permalink to this heading">¶</a></h2>
+<h2>Upgrade<a class="headerlink" href="#upgrade" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -1036,7 +1036,7 @@ database credentials</strong>):</p></li>
 <p>For now, releases do not follow <a class="reference external" href="https://semver.org">semantic versioning</a>). Any version may contain backward-incompatible changes.</p>
 </div>
 <section id="id3">
-<h3>From PyPI<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<h3>From PyPI<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -1068,7 +1068,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </ul>
 </section>
 <section id="id4">
-<h3>From sources<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<h3>From sources<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -1076,7 +1076,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <section id="id5">
-<h4>Dev environment<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h4>
+<h4>Dev environment<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
 </ul>
@@ -1110,15 +1110,15 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </section>
 <section id="prod-environment">
-<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Permalink to this heading">¶</a></h4>
+<h4>Prod environment<a class="headerlink" href="#prod-environment" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.8.10) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.11) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.10.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.10.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.10/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.11.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.11.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.11/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1149,7 +1149,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </section>
 </section>
 <section id="deployment">
-<h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this heading">¶</a></h2>
+<h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">¶</a></h2>
 <p>There are several ways to start <strong>FitTrackee</strong> web application and task queue
 library.
 One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong> to proxy pass to <strong>Gunicorn</strong>.</p>
@@ -1282,11 +1282,11 @@ server {
 </div>
 </section>
 <section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading">¶</a></h2>
+<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h2>
 <section id="id6">
-<h3>Installation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<h3>Installation<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.4.4.</span></p>
+<p><span class="versionmodified added">Added in version 0.4.4.</span></p>
 </div>
 <p>For <strong>evaluation</strong> purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
 <div class="admonition warning">
@@ -1330,9 +1330,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-run
 </div>
 </section>
 <section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h3>
+<h3>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h3>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.5.0.</span></p>
+<p><span class="versionmodified added">Added in version 0.5.0.</span></p>
 </div>
 <ul class="simple">
 <li><p>an additional step is needed to install <code class="docutils literal notranslate"><span class="pre">fittrackee_client</span></code></p></li>
@@ -1363,11 +1363,11 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </section>
 </section>
 <section id="yunohost">
-<h2>Yunohost<a class="headerlink" href="#yunohost" title="Permalink to this heading">¶</a></h2>
+<h2>Yunohost<a class="headerlink" href="#yunohost" title="Link to this heading">¶</a></h2>
 <p>Thanks to contributors, a package is available, see <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
 </section>
 <section id="nixos">
-<h2>NixOS<a class="headerlink" href="#nixos" title="Permalink to this heading">¶</a></h2>
+<h2>NixOS<a class="headerlink" href="#nixos" title="Link to this heading">¶</a></h2>
 <p>Thanks to contributors, a package is available on NixOS, see <a class="reference external" href="https://mynixos.com/nixpkgs/package/fit-trackee">https://mynixos.com/nixpkgs/package/fit-trackee</a>.</p>
 </section>
 </section>
@@ -1476,9 +1476,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=4628b18e"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+</div><script src="_static/documentation_options.js?v=9a7586e3"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
