@@ -256,7 +256,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         description = params.get('description')
         if 'equipment_id' in params:
             if params['equipment_id'] == "none":
-                equipment_id = "none"
+                equipment_id: Union[str, int, None] = "none"
             else:
                 equipment_uuid = decode_short_id(params['equipment_id'])
                 equipment = Equipment.query.filter_by(

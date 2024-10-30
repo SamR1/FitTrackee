@@ -1,11 +1,49 @@
 # Change log
 
+## Version 0.8.11 (2024/10/30)
+
+**FitTrackee** is now available for Python 3.13.
+Python 3.8 is no longer supported, the minimum version is now Python 3.9.
+
+### Translations
+
+* [PR#640](https://github.com/SamR1/FitTrackee/pull/640) - Translations update (Basque)
+* [PR#645](https://github.com/SamR1/FitTrackee/pull/645) - Translations update (Russian, Polish)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 98%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 81%
+- Norwegian Bokmål: 52%
+- Polish: 100%
+- Portuguese: 97%
+- Russian: 62%
+- Spanish: 100%
+
+### Misc
+
+* [#455](https://github.com/SamR1/FitTrackee/issues/455) - Drop support for Python 3.8
+* [#639](https://github.com/SamR1/FitTrackee/issues/639) - Add support for Python 3.13
+
+
+Thanks to the contributors:
+- @erral
+- @sikmir
+- Mariuz
+
+
 ## Version 0.8.10 (2024/10/09)
 
 ### Features and enhancements
 
-* [#635](https://github.com/SamR1/FitTrackee/issues/635) - Add ability to replace gpx title when adding a workout
-* [#636](https://github.com/SamR1/FitTrackee/issues/636) - Get description from gpx file if present 
+* [PR#635](https://github.com/SamR1/FitTrackee/pull/635) - Add ability to replace gpx title when adding a workout
+* [PR#636](https://github.com/SamR1/FitTrackee/pull/636) - Get description from gpx file if present 
 
 ### Translations
 

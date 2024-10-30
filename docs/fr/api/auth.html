@@ -1,12 +1,12 @@
 <!doctype html>
-<html class="no-js" lang="fr" data-content_root="">
+<html class="no-js" lang="fr" data-content_root="../">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="Documentation de l’API" href="index.html" />
 
-    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Authentification et compte - Documentation FitTrackee 0.8.10</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
+        <title>Authentification et compte - Documentation FitTrackee 0.8.11</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.10
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.11
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.10
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.11
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -282,10 +282,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="authentication-and-account">
-<h1>Authentification et compte<a class="headerlink" href="#authentication-and-account" title="Lien permanent vers cette rubrique">¶</a></h1>
+<h1>Authentification et compte<a class="headerlink" href="#authentication-and-account" title="Lien vers cette rubrique">¶</a></h1>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-register">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/register</span></span><a class="headerlink" href="#post--api-auth-register" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Enregistrer un utilisateur et envoyer un courriel de confirmation.</p>
 <p>Le compte nouvellement créé est inactif. L’utilisateur doit confirmer son adresse électronique pour l’activer.</p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -350,7 +350,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-confirm">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/confirm</span></span><a class="headerlink" href="#post--api-auth-account-confirm" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Activer le compte utilisateur après l’inscription.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/account/confirm</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -386,7 +386,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-resend-confirmation">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/resend-confirmation</span></span><a class="headerlink" href="#post--api-auth-account-resend-confirmation" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Renvoyer le courriel avec les instructions pour confirmer le compte.</p>
 <p>Si l’envoi des courriels est désactivé, ce point d’accès n’est pas disponible.</p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -423,7 +423,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-login">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/login</span></span><a class="headerlink" href="#post--api-auth-login" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Connexion de l’utilisateur.</p>
 <p>Seuls les utilisateurs disposant d’un compte actif peuvent se connecter.</p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -477,7 +477,7 @@
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-profile">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile</span></span><a class="headerlink" href="#get--api-auth-profile" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Obtenir des informations sur l’utilisateur authentifié (profil, compte, préférences).</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -597,7 +597,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit</span></span><a class="headerlink" href="#post--api-auth-profile-edit" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Modifier le profil de l’utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -729,7 +729,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-preferences">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/preferences</span></span><a class="headerlink" href="#post--api-auth-profile-edit-preferences" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Modifier les préférences de l’utilisateur authentifié.</p>
 <p>Formats de date pris en charge :</p>
 <ul class="simple">
@@ -882,7 +882,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-profile-edit-sports">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/sports</span></span><a class="headerlink" href="#post--api-auth-profile-edit-sports" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Modifier les préférences des sports de l’utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -951,7 +951,7 @@
 
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-profile-reset-sports-(sport_id)">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/reset/sports/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">sport_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-auth-profile-reset-sports-(sport_id)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Réinitialiser les préférences de l’utilisateur authentifié pour un sport donné.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -993,7 +993,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-picture">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#post--api-auth-picture" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Mise à jour de l’image de l’utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -1047,7 +1047,7 @@
 
 <dl class="http delete">
 <dt class="sig sig-object http" id="delete--api-auth-picture">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/auth/picture</span></span><a class="headerlink" href="#delete--api-auth-picture" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Supprimer l’image de l’utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">profile:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -1083,7 +1083,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-reset-request">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/reset-request</span></span><a class="headerlink" href="#post--api-auth-password-reset-request" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Traiter les demandes de réinitialisation de mot de passe.</p>
 <p>Si l’envoi des courriels est désactivé, ce point d’accès n’est pas disponible.</p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -1119,7 +1119,7 @@
 
 <dl class="http patch">
 <dt class="sig sig-object http" id="patch--api-auth-profile-edit-account">
-<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/account</span></span><a class="headerlink" href="#patch--api-auth-profile-edit-account" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/auth/profile/edit/account</span></span><a class="headerlink" href="#patch--api-auth-profile-edit-account" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Mise à jour de l’email et du mot de passe de l’utilisateur authentifié.</p>
 <p>Les courriels suivants sont envoyés si l’envoi est activé :</p>
 <ul class="simple">
@@ -1267,7 +1267,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-password-update">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/password/update</span></span><a class="headerlink" href="#post--api-auth-password-update" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Mise à jour du mot de passe de l’utilisateur après une demande de réinitialisation du mot de passe.</p>
 <p>Uniquement si l’envoi est activé.</p>
 <p><strong>Exemple de requête</strong> :</p>
@@ -1305,7 +1305,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-email-update">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/email/update</span></span><a class="headerlink" href="#post--api-auth-email-update" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Mise à jour de l’adresse électronique de l’utilisateur après confirmation.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/email/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1340,7 +1340,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-logout">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/logout</span></span><a class="headerlink" href="#post--api-auth-logout" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/logout</span></span><a class="headerlink" href="#post--api-auth-logout" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Déconnexion de l’utilisateur. Si un jeton valide est fourni, il sera invalidé.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/auth/logout</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1395,7 +1395,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-privacy-policy">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/privacy-policy</span></span><a class="headerlink" href="#post--api-auth-account-privacy-policy" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/privacy-policy</span></span><a class="headerlink" href="#post--api-auth-account-privacy-policy" title="Lien vers cette définition">¶</a></dt>
 <dd><p>L’utilisateur authentifié accepte la politique de confidentialité.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/privacy-policy</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1440,7 +1440,7 @@
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-account-export">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export</span></span><a class="headerlink" href="#get--api-auth-account-export" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export</span></span><a class="headerlink" href="#get--api-auth-account-export" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Obtenir l’archive de l’export de données pour l’utilisateur authentifié si une demande existe.</p>
 <p>Il renvoie :</p>
 <ul class="simple">
@@ -1505,7 +1505,7 @@
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-auth-account-export-request">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/request</span></span><a class="headerlink" href="#post--api-auth-account-export-request" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/request</span></span><a class="headerlink" href="#post--api-auth-account-export-request" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Demande d’export de données pour un utilisateur authentifié.</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/auth/account/export/request</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1555,7 +1555,7 @@
 
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-auth-account-export-(string-file_name)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-auth-account-export-(string-file_name)" title="Lien permanent vers cette définition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/account/export/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-auth-account-export-(string-file_name)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Télécharger une archive d’export de données</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/auth/account/export/download/archive_rgjsR3fHr5Yp.zip</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -1648,12 +1648,12 @@
       
     </aside>
   </div>
-</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=cea45d8c"></script>
-    <script src="../_static/doctools.js?v=888ff710"></script>
-    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+</div><script src="../_static/documentation_options.js?v=12f96ae1"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/translations.js?v=d99ca74e"></script>
+    <script src="../_static/translations.js?v=041d0952"></script>
     </body>
 </html>
