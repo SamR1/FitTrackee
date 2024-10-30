@@ -62,15 +62,15 @@ export const languageLabels: Record<TLanguage, string> = {
   de: 'Deutsch',
   en: 'English',
   es: 'Español',
-  eu: 'Euskara (99%)',
+  eu: 'Euskara',
   fr: 'Français',
   gl: 'Galego',
   it: 'Italiano (81%)',
   nl: 'Nederlands (99%)',
   nb: 'Norsk bokmål (52%)',
-  pl: 'Polski (98%)',
+  pl: 'Polski',
   pt: 'Português (97%)',
-  ru: 'Русский (61%)',
+  ru: 'Русский (62%)',
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {
