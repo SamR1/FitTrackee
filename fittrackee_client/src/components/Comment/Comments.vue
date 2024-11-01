@@ -24,6 +24,7 @@
           :current-comment-edition="workoutData.currentCommentEdition"
           :authUser="authUser"
           comments-loading="workoutData.commentsLoading"
+          :action="comment.suspension"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS') }}

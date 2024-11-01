@@ -72,6 +72,7 @@
         <CommentForUser
           :display-object-name="notification.type.startsWith('user_warning')"
           :comment="notification.comment"
+          :action="notification.report_action"
         />
       </template>
       <RelationshipDetail

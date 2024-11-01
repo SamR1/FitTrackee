@@ -10,6 +10,7 @@
       :hide-suspension-appeal="displayObjectName"
       comments-loading="null"
       :for-notification="true"
+      :action="action"
     />
   </div>
 </template>
@@ -19,11 +20,13 @@
 
   import Comment from '@/components/Comment/Comment.vue'
   import useAuthUser from '@/composables/useAuthUser'
+  import type { IUserReportAction } from '@/types/user'
   import type { IComment } from '@/types/workouts'
 
   interface Props {
     comment: IComment
     displayObjectName: boolean
+    action?: IUserReportAction | null
   }
   const props = defineProps<Props>()
   const { comment, displayObjectName } = toRefs(props)

@@ -67,9 +67,9 @@
         {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
       </div>
       <CommentActionAppeal
-        v-if="displayMakeAppeal && comment.suspended && comment.suspension"
+        v-if="displayMakeAppeal && action && comment.suspended"
         :hide-suspension-appeal="hideSuspensionAppeal"
-        :action="comment.suspension"
+        :action="action"
         :comment="comment"
       />
       <div class="comment-actions" v-if="!forAdmin">
@@ -192,6 +192,7 @@
     IAuthUserProfile,
     IUserLightProfile,
     IUserProfile,
+    IUserReportAction,
   } from '@/types/user'
   import type {
     IComment,
@@ -212,6 +213,7 @@
     forAdmin?: boolean
     displayAppeal?: boolean
     hideSuspensionAppeal?: boolean
+    action?: IUserReportAction | null
   }
   const props = withDefaults(defineProps<Props>(), {
     displayAppeal: false,
@@ -220,8 +222,10 @@
     forNotification: false,
     workout: null,
     hideSuspensionAppeal: false,
+    action: null,
   })
   const {
+    action,
     authUser,
     comment,
     currentCommentEdition,
@@ -251,8 +255,13 @@
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () =>
-      comment.value.suspended_at !== null &&
       comment.value.user.username === authUser?.value.username &&
+      action.value?.action_type === 'comment_suspension' &&
+      (!action.value.appeal ||
+        action.value.appeal?.approved === false ||
+        (action.value.appeal?.approved === null &&
+          !action.value.appeal?.updated_at)) &&
+      comment.value.suspended_at !== null &&
       comment.value.suspension !== undefined &&
       displayAppealForm.value !== comment.value.id
   )
