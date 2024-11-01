@@ -285,14 +285,24 @@ def process_appeal(
         )
         db.session.flush()
 
-        if new_report_action and current_app.config['CAN_SEND_EMAILS']:
-            report_action_email_service = ReportEmailService()
-            report_action_email_service.send_report_action_email(
-                new_report_action.report,
-                new_report_action.action_type,
-                reason,
-                new_report_action,
-            )
+        if current_app.config['CAN_SEND_EMAILS']:
+            if new_report_action:
+                report_action_email_service = ReportEmailService()
+                report_action_email_service.send_report_action_email(
+                    new_report_action.report,
+                    new_report_action.action_type,
+                    reason,
+                    new_report_action,
+                )
+            if data["approved"] is False:
+                action = appeal.action
+                report_action_email_service = ReportEmailService()
+                report_action_email_service.send_report_action_email(
+                    action.report,
+                    "appeal_rejected",
+                    None,
+                    action,
+                )
 
         db.session.commit()
         return {

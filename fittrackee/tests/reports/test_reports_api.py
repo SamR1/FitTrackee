@@ -3470,6 +3470,33 @@ class TestProcessReportActionAppeal(
 
         user_unsuspension_email_mock.send.assert_called_once()
 
+    def test_it_sends_an_email_when_appeal_on_user_suspension_is_rejected(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        suspension_action = self.create_report_user_action(
+            user_1_admin, user_2, report_id=report.id
+        )
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": False, "reason": "not ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once()
+
     @pytest.mark.parametrize(
         "input_data",
         [
@@ -3533,6 +3560,33 @@ class TestProcessReportActionAppeal(
         )
 
         user_warning_lifting_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_when_appeal_on_user_warning_is_rejected(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
+        warning_action = self.create_report_user_action(
+            user_1_admin, user_2, "user_warning", report.id
+        )
+        appeal = self.create_action_appeal(warning_action.id, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": False, "reason": "not ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once()
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3617,6 +3671,41 @@ class TestProcessReportActionAppeal(
         )
 
         comment_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_when_appeal_on_comment_suspension_is_rejected(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.PUBLIC,
+        )
+        suspension_action = self.create_report_comment_action(
+            user_1_admin, user_3, comment
+        )
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_3)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": False, "reason": "not ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once()
 
     def test_it_returns_400_when_comment_already_unsuspended(
         self,
@@ -3727,6 +3816,35 @@ class TestProcessReportActionAppeal(
         )
 
         workout_unsuspension_email_mock.send.assert_called_once()
+
+    def test_it_sends_an_email_when_appeal_on_workout_suspension_is_rejected(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        suspension_action = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        appeal = self.create_action_appeal(suspension_action.id, user_2)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.patch(
+            self.route.format(appeal_id=appeal.short_id),
+            json={"approved": False, "reason": "not ok"},
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once()
 
     def test_it_returns_400_when_workout_already_unsuspended(
         self,
