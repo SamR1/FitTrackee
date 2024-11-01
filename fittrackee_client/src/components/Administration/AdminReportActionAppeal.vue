@@ -41,39 +41,39 @@
           </button>
         </div>
       </form>
-      <div class="description-list" v-else>
-        <i18n-t
-          :keypath="`admin.APP_MODERATION.APPEAL.${appeal.approved ? 'APPROVED' : 'REJECTED'}`"
-          tag="p"
-        >
-          <span
-            class="report-action-date"
-            :title="
-              formatDate(
-                appeal.updated_at,
-                authUser.timezone,
-                authUser.date_format
-              )
-            "
-          >
-            {{
-              formatDistance(new Date(appeal.updated_at), new Date(), {
-                addSuffix: true,
-                locale,
-              })
-            }}
-          </span>
-        </i18n-t>
-        <dl>
-          <dt>{{ $t('admin.APP_MODERATION.APPEAL.REASON_IS') }}</dt>
-          <dd>{{ appeal.reason }}</dd>
-        </dl>
-      </div>
     </template>
-    <div v-else-if="appeal.approved === null">
+    <div v-else-if="appeal.approved === null" class="automatically-approved">
       {{
         $t('admin.APP_MODERATION.APPEAL.AUTOMATICALLY_APPROVED_BY_UNSUSPENSION')
       }}
+    </div>
+    <div class="description-list" v-else>
+      <i18n-t
+        :keypath="`admin.APP_MODERATION.APPEAL.${appeal.approved ? 'APPROVED' : 'REJECTED'}`"
+        tag="p"
+      >
+        <span
+          class="report-action-date"
+          :title="
+            formatDate(
+              appeal.updated_at,
+              authUser.timezone,
+              authUser.date_format
+            )
+          "
+        >
+          {{
+            formatDistance(new Date(appeal.updated_at), new Date(), {
+              addSuffix: true,
+              locale,
+            })
+          }}
+        </span>
+      </i18n-t>
+      <dl>
+        <dt>{{ $t('admin.APP_MODERATION.APPEAL.REASON_IS') }}</dt>
+        <dd>{{ appeal.reason }}</dd>
+      </dl>
     </div>
   </div>
 </template>
@@ -146,6 +146,14 @@
       .appeal-actions-buttons {
         display: flex;
         gap: 5px;
+      }
+    }
+    .automatically-approved {
+      margin-top: $default-margin;
+    }
+    .description-list {
+      dl {
+        margin-bottom: -$default-margin;
       }
     }
 

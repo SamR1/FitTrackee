@@ -490,6 +490,11 @@ class Workout(BaseModel):
 
         if is_owner or for_report:
             workout["suspended_at"] = self.suspended_at
+            if self.suspension_action:
+                workout["suspension"] = self.suspension_action.serialize(
+                    current_user=user,  # type: ignore
+                    full=False,
+                )
 
         if light:
             workout["next_workout"] = None
@@ -623,12 +628,6 @@ class Workout(BaseModel):
                 .order_by(Workout.workout_date.asc())
                 .first()
             )
-
-            if self.suspension_action:
-                workout["suspension"] = self.suspension_action.serialize(
-                    current_user=user,  # type: ignore
-                    full=False,
-                )
 
         else:
             next_workout = None

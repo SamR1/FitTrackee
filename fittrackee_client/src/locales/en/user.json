@@ -8,6 +8,7 @@
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
   "APPEAL_IN_PROGRESS": "Appeal currently being processed.",
+  "APPEAL_REJECTED": "Appeal rejected.",
   "APPEAL_SUBMITTED": "Appeal submitted.",
   "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone.",
   "CURRENT_PASSWORD": "Current password",

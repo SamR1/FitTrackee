@@ -13,8 +13,8 @@
   "NO_NOTIFICATIONS": "No notifications.",
   "REPLIED_YOUR_COMMENT": "replied to your comment",
   "REPORTED_USER_USER": "reported account of:",
-  "REPORTED_USER_COMMENT": "reported comment from:",
-  "REPORTED_USER_WORKOUT": "reported workout from:",
+  "REPORTED_USER_COMMENT": "reported this comment:",
+  "REPORTED_USER_WORKOUT": "reported this workout:",
   "SEND_FOLLOW_REQUEST_TO_YOU": "send a follow request to you",
   "STATUS": "Status",
   "TYPES": {

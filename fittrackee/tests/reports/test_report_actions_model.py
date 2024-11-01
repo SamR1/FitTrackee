@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Dict
 
 import pytest
 from flask import Flask
@@ -594,11 +595,17 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             'created_at': report_action.created_at,
             'id': report_action.short_id,
             'reason': None,
+            'report_id': report_action.id,
             'user': user_2.serialize(current_user=user_1_admin),
         }
 
-    def test_it_returns_serialized_user_report_action(
-        self, app: Flask, user_1_admin: User, user_2: User
+    @pytest.mark.parametrize('input_full_argument', [{}, {"full": True}])
+    def test_it_returns_full_serialized_user_report_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        input_full_argument: Dict,
     ) -> None:
         report_id = self.create_report(
             reporter=user_1_admin, reported_object=user_2
@@ -612,7 +619,9 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         db.session.add(report_action)
         db.session.commit()
 
-        serialized_action = report_action.serialize(user_1_admin)
+        serialized_action = report_action.serialize(
+            user_1_admin, **input_full_argument
+        )
 
         assert serialized_action['action_type'] == report_action.action_type
         assert serialized_action['admin_user'] == user_1_admin.serialize(
@@ -628,7 +637,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         )
         assert serialized_action['workout'] is None
 
-    def test_it_returns_serialized_report_action_with_appeal(
+    def test_it_returns_serialized_report_action_with_appeal_for_admin(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_id = self.create_report(

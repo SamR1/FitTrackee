@@ -547,6 +547,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'sport_id': workout_cycling_user_1.sport_id,
             'suspended': True,
             'suspended_at': workout_cycling_user_1.suspended_at,
+            'suspension': workout_cycling_user_1.suspension_action.serialize(  # type: ignore # noqa
+                current_user=user_1, full=False
+            ),
             'title': None,
             'user': user_1.serialize(),
             'weather_end': None,
@@ -1822,6 +1825,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.suspended_at = datetime.utcnow()
+        expected_report_action = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
 
         serialized_workout = workout_cycling_user_2.serialize(
             user=user_1_admin, for_report=True, light=False
@@ -1830,6 +1836,12 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         assert (
             serialized_workout["suspended_at"]
             == workout_cycling_user_2.suspended_at
+        )
+        assert serialized_workout[
+            "suspension"
+        ] == expected_report_action.serialize(
+            current_user=user_1_admin,  # type: ignore
+            full=False,
         )
 
     def test_it_serializes_minimal_workout(

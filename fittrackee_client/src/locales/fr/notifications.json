@@ -13,8 +13,8 @@
   "NO_NOTIFICATIONS": "Pas de notifications.",
   "REPLIED_YOUR_COMMENT": "a répondu à votre commentaire",
   "REPORTED_USER_USER": "a signalé le compte de :",
-  "REPORTED_USER_COMMENT": "a signalé le commentaire de :",
-  "REPORTED_USER_WORKOUT": "a signalé la séance de :",
+  "REPORTED_USER_COMMENT": "a signalé ce commentaire :",
+  "REPORTED_USER_WORKOUT": "a signalé cette séance :",
   "SEND_FOLLOW_REQUEST_TO_YOU": "souhaite s'abonner",
   "STATUS": "Status",
   "TYPES": {

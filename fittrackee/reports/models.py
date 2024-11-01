@@ -451,6 +451,7 @@ class ReportAction(BaseModel):
         }
 
         if current_user.admin:
+            action["report_id"] = self.report_id
             action["admin_user"] = self.admin_user.serialize(
                 current_user=current_user
             )
@@ -465,7 +466,6 @@ class ReportAction(BaseModel):
         if current_user.admin:
             action = {
                 **action,
-                "report_id": self.report_id,
                 "comment": (
                     self.comment.serialize(user=current_user, for_report=True)
                     if self.comment_id

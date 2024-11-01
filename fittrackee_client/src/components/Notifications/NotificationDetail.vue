@@ -311,12 +311,21 @@
       padding: $default-padding * 0.5 $default-padding;
     }
 
+    .info-box.suspended {
+      padding: 30px;
+    }
+
     .appeal-link {
       margin-left: $default-margin;
     }
 
     ::v-deep(.suspended.info-box) {
       font-size: 0.9em;
+    }
+    ::v-deep(.workout-card) {
+      .suspended.info-box {
+        margin-bottom: $default-margin;
+      }
     }
 
     &.read {
@@ -342,7 +351,8 @@
         opacity: 0.5;
       }
 
-      ::v-deep(.suspended.info-box) {
+      ::v-deep(.suspended.info-box),
+      ::v-deep(.appeal-rejected) {
         opacity: 0.5;
       }
 

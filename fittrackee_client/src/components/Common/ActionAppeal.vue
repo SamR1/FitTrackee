@@ -7,11 +7,22 @@
     <div v-if="success || reportAction.appeal" class="appeal-submitted">
       <div
         class="info-box"
-        :class="{ 'success-message': success, 'appeal-success': success }"
+        :class="{
+          'success-message': success,
+          'appeal-success': success,
+          'appeal-rejected': appealStatus === 'REJECTED',
+        }"
       >
         <span>
-          <i class="fa fa-info-circle" aria-hidden="true" />
-          {{ $t(`user.APPEAL_${success ? 'SUBMITTED' : 'IN_PROGRESS'}`) }}
+          <i
+            class="fa"
+            :class="{
+              'fa-info-circle': appealStatus !== 'REJECTED',
+              'fa-times': appealStatus === 'REJECTED',
+            }"
+            aria-hidden="true"
+          />
+          {{ $t(`user.APPEAL_${appealStatus}`) }}
           <button
             v-if="!success && $route.name != 'AuthUserAccountSuspension'"
             class="transparent hide-button"
@@ -91,9 +102,19 @@
       ? 'SUSPENSION'
       : 'WARNING'
   )
-
+  const appealStatus: ComputedRef<string> = computed(() => getAppealStatus())
   const emit = defineEmits(['submitForm', 'hideMessage'])
 
+  function getAppealStatus() {
+    if (success.value) {
+      return 'SUBMITTED'
+    }
+    const appeal = reportAction.value.appeal
+    if (appeal?.approved === false) {
+      return 'REJECTED'
+    }
+    return 'IN_PROGRESS'
+  }
   function updateText(textareaData: ICustomTextareaData) {
     appealText.value = textareaData.value
   }
@@ -109,6 +130,12 @@
 
 <style scoped lang="scss">
   @import '~@/scss/vars';
+  .description-list {
+    dl {
+      margin-bottom: 0;
+    }
+  }
+
   .error-message,
   .appeal-info {
     margin: $default-margin 0;
@@ -120,6 +147,13 @@
     gap: $default-padding;
     .appeal-success {
       margin: $default-margin 0 0;
+    }
+  }
+  .appeal-rejected {
+    background: var(--error-background-color);
+    color: var(--error-color);
+    button {
+      color: var(--error-color);
     }
   }
 

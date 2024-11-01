@@ -5,6 +5,7 @@
         :display-appeal="false"
         :display-object-name="true"
         :workout="report.reported_workout"
+        :report-id="report.id"
       />
     </div>
     <div class="reported-comment" v-else-if="report.reported_comment">
@@ -28,7 +29,7 @@
     </div>
     <div class="report-button">
       <button @click="$router.push(`/admin/reports/${report.id}`)">
-        {{ $t('admin.APP_MODERATION.VIEW_REPORT') }}
+        {{ $t('admin.APP_MODERATION.VIEW_REPORT') }} #{{ report.id }}
       </button>
     </div>
   </div>
