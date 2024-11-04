@@ -1,4 +1,4 @@
-FROM python:3.12-alpine AS BUILDER
+FROM python:3.13-alpine AS BUILDER
 
 # install dependencies
 RUN apk add --no-cache linux-headers gcc musl-dev libffi-dev \
@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir poetry
 RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction
 
 
-FROM python:3.12-alpine
+FROM python:3.13-alpine
 
 RUN apk add bash
 
