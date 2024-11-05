@@ -11,13 +11,14 @@ services:
       - FLASK_DEBUG=1
       - FLASK_APP=fittrackee/__main__.py
       - FLASK_SKIP_DOTENV=1
-      - APP_SETTINGS=fittrackee.config.DevelopmentConfig
+      - APP_SETTINGS=fittrackee.config.ProductionConfig
       - APP_SECRET_KEY='just for test'
-      - APP_LOG=fittrackee.log
       - UPLOAD_FOLDER=/usr/src/app/uploads
       - DATABASE_URL=postgresql://fittrackee:fittrackee@fittrackee-db:5432/fittrackee
       - DATABASE_TEST_URL=postgresql://fittrackee:fittrackee@fittrackee-db:5432/fittrackee_test
       - REDIS_URL=redis://fittrackee-redis:6379
+    volumes:
+      - ./fittrackee-upload:/usr/src/app/uploads/uploads/
     ports:
       - 8230:5000
     depends_on:
@@ -32,8 +33,8 @@ services:
     image: postgres:17-alpine
     container_name: fittrackee-db
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=70
+      - PGID=70
       - TZ=Europe/Paris
       - POSTGRES_USER=fittrackee
       - POSTGRES_PASSWORD=fittrackee
