@@ -71,17 +71,22 @@
   const { authUser } = useAuthUser()
 
   const notificationTypes: TNotificationType[] = [
-    'follow',
-    'follow_request',
     'comment_like',
     'comment_reply',
     'comment_suspension',
+    'comment_unsuspension',
+    'follow',
+    'follow_request',
     'mention',
     'report',
+    'suspension_appeal',
     'user_warning',
+    'user_warning_appeal',
+    'user_warning_lifting',
     'workout_comment',
     'workout_like',
     'workout_suspension',
+    'workout_unsuspension',
   ]
   let params: LocationQuery = Object.assign({}, route.query)
 
@@ -120,7 +125,12 @@
   function getNotificationsOptions() {
     const options: Record<string, string>[] = []
     notificationTypes
-      .filter((type) => type !== 'report' || authUser.value.admin)
+      .filter(
+        (type) =>
+          !['report', 'suspension_appeal', 'user_warning_appeal'].includes(
+            type
+          ) || authUser.value.admin
+      )
       .map((type) => {
         options.push({
           label: t(`notifications.TYPES.${type}`),
