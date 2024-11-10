@@ -77,6 +77,7 @@
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
     "BIRTH_DATE": "Birth date",
+    "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
     "EDIT": "Edit profile",
     "EDIT_PREFERENCES": "Edit preferences",
@@ -108,6 +109,7 @@
     "INTERFACE": "Interface",
     "LANGUAGE": "Language",
     "LAST_NAME": "Last name",
+    "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
     "MONDAY": "Monday",
     "PICTURE": "Picture",
@@ -123,6 +125,18 @@
       "LABEL": "Profile in users directory"
     },
     "REGISTRATION_DATE": "Registration date",
+    "REPORTS_FROM_OTHER_USERS": "Reports from other users",
+    "SANCTIONS": {
+      "comment_suspension": "Comment suspension ({date})",
+      "user_suspension": "Account suspension ({date})",
+      "user_warning": "Warning ({date})",
+      "workout_suspension": "Workout suspension ({date})"
+    },
+    "SANCTION_APPEAL": {
+      "APPROVED": "your appeal has been approved",
+      "IN_PROGRESS": "your appeal is being processed",
+      "REJECTED": "your appeal has been rejected"
+    },
     "SPORT": {
       "ACTION": "action",
       "COLOR": "color",
@@ -171,7 +185,8 @@
       "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
       "LABEL": "GPX max speed strategy",
       "RAW_SPEED": "Raw"
-    }
+    },
+    "USER_RECEIVED_SANCTIONS": "This user received {count} sanction.|This user received {count} sanctions."
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
   "REGISTER": "Register",

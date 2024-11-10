@@ -28,6 +28,7 @@ export interface IUserLightProfile {
 export interface IUserProfile extends IUserLightProfile {
   bio: string | null
   birth_date: string | null
+  created_reports_count?: number
   email?: string
   email_to_confirm?: string
   first_name: string | null
@@ -36,6 +37,8 @@ export interface IUserProfile extends IUserLightProfile {
   nb_sports?: number
   profile_link?: string
   records: IRecord[]
+  reported_count?: number
+  sanctions_count?: number
   sports_list: number[]
   total_ascent: number
   total_distance: number

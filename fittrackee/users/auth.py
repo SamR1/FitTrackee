@@ -2108,48 +2108,46 @@ def appeal_user_suspension(
 
 
 @auth_blueprint.route(
-    "/auth/account/warning/<string:action_short_id>", methods=["GET"]
+    "/auth/account/sanctions/<string:action_short_id>", methods=["GET"]
 )
 @require_auth(scopes=['profile:read'])
-def get_user_warning(
+def get_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
-    warning_action = ReportAction.query.filter_by(
+    sanction = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()
 
-    if not warning_action:
-        return NotFoundErrorResponse("no warning found")
+    if not sanction:
+        return NotFoundErrorResponse("no sanction found")
 
     return {
         "status": "success",
-        "user_warning": warning_action.serialize(
-            current_user=auth_user, full=True
-        ),
+        "sanction": sanction.serialize(current_user=auth_user, full=True),
     }, 200
 
 
 @auth_blueprint.route(
-    "/auth/account/warning/<string:action_short_id>/appeal",
+    "/auth/account/sanctions/<string:action_short_id>/appeal",
     methods=["POST"],
 )
 @require_auth(scopes=['profile:write'])
-def appeal_user_warning(
+def appeal_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
-    warning_action = ReportAction.query.filter_by(
+    sanction = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()
 
-    if not warning_action:
-        return NotFoundErrorResponse("no warning found")
+    if not sanction:
+        return NotFoundErrorResponse("no sanction found")
     text = request.get_json().get("text")
     if not text:
         return InvalidPayloadErrorResponse("no text provided")
 
     try:
         appeal = ReportActionAppeal(
-            action_id=warning_action.id,
+            action_id=sanction.id,
             user_id=auth_user.id,
             text=text,
         )

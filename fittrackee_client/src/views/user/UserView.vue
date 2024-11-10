@@ -14,6 +14,9 @@
         :from-admin="fromAdmin"
       />
     </div>
+    <div class="box" v-if="authUser.admin && fromAdmin">
+      <UserReports :authUser="authUser" :user="user" />
+    </div>
   </div>
 </template>
 
@@ -25,6 +28,7 @@
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+  import UserReports from '@/components/User/ProfileDisplay/UserReports.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { USERS_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'

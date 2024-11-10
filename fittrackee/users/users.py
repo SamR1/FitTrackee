@@ -26,6 +26,7 @@ from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
+from ..reports.models import ReportAction
 from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyRejectedError,
@@ -38,6 +39,7 @@ from .utils.language import get_language
 
 users_blueprint = Blueprint('users', __name__)
 
+ACTIONS_PER_PAGE = 5
 USERS_PER_PAGE = 10
 EMPTY_USERS_RESPONSE = {
     'status': 'success',
@@ -1226,3 +1228,55 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     auth_user.unblocks_user(target_user)
 
     return {"status": "success"}
+
+
+@users_blueprint.route('/users/<user_name>/sanctions', methods=['GET'])
+@require_auth(scopes=['users:read'])
+def get_user_sanctions(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+
+    if user.id != auth_user.id and not auth_user.admin:
+        return ForbiddenErrorResponse()
+
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+
+    paginated_sanctions = (
+        ReportAction.query.filter(
+            ReportAction.user_id == user.id,
+            ReportAction.action_type.not_in(
+                [
+                    "comment_unsuspension",
+                    "user_unsuspension",
+                    "user_warning_lifting",
+                    "workout_unsuspension",
+                ]
+            ),
+        )
+        .order_by(ReportAction.created_at.desc())
+        .paginate(page=page, per_page=ACTIONS_PER_PAGE, error_out=False)
+    )
+
+    return {
+        'status': 'success',
+        'data': {
+            'sanctions': [
+                sanctions.serialize(current_user=auth_user, full=False)
+                for sanctions in paginated_sanctions.items
+            ]
+        },
+        'pagination': {
+            'has_next': paginated_sanctions.has_next,
+            'has_prev': paginated_sanctions.has_prev,
+            'page': paginated_sanctions.page,
+            'pages': paginated_sanctions.pages,
+            'total': paginated_sanctions.total,
+        },
+    }

@@ -2,24 +2,24 @@
   <div v-if="authUserLoading && !appealText">
     <Loader />
   </div>
-  <div v-else-if="userWarning.id">
+  <div v-else-if="userSanction.id">
     <div>{{ $t('notifications.YOU_RECEIVED_A_WARNING') }}.</div>
-    <template v-if="userWarning.comment">
+    <template v-if="userSanction.comment">
       <CommentForUser
         :display-object-name="true"
-        :comment="userWarning.comment"
+        :comment="userSanction.comment"
       />
     </template>
-    <template v-else-if="userWarning.workout">
+    <template v-else-if="userSanction.workout">
       <WorkoutForUser
-        :action="userWarning"
+        :action="userSanction"
         :display-appeal="false"
         :display-object-name="true"
-        :workout="userWarning.workout"
+        :workout="userSanction.workout"
       />
     </template>
     <ActionAppeal
-      :report-action="userWarning"
+      :report-action="userSanction"
       :success="authUserSuccess"
       :loading="authUserLoading"
       @submitForm="submitAppeal"
@@ -72,31 +72,31 @@
 
   const appealText: Ref<string> = ref('')
 
-  const userWarning: ComputedRef<IUserReportAction> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.USER_WARNING]
+  const userSanction: ComputedRef<IUserReportAction> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.USER_SANCTION]
   )
 
-  function loadUserWarning() {
+  function loadUserSanction() {
     store.dispatch(
-      AUTH_USER_STORE.ACTIONS.GET_USER_WARNING,
+      AUTH_USER_STORE.ACTIONS.GET_USER_SANCTION,
       route.params.action_id as string
     )
   }
   function submitAppeal(text: string) {
     appealText.value = text
     store.dispatch(AUTH_USER_STORE.ACTIONS.APPEAL, {
-      actionId: userWarning.value.id,
+      actionId: userSanction.value.id,
       actionType: 'user_warning',
       text,
     })
   }
 
-  onMounted(() => loadUserWarning())
+  onMounted(() => loadUserSanction())
   onUnmounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     store.commit(
-      AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING,
+      AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION,
       {} as IUserReportAction
     )
   })

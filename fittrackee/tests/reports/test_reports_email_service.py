@@ -134,7 +134,7 @@ class TestReportEmailServiceForUserWarning(
                 'username': user_3.username,
                 'fittrackee_url': app.config['UI_URL'],
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'{app.config["UI_URL"]}/profile/sanctions'
                     f'/{user_warning.short_id}/appeal'  # type:ignore
                 ),
                 'reason': input_reason.get('reason'),
@@ -180,7 +180,7 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'{app.config["UI_URL"]}/profile/sanctions'
                     f'/{user_warning.short_id}/appeal'  # type:ignore
                 ),
                 'comment_url': (
@@ -238,7 +238,7 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'{app.config["UI_URL"]}/profile/sanctions'
                     f'/{user_warning.short_id}/appeal'  # type:ignore
                 ),
                 'comment_url': (
@@ -293,7 +293,7 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'{app.config["UI_URL"]}/profile/sanctions'
                     f'/{user_warning.short_id}/appeal'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],
@@ -350,7 +350,7 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
+                    f'{app.config["UI_URL"]}/profile/sanctions'
                     f'/{user_warning.short_id}/appeal'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],

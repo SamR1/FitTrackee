@@ -71,10 +71,10 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   ) {
     state.userReportAction = accountSuspension
   },
-  [AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING](
+  [AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION](
     state: IAuthUserState,
-    userWarning: IUserReportAction
+    sanction: IUserReportAction
   ) {
-    state.userReportAction = userWarning
+    state.userReportAction = sanction
   },
 }

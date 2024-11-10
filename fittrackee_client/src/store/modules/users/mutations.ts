@@ -3,6 +3,7 @@ import type { MutationTree } from 'vuex'
 import { USERS_STORE } from '@/store/constants'
 import type { IUsersState, TUsersMutations } from '@/store/modules/users/types'
 import type { IPagination } from '@/types/api'
+import type { IReportAction } from '@/types/reports'
 import type { IUserProfile } from '@/types/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
@@ -36,6 +37,24 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     relationships: IUserProfile[]
   ) {
     state.user_relationships = relationships
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS](
+    state: IUsersState,
+    sanctions: IReportAction[]
+  ) {
+    state.userSanctions.sanctions = sanctions
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS_LOADING](
+    state: IUsersState,
+    loading: boolean
+  ) {
+    state.userSanctions.loading = loading
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS_PAGINATION](
+    state: IUsersState,
+    pagination: IPagination
+  ) {
+    state.userSanctions.pagination = pagination
   },
   [USERS_STORE.MUTATIONS.UPDATE_USERS](
     state: IUsersState,

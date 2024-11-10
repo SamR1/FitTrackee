@@ -4,6 +4,11 @@ import type { IUserProfile } from '@/types/user'
 
 export const usersState: IUsersState = {
   user: <IUserProfile>{},
+  userSanctions: {
+    sanctions: [],
+    loading: false,
+    pagination: <IPagination>{},
+  },
   user_relationships: [],
   users: [],
   loading: false,

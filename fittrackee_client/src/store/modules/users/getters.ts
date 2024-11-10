@@ -14,6 +14,15 @@ export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USER_RELATIONSHIPS]: (state: IUsersState) => {
     return state.user_relationships
   },
+  [USERS_STORE.GETTERS.USER_SANCTIONS]: (state: IUsersState) => {
+    return state.userSanctions.sanctions
+  },
+  [USERS_STORE.GETTERS.USER_SANCTIONS_LOADING]: (state: IUsersState) => {
+    return state.userSanctions.loading
+  },
+  [USERS_STORE.GETTERS.USER_SANCTIONS_PAGINATION]: (state: IUsersState) => {
+    return state.userSanctions.pagination
+  },
   [USERS_STORE.GETTERS.USERS]: (state: IUsersState) => {
     return state.users
   },
