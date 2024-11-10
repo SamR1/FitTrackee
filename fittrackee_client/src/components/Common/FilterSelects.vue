@@ -26,6 +26,7 @@
         </option>
       </select>
     </label>
+    <slot name="additionalFilters"></slot>
     <label>
       {{ $t('common.SELECTS.PER_PAGE.LABEL') }}:
       <select

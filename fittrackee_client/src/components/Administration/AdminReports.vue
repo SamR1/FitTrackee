@@ -79,6 +79,9 @@
                 <th class="left-text">
                   {{ capitalize($t('common.LAST_UPDATED_ON')) }}
                 </th>
+                <th class="left-text">
+                  {{ $t('admin.ACTION') }}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -157,6 +160,11 @@
                   <time v-if="report.updated_at">
                     {{ getDate(report.updated_at) }}
                   </time>
+                </td>
+                <td>
+                  <button @click="$router.push(`/admin/reports/${report.id}`)">
+                    {{ $t('admin.APP_MODERATION.VIEW_REPORT') }}
+                  </button>
                 </td>
               </tr>
             </tbody>
