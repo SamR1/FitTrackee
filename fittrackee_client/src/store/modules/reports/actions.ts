@@ -201,4 +201,24 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
           )
         )
     },
+
+    [REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS](
+      context: ActionContext<IReportsState, IRootState>
+    ): void {
+      context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+      authApi
+        .get('reports/unresolved')
+        .then((res) => {
+          if (res.data.status === 'success') {
+            console.log(res.data)
+            context.commit(
+              REPORTS_STORE.MUTATIONS.SET_UNRESOLVED_REPORTS_STATUS,
+              res.data.unresolved
+            )
+          } else {
+            handleError(context, null)
+          }
+        })
+        .catch((error) => handleError(context, error))
+    },
   }

@@ -85,6 +85,7 @@
       "UPDATE_APPEAL": "Indiquer le motif du traitement de ce recours."
     },
     "TITLE": "Modération",
+    "UNRESOLVED_REPORTS_EXIST": "Il existe des rapports non résolus.",
     "VIEW_REPORT": "voir le report"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",

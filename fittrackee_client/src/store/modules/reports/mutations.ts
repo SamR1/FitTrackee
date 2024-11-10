@@ -48,4 +48,10 @@ export const mutations: MutationTree<IReportsState> & TReportsMutations = {
   ) {
     state.pagination = pagination
   },
+  [REPORTS_STORE.MUTATIONS.SET_UNRESOLVED_REPORTS_STATUS](
+    state: IReportsState,
+    unresolved: boolean
+  ) {
+    state.unresolved = unresolved
+  },
 }

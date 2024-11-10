@@ -85,6 +85,7 @@
       "UPDATE_APPEAL": "Indicate the reason for this appeal processing."
     },
     "TITLE": "Moderation",
+    "UNRESOLVED_REPORTS_EXIST": "There are unresolved reports.",
     "VIEW_REPORT": "View report"
   },
   "BACK_TO_ADMIN": "Back to admin",

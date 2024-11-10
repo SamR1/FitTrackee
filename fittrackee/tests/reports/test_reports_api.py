@@ -992,7 +992,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             "total": 3,
         }
 
-    def test_it_returns_reports_when_not_visible(
+    def test_it_returns_reports_when_reported_object_not_visible_to_admin(
         self,
         app: Flask,
         user_1_admin: User,
@@ -3901,6 +3901,137 @@ class TestProcessReportActionAppeal(
         response = client.patch(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False, reason="OK")),
+            content_type="application/json",
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestGetReportsUnresolved(ReportTestCase):
+    route = "/api/reports/unresolved"
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(self.route, content_type="application/json")
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_has_no_admin_rights(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_false_when_no_reports(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unresolved"] is False
+
+    def test_it_returns_false_when_reports_are_resolved(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        for reported_user in [user_2, user_3]:
+            report = self.create_report(
+                reporter=user_1_admin, reported_object=reported_user
+            )
+            report.resolved = True
+            db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unresolved"] is False
+
+    def test_it_returns_true_when_unresolved_reports_exist(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        for reported_user in [user_2, user_3]:
+            report = self.create_report(
+                reporter=user_1_admin, reported_object=reported_user
+            )
+            if reported_user.id == user_3.id:
+                report.resolved = True
+            db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unresolved"] is True
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "reports:read": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            self.route,
             content_type="application/json",
             headers=dict(Authorization=f'Bearer {access_token}'),
         )

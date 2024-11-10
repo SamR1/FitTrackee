@@ -314,3 +314,17 @@ def process_appeal(
         return InvalidPayloadErrorResponse(str(e))
     except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@reports_blueprint.route("/reports/unresolved", methods=["GET"])
+@require_auth(scopes=["reports:read"], as_admin=True)
+def get_unresolved_reports_status(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    unresolved_reports = Report.query.filter(
+        Report.resolved == False  # noqa
+    ).count()
+    return {
+        "status": "success",
+        "unresolved": unresolved_reports > 0,
+    }, 200
