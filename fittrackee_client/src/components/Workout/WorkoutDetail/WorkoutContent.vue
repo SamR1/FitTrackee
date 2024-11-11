@@ -4,6 +4,7 @@
       <template #title>
         {{ $t(`workouts.${contentType}`) }}
         <button
+          v-if="allowEdition"
           class="transparent icon-button"
           :aria-label="$t(`buttons.EDIT`)"
           @click="editContent"
@@ -74,6 +75,7 @@
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
+  import type { ICustomTextareaData } from '@/types/forms'
   import type { IWorkoutContentEdition } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -82,9 +84,11 @@
     content?: string | null
     contentType: 'DESCRIPTION' | 'NOTES'
     workoutId: string
+    allowEdition?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     content: () => '',
+    allowEdition: true,
   })
 
   const store = useStore()
@@ -127,8 +131,8 @@
     isEdition.value = true
     editedContent.value = content.value ? content.value : ''
   }
-  function updateContent(text: string) {
-    editedContent.value = text
+  function updateContent(textareaData: ICustomTextareaData) {
+    editedContent.value = textareaData.value
   }
   function onCancel() {
     isEdition.value = false

@@ -34,6 +34,7 @@
             content-type="DESCRIPTION"
             :content="workoutData.workout.description"
             :loading="workoutData.loading"
+            :allow-edition="isWorkoutOwner"
           />
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
@@ -41,7 +42,7 @@
             :useImperialUnits="authUser ? authUser.imperial_units : false"
           />
           <WorkoutContent
-            v-if="!displaySegment"
+            v-if="isWorkoutOwner && !displaySegment"
             :workout-id="workoutData.workout.id"
             content-type="NOTES"
             :content="workoutData.workout.notes"
