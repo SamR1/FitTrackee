@@ -3,7 +3,7 @@
     v-if="user.username"
     class="user-name"
     :to="{
-      name: 'User',
+      name: $route.path.startsWith('/admin') ? 'UserFromAdmin' : 'User',
       params: { username: user.username },
     }"
     :title="user.username"
