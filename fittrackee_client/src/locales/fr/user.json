@@ -8,6 +8,7 @@
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
+  "APPEAL_APPROVED": "Appel approuvé.",
   "APPEAL_REJECTED": "Appel rejeté.",
   "APPEAL_SUBMITTED": "Appel envoyé.",
   "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacées.",
@@ -112,6 +113,7 @@
     "LATEST_SANCTIONS_RECEIVED": "Dernières sanctions reçues",
     "LOCATION": "Lieu",
     "MONDAY": "Lundi",
+    "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
     "PICTURE_REMOVE": "Supprimer",
@@ -137,6 +139,7 @@
       "IN_PROGRESS": "votre appel est en cours de traitement",
       "REJECTED": "votre appel a été rejeté"
     },
+    "SANCTIONS_RECEIVED": "Sanctions reçues",
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
@@ -160,6 +163,7 @@
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
+      "MODERATION": "modération",
       "PICTURE": "image",
       "PREFERENCES": "préférences",
       "PRIVACY-POLICY": "politique de confidentialité",

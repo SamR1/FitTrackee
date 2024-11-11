@@ -12,6 +12,8 @@ import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
+import UserSanctionDetail from '@/components/User/ProfileDisplay/UserSanctionDetail.vue'
+import UserSanctionsList from '@/components/User/ProfileDisplay/UserSanctionsList.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
@@ -30,7 +32,6 @@ import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
 import UserRelationships from '@/components/User/UserRelationships.vue'
-import UserSanction from '@/components/User/UserSanction.vue'
 import UserSports from '@/components/User/UserSports/index.vue'
 import UserSport from '@/components/User/UserSports/UserSport.vue'
 import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
@@ -341,9 +342,14 @@ const routes: RouteRecordRaw[] = [
             component: UserAccountSuspension,
           },
           {
-            path: 'sanctions/:action_id/appeal',
-            name: 'UserSanction',
-            component: UserSanction,
+            path: 'sanctions/:action_id',
+            name: 'UserSanctionDetail',
+            component: UserSanctionDetail,
+          },
+          {
+            path: 'moderation',
+            name: 'Moderation',
+            component: UserSanctionsList,
           },
         ],
       },

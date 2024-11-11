@@ -575,6 +575,26 @@ class User(BaseModel):
         )
 
     @property
+    def sanctions_count(self) -> int:
+        from fittrackee.reports.models import ReportAction
+
+        return (
+            ReportAction.query.filter(
+                ReportAction.user_id == self.id,
+                ReportAction.action_type.not_in(
+                    [
+                        "comment_unsuspension",
+                        "user_unsuspension",
+                        "user_warning_lifting",
+                        "workout_unsuspension",
+                    ]
+                ),
+            )
+            .order_by(ReportAction.created_at.desc())
+            .count()
+        )
+
+    @property
     def all_reports_count(self) -> Dict[str, int]:
         query = """
         SELECT (
@@ -742,6 +762,7 @@ class User(BaseModel):
                     'hide_profile_in_users_directory': (
                         self.hide_profile_in_users_directory
                     ),
+                    'sanctions_count': self.sanctions_count,
                 },
             }
 

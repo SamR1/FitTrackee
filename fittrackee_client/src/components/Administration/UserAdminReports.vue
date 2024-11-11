@@ -1,33 +1,33 @@
 <template>
-  <div id="user-reports" class="description-list">
-    <dl>
-      <dt>{{ $t('user.PROFILE.CREATED_REPORTS') }}:</dt>
-      <dd>
-        {{ user.created_reports_count }}
-      </dd>
-      <dt>{{ $t('user.PROFILE.REPORTS_FROM_OTHER_USERS') }}:</dt>
-      <dd>
-        {{ user.reported_count }}
-      </dd>
-    </dl>
-  </div>
-  <div id="user-sanctions" v-if="user.sanctions_count">
-    <strong>{{ $t('user.PROFILE.LATEST_SANCTIONS_RECEIVED') }}</strong>
-    <div>
-      {{
-        $t('user.PROFILE.USER_RECEIVED_SANCTIONS', {
-          count: user.sanctions_count,
-        })
-      }}
+  <div id="user-moderation-detail">
+    <div id="user-reports" class="description-list">
+      <dl>
+        <dt>{{ $t('user.PROFILE.CREATED_REPORTS') }}:</dt>
+        <dd>
+          {{ user.created_reports_count }}
+        </dd>
+        <dt>{{ $t('user.PROFILE.REPORTS_FROM_OTHER_USERS') }}:</dt>
+        <dd>
+          {{ user.reported_count }}
+        </dd>
+      </dl>
     </div>
-    <div v-if="sanctionsLoading">
-      <Loader />
-    </div>
-    <template v-else>
-      <ul class="last-sanctions">
-        <li v-for="sanction in sanctions" :key="sanction.id">
-          <div>
-            <router-link :to="`/admin/reports/${sanction.report_id}`">
+    <div id="user-sanctions" v-if="user.sanctions_count">
+      <strong>{{ $t('user.PROFILE.LATEST_SANCTIONS_RECEIVED') }}:</strong>
+      <div>
+        {{
+          $t('user.PROFILE.USER_RECEIVED_SANCTIONS', {
+            count: user.sanctions_count,
+          })
+        }}
+      </div>
+      <div v-if="sanctionsLoading">
+        <Loader />
+      </div>
+      <template v-else>
+        <ul class="last-sanctions">
+          <li v-for="sanction in sanctions" :key="sanction.id">
+            <div>
               {{
                 $t(`user.PROFILE.SANCTIONS.${sanction.action_type}`, {
                   date: formatDate(
@@ -37,39 +37,41 @@
                   ),
                 })
               }}
-            </router-link>
-            <span
-              v-if="sanction.appeal"
-              class="info-box appeal"
-              :class="{
-                approved: getSanctionStatus(sanction.appeal) === 'APPROVED',
-                rejected: getSanctionStatus(sanction.appeal) === 'REJECTED',
-              }"
-            >
-              <i
-                class="fa"
+              <span
+                v-if="sanction.appeal"
+                class="info-box appeal"
                 :class="{
-                  'fa-info-circle':
-                    getSanctionStatus(sanction.appeal) !== 'REJECTED',
-                  'fa-times': getSanctionStatus(sanction.appeal) === 'REJECTED',
+                  approved: getSanctionStatus(sanction.appeal) === 'APPROVED',
+                  rejected: getSanctionStatus(sanction.appeal) === 'REJECTED',
                 }"
-                aria-hidden="true"
-              />
-              {{
-                $t(
-                  `user.PROFILE.SANCTION_APPEAL.${getSanctionStatus(sanction.appeal)}`
-                )
+              >
+                <i
+                  class="fa"
+                  :class="{
+                    'fa-info-circle':
+                      getSanctionStatus(sanction.appeal) !== 'REJECTED',
+                    'fa-times':
+                      getSanctionStatus(sanction.appeal) === 'REJECTED',
+                  }"
+                  aria-hidden="true"
+                />
+                {{ $t(`user.APPEAL_${getSanctionStatus(sanction.appeal)}`) }}
+              </span>
+            </div>
+            <router-link :to="`/admin/reports/${sanction.report_id}`">
+              {{ $t('admin.APP_MODERATION.VIEW_REPORT') }} #{{
+                sanction.report_id
               }}
-            </span>
-          </div>
-        </li>
-      </ul>
-      <Pagination
-        :pagination="sanctionsPagination"
-        :path="`/admin/users/${user.username}`"
-        :query="query"
-      />
-    </template>
+            </router-link>
+          </li>
+        </ul>
+        <Pagination
+          :pagination="sanctionsPagination"
+          :path="`/admin/users/${user.username}`"
+          :query="query"
+        />
+      </template>
+    </div>
   </div>
 </template>
 
@@ -166,36 +168,41 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @import '~@/scss/vars';
 
-  #user-reports {
-    dl {
-      margin-bottom: 0;
+  #user-moderation-detail {
+    margin-bottom: $default-margin;
+
+    #user-reports {
+      dl {
+        margin-bottom: 0;
+      }
     }
-  }
 
-  #user-sanctions {
-    ul {
-      list-style: square;
-      li {
-        margin-left: $default-margin;
-        padding: $default-padding * 0.5;
-        div {
-          display: flex;
-          flex-wrap: wrap;
-          gap: $default-padding * 0.5;
+    #user-sanctions {
+      ul {
+        list-style: square;
+        li {
+          margin-left: $default-margin;
+          padding: $default-padding * 0.5;
+          div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: $default-padding * 0.5;
+          }
         }
       }
-    }
-    .appeal {
-      padding: $default-padding * 0.5 $default-padding;
-      &.approved {
-        background: var(--success-background-color);
-        color: var(--success-color);
-      }
-      &.rejected {
-        background: var(--error-background-color);
-        color: var(--error-color);
+      .appeal {
+        margin-top: -2px;
+        padding: $default-padding * 0.5 $default-padding;
+        &.approved {
+          background: var(--success-background-color);
+          color: var(--success-color);
+        }
+        &.rejected {
+          background: var(--error-background-color);
+          color: var(--error-color);
+        }
       }
     }
   }

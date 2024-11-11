@@ -174,7 +174,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         assert "created_reports_count" not in serialized_user
         assert "reported_count" not in serialized_user
-        assert "sanctions_count" not in serialized_user
+        assert serialized_user["sanctions_count"] == 0
 
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
@@ -1539,3 +1539,61 @@ class TestUserAllReportsCount(ReportMixin, CommentMixin):
         )
 
         assert user_1.all_reports_count["sanctions_count"] == 0
+
+
+class TestUserSanctionsCount(ReportMixin, CommentMixin):
+    def test_it_returns_sanctions_count(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        self.create_report_user_action(user_1_admin, user_2)
+        self.create_report_user_action(user_1_admin, user_3)
+
+        assert user_2.sanctions_count == 1
+
+    @pytest.mark.parametrize(
+        'input_action_type', ["user_unsuspension", "user_warning_lifting"]
+    )
+    def test_it_does_not_count_user_report_action_that_is_not_a_sanction(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_action_type: str,
+    ) -> None:
+        self.create_report_user_action(
+            user_2_admin, user_1, action_type=input_action_type
+        )
+
+        assert user_1.sanctions_count == 0
+
+    def test_it_does_not_count_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.create_report_workout_action(
+            user_2_admin,
+            user_1,
+            workout_cycling_user_1,
+            "workout_unsuspension",
+        )
+
+        assert user_1.sanctions_count == 0
+
+    def test_it_does_not_count_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        self.create_report_comment_action(
+            user_2_admin, user_1, comment, "comment_unsuspension"
+        )
+
+        assert user_1.sanctions_count == 0

@@ -10,6 +10,7 @@
         :class="{
           'success-message': success,
           'appeal-success': success,
+          'appeal-approved': appealStatus === 'APPROVED',
           'appeal-rejected': appealStatus === 'REJECTED',
         }"
       >
@@ -24,7 +25,7 @@
           />
           {{ $t(`user.APPEAL_${appealStatus}`) }}
           <button
-            v-if="!success && $route.name != 'AuthUserAccountSuspension'"
+            v-if="displayHideButton"
             class="transparent hide-button"
             @click="emit('hideMessage')"
           >
@@ -32,11 +33,11 @@
           </button>
         </span>
       </div>
-      <div v-if="reportAction.action_type.startsWith('user_')">
+      <div>
         <slot name="additionalButtons"></slot>
       </div>
     </div>
-    <form v-else @submit.prevent="submit">
+    <form v-else-if="canAppeal" @submit.prevent="submit">
       <div class="form-items">
         <div class="form-item">
           <label for="appeal">{{ $t('user.APPEAL') }}:</label>
@@ -76,6 +77,7 @@
 <script setup lang="ts">
   import { computed, onUnmounted, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useRoute } from 'vue-router'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
@@ -87,11 +89,15 @@
     reportAction: IUserReportAction
     loading: boolean
     success: boolean
+    canAppeal?: boolean
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    canAppeal: true,
+  })
 
   const { reportAction, loading, success } = toRefs(props)
 
+  const route = useRoute()
   const store = useStore()
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
@@ -103,6 +109,14 @@
       : 'WARNING'
   )
   const appealStatus: ComputedRef<string> = computed(() => getAppealStatus())
+  const displayHideButton: ComputedRef<boolean> = computed(
+    () =>
+      !success.value &&
+      !['AuthUserAccountSuspension', 'UserSanction'].includes(
+        route.name as string
+      )
+  )
+
   const emit = defineEmits(['submitForm', 'hideMessage'])
 
   function getAppealStatus() {
@@ -112,6 +126,8 @@
     const appeal = reportAction.value.appeal
     if (appeal?.approved === false) {
       return 'REJECTED'
+    } else if (appeal?.approved === true) {
+      return 'APPROVED'
     }
     return 'IN_PROGRESS'
   }
@@ -147,6 +163,13 @@
     gap: $default-padding;
     .appeal-success {
       margin: $default-margin 0 0;
+    }
+  }
+  .appeal-approved {
+    background: var(--success-background-color);
+    color: var(--success-color);
+    button {
+      color: var(--success-color);
     }
   }
   .appeal-rejected {

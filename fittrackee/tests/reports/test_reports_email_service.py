@@ -135,7 +135,7 @@ class TestReportEmailServiceForUserWarning(
                 'fittrackee_url': app.config['UI_URL'],
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/profile/sanctions'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'reason': input_reason.get('reason'),
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
@@ -181,7 +181,7 @@ class TestReportEmailServiceForUserWarning(
             {
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/profile/sanctions'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'comment_url': (
                     f'{app.config["UI_URL"]}/workouts'
@@ -239,7 +239,7 @@ class TestReportEmailServiceForUserWarning(
             {
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/profile/sanctions'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'comment_url': (
                     f'{app.config["UI_URL"]}/comments'
@@ -294,7 +294,7 @@ class TestReportEmailServiceForUserWarning(
             {
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/profile/sanctions'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': None,
@@ -351,7 +351,7 @@ class TestReportEmailServiceForUserWarning(
             {
                 'appeal_url': (
                     f'{app.config["UI_URL"]}/profile/sanctions'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': (

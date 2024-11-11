@@ -97,6 +97,9 @@
         object-type="user"
       />
       <template v-else>
+        <div v-if="authUser && authUser.admin && fromAdmin">
+          <UserAdminReports :authUser="authUser" :user="user" />
+        </div>
         <div class="profile-buttons" v-if="fromAdmin">
           <button
             class="danger"
@@ -172,6 +175,7 @@
   import { computed, ref, toRefs, watch, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
+  import UserAdminReports from '@/components/Administration/UserAdminReports.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import useApp from '@/composables/useApp'
