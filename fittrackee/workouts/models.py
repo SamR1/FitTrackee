@@ -428,7 +428,9 @@ class Workout(BaseModel):
             'pauses': str(self.pauses) if self.pauses else None,
             'equipments': [
                 equipment.serialize() for equipment in self.equipments
-            ],
+            ]
+            if user and user.id == self.user_id
+            else [],
             'records': (
                 []
                 if for_report
