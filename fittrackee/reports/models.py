@@ -349,6 +349,7 @@ class ReportAction(BaseModel):
         db.Integer,
         db.ForeignKey("reports.id", ondelete="CASCADE"),
         index=True,
+        nullable=False,
     )
     user_id = db.Column(
         db.Integer,
