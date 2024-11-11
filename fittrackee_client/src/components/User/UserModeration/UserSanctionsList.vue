@@ -1,7 +1,7 @@
 <template>
   <div id="user-moderation">
     <h1>{{ $t('user.PROFILE.SANCTIONS_RECEIVED') }}</h1>
-    <div id="user-sanctions" v-if="user.sanctions_count">
+    <div id="user-sanctions" v-if="authUser.sanctions_count">
       <div v-if="sanctionsLoading">
         <Loader />
       </div>
@@ -9,7 +9,7 @@
         <ul class="last-sanctions">
           <li v-for="sanction in sanctions" :key="sanction.id">
             <div>
-              <router-link :to="`/profile/sanctions/${sanction.id}`">
+              <router-link :to="`/profile/moderation/sanctions/${sanction.id}`">
                 {{
                   $t(`user.PROFILE.SANCTIONS.${sanction.action_type}`, {
                     date: formatDate(
@@ -92,10 +92,10 @@
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IUserProfile
+    authUser: IUserProfile
   }
   const props = defineProps<Props>()
-  const { user } = toRefs(props)
+  const { authUser } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()
@@ -137,7 +137,7 @@
   }
   function loadSanctions(payload: TUsersPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USER_SANCTIONS, {
-      username: user.value.username,
+      username: authUser.value.username,
       ...payload,
     })
   }

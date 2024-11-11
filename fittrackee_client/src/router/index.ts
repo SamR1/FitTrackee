@@ -12,8 +12,6 @@ import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
-import UserSanctionDetail from '@/components/User/ProfileDisplay/UserSanctionDetail.vue'
-import UserSanctionsList from '@/components/User/ProfileDisplay/UserSanctionsList.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
@@ -31,6 +29,9 @@ import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
+import UserModeration from '@/components/User/UserModeration/index.vue'
+import UserSanctionDetail from '@/components/User/UserModeration/UserSanctionDetail.vue'
+import UserSanctionsList from '@/components/User/UserModeration/UserSanctionsList.vue'
 import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSports from '@/components/User/UserSports/index.vue'
 import UserSport from '@/components/User/UserSports/UserSport.vue'
@@ -342,14 +343,21 @@ const routes: RouteRecordRaw[] = [
             component: UserAccountSuspension,
           },
           {
-            path: 'sanctions/:action_id',
-            name: 'UserSanctionDetail',
-            component: UserSanctionDetail,
-          },
-          {
             path: 'moderation',
             name: 'Moderation',
-            component: UserSanctionsList,
+            component: UserModeration,
+            children: [
+              {
+                path: '',
+                name: 'UserSanctionList',
+                component: UserSanctionsList,
+              },
+              {
+                path: 'sanctions/:action_id',
+                name: 'UserSanctionDetail',
+                component: UserSanctionDetail,
+              },
+            ],
           },
         ],
       },

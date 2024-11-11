@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onMounted, onUnmounted } from 'vue'
+  import { computed, ref, onMounted, onUnmounted, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -71,14 +71,20 @@
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IUserReportAction } from '@/types/user'
+  import type { IAuthUserProfile, IUserReportAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
+
+  interface Props {
+    authUser: IAuthUserProfile
+  }
+  const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
 
-  const { authUser, authUserLoading, authUserSuccess } = useAuthUser()
+  const { authUserLoading, authUserSuccess } = useAuthUser()
 
   const appealText: Ref<string> = ref('')
 
@@ -114,6 +120,7 @@
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
+
   #user-sanction {
     padding: $default-padding 0;
     h1 {

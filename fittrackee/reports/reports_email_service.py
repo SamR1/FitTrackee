@@ -148,7 +148,7 @@ class ReportEmailService:
                 fittrackee_url,
             )
         email_data["appeal_url"] = (
-            f"{fittrackee_url}/profile/sanctions/{report_action.short_id}"
+            f"{fittrackee_url}/profile/moderation/sanctions/{report_action.short_id}"
         )
         user_warning_email.send(user_data, email_data)
 
