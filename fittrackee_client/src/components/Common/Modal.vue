@@ -16,7 +16,10 @@
             <i class="fa fa-exclamation-triangle" aria-hidden="true" />
             {{ warning }}
           </div>
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+          <ErrorMessage
+            :message="errorMessages"
+            v-if="errorMessages && !hideErrorMessage"
+          />
           <div v-if="loading">
             <Loader />
           </div>
@@ -58,11 +61,13 @@
     strongMessage?: string | null
     loading?: boolean
     warning?: string
+    hideErrorMessage?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     loading: false,
     strongMessage: () => '',
     warning: () => '',
+    hideErrorMessage: false,
   })
   const { title, message, strongMessage } = toRefs(props)
 

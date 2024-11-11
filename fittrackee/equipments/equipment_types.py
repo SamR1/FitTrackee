@@ -19,7 +19,7 @@ equipment_types_blueprint = Blueprint('equipment_types', __name__)
 
 
 @equipment_types_blueprint.route('/equipment-types', methods=['GET'])
-@require_auth(scopes=['equipments:read'])
+@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
 def get_equipment_types(auth_user: User) -> Dict:
     """
     Get all types of equipment

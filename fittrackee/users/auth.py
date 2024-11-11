@@ -2110,7 +2110,7 @@ def appeal_user_suspension(
 @auth_blueprint.route(
     "/auth/account/sanctions/<string:action_short_id>", methods=["GET"]
 )
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
 def get_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

@@ -2913,6 +2913,31 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
             'total': 0,
         }
 
+    def test_it_does_not_return_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, user_2_admin: User
+    ) -> None:
+        self.create_report_user_action(user_2_admin, user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
     @patch('fittrackee.users.users.ACTIONS_PER_PAGE', 2)
     @pytest.mark.parametrize('input_params', ["", "?page=1"])
     def test_it_returns_report_actions_first_page(

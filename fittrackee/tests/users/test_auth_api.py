@@ -4363,6 +4363,28 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
             "sanction": jsonify_dict(action.serialize(user_2, full=True)),
         }
 
+    def test_it_returns_user_suspension_when_user_is_suspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_report_user_action(
+            user_1_admin, user_2, action_type="user_suspension"
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
+        }
+
     def test_it_returns_workout_suspension(
         self,
         app: Flask,

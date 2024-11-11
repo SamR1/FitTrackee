@@ -50,6 +50,7 @@
     "workout has been reactivated after appeal": "The workout has been reactivated after appeal.",
     "you can appeal only once": "You can appeal only once.",
     "you can not delete your account, no other user has admin rights": "You can not delete your account, no other user has admin rights.",
-    "you do not have permissions": "You do not have permissions."
+    "you do not have permissions": "You do not have permissions.",
+    "you do not have permissions, your account is suspended": "You do not have permissions, your account is suspended."
   }
 }

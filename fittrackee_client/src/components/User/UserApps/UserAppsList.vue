@@ -28,7 +28,10 @@
       :query="query"
     />
     <div class="app-list-buttons">
-      <button @click="$router.push('/profile/apps/new')">
+      <button
+        v-if="!authUser.suspended_at"
+        @click="$router.push('/profile/apps/new')"
+      >
         {{ $t('oauth2.NEW_APP') }}
       </button>
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>

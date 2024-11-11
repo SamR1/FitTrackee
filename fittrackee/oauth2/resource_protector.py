@@ -91,7 +91,12 @@ class CustomResourceProtector(ResourceProtector):
                     )
                     or (as_admin and not auth_user.admin)
                 ):
-                    return ForbiddenErrorResponse()
+                    return ForbiddenErrorResponse(
+                        'you do not have permissions, '
+                        'your account is suspended'
+                        if auth_user and auth_user.suspended_at
+                        else None
+                    )
                 return f(auth_user, *args, **kwargs)
 
             return decorated

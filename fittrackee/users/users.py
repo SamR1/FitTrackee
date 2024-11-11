@@ -1231,7 +1231,7 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
 
 @users_blueprint.route('/users/<user_name>/sanctions', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@require_auth(scopes=['users:read'], allow_suspended_user=True)
 def get_user_sanctions(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:

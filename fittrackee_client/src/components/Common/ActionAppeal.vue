@@ -112,7 +112,7 @@
   const displayHideButton: ComputedRef<boolean> = computed(
     () =>
       !success.value &&
-      !['AuthUserAccountSuspension', 'UserSanction'].includes(
+      !['AuthUserAccountSuspension', 'UserSanctionDetail'].includes(
         route.name as string
       )
   )
@@ -147,6 +147,7 @@
 <style scoped lang="scss">
   @import '~@/scss/vars';
   .description-list {
+    margin-bottom: $default-margin;
     dl {
       margin-bottom: 0;
     }

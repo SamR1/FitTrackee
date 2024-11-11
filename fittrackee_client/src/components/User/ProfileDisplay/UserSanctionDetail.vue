@@ -33,36 +33,30 @@
         :report-action="userSanction"
         :success="authUserSuccess"
         :loading="authUserLoading"
-        :can-appeal="userSanction.action_type !== 'user_suspension'"
+        :can-appeal="
+          userSanction.action_type !== 'user_suspension' &&
+          !authUser.suspended_at
+        "
         @submitForm="submitAppeal"
-      >
-        <template #additionalButtons>
-          <div class="additional-buttons">
-            <button @click="$router.push('/profile/moderation')">
-              {{ $t('buttons.BACK') }}
-            </button>
-            <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
-            <button
-              class="notification-button"
-              @click="$router.push('/notifications')"
-            >
-              {{ $t('notifications.NOTIFICATIONS', 0) }}
-            </button>
-          </div>
-        </template>
-      </ActionAppeal>
+      />
     </div>
     <div v-else>
       <div class="no-warning">
         {{ $t('user.NO_WARNING_FOUND') }}
       </div>
+    </div>
+    <div class="buttons">
       <button @click="$router.push('/profile/moderation')">
         {{ $t('buttons.BACK') }}
       </button>
-      <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
-      <button @click="$router.push('/notifications')">
-        {{ $t('notifications.NOTIFICATIONS', 0) }}
-      </button>
+      <template v-if="!authUser.suspended_at">
+        <button @click="$router.push('/')">
+          {{ $t('common.HOME') }}
+        </button>
+        <button @click="$router.push('/notifications')">
+          {{ $t('notifications.NOTIFICATIONS', 0) }}
+        </button>
+      </template>
     </div>
   </div>
 </template>
@@ -134,7 +128,7 @@
       margin-top: $default-padding;
     }
 
-    .additional-buttons {
+    .buttons {
       display: flex;
       gap: $default-padding;
       button {
