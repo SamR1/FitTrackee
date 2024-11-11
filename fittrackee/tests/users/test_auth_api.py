@@ -16,6 +16,7 @@ from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
     BlacklistedToken,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -483,6 +484,44 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
 
         account_confirmation_email_mock.send.assert_not_called()
+
+    def test_it_creates_notifications_for_admins_on_registration(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        email = self.random_email()
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=email,
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(email=email).first()
+        notification = Notification.query.filter_by(
+            event_type='account_creation', event_object_id=new_user.id
+        ).all()
+        assert len(notification) == 2
+        for notification in notification:
+            assert notification.created_at == new_user.created_at
+            assert notification.from_user_id == new_user.id
+            assert notification.event_object_id == new_user.id
+            assert notification.to_user_id in [
+                user_1_admin.id,
+                user_2_admin.id,
+            ]
 
 
 class TestUserLogin(ApiTestCaseMixin):

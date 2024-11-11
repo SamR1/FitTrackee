@@ -40,6 +40,7 @@ USER_LINK_TEMPLATE = (
 )
 
 NOTIFICATION_TYPES = [
+    'account_creation',
     'comment_like',
     'comment_reply',
     'comment_suspension',

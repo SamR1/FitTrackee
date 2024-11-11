@@ -3,6 +3,7 @@ import type { IUserReportAction, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export type TNotificationType =
+  | 'account_creation'
   | 'comment_like'
   | 'comment_reply'
   | 'comment_suspension'

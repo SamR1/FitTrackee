@@ -54,6 +54,7 @@ from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
     BlockedUser,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
@@ -184,6 +185,18 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if new_user:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
+            for admin in User.query.filter(
+                User.admin == True,  # noqa
+                User.is_active == True,  # noqa
+            ).all():
+                notification = Notification(
+                    from_user_id=new_user.id,
+                    to_user_id=admin.id,
+                    created_at=new_user.created_at,
+                    event_type='account_creation',
+                    event_object_id=new_user.id,
+                )
+                db.session.add(notification)
             db.session.commit()
             send_account_confirmation_email(new_user)
 

@@ -181,10 +181,14 @@
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
-    return ['follow', 'follow_request'].includes(notificationType)
+    return ['follow', 'follow_request', 'account_creation'].includes(
+      notificationType
+    )
   }
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {
+      case 'account_creation':
+        return 'notifications.SIGN_UP'
       case 'comment_like':
         return 'notifications.LIKED_YOUR_COMMENT'
       case 'comment_reply':
