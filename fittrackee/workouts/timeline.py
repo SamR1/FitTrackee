@@ -31,25 +31,19 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
             )
             .filter(
                 or_(
+                    # get all authenticated user workouts
                     Workout.user_id == auth_user.id,
+                    # gel followed users workouts, that are not suspended
+                    # and user is not blocked
                     and_(
                         Workout.suspended_at == None,  # noqa
-                        or_(
-                            and_(
-                                Workout.user_id.in_(following_ids),
-                                (
-                                    Workout.workout_visibility
-                                    == PrivacyLevel.FOLLOWERS
-                                ),
+                        and_(
+                            Workout.user_id.in_(following_ids),
+                            Workout.user_id.not_in(
+                                blocked_users + blocked_by_users
                             ),
-                            and_(
-                                (
-                                    Workout.workout_visibility
-                                    == PrivacyLevel.PUBLIC
-                                ),
-                                Workout.user_id.not_in(
-                                    blocked_users + blocked_by_users
-                                ),
+                            Workout.workout_visibility.in_(
+                                [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC]
                             ),
                         ),
                     ),

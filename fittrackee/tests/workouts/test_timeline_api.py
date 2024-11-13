@@ -14,7 +14,7 @@ from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 
 
-class TestGetUserTimeline(WorkoutApiTestCaseMixin):
+class GetUserTimelineTestCase(WorkoutApiTestCaseMixin):
     @staticmethod
     def assert_no_workout_returned(response: TestResponse) -> None:
         assert response.status_code == 200
@@ -32,6 +32,8 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['id'] == workout.short_id
 
+
+class TestGetUserTimeline(GetUserTimelineTestCase):
     def test_it_returns_401_if_no_authentication(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -39,7 +41,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
 
         assert response.status_code == 401
 
-    def test_it_returns_error_when_user_is_suspended(
+    def test_it_returns_403_when_user_is_suspended(
         self, app: Flask, suspended_user: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -92,6 +94,32 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            '/api/timeline',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
+    @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
             ('workout visibility: private', PrivacyLevel.PRIVATE),
@@ -122,6 +150,50 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
+
+    def test_it_returns_authenticated_user_suspended_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_workout_returned(response, workout_cycling_user_1)
+
+
+class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
+    def test_it_does_not_return_followed_user_private_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/timeline',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_no_workout_returned(response)
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
@@ -157,8 +229,20 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
 
         self.assert_workout_returned(response, workout_cycling_user_2)
 
-    def test_it_does_not_return_followed_user_private_workout(
+    @pytest.mark.parametrize(
+        'input_desc,input_workout_visibility',
+        [
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
+    )
+    def test_it_does_not_return_workout_from_blocked_user(
         self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -167,47 +251,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_no_workout_returned(response)
-
-    def test_it_returns_public_workout(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_workout_returned(response, workout_cycling_user_2)
-
-    def test_it_does_not_return_public_workout_from_blocked_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
         user_1.blocks_user(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -220,71 +264,6 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
 
         self.assert_no_workout_returned(response)
 
-    def test_it_does_not_return_public_workout_from_suspended_user(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        user_2.suspended_at = datetime.utcnow()
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_no_workout_returned(response)
-
-    def test_it_returns_authenticated_user_suspended_workout(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_workout_returned(response, workout_cycling_user_1)
-
-    def test_it_does_not_return_other_users_suspended_workouts(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
-        )
-
-        self.assert_workout_returned(response, workout_cycling_user_1)
-
     def test_blocked_user_can_not_get_workout_in_timeline(
         self,
         app: Flask,
@@ -292,7 +271,9 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
+        user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
         user_2.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -309,14 +290,14 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
                 PrivacyLevel.FOLLOWERS,
             ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
         ],
     )
-    def test_it_does_return_workout_if_visibility_does_not_allow_it(
+    def test_it_does_not_return_followed_user_suspended_workouts(
         self,
         input_desc: str,
         input_workout_visibility: PrivacyLevel,
@@ -324,9 +305,15 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
         workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
+        user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_workout_visibility
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        user_1.blocks_user(user_2)
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -336,7 +323,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_no_workout_returned(response)
+        self.assert_workout_returned(response, workout_cycling_user_1)
 
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
@@ -359,8 +346,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        if input_workout_visibility == PrivacyLevel.FOLLOWERS:
-            user_2.approves_follow_request_from(user_1)
+        user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.map_visibility = PrivacyLevel.PRIVATE
         workout_cycling_user_2.map_id = self.random_string()
@@ -398,8 +384,7 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        if input_visibility == PrivacyLevel.FOLLOWERS:
-            user_2.approves_follow_request_from(user_1)
+        user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_visibility
         workout_cycling_user_2.map_visibility = input_visibility
         map_id = self.random_string()
@@ -417,29 +402,43 @@ class TestGetUserTimeline(WorkoutApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['data']['workouts'][0]['map'] == map_id
 
+
+class TestGetUserTimelineForNotFollowedUserWorkouts(GetUserTimelineTestCase):
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        'input_desc,input_workout_visibility',
+        [
+            (
+                'workout visibility: private',
+                PrivacyLevel.PRIVATE,
+            ),
+            (
+                'workout visibility: followers_only',
+                PrivacyLevel.FOLLOWERS,
+            ),
+            ('workout visibility: public', PrivacyLevel.PUBLIC),
+        ],
     )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_it_does_not_return_workout(
+        self,
+        input_desc: str,
+        input_workout_visibility: PrivacyLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
 
         response = client.get(
             '/api/timeline',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_response_scope(response, can_access)
+        self.assert_no_workout_returned(response)
 
 
 class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
