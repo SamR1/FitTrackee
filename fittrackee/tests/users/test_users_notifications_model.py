@@ -638,6 +638,39 @@ class TestNotificationForCommentReply(NotificationTestCase):
         ).first()
         assert notification is None
 
+    def test_it_does_not_create_notification_when_parent_comment_user_is_not_follower(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.comment_workout(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        reply = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            comment.id,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        db.session.flush()
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=reply.id,
+            ).first()
+            is None
+        )
+
     def test_it_does_not_raise_error_when_user_deletes_reply_on_his_own_comment(  # noqa
         self,
         app: Flask,
@@ -936,7 +969,7 @@ class TestNotificationForMention(NotificationTestCase):
         self.create_mention(user_2, comment)
 
         notifications = Notification.query.filter_by(
-            from_user_id=comment.user_id,
+            from_user_id=user_3.id,
             to_user_id=user_2.id,
         ).all()
         assert len(notifications) == 1

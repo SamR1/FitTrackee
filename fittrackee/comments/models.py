@@ -177,7 +177,7 @@ class Comment(BaseModel):
         return linkified_text, mentioned_users
 
     def update_mentions(self) -> None:
-        from fittrackee.users.models import User
+        from fittrackee.users.models import Notification, User
 
         existing_mentioned_users = set(
             db.session.query(User)
@@ -195,6 +195,11 @@ class Comment(BaseModel):
         Mention.query.filter(
             Mention.comment_id == self.id,
             Mention.user_id.in_(mentions_to_delete),
+        ).delete()
+        Notification.query.filter(
+            Notification.to_user_id.in_(mentions_to_delete),
+            Notification.event_type == 'mention',
+            Notification.event_object_id == self.id,
         ).delete()
         db.session.flush()
 
@@ -344,7 +349,6 @@ def on_comment_insert(
         # - the comment author (notification.from_user_id) is not the recipient
         #   (notification.to_user)
         # - the comment is public
-        # - the recipient is mentioned (regardless comment privacy level)
         # - the recipient follows the comment author if privacy level is only
         #   followers
 
@@ -362,21 +366,18 @@ def on_comment_insert(
         if new_comment.user_id == to_user_id:
             return
 
-        if not create_notification:
-            user_is_mentioned = Mention.query.filter_by(
-                comment_id=new_comment.id, user_id=to_user_id
-            ).first()
-
-            if user_is_mentioned:
-                create_notification = True
-            elif PrivacyLevel.FOLLOWERS:
-                create_notification = (
-                    FollowRequest.query.filter_by(
-                        follower_user_id=to_user_id,
-                        followed_user_id=new_comment.user_id,
-                    ).first()
-                    is not None
-                )
+        if (
+            not create_notification
+            and new_comment.text_visibility == PrivacyLevel.FOLLOWERS
+        ):
+            create_notification = (
+                FollowRequest.query.filter_by(
+                    follower_user_id=to_user_id,
+                    followed_user_id=new_comment.user_id,
+                    is_approved=True,
+                ).first()
+                is not None
+            )
 
         if not create_notification:
             return
@@ -425,20 +426,26 @@ def on_mention_insert(
         # `mention` notification is not created:
         # - when mentioned user is workout owner
         # (`workout_comment' notification already exists)
-        workout = Workout.query.filter_by(id=comment.workout_id).first()
-        if workout and workout.user_id == new_mention.user_id:
-            return
+        if not comment.reply_to:
+            workout = Workout.query.filter_by(id=comment.workout_id).first()
+            if workout and workout.user_id == new_mention.user_id:
+                return
 
-        # - when mentioned user is parent comment owner
-        # (`comment_reply' notification already exists)
-        if comment.reply_to:
-            parent_comment = Comment.query.filter_by(
-                id=comment.reply_to
-            ).first()
-            if (
-                parent_comment
-                and parent_comment.user_id == new_mention.user_id
-            ):
+        # - when mentioned user is parent comment owner and
+        # `comment_reply' notification already exists
+        else:
+            parent_comment_notification = (
+                Notification.query.join(
+                    Comment,
+                    Comment.id == Notification.event_object_id,
+                )
+                .filter(
+                    Notification.to_user_id == new_mention.user_id,
+                    Notification.event_type == 'comment_reply',
+                )
+                .first()
+            )
+            if parent_comment_notification:
                 return
 
         notification = Notification(
