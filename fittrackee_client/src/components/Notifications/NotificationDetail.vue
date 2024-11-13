@@ -89,7 +89,7 @@
         "
         :report="notification.report"
       />
-      <template v-else-if="notification.workout && notification.report_action">
+      <template v-else-if="notification.workout">
         <WorkoutForUser
           :action="notification.report_action"
           :display-appeal="notification.type !== 'user_warning'"
@@ -100,7 +100,9 @@
       <div
         class="auth-user"
         v-if="
-          notification.report_action?.action_type === 'user_warning_lifting'
+          notification.report_action?.action_type === 'user_warning_lifting' &&
+          !notification.comment &&
+          !notification.workout
         "
       >
         <UserPicture :user="authUser" />
@@ -123,7 +125,7 @@
         <router-link
           v-else-if="!notification.report_action?.appeal"
           class="appeal-link"
-          :to="`profile/warning/${notification.report_action.id}/appeal`"
+          :to="`profile/moderation/sanctions/${notification.report_action.id}`"
         >
           {{ $t('user.APPEAL') }}
         </router-link>
@@ -241,10 +243,14 @@
       case 'report':
       case 'suspension_appeal':
       case 'user_warning':
+      case 'user_warning_appeal':
       case 'user_warning_lifting':
       case 'workout_suspension':
       case 'workout_unsuspension':
         return 'flag'
+      case 'comment_like':
+      case 'workout_like':
+        return 'heart'
       default:
         return 'comment'
     }
