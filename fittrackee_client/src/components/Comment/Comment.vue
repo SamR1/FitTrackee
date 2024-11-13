@@ -86,8 +86,9 @@
           <i
             class="fa"
             :class="{
-              'fa-heart': comment.liked,
-              'fa-heart-o': !comment.liked,
+              'fa-heart': comment.likes_count > 0,
+              'fa-heart-o': comment.likes_count === 0,
+              liked: comment.liked,
             }"
             aria-hidden="true"
           />
@@ -422,7 +423,7 @@
         .fa-heart-o {
           font-size: 0.9em;
         }
-        .fa-heart {
+        .fa-heart.liked {
           color: var(--like-color);
         }
       }
