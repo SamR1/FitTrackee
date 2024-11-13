@@ -423,7 +423,7 @@
           font-size: 0.9em;
         }
         .fa-heart {
-          color: #ee2222;
+          color: var(--like-color);
         }
       }
       .report-submitted {
