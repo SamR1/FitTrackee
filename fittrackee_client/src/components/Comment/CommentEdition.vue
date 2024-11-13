@@ -252,7 +252,7 @@
 
       .users-suggestions {
         list-style-type: none;
-        background-color: white;
+        background-color: var(--user-suggestion-background);
         margin-top: 0;
         padding: 0;
         border: 1px solid var(--input-border-color);
