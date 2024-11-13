@@ -624,13 +624,15 @@ def on_report_action_appeal_insert(
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification, User
 
-        for admin in User.query.filter(
-            User.admin == True,  # noqa
-            User.id != new_appeal.user_id,
-            User.is_active == True,  # noqa
-        ).all():
-            report_action = ReportAction.query.filter_by().first()
-            if report_action:
+        report_action = ReportAction.query.filter_by(
+            id=new_appeal.action_id
+        ).first()
+        if report_action:
+            for admin in User.query.filter(
+                User.admin == True,  # noqa
+                User.id != new_appeal.user_id,
+                User.is_active == True,  # noqa
+            ).all():
                 notification = Notification(
                     from_user_id=new_appeal.user_id,
                     to_user_id=admin.id,
