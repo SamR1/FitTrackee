@@ -12,6 +12,7 @@ from fittrackee.reports.models import (
     WORKOUT_ACTION_TYPES,
     Report,
 )
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -1271,7 +1272,7 @@ class TestNotificationForReport(NotificationTestCase):
         assert serialized_notification["type"] == "report"
 
 
-class TestNotificationForSuspensionAppeal(ReportMixin):
+class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -1290,7 +1291,7 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
         ).first()
         assert notification is None
 
-    def test_it_creates_notification_on_appeal(
+    def test_it_creates_notification_on_user_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         suspension_action = self.create_report_user_action(
@@ -1306,6 +1307,71 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
         assert notification.marked_as_read is False
         assert notification.event_type == "suspension_appeal"
         assert notification.event_object_id == appeal.id
+
+    def test_it_creates_notification_on_workout_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_suspension = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        db.session.add(workout_suspension)
+        db.session.flush()
+
+        # appeal = ReportActionAppeal(
+        #     workout_suspension.id, user_2.id, self.random_string()
+        # )
+
+        appeal = self.create_action_appeal(workout_suspension.id, user_2)
+        db.session.add(appeal)
+        db.session.commit()
+
+        notifications = Notification.query.filter_by(
+            event_type='suspension_appeal'
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].from_user_id == user_2.id
+        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].event_object_id == workout_suspension.id
+
+    def test_it_creates_notification_on_comment_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        comment_suspension = self.create_report_comment_action(
+            user_1_admin, user_2, comment
+        )
+        db.session.add(comment_suspension)
+        db.session.flush()
+
+        # appeal = ReportActionAppeal(
+        #     comment_suspension.id, user_2.id, self.random_string()
+        # )
+        appeal = self.create_action_appeal(comment_suspension.id, user_2)
+        db.session.add(appeal)
+        db.session.commit()
+
+        notifications = Notification.query.filter_by(
+            event_type='suspension_appeal'
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].from_user_id == user_2.id
+        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].event_object_id == comment_suspension.id
 
     def test_it_serializes_suspension_appeal_notification(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User

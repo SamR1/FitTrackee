@@ -22,7 +22,7 @@ from fittrackee.reports.models import (
     ReportAction,
     ReportActionAppeal,
 )
-from fittrackee.users.models import Notification, User
+from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
@@ -989,31 +989,6 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
 
-    def test_it_creates_notification_on_user_suspension_appeal(
-        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
-    ) -> None:
-        user_warning = self.create_report_user_action(
-            user_1_admin, user_3, action_type='user_suspension'
-        )
-
-        appeal = ReportActionAppeal(
-            user_warning.id, user_3.id, self.random_string()
-        )
-        db.session.add(appeal)
-        db.session.commit()
-
-        notifications = Notification.query.filter_by(
-            event_type='suspension_appeal'
-        ).all()
-        assert len(notifications) == 2
-        for notification in notifications:
-            assert notification.from_user_id == user_3.id
-            assert notification.to_user_id in [
-                user_1_admin.id,
-                user_2_admin.id,
-            ]
-            assert notification.event_object_id == user_warning.id
-
     def test_it_creates_appeal_for_user_warning_action(
         self,
         app: Flask,
@@ -1040,31 +1015,6 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         assert appeal.reason is None
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
-
-    def test_it_creates_notification_on_user_warning_appeal(
-        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
-    ) -> None:
-        user_warning = self.create_report_user_action(
-            user_1_admin, user_3, action_type='user_warning'
-        )
-
-        appeal = ReportActionAppeal(
-            user_warning.id, user_3.id, self.random_string()
-        )
-        db.session.add(appeal)
-        db.session.commit()
-
-        notifications = Notification.query.filter_by(
-            event_type='user_warning_appeal'
-        ).all()
-        assert len(notifications) == 2
-        for notification in notifications:
-            assert notification.from_user_id == user_3.id
-            assert notification.to_user_id in [
-                user_1_admin.id,
-                user_2_admin.id,
-            ]
-            assert notification.event_object_id == user_warning.id
 
     def test_it_raises_error_when_workout_action_is_invalid(
         self,
@@ -1121,34 +1071,6 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         assert appeal.reason is None
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
-
-    def test_it_creates_notification_on_workout_suspension_appeal(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        workout_suspension = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
-        )
-        db.session.add(workout_suspension)
-        db.session.flush()
-
-        appeal = ReportActionAppeal(
-            workout_suspension.id, user_2.id, self.random_string()
-        )
-        db.session.add(appeal)
-        db.session.commit()
-
-        notifications = Notification.query.filter_by(
-            event_type='suspension_appeal'
-        ).all()
-        assert len(notifications) == 1
-        assert notifications[0].from_user_id == user_2.id
-        assert notifications[0].to_user_id == user_1_admin.id
-        assert notifications[0].event_object_id == workout_suspension.id
 
     def test_it_raises_error_when_comment_action_is_invalid(
         self,
@@ -1213,40 +1135,6 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         assert appeal.reason is None
         assert appeal.updated_at is None
         assert appeal.user_id == user_2.id
-
-    def test_it_creates_notification_on_comment_suspension_appeal(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
-        )
-        comment_suspension = self.create_report_comment_action(
-            user_1_admin, user_2, comment
-        )
-        db.session.add(comment_suspension)
-        db.session.flush()
-
-        appeal = ReportActionAppeal(
-            comment_suspension.id, user_2.id, self.random_string()
-        )
-        db.session.add(appeal)
-        db.session.commit()
-
-        notifications = Notification.query.filter_by(
-            event_type='suspension_appeal'
-        ).all()
-        assert len(notifications) == 1
-        assert notifications[0].from_user_id == user_2.id
-        assert notifications[0].to_user_id == user_1_admin.id
-        assert notifications[0].event_object_id == comment_suspension.id
 
     def test_it_creates_appeal_for_a_given_action_without_creation_date(
         self,
