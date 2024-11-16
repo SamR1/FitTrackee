@@ -5,7 +5,9 @@ from flask import Blueprint, request
 from sqlalchemy import and_, asc, desc, exc, or_
 
 from fittrackee import db
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
+from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import (
     HttpResponse,
     NotFoundErrorResponse,
@@ -31,11 +33,16 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
 
     blocked_users = auth_user.get_blocked_user_ids()
     blocked_by_users = auth_user.get_blocked_by_user_ids()
+    following_ids = auth_user.get_following_user_ids()
 
     notifications_pagination = (
         Notification.query.join(
             User,
             Notification.from_user_id == User.id,
+        )
+        .outerjoin(
+            Comment,
+            Notification.event_object_id == Comment.id,
         )
         .filter(
             Notification.to_user_id == auth_user.id,
@@ -63,6 +70,17 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                                         ),
                                         Notification.from_user_id.not_in(
                                             blocked_by_users
+                                        ),
+                                        or_(
+                                            Comment.text_visibility
+                                            == PrivacyLevel.PUBLIC,
+                                            and_(
+                                                Comment.text_visibility
+                                                == PrivacyLevel.FOLLOWERS,
+                                                Notification.from_user_id.in_(
+                                                    following_ids
+                                                ),
+                                            ),
                                         ),
                                     ),
                                 )
@@ -142,6 +160,10 @@ def get_status(auth_user: User) -> Dict:
             User,
             Notification.from_user_id == User.id,
         )
+        .outerjoin(
+            Comment,
+            Notification.event_object_id == Comment.id,
+        )
         .filter(
             Notification.to_user_id == auth_user.id,
             Notification.from_user_id.not_in(auth_user.get_blocked_user_ids()),
@@ -163,6 +185,17 @@ def get_status(auth_user: User) -> Dict:
                                         ),
                                         Notification.from_user_id.not_in(
                                             auth_user.get_blocked_by_user_ids()
+                                        ),
+                                        or_(
+                                            Comment.text_visibility
+                                            == PrivacyLevel.PUBLIC,
+                                            and_(
+                                                Comment.text_visibility
+                                                == PrivacyLevel.FOLLOWERS,
+                                                Notification.from_user_id.in_(
+                                                    auth_user.get_following_user_ids()
+                                                ),
+                                            ),
                                         ),
                                     ),
                                 )
