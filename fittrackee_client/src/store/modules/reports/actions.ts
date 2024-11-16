@@ -210,7 +210,6 @@ export const actions: ActionTree<IReportsState, IRootState> & IReportsActions =
         .get('reports/unresolved')
         .then((res) => {
           if (res.data.status === 'success') {
-            console.log(res.data)
             context.commit(
               REPORTS_STORE.MUTATIONS.SET_UNRESOLVED_REPORTS_STATUS,
               res.data.unresolved
