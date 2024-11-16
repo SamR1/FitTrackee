@@ -928,6 +928,7 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        """comment is visible to user"""
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.comment_workout(
             user_2,
@@ -945,6 +946,37 @@ class TestNotificationForMention(NotificationTestCase):
         assert notifications[0].created_at == comment.created_at
         assert notifications[0].marked_as_read is False
         assert notifications[0].event_type == 'workout_comment'
+
+    @pytest.mark.parametrize(
+        'input_privacy_level', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_creates_notification_when_mentioned_user_is_workout_owner(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_privacy_level: PrivacyLevel,
+    ) -> None:
+        """comment is visible to user thanks to the mention"""
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=input_privacy_level,
+        )
+        mention = self.create_mention(user_1, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_1.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == mention.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'mention'
 
     def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
         self,
