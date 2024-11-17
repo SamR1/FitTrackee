@@ -265,7 +265,7 @@ describe('replaceUsername', () => {
       inputPosition: 6,
       inputUsernameQuery: 'Sa',
       inputUsername: 'Sam',
-      expectedString: 'Hello @Sam',
+      expectedString: 'Hello @Sam ',
     },
     {
       description:

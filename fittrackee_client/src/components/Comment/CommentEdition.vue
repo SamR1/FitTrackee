@@ -15,14 +15,9 @@
             <li
               v-for="user in matchingUsers"
               :key="user.username"
-              @click="
-                selectUser(
-                  user,
-                  `text${
-                    comment ? `-${comment.id}` : replyTo ? `-${replyTo}` : ''
-                  }`
-                )
-              "
+              tabindex="0"
+              @click="(e) => selectUser(e, user, comment, replyTo)"
+              @keydown.enter="(e) => selectUser(e, user, comment, replyTo)"
             >
               <UserPicture :user="user" />
               <span>{{ user.username }}</span>
@@ -184,7 +179,17 @@
       store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
     }
   }
-  function selectUser(user: IUserProfile, textAreaId: string) {
+  function selectUser(
+    event: Event,
+    user: IUserProfile,
+    comment: IComment | null,
+    replyTo: IComment | null
+  ) {
+    event.preventDefault()
+    event.stopPropagation()
+    const textAreaId = `text${
+      comment ? `-${comment.id}` : replyTo ? `-${replyTo.id}` : ''
+    }`
     if (suggestion.position !== null && suggestion.usernameQuery) {
       const updatedText = replaceUsername(
         commentText.value,
@@ -294,7 +299,8 @@
             }
           }
 
-          &:hover {
+          &:hover,
+          &:focus {
             background-color: var(--dropdown-hover-color);
             font-weight: bold;
             cursor: pointer;
