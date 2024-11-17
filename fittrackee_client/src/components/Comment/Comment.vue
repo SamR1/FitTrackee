@@ -168,6 +168,7 @@
           :authUser="authUser"
           :comments-loading="commentsLoading"
           :current-comment-edition="currentCommentEdition"
+          :action="reply.suspension"
           @deleteComment="deleteComment(reply)"
         />
       </template>
