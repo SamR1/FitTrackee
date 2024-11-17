@@ -154,7 +154,7 @@
           v-if="isNewReply()"
           class="add-comment-reply"
           :workout="workout"
-          :reply-to="comment.id"
+          :reply-to="comment"
           :comments-loading="commentsLoading"
           :name="`text-${comment.id}`"
           :authUser="authUser"

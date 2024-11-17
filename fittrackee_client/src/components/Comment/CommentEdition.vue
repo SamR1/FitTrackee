@@ -76,6 +76,7 @@
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IAuthUserProfile,
+    IUserLightProfile,
     IUserProfile,
     TPrivacyLevels,
   } from '@/types/user'
@@ -94,9 +95,9 @@
     commentsLoading: string | null
     authUser: IAuthUserProfile
     comment?: IComment | null
-    replyTo?: string | null
+    replyTo?: IComment | null
     name?: string | null
-    mentions?: IUserProfile[]
+    mentions?: IUserLightProfile[]
   }
   const props = withDefaults(defineProps<Props>(), {
     comment: null,
@@ -147,11 +148,25 @@
       const filteredMentions = mentions.value.filter(
         (m) => m.username !== authUser.value.username
       )
+      if (
+        replyTo.value &&
+        replyTo.value.user.username !== authUser.value.username
+      ) {
+        filteredMentions.push(replyTo.value.user)
+      }
       if (filteredMentions.length > 0) {
         return filteredMentions.map((m) => `@${m.username}`).join(' ') + ' '
       }
     }
-    // new comment or no mentions in reply
+    // add workout owner as mention
+    if (
+      !replyTo.value &&
+      workout.value?.user &&
+      workout.value?.user.username !== authUser.value.username
+    ) {
+      return `@${workout.value?.user.username} `
+    }
+    // no mentions in reply
     return ''
   }
   function searchUsers(usernameQuery: string) {
@@ -207,7 +222,7 @@
           workout_id: workout.value.id,
         }
         if (replyTo?.value) {
-          payload.reply_to = replyTo.value
+          payload.reply_to = replyTo.value.id
         }
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
         updateText({ value: '', selectionStart: 0 })
