@@ -521,7 +521,7 @@ class TestGetUserToken:
         )
 
         decoded_token = self.decode_token(app, token)
-        assert decoded_token['sub'] == user_id
+        assert decoded_token['sub'] == str(user_id)
 
     @pytest.mark.parametrize('input_password_reset', [True, False])
     def test_token_contains_timestamp_of_when_it_is_issued(
