@@ -2,12 +2,12 @@ import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
-from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import select, text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -25,38 +25,61 @@ def get_comments(
     workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
 ) -> List['Comment']:
     if user:
-        following_ids = user.get_following_user_ids()
-        blocked_users = user.get_blocked_user_ids()
-        blocked_by_users = user.get_blocked_by_user_ids()
-        comments_filter = Comment.query.join(
-            Mention, Mention.comment_id == Comment.id, isouter=True
-        ).filter(
-            Comment.workout_id == workout_id,
-            Comment.reply_to == reply_to,
-            or_(
-                Comment.user_id == user.id,
-                or_(
-                    Mention.user_id == user.id,
-                    and_(
-                        Comment.text_visibility == PrivacyLevel.PUBLIC,
-                        Comment.user_id.not_in(
-                            blocked_users + blocked_by_users
-                        ),
-                    ),
-                    and_(
-                        Comment.user_id.in_(following_ids),
-                        Comment.text_visibility == PrivacyLevel.FOLLOWERS,
-                    ),
-                ),
-            ),
-        )
+        params = {"workout_id": workout_id, "user_id": user.id}
+        sql = """
+        SELECT comments.*
+        FROM comments
+        LEFT OUTER JOIN mentions ON mentions.comment_id = comments.id
+        WHERE comments.workout_id = :workout_id
+          AND comments.user_id NOT IN (
+            SELECT blocked_users.user_id
+            FROM blocked_users
+            WHERE blocked_users.by_user_id = :user_id
+          )
+          AND comments.user_id NOT IN (
+            SELECT blocked_users.by_user_id
+            FROM blocked_users
+            WHERE blocked_users.user_id = user_id
+          )
+          AND (comments.user_id = :user_id
+            OR (
+              mentions.user_id = :user_id
+              OR comments.text_visibility = 'PUBLIC'
+              OR (comments.text_visibility = 'FOLLOWERS' AND :user_id IN (
+                SELECT follower_user_id
+                FROM follow_requests
+                WHERE follower_user_id = :user_id
+                  AND followed_user_id = comments.user_id
+                  AND is_approved IS TRUE
+              ))
+            )
+          )"""
+
+        if reply_to:
+            sql += """
+          AND comments.reply_to = :reply_to """
+            params["reply_to"] = reply_to
+        else:
+            sql += """
+          AND comments.reply_to IS NULL"""
+        sql += """
+        ORDER BY comments.created_at;"""
+
+        comments_filter = db.session.scalars(
+            select(Comment)
+            .from_statement(
+                text(sql),
+            )
+            .params(**params)
+        ).unique()
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             Comment.text_visibility == PrivacyLevel.PUBLIC,
-        )
-    return comments_filter.order_by(Comment.created_at.asc()).all()
+        ).order_by(Comment.created_at.asc())
+
+    return comments_filter.all()
 
 
 class Comment(BaseModel):
