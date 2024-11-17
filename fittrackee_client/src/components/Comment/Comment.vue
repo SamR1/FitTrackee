@@ -50,7 +50,7 @@
           :class="{ highlight: highlighted }"
           v-html="linkifyAndClean(comment.text_html)"
         />
-        <WorkoutCommentEdition
+        <CommentEdition
           v-else
           :workout="workout"
           :comment="comment"
@@ -150,7 +150,7 @@
         </div>
       </div>
       <template v-if="!forNotification">
-        <WorkoutCommentEdition
+        <CommentEdition
           v-if="isNewReply()"
           class="add-comment-reply"
           :workout="workout"
@@ -182,7 +182,7 @@
   import { useRoute } from 'vue-router'
 
   import CommentActionAppeal from '@/components/Comment/CommentActionAppeal.vue'
-  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import CommentEdition from '@/components/Comment/CommentEdition.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
