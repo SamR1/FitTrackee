@@ -19,6 +19,8 @@ class CustomResourceProtector(ResourceProtector):
     def __call__(
         self,
         scopes: Union[str, List, None] = None,
+        optional: bool = False,
+        *,
         as_admin: bool = False,
         optional_auth_user: bool = False,
         allow_suspended_user: bool = False,

@@ -28,7 +28,7 @@ def get_user_token(
         'exp': now
         + timedelta(days=expiration_days, seconds=expiration_seconds),
         'iat': now,
-        'sub': user_id,
+        'sub': str(user_id),
     }
     return jwt.encode(
         payload,
@@ -46,7 +46,7 @@ def decode_user_token(auth_token: str) -> int:
         current_app.config['SECRET_KEY'],
         algorithms=['HS256'],
     )
-    return payload['sub']
+    return int(payload['sub'])
 
 
 def clean_blacklisted_tokens(days: int) -> int:
