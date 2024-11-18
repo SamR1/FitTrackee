@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.8.12 (2024/11/17)
+
+### Bugs Fixed
+
+* [#652](https://github.com/SamR1/FitTrackee/issues/652) - User can not login on new installation
+
+### Misc
+
+* [PR#651](https://github.com/SamR1/FitTrackee/pull/651) - Tests - add databases to parallelize more tests
+
+
+
 ## Version 0.8.11 (2024/10/30)
 
 **FitTrackee** is now available for Python 3.13.

@@ -4,6 +4,10 @@ DROP DATABASE IF EXISTS fittrackee_test_gw0;
 DROP DATABASE IF EXISTS fittrackee_test_gw1;
 DROP DATABASE IF EXISTS fittrackee_test_gw2;
 DROP DATABASE IF EXISTS fittrackee_test_gw3;
+DROP DATABASE IF EXISTS fittrackee_test_gw4;
+DROP DATABASE IF EXISTS fittrackee_test_gw5;
+DROP DATABASE IF EXISTS fittrackee_test_gw6;
+DROP DATABASE IF EXISTS fittrackee_test_gw7;
 DROP SCHEMA IF EXISTS fittrackee;
 DROP USER IF EXISTS fittrackee;
 
@@ -15,3 +19,7 @@ CREATE DATABASE fittrackee_test_gw0 OWNER fittrackee;
 CREATE DATABASE fittrackee_test_gw1 OWNER fittrackee;
 CREATE DATABASE fittrackee_test_gw2 OWNER fittrackee;
 CREATE DATABASE fittrackee_test_gw3 OWNER fittrackee;
+CREATE DATABASE fittrackee_test_gw4 OWNER fittrackee;
+CREATE DATABASE fittrackee_test_gw5 OWNER fittrackee;
+CREATE DATABASE fittrackee_test_gw6 OWNER fittrackee;
+CREATE DATABASE fittrackee_test_gw7 OWNER fittrackee;

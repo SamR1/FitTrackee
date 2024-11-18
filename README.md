@@ -3,7 +3,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/) 
 [![Python Version](https://img.shields.io/pypi/pyversions/fittrackee.svg)](https://python.org)
-[![Flask Version](https://img.shields.io/badge/flask-3.0-brightgreen.svg)](http://flask.pocoo.org/) 
+[![Flask Version](https://img.shields.io/badge/flask-3.1-brightgreen.svg)](http://flask.pocoo.org/) 
 [![code formatter: ruff](https://img.shields.io/badge/code%20formatter-ruff-d7ff64)](https://docs.astral.sh/ruff/) 
 [![type check: mypy](https://img.shields.io/badge/type%20check-mypy-blue)](http://mypy-lang.org/)  
 [![Vue Version](https://img.shields.io/badge/vue-3.5-brightgreen.svg)](https://v3.vuejs.org/) 
