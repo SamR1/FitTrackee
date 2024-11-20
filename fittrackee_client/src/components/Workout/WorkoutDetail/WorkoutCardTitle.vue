@@ -25,10 +25,14 @@
       >
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
-          <div>
+          <div v-if="isAuthenticated">
             <button
               class="transparent icon-button likes"
               @click="updateLike(workoutObject)"
+              :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
+                'workouts.LIKES',
+                workoutObject.likes_count
+              )})`"
             >
               <i
                 class="fa"
@@ -37,10 +41,11 @@
                   'fa-heart-o': workoutObject.likes_count === 0,
                   liked: workoutObject.liked,
                 }"
+                aria-hidden="true"
               />
-              <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
-                workoutObject.likes_count
-              }}</span>
+              <span class="likes-count" v-if="workoutObject.likes_count > 0">
+                {{ workoutObject.likes_count }}
+              </span>
             </button>
             <button
               class="transparent icon-button"
@@ -84,6 +89,25 @@
             >
               <i class="fa fa-flag" aria-hidden="true" />
             </button>
+          </div>
+          <div
+            v-else
+            :title="`${workoutObject.likes_count} ${$t(
+              'workouts.LIKES',
+              workoutObject.likes_count
+            )}`"
+          >
+            <i
+              class="fa"
+              :class="{
+                'fa-heart': workoutObject.likes_count > 0,
+                'fa-heart-o': workoutObject.likes_count === 0,
+                liked: workoutObject.liked,
+              }"
+            />
+            <span class="likes-count" v-if="workoutObject.likes_count > 0">
+              {{ workoutObject.likes_count }}
+            </span>
           </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
@@ -136,6 +160,7 @@
   import type { ComputedRef } from 'vue'
 
   import authApi from '@/api/authApi'
+  import useAuthUser from '@/composables/useAuthUser'
   import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type { IWorkoutObject } from '@/types/workouts'
@@ -152,6 +177,8 @@
   const emit = defineEmits(['displayModal'])
 
   const store = useStore()
+
+  const { isAuthenticated } = useAuthUser()
 
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]

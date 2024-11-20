@@ -562,6 +562,7 @@ const routes: RouteRecordRaw[] = [
     props: { displaySegment: false },
     meta: {
       allowedToSuspendedUser: false,
+      withoutChecks: true,
     },
   },
   {
@@ -570,6 +571,7 @@ const routes: RouteRecordRaw[] = [
     component: CommentView,
     meta: {
       allowedToSuspendedUser: false,
+      withoutChecks: true,
     },
   },
   {

@@ -12,6 +12,7 @@
       <template #title>
         <WorkoutCardTitle
           v-if="sport"
+          :authUser="authUser"
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
