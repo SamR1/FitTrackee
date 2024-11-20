@@ -244,7 +244,10 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
             user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
         )
         comment = self.create_comment(
-            user_1, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC, parent_comment=parent_comment
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.PUBLIC,
+            parent_comment=parent_comment,
         )
         exporter = UserDataExporter(user_1)
 
@@ -258,7 +261,7 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
                 'reply_to': parent_comment.short_id,
                 'text': comment.text,
                 'text_visibility': comment.text_visibility.value,
-                'workout_id': workout_cycling_user_1.short_id
+                'workout_id': workout_cycling_user_1.short_id,
             },
         ]
 
@@ -287,6 +290,7 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
                 'workout_id': None,
             },
         ]
+
 
 class TestUserDataExporterExportData:
     def test_export_data_generates_json_file_in_user_directory(
