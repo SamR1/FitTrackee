@@ -50,6 +50,24 @@ class UserDataExporter:
             workouts_data.append(workout_data)
         return workouts_data
 
+    def get_user_comments_data(self) -> List[Dict]:
+        comments_data = []
+        for comment in self.user.comments:
+            comments_data.append(
+                {
+                    'created_at': comment.created_at,
+                    'id': comment.short_id,
+                    'modification_date': comment.modification_date,
+                    'reply_to': (comment.parent_comment.short_id if comment.reply_to else None),
+                    'text': comment.text,
+                    'text_visibility': comment.text_visibility.value,
+                    'workout_id': (comment.workout.short_id
+                    if comment.workout_id
+                    else None),
+                }
+            )
+        return comments_data
+
     def get_user_equipments_data(self) -> List[Dict]:
         return [equipment.serialize() for equipment in self.user.equipments]
 
@@ -72,6 +90,9 @@ class UserDataExporter:
             equipments_data_file_name = self.export_data(
                 self.get_user_equipments_data(), "equipments_data"
             )
+            comments_data_file_name = self.export_data(
+                self.get_user_comments_data(), "comments_data"
+            )
             zip_file = f"archive_{secrets.token_urlsafe(15)}.zip"
             zip_path = os.path.join(self.export_directory, zip_file)
             with ZipFile(zip_path, 'w') as zip_object:
@@ -81,6 +102,9 @@ class UserDataExporter:
                 )
                 zip_object.write(
                     equipments_data_file_name, "user_equipments_data.json"
+                )
+                zip_object.write(
+                    comments_data_file_name, "user_comments_data.json"
                 )
                 if self.user.picture:
                     picture_path = get_absolute_file_path(self.user.picture)
