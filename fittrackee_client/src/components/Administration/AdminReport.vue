@@ -64,6 +64,26 @@
                     <span class="deleted-object" v-if="!report.reported_user">
                       ({{ $t('admin.DELETED_USER').toLocaleLowerCase() }})
                     </span>
+                    <AlertMessage
+                      message="workouts.SUSPENDED_BY_ADMIN"
+                      v-else-if="report.reported_workout?.suspension?.report_id"
+                    >
+                      <template
+                        #additionalMessage
+                        v-if="
+                          report.reported_workout.suspension.report_id !==
+                          parseInt(route.params.reportId as string)
+                        "
+                      >
+                        <i18n-t keypath="common.SEE_REPORT" tag="span">
+                          <router-link
+                            :to="`/admin/reports/${report.reported_workout.suspension.report_id}`"
+                          >
+                            #{{ report.reported_workout.suspension.report_id }}
+                          </router-link>
+                        </i18n-t>
+                      </template>
+                    </AlertMessage>
                   </template>
                   <template v-if="report.object_type === 'user'">
                     <UserCard

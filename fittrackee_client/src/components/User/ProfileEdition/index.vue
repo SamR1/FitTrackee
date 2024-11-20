@@ -31,14 +31,7 @@
 
   const tabs: ComputedRef<string[]> = computed(() =>
     isAuthUserSuspended.value
-      ? [
-          'PROFILE',
-          'ACCOUNT',
-          'PICTURE',
-          'PREFERENCES',
-          'EQUIPMENTS',
-          'PRIVACY-POLICY',
-        ]
+      ? ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'PRIVACY-POLICY']
       : [
           'PROFILE',
           'ACCOUNT',

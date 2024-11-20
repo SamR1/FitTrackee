@@ -61,7 +61,8 @@ export const replaceUsername = (
   return (
     text.substring(0, position + 1) +
     username +
-    text.substring(position + 1 + usernameQuery.length)
+    ' ' +
+    text.substring(position + usernameQuery.length + 2)
   )
 }
 

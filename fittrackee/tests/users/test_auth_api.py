@@ -13,15 +13,17 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import ReportActionAppeal
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
     BlacklistedToken,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
 from fittrackee.users.utils.token import get_user_token
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout
 
 from ..federation.users.test_auth_api import assert_actor_is_created
 from ..mixins import ApiTestCaseMixin, ReportMixin
@@ -487,6 +489,44 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
 
         account_confirmation_email_mock.send.assert_not_called()
+
+    def test_it_creates_notifications_for_admins_on_registration(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        email = self.random_email()
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=email,
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(email=email).first()
+        notification = Notification.query.filter_by(
+            event_type='account_creation', event_object_id=new_user.id
+        ).all()
+        assert len(notification) == 2
+        for notification in notification:
+            assert notification.created_at == new_user.created_at
+            assert notification.from_user_id == new_user.id
+            assert notification.event_object_id == new_user.id
+            assert notification.to_user_id in [
+                user_1_admin.id,
+                user_2_admin.id,
+            ]
 
 
 class TestUserLogin(ApiTestCaseMixin):
@@ -4306,8 +4346,8 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         self.assert_response_scope(response, can_access)
 
 
-class TestGetUserWarning(UserSuspensionTestCase):
-    route = "/api/auth/account/warning/{action_short_id}"
+class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
+    route = "/api/auth/account/sanctions/{action_short_id}"
 
     def test_it_returns_error_when_user_is_not_authenticated(
         self, app: Flask
@@ -4321,7 +4361,7 @@ class TestGetUserWarning(UserSuspensionTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_404_when_warning_does_not_exist(
+    def test_it_returns_404_when_sanction_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4336,10 +4376,10 @@ class TestGetUserWarning(UserSuspensionTestCase):
 
         self.assert_404_with_message(
             response,
-            "no warning found",
+            "no sanction found",
         )
 
-    def test_it_returns_404_when_warning_is_for_another_user(
+    def test_it_returns_404_when_sanction_is_for_another_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         action = self.create_report_user_action(
@@ -4357,7 +4397,7 @@ class TestGetUserWarning(UserSuspensionTestCase):
 
         self.assert_404_with_message(
             response,
-            "no warning found",
+            "no sanction found",
         )
 
     def test_it_returns_user_warning(
@@ -4379,7 +4419,107 @@ class TestGetUserWarning(UserSuspensionTestCase):
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "user_warning": jsonify_dict(action.serialize(user_2, full=True)),
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
+        }
+
+    def test_it_returns_user_suspension(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_report_user_action(
+            user_1_admin, user_2, action_type="user_suspension"
+        )
+        user_2.suspended_at = None
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
+        }
+
+    def test_it_returns_user_suspension_when_user_is_suspended(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        action = self.create_report_user_action(
+            user_1_admin, user_2, action_type="user_suspension"
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
+        }
+
+    def test_it_returns_workout_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        action = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
+        }
+
+    def test_it_returns_comment_suspension(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        comment = self.create_comment(user_2, workout_cycling_user_2)
+        action = self.create_report_comment_action(
+            user_1_admin, user_2, comment
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        assert response.json == {
+            "status": "success",
+            "sanction": jsonify_dict(action.serialize(user_2, full=True)),
         }
 
     @pytest.mark.parametrize(
@@ -4407,8 +4547,8 @@ class TestGetUserWarning(UserSuspensionTestCase):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostUserWarningAppeal(UserSuspensionTestCase):
-    route = "/api/auth/account/warning/{action_short_id}/appeal"
+class TestPostUserSanctionAppeal(UserSuspensionTestCase):
+    route = "/api/auth/account/sanctions/{action_short_id}/appeal"
 
     def test_it_returns_error_when_user_is_not_authenticated(
         self, app: Flask
@@ -4423,7 +4563,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_404_when_when_no_user_warning(
+    def test_it_returns_404_when_when_no_sanction(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4439,7 +4579,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
 
         self.assert_404_with_message(
             response,
-            "no warning found",
+            "no sanction found",
         )
 
     @pytest.mark.parametrize(
@@ -4465,7 +4605,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
 
         self.assert_400(response, 'no text provided')
 
-    def test_user_can_appeal_user_warning(
+    def test_user_can_appeal_sanction(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action = self.create_report_user_action(
@@ -4496,7 +4636,7 @@ class TestPostUserWarningAppeal(UserSuspensionTestCase):
         assert appeal.user_id == user_2.id
         assert appeal.updated_at is None
 
-    def test_user_can_appeal_user_warning_only_once(
+    def test_user_can_appeal_sanction_only_once(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action = self.create_report_user_action(

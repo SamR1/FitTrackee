@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import pytest
 from flask import Flask
@@ -80,6 +81,35 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         )
         assert data['data']['equipment_types'][2] == jsonify_dict(
             equipment_type_2_bike.serialize(is_admin=True)
+        )
+
+    def test_suspended_ser_can_get_all_equipment_types(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_type_1_shoe_inactive: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/equipment-types',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert len(data['data']['equipment_types']) == 2
+        assert data['data']['equipment_types'][0] == jsonify_dict(
+            equipment_type_1_shoe.serialize(is_admin=False)
+        )
+        assert data['data']['equipment_types'][1] == jsonify_dict(
+            equipment_type_2_bike.serialize(is_admin=False)
         )
 
     @pytest.mark.parametrize(

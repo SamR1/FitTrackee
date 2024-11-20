@@ -12,6 +12,7 @@ from fittrackee.users.models import User
 from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import ReportMixin
 from .mixins import ReportServiceCreateReportActionMixin
 
 
@@ -133,8 +134,8 @@ class TestReportEmailServiceForUserWarning(
                 'username': user_3.username,
                 'fittrackee_url': app.config['UI_URL'],
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'reason': input_reason.get('reason'),
                 'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
@@ -179,8 +180,8 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'comment_url': (
                     f'{app.config["UI_URL"]}/workouts'
@@ -237,8 +238,8 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'comment_url': (
                     f'{app.config["UI_URL"]}/comments'
@@ -292,8 +293,8 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': None,
@@ -349,8 +350,8 @@ class TestReportEmailServiceForUserWarning(
             },
             {
                 'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/warning'
-                    f'/{user_warning.short_id}/appeal'  # type:ignore
+                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
+                    f'/{user_warning.short_id}'  # type:ignore
                 ),
                 'fittrackee_url': app.config['UI_URL'],
                 'map': (
@@ -968,5 +969,157 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
                     f'{app.config["UI_URL"]}/workouts/'
                     f'{workout_cycling_user_2.short_id}'
                 ),
+            },
+        )
+
+
+class TestReportEmailServiceForAppealRejected(
+    ReportServiceCreateReportActionMixin, ReportMixin
+):
+    @pytest.mark.parametrize(
+        'input_action_type', ["user_suspension", "user_warning"]
+    )
+    def test_it_sends_an_email_for_user_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        appeal_rejected_email_mock: MagicMock,
+        input_action_type: str,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_user(
+            report_service, reporter=user_2, reported_user=user_3
+        )
+        report_action = self.create_report_user_action(
+            user_1_admin, user_3, input_action_type, report.id
+        )
+        db.session.flush()
+        report_email_service = ReportEmailService()
+
+        report_email_service.send_report_action_email(
+            report, "appeal_rejected", None, report_action
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'username': user_3.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'without_user_action': True,
+                'action_type': input_action_type,
+            },
+        )
+
+    def test_it_sends_an_email_on_workout_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        workout_cycling_user_2.map_id = self.random_short_id()
+        report_service = ReportService()
+        report = self.create_report_for_workout(
+            report_service,
+            reporter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        db.session.flush()
+        report_action = self.create_report_workout_action(
+            user_1_admin, user_3, workout_cycling_user_2
+        )
+        db.session.flush()
+        report_email_service = ReportEmailService()
+
+        report_email_service.send_report_action_email(
+            report, "appeal_rejected", None, report_action
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_2.email,
+            },
+            {
+                'username': user_2.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'without_user_action': True,
+                'action_type': report_action.action_type,
+                'map': (
+                    f'{app.config["UI_URL"]}/api/workouts/map'
+                    f'/{workout_cycling_user_2.map_id}'
+                ),
+                'title': workout_cycling_user_2.title,
+                'workout_date': get_date_string_for_user(
+                    workout_cycling_user_2.workout_date, user_2
+                ),
+                'workout_url': (
+                    f'{app.config["UI_URL"]}/workouts/'
+                    f'{workout_cycling_user_2.short_id}'
+                ),
+            },
+        )
+
+    def test_it_sends_an_email_on_comment_action(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        appeal_rejected_email_mock: MagicMock,
+    ) -> None:
+        report_service = ReportService()
+        report = self.create_report_for_comment(
+            report_service,
+            reporter=user_2,
+            commenter=user_3,
+            workout=workout_cycling_user_2,
+        )
+        report_action = self.create_report_comment_action(
+            user_1_admin, user_3, report.reported_comment
+        )
+        db.session.flush()
+        report_email_service = ReportEmailService()
+
+        report_email_service.send_report_action_email(
+            report, "appeal_rejected", None, report_action
+        )
+
+        appeal_rejected_email_mock.send.assert_called_once_with(
+            {
+                'language': 'en',
+                'email': user_3.email,
+            },
+            {
+                'username': user_3.username,
+                'fittrackee_url': app.config['UI_URL'],
+                'reason': None,
+                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                'without_user_action': True,
+                'action_type': report_action.action_type,
+                'comment_url': (
+                    f'{app.config["UI_URL"]}/workouts'
+                    f'/{workout_cycling_user_2.short_id}'
+                    f'/comments/{report.reported_comment.short_id}'
+                ),
+                'created_at': get_date_string_for_user(
+                    report.reported_comment.created_at, user_3
+                ),
+                'text': report.reported_comment.handle_mentions()[0],
             },
         )

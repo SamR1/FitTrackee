@@ -12,6 +12,7 @@ from fittrackee.reports.models import (
     WORKOUT_ACTION_TYPES,
     Report,
 )
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -637,6 +638,39 @@ class TestNotificationForCommentReply(NotificationTestCase):
         ).first()
         assert notification is None
 
+    def test_it_does_not_create_notification_when_parent_comment_user_is_not_follower(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.comment_workout(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        reply = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            comment.id,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        db.session.flush()
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=reply.id,
+            ).first()
+            is None
+        )
+
     def test_it_does_not_raise_error_when_user_deletes_reply_on_his_own_comment(  # noqa
         self,
         app: Flask,
@@ -894,6 +928,7 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        """comment is visible to user"""
         workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
         comment = self.comment_workout(
             user_2,
@@ -911,6 +946,37 @@ class TestNotificationForMention(NotificationTestCase):
         assert notifications[0].created_at == comment.created_at
         assert notifications[0].marked_as_read is False
         assert notifications[0].event_type == 'workout_comment'
+
+    @pytest.mark.parametrize(
+        'input_privacy_level', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+    )
+    def test_it_creates_notification_when_mentioned_user_is_workout_owner(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_privacy_level: PrivacyLevel,
+    ) -> None:
+        """comment is visible to user thanks to the mention"""
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=input_privacy_level,
+        )
+        mention = self.create_mention(user_1, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_1.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == mention.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'mention'
 
     def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
         self,
@@ -935,7 +1001,7 @@ class TestNotificationForMention(NotificationTestCase):
         self.create_mention(user_2, comment)
 
         notifications = Notification.query.filter_by(
-            from_user_id=comment.user_id,
+            from_user_id=user_3.id,
             to_user_id=user_2.id,
         ).all()
         assert len(notifications) == 1
@@ -1271,7 +1337,7 @@ class TestNotificationForReport(NotificationTestCase):
         assert serialized_notification["type"] == "report"
 
 
-class TestNotificationForSuspensionAppeal(ReportMixin):
+class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -1290,7 +1356,7 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
         ).first()
         assert notification is None
 
-    def test_it_creates_notification_on_appeal(
+    def test_it_creates_notification_on_user_appeal(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         suspension_action = self.create_report_user_action(
@@ -1306,6 +1372,71 @@ class TestNotificationForSuspensionAppeal(ReportMixin):
         assert notification.marked_as_read is False
         assert notification.event_type == "suspension_appeal"
         assert notification.event_object_id == appeal.id
+
+    def test_it_creates_notification_on_workout_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_suspension = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+        db.session.add(workout_suspension)
+        db.session.flush()
+
+        # appeal = ReportActionAppeal(
+        #     workout_suspension.id, user_2.id, self.random_string()
+        # )
+
+        appeal = self.create_action_appeal(workout_suspension.id, user_2)
+        db.session.add(appeal)
+        db.session.commit()
+
+        notifications = Notification.query.filter_by(
+            event_type='suspension_appeal'
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].from_user_id == user_2.id
+        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].event_object_id == workout_suspension.id
+
+    def test_it_creates_notification_on_comment_suspension_appeal(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        comment_suspension = self.create_report_comment_action(
+            user_1_admin, user_2, comment
+        )
+        db.session.add(comment_suspension)
+        db.session.flush()
+
+        # appeal = ReportActionAppeal(
+        #     comment_suspension.id, user_2.id, self.random_string()
+        # )
+        appeal = self.create_action_appeal(comment_suspension.id, user_2)
+        db.session.add(appeal)
+        db.session.commit()
+
+        notifications = Notification.query.filter_by(
+            event_type='suspension_appeal'
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].from_user_id == user_2.id
+        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].event_object_id == comment_suspension.id
 
     def test_it_serializes_suspension_appeal_notification(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User

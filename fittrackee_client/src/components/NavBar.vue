@@ -4,6 +4,7 @@
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
       :message="$t('user.LOGOUT_CONFIRMATION')"
+      :hide-error-message="true"
       @confirmAction="logout"
       @cancelAction="updateDisplayModal(false)"
       @keydown.esc="updateDisplayModal(false)"

@@ -42,7 +42,11 @@
             >
               <i
                 class="fa"
-                :class="`fa-heart${workoutObject.liked ? '' : '-o'}`"
+                :class="{
+                  'fa-heart': workoutObject.likes_count > 0,
+                  'fa-heart-o': workoutObject.likes_count === 0,
+                  liked: workoutObject.liked,
+                }"
               />
               <span class="likes-count" v-if="workoutObject.likes_count > 0">{{
                 workoutObject.likes_count
@@ -257,6 +261,9 @@
 
       .fa {
         padding: 0 $default-padding * 0.3;
+      }
+      .fa-heart.liked {
+        color: var(--like-color);
       }
       .icon-button {
         margin-left: 2px;

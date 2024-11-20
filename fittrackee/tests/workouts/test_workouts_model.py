@@ -548,6 +548,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'sport_id': workout_cycling_user_1.sport_id,
             'suspended': True,
             'suspended_at': workout_cycling_user_1.suspended_at,
+            'suspension': workout_cycling_user_1.suspension_action.serialize(  # type: ignore # noqa
+                current_user=user_1, full=False
+            ),
             'title': None,
             'user': user_1.serialize(),
             'weather_end': None,
@@ -1051,6 +1054,25 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             ),
         }
 
+    def test_serializer_does_not_return_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        add_follower(user_1, user_2)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["equipments"] == []
+
     def test_it_serializes_minimal_workout(
         self,
         app: Flask,
@@ -1343,6 +1365,24 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'workout_visibility': workout_cycling_user_1.workout_visibility,
         }
 
+    def test_serializer_does_not_return_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["equipments"] == []
+
     def test_it_serializes_minimal_workout(
         self,
         app: Flask,
@@ -1579,6 +1619,21 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(for_report=input_for_report)
+
+    def test_serializer_does_not_return_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize(light=False)
+
+        assert serialized_workout["equipments"] == []
 
     def test_it_serializes_minimal_workout(
         self,
@@ -1823,6 +1878,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.suspended_at = datetime.utcnow()
+        expected_report_action = self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
 
         serialized_workout = workout_cycling_user_2.serialize(
             user=user_1_admin, for_report=True, light=False
@@ -1831,6 +1889,12 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         assert (
             serialized_workout["suspended_at"]
             == workout_cycling_user_2.suspended_at
+        )
+        assert serialized_workout[
+            "suspension"
+        ] == expected_report_action.serialize(
+            current_user=user_1_admin,  # type: ignore
+            full=False,
         )
 
     def test_it_serializes_minimal_workout(

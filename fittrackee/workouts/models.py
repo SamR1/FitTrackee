@@ -434,7 +434,9 @@ class Workout(BaseModel):
             'pauses': str(self.pauses) if self.pauses else None,
             'equipments': [
                 equipment.serialize() for equipment in self.equipments
-            ],
+            ]
+            if user and user.id == self.user_id
+            else [],
             'records': (
                 []
                 if for_report
@@ -496,6 +498,11 @@ class Workout(BaseModel):
 
         if is_owner or for_report:
             workout["suspended_at"] = self.suspended_at
+            if self.suspension_action:
+                workout["suspension"] = self.suspension_action.serialize(
+                    current_user=user,  # type: ignore
+                    full=False,
+                )
 
         if light:
             workout["next_workout"] = None
@@ -629,12 +636,6 @@ class Workout(BaseModel):
                 .order_by(Workout.workout_date.asc())
                 .first()
             )
-
-            if self.suspension_action:
-                workout["suspension"] = self.suspension_action.serialize(
-                    current_user=user,  # type: ignore
-                    full=False,
-                )
 
         else:
             next_workout = None

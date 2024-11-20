@@ -519,8 +519,8 @@
   function updateNotes(textareaData: ICustomTextareaData) {
     workoutForm.notes = textareaData.value
   }
-  function updateDescription(value: string) {
-    workoutForm.description = value
+  function updateDescription(textareaData: ICustomTextareaData) {
+    workoutForm.description = textareaData.value
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value

@@ -19,6 +19,8 @@ class CustomResourceProtector(ResourceProtector):
     def __call__(
         self,
         scopes: Union[str, List, None] = None,
+        optional: bool = False,
+        *,
         as_admin: bool = False,
         optional_auth_user: bool = False,
         allow_suspended_user: bool = False,
@@ -91,7 +93,12 @@ class CustomResourceProtector(ResourceProtector):
                     )
                     or (as_admin and not auth_user.admin)
                 ):
-                    return ForbiddenErrorResponse()
+                    return ForbiddenErrorResponse(
+                        'you do not have permissions, '
+                        'your account is suspended'
+                        if auth_user and auth_user.suspended_at
+                        else None
+                    )
                 return f(auth_user, *args, **kwargs)
 
             return decorated

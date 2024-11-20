@@ -4,6 +4,7 @@ from flask import current_app
 
 from fittrackee.comments.models import Comment
 from fittrackee.emails.tasks import (
+    appeal_rejected_email,
     comment_suspension_email,
     comment_unsuspension_email,
     user_suspension_email,
@@ -147,7 +148,7 @@ class ReportEmailService:
                 fittrackee_url,
             )
         email_data["appeal_url"] = (
-            f"{fittrackee_url}/profile/warning/{report_action.short_id}/appeal"
+            f"{fittrackee_url}/profile/moderation/sanctions/{report_action.short_id}"
         )
         user_warning_email.send(user_data, email_data)
 
@@ -255,6 +256,38 @@ class ReportEmailService:
         email_data["without_user_action"] = True
         workout_unsuspension_email.send(user_data, email_data)
 
+    def _send_appeal_rejected_email(
+        self,
+        *,
+        report: Report,
+        reason: Optional[str],
+        report_action: Optional[ReportAction],
+    ) -> None:
+        user_data, email_data, fittrackee_url = self._get_email_data(
+            report, reason, with_user_image=True
+        )
+
+        if not report_action:
+            raise InvalidReportActionException("invalid action action")
+
+        if report.reported_comment_id:
+            email_data = self._get_comment_email_data(
+                email_data,
+                report.reported_comment,
+                report.reported_user,
+                fittrackee_url,
+            )
+        elif report.reported_workout_id:
+            email_data = self._get_workout_email_data(
+                email_data,
+                report.reported_workout,
+                report.reported_user,
+                fittrackee_url,
+            )
+        email_data["without_user_action"] = True
+        email_data["action_type"] = report_action.action_type
+        appeal_rejected_email.send(user_data, email_data)
+
     def send_report_action_email(
         self,
         report: Report,
@@ -262,7 +295,7 @@ class ReportEmailService:
         reason: Optional[str],
         report_action: Optional[
             ReportAction
-        ] = None,  # needed only for user warning
+        ] = None,  # needed only for user warning and appeal
     ) -> None:
         send_email_func = getattr(self, f"_send_{action_type}_email")
         send_email_func(

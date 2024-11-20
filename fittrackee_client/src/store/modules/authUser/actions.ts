@@ -309,7 +309,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     const url =
       appealPayload.actionType === 'user_suspension'
         ? 'auth/account/suspension/appeal'
-        : `auth/account/warning/${appealPayload.actionId}/appeal`
+        : `auth/account/sanctions/${appealPayload.actionId}/appeal`
     authApi
       .post(url, { text: appealPayload.text })
       .then((res) => {
@@ -677,19 +677,19 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
-  [AUTH_USER_STORE.ACTIONS.GET_USER_WARNING](
+  [AUTH_USER_STORE.ACTIONS.GET_USER_SANCTION](
     context: ActionContext<IAuthUserState, IRootState>,
     actionId: string
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     authApi
-      .get(`auth/account/warning/${actionId}`)
+      .get(`auth/account/sanctions/${actionId}`)
       .then((res) => {
         if (res.data.status === 'success') {
           context.commit(
-            AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING,
-            res.data.user_warning
+            AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION,
+            res.data.sanction
           )
         } else {
           handleError(context, null)

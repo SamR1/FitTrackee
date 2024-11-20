@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple, Union
 from uuid import uuid4
 
 from flask import current_app
-from sqlalchemy import and_, or_
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -11,6 +10,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import select, text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -32,51 +32,73 @@ def get_comments(
     workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
 ) -> List['Comment']:
     if user:
-        (
-            local_following_ids,
-            remote_following_ids,
-        ) = user.get_following_user_ids()
-        blocked_users = user.get_blocked_user_ids()
-        blocked_by_users = user.get_blocked_by_user_ids()
-        comments_filter = Comment.query.join(
-            Mention, Mention.comment_id == Comment.id, isouter=True
-        ).filter(
-            Comment.workout_id == workout_id,
-            Comment.reply_to == reply_to,
-            or_(
-                Comment.user_id == user.id,
-                or_(
-                    Mention.user_id == user.id,
-                    and_(
-                        Comment.text_visibility == PrivacyLevel.PUBLIC,
-                        Comment.user_id.not_in(
-                            blocked_users + blocked_by_users
-                        ),
-                    ),
-                    and_(
-                        Comment.user_id.in_(local_following_ids),
-                        Comment.text_visibility.in_(
-                            [
-                                PrivacyLevel.FOLLOWERS,
-                                PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                            ]
-                        ),
-                    ),
-                    and_(
-                        Comment.user_id.in_(remote_following_ids),
-                        Comment.text_visibility
-                        == PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                    ),
-                ),
-            ),
-        )
+        params = {"workout_id": workout_id, "user_id": user.id}
+        sql = """
+        SELECT comments.*
+        FROM comments
+        LEFT OUTER JOIN mentions ON mentions.comment_id = comments.id
+        WHERE comments.workout_id = :workout_id
+          AND comments.user_id NOT IN (
+            SELECT blocked_users.user_id
+            FROM blocked_users
+            WHERE blocked_users.by_user_id = :user_id
+          )
+          AND comments.user_id NOT IN (
+            SELECT blocked_users.by_user_id
+            FROM blocked_users
+            WHERE blocked_users.user_id = user_id
+          )
+          AND (comments.user_id = :user_id
+            OR (
+              mentions.user_id = :user_id
+              OR comments.text_visibility = 'PUBLIC'
+              OR (comments.text_visibility IN (
+                    'FOLLOWERS', 'FOLLOWERS_AND_REMOTE'
+                ) AND :user_id IN (
+                SELECT follower_user_id
+                FROM follow_requests
+                WHERE follower_user_id = :user_id
+                  AND followed_user_id = comments.user_id
+                  AND is_approved IS TRUE
+              ))
+              OR (comments.text_visibility = 'FOLLOWERS_AND_REMOTE' 
+                AND :user_id IN (
+                SELECT follower_user_id
+                FROM follow_requests
+                JOIN users ON follow_requests.followed_user_id = users.id
+                WHERE follower_user_id = :user_id
+                  AND followed_user_id = comments.user_id
+                  AND is_approved IS TRUE
+                  AND users.is_remote IS TRUE
+              ))
+            )
+          )"""
+
+        if reply_to:
+            sql += """
+          AND comments.reply_to = :reply_to """
+            params["reply_to"] = reply_to
+        else:
+            sql += """
+          AND comments.reply_to IS NULL"""
+        sql += """
+        ORDER BY comments.created_at;"""
+
+        comments_filter = db.session.scalars(
+            select(Comment)
+            .from_statement(
+                text(sql),
+            )
+            .params(**params)
+        ).unique()
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
             Comment.text_visibility == PrivacyLevel.PUBLIC,
-        )
-    return comments_filter.order_by(Comment.created_at.asc()).all()
+        ).order_by(Comment.created_at.asc())
+
+    return comments_filter.all()
 
 
 class Comment(BaseModel):
@@ -222,7 +244,7 @@ class Comment(BaseModel):
         return linkified_text, mentioned_users
 
     def update_mentions(self) -> Set['User']:
-        from fittrackee.users.models import User
+        from fittrackee.users.models import Notification, User
 
         existing_mentioned_users = set(
             db.session.query(User)
@@ -243,6 +265,11 @@ class Comment(BaseModel):
         Mention.query.filter(
             Mention.comment_id == self.id,
             Mention.user_id.in_(mentions_to_delete),
+        ).delete()
+        Notification.query.filter(
+            Notification.to_user_id.in_(mentions_to_delete),
+            Notification.event_type == 'mention',
+            Notification.event_object_id == self.id,
         ).delete()
         db.session.flush()
 
@@ -406,7 +433,6 @@ def on_comment_insert(
         # - the comment author (notification.from_user_id) is not the recipient
         #   (notification.to_user)
         # - the comment is public
-        # - the recipient is mentioned (regardless comment privacy level)
         # - the recipient follows the comment author if privacy level is only
         #   followers
 
@@ -427,21 +453,18 @@ def on_comment_insert(
         if new_comment.user_id == to_user_id:
             return
 
-        if not create_notification:
-            user_is_mentioned = Mention.query.filter_by(
-                comment_id=new_comment.id, user_id=to_user_id
-            ).first()
-
-            if user_is_mentioned:
-                create_notification = True
-            elif PrivacyLevel.FOLLOWERS:
-                create_notification = (
-                    FollowRequest.query.filter_by(
-                        follower_user_id=to_user_id,
-                        followed_user_id=new_comment.user_id,
-                    ).first()
-                    is not None
-                )
+        if (
+            not create_notification
+            and new_comment.text_visibility == PrivacyLevel.FOLLOWERS
+        ):
+            create_notification = (
+                FollowRequest.query.filter_by(
+                    follower_user_id=to_user_id,
+                    followed_user_id=new_comment.user_id,
+                    is_approved=True,
+                ).first()
+                is not None
+            )
 
         if not create_notification:
             return
@@ -481,29 +504,44 @@ def on_mention_insert(
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification
-        from fittrackee.workouts.models import Workout
 
         comment = Comment.query.filter_by(id=new_mention.comment_id).first()
         if new_mention.user_id == comment.user_id:
             return
 
         # `mention` notification is not created:
-        # - when mentioned user is workout owner
-        # (`workout_comment' notification already exists)
-        workout = Workout.query.filter_by(id=comment.workout_id).first()
-        if workout and workout.user_id == new_mention.user_id:
-            return
+        # - when mentioned user is workout owner and `workout_comment'
+        # notification does not exist)
+        if not comment.reply_to:
+            notification = (
+                Notification.query.join(
+                    Comment, Comment.id == Notification.event_object_id
+                )
+                .filter(
+                    Comment.id == comment.id,
+                    Notification.event_type == 'workout_comment',
+                    Notification.to_user_id == new_mention.user_id,
+                )
+                .first()
+            )
+            if notification:
+                return
 
-        # - when mentioned user is parent comment owner
-        # (`comment_reply' notification already exists)
-        if comment.reply_to:
-            parent_comment = Comment.query.filter_by(
-                id=comment.reply_to
-            ).first()
-            if (
-                parent_comment
-                and parent_comment.user_id == new_mention.user_id
-            ):
+        # - when mentioned user is parent comment owner and
+        # `comment_reply' notification already exists
+        else:
+            parent_comment_notification = (
+                Notification.query.join(
+                    Comment,
+                    Comment.id == Notification.event_object_id,
+                )
+                .filter(
+                    Notification.to_user_id == new_mention.user_id,
+                    Notification.event_type == 'comment_reply',
+                )
+                .first()
+            )
+            if parent_comment_notification:
                 return
 
         notification = Notification(

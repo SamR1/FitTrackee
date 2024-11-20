@@ -220,10 +220,12 @@
   )
 
   function getStatistics(apiParams: IStatisticsParams) {
-    store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
-      username: user.value.username,
-      params: apiParams,
-    })
+    if (!user.value.suspended_at) {
+      store.dispatch(STATS_STORE.ACTIONS.GET_USER_STATS, {
+        username: user.value.username,
+        params: apiParams,
+      })
+    }
   }
   function updateDisplayData(event: Event) {
     displayedData.value = (event.target as HTMLInputElement)

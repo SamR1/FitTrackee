@@ -3,12 +3,13 @@ import type { IUserReportAction, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
 export type TNotificationType =
-  | 'follow'
-  | 'follow_request'
+  | 'account_creation'
   | 'comment_like'
   | 'comment_reply'
   | 'comment_suspension'
   | 'comment_unsuspension'
+  | 'follow'
+  | 'follow_request'
   | 'mention'
   | 'report'
   | 'suspension_appeal'
@@ -16,9 +17,9 @@ export type TNotificationType =
   | 'user_warning_appeal'
   | 'user_warning_lifting'
   | 'workout_comment'
+  | 'workout_like'
   | 'workout_suspension'
   | 'workout_unsuspension'
-  | 'workout_like'
 
 export interface INotification {
   report_action?: IUserReportAction

@@ -47,7 +47,9 @@
                 </span>
               </div>
             </th>
-            <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
+            <th v-if="isEdition && !authUser.suspended_at">
+              {{ $t('user.PROFILE.SPORT.ACTION') }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -165,7 +167,10 @@
                 />
               </span>
             </td>
-            <td v-if="isEdition" class="action-buttons">
+            <td
+              v-if="isEdition && !authUser.suspended_at"
+              class="action-buttons"
+            >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.ACTION') }}
               </span>
@@ -206,7 +211,10 @@
         </button>
       </div>
       <div v-else class="profile-buttons">
-        <button @click="$router.push('/profile/edit/sports')">
+        <button
+          v-if="!authUser.suspended_at"
+          @click="$router.push('/profile/edit/sports')"
+        >
           {{ $t('user.PROFILE.EDIT_SPORTS_PREFERENCES') }}
         </button>
         <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>

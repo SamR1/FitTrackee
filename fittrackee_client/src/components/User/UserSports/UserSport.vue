@@ -66,16 +66,18 @@
       </dd>
     </dl>
     <div class="sport-buttons">
-      <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
-        {{ $t('buttons.EDIT') }}
-      </button>
-      <button
-        :disabled="authUserLoading"
-        class="danger"
-        @click.prevent="updateDisplayModal(true)"
-      >
-        {{ $t('buttons.RESET') }}
-      </button>
+      <template v-if="!authUser.suspended_at">
+        <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
+          {{ $t('buttons.EDIT') }}
+        </button>
+        <button
+          :disabled="authUserLoading"
+          class="danger"
+          @click.prevent="updateDisplayModal(true)"
+        >
+          {{ $t('buttons.RESET') }}
+        </button>
+      </template>
       <button
         @click="
           $router.push(

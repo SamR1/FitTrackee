@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Tuple
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -10,7 +11,8 @@ from sqlalchemy.dialects.postgresql import insert
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.models import Actor
-from fittrackee.reports.models import Report
+from fittrackee.reports.models import Report, ReportAction
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
     FollowRequest,
     Notification,
@@ -2861,3 +2863,343 @@ class TestUnBlockUser(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
+    route = '/api/users/{username}/sanctions'
+
+    def create_report_actions(
+        self, *, admin: User, auth_user: User, workout: Workout
+    ) -> Tuple[ReportAction, ReportAction, ReportAction]:
+        user_action = self.create_report_user_action(
+            admin, auth_user, action_type="user_warning"
+        )
+        workout_action = self.create_report_workout_action(
+            admin, auth_user, workout
+        )
+        comment = self.create_comment(auth_user, workout)
+        comment_action = self.create_report_comment_action(
+            admin, auth_user, comment
+        )
+        return user_action, workout_action, comment_action
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            content_type="application/json",
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_returns_error_when_user_is_not_authenticated_user(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_empty_list_when_no_report_actions(
+        self, app: Flask, user_1: User, user_2_admin: User, user_3: User
+    ) -> None:
+        self.create_report_user_action(
+            user_2_admin, user_3, action_type="user_warning"
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 0
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 0,
+            'total': 0,
+        }
+
+    def test_it_does_not_return_error_when_user_is_suspended(
+        self, app: Flask, user_1: User, user_2_admin: User
+    ) -> None:
+        self.create_report_user_action(user_2_admin, user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 1
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
+    @patch('fittrackee.users.users.ACTIONS_PER_PAGE', 2)
+    @pytest.mark.parametrize('input_params', ["", "?page=1"])
+    def test_it_returns_report_actions_first_page(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_params: str,
+    ) -> None:
+        _, workout_action, comment_action = self.create_report_actions(
+            admin=user_2_admin,
+            auth_user=user_1,
+            workout=workout_cycling_user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username) + input_params,
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['sanctions'] == [
+            jsonify_dict(
+                comment_action.serialize(current_user=user_1, full=False)
+            ),
+            jsonify_dict(
+                workout_action.serialize(current_user=user_1, full=False)
+            ),
+        ]
+        assert data['pagination'] == {
+            'has_next': True,
+            'has_prev': False,
+            'page': 1,
+            'pages': 2,
+            'total': 3,
+        }
+
+    @patch('fittrackee.users.users.ACTIONS_PER_PAGE', 2)
+    def test_it_returns_report_actions_page_2(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_action, _, _ = self.create_report_actions(
+            admin=user_2_admin,
+            auth_user=user_1,
+            workout=workout_cycling_user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username) + "?page=2",
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['sanctions'] == [
+            jsonify_dict(
+                user_action.serialize(current_user=user_1, full=False)
+            ),
+        ]
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': True,
+            'page': 2,
+            'pages': 2,
+            'total': 3,
+        }
+
+    def test_it_returns_report_actions_when_auther_is_admin(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+    ) -> None:
+        action = self.create_report_user_action(user_1_admin, user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['sanctions'] == [
+            jsonify_dict(
+                action.serialize(current_user=user_1_admin, full=False)
+            ),
+        ]
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 1,
+        }
+
+    @pytest.mark.parametrize(
+        'input_action_type', ["report_reopening", "report_resolution"]
+    )
+    def test_it_does_not_return_report_related_action(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_action_type: str,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_2_admin, reported_object=user_1
+        )
+        self.create_report_action(
+            admin_user=user_2_admin,
+            user=user_1,
+            action_type=input_action_type,
+            report_id=report.id,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 0
+
+    @pytest.mark.parametrize(
+        'input_action_type', ["user_unsuspension", "user_warning_lifting"]
+    )
+    def test_it_does_not_return_user_report_action_that_is_not_a_sanction(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_action_type: str,
+    ) -> None:
+        self.create_report_user_action(
+            user_2_admin, user_1, action_type=input_action_type
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 0
+
+    def test_it_does_not_return_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.create_report_workout_action(
+            user_2_admin,
+            user_1,
+            workout_cycling_user_1,
+            "workout_unsuspension",
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 0
+
+    def test_it_does_not_return_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        self.create_report_comment_action(
+            user_2_admin, user_1, comment, "comment_unsuspension"
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['sanctions']) == 0

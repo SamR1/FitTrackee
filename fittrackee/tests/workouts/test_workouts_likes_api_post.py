@@ -10,7 +10,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
-from ..utils import OAUTH_SCOPES
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
@@ -146,11 +146,11 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert (
-            data['data']['workouts'][0]['id']
-            == workout_cycling_user_2.short_id
-        )
+        assert data['data']['workouts'] == [
+            jsonify_dict(
+                workout_cycling_user_2.serialize(user=user_1, light=False)
+            )
+        ]
         assert (
             WorkoutLike.query.filter_by(
                 user_id=user_1.id, workout_id=workout_cycling_user_2.id
@@ -371,11 +371,11 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert (
-            data['data']['workouts'][0]['id']
-            == workout_cycling_user_2.short_id
-        )
+        assert data['data']['workouts'] == [
+            jsonify_dict(
+                workout_cycling_user_2.serialize(user=user_1, light=False)
+            )
+        ]
         assert (
             WorkoutLike.query.filter_by(
                 user_id=user_1.id, workout_id=workout_cycling_user_2.id

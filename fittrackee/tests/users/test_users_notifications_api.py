@@ -1016,6 +1016,91 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
+    def test_it_does_not_return_comment_notification_when_user_does_not_follow_author_anymore(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        # comment without mention
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        user_1.unfollows(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_does_not_return_reply_notification_when_user_does_not_follow_author_anymore(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        # comment without mention
+        self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            parent_comment=comment,
+        )
+        user_1.unfollows(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notifications"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
     def test_it_returns_report_notification(
         self,
         app: Flask,
@@ -1544,6 +1629,77 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
         user_2.blocks_user(user_1)
 
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unread"] is False
+
+    def test_it_returns_unread_as_false_when_user_does_not_follow_comment_author_anymore(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        # comment without mention
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        user_1.unfollows(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["unread"] is False
+
+    def test_it_returns_unread_as_false_when_user_does_not_follow_reply_author_anymore(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+        )
+        # comment without mention
+        self.create_comment(
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            parent_comment=comment,
+        )
+        user_1.unfollows(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

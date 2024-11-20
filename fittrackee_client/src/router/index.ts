@@ -29,12 +29,14 @@ import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
 import UserEquipmentsList from '@/components/User/UserEquipments/UserEquipmentsList.vue'
+import UserModeration from '@/components/User/UserModeration/index.vue'
+import UserSanctionDetail from '@/components/User/UserModeration/UserSanctionDetail.vue'
+import UserSanctionsList from '@/components/User/UserModeration/UserSanctionsList.vue'
 import UserRelationships from '@/components/User/UserRelationships.vue'
 import UserSports from '@/components/User/UserSports/index.vue'
 import UserSport from '@/components/User/UserSports/UserSport.vue'
 import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
 import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
-import UserWarning from '@/components/User/UserWarning.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
 import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
@@ -341,9 +343,21 @@ const routes: RouteRecordRaw[] = [
             component: UserAccountSuspension,
           },
           {
-            path: 'warning/:action_id/appeal',
-            name: 'UserWarning',
-            component: UserWarning,
+            path: 'moderation',
+            name: 'Moderation',
+            component: UserModeration,
+            children: [
+              {
+                path: '',
+                name: 'UserSanctionList',
+                component: UserSanctionsList,
+              },
+              {
+                path: 'sanctions/:action_id',
+                name: 'UserSanctionDetail',
+                component: UserSanctionDetail,
+              },
+            ],
           },
         ],
       },

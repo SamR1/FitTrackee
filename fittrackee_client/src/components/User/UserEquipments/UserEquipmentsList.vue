@@ -60,7 +60,7 @@
                   <th class="text-left">
                     {{ $t('common.ACTIVE') }}
                   </th>
-                  <th v-if="isEdition">
+                  <th v-if="isEdition && !authUser.suspended_at">
                     {{ $t('common.ACTION') }}
                   </th>
                   <th />
@@ -119,7 +119,10 @@
                       aria-hidden="true"
                     />
                   </td>
-                  <td v-if="isEdition" class="action-buttons">
+                  <td
+                    v-if="isEdition && !authUser.suspended_at"
+                    class="action-buttons"
+                  >
                     <span class="cell-heading">
                       {{ $t('user.PROFILE.SPORT.ACTION') }}
                     </span>
@@ -142,13 +145,13 @@
     </div>
     <div class="equipments-list-buttons">
       <button
-        v-if="!isEdition && equipments.length > 0"
+        v-if="!isEdition && !authUser.suspended_at && equipments.length > 0"
         @click="$router.push('/profile/edit/equipments')"
       >
         {{ $t('equipments.EDIT_EQUIPMENTS') }}
       </button>
       <button
-        v-if="!isEdition"
+        v-if="!isEdition && !authUser.suspended_at"
         @click="$router.push('/profile/equipments/new')"
       >
         {{ $t('equipments.NEW_EQUIPMENT') }}

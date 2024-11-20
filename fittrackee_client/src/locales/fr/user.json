@@ -8,6 +8,8 @@
   "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
+  "APPEAL_APPROVED": "Appel approuvé.",
+  "APPEAL_REJECTED": "Appel rejeté.",
   "APPEAL_SUBMITTED": "Appel envoyé.",
   "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacées.",
   "CURRENT_PASSWORD": "Mot de passe actuel",
@@ -76,6 +78,7 @@
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
     "BIRTH_DATE": "Date de naissance",
+    "CREATED_REPORTS": "Signalements créés",
     "DATE_FORMAT": "Format d'affichage de la date",
     "EDIT": "Modifier le profil",
     "EDIT_PREFERENCES": "Modifier les préférences",
@@ -107,8 +110,10 @@
     "INTERFACE": "Interface",
     "LANGUAGE": "Langue",
     "LAST_NAME": "Nom",
+    "LATEST_SANCTIONS_RECEIVED": "Dernières sanctions reçues",
     "LOCATION": "Lieu",
     "MONDAY": "Lundi",
+    "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
     "PICTURE_REMOVE": "Supprimer",
@@ -122,6 +127,19 @@
       "LABEL": "Profil dans l'annuaire des utilisateurs"
     },
     "REGISTRATION_DATE": "Date d'inscription",
+    "REPORTS_FROM_OTHER_USERS": "Signalements par d'autres utilisateurs",
+    "SANCTIONS": {
+      "comment_suspension": "Suspension de commentaire ({date})",
+      "user_suspension": "Suspension de compte ({date})",
+      "user_warning": "Avertissement ({date})",
+      "workout_suspension": "Suspension de séance ({date})"
+    },
+    "SANCTION_APPEAL": {
+      "APPROVED": "votre appel a été approuvé",
+      "IN_PROGRESS": "votre appel est en cours de traitement",
+      "REJECTED": "votre appel a été rejeté"
+    },
+    "SANCTIONS_RECEIVED": "Sanctions reçues",
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
@@ -145,6 +163,7 @@
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
+      "MODERATION": "modération",
       "PICTURE": "image",
       "PREFERENCES": "préférences",
       "PRIVACY-POLICY": "politique de confidentialité",
@@ -170,7 +189,8 @@
       "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
       "LABEL": "Calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
-    }
+    },
+    "USER_RECEIVED_SANCTIONS": "Cet utilisateur a reçu {count} sanction.|Cet utilisateur a reçu {count} sanctions."
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",
   "REGISTER": "S'inscrire",

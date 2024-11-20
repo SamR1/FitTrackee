@@ -285,14 +285,24 @@ def process_appeal(
         )
         db.session.flush()
 
-        if new_report_action and current_app.config['CAN_SEND_EMAILS']:
-            report_action_email_service = ReportEmailService()
-            report_action_email_service.send_report_action_email(
-                new_report_action.report,
-                new_report_action.action_type,
-                reason,
-                new_report_action,
-            )
+        if current_app.config['CAN_SEND_EMAILS']:
+            if new_report_action:
+                report_action_email_service = ReportEmailService()
+                report_action_email_service.send_report_action_email(
+                    new_report_action.report,
+                    new_report_action.action_type,
+                    reason,
+                    new_report_action,
+                )
+            if data["approved"] is False:
+                action = appeal.action
+                report_action_email_service = ReportEmailService()
+                report_action_email_service.send_report_action_email(
+                    action.report,
+                    "appeal_rejected",
+                    None,
+                    action,
+                )
 
         db.session.commit()
         return {
@@ -304,3 +314,17 @@ def process_appeal(
         return InvalidPayloadErrorResponse(str(e))
     except (exc.OperationalError, exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@reports_blueprint.route("/reports/unresolved", methods=["GET"])
+@require_auth(scopes=["reports:read"], as_admin=True)
+def get_unresolved_reports_status(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    unresolved_reports = Report.query.filter(
+        Report.resolved == False  # noqa
+    ).count()
+    return {
+        "status": "success",
+        "unresolved": unresolved_reports > 0,
+    }, 200

@@ -105,26 +105,29 @@
         </dd>
       </template>
     </dl>
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
     <div class="equipment-buttons">
-      <button
-        @click="$router.push(`/profile/edit/equipments/${equipment.id}`)"
-        :disabled="equipmentsLoading"
-      >
-        {{ $t('buttons.EDIT') }}
-      </button>
-      <button
-        :disabled="equipmentsLoading"
-        @click="refreshTotals(equipment.id)"
-      >
-        {{ $t('buttons.REFRESH_TOTALS') }}
-      </button>
-      <button
-        class="danger"
-        @click="displayModal = true"
-        :disabled="equipmentsLoading"
-      >
-        {{ $t('buttons.DELETE') }}
-      </button>
+      <template v-if="!authUser.suspended_at">
+        <button
+          @click="$router.push(`/profile/edit/equipments/${equipment.id}`)"
+          :disabled="equipmentsLoading"
+        >
+          {{ $t('buttons.EDIT') }}
+        </button>
+        <button
+          :disabled="equipmentsLoading"
+          @click="refreshTotals(equipment.id)"
+        >
+          {{ $t('buttons.REFRESH_TOTALS') }}
+        </button>
+        <button
+          class="danger"
+          @click="displayModal = true"
+          :disabled="equipmentsLoading"
+        >
+          {{ $t('buttons.DELETE') }}
+        </button>
+      </template>
       <button
         :disabled="equipmentsLoading"
         @click="
@@ -164,6 +167,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import useApp from '@/composables/useApp'
   import useEquipments from '@/composables/useEquipments'
   import useSports from '@/composables/useSports'
   import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
@@ -184,6 +188,7 @@
   const store = useStore()
   const { t } = useI18n()
 
+  const { errorMessages } = useApp()
   const { equipment } = useEquipments()
   const { sportColors, sports } = useSports()
 
@@ -278,5 +283,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: $default-padding;
+  }
+  .error-message {
+    margin: $default-margin * 2 0;
   }
 </style>

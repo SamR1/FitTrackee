@@ -72,6 +72,7 @@
         <CommentForUser
           :display-object-name="notification.type.startsWith('user_warning')"
           :comment="notification.comment"
+          :action="notification.report_action"
         />
       </template>
       <RelationshipDetail
@@ -88,7 +89,7 @@
         "
         :report="notification.report"
       />
-      <template v-else-if="notification.workout && notification.report_action">
+      <template v-else-if="notification.workout">
         <WorkoutForUser
           :action="notification.report_action"
           :display-appeal="notification.type !== 'user_warning'"
@@ -99,7 +100,9 @@
       <div
         class="auth-user"
         v-if="
-          notification.report_action?.action_type === 'user_warning_lifting'
+          notification.report_action?.action_type === 'user_warning_lifting' &&
+          !notification.comment &&
+          !notification.workout
         "
       >
         <UserPicture :user="authUser" />
@@ -122,7 +125,7 @@
         <router-link
           v-else-if="!notification.report_action?.appeal"
           class="appeal-link"
-          :to="`profile/warning/${notification.report_action.id}/appeal`"
+          :to="`profile/moderation/sanctions/${notification.report_action.id}`"
         >
           {{ $t('user.APPEAL') }}
         </router-link>
@@ -180,10 +183,14 @@
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
-    return ['follow', 'follow_request'].includes(notificationType)
+    return ['follow', 'follow_request', 'account_creation'].includes(
+      notificationType
+    )
   }
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {
+      case 'account_creation':
+        return 'notifications.SIGN_UP'
       case 'comment_like':
         return 'notifications.LIKED_YOUR_COMMENT'
       case 'comment_reply':
@@ -236,10 +243,14 @@
       case 'report':
       case 'suspension_appeal':
       case 'user_warning':
+      case 'user_warning_appeal':
       case 'user_warning_lifting':
       case 'workout_suspension':
       case 'workout_unsuspension':
         return 'flag'
+      case 'comment_like':
+      case 'workout_like':
+        return 'heart'
       default:
         return 'comment'
     }
@@ -311,12 +322,21 @@
       padding: $default-padding * 0.5 $default-padding;
     }
 
+    .info-box.suspended {
+      padding: 30px;
+    }
+
     .appeal-link {
       margin-left: $default-margin;
     }
 
     ::v-deep(.suspended.info-box) {
       font-size: 0.9em;
+    }
+    ::v-deep(.workout-card) {
+      .suspended.info-box {
+        margin-bottom: $default-margin;
+      }
     }
 
     &.read {
@@ -342,7 +362,8 @@
         opacity: 0.5;
       }
 
-      ::v-deep(.suspended.info-box) {
+      ::v-deep(.suspended.info-box),
+      ::v-deep(.appeal-rejected) {
         opacity: 0.5;
       }
 

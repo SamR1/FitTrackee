@@ -19,6 +19,7 @@ import type {
 } from '@/types/reports'
 
 export interface IReportsState {
+  unresolved: boolean
   report: IReportForAdmin
   reports: IReportForAdmin[]
   pagination: IPagination
@@ -39,6 +40,9 @@ export interface IReportsActions {
     context: ActionContext<IReportsState, IRootState>,
     payload: TPaginationPayload
   ): void
+  [REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS](
+    context: ActionContext<IReportsState, IRootState>
+  ): void
   [REPORTS_STORE.ACTIONS.PROCESS_APPEAL](
     context: ActionContext<IReportsState, IRootState>,
     payload: IAppealPayload
@@ -58,6 +62,9 @@ export interface IReportsActions {
 }
 
 export interface IReportsGetters {
+  [REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS](
+    state: IReportsState
+  ): boolean
   [REPORTS_STORE.GETTERS.REPORT](state: IReportsState): IReportForAdmin
   [REPORTS_STORE.GETTERS.REPORT_LOADING](state: IReportsState): boolean
   [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
@@ -73,6 +80,10 @@ export type TReportsMutations<S = IReportsState> = {
     state: S,
     reportLoading: boolean
   ): void
+  [REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS](
+    state: S,
+    reportStatus: string | null
+  ): void
   [REPORTS_STORE.MUTATIONS.SET_REPORT_UPDATE_LOADING](
     state: S,
     reportLoading: boolean
@@ -82,9 +93,9 @@ export type TReportsMutations<S = IReportsState> = {
     state: S,
     pagination: IPagination
   ): void
-  [REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS](
+  [REPORTS_STORE.MUTATIONS.SET_UNRESOLVED_REPORTS_STATUS](
     state: S,
-    reportStatus: string | null
+    unresolved: boolean
   ): void
 }
 

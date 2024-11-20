@@ -24,12 +24,13 @@
           :current-comment-edition="workoutData.currentCommentEdition"
           :authUser="authUser"
           comments-loading="workoutData.commentsLoading"
+          :action="comment.suspension"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS') }}
         </div>
         <div class="add-comment" v-if="displayAddComment">
-          <WorkoutCommentEdition
+          <CommentEdition
             v-if="authUser.username"
             :workout="workoutData.workout"
             comments-loading="workoutData.commentsLoading"
@@ -60,7 +61,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import CommentEdition from '@/components/Comment/CommentEdition.vue'
   import { WORKOUTS_STORE } from '@/store/constants'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IComment, IWorkoutData } from '@/types/workouts'

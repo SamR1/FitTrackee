@@ -316,6 +316,7 @@ class TestReportModel(CommentMixin, RandomMixin):
             reported_by=user_3.id,
             reported_object=user_2,
         )
+        db.session.add(report)
         report_action = ReportAction(
             admin_user_id=user_1_admin.id,
             action_type="user_warning",

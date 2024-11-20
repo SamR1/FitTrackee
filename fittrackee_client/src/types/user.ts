@@ -34,6 +34,7 @@ export interface IUserLightProfile {
 export interface IUserProfile extends IUserLightProfile {
   bio: string | null
   birth_date: string | null
+  created_reports_count?: number
   email?: string
   email_to_confirm?: string
   first_name: string | null
@@ -42,6 +43,8 @@ export interface IUserProfile extends IUserLightProfile {
   nb_sports?: number
   profile_link?: string
   records: IRecord[]
+  reported_count?: number
+  sanctions_count?: number
   sports_list: number[]
   total_ascent: number
   total_distance: number
@@ -197,17 +200,18 @@ export interface IReportActionAppeal {
   id: string
   reason: string | null
   text: string
-  updated_at: string
+  updated_at: string | null
   user: IUserLightProfile
 }
 
 export interface IUserReportAction {
   action_type: string
-  appeal: IReportActionAppeal
+  appeal: IReportActionAppeal | null
   comment?: IComment | null
   created_at: string
   id: string
   reason: string
+  report_id?: number
   user?: IUserProfile
   workout?: IWorkout | null
 }

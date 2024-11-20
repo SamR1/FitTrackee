@@ -11,6 +11,7 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.reports.models import ReportAction
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
     BlockUserException,
@@ -162,16 +163,23 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user['accepted_privacy_policy'] is True
 
     def test_it_does_not_return_confirmation_token(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1: User
     ) -> None:
-        serialized_user = user_2.serialize(
-            current_user=user_1_admin, light=False
-        )
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert 'confirmation_token' not in serialized_user
 
+    def test_it_does_return_reports_info(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-class TestUserSerializeAsAdmin(UserModelAssertMixin):
+        assert "created_reports_count" not in serialized_user
+        assert "reported_count" not in serialized_user
+        assert serialized_user["sanctions_count"] == 0
+
+
+class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
     def test_it_returns_user_account_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
@@ -239,6 +247,21 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin):
 
         assert 'confirmation_token' not in serialized_user
 
+    def test_it_returns_reports_info(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        self.create_user_report(user_2, user_3)
+        self.create_user_report(user_1_admin, user_2)
+        self.create_report_user_action(user_1_admin, user_2)
+
+        serialized_user = user_2.serialize(
+            current_user=user_1_admin, light=False
+        )
+
+        assert serialized_user['created_reports_count'] == 1
+        assert serialized_user['reported_count'] == 2
+        assert serialized_user['sanctions_count'] == 1
+
 
 class TestUserSerializeAsUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
@@ -275,22 +298,27 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'hide_profile_in_users_directory' not in serialized_user
 
     def test_it_returns_workouts_infos(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(
-            current_user=user_1_admin, light=False
-        )
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         self.assert_workouts_keys_are_present(serialized_user)
 
     def test_it_does_not_return_confirmation_token(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        serialized_user = user_2.serialize(
-            current_user=user_1_admin, light=False
-        )
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
 
         assert 'confirmation_token' not in serialized_user
+
+    def test_it_does_return_reports_info(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        serialized_user = user_2.serialize(current_user=user_1, light=False)
+
+        assert "created_reports_count" not in serialized_user
+        assert "reported_count" not in serialized_user
+        assert "sanctions_count" not in serialized_user
 
 
 class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
@@ -346,6 +374,15 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(light=False)
 
         assert 'confirmation_token' not in serialized_user
+
+    def test_it_does_return_reports_info(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(light=False)
+
+        assert "created_reports_count" not in serialized_user
+        assert "reported_count" not in serialized_user
+        assert "sanctions_count" not in serialized_user
 
 
 class TestInactiveUserSerialize(UserModelAssertMixin):
@@ -1501,3 +1538,134 @@ class TestUserLightSerializer(UserModelAssertMixin):
             'suspended_at': user_2.suspended_at,
             'username': user_2.username,
         }
+
+
+class TestUserAllReportsCount(ReportMixin, CommentMixin):
+    def test_it_returns_0_when_user_has_not_been_reported(
+        self, app: Flask, user_1: User
+    ) -> None:
+        assert user_1.all_reports_count == {
+            "created_reports_count": 0,
+            "reported_count": 0,
+            "sanctions_count": 0,
+        }
+
+    def test_it_returns_number_of_reports(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        self.create_user_report(user_1_admin, user_2)
+        self.create_user_report(user_2, user_3)
+        self.create_user_report(user_3, user_2)
+        self.create_report_user_action(user_1_admin, user_2)
+
+        assert user_2.all_reports_count == {
+            "created_reports_count": 1,
+            "reported_count": 3,
+            "sanctions_count": 1,
+        }
+
+    @pytest.mark.parametrize(
+        'input_action_type', ["user_unsuspension", "user_warning_lifting"]
+    )
+    def test_it_does_not_count_user_report_action_that_is_not_a_sanction(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_action_type: str,
+    ) -> None:
+        self.create_report_user_action(
+            user_2_admin, user_1, action_type=input_action_type
+        )
+
+        assert user_1.all_reports_count["sanctions_count"] == 0
+
+    def test_it_does_not_count_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.create_report_workout_action(
+            user_2_admin,
+            user_1,
+            workout_cycling_user_1,
+            "workout_unsuspension",
+        )
+
+        assert user_1.all_reports_count["sanctions_count"] == 0
+
+    def test_it_does_not_count_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        self.create_report_comment_action(
+            user_2_admin, user_1, comment, "comment_unsuspension"
+        )
+
+        assert user_1.all_reports_count["sanctions_count"] == 0
+
+
+class TestUserSanctionsCount(ReportMixin, CommentMixin):
+    def test_it_returns_sanctions_count(
+        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+    ) -> None:
+        self.create_report_user_action(user_1_admin, user_2)
+        self.create_report_user_action(user_1_admin, user_3)
+
+        assert user_2.sanctions_count == 1
+
+    @pytest.mark.parametrize(
+        'input_action_type', ["user_unsuspension", "user_warning_lifting"]
+    )
+    def test_it_does_not_count_user_report_action_that_is_not_a_sanction(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        input_action_type: str,
+    ) -> None:
+        self.create_report_user_action(
+            user_2_admin, user_1, action_type=input_action_type
+        )
+
+        assert user_1.sanctions_count == 0
+
+    def test_it_does_not_count_workout_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.create_report_workout_action(
+            user_2_admin,
+            user_1,
+            workout_cycling_user_1,
+            "workout_unsuspension",
+        )
+
+        assert user_1.sanctions_count == 0
+
+    def test_it_does_not_count_comment_unsuspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        self.create_report_comment_action(
+            user_2_admin, user_1, comment, "comment_unsuspension"
+        )
+
+        assert user_1.sanctions_count == 0

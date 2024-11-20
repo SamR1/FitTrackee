@@ -160,7 +160,7 @@ export interface IAuthUserActions {
     payload: IUserAppealPayload
   ): void
 
-  [AUTH_USER_STORE.ACTIONS.GET_USER_WARNING](
+  [AUTH_USER_STORE.ACTIONS.GET_USER_SANCTION](
     context: ActionContext<IAuthUserState, IRootState>,
     actionId: string
   ): void
@@ -207,7 +207,7 @@ export interface IAuthUserGetters {
     state: IAuthUserState
   ): IUserReportAction
 
-  [AUTH_USER_STORE.GETTERS.USER_WARNING](
+  [AUTH_USER_STORE.GETTERS.USER_SANCTION](
     state: IAuthUserState
   ): IUserReportAction
 }
@@ -250,9 +250,9 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     state: S,
     accountSuspension: IUserReportAction
   ): void
-  [AUTH_USER_STORE.MUTATIONS.SET_USER_WARNING](
+  [AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION](
     state: S,
-    userWarning: IUserReportAction
+    sanction: IUserReportAction
   ): void
 }
 

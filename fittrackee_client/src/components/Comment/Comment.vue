@@ -53,7 +53,7 @@
           :class="{ highlight: highlighted }"
           v-html="linkifyAndClean(comment.text_html)"
         />
-        <WorkoutCommentEdition
+        <CommentEdition
           v-else
           :workout="workout"
           :comment="comment"
@@ -70,9 +70,9 @@
         {{ $t('workouts.COMMENTS.SUSPENDED_COMMENT_BY_ADMIN') }}
       </div>
       <CommentActionAppeal
-        v-if="displayMakeAppeal && comment.suspended && comment.suspension"
+        v-if="displayMakeAppeal && action && comment.suspended"
         :hide-suspension-appeal="hideSuspensionAppeal"
-        :action="comment.suspension"
+        :action="action"
         :comment="comment"
       />
       <div class="comment-actions" v-if="!forAdmin">
@@ -89,8 +89,9 @@
           <i
             class="fa"
             :class="{
-              'fa-heart': comment.liked,
-              'fa-heart-o': !comment.liked,
+              'fa-heart': comment.likes_count > 0,
+              'fa-heart-o': comment.likes_count === 0,
+              liked: comment.liked,
             }"
             aria-hidden="true"
           />
@@ -152,11 +153,11 @@
         </div>
       </div>
       <template v-if="!forNotification">
-        <WorkoutCommentEdition
+        <CommentEdition
           v-if="isNewReply()"
           class="add-comment-reply"
           :workout="workout"
-          :reply-to="comment.id"
+          :reply-to="comment"
           :comments-loading="commentsLoading"
           :name="`text-${comment.id}`"
           :authUser="authUser"
@@ -170,6 +171,7 @@
           :authUser="authUser"
           :comments-loading="commentsLoading"
           :current-comment-edition="currentCommentEdition"
+          :action="reply.suspension"
           @deleteComment="deleteComment(reply)"
         />
       </template>
@@ -184,7 +186,7 @@
   import { useRoute } from 'vue-router'
 
   import CommentActionAppeal from '@/components/Comment/CommentActionAppeal.vue'
-  import WorkoutCommentEdition from '@/components/Comment/CommentEdition.vue'
+  import CommentEdition from '@/components/Comment/CommentEdition.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -195,6 +197,7 @@
     IAuthUserProfile,
     IUserLightProfile,
     IUserProfile,
+    IUserReportAction,
   } from '@/types/user'
   import type {
     IComment,
@@ -216,6 +219,7 @@
     forAdmin?: boolean
     displayAppeal?: boolean
     hideSuspensionAppeal?: boolean
+    action?: IUserReportAction | null
   }
   const props = withDefaults(defineProps<Props>(), {
     displayAppeal: false,
@@ -224,8 +228,10 @@
     forNotification: false,
     workout: null,
     hideSuspensionAppeal: false,
+    action: null,
   })
   const {
+    action,
     authUser,
     comment,
     currentCommentEdition,
@@ -255,8 +261,13 @@
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () =>
-      comment.value.suspended_at !== null &&
       comment.value.user.username === authUser?.value.username &&
+      action.value?.action_type === 'comment_suspension' &&
+      (!action.value.appeal ||
+        action.value.appeal?.approved === false ||
+        (action.value.appeal?.approved === null &&
+          !action.value.appeal?.updated_at)) &&
+      comment.value.suspended_at !== null &&
       comment.value.suspension !== undefined &&
       displayAppealForm.value !== comment.value.id
   )
@@ -418,8 +429,8 @@
         .fa-heart-o {
           font-size: 0.9em;
         }
-        .fa-heart {
-          color: #ee2222;
+        .fa-heart.liked {
+          color: var(--like-color);
         }
       }
       .report-submitted {

@@ -120,6 +120,37 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
         context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, false)
       )
   },
+  [USERS_STORE.ACTIONS.GET_USER_SANCTIONS](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: TUsersPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS_LOADING, true)
+    const { username, ...params } = payload
+    authApi
+      .get(`users/${username}/sanctions`, { params })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS,
+            res.data.data.sanctions
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(
+          USERS_STORE.MUTATIONS.UPDATE_USER_SANCTIONS_LOADING,
+          false
+        )
+      )
+  },
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
     payload: TUsersPayload

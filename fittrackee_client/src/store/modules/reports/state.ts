@@ -3,6 +3,7 @@ import type { IPagination } from '@/types/api'
 import type { IReportForAdmin } from '@/types/reports'
 
 export const reportsState: IReportsState = {
+  unresolved: false,
   report: <IReportForAdmin>{},
   reports: [],
   pagination: <IPagination>{},

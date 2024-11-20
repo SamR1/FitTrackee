@@ -9,6 +9,8 @@ import type { IRootState } from '@/store/modules/root/types'
 
 export const getters: GetterTree<IReportsState, IRootState> & IReportsGetters =
   {
+    [REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS]: (state: IReportsState) =>
+      state.unresolved,
     [REPORTS_STORE.GETTERS.REPORT]: (state: IReportsState) => state.report,
     [REPORTS_STORE.GETTERS.REPORT_LOADING]: (state: IReportsState) =>
       state.reportLoading,

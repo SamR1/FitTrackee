@@ -42,6 +42,7 @@
       case 'BLOCKED-USERS':
       case 'EQUIPMENTS':
       case 'FOLLOW-REQUESTS':
+      case 'MODERATION':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${

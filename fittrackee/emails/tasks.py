@@ -141,3 +141,13 @@ def workout_unsuspension_email(user: Dict, email_data: Dict) -> None:
         recipient=user['email'],
         data=email_data,
     )
+
+
+@dramatiq.actor(queue_name='fittrackee_emails')
+def appeal_rejected_email(user: Dict, email_data: Dict) -> None:
+    email_service.send(
+        template='appeal_rejected',
+        lang=user['language'],
+        recipient=user['email'],
+        data=email_data,
+    )

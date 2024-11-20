@@ -11,6 +11,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
+from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
@@ -44,6 +45,7 @@ USER_LINK_TEMPLATE = (
 )
 
 NOTIFICATION_TYPES = [
+    'account_creation',
     'comment_like',
     'comment_reply',
     'comment_suspension',
@@ -715,6 +717,57 @@ class User(BaseModel):
             .first()
         )
 
+    @property
+    def sanctions_count(self) -> int:
+        from fittrackee.reports.models import ReportAction
+
+        return (
+            ReportAction.query.filter(
+                ReportAction.user_id == self.id,
+                ReportAction.action_type.not_in(
+                    [
+                        "comment_unsuspension",
+                        "user_unsuspension",
+                        "user_warning_lifting",
+                        "workout_unsuspension",
+                    ]
+                ),
+            )
+            .order_by(ReportAction.created_at.desc())
+            .count()
+        )
+
+    @property
+    def all_reports_count(self) -> Dict[str, int]:
+        query = """
+        SELECT (
+                SELECT COUNT(*) AS created_reports_count
+                FROM reports
+                WHERE reports.reported_by = :user_id
+            ),
+            (
+                SELECT COUNT(*) AS reported_count
+                FROM reports
+                WHERE reports.reported_user_id = :user_id
+            ),
+            (
+                SELECT COUNT(*) AS sanctions_count
+                FROM report_actions
+                WHERE report_actions.user_id = :user_id
+                  AND report_actions.action_type NOT IN (
+                     'comment_unsuspension',
+                     'user_unsuspension',
+                     'user_warning_lifting',
+                     'workout_unsuspension'
+                )
+        );"""
+        result = db.session.execute(text(query), {'user_id': self.id}).first()
+        return {
+            "created_reports_count": result[0],
+            "reported_count": result[1],
+            "sanctions_count": result[2],
+        }
+
     def serialize(
         self,
         *,
@@ -820,6 +873,16 @@ class User(BaseModel):
         if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
             serialized_user['email_to_confirm'] = self.email_to_confirm
 
+        if role in [UserRole.ADMIN]:
+            reports_count = self.all_reports_count
+            serialized_user['created_reports_count'] = reports_count[
+                'created_reports_count'
+            ]
+            serialized_user['reported_count'] = reports_count['reported_count']
+            serialized_user['sanctions_count'] = reports_count[
+                'sanctions_count'
+            ]
+
         if role == UserRole.AUTH_USER:
             accepted_privacy_policy = False
             if self.accepted_policy_date:
@@ -850,6 +913,7 @@ class User(BaseModel):
                     'hide_profile_in_users_directory': (
                         self.hide_profile_in_users_directory
                     ),
+                    'sanctions_count': self.sanctions_count,
                 },
             }
 

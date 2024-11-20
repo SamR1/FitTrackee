@@ -69,6 +69,7 @@
             </div>
           </div>
         </div>
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
           <button class="confirm" type="submit" :disabled="scopes.length === 0">
             {{ $t('buttons.SUBMIT') }}
@@ -89,6 +90,7 @@
   import { computed, reactive, toRefs } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
 
+  import useApp from '@/composables/useApp'
   import { OAUTH2_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { IOAuth2ClientPayload } from '@/types/oauth'
@@ -103,6 +105,8 @@
   const { authUser } = toRefs(props)
 
   const store = useStore()
+
+  const { errorMessages } = useApp()
 
   const appForm = reactive({
     client_name: '',

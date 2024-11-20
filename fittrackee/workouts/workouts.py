@@ -1758,7 +1758,7 @@ def like_workout(
         db.session.rollback()
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user)]},
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
     }, 200
 
 
