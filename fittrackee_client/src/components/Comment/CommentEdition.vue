@@ -153,6 +153,12 @@
         return filteredMentions.map((m) => `@${m.username}`).join(' ') + ' '
       }
     }
+    if (
+      replyTo.value &&
+      replyTo.value.user.username !== authUser.value.username
+    ) {
+      return `@${replyTo.value.user.username} `
+    }
     // add workout owner as mention
     if (
       !replyTo.value &&
