@@ -56,7 +56,7 @@
             </router-link>
             <router-link
               class="nav-item"
-              v-if="isAuthenticated && authUser.admin"
+              v-if="authUserHasModeratorRights"
               to="/admin"
               @click="closeMenu()"
             >
@@ -171,7 +171,12 @@
   const store = useStore()
 
   const { appLanguage, darkTheme } = useApp()
-  const { authUser, isAuthenticated, isAuthUserSuspended } = useAuthUser()
+  const {
+    authUser,
+    isAuthenticated,
+    isAuthUserSuspended,
+    authUserHasModeratorRights,
+  } = useAuthUser()
 
   const isMenuOpen: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)

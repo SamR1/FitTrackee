@@ -11,6 +11,7 @@ from fittrackee import BaseModel, db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
 from fittrackee.users.models import Notification, User
+from fittrackee.users.roles import UserRole
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
@@ -196,7 +197,10 @@ class Report(BaseModel):
         self.resolved = False
 
     def serialize(self, current_user: User, full: bool = False) -> Dict:
-        if not current_user.admin and self.reported_by != current_user.id:
+        if (
+            not current_user.has_moderator_rights
+            and self.reported_by != current_user.id
+        ):
             raise ReportForbiddenException()
 
         try:
@@ -240,7 +244,7 @@ class Report(BaseModel):
             "resolved": self.resolved,
             "resolved_at": self.resolved_at,
         }
-        if current_user.admin:
+        if current_user.has_moderator_rights:
             if full:
                 report["report_actions"] = [
                     action.serialize(current_user, full=False)
@@ -268,7 +272,7 @@ def on_report_insert(
         from fittrackee.users.models import Notification, User
 
         for admin in User.query.filter(
-            User.admin == True,  # noqa
+            User.role >= UserRole.MODERATOR.value,
             User.id != new_report.reported_by,
             User.is_active == True,  # noqa
         ).all():
@@ -318,7 +322,7 @@ class ReportComment(BaseModel):
         self.user_id = user_id
 
     def serialize(self, current_user: User) -> Dict:
-        if not current_user.admin:
+        if not current_user.has_moderator_rights:
             raise ReportCommentForbiddenException()
         return {
             "created_at": self.created_at,
@@ -339,7 +343,7 @@ class ReportAction(BaseModel):
         nullable=False,
     )
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
-    admin_user_id = db.Column(
+    moderator_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
@@ -372,9 +376,9 @@ class ReportAction(BaseModel):
     action_type = db.Column(db.String(50), nullable=False)
     reason = db.Column(db.String(), nullable=True)
 
-    admin_user = db.relationship(
+    moderator = db.relationship(
         "User",
-        primaryjoin=admin_user_id == User.id,
+        primaryjoin=moderator_id == User.id,
         lazy="joined",
         single_parent=True,
     )
@@ -403,7 +407,7 @@ class ReportAction(BaseModel):
     def __init__(
         self,
         action_type: str,
-        admin_user_id: int,
+        moderator_id: int,
         report_id: int,
         *,
         user_id: Optional[int] = None,
@@ -422,7 +426,7 @@ class ReportAction(BaseModel):
             raise InvalidReportActionException()
 
         self.action_type = action_type
-        self.admin_user_id = admin_user_id
+        self.moderator_id = moderator_id
         self.created_at = created_at if created_at else datetime.utcnow()
         self.comment_id = (
             comment_id if action_type in COMMENT_ACTION_TYPES else None
@@ -439,7 +443,10 @@ class ReportAction(BaseModel):
         return encode_uuid(self.uuid)
 
     def serialize(self, current_user: User, full: bool = True) -> Dict:
-        if not current_user.admin and current_user.id != self.user_id:
+        if (
+            not current_user.has_moderator_rights
+            and current_user.id != self.user_id
+        ):
             raise ReportActionForbiddenException()
         action = {
             "action_type": self.action_type,
@@ -451,9 +458,9 @@ class ReportAction(BaseModel):
             "reason": self.reason,
         }
 
-        if current_user.admin:
+        if current_user.has_moderator_rights:
             action["report_id"] = self.report_id
-            action["admin_user"] = self.admin_user.serialize(
+            action["moderator"] = self.moderator.serialize(
                 current_user=current_user
             )
             action["user"] = (
@@ -464,7 +471,7 @@ class ReportAction(BaseModel):
         if not full:
             return action
 
-        if current_user.admin:
+        if current_user.has_moderator_rights:
             action = {
                 **action,
                 "comment": (
@@ -520,7 +527,7 @@ class ReportActionAppeal(BaseModel):
         index=True,
         nullable=False,
     )
-    admin_user_id = db.Column(
+    moderator_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
@@ -534,9 +541,9 @@ class ReportActionAppeal(BaseModel):
     text = db.Column(db.String(), nullable=False)
     reason = db.Column(db.String(), nullable=True)
 
-    admin_user = db.relationship(
+    moderator = db.relationship(
         "User",
-        primaryjoin=admin_user_id == User.id,
+        primaryjoin=moderator_id == User.id,
         lazy="joined",
         single_parent=True,
     )
@@ -574,7 +581,10 @@ class ReportActionAppeal(BaseModel):
         return encode_uuid(self.uuid)
 
     def serialize(self, current_user: User) -> Dict:
-        if not current_user.admin and current_user.id != self.user_id:
+        if (
+            not current_user.has_moderator_rights
+            and current_user.id != self.user_id
+        ):
             raise ReportActionAppealForbiddenException()
         appeal = {
             "approved": self.approved,
@@ -584,10 +594,10 @@ class ReportActionAppeal(BaseModel):
             "text": self.text,
             "updated_at": self.updated_at,
         }
-        if current_user.admin:
-            appeal["admin_user"] = (
-                self.admin_user.serialize(current_user=current_user)
-                if self.admin_user
+        if current_user.has_moderator_rights:
+            appeal["moderator"] = (
+                self.moderator.serialize(current_user=current_user)
+                if self.moderator
                 else None
             )
             appeal["user"] = self.user.serialize(current_user=current_user)
@@ -607,7 +617,7 @@ def on_report_action_insert(
             + ["user_warning", "user_warning_lifting"]
         ):
             notification = Notification(
-                from_user_id=new_action.admin_user_id,
+                from_user_id=new_action.moderator_id,
                 to_user_id=new_action.user_id,
                 created_at=new_action.created_at,
                 event_type=new_action.action_type,
@@ -629,7 +639,7 @@ def on_report_action_appeal_insert(
         ).first()
         if report_action:
             for admin in User.query.filter(
-                User.admin == True,  # noqa
+                User.role >= UserRole.MODERATOR.value,
                 User.id != new_appeal.user_id,
                 User.is_active == True,  # noqa
             ).all():

@@ -8,9 +8,9 @@ export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
+export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 
 export interface IUserLightProfile {
-  admin: boolean
   blocked: boolean
   created_at: string
   followers: IUserProfile[]
@@ -20,6 +20,7 @@ export interface IUserLightProfile {
   is_followed_by: string
   nb_workouts: number
   picture: string | boolean
+  role: TUserRole
   suspended_at?: string | null
   suspension_report_id?: number
   username: string
@@ -89,7 +90,7 @@ export interface IUserAccountUpdatePayload {
 
 export interface IAdminUserPayload {
   activate?: boolean
-  admin?: boolean
+  role?: TUserRole
   new_email?: string
   resetPassword?: boolean
   username: string

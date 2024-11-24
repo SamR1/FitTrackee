@@ -15,6 +15,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
@@ -522,7 +523,7 @@ def get_workouts_by_sport(
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
-@require_auth(scopes=['workouts:read'], as_admin=True)
+@require_auth(scopes=['workouts:read'], role=UserRole.MODERATOR)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics.

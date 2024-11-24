@@ -230,10 +230,10 @@
                       </router-link>
                       <router-link
                         class="user-name"
-                        :to="`/admin/users/${item.admin_user.username}`"
-                        :title="item.admin_user.username"
+                        :to="`/admin/users/${item.moderator.username}`"
+                        :title="item.moderator.username"
                       >
-                        {{ item.admin_user.username }}
+                        {{ item.moderator.username }}
                       </router-link>
                       <span
                         class="report-action-date"
@@ -432,7 +432,7 @@
     IReportAction,
     IReportComment,
     IReportCommentPayload,
-    IReportForAdmin,
+    IReportForModerator,
     TReportAction,
     IReportActionPayload,
   } from '@/types/reports'
@@ -461,7 +461,7 @@
   const displayModal: Ref<string> = ref('')
   const displayedAppeals: Ref<string[]> = ref([])
 
-  const report: ComputedRef<IReportForAdmin> = computed(
+  const report: ComputedRef<IReportForModerator> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT]
   )
   const reportedContent: ComputedRef<IComment | IWorkout | null> = computed(

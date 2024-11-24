@@ -68,7 +68,7 @@
   const router = useRouter()
   const { t } = useI18n()
 
-  const { authUser } = useAuthUser()
+  const { authUserHasModeratorRights } = useAuthUser()
 
   const notificationTypes: TNotificationType[] = [
     'comment_like',
@@ -129,7 +129,7 @@
         (type) =>
           !['report', 'suspension_appeal', 'user_warning_appeal'].includes(
             type
-          ) || authUser.value.admin
+          ) || authUserHasModeratorRights.value
       )
       .map((type) => {
         options.push({

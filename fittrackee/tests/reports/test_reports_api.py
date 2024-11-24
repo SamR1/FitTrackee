@@ -922,12 +922,12 @@ class TestPostUserReport(ReportTestCase):
         assert new_report.updated_at is None
 
 
-class TestGetReportsAsAdmin(ReportTestCase):
+class TestGetReportsAsModerator(ReportTestCase):
     def test_it_returns_empty_list_when_no_reports(
-        self, app: Flask, user_1_admin: User
+        self, app: Flask, user_1_moderator: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -951,7 +951,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_all_reports(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -962,7 +962,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -976,13 +976,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 3
         assert data["reports"][0] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["reports"][2] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -992,10 +992,10 @@ class TestGetReportsAsAdmin(ReportTestCase):
             "total": 3,
         }
 
-    def test_it_returns_reports_when_reported_object_not_visible_to_admin(
+    def test_it_returns_reports_when_reported_object_not_visible_to_moderator(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1006,7 +1006,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1020,7 +1020,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            report.serialize(user_1_admin)
+            report.serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1037,7 +1037,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_reports_for_a_given_type(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1050,7 +1050,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1064,7 +1064,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            reports[input_index].serialize(user_1_admin)
+            reports[input_index].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1081,7 +1081,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_report_when_reported_object_is_deleted(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1096,7 +1096,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         db.session.delete(reports[input_index].reported_object)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1110,7 +1110,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            reports[input_index].serialize(user_1_admin)
+            reports[input_index].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1121,13 +1121,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         }
 
     def test_it_returns_report_when_reporter_is_deleted(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         db.session.delete(user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1141,7 +1141,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            report.serialize(user_1_admin)
+            report.serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1154,7 +1154,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_only_unresolved_reports(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1167,7 +1167,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         reports[1].resolved = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1181,10 +1181,10 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 2
         assert data["reports"][0] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1197,7 +1197,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_only_resolved_reports(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1210,7 +1210,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         reports[1].resolved = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1224,7 +1224,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1244,7 +1244,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_reports_ordered_by_created_at_descending(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1256,7 +1256,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1270,13 +1270,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 3
         assert data["reports"][0] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["reports"][2] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1289,7 +1289,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_reports_ordered_by_created_at_ascending(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1300,7 +1300,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1314,13 +1314,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 3
         assert data["reports"][0] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["reports"][2] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1337,7 +1337,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_reports_ordered_by_updated_at_descending(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1353,7 +1353,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1367,13 +1367,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 3
         assert data["reports"][0] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["reports"][2] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1395,10 +1395,10 @@ class TestGetReportsAsAdmin(ReportTestCase):
         ],
     )
     def test_it_returns_error_if_order_by_is_invalid(
-        self, app: Flask, user_1_admin: User, input_order_by: str
+        self, app: Flask, user_1_moderator: User, input_order_by: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1412,7 +1412,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_reports_ordered_by_update_at_ascending(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1427,7 +1427,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1441,13 +1441,13 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 3
         assert data["reports"][0] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["reports"][2] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1461,7 +1461,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_first_page(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1472,7 +1472,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1486,10 +1486,10 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 2
         assert data["reports"][0] == jsonify_dict(
-            reports[2].serialize(user_1_admin)
+            reports[2].serialize(user_1_moderator)
         )
         assert data["reports"][1] == jsonify_dict(
-            reports[1].serialize(user_1_admin)
+            reports[1].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": True,
@@ -1503,7 +1503,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
     def test_it_returns_last_page(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_4: User,
@@ -1514,7 +1514,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
             user_2, user_3, user_4, workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1528,7 +1528,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert data["status"] == "success"
         assert len(data["reports"]) == 1
         assert data["reports"][0] == jsonify_dict(
-            reports[0].serialize(user_1_admin)
+            reports[0].serialize(user_1_moderator)
         )
         assert data["pagination"] == {
             "has_next": False,
@@ -1539,6 +1539,45 @@ class TestGetReportsAsAdmin(ReportTestCase):
         }
 
     def test_it_returns_reports_for_a_given_reporter(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        reports = self.create_reports(
+            user_2, user_3, user_4, workout_cycling_user_2
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.get(
+            f"{self.route}?reporter={user_3.username}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["reports"] == [
+            jsonify_dict(reports[1].serialize(user_1_moderator))
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+
+class TestGetReportsAsAdmin(ReportTestCase):
+    def test_it_returns_reports(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1556,7 +1595,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         )
 
         response = client.get(
-            f"{self.route}?reporter={user_3.username}",
+            self.route,
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1564,15 +1603,22 @@ class TestGetReportsAsAdmin(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["reports"] == [
-            jsonify_dict(reports[1].serialize(user_1_admin))
-        ]
+        assert len(data["reports"]) == 3
+        assert data["reports"][0] == jsonify_dict(
+            reports[2].serialize(user_1_admin)
+        )
+        assert data["reports"][1] == jsonify_dict(
+            reports[1].serialize(user_1_admin)
+        )
+        assert data["reports"][2] == jsonify_dict(
+            reports[0].serialize(user_1_admin)
+        )
         assert data["pagination"] == {
             "has_next": False,
             "has_prev": False,
             "page": 1,
             "pages": 1,
-            "total": 1,
+            "total": 3,
         }
 
 
@@ -1693,13 +1739,13 @@ class GetReportTestCase(ReportTestCase):
     route = "/api/reports/{report_id}"
 
 
-class TestGetReportAsAdmin(GetReportTestCase):
+class TestGetReportAsModerator(GetReportTestCase):
     def test_it_returns_404_when_report_does_not_exist(
-        self, app: Flask, user_1_admin: User
+        self, app: Flask, user_1_moderator: User
     ) -> None:
         report_id = self.random_int()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1713,13 +1759,13 @@ class TestGetReportAsAdmin(GetReportTestCase):
         )
 
     def test_it_returns_report_from_authenticated_user(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -1732,10 +1778,33 @@ class TestGetReportAsAdmin(GetReportTestCase):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["report"] == jsonify_dict(
-            report.serialize(user_1_admin, full=True)
+            report.serialize(user_1_moderator, full=True)
         )
 
     def test_it_returns_report_from_another_user(
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
+    ) -> None:
+        report = self.create_report(reporter=user_2, reported_object=user_3)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.get(
+            self.route.format(report_id=report.id),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["report"] == jsonify_dict(
+            report.serialize(user_1_moderator, full=True)
+        )
+
+
+class TestGetReportAsAdmin(GetReportTestCase):
+    def test_it_returns_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
@@ -1864,7 +1933,7 @@ class TestPatchReport(ReportTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_error_if_user_has_no_admin_rights(
+    def test_it_returns_error_if_user_has_no_moderation_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         report = self.create_report(reporter=user_1, reported_object=user_2)
@@ -1886,10 +1955,10 @@ class TestPatchReport(ReportTestCase):
         self.assert_403(response)
 
     def test_it_returns_404_when_no_report(
-        self, app: Flask, user_1_admin: User
+        self, app: Flask, user_1_moderator: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         report_id = self.random_int()
 
@@ -1905,11 +1974,11 @@ class TestPatchReport(ReportTestCase):
         )
 
     def test_it_returns_400_when_comment_is_missing(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -1922,11 +1991,11 @@ class TestPatchReport(ReportTestCase):
         self.assert_400(response)
 
     def test_it_adds_a_comment(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
         comment = self.random_string()
@@ -1949,18 +2018,18 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["comments"][0]["comment"] == comment
 
     def test_it_resolves_a_report(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         report_comment = ReportComment(
             comment=self.random_string(),
             report_id=report.id,
-            user_id=user_1_admin.id,
+            user_id=user_1_moderator.id,
         )
         db.session.add(report_comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
         comment = self.random_string()
@@ -1980,22 +2049,22 @@ class TestPatchReport(ReportTestCase):
         date_string = self.get_date_string(date=now)
         assert data["report"]["resolved_at"] == date_string
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_1_admin.serialize(current_user=user_1_admin)
+            user_1_moderator.serialize(current_user=user_1_moderator)
         )
         assert data["report"]["updated_at"] == date_string
         assert len(data["report"]["comments"]) == 2
         assert data["report"]["comments"][1]["comment"] == comment
 
     def test_it_marks_a_report_as_unresolved(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         report.resolved = True
         report.resolved_at = datetime.utcnow()
-        report.resolved_by = user_1_admin.id
+        report.resolved_by = user_1_moderator.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
         comment = self.random_string()
@@ -2019,7 +2088,11 @@ class TestPatchReport(ReportTestCase):
         assert data["report"]["comments"][0]["comment"] == comment
 
     def test_it_adds_comment_one_resolved_report(
-        self, app: Flask, user_1_admin: User, user_2_admin: User, user_3: User
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2_admin: User,
+        user_3: User,
     ) -> None:
         report = self.create_report(
             reporter=user_3, reported_object=user_2_admin
@@ -2030,7 +2103,7 @@ class TestPatchReport(ReportTestCase):
         report.resolved_by = user_2_admin.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         comment_time = datetime.utcnow()
         comment = self.random_string()
@@ -2051,7 +2124,7 @@ class TestPatchReport(ReportTestCase):
             date=resolved_time
         )
         assert data["report"]["resolved_by"] == jsonify_dict(
-            user_2_admin.serialize(current_user=user_1_admin)
+            user_2_admin.serialize(current_user=user_1_moderator)
         )
         assert data["report"]["updated_at"] == self.get_date_string(
             date=comment_time
@@ -2081,7 +2154,7 @@ class TestPostReportAction(ReportTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_403_if_user_has_no_admin_rights(
+    def test_it_returns_403_if_user_has_no_moderation_rights(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         report = self.create_report(reporter=user_1, reported_object=user_2)
@@ -2102,10 +2175,10 @@ class TestPostReportAction(ReportTestCase):
         self.assert_403(response)
 
     def test_it_returns_404_when_no_report(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         report_id = self.random_int()
 
@@ -2124,11 +2197,11 @@ class TestPostReportAction(ReportTestCase):
         )
 
     def test_it_returns_400_when_action_type_is_missing(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2143,11 +2216,11 @@ class TestPostReportAction(ReportTestCase):
         self.assert_400(response)
 
     def test_it_returns_400_when_action_type_is_invalid(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2167,12 +2240,12 @@ class TestPostReportActionForUserAction(ReportTestCase):
     route = "/api/reports/{report_id}/actions"
 
     def test_it_returns_400_when_action_type_is_user_warning_lifting(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         """'user_warning_lifting' is created on appeal processing"""
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2190,13 +2263,13 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_returns_400_when_username_is_missing_on_user_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2209,11 +2282,11 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self.assert_400(response, "'username' is missing")
 
     def test_it_returns_400_when_username_is_invalid_on_user_report_action(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2229,11 +2302,11 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self.assert_400(response, "invalid 'username'")
 
     def test_it_returns_400_when_user_is_deleted(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         username = user_2.username
         db.session.delete(user_2)
@@ -2249,11 +2322,11 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self.assert_400(response, "invalid 'username'")
 
     def test_it_suspends_user(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
 
@@ -2275,11 +2348,11 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
     def test_it_returns_400_when_when_user_already_suspended(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2297,14 +2370,14 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self.assert_400(response, "user account already suspended")
 
     def test_it_returns_400_when_when_user_already_warned(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type="user_warning",
             report_id=report.id,
@@ -2324,13 +2397,13 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self.assert_400(response, "user already warned")
 
     def test_it_reactivates_user(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2353,7 +2426,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_creates_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         input_action_type: str,
@@ -2363,7 +2436,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
             user_2.suspended_at = datetime.utcnow()
             db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2379,7 +2452,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             ReportAction.query.filter_by(
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_moderator.id,
                 user_id=user_2.id,
                 action_type=input_action_type,
             ).first()
@@ -2387,18 +2460,18 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
     def test_it_returns_report(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         report_comment = ReportComment(
             comment=self.random_string(),
             report_id=report.id,
-            user_id=user_1_admin.id,
+            user_id=user_1_moderator.id,
         )
         db.session.add(report_comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2417,21 +2490,21 @@ class TestPostReportActionForUserAction(ReportTestCase):
         assert data["status"] == "success"
         updated_report = Report.query.filter_by(id=report.id).first()
         assert data["report"] == jsonify_dict(
-            updated_report.serialize(user_1_admin, full=True)
+            updated_report.serialize(user_1_moderator, full=True)
         )
 
     def test_it_does_not_enable_registration_on_user_suspension(
         self,
         app_with_3_users_max: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_3_users_max, user_1_admin.email
+            app_with_3_users_max, user_1_moderator.email
         )
 
         client.post(
@@ -2464,14 +2537,14 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_sends_an_email_on_user_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_suspension_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2490,7 +2563,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_sends_an_email_on_user_reactivation(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_unsuspension_email_mock: MagicMock,
@@ -2499,7 +2572,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2518,14 +2591,14 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_sends_an_email_on_user_warning(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_warning_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2544,14 +2617,14 @@ class TestPostReportActionForUserAction(ReportTestCase):
     def test_it_does_not_send_when_email_sending_is_disabled(
         self,
         app_wo_email_activation: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_suspension_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app_wo_email_activation, user_1_admin.email
+            app_wo_email_activation, user_1_moderator.email
         )
 
         response = client.post(
@@ -2574,7 +2647,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_returns_400_when_workout_id_is_missing_on_workout_report_action(  # noqa
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2585,7 +2658,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2600,7 +2673,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_returns_400_when_workout_is_invalid_on_workout_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2611,7 +2684,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2629,7 +2702,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_returns_400_when_workout_is_deleted(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2640,7 +2713,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         short_id = workout_cycling_user_2.short_id
         db.session.delete(workout_cycling_user_2)
@@ -2658,7 +2731,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_suspends_workout_by_setting_moderation_date(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2669,7 +2742,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
 
@@ -2695,7 +2768,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_returns_400_when_when_workout_already_suspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2706,7 +2779,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2729,7 +2802,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_unsuspends_workout(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2740,7 +2813,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
 
@@ -2765,7 +2838,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_creates_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2776,7 +2849,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2792,7 +2865,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             ReportAction.query.filter_by(
-                admin_user_id=user_1_admin.id, user_id=user_2.id
+                moderator_id=user_1_moderator.id, user_id=user_2.id
             ).first()
             is not None
         )
@@ -2800,7 +2873,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_returns_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2811,7 +2884,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2829,13 +2902,13 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert data["status"] == "success"
         updated_report = Report.query.filter_by(id=report.id).first()
         assert data["report"] == jsonify_dict(
-            updated_report.serialize(user_1_admin, full=True)
+            updated_report.serialize(user_1_moderator, full=True)
         )
 
     def test_it_sends_an_email_on_workout_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2847,7 +2920,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2866,7 +2939,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_sends_an_email_on_workout_unsuspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2880,7 +2953,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2899,7 +2972,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
     def test_it_does_not_send_an_email_when_email_sending_is_disabled(
         self,
         app_wo_email_activation: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2911,7 +2984,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app_wo_email_activation, user_1_admin.email
+            app_wo_email_activation, user_1_moderator.email
         )
 
         response = client.post(
@@ -2934,7 +3007,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_returns_400_when_comment_id_is_missing_on_comment_report_action(  # noqa
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2946,7 +3019,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2961,7 +3034,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_returns_400_when_comment_is_invalid_on_comment_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -2973,7 +3046,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -2991,7 +3064,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_returns_400_when_comment_is_deleted(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3003,7 +3076,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         short_id = comment.short_id
         db.session.delete(comment)
@@ -3021,7 +3094,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_suspends_comment_by_setting_moderation_date(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3033,7 +3106,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
 
@@ -3056,7 +3129,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_returns_400_when_when_comment_already_suspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3068,7 +3141,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -3093,7 +3166,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_unsuspends_comment(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3105,7 +3178,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         comment.suspended_at = datetime.utcnow()
 
@@ -3127,7 +3200,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_creates_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3139,7 +3212,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -3155,7 +3228,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             ReportAction.query.filter_by(
-                admin_user_id=user_1_admin.id, user_id=user_3.id
+                moderator_id=user_1_moderator.id, user_id=user_3.id
             ).first()
             is not None
         )
@@ -3163,7 +3236,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_returns_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3175,7 +3248,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
 
@@ -3195,13 +3268,13 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         assert data["status"] == "success"
         updated_report = Report.query.filter_by(id=report.id).first()
         assert data["report"] == jsonify_dict(
-            updated_report.serialize(user_1_admin, full=True)
+            updated_report.serialize(user_1_moderator, full=True)
         )
 
     def test_it_sends_an_email_on_comment_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3218,7 +3291,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -3237,7 +3310,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_sends_an_email_on_comment_unsuspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3256,7 +3329,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.post(
@@ -3275,7 +3348,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
     def test_it_does_not_send_email_when_email_sending_id_disabled(
         self,
         app_wo_email_activation: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3292,7 +3365,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
-            app_wo_email_activation, user_1_admin.email
+            app_wo_email_activation, user_1_moderator.email
         )
 
         response = client.post(
@@ -3327,7 +3400,7 @@ class TestProcessReportActionAppeal(
 
         self.assert_401(response)
 
-    def test_it_returns_403_when_user_has_no_admin_rights(
+    def test_it_returns_403_when_user_has_no_moderation_rights(
         self, app: Flask, user_1: User
     ) -> None:
         appeal_id = self.random_short_id()
@@ -3345,11 +3418,11 @@ class TestProcessReportActionAppeal(
         self.assert_403(response)
 
     def test_it_returns_404_if_appeal_does_not_exist(
-        self, app: Flask, user_1_admin: User
+        self, app: Flask, user_1_moderator: User
     ) -> None:
         appeal_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3368,14 +3441,18 @@ class TestProcessReportActionAppeal(
         "input_data", [{"approved": True}, {"reason": "foo"}, {}]
     )
     def test_it_returns_error_when_data_are_missing(
-        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        input_data: Dict,
     ) -> None:
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2
+            user_1_moderator, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3388,14 +3465,14 @@ class TestProcessReportActionAppeal(
         self.assert_400(response)
 
     def test_it_returns_400_when_user_already_unsuspended(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2
+            user_1_moderator, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         user_2.suspended_at = None
         db.session.commit()
@@ -3417,14 +3494,18 @@ class TestProcessReportActionAppeal(
         ],
     )
     def test_it_processes_user_suspension_appeal(
-        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        input_data: Dict,
     ) -> None:
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2
+            user_1_moderator, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3437,7 +3518,7 @@ class TestProcessReportActionAppeal(
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+            "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
         appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
@@ -3446,19 +3527,19 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_user_suspension_is_approved(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_unsuspension_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2, report_id=report.id
+            user_1_moderator, user_2, report_id=report.id
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3473,19 +3554,19 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_user_suspension_is_rejected(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         appeal_rejected_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2, report_id=report.id
+            user_1_moderator, user_2, report_id=report.id
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3505,17 +3586,21 @@ class TestProcessReportActionAppeal(
         ],
     )
     def test_it_processes_user_warning_appeal(
-        self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        input_data: Dict,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         warning_action = self.create_report_user_action(
-            user_1_admin, user_2, "user_warning", report.id
+            user_1_moderator, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3528,7 +3613,7 @@ class TestProcessReportActionAppeal(
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+            "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
         appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
@@ -3537,19 +3622,19 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_user_warning_is_approved(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_warning_lifting_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         warning_action = self.create_report_user_action(
-            user_1_admin, user_2, "user_warning", report.id
+            user_1_moderator, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3564,19 +3649,19 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_user_warning_is_rejected(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         appeal_rejected_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+            reporter=user_1_moderator, reported_object=user_2
         )
         warning_action = self.create_report_user_action(
-            user_1_admin, user_2, "user_warning", report.id
+            user_1_moderator, user_2, "user_warning", report.id
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3598,7 +3683,7 @@ class TestProcessReportActionAppeal(
     def test_it_processes_comment_suspension_appeal(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3612,13 +3697,13 @@ class TestProcessReportActionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
-            user_1_admin, user_3, comment
+            user_1_moderator, user_3, comment
         )
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_3)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3631,7 +3716,7 @@ class TestProcessReportActionAppeal(
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+            "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
         appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
@@ -3640,7 +3725,7 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_comment_suspension_is_approved(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3654,13 +3739,13 @@ class TestProcessReportActionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
-            user_1_admin, user_3, comment
+            user_1_moderator, user_3, comment
         )
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_3)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3675,7 +3760,7 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_comment_suspension_is_rejected(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3689,13 +3774,13 @@ class TestProcessReportActionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
-            user_1_admin, user_3, comment
+            user_1_moderator, user_3, comment
         )
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_3)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3710,7 +3795,7 @@ class TestProcessReportActionAppeal(
     def test_it_returns_400_when_comment_already_unsuspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -3723,7 +3808,7 @@ class TestProcessReportActionAppeal(
             text_visibility=PrivacyLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
-            user_1_admin, user_3, comment
+            user_1_moderator, user_3, comment
         )
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_3)
@@ -3731,7 +3816,7 @@ class TestProcessReportActionAppeal(
         comment.suspended_at = None
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3753,21 +3838,21 @@ class TestProcessReportActionAppeal(
     def test_it_processes_workout_suspension_appeal(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
         suspension_action = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
+            user_1_moderator, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
         now = datetime.utcnow()
 
@@ -3782,7 +3867,7 @@ class TestProcessReportActionAppeal(
         assert response.status_code == 200
         assert response.json == {
             "status": "success",
-            "appeal": jsonify_dict(appeal.serialize(user_1_admin)),
+            "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
         appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
         assert appeal.approved is input_data["approved"]
@@ -3791,21 +3876,21 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_workout_suspension_is_approved(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         workout_unsuspension_email_mock: MagicMock,
     ) -> None:
         suspension_action = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
+            user_1_moderator, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3820,21 +3905,21 @@ class TestProcessReportActionAppeal(
     def test_it_sends_an_email_when_appeal_on_workout_suspension_is_rejected(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         appeal_rejected_email_mock: MagicMock,
     ) -> None:
         suspension_action = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
+            user_1_moderator, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         client.patch(
@@ -3849,13 +3934,13 @@ class TestProcessReportActionAppeal(
     def test_it_returns_400_when_workout_already_unsuspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         suspension_action = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
+            user_1_moderator, user_2, workout_cycling_user_2
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.flush()
@@ -3864,7 +3949,7 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2.suspended_at = None
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.patch(
@@ -3883,7 +3968,7 @@ class TestProcessReportActionAppeal(
     def test_expected_scopes_are_defined(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         client_scope: str,
         can_access: bool,
@@ -3895,7 +3980,7 @@ class TestProcessReportActionAppeal(
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+            app, user_1_moderator, scope=client_scope
         )
 
         response = client.patch(
@@ -3920,7 +4005,7 @@ class TestGetReportsUnresolved(ReportTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_error_if_user_has_no_admin_rights(
+    def test_it_returns_error_if_user_has_no_moderation_rights(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3936,10 +4021,10 @@ class TestGetReportsUnresolved(ReportTestCase):
         self.assert_403(response)
 
     def test_it_returns_false_when_no_reports(
-        self, app: Flask, user_1_admin: User
+        self, app: Flask, user_1_moderator: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -3956,18 +4041,18 @@ class TestGetReportsUnresolved(ReportTestCase):
     def test_it_returns_false_when_reports_are_resolved(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
     ) -> None:
         for reported_user in [user_2, user_3]:
             report = self.create_report(
-                reporter=user_1_admin, reported_object=reported_user
+                reporter=user_1_moderator, reported_object=reported_user
             )
             report.resolved = True
             db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -3984,19 +4069,19 @@ class TestGetReportsUnresolved(ReportTestCase):
     def test_it_returns_true_when_unresolved_reports_exist(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
     ) -> None:
         for reported_user in [user_2, user_3]:
             report = self.create_report(
-                reporter=user_1_admin, reported_object=reported_user
+                reporter=user_1_moderator, reported_object=reported_user
             )
             if reported_user.id == user_3.id:
                 report.resolved = True
             db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -4017,7 +4102,7 @@ class TestGetReportsUnresolved(ReportTestCase):
     def test_expected_scopes_are_defined(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         client_scope: str,
         can_access: bool,
     ) -> None:
@@ -4027,7 +4112,7 @@ class TestGetReportsUnresolved(ReportTestCase):
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+            app, user_1_moderator, scope=client_scope
         )
 
         response = client.get(

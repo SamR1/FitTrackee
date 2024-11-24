@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Account bevestigen",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Geen instructies ontvangen?",
   "ACCOUNT_CONFIRMATION_SENT": "Controleer uw email. Een nieuwe bevestigingsmail werd verzonden naar het opgegeven adres.",
-  "ADMIN": "Beheer",
   "ALREADY_HAVE_ACCOUNT": "Al een account aangemaakt?",
   "CONFIRM_ACCOUNT_DELETION": "Weet u zeker dat u uw account wilt verwijderen? Alle data wordt verwijderd, dit kan niet ongedaan worden.",
   "CURRENT_PASSWORD": "Huidig wachtwoord",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Opnieuw zenden van account bevestigingsmail",
   "RESET_PASSWORD": "Reset uw wachtwoord",
   "REVIEW": "beoordeel",
+  "ROLES": {
+    "admin": "Beheerder"
+  },
   "SHOW_PASSWORD": "toon wachtwoord",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
   "TOGGLE_THEME": "Schakel thema (lichte of donkere modus)",

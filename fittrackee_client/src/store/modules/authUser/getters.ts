@@ -27,8 +27,20 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]: (state: IAuthUserState) => {
     return state.authToken !== null
   },
-  [AUTH_USER_STORE.GETTERS.IS_ADMIN]: (state: IAuthUserState) => {
-    return state.authUserProfile && state.authUserProfile.admin
+  [AUTH_USER_STORE.GETTERS.HAS_ADMIN_RIGHTS]: (state: IAuthUserState) => {
+    return (
+      state.authUserProfile &&
+      ['admin', 'owner'].includes(state.authUserProfile.role)
+    )
+  },
+  [AUTH_USER_STORE.GETTERS.HAS_MODERATOR_RIGHTS]: (state: IAuthUserState) => {
+    return (
+      state.authUserProfile &&
+      ['admin', 'moderator', 'owner'].includes(state.authUserProfile.role)
+    )
+  },
+  [AUTH_USER_STORE.GETTERS.HAS_OWNER_RIGHTS]: (state: IAuthUserState) => {
+    return state.authUserProfile && state.authUserProfile.role === 'owner'
   },
   [AUTH_USER_STORE.GETTERS.IS_REGISTRATION_SUCCESS]: (
     state: IAuthUserState

@@ -4,10 +4,16 @@
       <div class="follows-you" v-if="user.follows === 'true'">
         {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
       </div>
+      <div class="follows-you" v-else-if="user.username === authUser.username">
+        {{ $t('user.YOU') }}
+      </div>
       <UserPicture :user="user" />
       <div class="user-details">
         <div class="user-name">{{ user.username }}</div>
         <UserStats :user="user" />
+      </div>
+      <div class="user-role" v-if="role">
+        {{ $t(role) }}
       </div>
     </div>
     <AlertMessage
@@ -56,7 +62,7 @@
   const route = useRoute()
 
   const { displayOptions } = useApp()
-  const { authUser } = useAuthUser()
+  const { authUser, authUserHasModeratorRights } = useAuthUser()
 
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at
@@ -74,7 +80,12 @@
       user.value.username === authUser?.value.username
   )
   const displayReportLink: ComputedRef<boolean> = computed(
-    () => authUser.value.admin && user.value.suspension_report_id !== undefined
+    () =>
+      authUserHasModeratorRights.value &&
+      user.value.suspension_report_id !== undefined
+  )
+  const role: ComputedRef<string> = computed(() =>
+    user.value.role !== 'user' ? `user.ROLES.${user.value.role}` : ''
   )
 </script>
 
@@ -89,6 +100,12 @@
     .follows-you {
       position: absolute;
       margin-top: -$default-margin;
+      margin-left: -$default-margin;
+    }
+    .user-role {
+      position: absolute;
+      bottom: 0;
+      margin-bottom: -$default-margin;
       margin-left: -$default-margin;
     }
 
@@ -164,6 +181,7 @@
         }
 
         ::v-deep(.user-stats) {
+          flex-direction: column;
           gap: $default-padding * 0.5;
 
           .user-stat {

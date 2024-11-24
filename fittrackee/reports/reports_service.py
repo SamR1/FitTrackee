@@ -76,7 +76,7 @@ class ReportService:
     def update_report(
         *,
         report_id: int,
-        admin_user: User,
+        moderator: User,
         report_comment: str,
         resolved: Optional[bool] = None,
     ) -> Report:
@@ -86,7 +86,9 @@ class ReportService:
         previous_resolved = report.resolved
 
         new_report_comment = ReportComment(
-            comment=report_comment, report_id=report_id, user_id=admin_user.id
+            comment=report_comment,
+            report_id=report_id,
+            user_id=moderator.id,
         )
         db.session.add(new_report_comment)
 
@@ -97,10 +99,10 @@ class ReportService:
             report.resolved = resolved
         if resolved is True and report.resolved_by is None:
             report.resolved_at = now
-            report.resolved_by = admin_user.id
+            report.resolved_by = moderator.id
             report_action = ReportAction(
                 report_id=report.id,
-                admin_user_id=admin_user.id,
+                moderator_id=moderator.id,
                 action_type="report_resolution",
                 created_at=now,
             )
@@ -110,7 +112,7 @@ class ReportService:
             if previous_resolved is True:
                 report_action = ReportAction(
                     report_id=report.id,
-                    admin_user_id=admin_user.id,
+                    moderator_id=moderator.id,
                     action_type="report_reopening",
                     created_at=now,
                 )
@@ -126,7 +128,7 @@ class ReportService:
     def create_report_action(
         *,
         report: Report,
-        admin_user: User,
+        moderator: User,
         action_type: str,
         reason: Optional[str] = None,
         data: Dict,
@@ -158,7 +160,7 @@ class ReportService:
                     raise UserWarningExistsException("user already warned")
 
                 report_action = ReportAction(
-                    admin_user_id=admin_user.id,
+                    moderator_id=moderator.id,
                     action_type=action_type,
                     created_at=now,
                     report_id=report.id,
@@ -172,7 +174,7 @@ class ReportService:
                 db.session.add(report_action)
             else:
                 user_manager_service = UserManagerService(
-                    username=username, admin_user_id=admin_user.id
+                    username=username, moderator_id=moderator.id
                 )
                 user, _, _, _ = user_manager_service.update(
                     suspended=action_type == "user_suspension",
@@ -211,7 +213,7 @@ class ReportService:
                 )
 
             report_action = ReportAction(
-                admin_user_id=admin_user.id,
+                moderator_id=moderator.id,
                 action_type=action_type,
                 created_at=now,
                 report_id=report.id,
@@ -255,9 +257,9 @@ class ReportService:
 
     @staticmethod
     def process_appeal(
-        appeal: ReportActionAppeal, admin_user: User, data: Dict
+        appeal: ReportActionAppeal, moderator: User, data: Dict
     ) -> Optional[ReportAction]:
-        appeal.admin_user_id = admin_user.id
+        appeal.moderator_id = moderator.id
         appeal.approved = data["approved"]
         appeal.reason = data["reason"]
         appeal.updated_at = datetime.utcnow()
@@ -281,14 +283,15 @@ class ReportService:
                     )
 
                 user_manager_service = UserManagerService(
-                    username=appeal.user.username, admin_user_id=admin_user.id
+                    username=appeal.user.username,
+                    moderator_id=moderator.id,
                 )
                 user, _, _, new_report_action = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
             if action.action_type == "user_warning":
                 new_report_action = ReportAction(
-                    admin_user_id=admin_user.id,
+                    moderator_id=moderator.id,
                     action_type="user_warning_lifting",
                     created_at=datetime.utcnow(),
                     report_id=action.report_id,
@@ -306,7 +309,7 @@ class ReportService:
                     )
                 content_id = {f"{content_type}_id": content.id}
                 new_report_action = ReportAction(
-                    admin_user_id=admin_user.id,
+                    moderator_id=moderator.id,
                     action_type=f"{content_type}_unsuspension",
                     created_at=datetime.utcnow(),
                     report_id=action.report_id,

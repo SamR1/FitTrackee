@@ -23,7 +23,7 @@ class TestReportEmailServiceForUserSuspension(
     def test_it_sends_an_email_on_user_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_suspension_email_mock: MagicMock,
@@ -60,7 +60,7 @@ class TestReportEmailServiceForUserReactivation(
     def test_it_sends_an_email_on_user_reactivation(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_unsuspension_email_mock: MagicMock,
@@ -99,7 +99,7 @@ class TestReportEmailServiceForUserWarning(
     def test_it_sends_an_email_on_user_warning_for_user_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_warning_email_mock: MagicMock,
@@ -114,7 +114,7 @@ class TestReportEmailServiceForUserWarning(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning",
             reason=None,
             data={"username": user_3.username},
@@ -145,7 +145,7 @@ class TestReportEmailServiceForUserWarning(
     def test_it_sends_an_email_on_user_warning_for_comment_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -162,7 +162,7 @@ class TestReportEmailServiceForUserWarning(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning",
             reason=None,
             data={"username": user_3.username},
@@ -202,7 +202,7 @@ class TestReportEmailServiceForUserWarning(
     def test_it_sends_an_email_on_user_warning_for_comment_report_when_workout_is_deleted(  # noqa
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -219,7 +219,7 @@ class TestReportEmailServiceForUserWarning(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning",
             reason=None,
             data={"username": user_3.username},
@@ -259,7 +259,7 @@ class TestReportEmailServiceForUserWarning(
     def test_it_sends_an_email_on_user_warning_for_workout_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -275,7 +275,7 @@ class TestReportEmailServiceForUserWarning(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning",
             reason=None,
             data={"username": user_2.username},
@@ -315,7 +315,7 @@ class TestReportEmailServiceForUserWarning(
     def test_it_sends_an_email_on_user_warning_for_workout_with_gpx_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -332,7 +332,7 @@ class TestReportEmailServiceForUserWarning(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning",
             reason=None,
             data={"username": user_2.username},
@@ -379,7 +379,7 @@ class TestReportEmailServiceForUserWarningLifting(
     def test_it_sends_an_email_on_user_warning_for_user_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_warning_lifting_email_mock: MagicMock,
@@ -393,7 +393,7 @@ class TestReportEmailServiceForUserWarningLifting(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning_lifting",
             reason=None,
             data={"username": user_3.username},
@@ -421,7 +421,7 @@ class TestReportEmailServiceForUserWarningLifting(
     def test_it_sends_an_email_on_user_warning_for_comment_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -438,7 +438,7 @@ class TestReportEmailServiceForUserWarningLifting(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning_lifting",
             reason=None,
             data={"username": user_3.username},
@@ -475,7 +475,7 @@ class TestReportEmailServiceForUserWarningLifting(
     def test_it_sends_an_email_on_user_warning_for_workout_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -491,7 +491,7 @@ class TestReportEmailServiceForUserWarningLifting(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning_lifting",
             reason=None,
             data={"username": user_2.username},
@@ -528,7 +528,7 @@ class TestReportEmailServiceForUserWarningLifting(
     def test_it_sends_an_email_on_user_warning_for_workout_with_gpx_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -545,7 +545,7 @@ class TestReportEmailServiceForUserWarningLifting(
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_moderator,
             action_type="user_warning_lifting",
             reason=None,
             data={"username": user_2.username},
@@ -588,7 +588,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_comment_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -634,7 +634,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_comment_suspension_when_workout_is_deleted(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -681,7 +681,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_comment_reactivation(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -730,7 +730,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_comment_reactivation_when_workout_is_deleted(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -781,7 +781,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_workout_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -826,7 +826,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_workout_with_gpx_suspension(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         user_suspension_email_mock: MagicMock,
@@ -876,7 +876,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_workout_reactivation(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -924,7 +924,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
     def test_it_sends_an_email_on_workout_with_gpx_reactivation(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -982,7 +982,7 @@ class TestReportEmailServiceForAppealRejected(
     def test_it_sends_an_email_for_user_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         appeal_rejected_email_mock: MagicMock,
@@ -993,7 +993,7 @@ class TestReportEmailServiceForAppealRejected(
             report_service, reporter=user_2, reported_user=user_3
         )
         report_action = self.create_report_user_action(
-            user_1_admin, user_3, input_action_type, report.id
+            user_1_moderator, user_3, input_action_type, report.id
         )
         db.session.flush()
         report_email_service = ReportEmailService()
@@ -1020,7 +1020,7 @@ class TestReportEmailServiceForAppealRejected(
     def test_it_sends_an_email_on_workout_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1037,7 +1037,7 @@ class TestReportEmailServiceForAppealRejected(
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.flush()
         report_action = self.create_report_workout_action(
-            user_1_admin, user_3, workout_cycling_user_2
+            user_1_moderator, user_3, workout_cycling_user_2
         )
         db.session.flush()
         report_email_service = ReportEmailService()
@@ -1076,7 +1076,7 @@ class TestReportEmailServiceForAppealRejected(
     def test_it_sends_an_email_on_comment_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1091,7 +1091,7 @@ class TestReportEmailServiceForAppealRejected(
             workout=workout_cycling_user_2,
         )
         report_action = self.create_report_comment_action(
-            user_1_admin, user_3, report.reported_comment
+            user_1_moderator, user_3, report.reported_comment
         )
         db.session.flush()
         report_email_service = ReportEmailService()

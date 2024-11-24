@@ -11,7 +11,14 @@
           {{ user.username }}
         </router-link>
       </div>
-      <UserStats :user="user" />
+      <div class="stats-role">
+        <UserStats :user="user" />
+        <div class="role" v-if="role">
+          <div class="user-role">
+            {{ $t(role) }}
+          </div>
+        </div>
+      </div>
     </div>
     <UserRelationshipActions
       v-if="hideRelationship !== true"
@@ -57,6 +64,7 @@
   import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
 
@@ -71,6 +79,8 @@
   const { authUser, from, hideRelationship, updatedUser, user } = toRefs(props)
 
   const route = useRoute()
+
+  const { authUserHasModeratorRights } = useAuthUser()
 
   const emit = defineEmits(['updatedUserRelationship'])
 
@@ -87,8 +97,11 @@
   )
   const displayReportLink: ComputedRef<boolean> = computed(
     () =>
-      authUser.value.admin &&
+      authUserHasModeratorRights.value &&
       route.params.reportId != user.value.suspension_report_id?.toString()
+  )
+  const role: ComputedRef<string> = computed(() =>
+    user.value.role !== 'user' ? `user.ROLES.${user.value.role}` : ''
   )
 
   function emitUser(username: string) {
@@ -136,21 +149,32 @@
           }
         }
       }
-      ::v-deep(.user-stats) {
+      .stats-role {
+        display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        margin: $default-margin 0;
+        justify-content: space-between;
         width: 50%;
-        .distance {
-          padding-right: $default-padding * 0.1;
+        .role {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: $default-margin * 0.5;
         }
-        .stat-number {
-          padding-right: 0;
-        }
-        .distance,
-        .stat-number,
-        .stat-label {
-          font-size: 0.95em;
+
+        ::v-deep(.user-stats) {
+          flex-direction: column;
+          align-items: flex-end;
+          margin: $default-margin 0;
+          .distance {
+            padding-right: $default-padding * 0.1;
+          }
+          .stat-number {
+            padding-right: 0;
+          }
+          .distance,
+          .stat-number,
+          .stat-label {
+            font-size: 0.95em;
+          }
         }
       }
     }

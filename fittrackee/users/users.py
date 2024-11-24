@@ -22,7 +22,6 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
@@ -31,10 +30,14 @@ from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
+    InvalidUserRole,
     NotExistingFollowRequestError,
+    OwnerException,
     UserNotFoundException,
 )
 from .models import FollowRequest, User, UserDataExport, UserSportPreference
+from .roles import UserRole
+from .users_service import UserManagerService
 from .utils.language import get_language
 
 users_blueprint = Blueprint('users', __name__)
@@ -58,7 +61,7 @@ def _get_value_depending_on_user_rights(
     params: Dict, key: str, auth_user: Optional[User]
 ) -> str:
     value = params.get(key, 'false').lower()
-    if not auth_user or not auth_user.admin:
+    if not auth_user or not auth_user.has_moderator_rights:
         value = 'false'
     return value
 
@@ -72,6 +75,8 @@ def get_users_list(auth_user: User) -> Dict:
     if per_page > 50:
         per_page = 50
     column = params.get('order_by', 'username')
+    if column == "admin":
+        column = "role"
     user_column = getattr(User, column)
     order = params.get('order', 'asc')
     order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
@@ -443,7 +448,9 @@ def get_single_user(
             func.lower(User.username) == func.lower(user_name),
         ).first()
         if user:
-            if (not auth_user or not auth_user.admin) and not user.is_active:
+            if (
+                not auth_user or not auth_user.has_admin_rights
+            ) and not user.is_active:
                 return UserNotFoundErrorResponse()
             return {
                 'status': 'success',
@@ -502,7 +509,7 @@ def get_picture(user_name: str) -> Any:
 
 
 @users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@require_auth(scopes=['users:write'], as_admin=True)
+@require_auth(scopes=['users:write'], role=UserRole.ADMIN)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user account.
@@ -615,7 +622,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :param string user_name: user name
 
     :<json boolean activate: (de-)activate user account
-    :<json boolean admin: does the user have administrator rights
+    :<json boolean role: user role ('user', 'admin', 'owner')
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
 
@@ -624,6 +631,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :statuscode 200: ``success``
     :statuscode 400:
         - ``invalid payload``
+        - ``invalid role``
         - ``valid email must be provided``
         - ``new email must be different than current email``
     :statuscode 401:
@@ -642,18 +650,25 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if activate is False and user_name == auth_user.username:
         return ForbiddenErrorResponse()
 
+    role = user_data.get('role')
+    if role == 'owner':
+        return InvalidPayloadErrorResponse(
+            "'owner' can not be set via API, please user CLI instead"
+        )
+
     try:
         reset_password = user_data.get('reset_password', False)
         new_email = user_data.get('new_email')
         user_manager_service = UserManagerService(
-            username=user_name, admin_user_id=auth_user.id
+            username=user_name, moderator_id=auth_user.id
         )
         user, _, _, _ = user_manager_service.update(
-            is_admin=user_data.get('admin'),
+            role=role,
             activate=user_data.get('activate'),
             reset_password=reset_password,
             new_email=new_email,
             with_confirmation=current_app.config['CAN_SEND_EMAILS'],
+            raise_error_on_owner=True,
         )
 
         if current_app.config['CAN_SEND_EMAILS']:
@@ -715,9 +730,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
-    except InvalidEmailException as e:
+    except (InvalidEmailException, InvalidUserRole, OwnerException) as e:
         return InvalidPayloadErrorResponse(str(e))
-    except exc.StatementError as e:
+    except (TypeError, exc.StatementError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
@@ -731,8 +746,9 @@ def delete_user(
 
     A user can only delete his own account.
 
-    An admin can delete all accounts except his account if he's the only
-    one admin.
+    A user with admin rights can delete all accounts except his account if
+    he is the only user with admin rights.
+    Only owner can delete his own account.
 
     **Scope**: ``users:write``
 
@@ -772,12 +788,15 @@ def delete_user(
         ).first()
         if not user:
             return UserNotFoundErrorResponse()
+        if user.id != auth_user.id and user.role == UserRole.OWNER.value:
+            return ForbiddenErrorResponse('you can not delete owner account')
 
-        if user.id != auth_user.id and not auth_user.admin:
+        if user.id != auth_user.id and not auth_user.has_admin_rights:
             return ForbiddenErrorResponse()
         if (
-            user.admin is True
-            and User.query.filter_by(admin=True).count() == 1
+            user.has_admin_rights is True
+            and User.query.filter(User.role >= UserRole.ADMIN.value).count()
+            == 1
         ):
             return ForbiddenErrorResponse(
                 'you can not delete your account, '
@@ -1242,7 +1261,7 @@ def get_user_sanctions(
         appLog.error(f"Error: user {user_name} not found")
         return UserNotFoundErrorResponse()
 
-    if user.id != auth_user.id and not auth_user.admin:
+    if user.id != auth_user.id and not auth_user.has_moderator_rights:
         return ForbiddenErrorResponse()
 
     params = request.args.copy()

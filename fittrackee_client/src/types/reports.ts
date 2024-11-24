@@ -23,7 +23,7 @@ export interface IReport {
 
 export interface IReportAction {
   action_type: string
-  admin_user: IUserLightProfile
+  moderator: IUserLightProfile
   appeal: IReportActionAppeal | null
   created_at: string
   id: number
@@ -40,7 +40,7 @@ export interface IReportComment {
   user: IUserProfile
 }
 
-export interface IReportForAdmin extends IReport {
+export interface IReportForModerator extends IReport {
   report_actions?: IReportAction[]
   comments?: IReportComment[]
 }

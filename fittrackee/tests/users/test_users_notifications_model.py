@@ -497,7 +497,7 @@ class TestNotificationForWorkoutReportAction(
     def test_it_creates_notification_on_comment_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -509,7 +509,7 @@ class TestNotificationForWorkoutReportAction(
         )
 
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type=input_report_action,
             report_id=report.id,
@@ -517,7 +517,7 @@ class TestNotificationForWorkoutReportAction(
         )
 
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_2.id,
             event_object_id=workout_cycling_user_2.id,
         ).first()
@@ -529,7 +529,7 @@ class TestNotificationForWorkoutReportAction(
     def test_it_serializes_comment_action_notification(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -540,14 +540,14 @@ class TestNotificationForWorkoutReportAction(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type=input_report_action,
             report_id=report.id,
             workout_id=workout_cycling_user_2.id,
         )
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_2.id,
             event_object_id=workout_cycling_user_2.id,
         ).first()
@@ -828,7 +828,7 @@ class TestNotificationForCommentReportAction(
     def test_it_creates_notification_on_comment_report_action(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -839,7 +839,7 @@ class TestNotificationForCommentReportAction(
         report = self.create_report(reporter=user_2, reported_object=comment)
 
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_report_action,
             report_id=report.id,
@@ -847,7 +847,7 @@ class TestNotificationForCommentReportAction(
         )
 
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
             event_object_id=comment.id,
         ).first()
@@ -859,7 +859,7 @@ class TestNotificationForCommentReportAction(
     def test_it_serializes_comment_action_notification(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -869,14 +869,14 @@ class TestNotificationForCommentReportAction(
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_report_action,
             report_id=report.id,
             comment_id=comment.id,
         )
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
             event_object_id=comment.id,
         ).first()
@@ -1222,11 +1222,11 @@ class TestNotificationForReport(NotificationTestCase):
         assert notification is None
 
     def test_it_does_not_create_notification_when_admin_is_reporter(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         report = Report(
             note=random_string(),
-            reported_by=user_1_admin.id,
+            reported_by=user_1_moderator.id,
             reported_object=user_2,
         )
         db.session.add(report)
@@ -1239,7 +1239,7 @@ class TestNotificationForReport(NotificationTestCase):
         assert notification is None
 
     def test_it_does_not_create_notification_when_admin_is_inactive(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = Report(
             note=random_string(),
@@ -1247,7 +1247,7 @@ class TestNotificationForReport(NotificationTestCase):
             reported_object=user_2,
         )
         db.session.add(report)
-        user_1_admin.is_active = False
+        user_1_moderator.is_active = False
         db.session.commit()
 
         notification = Notification.query.filter_by(
@@ -1256,7 +1256,7 @@ class TestNotificationForReport(NotificationTestCase):
         assert notification is None
 
     def test_it_creates_notification_on_report_creation(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = Report(
             note=random_string(),
@@ -1268,17 +1268,17 @@ class TestNotificationForReport(NotificationTestCase):
 
         notification = Notification.query.filter_by(
             from_user_id=user_3.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
         ).first()
         assert notification.created_at == report.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == 'report'
         assert notification.event_object_id == report.id
 
-    def test_it_creates_notifications_for_all_admin(
+    def test_it_creates_notifications_for_all_admins_and_moderators(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2_admin: User,
         user_3: User,
         user_4: User,
@@ -1296,14 +1296,14 @@ class TestNotificationForReport(NotificationTestCase):
         ).all()
         assert len(notifications) == 2
         assert {notifications[0].to_user_id, notifications[1].to_user_id} == {
-            user_1_admin.id,
+            user_1_moderator.id,
             user_2_admin.id,
         }
 
     def test_it_serializes_report_notification(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1320,53 +1320,53 @@ class TestNotificationForReport(NotificationTestCase):
         db.session.commit()
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
         ).first()
 
         serialized_notification = notification.serialize()
 
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
-            current_user=user_1_admin
+            current_user=user_1_moderator
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
-            user_1_admin
+            user_1_moderator
         )
         assert serialized_notification["type"] == "report"
 
 
 class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2
+            user_1_moderator, user_2
         )
         self.create_action_appeal(
             suspension_action.id, user_2, with_commit=False
         )
-        user_1_admin.is_active = False
+        user_1_moderator.is_active = False
         db.session.commit()
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
         ).first()
         assert notification is None
 
     def test_it_creates_notification_on_user_appeal(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2
+            user_1_moderator, user_2
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
         ).first()
         assert notification.created_at == appeal.created_at
         assert notification.marked_as_read is False
@@ -1376,13 +1376,13 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
     def test_it_creates_notification_on_workout_suspension_appeal(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_suspension = self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
+            user_1_moderator, user_2, workout_cycling_user_2
         )
         db.session.add(workout_suspension)
         db.session.flush()
@@ -1400,13 +1400,13 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         ).all()
         assert len(notifications) == 1
         assert notifications[0].from_user_id == user_2.id
-        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].to_user_id == user_1_moderator.id
         assert notifications[0].event_object_id == workout_suspension.id
 
     def test_it_creates_notification_on_comment_suspension_appeal(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
@@ -1418,7 +1418,7 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
             text_visibility=PrivacyLevel.FOLLOWERS,
         )
         comment_suspension = self.create_report_comment_action(
-            user_1_admin, user_2, comment
+            user_1_moderator, user_2, comment
         )
         db.session.add(comment_suspension)
         db.session.flush()
@@ -1435,32 +1435,32 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         ).all()
         assert len(notifications) == 1
         assert notifications[0].from_user_id == user_2.id
-        assert notifications[0].to_user_id == user_1_admin.id
+        assert notifications[0].to_user_id == user_1_moderator.id
         assert notifications[0].event_object_id == comment_suspension.id
 
     def test_it_serializes_suspension_appeal_notification(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         suspension_action = self.create_report_user_action(
-            user_1_admin, user_2, report_id=report.id
+            user_1_moderator, user_2, report_id=report.id
         )
         self.create_action_appeal(suspension_action.id, user_2)
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
         ).first()
 
         serialized_notification = notification.serialize()
 
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
-            current_user=user_1_admin
+            current_user=user_1_moderator
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
-            user_1_admin
+            user_1_moderator
         )
         assert serialized_notification["type"] == "suspension_appeal"
 
@@ -1472,7 +1472,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_creates_notification_on_user_action_on_user_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1482,14 +1482,14 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         report = self.create_report(reporter=user_2, reported_object=user_3)
 
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_action_type,
             report_id=report.id,
         )
 
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
         ).first()
         assert notification.created_at == report_action.created_at
@@ -1502,7 +1502,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_serializes_user_action_notification_on_user_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1511,13 +1511,13 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
         ).first()
 
@@ -1541,7 +1541,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_creates_notification_on_user_action_on_workout_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1553,14 +1553,14 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         )
 
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type=input_action_type,
             report_id=report.id,
         )
 
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_2.id,
         ).first()
         assert notification.created_at == report_action.created_at
@@ -1574,7 +1574,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_serializes_user_action_notification_on_workout_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1585,13 +1585,13 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
             reporter=user_3, reported_object=workout_cycling_user_2
         )
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_2.id,
         ).first()
 
@@ -1617,7 +1617,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_creates_notification_on_user_action_on_comment_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1628,14 +1628,14 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         report = self.create_report(reporter=user_2, reported_object=comment)
 
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_action_type,
             report_id=report.id,
         )
 
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
         ).first()
         assert notification.created_at == report_action.created_at
@@ -1649,7 +1649,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     def test_it_serializes_user_action_notification_on_comment_report(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -1659,13 +1659,13 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = self.create_report(reporter=user_2, reported_object=comment)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_3,
             action_type=input_action_type,
             report_id=report.id,
         )
         notification = Notification.query.filter_by(
-            from_user_id=user_1_admin.id,
+            from_user_id=user_1_moderator.id,
             to_user_id=user_3.id,
         ).first()
 
@@ -1686,32 +1686,32 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
 
 class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
     def test_it_does_not_create_notification_when_admin_is_inactive(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type="user_warning",
             report_id=report.id,
         )
         self.create_action_appeal(report_action.id, user_2, with_commit=False)
-        user_1_admin.is_active = False
+        user_1_moderator.is_active = False
         db.session.commit()
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
             event_type='user_warning_appeal',
         ).first()
         assert notification is None
 
     def test_it_creates_notification_on_appeal(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type="user_warning",
             report_id=report.id,
@@ -1720,7 +1720,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
 
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
             event_type='user_warning_appeal',
         ).first()
         assert notification.created_at == appeal.created_at
@@ -1728,11 +1728,11 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         assert notification.event_object_id == appeal.id
 
     def test_it_serializes_user_warning_appeal_notification(
-        self, app: Flask, user_1_admin: User, user_2: User, user_3: User
+        self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         report_action = self.create_report_action(
-            user_1_admin,
+            user_1_moderator,
             user_2,
             action_type="user_warning",
             report_id=report.id,
@@ -1740,7 +1740,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         self.create_action_appeal(report_action.id, user_2)
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
-            to_user_id=user_1_admin.id,
+            to_user_id=user_1_moderator.id,
             event_type='user_warning_appeal',
         ).first()
 
@@ -1748,11 +1748,11 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
 
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] == user_2.serialize(
-            current_user=user_1_admin
+            current_user=user_1_moderator
         )
         assert serialized_notification["id"] == notification.id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
-            user_1_admin
+            user_1_moderator
         )
         assert serialized_notification["type"] == "user_warning_appeal"

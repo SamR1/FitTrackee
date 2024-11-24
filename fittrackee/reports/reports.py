@@ -18,6 +18,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 
@@ -135,7 +136,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             ),
             (
                 Report.reported_by == auth_user.id
-                if auth_user.admin is False
+                if auth_user.role < UserRole.MODERATOR.value
                 else (
                     Report.reported_by == reporter.id
                     if reporter and reporter_username
@@ -167,7 +168,8 @@ def get_report(
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     report = Report.query.filter_by(id=report_id).first()
     if not report or (
-        not auth_user.admin and report.reported_by != auth_user.id
+        not auth_user.has_moderator_rights
+        and report.reported_by != auth_user.id
     ):
         return NotFoundErrorResponse(f"report not found (id: {report_id})")
 
@@ -178,7 +180,7 @@ def get_report(
 
 
 @reports_blueprint.route("/reports/<int:report_id>", methods=["PATCH"])
-@require_auth(scopes=["reports:write"], as_admin=True)
+@require_auth(scopes=["reports:write"], role=UserRole.MODERATOR)
 def update_report(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -190,7 +192,7 @@ def update_report(
     try:
         report = report_service.update_report(
             report_id=report_id,
-            admin_user=auth_user,
+            moderator=auth_user,
             report_comment=comment,
             resolved=data.get("resolved"),
         )
@@ -204,7 +206,7 @@ def update_report(
 
 
 @reports_blueprint.route("/reports/<int:report_id>/actions", methods=["POST"])
-@require_auth(scopes=["reports:write"], as_admin=True)
+@require_auth(scopes=["reports:write"], role=UserRole.MODERATOR)
 def create_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -226,7 +228,7 @@ def create_action(
     try:
         action = report_service.create_report_action(
             report=report,
-            admin_user=auth_user,
+            moderator=auth_user,
             action_type=action_type,
             reason=reason,
             data=data,
@@ -262,7 +264,7 @@ def create_action(
 
 
 @reports_blueprint.route('/appeals/<string:appeal_id>', methods=["PATCH"])
-@require_auth(scopes=['users:write'], as_admin=True)
+@require_auth(scopes=['users:write'], role=UserRole.MODERATOR)
 def process_appeal(
     auth_user: User, appeal_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -317,7 +319,7 @@ def process_appeal(
 
 
 @reports_blueprint.route("/reports/unresolved", methods=["GET"])
-@require_auth(scopes=["reports:read"], as_admin=True)
+@require_auth(scopes=["reports:read"], role=UserRole.MODERATOR)
 def get_unresolved_reports_status(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:

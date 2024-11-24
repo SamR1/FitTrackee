@@ -575,7 +575,7 @@ def get_workout(
     workout = Workout.query.filter(Workout.uuid == workout_uuid).first()
     if not workout or (
         not can_view(workout, 'workout_visibility', auth_user)
-        and not (allow_admin and auth_user and auth_user.admin)
+        and not (allow_admin and auth_user and auth_user.has_admin_rights)
     ):
         raise WorkoutForbiddenException()
     return workout

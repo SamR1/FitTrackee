@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Conferma dell'account",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non hai ricevuto istruzioni?",
   "ACCOUNT_CONFIRMATION_SENT": "Controlla la tua email. Una nuova email di conferma è stata inviata all'indirizzo specificato.",
-  "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Hai già un account?",
   "CONFIRM_ACCOUNT_DELETION": "Sei sicuro di voler eliminare il tuo account? Tutti i dati saranno eliminati, quest'azione non può essere annullata",
   "CURRENT_PASSWORD": "Password corrente",
@@ -109,6 +108,9 @@
   "REGISTER_DISABLED": "Mi dispiace, la registrazione è disabilitata.",
   "RESENT_ACCOUNT_CONFIRMATION": "Re-invia email di conferma dell'account",
   "RESET_PASSWORD": "Resetta password",
+  "ROLES": {
+    "admin": "Admin"
+  },
   "SHOW_PASSWORD": "mostra password",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Questo account è inattivo.",
   "USERNAME": "Username",

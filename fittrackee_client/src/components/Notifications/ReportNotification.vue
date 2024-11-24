@@ -41,10 +41,10 @@
   import CommentForUser from '@/components/Comment/CommentForUser.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
-  import type { IReportForAdmin } from '@/types/reports'
+  import type { IReportForModerator } from '@/types/reports'
 
   interface Props {
-    report: IReportForAdmin
+    report: IReportForModerator
   }
   const props = defineProps<Props>()
   const { report } = toRefs(props)
@@ -73,9 +73,6 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      button {
-        text-transform: capitalize;
-      }
     }
   }
 </style>

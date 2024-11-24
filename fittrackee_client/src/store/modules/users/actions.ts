@@ -167,8 +167,8 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     const data: Record<string, boolean | string | number | undefined> = {}
-    if (payload.admin !== undefined) {
-      data.admin = payload.admin
+    if (payload.role !== undefined) {
+      data.role = payload.role
     }
     if (payload.resetPassword) {
       data.reset_password = payload.resetPassword
@@ -187,7 +187,7 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data.users[0]
           )
-          if (payload.resetPassword || payload.new_email) {
+          if (payload.resetPassword || payload.new_email || payload.role) {
             context.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           }
           if (payload.activate || payload.new_email) {

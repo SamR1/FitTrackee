@@ -371,7 +371,7 @@ class Workout(BaseModel):
         - light: when true, only workouts data needed for workout lists
           and timeline
         """
-        for_report = for_report and user is not None and user.admin
+        for_report = for_report and user is not None and user.has_admin_rights
         if can_see_map_data is None:
             can_see_map_data = can_view(
                 self,
@@ -459,7 +459,9 @@ class Workout(BaseModel):
         for_report: bool = False,
         light: bool = True,  # for workouts list and timeline
     ) -> Dict:
-        for_report = for_report and user is not None and user.admin
+        for_report = (
+            for_report and user is not None and user.has_moderator_rights
+        )
         if not can_view(
             self, "workout_visibility", user=user, for_report=for_report
         ):

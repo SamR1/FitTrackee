@@ -60,6 +60,7 @@ from .models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from .roles import UserRole
 from .tasks import export_data
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
@@ -186,7 +187,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
             for admin in User.query.filter(
-                User.admin == True,  # noqa
+                User.role == UserRole.ADMIN.value,
                 User.is_active == True,  # noqa
             ).all():
                 notification = Notification(

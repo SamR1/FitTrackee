@@ -6,9 +6,11 @@ Create Date: 2023-04-13 11:28:53.769936
 
 """
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
+
+from fittrackee.users.roles import UserRole
 
 # revision identifiers, used by Alembic.
 revision = 'aa7802092404'
@@ -160,23 +162,39 @@ def upgrade():
         batch_op.add_column(
             sa.Column('suspended_at', sa.DateTime(), nullable=True)
         )
+        batch_op.add_column(sa.Column('role', sa.Integer(), nullable=True))
     user_helper = sa.Table(
-        'users', sa.MetaData(), sa.Column('id', sa.Integer(), nullable=False)
+        'users',
+        sa.MetaData(),
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('admin', sa.String(length=10), nullable=False),
     )
     connection = op.get_bind()
     for user in connection.execute(user_helper.select()):
-        op.execute(
-            "UPDATE users "
-            "SET manually_approves_followers = True, "
-            "    hide_profile_in_users_directory = True, "
-            "    workouts_visibility = 'PRIVATE', "
-            "    map_visibility = 'PRIVATE' "
-            f"WHERE users.id = {user.id}"
-        )
+        op.execute(f"""
+            UPDATE users
+            SET manually_approves_followers = True,
+                hide_profile_in_users_directory = True,
+                workouts_visibility = 'PRIVATE',
+                map_visibility = 'PRIVATE',
+                role = 
+                    CASE 
+                        WHEN {user.admin} IS TRUE THEN {UserRole.ADMIN.value}
+                        ELSE  {UserRole.USER.value}
+                    END
+            WHERE users.id = {user.id}
+            """)
     op.alter_column('users', 'manually_approves_followers', nullable=False)
     op.alter_column('users', 'hide_profile_in_users_directory', nullable=False)
     op.alter_column('users', 'workouts_visibility', nullable=False)
     op.alter_column('users', 'map_visibility', nullable=False)
+    op.alter_column('users', 'role', nullable=False)
+    op.create_check_constraint(
+        'ck_users_role',
+        'users',
+        f"role IN ({', '.join(UserRole.db_values())})",
+    )
+    op.drop_column('users', 'admin')
 
     with op.batch_alter_table('workouts', schema=None) as batch_op:
         batch_op.add_column(
@@ -357,7 +375,7 @@ def upgrade():
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=True),
-        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('moderator_id', sa.Integer(), nullable=True),
         sa.Column('report_id', sa.Integer(), nullable=False),
         sa.Column('comment_id', sa.Integer(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=True),
@@ -365,7 +383,7 @@ def upgrade():
         sa.Column('action_type', sa.String(length=50), nullable=False),
         sa.Column('reason', sa.String(), nullable=True),
         sa.ForeignKeyConstraint(
-            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+            ['moderator_id'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(
             ['report_id'], ['reports.id'], ondelete='CASCADE'
@@ -382,8 +400,8 @@ def upgrade():
     )
     with op.batch_alter_table('report_actions', schema=None) as batch_op:
         batch_op.create_index(
-            batch_op.f('ix_report_actions_admin_user_id'),
-            ['admin_user_id'],
+            batch_op.f('ix_report_actions_moderator_id'),
+            ['moderator_id'],
             unique=False,
         )
         batch_op.create_index(
@@ -416,7 +434,7 @@ def upgrade():
         sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('action_id', sa.Integer(), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
-        sa.Column('admin_user_id', sa.Integer(), nullable=True),
+        sa.Column('moderator_id', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=True),
         sa.Column('approved', sa.Boolean(), nullable=True),
@@ -426,7 +444,7 @@ def upgrade():
             ['action_id'], ['report_actions.id'], ondelete='CASCADE'
         ),
         sa.ForeignKeyConstraint(
-            ['admin_user_id'], ['users.id'], ondelete='SET NULL'
+            ['moderator_id'], ['users.id'], ondelete='SET NULL'
         ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
@@ -442,8 +460,8 @@ def upgrade():
             unique=False,
         )
         batch_op.create_index(
-            batch_op.f('ix_report_action_appeals_admin_user_id'),
-            ['admin_user_id'],
+            batch_op.f('ix_report_action_appeals_moderator_id'),
+            ['moderator_id'],
             unique=False,
         )
         batch_op.create_index(
@@ -457,7 +475,7 @@ def downgrade():
     with op.batch_alter_table('report_action_appeals', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_report_action_appeals_user_id'))
         batch_op.drop_index(
-            batch_op.f('ix_report_action_appeals_admin_user_id')
+            batch_op.f('ix_report_action_appeals_moderator_id')
         )
         batch_op.drop_index(batch_op.f('ix_report_action_appeals_action_id'))
 
@@ -467,7 +485,7 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_report_actions_created_at'))
         batch_op.drop_index(batch_op.f('ix_report_actions_user_id'))
         batch_op.drop_index(batch_op.f('ix_report_actions_report_id'))
-        batch_op.drop_index(batch_op.f('ix_report_actions_admin_user_id'))
+        batch_op.drop_index(batch_op.f('ix_report_actions_moderator_id'))
 
     op.drop_table('report_actions')
 
@@ -505,7 +523,26 @@ def downgrade():
         batch_op.drop_column('workout_visibility')
         batch_op.drop_column('suspended_at')
 
+    op.add_column('users', sa.Column('admin', sa.Boolean(), nullable=True))
+    batch_op.drop_constraint(batch_op.f('ck_users_role'))
+
+    user_helper = sa.Table(
+        'users',
+        sa.MetaData(),
+        sa.Column('id', sa.Integer(), nullable=False),
+        sa.Column('role', sa.Integer(), nullable=False),
+    )
+    connection = op.get_bind()
+    for user in connection.execute(user_helper.select()):
+        op.execute(f"""
+            UPDATE users
+            SET admin = {user.role} <> {UserRole.USER.value}
+            WHERE users.id = {user.id}
+            """)
+
     with op.batch_alter_table('users', schema=None) as batch_op:
+        batch_op.alter_column('admin', nullable=False)
+        batch_op.drop_column('role')
         batch_op.drop_column('suspended_at')
         batch_op.drop_column('map_visibility')
         batch_op.drop_column('workouts_visibility')

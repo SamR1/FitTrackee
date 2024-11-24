@@ -140,8 +140,10 @@
       }
     },
     "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Add admin rights",
-      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
+      "CHANGE_ROLE": "Change role",
+      "CHANGE_TO_ADMIN": "Change to admin",
+      "CHANGE_TO_MODERATOR": "Change to moderator",
+      "CHANGE_TO_USER": "Change to user"
     },
     "TITLE": "Administration - Users"
   },

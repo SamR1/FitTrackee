@@ -1,4 +1,4 @@
-import type { IReportForAdmin } from '@/types/reports'
+import type { IReportForModerator } from '@/types/reports'
 import type { IUserReportAction, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
@@ -28,7 +28,7 @@ export interface INotification {
   id: number
   from?: IUserProfile
   marked_as_read: boolean
-  report?: IReportForAdmin
+  report?: IReportForModerator
   type: TNotificationType
   workout?: IWorkout
 }

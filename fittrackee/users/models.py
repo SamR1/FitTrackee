@@ -11,6 +11,7 @@ from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
+from sqlalchemy.schema import CheckConstraint
 from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
@@ -28,7 +29,12 @@ from .exceptions import (
     InvalidNotificationTypeException,
     NotExistingFollowRequestError,
 )
-from .roles import UserRole
+from .roles import (
+    UserRole,
+    has_admin_rights,
+    has_moderator_rights,
+    is_auth_user,
+)
 from .utils.token import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
@@ -208,7 +214,6 @@ class User(BaseModel):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
-    admin = db.Column(db.Boolean, default=False, nullable=False)
     first_name = db.Column(db.String(80), nullable=True)
     last_name = db.Column(db.String(80), nullable=True)
     birth_date = db.Column(db.DateTime, nullable=True)
@@ -248,6 +253,15 @@ class User(BaseModel):
         nullable=False,
     )
     suspended_at = db.Column(db.DateTime, nullable=True)
+    role = db.Column(
+        db.Integer,
+        CheckConstraint(
+            f"role IN ({', '.join(UserRole.db_values())})",
+            name='ck_users_role',
+        ),
+        nullable=False,
+        default=UserRole.USER.value,
+    )
 
     workouts = db.relationship(
         'Workout',
@@ -264,7 +278,6 @@ class User(BaseModel):
         lazy='select',
         backref=db.backref('user', lazy='select', single_parent=True),
     )
-
     received_follow_requests = db.relationship(
         FollowRequest,
         backref='to_user',
@@ -396,6 +409,14 @@ class User(BaseModel):
 
     def get_user_id(self) -> int:
         return self.id
+
+    @property
+    def has_moderator_rights(self) -> bool:
+        return has_moderator_rights(UserRole(self.role))
+
+    @property
+    def has_admin_rights(self) -> bool:
+        return has_admin_rights(UserRole(self.role))
 
     @hybrid_property
     def workouts_count(self) -> int:
@@ -638,26 +659,24 @@ class User(BaseModel):
             role = (
                 UserRole.AUTH_USER
                 if current_user.id == self.id
-                else UserRole.ADMIN
-                if current_user.admin
-                else UserRole.USER
+                else UserRole(current_user.role)
             )
 
         serialized_user = {
-            'admin': self.admin,
             'created_at': self.created_at,
             'followers': self.followers.count(),
             'following': self.following.count(),
             'nb_workouts': self.workouts_count,
             'picture': self.picture is not None,
+            'role': UserRole(self.role).name.lower(),
             'suspended_at': self.suspended_at,
             'username': self.username,
         }
-        if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
+        if is_auth_user(role) or has_moderator_rights(role):
             serialized_user['is_active'] = self.is_active
             serialized_user['email'] = self.email
         if (
-            role == UserRole.ADMIN
+            has_moderator_rights(role)
             and self.suspended_at
             and self.suspension_action
         ):
@@ -665,7 +684,7 @@ class User(BaseModel):
                 self.suspension_action.report_id
             )
 
-        if current_user is not None and role != UserRole.AUTH_USER:
+        if current_user is not None and not is_auth_user(role):
             serialized_user['follows'] = self.follows(current_user)
             serialized_user['is_followed_by'] = self.is_followed_by(
                 current_user
@@ -720,10 +739,10 @@ class User(BaseModel):
             serialized_user['total_distance'] = float(total[0])
             serialized_user['total_duration'] = str(total[1])
 
-        if role in [UserRole.AUTH_USER, UserRole.ADMIN]:
+        if is_auth_user(role) or has_admin_rights(role):
             serialized_user['email_to_confirm'] = self.email_to_confirm
 
-        if role in [UserRole.ADMIN]:
+        if has_moderator_rights(role):
             reports_count = self.all_reports_count
             serialized_user['created_reports_count'] = reports_count[
                 'created_reports_count'
@@ -733,7 +752,7 @@ class User(BaseModel):
                 'sanctions_count'
             ]
 
-        if role == UserRole.AUTH_USER:
+        if is_auth_user(role):
             accepted_privacy_policy = False
             if self.accepted_policy_date:
                 accepted_privacy_policy = (

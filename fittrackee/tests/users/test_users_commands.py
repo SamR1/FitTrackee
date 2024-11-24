@@ -1,12 +1,14 @@
 import secrets
 from unittest.mock import patch
 
+import pytest
 from click.testing import CliRunner
 from flask import Flask
 
-from fittrackee import bcrypt
+from fittrackee import bcrypt, db
 from fittrackee.cli import cli
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 
 from ..utils import random_email, random_string
 
@@ -212,7 +214,8 @@ class TestCliUserUpdate:
 
         assert result.exit_code == 0
         assert "No updates." in result.output
-        assert user_1.admin is False
+        db.session.refresh(user_1)
+        assert user_1.role == UserRole.USER.value
         assert user_1.is_active is True
         assert user_1.email == previous_email
         assert user_1.password == previous_password
@@ -228,14 +231,31 @@ class TestCliUserUpdate:
                 ['users', 'update', user_1.username, '--set-admin', 'true'],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{user_1.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=user_1.id).first()
-            assert updated_user.admin is True
-            # unchanged values
-            assert updated_user.is_active is True
-            assert updated_user.email == previous_email
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(user_1)
+        assert f"User '{user_1.username}' updated." in result.output
+        assert user_1.role == UserRole.ADMIN.value
+        # unchanged values
+        assert user_1.is_active is True
+        assert user_1.email == previous_email
+        assert user_1.password == previous_password
+
+    def test_it_displays_warning_when_using_deprecated_set_admin(
+        self, app: Flask, user_1: User
+    ) -> None:
+        runner = CliRunner()
+
+        with app.app_context():
+            result = runner.invoke(
+                cli,
+                ['users', 'update', user_1.username, '--set-admin', 'true'],
+            )
+
+        assert result.exit_code == 0
+        assert (
+            "WARNING: --set-admin is deprecated. "
+            "Please use --set-role option instead."
+        ) in result.stdout
 
     def test_it_removes_admin_rights(
         self, app: Flask, user_1_admin: User
@@ -256,14 +276,14 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{user_1_admin.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=user_1_admin.id).first()
-            assert updated_user.admin is False
-            # unchanged values
-            assert updated_user.is_active is True
-            assert updated_user.email == previous_email
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(user_1_admin)
+        assert f"User '{user_1_admin.username}' updated." in result.output
+        assert user_1_admin.role == UserRole.USER.value
+        # unchanged values
+        assert user_1_admin.is_active is True
+        assert user_1_admin.email == previous_email
+        assert user_1_admin.password == previous_password
 
     def test_it_activates_user_when_adding_admin_rights(
         self, app: Flask, inactive_user: User
@@ -284,14 +304,95 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{inactive_user.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=inactive_user.id).first()
-            assert updated_user.admin is True
-            assert updated_user.is_active is True
-            # unchanged values
-            assert updated_user.email == previous_email
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(inactive_user)
+        assert f"User '{inactive_user.username}' updated." in result.output
+        assert inactive_user.role == UserRole.ADMIN.value
+        assert inactive_user.is_active is True
+        # unchanged values
+        assert inactive_user.email == previous_email
+        assert inactive_user.password == previous_password
+
+    def test_it_sets_role(self, app: Flask, user_1: User) -> None:
+        runner = CliRunner()
+        previous_email = user_1.email
+        previous_password = user_1.password
+
+        with app.app_context():
+            result = runner.invoke(
+                cli,
+                ['users', 'update', user_1.username, '--set-role', 'admin'],
+            )
+
+        assert result.exit_code == 0
+        db.session.refresh(user_1)
+        assert f"User '{user_1.username}' updated." in result.output
+        assert user_1.role == UserRole.ADMIN.value
+        # unchanged values
+        assert user_1.is_active is True
+        assert user_1.email == previous_email
+        assert user_1.password == previous_password
+
+    @pytest.mark.parametrize(
+        'input_role,input_active',
+        [
+            ('user', False),
+            ('moderator', True),
+            ('admin', True),
+            ('owner', True),
+        ],
+    )
+    def test_it_activates_user_only_when_role_is_not_user(
+        self,
+        app: Flask,
+        inactive_user: User,
+        input_role: str,
+        input_active: bool,
+    ) -> None:
+        runner = CliRunner()
+
+        with app.app_context():
+            runner.invoke(
+                cli,
+                [
+                    'users',
+                    'update',
+                    inactive_user.username,
+                    '--set-role',
+                    input_role,
+                ],
+            )
+
+        db.session.refresh(inactive_user)
+        assert inactive_user.role == UserRole[input_role.upper()].value
+        assert inactive_user.is_active == input_active
+
+    def test_it_displays_error_when_set_admin_and_set_role_are_used_together(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        runner = CliRunner()
+
+        with app.app_context():
+            result = runner.invoke(
+                cli,
+                [
+                    'users',
+                    'update',
+                    user_1.username,
+                    '--set-role',
+                    'admin',
+                    '--set-admin',
+                    'true',
+                ],
+            )
+
+            assert result.exit_code == 1
+            assert (
+                "--set-admin and --set-role can not be used together."
+                in result.stdout
+            )
 
     def test_it_activates_user(self, app: Flask, inactive_user: User) -> None:
         runner = CliRunner()
@@ -309,14 +410,14 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{inactive_user.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=inactive_user.id).first()
-            assert updated_user.is_active is True
-            # unchanged values
-            assert updated_user.admin is False
-            assert updated_user.email == previous_email
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(inactive_user)
+        assert f"User '{inactive_user.username}' updated." in result.output
+        assert inactive_user.is_active is True
+        # unchanged values
+        assert inactive_user.role == UserRole.USER.value
+        assert inactive_user.email == previous_email
+        assert inactive_user.password == previous_password
 
     def test_it_resets_password(self, app: Flask, user_1: User) -> None:
         runner = CliRunner()
@@ -336,17 +437,15 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{user_1.username}' updated." in result.output
-            assert f"The new password is: {new_password}" in result.output
-            updated_user = User.query.filter_by(id=user_1.id).first()
-            assert bcrypt.check_password_hash(
-                updated_user.password, new_password
-            )
-            # unchanged values
-            assert updated_user.admin is False
-            assert updated_user.is_active is True
-            assert updated_user.email == previous_email
+        assert result.exit_code == 0
+        db.session.refresh(user_1)
+        assert f"User '{user_1.username}' updated." in result.output
+        assert f"The new password is: {new_password}" in result.output
+        assert bcrypt.check_password_hash(user_1.password, new_password)
+        # unchanged values
+        assert user_1.role == UserRole.USER.value
+        assert user_1.is_active is True
+        assert user_1.email == previous_email
 
     def test_it_updates_email(self, app: Flask, user_1: User) -> None:
         runner = CliRunner()
@@ -365,14 +464,14 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{user_1.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=user_1.id).first()
-            assert updated_user.email == new_email
-            # unchanged values
-            assert updated_user.admin is False
-            assert updated_user.is_active is True
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(user_1)
+        assert f"User '{user_1.username}' updated." in result.output
+        assert user_1.email == new_email
+        # unchanged values
+        assert user_1.role == UserRole.USER.value
+        assert user_1.is_active is True
+        assert user_1.password == previous_password
 
     def test_it_displays_error_when_email_is_invalid(
         self, app: Flask, user_1: User
@@ -391,11 +490,11 @@ class TestCliUserUpdate:
                 ],
             )
 
-            assert result.exit_code == 0
-            assert (
-                result.output
-                == "An error occurred: valid email must be provided\n"
-            )
+        assert result.exit_code == 0
+        assert (
+            result.output
+            == "An error occurred: valid email must be provided\n"
+        )
 
     def test_it_updates_user(self, app: Flask, inactive_user: User) -> None:
         runner = CliRunner()
@@ -411,15 +510,15 @@ class TestCliUserUpdate:
                     inactive_user.username,
                     '--update-email',
                     new_email,
-                    '--set-admin',
-                    'true',
+                    '--set-role',
+                    'admin',
                 ],
             )
 
-            assert result.exit_code == 0
-            assert f"User '{inactive_user.username}' updated." in result.output
-            updated_user = User.query.filter_by(id=inactive_user.id).first()
-            assert updated_user.email == new_email
-            assert updated_user.admin is True
-            assert updated_user.is_active is True
-            assert updated_user.password == previous_password
+        assert result.exit_code == 0
+        db.session.refresh(inactive_user)
+        assert f"User '{inactive_user.username}' updated." in result.output
+        assert inactive_user.email == new_email
+        assert inactive_user.role == UserRole.ADMIN.value
+        assert inactive_user.is_active is True
+        assert inactive_user.password == previous_password

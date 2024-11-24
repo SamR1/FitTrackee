@@ -183,7 +183,11 @@ export interface IAuthUserGetters {
     state: IAuthUserState
   ): IUserProfile[]
 
-  [AUTH_USER_STORE.GETTERS.IS_ADMIN](state: IAuthUserState): boolean
+  [AUTH_USER_STORE.GETTERS.HAS_ADMIN_RIGHTS](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.HAS_MODERATOR_RIGHTS](state: IAuthUserState): boolean
+
+  [AUTH_USER_STORE.GETTERS.HAS_OWNER_RIGHTS](state: IAuthUserState): boolean
 
   [AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED](state: IAuthUserState): boolean
 

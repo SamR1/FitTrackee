@@ -4,6 +4,7 @@ import pytest
 
 from fittrackee import db
 from fittrackee.users.models import FollowRequest, User, UserSportPreference
+from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport
 
 from ..utils import generate_follow_request, random_string
@@ -36,13 +37,43 @@ def user_1_admin() -> User:
     admin = User(
         username='admin', email='admin@example.com', password='12345678'
     )
-    admin.admin = True
+    admin.role = UserRole.ADMIN.value
     admin.hide_profile_in_users_directory = False
     admin.is_active = True
     admin.accepted_policy = datetime.datetime.utcnow()
     db.session.add(admin)
     db.session.commit()
     return admin
+
+
+@pytest.fixture()
+def user_1_moderator() -> User:
+    moderator = User(
+        username='moderator',
+        email='moderator@example.com',
+        password='12345678',
+    )
+    moderator.role = UserRole.MODERATOR.value
+    moderator.hide_profile_in_users_directory = False
+    moderator.is_active = True
+    moderator.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(moderator)
+    db.session.commit()
+    return moderator
+
+
+@pytest.fixture()
+def user_1_owner() -> User:
+    owner = User(
+        username='owner', email='owner@example.com', password='12345678'
+    )
+    owner.role = UserRole.OWNER.value
+    owner.hide_profile_in_users_directory = False
+    owner.is_active = True
+    owner.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(owner)
+    db.session.commit()
+    return owner
 
 
 @pytest.fixture()
@@ -110,7 +141,19 @@ def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.admin = True
+    user.role = UserRole.ADMIN.value
+    user.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
+def user_2_moderator() -> User:
+    user = User(username='toto', email='toto@toto.com', password='12345678')
+    user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.role = UserRole.MODERATOR.value
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)
     db.session.commit()
@@ -122,6 +165,19 @@ def user_3() -> User:
     user = User(username='sam', email='sam@test.com', password='12345678')
     user.is_active = True
     user.hide_profile_in_users_directory = False
+    user.weekm = True
+    user.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
+def user_3_admin() -> User:
+    user = User(username='sam', email='sam@test.com', password='12345678')
+    user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.role = UserRole.ADMIN.value
     user.weekm = True
     user.accepted_policy = datetime.datetime.utcnow()
     db.session.add(user)

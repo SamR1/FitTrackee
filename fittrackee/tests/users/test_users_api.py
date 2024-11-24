@@ -20,6 +20,7 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.utils import get_readable_duration
 from fittrackee.workouts.models import Sport, Workout
 
@@ -1688,7 +1689,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_1.username}',
             content_type='application/json',
-            data=json.dumps(dict(admin=True)),
+            data=json.dumps(dict(role="admin")),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1710,7 +1711,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_returns_error_if_payload_for_admin_rights_is_invalid(
+    def test_it_returns_error_if_payload_for_role_is_invalid(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1720,20 +1721,15 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(admin="")),
+            data=json.dumps(dict(role="")),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        assert response.status_code == 500
-        data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert (
-            'error, please try again or contact the administrator'
-            in data['message']
-        )
+        self.assert_400(response, "invalid role")
 
-    def test_it_adds_admin_rights_to_a_user(
-        self, app: Flask, user_1_admin: User, user_2: User
+    @pytest.mark.parametrize('input_role', ["admin", "moderator"])
+    def test_it_updates_user_role(
+        self, app: Flask, user_1_admin: User, user_2: User, input_role: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -1742,7 +1738,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(admin=True)),
+            data=json.dumps(dict(role=input_role)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1752,9 +1748,9 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         assert len(data['data']['users']) == 1
         user = data['data']['users'][0]
         assert user['email'] == user_2.email
-        assert user['admin'] is True
+        assert user['role'] == UserRole[input_role.upper()].name.lower()
 
-    def test_it_removes_admin_rights_to_a_user(
+    def test_it_returns_error_when_setting_owner_role_to_user(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1764,7 +1760,30 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(admin=False)),
+            data=json.dumps(dict(role="owner")),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, "'owner' can not be set via API, please user CLI instead"
+        )
+
+    @pytest.mark.parametrize('input_role', ["admin", "user"])
+    def test_it_updates_moderator_role(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_moderator: User,
+        input_role: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2_moderator.username}',
+            content_type='application/json',
+            data=json.dumps(dict(role=input_role)),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1772,12 +1791,90 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['users']) == 1
-
         user = data['data']['users'][0]
-        assert user['email'] == user_2.email
-        assert user['admin'] is False
+        assert user['email'] == user_2_moderator.email
+        assert user['role'] == UserRole[input_role.upper()].name.lower()
 
-    def test_it_does_not_send_email_when_only_admin_rights_update(
+    def test_it_returns_error_when_setting_owner_role_to_moderator(
+        self, app: Flask, user_1_admin: User, user_2_moderator: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2_moderator.username}',
+            content_type='application/json',
+            data=json.dumps(dict(role="owner")),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, "'owner' can not be set via API, please user CLI instead"
+        )
+
+    @pytest.mark.parametrize('input_role', ["moderator", "user"])
+    def test_it_updates_admin_role(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        input_role: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(role=input_role)),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 1
+        user = data['data']['users'][0]
+        assert user['email'] == user_2_admin.email
+        assert user['role'] == UserRole[input_role.upper()].name.lower()
+
+    def test_it_returns_error_when_setting_owner_role_to_admin(
+        self, app: Flask, user_1_admin: User, user_2_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_2_admin.username}',
+            content_type='application/json',
+            data=json.dumps(dict(role="owner")),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(
+            response, "'owner' can not be set via API, please user CLI instead"
+        )
+
+    def test_it_returns_error_when_modifying_owner_role(
+        self, app: Flask, user_1_owner: User, user_2_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2_admin.email
+        )
+
+        response = client.patch(
+            f'/api/users/{user_1_owner.username}',
+            content_type='application/json',
+            data=json.dumps(dict(role="admin")),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, "user with owner rights can not be modified")
+
+    def test_it_does_not_send_email_when_only_role_update(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1792,7 +1889,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         response = client.patch(
             f'/api/users/{user_2.username}',
             content_type='application/json',
-            data=json.dumps(dict(admin=True)),
+            data=json.dumps(dict(role="moderator")),
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -2441,6 +2538,20 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    def test_moderator_can_not_delete_another_user_account(
+        self, app: Flask, user_1_moderator: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_2.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_error_when_deleting_non_existing_user(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2487,7 +2598,28 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
         assert response.status_code == 204
         assert User.query.filter_by(id=deleted_user_id).first() is None
 
-    def test_admin_can_not_delete_its_own_account_if_no_other_admin(
+    def test_admin_can_not_delete_owner_account(
+        self,
+        app: Flask,
+        user_1_owner: User,
+        user_2_admin: User,
+        user_3_admin: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2_admin.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1_owner.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(
+            response,
+            'you can not delete owner account',
+        )
+
+    def test_admin_can_not_delete_its_own_account_if_no_other_user_with_admin_rights(  # noqa
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2496,6 +2628,38 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
 
         response = client.delete(
             f'/api/users/{user_1_admin.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(
+            response,
+            'you can not delete your account, no other user has admin rights',
+        )
+
+    def test_owner_can_delete_his_own_account(
+        self, app: Flask, user_1_owner: User, user_2_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_owner.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1_owner.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert User.query.filter_by(id=user_1_owner.id).first() is None
+
+    def test_owner_can_not_delete_his_own_account_if_no_other_user_with_admin_rights(  # noqa
+        self, app: Flask, user_1_owner: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_owner.email
+        )
+
+        response = client.delete(
+            f'/api/users/{user_1_owner.username}',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -3021,15 +3185,15 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
             'total': 3,
         }
 
-    def test_it_returns_report_actions_when_auther_is_admin(
+    def test_it_returns_report_actions_when_author_is_moderator(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
     ) -> None:
-        action = self.create_report_user_action(user_1_admin, user_2)
+        action = self.create_report_user_action(user_1_moderator, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
+            app, user_1_moderator.email
         )
 
         response = client.get(
@@ -3042,7 +3206,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
         assert 'success' in data['status']
         assert data['data']['sanctions'] == [
             jsonify_dict(
-                action.serialize(current_user=user_1_admin, full=False)
+                action.serialize(current_user=user_1_moderator, full=False)
             ),
         ]
         assert data['pagination'] == {
@@ -3067,7 +3231,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
             reporter=user_2_admin, reported_object=user_1
         )
         self.create_report_action(
-            admin_user=user_2_admin,
+            moderator=user_2_admin,
             user=user_1,
             action_type=input_action_type,
             report_id=report.id,

@@ -23,7 +23,6 @@
               <tr>
                 <th>#</th>
                 <th class="left-text">{{ $t('user.USERNAME') }}</th>
-                <th class="left-text">{{ $t('user.EMAIL') }}</th>
                 <th class="left-text">
                   {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                 </th>
@@ -31,7 +30,7 @@
                   {{ capitalize($t('workouts.WORKOUT', 0)) }}
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
-                <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.ROLE') }}</th>
                 <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
@@ -51,12 +50,10 @@
                   <router-link :to="`/admin/users/${user.username}`">
                     {{ user.username }}
                   </router-link>
-                </td>
-                <td>
-                  <span class="cell-heading">
-                    {{ $t('user.EMAIL') }}
-                  </span>
-                  {{ user.email }}
+                  <ErrorMessage
+                    :message="errorMessages"
+                    v-if="errorMessages && userInEdition === user.username"
+                  />
                 </td>
                 <td>
                   <span class="cell-heading">
@@ -89,12 +86,9 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
-                    {{ $t('user.ADMIN') }}
+                    {{ $t('user.ROLE') }}
                   </span>
-                  <i
-                    :class="`fa fa${user.admin ? '-check' : ''}-square-o`"
-                    aria-hidden="true"
-                  />
+                  {{ $t(`user.ROLES.${user.role}`) }}
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
@@ -111,19 +105,38 @@
                   <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
-                  <button
-                    :class="{ danger: user.admin }"
-                    :disabled="isAdminButtonDisabled(user)"
-                    @click="updateUser(user.username, !user.admin)"
-                  >
-                    {{
-                      $t(
-                        `admin.USERS.TABLE.${
-                          user.admin ? 'REMOVE' : 'ADD'
-                        }_ADMIN_RIGHTS`
-                      )
-                    }}
-                  </button>
+                  <div class="roles">
+                    <div
+                      v-if="isUserInEdition(user.username)"
+                      class="roles-buttons"
+                    >
+                      <button
+                        v-for="role in getUserRoles(user.role)"
+                        :class="{
+                          danger: user.role === 'admin' || role === 'user',
+                        }"
+                        :key="role"
+                        @click="updateUser(user.username, role)"
+                      >
+                        {{
+                          $t(
+                            `admin.USERS.TABLE.CHANGE_TO_${role.toUpperCase()}`
+                          )
+                        }}
+                      </button>
+                      <button @click="userInEdition = ''">
+                        {{ $t('buttons.CANCEL') }}
+                      </button>
+                    </div>
+                    <div v-else>
+                      <button
+                        :disabled="isButtonDisabled(user)"
+                        @click="userInEdition = user.username"
+                      >
+                        {{ $t('admin.USERS.TABLE.CHANGE_ROLE') }}
+                      </button>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -134,7 +147,10 @@
             :pagination="pagination"
             :query="query"
           />
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+          <ErrorMessage
+            :message="errorMessages"
+            v-if="userInEdition === '' && errorMessages"
+          />
           <button @click.prevent="$router.push('/admin')">
             {{ $t('admin.BACK_TO_ADMIN') }}
           </button>
@@ -148,6 +164,7 @@
   import {
     computed,
     reactive,
+    ref,
     watch,
     capitalize,
     onBeforeMount,
@@ -165,7 +182,7 @@
   import useAuthUser from '@/composables/useAuthUser'
   import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IUserProfile, TUsersPayload } from '@/types/user'
+  import type { IUserProfile, TUserRole, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -196,6 +213,10 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  const userInEdition: Ref<string> = ref('')
 
   function loadUsers(queryParams: TUsersPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
@@ -203,10 +224,25 @@
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)
   }
-  function updateUser(username: string, admin: boolean) {
+  function isUserInEdition(username: string) {
+    return userInEdition.value === username
+  }
+  function getUserRoles(role: TUserRole): TUserRole[] {
+    switch (role) {
+      case 'admin':
+        return ['moderator', 'user']
+      case 'moderator':
+        return ['admin', 'user']
+      case 'user':
+        return ['admin', 'moderator']
+      default:
+        return []
+    }
+  }
+  function updateUser(username: string, role: TUserRole) {
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
-      admin,
+      role,
     })
   }
   function reloadUsers(queryParam: string, queryValue: string) {
@@ -216,9 +252,11 @@
     }
     router.push({ path: '/admin/users', query })
   }
-  function isAdminButtonDisabled(user: IUserProfile) {
+  function isButtonDisabled(user: IUserProfile) {
     return (
-      user.username === authUser.value.username || user.suspended_at !== null
+      user.username === authUser.value.username ||
+      user.suspended_at !== null ||
+      user.role === 'owner'
     )
   }
 
@@ -227,6 +265,14 @@
     (newQuery: LocationQuery) => {
       query = getQuery(newQuery, orderByList, defaultOrderBy, { query })
       loadUsers(query)
+    }
+  )
+  watch(
+    () => isSuccess.value,
+    (newSuccess: boolean) => {
+      if (newSuccess) {
+        userInEdition.value = ''
+      }
     }
   )
 
@@ -258,6 +304,19 @@
     .left-text {
       text-align: left;
     }
+
+    .roles {
+      width: 120px;
+      display: flex;
+      justify-content: center;
+      margin: auto;
+      .roles-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $default-padding * 0.5;
+      }
+    }
     ::v-deep(.user-picture) {
       img {
         height: 30px;
@@ -269,12 +328,21 @@
     }
 
     @media screen and (max-width: $small-limit) {
+      .roles {
+        width: 45%;
+      }
       .top-button {
         display: block;
         margin-bottom: $default-margin * 2;
       }
       .pagination-center {
         margin-top: -3 * $default-margin;
+      }
+    }
+
+    @media screen and (max-width: $x-small-limit) {
+      .roles {
+        width: 100%;
       }
     }
   }

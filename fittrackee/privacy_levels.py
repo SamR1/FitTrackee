@@ -32,7 +32,9 @@ def can_view(
     for_report: bool = False,
 ) -> bool:
     owner = target_object.user
-    if user and (user.id == owner.id or (user.admin and for_report)):
+    if user and (
+        user.id == owner.id or (user.has_moderator_rights and for_report)
+    ):
         return True
 
     if (

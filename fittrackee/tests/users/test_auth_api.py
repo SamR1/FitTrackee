@@ -4244,7 +4244,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         appeal = ReportActionAppeal.query.filter_by(
             action_id=action.id
         ).first()
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.user_id == user_2.id
@@ -4587,7 +4587,7 @@ class TestPostUserSanctionAppeal(UserSuspensionTestCase):
         appeal = ReportActionAppeal.query.filter_by(
             action_id=action.id
         ).first()
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.user_id == user_2.id
