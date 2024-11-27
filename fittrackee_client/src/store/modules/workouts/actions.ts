@@ -167,10 +167,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 }
               })
           }
-          context.dispatch(
-            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-            res.data.data.workouts[0].id
-          )
+          if (!payload.segmentId) {
+            context.dispatch(
+              WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+              res.data.data.workouts[0].id
+            )
+          }
         } else {
           context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
           handleError(context, null)

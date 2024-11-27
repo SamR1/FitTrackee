@@ -560,6 +560,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: 'workouts.SEGMENT',
       count: 0,
+      withoutChecks: true,
       allowedToSuspendedUser: false,
     },
   },
