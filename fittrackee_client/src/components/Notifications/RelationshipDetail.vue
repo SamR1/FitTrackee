@@ -79,15 +79,18 @@
     .follow-request-user {
       display: flex;
       align-items: center;
-      .user-picture {
+      ::v-deep(.user-picture) {
         min-width: initial;
         padding: 0 $default-padding;
-        img {
-          height: 60px;
-          width: 60px;
-        }
-        .no-picture {
-          font-size: 3.8em;
+        @media screen and (max-width: $small-limit) {
+          padding: 0 $default-padding $default-padding * 0.5;
+          img {
+            height: 60px;
+            width: 60px;
+          }
+          .no-picture {
+            font-size: 3.8em;
+          }
         }
       }
     }
