@@ -56,7 +56,10 @@
           <div id="bottom" />
         </div>
         <div v-else>
-          <NotFound v-if="!workoutData.loading" target="WORKOUT" />
+          <NotFound
+            v-if="!workoutData.loading"
+            :target="displaySegment ? 'SEGMENT' : 'WORKOUT'"
+          />
         </div>
       </div>
     </div>
