@@ -131,7 +131,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences {
-    padding-top: $default-padding;
+    padding: $default-padding * 0.5 0 $default-padding;
     .preferences-section {
       font-weight: bold;
       text-transform: uppercase;

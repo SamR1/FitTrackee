@@ -316,6 +316,7 @@
   @import '~@/scss/vars.scss';
 
   #user-infos {
+    padding: 0 0 $default-padding;
     .user-bio {
       white-space: pre-wrap;
     }

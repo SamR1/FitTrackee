@@ -482,7 +482,7 @@
             }
           }
           &.notifications {
-            padding-top: $default-padding;
+            margin: $default-margin 0 0;
             .notifications-label {
               display: block;
             }
