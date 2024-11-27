@@ -691,7 +691,7 @@ class User(BaseModel):
             )
             serialized_user['blocked'] = self.is_blocked_by(current_user)
 
-        if light:
+        if light or not role:
             return serialized_user
 
         sports = []

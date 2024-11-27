@@ -50,9 +50,11 @@
   const { authUser } = useAuthUser()
 
   const displayLinks = computed(() =>
-    user.value.username === authUser?.value.username
-      ? !authUser?.value.suspended_at
-      : true
+    authUser.value.username
+      ? user.value.username === authUser.value.username
+        ? !authUser.value.suspended_at
+        : true
+      : false
   )
 
   function getURL(

@@ -65,22 +65,24 @@
         <dd>
           <time>{{ registrationDate }}</time>
         </dd>
-        <dt v-if="user.email">{{ $t('user.EMAIL') }}:</dt>
-        <dd v-if="user.email">{{ user.email }}</dd>
-        <dt v-if="user.first_name">{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
-        <dd v-if="user.first_name">{{ user.first_name }}</dd>
-        <dt v-if="user.last_name">{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
-        <dd v-if="user.last_name">{{ user.last_name }}</dd>
-        <dt v-if="birthDate">{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-        <dd v-if="birthDate">
-          <time>{{ birthDate }}</time>
-        </dd>
-        <dt v-if="user.location">{{ $t('user.PROFILE.LOCATION') }}:</dt>
-        <dd v-if="user.location">{{ user.location }}</dd>
-        <dt v-if="user.bio">{{ $t('user.PROFILE.BIO') }}:</dt>
-        <dd v-if="user.bio" class="user-bio">
-          {{ user.bio }}
-        </dd>
+        <template v-if="isAuthenticated">
+          <dt v-if="fromAdmin">{{ $t('user.EMAIL') }}:</dt>
+          <dd v-if="fromAdmin">{{ user.email }}</dd>
+          <dt v-if="user.first_name">{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
+          <dd v-if="user.first_name">{{ user.first_name }}</dd>
+          <dt v-if="user.last_name">{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
+          <dd v-if="user.last_name">{{ user.last_name }}</dd>
+          <dt v-if="birthDate">{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
+          <dd v-if="birthDate">
+            <time>{{ birthDate }}</time>
+          </dd>
+          <dt v-if="user.location">{{ $t('user.PROFILE.LOCATION') }}:</dt>
+          <dd v-if="user.location">{{ user.location }}</dd>
+          <dt v-if="user.bio">{{ $t('user.PROFILE.BIO') }}:</dt>
+          <dd v-if="user.bio" class="user-bio">
+            {{ user.bio }}
+          </dd>
+        </template>
       </dl>
       <div
         class="report-submitted"
@@ -102,35 +104,55 @@
         <div v-if="authUser && authUserHasModeratorRights && fromAdmin">
           <UserAdminReports :authUser="authUser" :user="user" />
         </div>
-        <div class="profile-buttons" v-if="fromAdmin">
-          <template v-if="user.role !== 'owner' && authUserHasAdminRights">
-            <button
-              class="danger"
-              v-if="authUser?.username !== user.username"
-              @click.prevent="updateDisplayModal('delete')"
-            >
-              {{ $t('admin.DELETE_USER') }}
-            </button>
-            <button
-              v-if="!user.is_active"
-              @click.prevent="confirmUserAccount(user.username)"
-            >
-              {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
-            </button>
-            <button
-              v-if="authUser?.username !== user.username"
-              @click.prevent="displayEmailForm"
-            >
-              {{ $t('admin.UPDATE_USER_EMAIL') }}
-            </button>
+        <template v-if="isAuthenticated">
+          <div class="profile-buttons" v-if="fromAdmin">
+            <template v-if="user.role !== 'owner' && authUserHasAdminRights">
+              <button
+                class="danger"
+                v-if="authUser?.username !== user.username"
+                @click.prevent="updateDisplayModal('delete')"
+              >
+                {{ $t('admin.DELETE_USER') }}
+              </button>
+              <button
+                v-if="!user.is_active"
+                @click.prevent="confirmUserAccount(user.username)"
+              >
+                {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
+              </button>
+              <button
+                v-if="authUser?.username !== user.username"
+                @click.prevent="displayEmailForm"
+              >
+                {{ $t('admin.UPDATE_USER_EMAIL') }}
+              </button>
+              <button
+                v-if="
+                  authUser?.username !== user.username &&
+                  appConfig.is_email_sending_enabled
+                "
+                @click.prevent="updateDisplayModal('reset')"
+              >
+                {{ $t('admin.RESET_USER_PASSWORD') }}
+              </button>
+              <UserRelationshipActions
+                v-if="authUser?.username"
+                :authUser="authUser"
+                :user="user"
+                from="userInfos"
+              />
+            </template>
+            <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+          </div>
+          <div class="profile-buttons" v-else>
             <button
               v-if="
-                authUser?.username !== user.username &&
-                appConfig.is_email_sending_enabled
+                $route.path === '/profile' ||
+                user.username === authUser?.username
               "
-              @click.prevent="updateDisplayModal('reset')"
+              @click="$router.push('/profile/edit')"
             >
-              {{ $t('admin.RESET_USER_PASSWORD') }}
+              {{ $t('user.PROFILE.EDIT') }}
             </button>
             <UserRelationshipActions
               v-if="authUser?.username"
@@ -138,37 +160,20 @@
               :user="user"
               from="userInfos"
             />
-          </template>
-          <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
-        </div>
-        <div class="profile-buttons" v-else>
-          <button
-            v-if="
-              $route.path === '/profile' || user.username === authUser?.username
-            "
-            @click="$router.push('/profile/edit')"
-          >
-            {{ $t('user.PROFILE.EDIT') }}
-          </button>
-          <UserRelationshipActions
-            v-if="authUser?.username"
-            :authUser="authUser"
-            :user="user"
-            from="userInfos"
-          />
-          <button
-            v-if="
-              $route.name === 'User' &&
-              user.username !== authUser?.username &&
-              user.suspended_at === null &&
-              reportStatus !== `user-${user.username}-created`
-            "
-            @click="displayReportForm"
-          >
-            {{ $t('user.REPORT') }}
-          </button>
-          <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
-        </div>
+            <button
+              v-if="
+                $route.name === 'User' &&
+                user.username !== authUser?.username &&
+                user.suspended_at === null &&
+                reportStatus !== `user-${user.username}-created`
+              "
+              @click="displayReportForm"
+            >
+              {{ $t('user.REPORT') }}
+            </button>
+            <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+          </div>
+        </template>
       </template>
     </div>
   </div>
@@ -203,7 +208,11 @@
   const store = useStore()
 
   const { appConfig, appLanguage, displayOptions, errorMessages } = useApp()
-  const { authUserHasModeratorRights, authUserHasAdminRights } = useAuthUser()
+  const {
+    authUserHasModeratorRights,
+    authUserHasAdminRights,
+    isAuthenticated,
+  } = useAuthUser()
 
   const displayModal: Ref<string> = ref('')
   const formErrors: Ref<boolean> = ref(false)

@@ -471,67 +471,21 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
 
 
 class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
-    def test_it_returns_user_account_infos(
+    def test_it_returns_limited_user_infos_by_default(
         self, app: Flask, user_1: User
     ) -> None:
         serialized_user = user_1.serialize(light=False)
 
-        assert serialized_user['role'] == UserRole(user_1.role).name.lower()
-        assert serialized_user['username'] == user_1.username
-        assert 'blocked' not in serialized_user
-        assert 'email' not in serialized_user
-        assert 'email_to_confirm' not in serialized_user
-        assert 'is_active' not in serialized_user
-
-    def test_it_returns_user_profile_infos(
-        self, app: Flask, user_1: User
-    ) -> None:
-        serialized_user = user_1.serialize(light=False)
-
-        self.assert_user_profile(serialized_user, user_1)
-
-    def test_it_does_return_user_preferences(
-        self, app: Flask, user_1: User
-    ) -> None:
-        serialized_user = user_1.serialize(light=False)
-
-        assert 'imperial_units' not in serialized_user
-        assert 'language' not in serialized_user
-        assert 'timezone' not in serialized_user
-        assert 'weekm' not in serialized_user
-        assert 'workouts_visibility' not in serialized_user
-        assert 'map_visibility' not in serialized_user
-        assert 'manually_approves_followers' not in serialized_user
-        assert 'hide_profile_in_users_directory' not in serialized_user
-
-    def test_it_returns_some_workouts_infos(
-        self, app: Flask, user_1: User
-    ) -> None:
-        serialized_user = user_1.serialize(light=False)
-
-        assert 'nb_workouts' in serialized_user
-        assert 'nb_sports' not in serialized_user
-        assert 'records' not in serialized_user
-        assert 'sports_list' not in serialized_user
-        assert 'total_ascent' not in serialized_user
-        assert 'total_distance' not in serialized_user
-        assert 'total_duration' not in serialized_user
-
-    def test_it_does_not_return_confirmation_token(
-        self, app: Flask, user_1: User
-    ) -> None:
-        serialized_user = user_1.serialize(light=False)
-
-        assert 'confirmation_token' not in serialized_user
-
-    def test_it_does_return_reports_info(
-        self, app: Flask, user_1: User
-    ) -> None:
-        serialized_user = user_1.serialize(light=False)
-
-        assert "created_reports_count" not in serialized_user
-        assert "reported_count" not in serialized_user
-        assert "sanctions_count" not in serialized_user
+        assert serialized_user == {
+            'created_at': user_1.created_at,
+            'followers': user_1.followers.count(),
+            'following': user_1.following.count(),
+            'nb_workouts': user_1.workouts_count,
+            'picture': user_1.picture is not None,
+            'role': UserRole(user_1.role).name.lower(),
+            'suspended_at': user_1.suspended_at,
+            'username': user_1.username,
+        }
 
 
 class TestInactiveUserSerialize(UserModelAssertMixin):

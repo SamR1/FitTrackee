@@ -505,12 +505,20 @@ const routes: RouteRecordRaw[] = [
         name: 'UserFollowers',
         component: UserRelationships,
         props: { relationship: 'followers' },
+        meta: {
+          withoutAuth: false,
+          withoutChecks: false,
+        },
       },
       {
         path: 'following',
         name: 'UserFollowing',
         component: UserRelationships,
         props: { relationship: 'following' },
+        meta: {
+          withoutAuth: false,
+          withoutChecks: false,
+        },
       },
     ],
   },
