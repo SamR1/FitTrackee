@@ -39,7 +39,11 @@ import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
 import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
-import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  NOTIFICATIONS_STORE,
+  ROOT_STORE,
+} from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import AdminView from '@/views/AdminView.vue'
 import Dashboard from '@/views/Dashboard.vue'
@@ -722,6 +726,7 @@ router.beforeEach((to, from, next) => {
       title ? ` - ${capitalize(translatedTitle)}` : ''
     }`
   }
+  store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {

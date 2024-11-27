@@ -11,11 +11,11 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs, onUnmounted, onBeforeMount, watch } from 'vue'
+  import { toRefs, onBeforeMount, watch } from 'vue'
   import { useRoute } from 'vue-router'
 
   import useEquipments from '@/composables/useEquipments'
-  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -44,8 +44,5 @@
   onBeforeMount(() => {
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>

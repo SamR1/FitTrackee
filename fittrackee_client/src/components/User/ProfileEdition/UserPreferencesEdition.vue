@@ -277,13 +277,13 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, onMounted, onUnmounted, toRefs } from 'vue'
+  import { computed, reactive, onMounted, toRefs } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type {
     IUserPreferencesPayload,
     IAuthUserProfile,
@@ -472,9 +472,6 @@
     if (user.value) {
       updateUserForm(user.value)
     }
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

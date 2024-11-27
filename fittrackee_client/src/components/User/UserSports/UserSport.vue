@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onUnmounted, toRefs, watch } from 'vue'
+  import { capitalize, computed, toRefs, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -108,10 +108,8 @@
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import useSports from '@/composables/useSports'
-  import { ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -121,7 +119,6 @@
   const { translatedSports } = toRefs(props)
 
   const route = useRoute()
-  const store = useStore()
 
   const { errorMessages } = useApp()
   const { displayModal, sportColors, resetSport, updateDisplayModal } =
@@ -153,10 +150,6 @@
       }
     }
   )
-
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
 </script>
 
 <style scoped lang="scss">

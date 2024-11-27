@@ -121,7 +121,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
+  import { OAUTH2_STORE } from '@/store/constants'
   import type { IOAuth2Client } from '@/types/oauth'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -216,7 +216,6 @@
     }
   })
   onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(OAUTH2_STORE.MUTATIONS.EMPTY_CLIENT)
     store.commit(OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL, false)
   })

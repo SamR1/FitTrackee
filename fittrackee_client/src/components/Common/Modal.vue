@@ -52,8 +52,6 @@
   import { onUnmounted, onMounted, toRefs } from 'vue'
 
   import useApp from '@/composables/useApp'
-  import { ROOT_STORE } from '@/store/constants'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     title: string
@@ -72,8 +70,6 @@
   const { title, message, strongMessage } = toRefs(props)
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
-
-  const store = useStore()
 
   const { errorMessages } = useApp()
 
@@ -102,7 +98,6 @@
     document.addEventListener('keydown', focusTrap)
   })
   onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     document.removeEventListener('keydown', focusTrap)
     previousFocusedElement?.focus()
   })

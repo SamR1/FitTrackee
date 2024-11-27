@@ -122,7 +122,7 @@
   import PasswordInput from '@/components/Common/PasswordInput.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type {
     IAuthUserProfile,
     IUserAccountPayload,
@@ -254,7 +254,6 @@
   })
   onUnmounted(() => {
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

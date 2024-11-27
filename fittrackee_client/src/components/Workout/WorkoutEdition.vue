@@ -372,15 +372,7 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    computed,
-    reactive,
-    ref,
-    toRefs,
-    watch,
-    onMounted,
-    onUnmounted,
-  } from 'vue'
+  import { computed, reactive, ref, toRefs, watch, onMounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
@@ -726,7 +718,6 @@
       element.focus()
     }
   })
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 
 <style lang="scss" scoped>

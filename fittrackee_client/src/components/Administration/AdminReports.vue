@@ -186,14 +186,7 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    capitalize,
-    computed,
-    reactive,
-    watch,
-    onBeforeMount,
-    onUnmounted,
-  } from 'vue'
+  import { capitalize, computed, reactive, watch, onBeforeMount } from 'vue'
   import type { Reactive, ComputedRef } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
@@ -306,9 +299,6 @@
   )
 
   onBeforeMount(() => loadReports(query))
-  onUnmounted(() => {
-    store.dispatch(REPORTS_STORE.ACTIONS.EMPTY_REPORTS)
-  })
 </script>
 
 <style lang="scss" scoped>

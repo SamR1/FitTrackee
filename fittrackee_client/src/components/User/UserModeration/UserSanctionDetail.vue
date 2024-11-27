@@ -70,7 +70,7 @@
   import ActionAppeal from '@/components/Common/ActionAppeal.vue'
   import WorkoutForUser from '@/components/Workout/WorkoutForUser.vue'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IAuthUserProfile, IUserReportAction } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
@@ -109,7 +109,6 @@
 
   onMounted(() => loadUserSanction())
   onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
     store.commit(
       AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION,
