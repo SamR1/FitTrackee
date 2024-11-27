@@ -2,7 +2,9 @@
   <div id="admin" class="view">
     <div class="container" v-if="!authUserLoading">
       <router-view v-if="authUserHasModeratorRights" />
-      <NotFound v-else />
+      <div class="container" v-else>
+        <NotFound />
+      </div>
       <div id="bottom" />
     </div>
   </div>
