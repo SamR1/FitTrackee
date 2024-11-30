@@ -37,7 +37,7 @@
   const { appConfig } = useApp()
   const { dateFormat, timezone } = useAuthUser()
 
-  const fittrackeePrivatePolicyDate = 'Sun, 26 Feb 2023 17:00:00 GMT'
+  const fittrackeePrivatePolicyDate = 'Sat, 30 Nov 2024 10:00:00 GMT'
   const paragraphs = [
     'DATA_COLLECTED',
     'INFORMATION_USAGE',
