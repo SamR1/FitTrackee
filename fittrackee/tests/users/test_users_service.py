@@ -501,14 +501,14 @@ class TestUserManagerServiceUserCreation:
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
 
-    def test_created_user_has_no_admin_rights(self, app: Flask) -> None:
+    def test_created_user_has_user_role(self, app: Flask) -> None:
         username = random_string()
         user_manager_service = UserManagerService(username=username)
 
         new_user, _ = user_manager_service.create(email=random_email())
 
         assert new_user
-        assert new_user.has_admin_rights is False
+        assert new_user.role == UserRole.USER.value
 
     def test_created_user_does_not_accept_privacy_policy(
         self, app: Flask
