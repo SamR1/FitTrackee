@@ -268,7 +268,8 @@ class Comment(BaseModel):
                     current_user=user, full=False
                 )
         if user and (
-            user.id == self.user_id or (user.has_admin_rights and for_report)
+            user.id == self.user_id
+            or (user.has_moderator_rights and for_report)
         ):
             suspension["suspended_at"] = self.suspended_at
 
@@ -278,9 +279,9 @@ class Comment(BaseModel):
                 self.suspended_at
                 and (
                     not user
-                    or (user.has_admin_rights and not for_report)
+                    or (user.has_moderator_rights and not for_report)
                     or (
-                        not (user.has_admin_rights and for_report)
+                        not (user.has_moderator_rights and for_report)
                         and user.id != self.user_id
                     )
                 )

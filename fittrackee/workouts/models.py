@@ -367,11 +367,14 @@ class Workout(BaseModel):
         - additional_data is False when:
           - workout is not suspended
           - user is workout owner
-            or workout is displayed in report and current user is an admin
+            or workout is displayed in report and current user has moderation
+            rights
         - light: when true, only workouts data needed for workout lists
           and timeline
         """
-        for_report = for_report and user is not None and user.has_admin_rights
+        for_report = (
+            for_report and user is not None and user.has_moderator_rights
+        )
         if can_see_map_data is None:
             can_see_map_data = can_view(
                 self,

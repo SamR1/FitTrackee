@@ -553,14 +553,14 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
+class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
     )
     def test_it_raises_error_when_comment_is_visible(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -575,7 +575,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         )
 
         with pytest.raises(CommentForbiddenException):
-            comment.serialize(user_1_admin)
+            comment.serialize(user_1_moderator)
 
     @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
@@ -584,7 +584,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
     def test_it_serializes_comment_when_report_flag_is_true(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -609,7 +609,9 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         else:
             suspended_at = {"suspended_at": None}
 
-        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+        serialized_comment = comment.serialize(
+            user_1_moderator, for_report=True
+        )
 
         assert serialized_comment == {
             'id': comment.short_id,
@@ -631,7 +633,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
     def test_it_does_not_return_content_when_comment_is_suspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
@@ -647,7 +649,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         )
         comment.suspended_at = datetime.utcnow()
 
-        serialized_comment = comment.serialize(user_1_admin)
+        serialized_comment = comment.serialize(user_1_moderator)
 
         assert serialized_comment == {
             'id': comment.short_id,
@@ -664,6 +666,66 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'replies': [],
             'likes_count': 0,
             'liked': False,
+        }
+
+
+class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
+    def test_it_raises_error_when_comment_is_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_1_admin)
+
+    def test_it_serializes_comment_when_report_flag_is_true(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=PrivacyLevel.FOLLOWERS,
+            with_mentions=True,
+        )
+        comment.suspended_at = datetime.utcnow()
+
+        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_3.serialize(),
+            'workout_id': workout_cycling_user_2.short_id,
+            'text': comment.text,
+            'text_html': comment.handle_mentions()[0],
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [user_2.serialize()],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+            'suspended': True,
+            'suspended_at': comment.suspended_at,
         }
 
 
