@@ -120,7 +120,9 @@
   const commentTextVisibility: Ref<TPrivacyLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
-      : workout.value?.workout_visibility
+      : replyTo.value
+        ? replyTo.value.text_visibility
+        : workout.value?.workout_visibility
   )
 
   const isLoading: ComputedRef<boolean> = computed(() =>
