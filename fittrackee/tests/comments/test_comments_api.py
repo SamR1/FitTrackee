@@ -264,6 +264,43 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         ).first()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
 
+    def test_it_creates_comment_with_wider_visibility_than_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment_text = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=comment_text,
+                    text_visibility=PrivacyLevel.PUBLIC,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        new_comment = Comment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+
     def test_it_returns_403_when_when_user_is_suspended(
         self,
         app: Flask,
@@ -591,6 +628,46 @@ class TestPostWorkoutCommentReply(
         assert response.status_code == 201
         data = json.loads(response.data.decode())
         assert data['comment']['reply_to'] == comment.short_id
+
+    def test_it_creates_reply_with_wider_visibility_than_parent_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=PrivacyLevel.FOLLOWERS,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=self.random_string(),
+                    text_visibility=PrivacyLevel.PUBLIC,
+                    reply_to=comment.short_id,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert data['comment']['reply_to'] == comment.short_id
+        assert data['comment']['text_visibility'] == PrivacyLevel.PUBLIC.value
 
     def test_it_returns_403_when_user_is_suspended(
         self,
