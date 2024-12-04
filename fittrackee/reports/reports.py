@@ -97,7 +97,7 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @reports_blueprint.route("/reports", methods=["GET"])
-@require_auth(scopes=["reports:read"])
+@require_auth(scopes=["reports:read"], role=UserRole.MODERATOR)
 def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     params = request.args.copy()
     page = int(params.get("page", 1))
@@ -162,7 +162,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @reports_blueprint.route("/reports/<int:report_id>", methods=["GET"])
-@require_auth(scopes=["reports:read"])
+@require_auth(scopes=["reports:read"], role=UserRole.MODERATOR)
 def get_report(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
