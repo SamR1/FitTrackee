@@ -19,13 +19,13 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, onUnmounted, watch } from 'vue'
+  import { onBeforeMount, watch } from 'vue'
   import { useRouter } from 'vue-router'
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
   const router = useRouter()
@@ -55,7 +55,6 @@
   )
 
   onBeforeMount(() => confirmEmail())
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
 </script>
 
 <style lang="scss" scoped>

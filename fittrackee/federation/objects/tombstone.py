@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Dict, Union
 
 from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.visibility_levels import VisibilityLevel
 
 from ..constants import AP_CTX, PUBLIC_STREAM
 from ..enums import ActivityType
@@ -23,8 +23,8 @@ class TombstoneObject(BaseObject):
         self.actor = self.object_to_delete.user.actor
         self.visibility = self._get_object_visibility()
         if self.visibility in [
-            PrivacyLevel.PRIVATE,
-            PrivacyLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
         ] and (
             self.object_to_delete_type != 'Comment'
             or (
@@ -36,7 +36,7 @@ class TombstoneObject(BaseObject):
                 f"object visibility is: '{self.visibility.value}'"
             )
 
-    def _get_object_visibility(self) -> PrivacyLevel:
+    def _get_object_visibility(self) -> VisibilityLevel:
         if self.object_to_delete_type == 'Comment':
             return self.object_to_delete.text_visibility
         return self.object_to_delete.workout_visibility
@@ -53,10 +53,13 @@ class TombstoneObject(BaseObject):
             },
         }
         # TODO: handle comments with mentions
-        if self.visibility == PrivacyLevel.PUBLIC:
+        if self.visibility == VisibilityLevel.PUBLIC:
             delete_activity['to'] = [PUBLIC_STREAM]
             delete_activity['cc'] = [self.actor.followers_url]
-        elif self.visibility in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]:
+        elif self.visibility in [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+        ]:
             # for comments w/ mentions
             _, mentioned_users = self.object_to_delete.handle_mentions()
             mentions = [

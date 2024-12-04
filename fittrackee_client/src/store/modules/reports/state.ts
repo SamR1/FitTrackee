@@ -1,10 +1,10 @@
 import type { IReportsState } from '@/store/modules/reports/types'
 import type { IPagination } from '@/types/api'
-import type { IReportForAdmin } from '@/types/reports'
+import type { IReportForModerator } from '@/types/reports'
 
 export const reportsState: IReportsState = {
   unresolved: false,
-  report: <IReportForAdmin>{},
+  report: <IReportForModerator>{},
   reports: [],
   pagination: <IPagination>{},
   reportStatus: null,

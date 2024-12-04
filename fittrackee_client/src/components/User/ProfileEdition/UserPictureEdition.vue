@@ -33,12 +33,12 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, onUnmounted } from 'vue'
+  import { computed, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'
   import useApp from '@/composables/useApp'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getReadableFileSizeAsText } from '@/utils/files'
@@ -78,10 +78,6 @@
       })
     }
   }
-
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
 </script>
 
 <style lang="scss" scoped>

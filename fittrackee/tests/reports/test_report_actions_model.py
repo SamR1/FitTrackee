@@ -6,7 +6,6 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReportActionAppealException,
     InvalidReportActionAppealUserException,
@@ -23,6 +22,7 @@ from fittrackee.reports.models import (
     ReportActionAppeal,
 )
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
@@ -39,7 +39,7 @@ class TestReportActionModel(ReportActionTestCase):
     ) -> None:
         with pytest.raises(InvalidReportActionException):
             ReportAction(
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 action_type=self.random_string(),
                 report_id=self.create_user_report(user_1_admin, user_2).id,
                 user_id=user_1_admin.id,
@@ -61,7 +61,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
 
         report_action = ReportAction(
             action_type=input_action_type,
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=created_at,
             report_id=report.id,
         )
@@ -69,7 +69,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == input_action_type
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -91,14 +91,14 @@ class TestReportActionForReportModel(ReportActionTestCase):
         with travel(now, tick=False):
             report_action = ReportAction(
                 action_type=action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 report_id=report.id,
             )
         db.session.add(report_action)
         db.session.commit()
 
         assert report_action.action_type == action_type
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == now
         assert report_action.reason is None
@@ -116,7 +116,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
         with travel(now, tick=False):
             report_action = ReportAction(
                 action_type=action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 report_id=report.id,
                 user_id=user_2.id,
             )
@@ -124,7 +124,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == action_type
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == now
         assert report_action.reason is None
@@ -144,7 +144,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
 
         report_action = ReportAction(
             action_type="report_resolution",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             report_id=report.id,
             reason=reason,
         )
@@ -166,7 +166,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         with pytest.raises(InvalidReportActionException):
             ReportAction(
                 action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
                 report_id=self.create_report(
                     reporter=user_1_admin, reported_object=user_2
@@ -181,7 +181,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
 
         report_action = ReportAction(
             action_type="user_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=created_at,
             report_id=report.id,
             user_id=user_2.id,
@@ -190,7 +190,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "user_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -198,7 +198,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         assert report_action.user_id == user_2.id
         assert report_action.workout is None
 
-    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
+    def test_it_sets_none_for_moderator_id_when_admin_user_is_deleted(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_id = self.create_report(
@@ -208,7 +208,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         now = datetime.utcnow()
         report_action = ReportAction(
             action_type=action_type,
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=now,
             report_id=report_id,
             user_id=user_2.id,
@@ -220,7 +220,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == action_type
-        assert report_action.admin_user_id is None
+        assert report_action.moderator_id is None
         assert report_action.comment_id is None
         assert report_action.created_at == now
         assert report_action.reason is None
@@ -233,7 +233,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
     ) -> None:
         report_action = ReportAction(
             action_type="user_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
             ).id,
@@ -262,7 +262,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         with pytest.raises(InvalidReportActionException):
             ReportAction(
                 action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
                 report_id=self.create_report(
                     reporter=user_1_admin,
@@ -284,7 +284,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         with pytest.raises(InvalidReportActionException):
             ReportAction(
                 action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
                 report_id=self.create_report(
                     reporter=user_1_admin,
@@ -309,7 +309,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
 
         report_action = ReportAction(
             action_type="workout_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=created_at,
             report_id=report_id,
             user_id=user_2.id,
@@ -319,7 +319,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "workout_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -327,7 +327,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         assert report_action.user_id == user_2.id
         assert report_action.workout_id == workout_cycling_user_2.id
 
-    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
+    def test_it_sets_none_for_moderator_id_when_admin_user_is_deleted(
         self,
         app: Flask,
         user_1_admin: User,
@@ -341,7 +341,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         created_at = datetime.utcnow()
         report_action = ReportAction(
             action_type="workout_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=created_at,
             report_id=report_id,
             user_id=user_2.id,
@@ -354,7 +354,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "workout_suspension"
-        assert report_action.admin_user_id is None
+        assert report_action.moderator_id is None
         assert report_action.comment_id is None
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -376,7 +376,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         created_at = datetime.utcnow()
         report_action = ReportAction(
             action_type="workout_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             created_at=created_at,
             report_id=report_id,
             user_id=user_2.id,
@@ -389,7 +389,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "workout_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -410,9 +410,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -420,7 +422,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         with pytest.raises(InvalidReportActionException):
             ReportAction(
                 action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 created_at=datetime.utcnow(),
                 report_id=report_id,
                 user_id=user_2.id,
@@ -437,14 +439,16 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         workout_cycling_user_2: Workout,
         input_action_type: str,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         with pytest.raises(InvalidReportActionException):
             ReportAction(
                 action_type=input_action_type,
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 comment_id=comment.id,
                 report_id=self.create_report(
                     reporter=user_2, reported_object=comment
@@ -461,9 +465,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -472,7 +478,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
 
         report_action = ReportAction(
             action_type="comment_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
             report_id=report_id,
@@ -482,7 +488,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "comment_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == created_at
         assert report_action.comment_id == comment.id
         assert report_action.reason is None
@@ -490,7 +496,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         assert report_action.user_id == user_3.id
         assert report_action.workout_id is None
 
-    def test_it_sets_none_for_admin_user_id_when_admin_user_is_deleted(
+    def test_it_sets_none_for_moderator_id_when_admin_user_is_deleted(
         self,
         app: Flask,
         user_1_admin: User,
@@ -499,9 +505,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -509,7 +517,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         created_at = datetime.utcnow()
         report_action = ReportAction(
             action_type="comment_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
             report_id=report_id,
@@ -522,7 +530,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "comment_suspension"
-        assert report_action.admin_user_id is None
+        assert report_action.moderator_id is None
         assert report_action.comment_id == comment.id
         assert report_action.created_at == created_at
         assert report_action.reason is None
@@ -539,9 +547,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -549,7 +559,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         created_at = datetime.utcnow()
         report_action = ReportAction(
             action_type="comment_suspension",
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             comment_id=comment.id,
             created_at=created_at,
             report_id=report_id,
@@ -562,7 +572,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         db.session.commit()
 
         assert report_action.action_type == "comment_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == created_at
         assert report_action.comment_id is None
         assert report_action.reason is None
@@ -576,7 +586,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
@@ -589,7 +599,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         serialized_action = report_action.serialize(user_1_admin, full=False)
 
         assert serialized_action == {
-            'admin_user': user_1_admin.serialize(current_user=user_1_admin),
+            'moderator': user_1_admin.serialize(current_user=user_1_admin),
             'appeal': None,
             'action_type': report_action.action_type,
             'created_at': report_action.created_at,
@@ -611,7 +621,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             reporter=user_1_admin, reported_object=user_2
         ).id
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=report_id,
             user_id=user_2.id,
@@ -624,7 +634,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         )
 
         assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['admin_user'] == user_1_admin.serialize(
+        assert serialized_action['moderator'] == user_1_admin.serialize(
             current_user=user_1_admin
         )
         assert serialized_action['comment'] is None
@@ -644,7 +654,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             reporter=user_1_admin, reported_object=user_2
         ).id
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=report_id,
             user_id=user_2.id,
@@ -662,7 +672,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         serialized_action = report_action.serialize(user_1_admin)
 
         assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['admin_user'] == user_1_admin.serialize(
+        assert serialized_action['moderator'] == user_1_admin.serialize(
             current_user=user_1_admin
         )
         assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
@@ -680,7 +690,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
@@ -706,7 +716,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
@@ -739,7 +749,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="user_suspension",
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
@@ -759,7 +769,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         input_action_type: str,
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type=input_action_type,
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=user_2
@@ -778,7 +788,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="workout_suspension",
             user_id=user_2.id,
             report_id=self.create_report(
@@ -813,7 +823,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             reporter=user_1_admin, reported_object=workout_cycling_user_2
         ).id
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="workout_suspension",
             report_id=report_id,
             user_id=user_2.id,
@@ -825,7 +835,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         serialized_action = report_action.serialize(user_1_admin)
 
         assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['admin_user'] == user_1_admin.serialize(
+        assert serialized_action['moderator'] == user_1_admin.serialize(
             current_user=user_1_admin
         )
         assert serialized_action['comment'] is None
@@ -851,12 +861,14 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="comment_suspension",
             report_id=self.create_report(
                 reporter=user_1_admin, reported_object=comment
@@ -888,17 +900,17 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_id = self.create_report(
             reporter=user_1_admin, reported_object=comment
         ).id
         report_action = ReportAction(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type="comment_suspension",
             comment_id=comment.id,
             report_id=report_id,
@@ -910,7 +922,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         serialized_action = report_action.serialize(user_1_admin)
 
         assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['admin_user'] == user_1_admin.serialize(
+        assert serialized_action['moderator'] == user_1_admin.serialize(
             current_user=user_1_admin
         )
         assert serialized_action['comment'] == comment.serialize(
@@ -982,7 +994,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
 
         assert appeal.action_id == report_action.id
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == created_at
         assert appeal.reason is None
@@ -1009,7 +1021,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
 
         assert appeal.action_id == report_action.id
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == created_at
         assert appeal.reason is None
@@ -1024,7 +1036,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_action = self.create_report_workout_action(
             user_1_admin,
             user_2,
@@ -1065,7 +1077,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
 
         assert appeal.action_id == report_action.id
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == created_at
         assert appeal.reason is None
@@ -1080,11 +1092,11 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment, action_type="comment_unsuspension"
@@ -1107,11 +1119,11 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment
@@ -1129,7 +1141,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
 
         assert appeal.action_id == report_action.id
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == created_at
         assert appeal.reason is None
@@ -1152,7 +1164,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
             )
 
         assert appeal.action_id == report_action.id
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.reason is None
@@ -1218,7 +1230,7 @@ class TestReportActionAppealSerializer(ReportActionTestCase):
 
         serialized_appeal = appeal.serialize(user_2_admin)
 
-        assert serialized_appeal["admin_user"] is None
+        assert serialized_appeal["moderator"] is None
         assert serialized_appeal["approved"] is None
         assert serialized_appeal["created_at"] == appeal.created_at
         assert serialized_appeal["id"] == appeal.short_id

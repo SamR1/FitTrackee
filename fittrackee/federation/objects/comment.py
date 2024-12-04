@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Dict
 
 from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.visibility_levels import VisibilityLevel
 
 from ..enums import ActivityType
 from .base_object import BaseObject
@@ -38,7 +38,7 @@ class CommentObject(BaseObject):
         if (
             activity_type == 'Create'
             and comment.text_visibility
-            in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+            in [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS]
             and not comment.mentioned_users.all()
         ):
             raise InvalidVisibilityException(
@@ -69,7 +69,10 @@ class CommentObject(BaseObject):
                 mentioned_users["remote"]
             )
         ]
-        if self.visibility in [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]:
+        if self.visibility in [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+        ]:
             self.activity_dict['to'] = mentions
             self.activity_dict['cc'] = []
             self.activity_dict['object']['to'] = mentions

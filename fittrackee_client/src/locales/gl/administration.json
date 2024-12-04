@@ -68,10 +68,6 @@
         "WORKOUTS_COUNT": "número adestramentos"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Conceder permisos admin",
-      "REMOVE_ADMIN_RIGHTS": "Retirar permisos admin"
-    },
     "TITLE": "Administración - Usuarias"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de correo."

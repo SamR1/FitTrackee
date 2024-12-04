@@ -47,12 +47,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onUnmounted, toRefs } from 'vue'
+  import { ref, toRefs } from 'vue'
   import type { Ref } from 'vue'
 
   import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
   import useApp from '@/composables/useApp'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -78,10 +78,6 @@
   function invalidateForm() {
     formErrors.value = true
   }
-
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
 </script>
 
 <style lang="scss" scoped>

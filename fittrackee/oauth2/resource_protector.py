@@ -13,6 +13,7 @@ from fittrackee.responses import (
     UnauthorizedErrorResponse,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 
 
 class CustomResourceProtector(ResourceProtector):
@@ -21,7 +22,7 @@ class CustomResourceProtector(ResourceProtector):
         scopes: Union[str, List, None] = None,
         optional: bool = False,
         *,
-        as_admin: bool = False,
+        role: Union[UserRole, None] = None,
         optional_auth_user: bool = False,
         allow_suspended_user: bool = False,
     ) -> Callable:
@@ -91,13 +92,15 @@ class CustomResourceProtector(ResourceProtector):
                         allow_suspended_user is False
                         and auth_user.suspended_at is not None
                     )
-                    or (as_admin and not auth_user.admin)
+                    or (role and auth_user.role < role.value)
                 ):
                     return ForbiddenErrorResponse(
-                        'you do not have permissions, '
-                        'your account is suspended'
-                        if auth_user and auth_user.suspended_at
-                        else None
+                        'you do not have permissions'
+                        + (
+                            ', your account is suspended'
+                            if auth_user and auth_user.suspended_at
+                            else ''
+                        )
                     )
                 return f(auth_user, *args, **kwargs)
 

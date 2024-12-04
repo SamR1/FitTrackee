@@ -6,15 +6,15 @@ import type {
   TReportsMutations,
 } from '@/store/modules/reports/types'
 import type { IPagination } from '@/types/api'
-import type { IReportForAdmin } from '@/types/reports'
+import type { IReportForModerator } from '@/types/reports'
 
 export const mutations: MutationTree<IReportsState> & TReportsMutations = {
   [REPORTS_STORE.MUTATIONS.EMPTY_REPORT](state: IReportsState) {
-    state.report = <IReportForAdmin>{}
+    state.report = <IReportForModerator>{}
   },
   [REPORTS_STORE.MUTATIONS.SET_REPORT](
     state: IReportsState,
-    report: IReportForAdmin
+    report: IReportForModerator
   ) {
     state.report = report
   },
@@ -38,7 +38,7 @@ export const mutations: MutationTree<IReportsState> & TReportsMutations = {
   },
   [REPORTS_STORE.MUTATIONS.SET_REPORTS](
     state: IReportsState,
-    reports: IReportForAdmin[]
+    reports: IReportForModerator[]
   ) {
     state.reports = reports
   },

@@ -1,19 +1,21 @@
 <template>
   <div class="workout-visibility-levels" v-if="workoutObject.workoutVisibility">
-    {{ $t('privacy.VISIBILITY') }}:
+    {{ $t('visibility_levels.VISIBILITY') }}:
     <div class="visibility">
       <span v-if="workoutObject.with_gpx" class="workout-visibility">
         {{ $t('workouts.WORKOUT') }}
       </span>
       <i
-        :class="`fa fa-${getPrivacyIcon(workoutObject.workoutVisibility)}`"
+        :class="`fa fa-${getVisibilityIcon(workoutObject.workoutVisibility)}`"
         aria-hidden="true"
-        :title="$t(`privacy.LEVELS.${workoutObject.workoutVisibility}`)"
+        :title="
+          $t(`visibility_levels.LEVELS.${workoutObject.workoutVisibility}`)
+        "
       />
       <span class="visibility-label">
         ({{
           $t(
-            `privacy.LEVELS.${getPrivacyLevelForLabel(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
               workoutObject.workoutVisibility,
               appConfig.federation_enabled
             )}`
@@ -24,14 +26,14 @@
     <div class="visibility" v-if="workoutObject.with_gpx">
       {{ $t('workouts.MAP') }}
       <i
-        :class="`fa fa-${getPrivacyIcon(workoutObject.mapVisibility)}`"
+        :class="`fa fa-${getVisibilityIcon(workoutObject.mapVisibility)}`"
         aria-hidden="true"
-        :title="$t(`privacy.LEVELS.${workoutObject.mapVisibility}`)"
+        :title="$t(`visibility_levels.LEVELS.${workoutObject.mapVisibility}`)"
       />
       <span class="visibility-label">
         ({{
           $t(
-            `privacy.LEVELS.${getPrivacyLevelForLabel(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
               workoutObject.mapVisibility,
               appConfig.federation_enabled
             )}`
@@ -48,10 +50,10 @@
 
   import { ROOT_STORE } from '@/store/constants'
   import type { TAppConfig } from '@/types/application'
-  import type { TPrivacyLevels } from '@/types/user'
+  import type { TVisibilityLevels } from '@/types/user'
   import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getPrivacyLevelForLabel } from '@/utils/privacy'
+  import { getVisibilityLevelForLabel } from '@/utils/visibility_levels'
   interface Props {
     workoutObject: IWorkoutObject
   }
@@ -63,10 +65,10 @@
   const appConfig: ComputedRef<TAppConfig> = computed(
     () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
   )
-  function getPrivacyIcon(
-    privacyLevel: TPrivacyLevels | null | undefined
+  function getVisibilityIcon(
+    visibilityLevel: TVisibilityLevels | null | undefined
   ): string {
-    switch (privacyLevel) {
+    switch (visibilityLevel) {
       case 'public':
         return 'globe'
       case 'followers_and_remote_only':

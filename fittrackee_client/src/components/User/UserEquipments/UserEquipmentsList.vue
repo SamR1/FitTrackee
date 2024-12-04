@@ -202,7 +202,7 @@
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
   #user-equipments-list {
-    padding: $default-padding 0;
+    padding: 0 0 $default-padding;
     h1 {
       font-size: 1.05em;
       font-weight: bold;

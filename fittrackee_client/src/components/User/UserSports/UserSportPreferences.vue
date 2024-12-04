@@ -308,6 +308,7 @@
   #user-sport-preferences {
     table {
       th {
+        padding-top: 0;
         text-transform: lowercase;
       }
     }
@@ -335,6 +336,10 @@
       .cell-heading {
         font-style: normal;
       }
+    }
+    .profile-buttons {
+      display: flex;
+      align-items: center;
     }
     .action-buttons {
       width: 70px;

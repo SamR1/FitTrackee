@@ -8,7 +8,6 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReportActionException,
     InvalidReporterException,
@@ -30,6 +29,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
@@ -59,11 +59,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_service = ReportService()
 
@@ -83,11 +83,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_service = ReportService()
 
@@ -108,11 +108,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         note = self.random_string()
         now = datetime.utcnow()
@@ -161,11 +161,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_service = ReportService()
         report_service.create_report(
@@ -193,11 +193,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         report_service = ReportService()
@@ -235,7 +235,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         report_service = ReportService()
 
         with pytest.raises(WorkoutForbiddenException):
@@ -253,7 +253,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         report_service = ReportService()
 
         with pytest.raises(InvalidReporterException):
@@ -273,7 +273,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         note = self.random_string()
         now = datetime.utcnow()
         report_service = ReportService()
@@ -322,7 +322,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_service = ReportService()
         # report from same user
         report_service.create_report(
@@ -350,7 +350,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         report_service = ReportService()
 
@@ -505,7 +505,7 @@ class TestReportServiceUpdate(CommentMixin):
         with pytest.raises(ReportNotFoundException):
             report_service.update_report(
                 report_id=self.random_int(),
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
             )
 
@@ -526,7 +526,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
             )
 
@@ -558,7 +558,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=comment,
             )
 
@@ -582,7 +582,7 @@ class TestReportServiceUpdate(CommentMixin):
 
         report_service.update_report(
             report_id=report.id,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             report_comment=self.random_string(),
         )
 
@@ -605,7 +605,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=True,
             )
@@ -637,7 +637,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=True,
             )
@@ -646,7 +646,7 @@ class TestReportServiceUpdate(CommentMixin):
             report_id=report.id
         ).first()
         assert report_action.action_type == "report_resolution"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.report_id == report.id
 
@@ -670,7 +670,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=False,
             )
@@ -705,7 +705,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(now, tick=False):
             report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=False,
             )
@@ -714,7 +714,7 @@ class TestReportServiceUpdate(CommentMixin):
             report_id=report.id
         ).first()
         assert report_action.action_type == "report_reopening"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.report_id == report.id
 
@@ -732,7 +732,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(datetime.utcnow(), tick=False):
             report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=False,
             )
@@ -757,7 +757,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(resolved_time, tick=False):
             report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
                 resolved=True,
             )
@@ -767,7 +767,7 @@ class TestReportServiceUpdate(CommentMixin):
         with travel(comment_time, tick=False):
             updated_report = report_service.update_report(
                 report_id=report.id,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 report_comment=self.random_string(),
             )
 
@@ -802,7 +802,7 @@ class TestReportServiceCreateReportAction(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 data={"username": user_3.username},
             )
@@ -820,7 +820,7 @@ class TestReportServiceCreateReportAction(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type=self.random_string(),
                 data={"username": user_3.username},
             )
@@ -842,7 +842,7 @@ class TestReportServiceCreateReportActionForUser(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 data={},
             )
@@ -860,7 +860,7 @@ class TestReportServiceCreateReportActionForUser(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 data={"username": self.random_string()},
             )
@@ -877,7 +877,7 @@ class TestReportServiceCreateReportActionForUser(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 reason=None,
                 data={"username": user_3.username},
@@ -904,7 +904,7 @@ class TestReportServiceCreateReportActionForUser(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 reason=None,
                 data={"username": user_3.username},
@@ -922,7 +922,7 @@ class TestReportServiceCreateReportActionForUser(
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_unsuspension",
             reason=None,
             data={"username": user_3.username},
@@ -948,7 +948,7 @@ class TestReportServiceCreateReportActionForUser(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_unsuspension",
                 reason=None,
                 data={"username": user_3.username},
@@ -978,7 +978,7 @@ class TestReportServiceCreateReportActionForUser(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=user_suspension.report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_unsuspension",
                 reason=None,
                 data={"username": user_3.username},
@@ -1007,7 +1007,7 @@ class TestReportServiceCreateReportActionForUser(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_suspension",
                 reason=input_reason.get("reason"),
                 data={"username": user_3.username},
@@ -1017,7 +1017,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.comment_id is None
         assert report_action.reason == input_reason.get("reason")
@@ -1037,7 +1037,7 @@ class TestReportServiceCreateReportActionForUser(
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_unsuspension",
             data={"username": user_3.username},
         )
@@ -1046,7 +1046,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_unsuspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.reason is None
         assert report_action.report_id == report.id
@@ -1063,7 +1063,7 @@ class TestReportServiceCreateReportActionForUser(
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
@@ -1072,7 +1072,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_warning"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.reason is None
         assert report_action.report_id == report.id
@@ -1098,7 +1098,7 @@ class TestReportServiceCreateReportActionForUser(
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
@@ -1107,7 +1107,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_warning"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id == report.reported_comment_id
         assert report_action.reason is None
         assert report_action.report_id == report.id
@@ -1132,7 +1132,7 @@ class TestReportServiceCreateReportActionForUser(
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_2.username},
         )
@@ -1141,7 +1141,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_warning"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
         assert report_action.reason is None
         assert report_action.report_id == report.id
@@ -1157,7 +1157,7 @@ class TestReportServiceCreateReportActionForUser(
         )
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
@@ -1168,7 +1168,7 @@ class TestReportServiceCreateReportActionForUser(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="user_warning",
                 data={"username": user_3.username},
             )
@@ -1190,14 +1190,14 @@ class TestReportServiceCreateReportActionForUser(
         )
         report_service.create_report_action(
             report=another_report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
 
         report_service.create_report_action(
             report=report,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             action_type="user_warning",
             data={"username": user_3.username},
         )
@@ -1206,7 +1206,7 @@ class TestReportServiceCreateReportActionForUser(
             report_id=report.id
         ).first()
         assert report_action.action_type == "user_warning"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.report_id == report.id
         assert report_action.comment_id is None
         assert report_action.reason is None
@@ -1238,7 +1238,7 @@ class TestReportServiceCreateReportActionForComment(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_suspension",
                 data={},
             )
@@ -1265,7 +1265,7 @@ class TestReportServiceCreateReportActionForComment(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_suspension",
                 data={"comment_id": self.random_short_id()},
             )
@@ -1295,7 +1295,7 @@ class TestReportServiceCreateReportActionForComment(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_suspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1321,7 +1321,7 @@ class TestReportServiceCreateReportActionForComment(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_suspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1356,7 +1356,7 @@ class TestReportServiceCreateReportActionForComment(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 reason=input_reason.get("reason"),
                 action_type="comment_suspension",
                 data={"comment_id": report.reported_comment.short_id},
@@ -1366,7 +1366,7 @@ class TestReportServiceCreateReportActionForComment(
             report_id=report.id
         ).first()
         assert report_action.action_type == "comment_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.comment_id == report.reported_comment_id
         assert report_action.reason == input_reason.get("reason")
@@ -1396,7 +1396,7 @@ class TestReportServiceCreateReportActionForComment(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_unsuspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1432,7 +1432,7 @@ class TestReportServiceCreateReportActionForComment(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_unsuspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1460,7 +1460,7 @@ class TestReportServiceCreateReportActionForComment(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_unsuspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1469,7 +1469,7 @@ class TestReportServiceCreateReportActionForComment(
             report_id=report.id
         ).first()
         assert report_action.action_type == "comment_unsuspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.comment_id == report.reported_comment_id
         assert report_action.reason is None
@@ -1508,7 +1508,7 @@ class TestReportServiceCreateReportActionForComment(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="comment_unsuspension",
                 data={"comment_id": report.reported_comment.short_id},
             )
@@ -1542,7 +1542,7 @@ class TestReportServiceCreateReportActionForWorkout(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_suspension",
                 data={},
             )
@@ -1568,7 +1568,7 @@ class TestReportServiceCreateReportActionForWorkout(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_suspension",
                 data={"workout_id": self.random_short_id()},
             )
@@ -1597,7 +1597,7 @@ class TestReportServiceCreateReportActionForWorkout(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_suspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1622,7 +1622,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_suspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1656,7 +1656,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 reason=input_reason.get("reason"),
                 action_type="workout_suspension",
                 data={"workout_id": report.reported_workout.short_id},
@@ -1666,7 +1666,7 @@ class TestReportServiceCreateReportActionForWorkout(
             report_id=report.id
         ).first()
         assert report_action.action_type == "workout_suspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.comment_id is None
         assert report_action.reason == input_reason.get("reason")
@@ -1695,7 +1695,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_unsuspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1730,7 +1730,7 @@ class TestReportServiceCreateReportActionForWorkout(
         ):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_unsuspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1758,7 +1758,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_unsuspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1767,7 +1767,7 @@ class TestReportServiceCreateReportActionForWorkout(
             report_id=report.id
         ).first()
         assert report_action.action_type == "workout_unsuspension"
-        assert report_action.admin_user_id == user_1_admin.id
+        assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
         assert report_action.comment_id is None
         assert report_action.reason is None
@@ -1805,7 +1805,7 @@ class TestReportServiceCreateReportActionForWorkout(
         with travel(now, tick=False):
             report_service.create_report_action(
                 report=report,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 action_type="workout_unsuspension",
                 data={"workout_id": report.reported_workout.short_id},
             )
@@ -1837,14 +1837,14 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data=input_data,
             )
 
         updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
-        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
         assert updated_appeal.updated_at == now
@@ -1865,7 +1865,7 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -1887,7 +1887,7 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -1895,7 +1895,7 @@ class TestReportServiceProcessAppeal(
             ReportAction.query.filter_by(
                 report_id=suspension_action.report_id,
                 action_type="user_unsuspension",
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 user_id=user_2.id,
                 reason=None,
                 created_at=now,
@@ -1919,7 +1919,7 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -1939,7 +1939,7 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": False, "reason": "not ok"},
             )
 
@@ -1963,14 +1963,14 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data=input_data,
             )
 
         updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
-        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
         assert updated_appeal.updated_at == now
@@ -1991,7 +1991,7 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -1999,7 +1999,7 @@ class TestReportServiceProcessAppeal(
             ReportAction.query.filter_by(
                 report_id=warning_action.report_id,
                 action_type="user_warning_lifting",
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 user_id=user_2.id,
                 reason=None,
                 created_at=now,
@@ -2024,11 +2024,11 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2043,14 +2043,14 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data=input_data,
             )
 
         updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
-        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
         assert updated_appeal.updated_at == now
@@ -2067,11 +2067,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2084,13 +2084,13 @@ class TestReportServiceProcessAppeal(
 
         report_service.process_appeal(
             appeal=appeal,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             data={"approved": True, "reason": reason},
         )
 
         assert (
             ReportAction.query.filter_by(
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 action_type="comment_unsuspension",
                 comment_id=comment.id,
                 report_id=suspension_action.report_id,
@@ -2108,11 +2108,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2130,7 +2130,7 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -2143,11 +2143,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2165,7 +2165,7 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": False, "reason": "not ok"},
             )
 
@@ -2186,7 +2186,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2201,14 +2201,14 @@ class TestReportServiceProcessAppeal(
         with travel(now, tick=False):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data=input_data,
             )
 
         updated_appeal = ReportActionAppeal.query.filter_by(
             id=appeal.id
         ).first()
-        assert updated_appeal.admin_user_id == user_1_admin.id
+        assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
         assert updated_appeal.updated_at == now
@@ -2224,7 +2224,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2237,14 +2237,14 @@ class TestReportServiceProcessAppeal(
 
         report_service.process_appeal(
             appeal=appeal,
-            admin_user=user_1_admin,
+            moderator=user_1_admin,
             data={"approved": True, "reason": reason},
         )
 
         assert (
             ReportAction.query.filter_by(
                 action_type="workout_unsuspension",
-                admin_user_id=user_1_admin.id,
+                moderator_id=user_1_admin.id,
                 reason=None,
                 report_id=suspension_action.report_id,
                 user_id=user_2.id,
@@ -2262,7 +2262,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2277,7 +2277,7 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": True, "reason": "ok"},
             )
 
@@ -2290,7 +2290,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2305,6 +2305,6 @@ class TestReportServiceProcessAppeal(
         ):
             report_service.process_appeal(
                 appeal=appeal,
-                admin_user=user_1_admin,
+                moderator=user_1_admin,
                 data={"approved": False, "reason": "not ok"},
             )

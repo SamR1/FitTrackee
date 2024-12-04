@@ -76,22 +76,22 @@
       </div>
     </dl>
     <dl>
-      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{
           $t(
-            `privacy.LEVELS.${getPrivacyLevelForLabel(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
               user.workouts_visibility,
               appConfig.federation_enabled
             )}`
           )
         }}
       </dd>
-      <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
       <dd>
         {{
           $t(
-            `privacy.LEVELS.${getPrivacyLevelForLabel(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
               user.map_visibility,
               appConfig.federation_enabled
             )}`
@@ -116,7 +116,7 @@
   import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
-  import { getPrivacyLevelForLabel } from '@/utils/privacy'
+  import { getVisibilityLevelForLabel } from '@/utils/visibility_levels'
 
   interface Props {
     user: IAuthUserProfile
@@ -148,7 +148,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences {
-    padding-top: $default-padding;
+    padding: $default-padding * 0.5 0 $default-padding;
     .preferences-section {
       font-weight: bold;
       text-transform: uppercase;

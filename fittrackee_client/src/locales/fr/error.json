@@ -4,6 +4,8 @@
     "COMMENT": "Commentaire introuvable",
     "PAGE": "Page introuvable",
     "REPORT": "Signalement introuvable",
+    "SEGMENT": "Segment introuvable",
+    "USER": "Utilisateur·rice introuvable",
     "WORKOUT": "Séance introuvable"
   },
   "SOMETHING_WRONG": "Une erreur s'est produite",

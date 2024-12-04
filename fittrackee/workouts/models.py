@@ -21,12 +21,12 @@ from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import (
-    PrivacyLevel,
+from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
     can_view,
     get_map_visibility,
 )
-from fittrackee.utils import encode_uuid
 
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
@@ -269,12 +269,12 @@ class Workout(BaseModel):
         db.String(DESCRIPTION_MAX_CHARACTERS), nullable=True
     )
     workout_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
     map_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
@@ -334,7 +334,7 @@ class Workout(BaseModel):
         return encode_uuid(self.uuid)
 
     @property
-    def calculated_map_visibility(self) -> PrivacyLevel:
+    def calculated_map_visibility(self) -> VisibilityLevel:
         return get_map_visibility(self.map_visibility, self.workout_visibility)
 
     def liked_by(self, user: 'User') -> bool:
@@ -373,11 +373,14 @@ class Workout(BaseModel):
         - additional_data is False when:
           - workout is not suspended
           - user is workout owner
-            or workout is displayed in report and current user is an admin
+            or workout is displayed in report and current user has moderation
+            rights
         - light: when true, only workouts data needed for workout lists
           and timeline
         """
-        for_report = for_report and user is not None and user.admin
+        for_report = (
+            for_report and user is not None and user.has_moderator_rights
+        )
         if can_see_map_data is None:
             can_see_map_data = can_view(
                 self,
@@ -465,7 +468,9 @@ class Workout(BaseModel):
         for_report: bool = False,
         light: bool = True,  # for workouts list and timeline
     ) -> Dict:
-        for_report = for_report and user is not None and user.admin
+        for_report = (
+            for_report and user is not None and user.has_moderator_rights
+        )
         if not can_view(
             self, "workout_visibility", user=user, for_report=for_report
         ):

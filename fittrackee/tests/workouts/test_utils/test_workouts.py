@@ -7,8 +7,8 @@ import pytz
 from flask import Flask
 from gpxpy.gpxfield import SimpleTZ
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import (
@@ -210,7 +210,7 @@ class GetWorkoutTestCase:
 
 
 class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
-    privacy_level = PrivacyLevel.PUBLIC
+    visibility_level = VisibilityLevel.PUBLIC
 
     @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_returns_workout_when_user_is_not_authenticated(
@@ -221,7 +221,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, None, input_allow_admin
@@ -237,7 +237,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -255,7 +255,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -270,7 +270,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_1, input_allow_admin
@@ -287,7 +287,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -303,7 +303,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2_admin, input_allow_admin
@@ -311,7 +311,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
 
 
 class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
-    privacy_level = PrivacyLevel.FOLLOWERS
+    visibility_level = VisibilityLevel.FOLLOWERS
 
     @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
@@ -322,7 +322,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, None, input_allow_admin
@@ -338,7 +338,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -356,7 +356,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -371,7 +371,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_1, input_allow_admin
@@ -388,7 +388,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -402,7 +402,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2_admin, False
@@ -416,7 +416,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2_admin, True
@@ -424,7 +424,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
 
 
 class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
-    privacy_level = PrivacyLevel.PRIVATE
+    visibility_level = VisibilityLevel.PRIVATE
 
     @pytest.mark.parametrize('input_allow_admin', [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
@@ -435,7 +435,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, None, input_allow_admin
@@ -451,7 +451,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -469,7 +469,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -484,7 +484,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
         input_allow_admin: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_1, input_allow_admin
@@ -501,7 +501,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         input_allow_admin: bool,
     ) -> None:
         user_1.blocks_user(user_2)
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2, input_allow_admin
@@ -515,7 +515,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_raises_forbidden_exception(
             workout_cycling_user_1, user_2_admin, False
@@ -529,7 +529,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = self.privacy_level
+        workout_cycling_user_1.workout_visibility = self.visibility_level
 
         self.assert_workout_is_returned(
             workout_cycling_user_1, user_2_admin, True

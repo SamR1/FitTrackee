@@ -62,12 +62,12 @@
 
 <script setup lang="ts">
   import { format } from 'date-fns'
-  import { computed, reactive, onMounted, onUnmounted, toRefs } from 'vue'
+  import { computed, reactive, onMounted, toRefs } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
 
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type {
     IUserProfile,
@@ -126,9 +126,6 @@
     if (user.value) {
       updateUserForm(user.value)
     }
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

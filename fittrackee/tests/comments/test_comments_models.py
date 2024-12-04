@@ -9,9 +9,9 @@ from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment, CommentLike, Mention
 from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ReportMixin
@@ -40,7 +40,7 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         assert comment.text == text
         assert comment.created_at == created_at
         assert comment.modification_date is None
-        assert comment.text_visibility == PrivacyLevel.PRIVATE
+        assert comment.text_visibility == VisibilityLevel.PRIVATE
         assert comment.suspended_at is None
 
     def test_created_date_is_initialized_on_creation_when_not_provided(
@@ -63,8 +63,8 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        text_visibility = PrivacyLevel.FOLLOWERS_AND_REMOTE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        text_visibility = VisibilityLevel.FOLLOWERS_AND_REMOTE
         with pytest.raises(
             InvalidVisibilityException,
             match=(
@@ -193,7 +193,11 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
     @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_serializes_owner_comment(
         self,
@@ -201,7 +205,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
         suspended: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
@@ -246,7 +250,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(user_1, workout_cycling_user_2)
         db.session.delete(workout_cycling_user_2)
 
@@ -277,7 +281,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
         comment = self.create_comment(user_1, workout_cycling_user_2)
 
         serialized_comment = comment.serialize(user_1)
@@ -307,7 +311,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
         comment = self.create_comment(user_1, workout_cycling_user_2)
         expected_report_action = self.create_report_comment_actions(
             user_2_admin, user_1, comment
@@ -346,11 +350,11 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -366,18 +370,18 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
 
         with pytest.raises(CommentForbiddenException):
             comment.serialize(user_2)
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC]
+        'input_visibility', [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC]
     )
     def test_it_serializes_comment_for_follower_when_privacy_allows_it(
         self,
@@ -387,7 +391,7 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = input_visibility
@@ -425,11 +429,11 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PRIVATE
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         db.session.delete(workout_cycling_user_1)
 
@@ -454,7 +458,8 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
 
 class TestWorkoutCommentModelSerializeForUser(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_not_public(
         self,
@@ -463,9 +468,9 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
@@ -484,11 +489,11 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         # TODO: mentions
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize(user_2)
@@ -517,11 +522,11 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         db.session.delete(workout_cycling_user_1)
         db.session.commit()
@@ -552,11 +557,11 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PRIVATE
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize(user_2)
@@ -578,21 +583,22 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         }
 
 
-class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
+class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_visible(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -600,24 +606,25 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         )
 
         with pytest.raises(CommentForbiddenException):
-            comment.serialize(user_1_admin)
+            comment.serialize(user_1_moderator)
 
     @pytest.mark.parametrize('suspended', [True, False])
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_serializes_comment_when_report_flag_is_true(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
         suspended: bool,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -634,7 +641,9 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         else:
             suspended_at = {"suspended_at": None}
 
-        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+        serialized_comment = comment.serialize(
+            user_1_moderator, for_report=True
+        )
 
         assert serialized_comment == {
             'id': comment.short_id,
@@ -656,23 +665,23 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
     def test_it_does_not_return_content_when_comment_is_suspended(
         self,
         app: Flask,
-        user_1_admin: User,
+        user_1_moderator: User,
         user_2: User,
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text=f"@{user_2.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         comment.suspended_at = datetime.utcnow()
 
-        serialized_comment = comment.serialize(user_1_admin)
+        serialized_comment = comment.serialize(user_1_moderator)
 
         assert serialized_comment == {
             'id': comment.short_id,
@@ -692,9 +701,70 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         }
 
 
+class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
+    def test_it_raises_error_when_comment_is_visible(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.FOLLOWERS,
+        )
+
+        with pytest.raises(CommentForbiddenException):
+            comment.serialize(user_1_admin)
+
+    def test_it_serializes_comment_when_report_flag_is_true(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text=f"@{user_2.username}",
+            text_visibility=VisibilityLevel.FOLLOWERS,
+            with_mentions=True,
+        )
+        comment.suspended_at = datetime.utcnow()
+
+        serialized_comment = comment.serialize(user_1_admin, for_report=True)
+
+        assert serialized_comment == {
+            'id': comment.short_id,
+            'user': user_3.serialize(),
+            'workout_id': workout_cycling_user_2.short_id,
+            'text': comment.text,
+            'text_html': comment.handle_mentions()[0],
+            'text_visibility': comment.text_visibility,
+            'created_at': comment.created_at,
+            'mentions': [user_2.serialize()],
+            'modification_date': comment.modification_date,
+            'reply_to': comment.reply_to,
+            'replies': [],
+            'likes_count': 0,
+            'liked': False,
+            'suspended': True,
+            'suspended_at': comment.suspended_at,
+        }
+
+
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_not_public(
         self,
@@ -702,9 +772,9 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
@@ -722,11 +792,11 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         # TODO: mentions
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize()
@@ -754,11 +824,11 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PRIVATE
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize()
@@ -789,16 +859,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
 
@@ -829,16 +899,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspended_comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
         suspended_comment.suspended_at = datetime.utcnow()
@@ -870,16 +940,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
 
@@ -912,16 +982,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
 
@@ -951,16 +1021,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
 
@@ -990,16 +1060,16 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
         db.session.delete(workout_cycling_user_1)
@@ -1038,38 +1108,38 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         user_2.approves_follow_request_from(user_1)
         user_1.approves_follow_request_from(user_2)
         user_1.approves_follow_request_from(user_3)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         # replies
         self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
             parent_comment=comment,
         )
         visible_replies = [
             self.create_comment(
                 user_3,
                 workout_cycling_user_1,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
                 parent_comment=comment,
             )
         ]
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         visible_replies.append(
             self.create_comment(
                 user_1,
                 workout_cycling_user_1,
-                text_visibility=PrivacyLevel.FOLLOWERS,
+                text_visibility=VisibilityLevel.FOLLOWERS,
                 parent_comment=comment,
             ),
         )
@@ -1110,35 +1180,35 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         user_2.approves_follow_request_from(user_1)
         user_1.approves_follow_request_from(user_2)
         user_1.approves_follow_request_from(user_3)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         # replies
         self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
             parent_comment=comment,
         )
         visible_reply = self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         suspended_reply = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         suspended_reply.suspended_at = datetime.utcnow()
@@ -1171,11 +1241,11 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         visible_replies = []
         for _ in range(7):
@@ -1183,7 +1253,7 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
                 self.create_comment(
                     user_1,
                     workout_cycling_user_1,
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     parent_comment=comment,
                 ),
             )
@@ -1198,7 +1268,8 @@ class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
 
 class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comments_are_not_visible(
         self,
@@ -1209,19 +1280,19 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_3_to_user_2: FollowRequest,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=parent_comment,
         )
 
@@ -1229,7 +1300,8 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
             parent_comment.serialize(user_1_admin)
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_serializes_comment_with_reply(
         self,
@@ -1240,11 +1312,11 @@ class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_3_to_user_2: FollowRequest,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         # for report only parent comment is returned
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
@@ -1288,12 +1360,12 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=self.random_string(),
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
         )
 
@@ -1311,12 +1383,12 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{self.random_string()} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
         )
         fetch_mock.side_effect = Exception()
@@ -1333,12 +1405,12 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{self.random_string()} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
         )
 
@@ -1355,12 +1427,12 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
         )
 
@@ -1379,13 +1451,13 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         mention = f"@{user_3.username}"
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"{mention} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
         )
 
@@ -1404,12 +1476,12 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize(user_1)
@@ -1426,14 +1498,14 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=(
                 f"@{user_3.username} {self.random_string()} @{user_1.username}"
             ),
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_comment = comment.serialize(user_2)
@@ -1446,7 +1518,11 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
 class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
+        [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
     )
     def test_it_serializes_comment(
         self,
@@ -1455,10 +1531,10 @@ class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         # user_2 does not follow user_1
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
@@ -1495,11 +1571,11 @@ class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         for user in [user_1, user_3]:
             like = CommentLike(user_id=user.id, comment_id=comment.id)
@@ -1518,11 +1594,11 @@ class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -1541,11 +1617,11 @@ class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
@@ -1564,11 +1640,11 @@ class TestWorkoutCommentModelSerializeWithLikes(CommentMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)

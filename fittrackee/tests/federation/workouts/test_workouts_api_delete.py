@@ -3,9 +3,9 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.utils import generate_follow_request
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import ApiTestCaseMixin
@@ -14,7 +14,8 @@ from ...mixins import ApiTestCaseMixin
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')
 class TestFederationDeleteWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'workout_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'workout_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_call_sent_to_inbox(
         self,
@@ -25,7 +26,7 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -43,8 +44,8 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.PUBLIC,
         ],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
@@ -56,7 +57,7 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -81,8 +82,8 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.PUBLIC,
         ],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
@@ -94,7 +95,7 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         generate_follow_request(remote_user_2, user_1)
         user_1.approves_follow_request_from(remote_user_2)

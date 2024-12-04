@@ -6,8 +6,8 @@ from flask import Flask
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, PUBLIC_STREAM
 from fittrackee.federation.objects.tombstone import TombstoneObject
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...comments.mixins import CommentMixin
@@ -15,7 +15,8 @@ from ...comments.mixins import CommentMixin
 
 class TestTombstoneObjectForWorkout:
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_private(
         self,
@@ -23,7 +24,7 @@ class TestTombstoneObjectForWorkout:
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         workout_cycling_user_1.ap_id = (
@@ -43,7 +44,7 @@ class TestTombstoneObjectForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts'
             f'/{workout_cycling_user_1.short_id}'
@@ -73,7 +74,7 @@ class TestTombstoneObjectForWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts'
@@ -99,7 +100,8 @@ class TestTombstoneObjectForWorkout:
 
 class TestTombstoneObjectForWorkoutComment(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_comment_has_no_mention(
         self,
@@ -107,9 +109,9 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1, workout_cycling_user_1, text_visibility=input_visibility
         )
@@ -126,9 +128,11 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_1, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         tombstone = TombstoneObject(comment)
 
@@ -162,11 +166,11 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         tombstone = TombstoneObject(comment)
 
@@ -194,7 +198,8 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         }
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     @patch('fittrackee.federation.utils.user.update_remote_user')
     def test_it_generates_delete_activity_for_comment_with_private_or_local_followers_visibility_and_mention(  # noqa
@@ -205,9 +210,9 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,

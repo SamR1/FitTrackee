@@ -7,8 +7,8 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.comments.models import CommentLike
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, Notification, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..comments.mixins import CommentMixin
@@ -356,7 +356,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -393,11 +393,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
@@ -433,11 +433,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.blocks_user(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -470,16 +470,16 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_1.blocks_user(user_2)
@@ -513,12 +513,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_1.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         user_1.blocks_user(user_2)
@@ -552,7 +552,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -596,11 +596,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
@@ -643,11 +643,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_2.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -680,16 +680,16 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_2.blocks_user(user_1)
@@ -723,12 +723,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_1.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         user_2.blocks_user(user_1)
@@ -825,7 +825,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -862,11 +862,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
@@ -902,11 +902,11 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -940,16 +940,16 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_2.suspended_at = datetime.utcnow()
@@ -984,12 +984,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_1.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         user_2.suspended_at = datetime.utcnow()
@@ -1026,12 +1026,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         # comment without mention
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         user_1.unfollows(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1067,15 +1067,17 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         # comment without mention
         self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         user_1.unfollows(user_2)
@@ -1558,7 +1560,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -1589,7 +1591,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -1621,11 +1623,11 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_2.blocks_user(user_1)
 
@@ -1654,12 +1656,12 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         # comment without mention
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         user_1.unfollows(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1688,15 +1690,17 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         # comment without mention
         self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         user_1.unfollows(user_2)

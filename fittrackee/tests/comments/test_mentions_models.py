@@ -7,16 +7,16 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Mention
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from .mixins import CommentMixin
 
 ALL_VISIBILITIES = [
-    PrivacyLevel.PUBLIC,
-    PrivacyLevel.FOLLOWERS,
-    PrivacyLevel.PRIVATE,
+    VisibilityLevel.PUBLIC,
+    VisibilityLevel.FOLLOWERS,
+    VisibilityLevel.PRIVATE,
 ]
 
 
@@ -110,14 +110,14 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text=f"@{user_2.username} {self.random_string()}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         comment.serialize(user_1)  # author
@@ -136,7 +136,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -144,7 +144,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
 
         assert comment.serialize(user_1)  # author
@@ -165,7 +165,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_user_2_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -173,7 +173,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
 
         assert comment.serialize(user_1)  # author

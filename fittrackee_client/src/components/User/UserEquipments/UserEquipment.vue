@@ -156,21 +156,14 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    capitalize,
-    computed,
-    onBeforeMount,
-    onUnmounted,
-    ref,
-    toRefs,
-  } from 'vue'
+  import { capitalize, computed, onBeforeMount, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   import useApp from '@/composables/useApp'
   import useEquipments from '@/composables/useEquipments'
   import useSports from '@/composables/useSports'
-  import { EQUIPMENTS_STORE, ROOT_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IDeleteEquipmentPayload } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
@@ -226,9 +219,6 @@
 
   onBeforeMount(() => {
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

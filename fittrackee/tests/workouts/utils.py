@@ -4,8 +4,8 @@ from typing import Optional, Tuple
 
 from flask import Flask
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 
 
 def post_a_workout(
@@ -13,7 +13,7 @@ def post_a_workout(
     gpx_file: str,
     notes: Optional[str] = None,
     description: Optional[str] = None,
-    workout_visibility: Optional[PrivacyLevel] = None,
+    workout_visibility: Optional[VisibilityLevel] = None,
 ) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(

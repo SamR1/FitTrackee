@@ -11,21 +11,24 @@ from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     InvalidUserException,
+    InvalidUserRole,
     MissingAdminIdException,
     MissingReportIdException,
+    OwnerException,
     UserAlreadyReactivatedException,
     UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.controls import is_valid_email, register_controls
 
 
 class UserManagerService:
-    def __init__(self, username: str, admin_user_id: Optional[int] = None):
+    def __init__(self, username: str, moderator_id: Optional[int] = None):
         self.username = username
-        self.admin_user_id = admin_user_id
+        self.moderator_id = moderator_id
 
     def _get_user(self) -> User:
         user = get_user_from_username(self.username)
@@ -63,7 +66,7 @@ class UserManagerService:
 
     def update(
         self,
-        is_admin: Optional[bool] = None,
+        role: Optional[str] = None,
         activate: Optional[bool] = None,
         reset_password: bool = False,
         new_email: Optional[str] = None,
@@ -71,20 +74,27 @@ class UserManagerService:
         suspended: Optional[bool] = None,
         report_id: Optional[int] = None,
         reason: Optional[str] = None,
+        raise_error_on_owner: bool = False,
     ) -> Tuple[User, bool, Optional[str], Optional[ReportAction]]:
         user_updated = False
         new_password = None
         report_action = None
         user = self._get_user()
+
+        if user.role == UserRole.OWNER.value and raise_error_on_owner:
+            raise OwnerException("user with owner rights can not be modified")
+
         if suspended is not None:
-            if self.admin_user_id is None:
+            if self.moderator_id is None:
                 raise MissingAdminIdException()
             if report_id is None:
                 raise MissingReportIdException()
 
-        if is_admin is not None:
-            user.admin = is_admin
-            if is_admin:
+        if role is not None:
+            if role not in UserRole.db_choices():
+                raise InvalidUserRole()
+            user.role = UserRole[role.upper()].value
+            if user.role >= UserRole.MODERATOR.value:
                 activate = True
             user_updated = True
 
@@ -105,16 +115,16 @@ class UserManagerService:
             if user.suspended_at:
                 raise UserAlreadySuspendedException()
             user.suspended_at = now
-            user.admin = False
+            user.role = UserRole.USER.value
             user_updated = True
         if suspended is False:
             if user.suspended_at is None:
                 raise UserAlreadyReactivatedException()
             user.suspended_at = None
             user_updated = True
-        if self.admin_user_id and report_id and suspended is not None:
+        if self.moderator_id and report_id and suspended is not None:
             report_action = ReportAction(
-                admin_user_id=self.admin_user_id,
+                moderator_id=self.moderator_id,
                 action_type=(
                     "user_suspension" if suspended else "user_unsuspension"
                 ),

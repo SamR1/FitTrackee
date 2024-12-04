@@ -37,7 +37,10 @@
             :auth-user="authUser"
           />
         </div>
-        <div class="add-comment-button" v-else-if="workoutData.workout.id">
+        <div
+          class="add-comment-button"
+          v-else-if="authUser.username && workoutData.workout.id"
+        >
           <button @click.prevent="displayCommentTextArea">
             {{ $t('workouts.COMMENTS.ADD') }}
           </button>

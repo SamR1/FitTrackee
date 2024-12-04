@@ -1,8 +1,10 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!authUserLoading">
-      <router-view v-if="isAuthUserAdmin" />
-      <NotFound v-else />
+      <router-view v-if="authUserHasModeratorRights" />
+      <div class="container" v-else>
+        <NotFound />
+      </div>
       <div id="bottom" />
     </div>
   </div>
@@ -18,10 +20,10 @@
 
   const store = useStore()
 
-  const { isAuthUserAdmin, authUserLoading } = useAuthUser()
+  const { authUserHasModeratorRights, authUserLoading } = useAuthUser()
 
   onBeforeMount(() => {
-    if (isAuthUserAdmin.value) {
+    if (authUserHasModeratorRights.value) {
       store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_STATS)
     }
   })

@@ -5,8 +5,8 @@ from flask import current_app
 
 from fittrackee import appLog
 from fittrackee.federation.utils.user import get_user_from_username
-from fittrackee.privacy_levels import can_view
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import can_view
 
 from .exceptions import CommentForbiddenException
 from .models import Comment

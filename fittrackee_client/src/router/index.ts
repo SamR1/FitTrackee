@@ -39,7 +39,11 @@ import UserSportEdition from '@/components/User/UserSports/UserSportEdition.vue'
 import UserSportPreferences from '@/components/User/UserSports/UserSportPreferences.vue'
 import createI18n from '@/i18n'
 import store from '@/store'
-import { AUTH_USER_STORE, NOTIFICATIONS_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  NOTIFICATIONS_STORE,
+  ROOT_STORE,
+} from '@/store/constants'
 import AboutView from '@/views/AboutView.vue'
 import AdminView from '@/views/AdminView.vue'
 import Dashboard from '@/views/Dashboard.vue'
@@ -505,12 +509,20 @@ const routes: RouteRecordRaw[] = [
         name: 'UserFollowers',
         component: UserRelationships,
         props: { relationship: 'followers' },
+        meta: {
+          withoutAuth: false,
+          withoutChecks: false,
+        },
       },
       {
         path: 'following',
         name: 'UserFollowing',
         component: UserRelationships,
         props: { relationship: 'following' },
+        meta: {
+          withoutAuth: false,
+          withoutChecks: false,
+        },
       },
     ],
   },
@@ -552,6 +564,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: 'workouts.SEGMENT',
       count: 0,
+      withoutChecks: true,
       allowedToSuspendedUser: false,
     },
   },
@@ -562,6 +575,7 @@ const routes: RouteRecordRaw[] = [
     props: { displaySegment: false },
     meta: {
       allowedToSuspendedUser: false,
+      withoutChecks: true,
     },
   },
   {
@@ -570,6 +584,7 @@ const routes: RouteRecordRaw[] = [
     component: CommentView,
     meta: {
       allowedToSuspendedUser: false,
+      withoutChecks: true,
     },
   },
   {
@@ -711,6 +726,7 @@ router.beforeEach((to, from, next) => {
       title ? ` - ${capitalize(translatedTitle)}` : ''
     }`
   }
+  store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {

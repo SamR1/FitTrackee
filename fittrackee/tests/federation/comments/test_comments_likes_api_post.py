@@ -5,8 +5,8 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.comments.models import CommentLike
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...comments.mixins import CommentMixin
@@ -31,11 +31,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -68,11 +68,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -95,11 +95,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -136,14 +136,14 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -176,11 +176,11 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -206,11 +206,11 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)

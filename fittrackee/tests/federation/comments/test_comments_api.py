@@ -5,8 +5,8 @@ import pytest
 from flask import Flask
 
 from fittrackee.comments.models import Comment, Mention
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...comments.mixins import CommentMixin
@@ -21,9 +21,9 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_returns_404_when_user_can_not_access_workout(
@@ -35,7 +35,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         remote_cycling_workout: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         # user_1 does not follow remote_user
         remote_cycling_workout.workout_visibility = input_workout_visibility
@@ -49,7 +49,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(
@@ -75,7 +75,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         # user_1 follows remote_user but the workout is private
         remote_user.approves_follow_request_from(user_1)
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PRIVATE
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PRIVATE
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -86,7 +86,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -112,7 +112,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
         remote_cycling_workout.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         comment_text = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -125,7 +125,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=comment_text,
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -161,11 +161,11 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -177,7 +177,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -193,8 +193,8 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_does_not_call_sent_to_inbox_if_privacy_is_private_or_local_followers_only_and_no_mentions(  # noqa
@@ -209,7 +209,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
         follow_request_from_user_2_to_user_1: FollowRequest,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         user_1.approves_follow_request_from(user_2)
@@ -256,7 +256,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -267,7 +267,8 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_calls_sent_to_inbox_if_comment_has_mention(  # noqa
         self,
@@ -279,10 +280,10 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         # remote_user is mentioned but does not follow user_1
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -293,7 +294,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=f"@{remote_user.fullname} {self.random_string()}",
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -312,7 +313,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
         self,
@@ -325,10 +326,10 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -339,7 +340,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -358,7 +359,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
         self,
@@ -370,9 +371,9 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         remote_user_2.send_follow_request_to(user_1)
         user_1.approves_follow_request_from(remote_user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -385,7 +386,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -413,7 +414,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         remote_user.send_follow_request_to(user_1)
         user_1.approves_follow_request_from(remote_user)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -426,7 +427,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=f"@{remote_user.fullname}",
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -455,11 +456,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -493,11 +494,11 @@ class TestGetWorkoutCommentAsFollower(
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -531,11 +532,11 @@ class TestGetWorkoutCommentAsRemoteFollower(
     ) -> None:
         user_1.send_follow_request_to(remote_user)
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             remote_user,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -566,11 +567,11 @@ class TestGetWorkoutCommentAsOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -603,11 +604,11 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client = app_with_federation.test_client()
 
@@ -632,16 +633,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -672,11 +673,11 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -707,11 +708,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -730,9 +731,9 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
     @pytest.mark.parametrize(
         'input_text_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
         ],
     )
     def test_it_returns_comment_when_visibility_allows_access(
@@ -743,11 +744,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -782,11 +783,11 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -817,11 +818,11 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client = app_with_federation.test_client()
 
@@ -849,20 +850,20 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         # remote user 2
         visible_comments = [
             self.create_comment(
                 remote_user_2,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
         ]
 
         for privacy_levels in [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ]:
             # user_1 is not mentioned
             self.create_comment(
@@ -872,9 +873,9 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
             )
 
         for privacy_levels in [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ]:
             # user_1 is mentioned
             visible_comments.append(
@@ -888,8 +889,8 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
 
         # remote user followed by user 1
         for privacy_levels in [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
         ]:
             visible_comments.append(
                 self.create_comment(
@@ -901,20 +902,20 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         self.create_comment(
             remote_user,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         # user 3
         visible_comments.append(
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
         )
         for privacy_levels in [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ]:
             self.create_comment(
                 user_3,
@@ -923,9 +924,9 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
             )
         # user 2 followed by user 1
         for privacy_levels in [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
         ]:
             visible_comments.append(
                 self.create_comment(
@@ -937,14 +938,14 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         # user 1
         for privacy_levels in [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PUBLIC,
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
         ]:
             visible_comments.append(
                 self.create_comment(
@@ -975,9 +976,9 @@ class TestGetWorkoutCommentWithMention(
     @pytest.mark.parametrize(
         'input_workout_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_user_can_access_comment_when_mentioned(
@@ -988,9 +989,9 @@ class TestGetWorkoutCommentWithMention(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -1025,16 +1026,16 @@ class TestGetWorkoutsCommentsWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1070,11 +1071,11 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1105,11 +1106,11 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1135,11 +1136,11 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1153,7 +1154,8 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_calls_sent_to_inbox_if_comment_has_mention(  # noqa
         self,
@@ -1165,9 +1167,9 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -1192,7 +1194,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
         self,
@@ -1205,14 +1207,14 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1232,7 +1234,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'input_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
         self,
@@ -1244,15 +1246,15 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         remote_user_2.send_follow_request_to(user_1)
         user_1.approves_follow_request_from(remote_user_2)
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1282,13 +1284,13 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         user_1.approves_follow_request_from(remote_user)
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text=f"@{remote_user.fullname}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment_id = comment.id
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1319,11 +1321,11 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1342,9 +1344,9 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_calls_sent_to_inbox_with_update_when_comment_has_mention(
@@ -1357,9 +1359,9 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -1388,9 +1390,9 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_calls_sent_to_inbox_with_update_when_mention_is_removed(
@@ -1403,9 +1405,9 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -1433,7 +1435,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'text_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_instance(
         self,
@@ -1446,10 +1448,10 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_1: Workout,
         remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        text_visibility: PrivacyLevel,
+        text_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
@@ -1487,7 +1489,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         user_1.approves_follow_request_from(remote_user)
         remote_user_2.send_follow_request_to(user_1)
         user_1.approves_follow_request_from(remote_user_2)
@@ -1495,7 +1497,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text=f"@{remote_user.fullname} @{remote_user_2.fullname}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1532,7 +1534,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         user_1.approves_follow_request_from(remote_user)
         remote_user_2.send_follow_request_to(user_1)
         user_1.approves_follow_request_from(remote_user_2)
@@ -1540,7 +1542,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text=f"@{remote_user.fullname}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email

@@ -7,12 +7,12 @@ from sqlalchemy import and_, asc, desc, exc, or_
 from fittrackee import db
 from fittrackee.comments.models import Comment
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import (
     HttpResponse,
     NotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.visibility_levels import VisibilityLevel
 
 from .models import Notification, User
 
@@ -75,12 +75,12 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                                         ),
                                         or_(
                                             Comment.text_visibility
-                                            == PrivacyLevel.PUBLIC,
+                                            == VisibilityLevel.PUBLIC,
                                             and_(
                                                 Comment.text_visibility.in_(
                                                     [
-                                                        PrivacyLevel.FOLLOWERS,
-                                                        PrivacyLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                        VisibilityLevel.FOLLOWERS,
+                                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
                                                     ]
                                                 ),
                                                 Notification.from_user_id.in_(
@@ -89,7 +89,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                                             ),
                                             and_(
                                                 Comment.text_visibility
-                                                == PrivacyLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                == VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
                                                 Notification.from_user_id.in_(
                                                     remote_following_ids
                                                 ),
@@ -205,12 +205,12 @@ def get_status(auth_user: User) -> Dict:
                                         ),
                                         or_(
                                             Comment.text_visibility
-                                            == PrivacyLevel.PUBLIC,
+                                            == VisibilityLevel.PUBLIC,
                                             and_(
                                                 Comment.text_visibility.in_(
                                                     [
-                                                        PrivacyLevel.FOLLOWERS,
-                                                        PrivacyLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                        VisibilityLevel.FOLLOWERS,
+                                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
                                                     ]
                                                 ),
                                                 Notification.from_user_id.in_(
@@ -219,7 +219,7 @@ def get_status(auth_user: User) -> Dict:
                                             ),
                                             and_(
                                                 Comment.text_visibility
-                                                == PrivacyLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                == VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
                                                 Notification.from_user_id.in_(
                                                     remote_following_ids
                                                 ),

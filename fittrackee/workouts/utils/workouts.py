@@ -13,13 +13,13 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import (
-    PrivacyLevel,
+from fittrackee.users.models import User, UserSportPreference
+from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
     can_view,
     get_map_visibility,
 )
-from fittrackee.users.models import User, UserSportPreference
-from fittrackee.utils import decode_short_id
 
 from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import (
@@ -177,11 +177,11 @@ def create_workout(
     new_workout.ap_id = workout_data.get('id')
     new_workout.remote_url = workout_data.get('url')
 
-    new_workout.workout_visibility = PrivacyLevel(
+    new_workout.workout_visibility = VisibilityLevel(
         workout_data.get('workout_visibility', user.workouts_visibility.value)
     )
     new_workout.map_visibility = get_map_visibility(
-        PrivacyLevel(
+        VisibilityLevel(
             workout_data.get('map_visibility', user.map_visibility.value)
         ),
         new_workout.workout_visibility,
@@ -280,7 +280,7 @@ def edit_workout(
     if workout_data.get('equipments_list') is not None:
         workout.equipments = workout_data.get('equipments_list')
     if workout_data.get('workout_visibility') is not None:
-        workout.workout_visibility = PrivacyLevel(
+        workout.workout_visibility = VisibilityLevel(
             workout_data.get('workout_visibility')
         )
     if not workout.gpx:
@@ -313,7 +313,9 @@ def edit_workout(
 
     else:
         if workout_data.get('map_visibility') is not None:
-            map_visibility = PrivacyLevel(workout_data.get('map_visibility'))
+            map_visibility = VisibilityLevel(
+                workout_data.get('map_visibility')
+            )
             workout.map_visibility = get_map_visibility(
                 map_visibility, workout.workout_visibility
             )
@@ -579,7 +581,7 @@ def get_workout(
     workout = Workout.query.filter(Workout.uuid == workout_uuid).first()
     if not workout or (
         not can_view(workout, 'workout_visibility', auth_user)
-        and not (allow_admin and auth_user and auth_user.admin)
+        and not (allow_admin and auth_user and auth_user.has_admin_rights)
     ):
         raise WorkoutForbiddenException()
     return workout

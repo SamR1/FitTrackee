@@ -7,8 +7,8 @@ from flask import Flask
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.objects.comment import CommentObject
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...comments.mixins import CommentMixin
@@ -16,7 +16,8 @@ from ...comments.mixins import CommentMixin
 
 class TestWorkoutCommentCreateObject(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_invalid(
         self,
@@ -25,9 +26,9 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         # no mentioned users
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=input_visibility
@@ -46,9 +47,11 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         invalid_activity_type = self.random_string()
         with pytest.raises(
@@ -65,12 +68,12 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
         comment_object = CommentObject(comment, 'Create')
@@ -106,12 +109,12 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
         comment_object = CommentObject(comment, 'Create')
@@ -148,17 +151,17 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         parent_comment = self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
@@ -201,13 +204,13 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment_object = CommentObject(comment, 'Create')
 
@@ -242,13 +245,13 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         comment_object = CommentObject(comment, 'Create')
 
@@ -269,7 +272,8 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
         }
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_with_mentioned_users(
         self,
@@ -281,9 +285,9 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
@@ -317,9 +321,11 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         invalid_activity_type = self.random_string()
         with pytest.raises(
@@ -329,7 +335,8 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
             CommentObject(comment, invalid_activity_type)
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_when_visibility_is_private_or_for_local_followers(  # noqa
         self,
@@ -338,9 +345,9 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         # case of mention removed
         comment = self.create_comment(
@@ -382,12 +389,12 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         comment.modification_date = datetime.utcnow()
         published = comment.created_at.strftime(DATE_FORMAT)
@@ -425,12 +432,12 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.modification_date = datetime.utcnow()
         published = comment.created_at.strftime(DATE_FORMAT)
@@ -474,13 +481,13 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.modification_date = datetime.utcnow()
         comment_object = CommentObject(comment, 'Update')
@@ -516,13 +523,13 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         comment.modification_date = datetime.utcnow()
         comment_object = CommentObject(comment, 'Update')
@@ -544,7 +551,8 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
         }
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_for_private_comment_with_mentioned_users(
         self,
@@ -556,15 +564,15 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = self.random_string()
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_3.username} @{remote_user.fullname} great!",
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         comment.modification_date = datetime.utcnow()
         comment_object = CommentObject(comment, 'Update')

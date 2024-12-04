@@ -31,7 +31,6 @@ from fittrackee.equipments.utils import (
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -46,6 +45,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
@@ -1129,9 +1129,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not current_app.config['FEDERATION_ENABLED'] and (
         workout_data.get('workout_visibility')
-        == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
         or workout_data.get('map_visibility')
-        == PrivacyLevel.FOLLOWERS_AND_REMOTE.value
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
     ):
         return InvalidPayloadErrorResponse()
 
@@ -1348,7 +1348,7 @@ def post_workout_no_gpx(
     if (
         not current_app.config['FEDERATION_ENABLED']
         and workout_data.get('workout_visibility')
-        == PrivacyLevel.FOLLOWERS_AND_REMOTE
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE
     ):
         return InvalidPayloadErrorResponse()
 
@@ -1640,20 +1640,20 @@ def update_workout(
 
         if old_workout:
             if workout.workout_visibility in (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ):
                 if old_workout.workout_visibility in (
-                    PrivacyLevel.PRIVATE,
-                    PrivacyLevel.FOLLOWERS,
+                    VisibilityLevel.PRIVATE,
+                    VisibilityLevel.FOLLOWERS,
                 ):
                     handle_workout_activities(workout, activity_type='Create')
                 else:
                     handle_workout_activities(workout, activity_type='Update')
 
             elif old_workout.workout_visibility in (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ):
                 handle_workout_activities(old_workout, activity_type='Delete')
 

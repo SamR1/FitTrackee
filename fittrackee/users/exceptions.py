@@ -18,6 +18,11 @@ class InvalidNotificationTypeException(Exception):
     pass
 
 
+class InvalidUserRole(Exception):
+    def __init__(self) -> None:
+        super().__init__('invalid role')
+
+
 class MissingAdminIdException(Exception):
     pass
 
@@ -31,6 +36,10 @@ class InvalidUserException(Exception):
 
 
 class NotExistingFollowRequestError(Exception):
+    pass
+
+
+class OwnerException(Exception):
     pass
 
 

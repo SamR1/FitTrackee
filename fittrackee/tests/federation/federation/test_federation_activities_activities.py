@@ -21,13 +21,13 @@ from fittrackee.federation.objects.workout import (
     convert_duration_string_to_seconds,
 )
 from fittrackee.federation.tasks.activity import get_activity_instance
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -512,7 +512,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         remote_actor: Union[RandomActor, Actor],
         sport_id: int,
         activity_type: str,
-        visibility: PrivacyLevel,
+        visibility: VisibilityLevel,
     ) -> Dict:
         remote_domain = (
             remote_actor.domain
@@ -556,7 +556,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 "workout_date": workout_date,
             },
         }
-        if visibility == PrivacyLevel.PUBLIC:
+        if visibility == VisibilityLevel.PUBLIC:
             activity['to'] = [PUBLIC_STREAM]
             activity['cc'] = [remote_actor.followers_url]
             activity['object']['to'] = [PUBLIC_STREAM]
@@ -572,7 +572,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         self,
         remote_actor: Union[RandomActor, Actor],
         sport_id: int,
-        visibility: PrivacyLevel = PrivacyLevel.PUBLIC,
+        visibility: VisibilityLevel = VisibilityLevel.PUBLIC,
     ) -> Dict:
         return self.generate_random_object(
             remote_actor, sport_id, 'Create', visibility
@@ -628,7 +628,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 del updates["workout_visibility"]
             else:
                 workout_visibility = workout.workout_visibility
-            if workout_visibility == PrivacyLevel.PUBLIC:
+            if workout_visibility == VisibilityLevel.PUBLIC:
                 activity['to'] = [PUBLIC_STREAM]
                 activity['cc'] = [actor.followers_url]
                 activity['object']['to'] = [PUBLIC_STREAM]
@@ -640,7 +640,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                 activity['object']['cc'] = []
         elif remote_actor and remote_actor and sport_id:
             activity = self.generate_random_object(
-                remote_actor, sport_id, 'Update', PrivacyLevel.PUBLIC
+                remote_actor, sport_id, 'Update', VisibilityLevel.PUBLIC
             )
         activity["object"] = {**activity["object"], **updates}
         return activity
@@ -718,7 +718,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=remote_user.actor,
             sport_id=sport_1_cycling.id,
-            visibility=PrivacyLevel.PUBLIC,
+            visibility=VisibilityLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': workout_activity['type']})(
             activity_dict=workout_activity
@@ -734,7 +734,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         assert (
             remote_workout.distance == workout_activity['object']['distance']
         )
-        assert remote_workout.workout_visibility == PrivacyLevel.PUBLIC
+        assert remote_workout.workout_visibility == VisibilityLevel.PUBLIC
 
     def test_it_creates_remote_workout_without_gpx_with_followers_visibility(
         self,
@@ -745,7 +745,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=remote_user.actor,
             sport_id=sport_1_cycling.id,
-            visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+            visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
         activity = get_activity_instance({'type': workout_activity['type']})(
             activity_dict=workout_activity
@@ -758,7 +758,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         ).first()
         assert (
             remote_workout.workout_visibility
-            == PrivacyLevel.FOLLOWERS_AND_REMOTE
+            == VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
 
     def test_serializer_returns_remote_url(
@@ -771,7 +771,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=remote_user.actor,
             sport_id=sport_1_cycling.id,
-            visibility=PrivacyLevel.PUBLIC,
+            visibility=VisibilityLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': workout_activity['type']})(
             activity_dict=workout_activity
@@ -971,7 +971,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
             ("max_speed", 13.0),
             ("sport_id", 2),
             ("title", "new_title"),
-            ("workout_visibility", PrivacyLevel.PUBLIC),
+            ("workout_visibility", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_updates_remote_workout(
@@ -982,10 +982,10 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         sport_2_running: Sport,
         remote_cycling_workout: Workout,
         input_key: str,
-        input_new_value: Union[str, int, float, PrivacyLevel],
+        input_new_value: Union[str, int, float, VisibilityLevel],
     ) -> None:
         remote_cycling_workout.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         update_activity = self.generate_workout_update_activity(
             workout=remote_cycling_workout,
@@ -1108,7 +1108,7 @@ class CommentActivitiesTestCase(RandomMixin):
         activity_type: str,
         remote_actor: Union[RandomActor, Actor],
         workout: Optional[Workout] = None,
-        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+        visibility: Optional[VisibilityLevel] = VisibilityLevel.PUBLIC,
         text: Optional[str] = None,
     ) -> Dict:
         remote_domain = (
@@ -1158,12 +1158,12 @@ class CommentActivitiesTestCase(RandomMixin):
                 "cc": [],
             },
         }
-        if visibility == PrivacyLevel.PUBLIC:
+        if visibility == VisibilityLevel.PUBLIC:
             activity['to'] = [PUBLIC_STREAM]
             activity['cc'] = [remote_actor.followers_url]
             activity['object']['to'] = [PUBLIC_STREAM]
             activity['object']['cc'] = [remote_actor.followers_url]
-        elif visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE:
+        elif visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE:
             activity['to'] = [remote_actor.followers_url]
             activity['cc'] = []
             activity['object']['to'] = [remote_actor.followers_url]
@@ -1179,7 +1179,7 @@ class CommentActivitiesTestCase(RandomMixin):
         self,
         remote_actor: Union[RandomActor, Actor],
         workout: Optional[Workout] = None,
-        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+        visibility: Optional[VisibilityLevel] = VisibilityLevel.PUBLIC,
         text: Optional[str] = None,
     ) -> Dict:
         return self.generate_random_object(
@@ -1190,7 +1190,7 @@ class CommentActivitiesTestCase(RandomMixin):
         self,
         remote_actor: Union[RandomActor, Actor],
         workout: Optional[Workout] = None,
-        visibility: Optional[PrivacyLevel] = PrivacyLevel.PUBLIC,
+        visibility: Optional[VisibilityLevel] = VisibilityLevel.PUBLIC,
         text: Optional[str] = None,
     ) -> Dict:
         return self.generate_random_object(
@@ -1256,7 +1256,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         random_actor: RandomActor,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts/'
             f'{workout_cycling_user_1.short_id}'
@@ -1264,7 +1264,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=random_actor,
             workout=workout_cycling_user_1,
-            visibility=PrivacyLevel.PUBLIC,
+            visibility=VisibilityLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': comment_activity['type']})(
             activity_dict=comment_activity
@@ -1294,7 +1294,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         random_actor: RandomActor,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts/'
             f'{workout_cycling_user_1.short_id}'
@@ -1307,7 +1307,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
                 f'rel="noopener noreferrer">@<span>{random_actor.fullname}'
                 f'</span></a>'
             ),
-            visibility=PrivacyLevel.PUBLIC,
+            visibility=VisibilityLevel.PUBLIC,
         )
         activity = get_activity_instance({'type': comment_activity['type']})(
             activity_dict=comment_activity
@@ -1335,9 +1335,9 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_creates_remote_workout_comment_with_expected_visibility(
@@ -1347,7 +1347,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         workout_cycling_user_1.ap_id = (
@@ -1386,7 +1386,7 @@ class TestCreateActivityForCommentReply(
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts/'
             f'{workout_cycling_user_1.short_id}'
@@ -1394,7 +1394,7 @@ class TestCreateActivityForCommentReply(
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor,
             workout=workout_cycling_user_1,
-            visibility=PrivacyLevel.PUBLIC,
+            visibility=VisibilityLevel.PUBLIC,
         )
         comment_activity["object"]["inReplyTo"] = (
             comment_activity["object"]["inReplyTo"]
@@ -1412,15 +1412,15 @@ class TestCreateActivityForCommentReply(
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
-        assert remote_comment.text_visibility == PrivacyLevel.PUBLIC
+        assert remote_comment.text_visibility == VisibilityLevel.PUBLIC
         assert remote_comment.reply_to is None
 
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS_AND_REMOTE,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_creates_remote_workout_comment_with_expected_visibility(
@@ -1430,15 +1430,17 @@ class TestCreateActivityForCommentReply(
         remote_user: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts/'
             f'{workout_cycling_user_1.short_id}'
         )
         parent_comment = self.create_comment(
-            user_1, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         parent_comment.ap_id = (
             f'{user_1.actor.activitypub_id}/workouts/'
@@ -1476,7 +1478,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         random_actor: Actor,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment_activity = self.generate_workout_comment_update_activity(
             random_actor
         )
@@ -1506,7 +1508,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         random_actor: Actor,
     ) -> None:
         # case of a comment edited to add a mention to a user (not-followers)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment_activity = self.generate_workout_comment_update_activity(
             random_actor, text=f"@{user_1.username}"
         )
@@ -1544,11 +1546,11 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_user: User,
         remote_user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         remote_comment.modification_date = datetime.utcnow()
         comment_activity = {
@@ -1577,11 +1579,11 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         remote_comment.modification_date = datetime.utcnow()
         comment_activity = remote_comment.get_activity("Update")
@@ -1603,14 +1605,14 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_user: User,
         random_actor: RandomActor,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         with patch('fittrackee.federation.utils.user.update_remote_user'):
             remote_comment = self.create_comment(
                 remote_user,
                 workout_cycling_user_1,
                 text=f"@{remote_user.fullname}",
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
             remote_comment.modification_date = datetime.utcnow()
             comment_activity = remote_comment.get_activity("Update")
@@ -1649,11 +1651,11 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         remote_comment.modification_date = datetime.utcnow()
         comment_activity = remote_comment.get_activity("Update")
@@ -1673,11 +1675,11 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         remote_comment.modification_date = datetime.utcnow()
         comment_activity = remote_comment.get_activity("Update")
@@ -1692,7 +1694,8 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         activity.process_activity()
 
         assert (
-            remote_comment.text_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
+            remote_comment.text_visibility
+            == VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
 
     def test_it_raises_exception_when_activity_is_invalid(
@@ -1703,11 +1706,11 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         remote_comment.modification_date = datetime.utcnow()
         comment_activity = remote_comment.get_activity("Update")
@@ -1734,7 +1737,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         workout_cycling_user_1: Workout,
         remote_user: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user.actor
         )
@@ -1773,11 +1776,11 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_cycling_workout: Workout,
         remote_user_2: User,
     ) -> None:
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             remote_cycling_workout,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user_2.actor,
@@ -1806,12 +1809,12 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         sport_1_cycling: Sport,
         remote_cycling_workout: Workout,
     ) -> None:
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             remote_cycling_workout,
             text=f"@{user_1.fullname}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user.actor,
@@ -1835,16 +1838,16 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         sport_1_cycling: Sport,
         remote_cycling_workout: Workout,
     ) -> None:
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
         remote_comment = self.create_comment(
             remote_user,
             remote_cycling_workout,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         reply = self.create_comment(
             user_1,
             remote_cycling_workout,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=remote_comment,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
@@ -1952,7 +1955,7 @@ class TestLikeActivityForComment(CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -1983,7 +1986,7 @@ class TestLikeActivityForComment(CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -2117,7 +2120,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like = CommentLike(user_id=remote_user.id, comment_id=comment.id)
         db.session.add(like)
@@ -2152,7 +2155,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -2176,7 +2179,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,

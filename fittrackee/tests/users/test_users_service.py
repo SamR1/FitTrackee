@@ -8,6 +8,7 @@ from fittrackee import bcrypt, db
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    InvalidUserRole,
     MissingAdminIdException,
     MissingReportIdException,
     UserAlreadySuspendedException,
@@ -15,6 +16,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 from fittrackee.users.users_service import UserManagerService
 
 from ..utils import random_email, random_string
@@ -56,21 +58,32 @@ class TestUserManagerServiceUserUpdate:
 
         assert user == user_1
 
-    def test_it_sets_admin_right_for_a_given_user(
+    @pytest.mark.parametrize(
+        'input_role', ['user', 'moderator', 'admin', 'owner']
+    )
+    def test_it_sets_role_for_a_given_user(
+        self, app: Flask, user_1: User, input_role: str
+    ) -> None:
+        user_manager_service = UserManagerService(username=user_1.username)
+
+        user_manager_service.update(role=input_role)
+
+        assert user_1.role == UserRole[input_role.upper()].value
+
+    def test_it_raises_exception_when_role_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        user_manager_service.update(is_admin=True)
-
-        assert user_1.admin is True
+        with pytest.raises(InvalidUserRole):
+            user_manager_service.update(role="invalid")
 
     def test_it_return_updated_user_flag_to_true(
         self, app: Flask, user_1: User
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _, _ = user_manager_service.update(is_admin=True)
+        _, user_updated, _, _ = user_manager_service.update(role='admin')
 
         assert user_updated is True
 
@@ -81,9 +94,9 @@ class TestUserManagerServiceUserUpdate:
             username=user_1_admin.username
         )
 
-        _, user_updated, _, _ = user_manager_service.update(is_admin=True)
+        _, user_updated, _, _ = user_manager_service.update(role='admin')
 
-        assert user_1_admin.admin is True
+        assert user_1_admin.role == UserRole.ADMIN.value
         assert user_updated is True
 
     @pytest.mark.parametrize('input_activate', [True, False])
@@ -95,10 +108,10 @@ class TestUserManagerServiceUserUpdate:
         )
 
         _, user_updated, _, _ = user_manager_service.update(
-            is_admin=True, activate=input_activate
+            role='admin', activate=input_activate
         )
 
-        assert inactive_user.admin is True
+        assert inactive_user.role == UserRole.ADMIN.value
         assert inactive_user.is_active is True
         assert inactive_user.confirmation_token is None
         assert user_updated is True
@@ -229,7 +242,7 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         user_manager_service = UserManagerService(
             username=user_1.username,
-            admin_user_id=user_2_admin.id,
+            moderator_id=user_2_admin.id,
         )
 
         with pytest.raises(
@@ -266,7 +279,7 @@ class TestUserManagerServiceUserUpdate:
         user_1.suspended_at = datetime.utcnow()
         user_manager_service = UserManagerService(
             username=user_1.username,
-            admin_user_id=user_2_admin.id,
+            moderator_id=user_2_admin.id,
         )
 
         with pytest.raises(
@@ -280,7 +293,7 @@ class TestUserManagerServiceUserUpdate:
     ) -> None:
         report = self.generate_user_report(user_2_admin, user_1)
         user_manager_service = UserManagerService(
-            username=user_1.username, admin_user_id=user_2_admin.id
+            username=user_1.username, moderator_id=user_2_admin.id
         )
         now = datetime.utcnow()
 
@@ -299,7 +312,7 @@ class TestUserManagerServiceUserUpdate:
         report = self.generate_user_report(user_2_admin, user_1_admin)
         user_manager_service = UserManagerService(
             username=user_1_admin.username,
-            admin_user_id=user_2_admin.id,
+            moderator_id=user_2_admin.id,
         )
         now = datetime.utcnow()
 
@@ -308,7 +321,7 @@ class TestUserManagerServiceUserUpdate:
                 suspended=True, report_id=report.id
             )
 
-        assert user_1_admin.admin is False
+        assert user_1_admin.role == UserRole.USER.value
         assert user_1_admin.is_active is True
         assert user_1_admin.suspended_at == now
         assert user_updated is True
@@ -320,7 +333,7 @@ class TestUserManagerServiceUserUpdate:
         user_1.suspended_at = datetime.utcnow()
         user_manager_service = UserManagerService(
             username=user_1.username,
-            admin_user_id=user_2_admin.id,
+            moderator_id=user_2_admin.id,
         )
 
         _, user_updated, _, _ = user_manager_service.update(
@@ -339,7 +352,7 @@ class TestUserManagerServiceUserUpdate:
         user_1.suspended_at = suspended_at
         user_manager_service = UserManagerService(
             username=user_1.username,
-            admin_user_id=user_2_admin.id,
+            moderator_id=user_2_admin.id,
         )
 
         _, user_updated, _, _ = user_manager_service.update(
@@ -365,7 +378,7 @@ class TestUserManagerServiceUserUpdate:
         reason = random_string()
         report = self.generate_user_report(user_1_admin, user_2)
         user_manager_service = UserManagerService(
-            admin_user_id=user_1_admin.id, username=user_2.username
+            moderator_id=user_1_admin.id, username=user_2.username
         )
         if input_suspended is False:
             user_2.suspended_at = datetime.utcnow()
@@ -380,7 +393,7 @@ class TestUserManagerServiceUserUpdate:
             )
 
         report_action = ReportAction.query.filter_by(
-            admin_user_id=user_1_admin.id,
+            moderator_id=user_1_admin.id,
             action_type=expected_action_action,
             user_id=user_2.id,
         ).first()
@@ -488,14 +501,14 @@ class TestUserManagerServiceUserCreation:
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
 
-    def test_created_user_has_no_admin_rights(self, app: Flask) -> None:
+    def test_created_user_has_user_role(self, app: Flask) -> None:
         username = random_string()
         user_manager_service = UserManagerService(username=username)
 
         new_user, _ = user_manager_service.create(email=random_email())
 
         assert new_user
-        assert new_user.admin is False
+        assert new_user.role == UserRole.USER.value
 
     def test_created_user_does_not_accept_privacy_policy(
         self, app: Flask

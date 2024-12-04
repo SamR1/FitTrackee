@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Dict
 
 from fittrackee.exceptions import InvalidVisibilityException
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 
 from ..enums import ActivityType
@@ -28,10 +28,10 @@ class WorkoutObject(BaseObject):
         self.activity_dict = self._init_activity_dict()
 
     @staticmethod
-    def _check_visibility(visibility: PrivacyLevel) -> None:
+    def _check_visibility(visibility: VisibilityLevel) -> None:
         if visibility in [
-            PrivacyLevel.PRIVATE,
-            PrivacyLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
         ]:
             raise InvalidVisibilityException(
                 f"object visibility is: '{visibility.value}'"

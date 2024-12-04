@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
@@ -29,7 +29,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
         remote_cycling_workout.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -66,7 +66,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -88,7 +88,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         remote_cycling_workout: Workout,
     ) -> None:
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -124,7 +124,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
         remote_cycling_workout.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -166,7 +166,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         )
@@ -193,7 +193,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         remote_cycling_workout: Workout,
     ) -> None:
-        remote_cycling_workout.workout_visibility = PrivacyLevel.PUBLIC
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_1.id, workout_id=remote_cycling_workout.id
         )

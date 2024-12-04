@@ -4,9 +4,9 @@ from flask import Blueprint, request
 from sqlalchemy import and_, or_
 
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.responses import HttpResponse, handle_error_and_return_response
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 
 from .models import Workout
 
@@ -46,20 +46,26 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                         or_(
                             and_(
                                 Workout.user_id.in_(local_following_ids),
+                                Workout.user_id.not_in(
+                                    blocked_users + blocked_by_users
+                                ),
                                 Workout.workout_visibility.in_(
                                     [
-                                        PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                                        PrivacyLevel.FOLLOWERS,
-                                        PrivacyLevel.PUBLIC,
+                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                                        VisibilityLevel.FOLLOWERS,
+                                        VisibilityLevel.PUBLIC,
                                     ]
                                 ),
                             ),
                             and_(
                                 Workout.user_id.in_(remote_following_ids),
+                                Workout.user_id.not_in(
+                                    blocked_users + blocked_by_users
+                                ),
                                 Workout.workout_visibility.in_(
                                     [
-                                        PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                                        PrivacyLevel.PUBLIC,
+                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                                        VisibilityLevel.PUBLIC,
                                     ]
                                 ),
                             ),

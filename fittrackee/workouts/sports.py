@@ -12,6 +12,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.roles import UserRole
 
 from .models import Sport
 
@@ -201,7 +202,7 @@ def get_sports(auth_user: User) -> Dict:
         sports_data.append(
             sport.serialize(
                 check_workouts=(
-                    auth_user and auth_user.admin and check_workouts
+                    auth_user and auth_user.has_admin_rights and check_workouts
                 ),
                 sport_preferences=(
                     sport_preferences[sport.id].serialize()
@@ -305,7 +306,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@require_auth(scopes=['workouts:write'], as_admin=True)
+@require_auth(scopes=['workouts:write'], role=UserRole.ADMIN)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport.

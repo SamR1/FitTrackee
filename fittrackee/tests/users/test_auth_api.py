@@ -11,7 +11,6 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
@@ -23,6 +22,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.users.utils.token import get_user_token
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..federation.users.test_auth_api import assert_actor_is_created
@@ -1631,16 +1631,16 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_updates_user_preferences_with_valid_map_visibility(
         self,
         app: Flask,
         user_1: User,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1697,10 +1697,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=True,
                     date_format='MM/dd/yyyy',
-                    map_visibility=PrivacyLevel.PUBLIC.value,
+                    map_visibility=VisibilityLevel.PUBLIC.value,
                     start_elevation_at_zero=False,
                     use_raw_gpx_speed=False,
-                    workouts_visibility=PrivacyLevel.PUBLIC.value,
+                    workouts_visibility=VisibilityLevel.PUBLIC.value,
                     manually_approves_followers=True,
                     hide_profile_in_users_directory=True,
                     use_dark_mode=None,
@@ -1711,22 +1711,24 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['map_visibility'] == PrivacyLevel.PUBLIC.value
-        assert data['data']['workouts_visibility'] == PrivacyLevel.PUBLIC.value
+        assert data['data']['map_visibility'] == VisibilityLevel.PUBLIC.value
+        assert (
+            data['data']['workouts_visibility'] == VisibilityLevel.PUBLIC.value
+        )
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.FOLLOWERS),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS_AND_REMOTE),
+            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.FOLLOWERS),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
         ],
     )
     def test_it_returns_400_when_privacy_level_is_invalid(
         self,
         app: Flask,
         user_1: User,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -4287,7 +4289,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         appeal = ReportActionAppeal.query.filter_by(
             action_id=action.id
         ).first()
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.user_id == user_2.id
@@ -4630,7 +4632,7 @@ class TestPostUserSanctionAppeal(UserSuspensionTestCase):
         appeal = ReportActionAppeal.query.filter_by(
             action_id=action.id
         ).first()
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.user_id == user_2.id

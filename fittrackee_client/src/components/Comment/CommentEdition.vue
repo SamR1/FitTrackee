@@ -30,7 +30,7 @@
           class="form-item text-visibility"
           v-if="!comment && workout && workout.workout_visibility"
         >
-          <label> {{ $t('privacy.VISIBILITY') }}: </label>
+          <label> {{ $t('visibility_levels.VISIBILITY') }}: </label>
           <select id="text_visibility" v-model="commentTextVisibility">
             <option
               v-for="level in getCommentVisibilityLevels(
@@ -42,7 +42,7 @@
             >
               {{
                 $t(
-                  `privacy.COMMENT_LEVELS.${getPrivacyLevelForLabel(
+                  `visibility_levels.COMMENT_LEVELS.${getVisibilityLevelForLabel(
                     level,
                     appConfig.federation_enabled
                   )}`
@@ -81,15 +81,15 @@
     IAuthUserProfile,
     IUserLightProfile,
     IUserProfile,
-    TPrivacyLevels,
+    TVisibilityLevels,
   } from '@/types/user'
   import type { IComment, ICommentForm, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUsernameQuery, replaceUsername } from '@/utils/inputs'
   import {
     getCommentVisibilityLevels,
-    getPrivacyLevelForLabel,
-  } from '@/utils/privacy'
+    getVisibilityLevelForLabel,
+  } from '@/utils/visibility_levels'
 
   interface ISuggestion {
     position: number | null
@@ -128,10 +128,12 @@
   let suggestion: ISuggestion = { position: null, usernameQuery: null }
 
   const commentText: Ref<string> = ref(getText())
-  const commentTextVisibility: Ref<TPrivacyLevels | undefined> = ref(
+  const commentTextVisibility: Ref<TVisibilityLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
-      : workout.value?.workout_visibility
+      : replyTo.value
+        ? replyTo.value.text_visibility
+        : workout.value?.workout_visibility
   )
 
   const isLoading: ComputedRef<boolean> = computed(() =>
@@ -163,6 +165,12 @@
       if (filteredMentions.length > 0) {
         return filteredMentions.map((m) => `@${m.username}`).join(' ') + ' '
       }
+    }
+    if (
+      replyTo.value &&
+      replyTo.value.user.username !== authUser.value.username
+    ) {
+      return `@${replyTo.value.user.username} `
     }
     // add workout owner as mention
     if (

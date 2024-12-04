@@ -12,6 +12,7 @@ from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.token import clean_blacklisted_tokens
@@ -78,8 +79,14 @@ def create_user(
 @click.option(
     '--set-admin',
     type=bool,
-    help='Add/remove admin rights (when adding admin rights, '
+    help='[DEPRECATED] Add/remove admin rights (when adding admin rights, '
     'it also activates user account if not active).',
+)
+@click.option(
+    '--set-role',
+    type=click.Choice(UserRole.db_choices()),
+    help='Set user role (when setting \'moderator\', \'admin\' and \'owner\' '
+    'role, it also activates user account if not active).',
 )
 @click.option('--activate', is_flag=True, help='Activate user account.')
 @click.option(
@@ -91,16 +98,32 @@ def create_user(
 def manage_user(
     username: str,
     set_admin: Optional[bool],
+    set_role: Optional[str],
     activate: bool,
     reset_password: bool,
     update_email: Optional[str],
 ) -> None:
     """Manage given user account."""
     with app.app_context():
+        role = None
+        if set_admin is not None:
+            click.echo(
+                "WARNING: --set-admin is deprecated. "
+                "Please use --set-role option instead."
+            )
+            role = 'admin' if set_admin else 'user'
+        if set_admin is not None and set_role is not None:
+            raise click.ClickException(
+                "--set-admin and --set-role can not be used together.",
+            )
+
+        if set_role:
+            role = set_role
+
         try:
             user_manager_service = UserManagerService(username)
             _, is_user_updated, password, _ = user_manager_service.update(
-                is_admin=set_admin,
+                role=role,
                 with_confirmation=False,
                 activate=activate if activate else None,
                 reset_password=reset_password,

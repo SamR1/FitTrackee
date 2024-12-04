@@ -8,6 +8,7 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.export_data import (
     UserDataExporter,
     clean_user_data_export,
@@ -15,13 +16,14 @@ from fittrackee.users.export_data import (
     generate_user_data_archives,
 )
 from fittrackee.users.models import User, UserDataExport
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..utils import random_int, random_string
 from ..workouts.utils import post_a_workout
 
 
-class TestUserDataExporterGetData:
+class TestUserDataExporterGetUserInfos:
     def test_it_return_serialized_user_as_info_info(
         self, app: Flask, user_1: User
     ) -> None:
@@ -31,6 +33,8 @@ class TestUserDataExporterGetData:
 
         assert user_data == user_1.serialize(current_user=user_1)
 
+
+class TestUserDataExporterGetUserWorkoutsData:
     def test_it_returns_empty_list_when_user_has_no_workouts(
         self, app: Flask, user_1: User
     ) -> None:
@@ -141,6 +145,25 @@ class TestUserDataExporterGetData:
             }
         ]
 
+    def test_it_stores_only_user_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        exporter = UserDataExporter(user_1)
+
+        workouts_data = exporter.get_user_workouts_data()
+
+        assert [data["id"] for data in workouts_data] == [
+            workout_cycling_user_1.short_id
+        ]
+
+
+class TestUserDataExporterGetUserEquipmentsData:
     def test_it_returns_empty_list_when_no_data_for_equipments(
         self,
         app: Flask,
@@ -168,23 +191,112 @@ class TestUserDataExporterGetData:
 
         assert equipments_data == [equipment_bike_user_1.serialize()]
 
-    def test_it_stores_only_user_workouts(
+
+class TestUserDataExporterGetUserCommentsData(CommentMixin):
+    def test_it_returns_empty_list_when_user_has_no_comments(
+        self, app: Flask, user_1: User
+    ) -> None:
+        exporter = UserDataExporter(user_1)
+
+        comments_data = exporter.get_user_comments_data()
+
+        assert comments_data == []
+
+    def test_it_returns_user_comment(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_2: Workout,
     ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
         exporter = UserDataExporter(user_1)
 
-        workouts_data = exporter.get_user_workouts_data()
+        comments_data = exporter.get_user_comments_data()
 
-        assert [data["id"] for data in workouts_data] == [
-            workout_cycling_user_1.short_id
+        assert comments_data == [
+            {
+                'created_at': comment.created_at,
+                'id': comment.short_id,
+                'modification_date': comment.modification_date,
+                'reply_to': None,
+                'text': comment.text,
+                'text_visibility': comment.text_visibility.value,
+                'workout_id': workout_cycling_user_1.short_id,
+            },
         ]
 
+    def test_it_returns_user_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+            parent_comment=parent_comment,
+        )
+        exporter = UserDataExporter(user_1)
+
+        comments_data = exporter.get_user_comments_data()
+
+        assert comments_data == [
+            {
+                'created_at': comment.created_at,
+                'id': comment.short_id,
+                'modification_date': comment.modification_date,
+                'reply_to': parent_comment.short_id,
+                'text': comment.text,
+                'text_visibility': comment.text_visibility.value,
+                'workout_id': workout_cycling_user_1.short_id,
+            },
+        ]
+
+    def test_it_returns_user_comment_without_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.create_comment(user_1, workout_cycling_user_1)
+        db.session.delete(workout_cycling_user_1)
+        db.session.commit()
+        exporter = UserDataExporter(user_1)
+
+        comments_data = exporter.get_user_comments_data()
+
+        assert comments_data == [
+            {
+                'created_at': comment.created_at,
+                'id': comment.short_id,
+                'modification_date': comment.modification_date,
+                'reply_to': None,
+                'text': comment.text,
+                'text_visibility': comment.text_visibility.value,
+                'workout_id': None,
+            },
+        ]
+
+
+class TestUserDataExporterExportData:
     def test_export_data_generates_json_file_in_user_directory(
         self,
         app: Flask,
@@ -222,11 +334,11 @@ class TestUserDataExporterGetData:
         assert file_path == os.path.join(user_directory, f"{file_name}.json")
 
 
-class TestUserDataExporterArchive:
+class TestUserDataExporterGenerateArchive:
     @patch.object(secrets, 'token_urlsafe')
     @patch.object(UserDataExporter, 'export_data')
     @patch('fittrackee.users.export_data.ZipFile')
-    def test_it_calls_export_data_twice(
+    def test_it_gets_data_for_each_type(
         self,
         zipfile_mock: Mock,
         export_data: Mock,
@@ -244,6 +356,7 @@ class TestUserDataExporterArchive:
                 call(exporter.get_user_info(), 'user_data'),
                 call(exporter.get_user_workouts_data(), 'workouts_data'),
                 call(exporter.get_user_equipments_data(), 'equipments_data'),
+                call(exporter.get_user_comments_data(), 'comments_data'),
             ]
         )
 
@@ -292,6 +405,7 @@ class TestUserDataExporterArchive:
             call('user_info'),
             call('workouts_data'),
             call('equipments_data'),
+            call('comments_data'),
         ]
 
         exporter.generate_archive()
@@ -303,6 +417,7 @@ class TestUserDataExporterArchive:
                     call(call('user_info'), 'user_data.json'),
                     call(call('workouts_data'), 'user_workouts_data.json'),
                     call(call('equipments_data'), 'user_equipments_data.json'),
+                    call(call('comments_data'), 'user_comments_data.json'),
                 ]
             )
         # fmt: on

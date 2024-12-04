@@ -4,10 +4,10 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.objects.like import LikeObject
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.workouts.test_workouts_model import WorkoutModelTestCase
 from fittrackee.tests.workouts.utils import add_follower
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import (
     Sport,
@@ -31,7 +31,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         remote_user: User,
     ) -> None:
         add_follower(user_1, remote_user)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PRIVATE
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(user=remote_user)
@@ -45,7 +45,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         add_follower(user_1, remote_user)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(user=remote_user)
@@ -54,23 +54,23 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
             (
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PUBLIC,
             ),
             (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
             ),
         ],
     )
     def test_serializer_returns_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -103,19 +103,19 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
         ],
     )
     def test_serializer_does_not_return_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -145,7 +145,8 @@ class TestWorkoutModelGetWorkoutCreateActivity:
     activity_type = 'Create'
 
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_if_visibility_is_invalid(
         self,
@@ -153,7 +154,7 @@ class TestWorkoutModelGetWorkoutCreateActivity:
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(InvalidVisibilityException):
@@ -163,7 +164,7 @@ class TestWorkoutModelGetWorkoutCreateActivity:
 
     @pytest.mark.parametrize(
         'workout_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_valid(
         self,
@@ -171,7 +172,7 @@ class TestWorkoutModelGetWorkoutCreateActivity:
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
 
@@ -193,7 +194,8 @@ class TestWorkoutModelGetWorkoutUpdateActivity(
 
 class TestWorkoutModelGetWorkoutDeleteActivity:
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_if_visibility_is_invalid(
         self,
@@ -201,7 +203,7 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(InvalidVisibilityException):
@@ -209,7 +211,7 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
 
     @pytest.mark.parametrize(
         'workout_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_valid(
         self,
@@ -217,7 +219,7 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
         workout_cycling_user_1.ap_id = (
@@ -243,7 +245,7 @@ class TestWorkoutLikeActivities:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         )
@@ -269,7 +271,7 @@ class TestWorkoutLikeActivities:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         )

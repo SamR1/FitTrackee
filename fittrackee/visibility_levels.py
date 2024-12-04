@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
 
 
-class PrivacyLevel(str, Enum):  # to make enum serializable
+class VisibilityLevel(str, Enum):  # to make enum serializable
     PUBLIC = 'public'
     FOLLOWERS_AND_REMOTE = 'followers_and_remote_only'
     FOLLOWERS = 'followers_only'  # only local followers in federated instances
@@ -15,19 +15,19 @@ class PrivacyLevel(str, Enum):  # to make enum serializable
 
 
 def get_map_visibility(
-    map_visibility: PrivacyLevel, workout_visibility: PrivacyLevel
-) -> PrivacyLevel:
+    map_visibility: VisibilityLevel, workout_visibility: VisibilityLevel
+) -> VisibilityLevel:
     # workout privacy overrides map privacy, when stricter
     if (
-        workout_visibility == PrivacyLevel.PRIVATE
+        workout_visibility == VisibilityLevel.PRIVATE
         or (
-            workout_visibility == PrivacyLevel.FOLLOWERS
+            workout_visibility == VisibilityLevel.FOLLOWERS
             and map_visibility
-            in [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC]
+            in [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC]
         )
         or (
-            workout_visibility == PrivacyLevel.FOLLOWERS_AND_REMOTE
-            and map_visibility == PrivacyLevel.PUBLIC
+            workout_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE
+            and map_visibility == VisibilityLevel.PUBLIC
         )
     ):
         return workout_visibility
@@ -41,7 +41,9 @@ def can_view(
     for_report: bool = False,
 ) -> bool:
     owner = target_object.user
-    if user and (user.id == owner.id or (user.admin and for_report)):
+    if user and (
+        user.id == owner.id or (user.has_moderator_rights and for_report)
+    ):
         return True
 
     if (
@@ -59,7 +61,9 @@ def can_view(
         if user_comments_count == 0:
             return False
 
-    if target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC and (
+    if target_object.__getattribute__(
+        visibility
+    ) == VisibilityLevel.PUBLIC and (
         not user or not user.is_blocked_by(owner)
     ):
         return True
@@ -74,7 +78,7 @@ def can_view(
         return True
 
     if (
-        target_object.__getattribute__(visibility) == PrivacyLevel.FOLLOWERS
+        target_object.__getattribute__(visibility) == VisibilityLevel.FOLLOWERS
         and user.is_remote is False
         and user in owner.followers.all()
         and target_object.user.is_remote is False
@@ -83,7 +87,7 @@ def can_view(
 
     if (
         target_object.__getattribute__(visibility)
-        == PrivacyLevel.FOLLOWERS_AND_REMOTE
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE
         and user in owner.followers.all()
     ):
         return True

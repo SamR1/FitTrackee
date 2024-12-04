@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import TYPE_CHECKING, Dict, Union
 
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.visibility_levels import VisibilityLevel
 
 from ..constants import AP_CTX, DATE_FORMAT, PUBLIC_STREAM
 
@@ -18,7 +18,7 @@ class BaseObject(ABC):
     id: str
     type: 'ActivityType'
     actor: 'Actor'
-    visibility: 'PrivacyLevel'
+    visibility: 'VisibilityLevel'
     activity_id: str
     object_url: str
     published: str
@@ -37,7 +37,7 @@ class BaseObject(ABC):
                 'attributedTo': self.actor.activitypub_id,
             },
         }
-        if self.visibility == PrivacyLevel.PUBLIC:
+        if self.visibility == VisibilityLevel.PUBLIC:
             activity['to'] = [PUBLIC_STREAM]
             activity['cc'] = [self.actor.followers_url]
             activity['object']['to'] = [PUBLIC_STREAM]

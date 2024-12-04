@@ -397,7 +397,7 @@ class ReportMixin(RandomMixin):
 
     @staticmethod
     def create_report_action(
-        admin_user: User,
+        moderator: User,
         user: User,
         report_id: int,
         *,
@@ -406,7 +406,7 @@ class ReportMixin(RandomMixin):
         workout_id: Optional[int] = None,
     ) -> ReportAction:
         report_action = ReportAction(
-            admin_user_id=admin_user.id,
+            moderator_id=moderator.id,
             action_type=action_type if action_type else "user_suspension",
             comment_id=(
                 comment_id
@@ -461,7 +461,7 @@ class ReportMixin(RandomMixin):
     ) -> ReportAction:
         report_action = ReportAction(
             action_type=action_type,
-            admin_user_id=admin.id,
+            moderator_id=admin.id,
             report_id=self.create_report(
                 reporter=admin, reported_object=workout
             ).id,
@@ -480,7 +480,7 @@ class ReportMixin(RandomMixin):
     ) -> ReportAction:
         report_action = ReportAction(
             action_type=action_type,
-            admin_user_id=admin.id,
+            moderator_id=admin.id,
             comment_id=comment.id,
             report_id=self.create_report(
                 reporter=admin, reported_object=comment

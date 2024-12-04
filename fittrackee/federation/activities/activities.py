@@ -18,12 +18,12 @@ from fittrackee.federation.utils.user import (
     create_remote_user,
     get_or_create_remote_domain_from_url,
 )
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.exceptions import (
     FollowRequestAlreadyProcessedError,
     FollowRequestAlreadyRejectedError,
     NotExistingFollowRequestError,
 )
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
@@ -91,17 +91,19 @@ class AbstractActivity(ABC):
         return actor, object_actor
 
     @staticmethod
-    def _get_visibility(activity_object: Dict, actor: Actor) -> PrivacyLevel:
+    def _get_visibility(
+        activity_object: Dict, actor: Actor
+    ) -> VisibilityLevel:
         recipients = activity_object.get("cc", []) + activity_object.get(
             "to", []
         )
         if PUBLIC_STREAM in recipients:
-            return PrivacyLevel.PUBLIC
+            return VisibilityLevel.PUBLIC
         elif actor.followers_url in recipients:
-            return PrivacyLevel.FOLLOWERS_AND_REMOTE
+            return VisibilityLevel.FOLLOWERS_AND_REMOTE
         # TODO:
         # For comments only (only visible to mentioned users)
-        return PrivacyLevel.PRIVATE
+        return VisibilityLevel.PRIVATE
 
 
 class FollowBaseActivity(AbstractActivity):
@@ -207,7 +209,7 @@ class UndoActivity(AbstractActivity):
 
 
 def create_comment(
-    note_data: Dict, actor: Actor, visibility: PrivacyLevel
+    note_data: Dict, actor: Actor, visibility: VisibilityLevel
 ) -> Comment:
     reply_to_object_api_id = note_data.get("inReplyTo")
     workout = None

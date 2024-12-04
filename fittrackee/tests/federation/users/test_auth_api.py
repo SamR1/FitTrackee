@@ -3,9 +3,9 @@ import json
 import pytest
 from flask import Flask
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import ApiTestCaseMixin
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 
 
 def assert_actor_is_created(app: Flask) -> None:
@@ -69,16 +69,16 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS_AND_REMOTE),
+            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
         ],
     )
     def test_it_updates_user_preferences_with_remote_level(
         self,
         app_with_federation: Flask,
         user_1: User,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email

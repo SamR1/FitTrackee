@@ -1,9 +1,13 @@
 <template>
   <div class="visibility">
     <i
-      :class="`fa fa-${getPrivacyIcon(visibility)}`"
+      :class="`fa fa-${getVisibilityIcon(visibility)}`"
       aria-hidden="true"
-      :title="$t(`privacy.${isComment ? 'COMMENT_' : ''}LEVELS.${visibility}`)"
+      :title="
+        $t(
+          `visibility_levels.${isComment ? 'COMMENT_' : ''}LEVELS.${visibility}`
+        )
+      "
     />
   </div>
 </template>
@@ -11,10 +15,10 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import type { TPrivacyLevels } from '@/types/user'
+  import type { TVisibilityLevels } from '@/types/user'
 
   interface Props {
-    visibility: TPrivacyLevels
+    visibility: TVisibilityLevels
     isComment?: boolean
   }
 
@@ -23,8 +27,8 @@
   })
   const { visibility, isComment } = toRefs(props)
 
-  function getPrivacyIcon(privacyLevel: TPrivacyLevels): string {
-    switch (privacyLevel) {
+  function getVisibilityIcon(visibilityLevel: TVisibilityLevels): string {
+    switch (visibilityLevel) {
       case 'public':
         return 'globe'
       case 'followers_and_remote_only':

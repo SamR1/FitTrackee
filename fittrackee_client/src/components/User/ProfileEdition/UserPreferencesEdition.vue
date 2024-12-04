@@ -232,17 +232,21 @@
           </div>
         </div>
         <label class="form-items">
-          {{ $t('privacy.WORKOUTS_VISIBILITY') }}
+          {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
             :disabled="authUserLoading"
             @change="updateMapVisibility"
           >
-            <option v-for="level in privacyLevels" :value="level" :key="level">
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
               {{
                 $t(
-                  `privacy.LEVELS.${getPrivacyLevelForLabel(
+                  `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
                     level,
                     appConfig.federation_enabled
                   )}`
@@ -252,20 +256,20 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('privacy.MAP_VISIBILITY') }}
+          {{ $t('visibility_levels.MAP_VISIBILITY') }}
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
             :disabled="authUserLoading"
           >
             <option
-              v-for="level in mapPrivacyLevels"
+              v-for="level in mapVisibilityLevels"
               :value="level"
               :key="level"
             >
               {{
                 $t(
-                  `privacy.LEVELS.${getPrivacyLevelForLabel(
+                  `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
                     level,
                     appConfig.federation_enabled
                   )}`
@@ -291,27 +295,27 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, onMounted, onUnmounted, toRefs } from 'vue'
+  import { computed, reactive, onMounted, toRefs } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type {
     IUserPreferencesPayload,
     IAuthUserProfile,
-    TPrivacyLevels,
+    TVisibilityLevels,
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages, languageLabels } from '@/utils/locales'
   import {
-    getPrivacyLevels,
-    getPrivacyLevelForLabel,
+    getVisibilityLevels,
+    getVisibilityLevelForLabel,
     getMapVisibilityLevels,
     getUpdatedMapVisibility,
-  } from '@/utils/privacy'
+  } from '@/utils/visibility_levels'
 
   interface Props {
     user: IAuthUserProfile
@@ -433,10 +437,10 @@
         userForm.language
       )
   )
-  const privacyLevels = computed(() =>
-    getPrivacyLevels(appConfig.value.federation_enabled)
+  const visibilityLevels = computed(() =>
+    getVisibilityLevels(appConfig.value.federation_enabled)
   )
-  const mapPrivacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
+  const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
   )
 
@@ -487,9 +491,6 @@
     if (user.value) {
       updateUserForm(user.value)
     }
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

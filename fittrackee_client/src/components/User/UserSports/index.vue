@@ -14,7 +14,7 @@
   import { useI18n } from 'vue-i18n'
 
   import useSports from '@/composables/useSports'
-  import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
+  import { OAUTH2_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -37,7 +37,6 @@
   )
 
   onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(OAUTH2_STORE.MUTATIONS.SET_CLIENTS, [])
   })
 </script>

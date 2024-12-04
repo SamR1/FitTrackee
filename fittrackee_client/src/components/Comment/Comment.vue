@@ -75,14 +75,14 @@
         :action="action"
         :comment="comment"
       />
-      <div class="comment-actions" v-if="!forAdmin">
+      <div class="comment-actions" v-if="authUser.username && !forAdmin">
         <button
           v-if="!comment.suspended && !forNotification"
           class="transparent icon-button likes"
           @click="forNotification ? null : updateLike(comment)"
           :disabled="forNotification"
-          :title="`${$t('workouts.COMMENTS.LIKE')} (${comment.likes_count} ${$t(
-            'workouts.COMMENTS.LIKES',
+          :title="`${$t(`workouts.${comment.liked ? 'REMOVE_LIKE' : 'COMMENTS.LIKE_COMMENT'}`)} (${comment.likes_count} ${$t(
+            'workouts.LIKES',
             comment.likes_count
           )})`"
         >
@@ -135,6 +135,30 @@
         >
           <i class="fa fa-trash" aria-hidden="true" />
         </button>
+      </div>
+      <div
+        v-if="!authUser.username"
+        class="comment-likes"
+        :title="`${comment.likes_count} ${$t(
+          'workouts.LIKES',
+          comment.likes_count
+        )}`"
+      >
+        <i
+          class="fa"
+          :class="{
+            'fa-heart': comment.likes_count > 0,
+            'fa-heart-o': comment.likes_count === 0,
+          }"
+          aria-hidden="true"
+        />
+        <span
+          class="likes-count"
+          v-if="comment.likes_count > 0"
+          aria-hidden="true"
+        >
+          {{ comment.likes_count }}
+        </span>
       </div>
       <ReportForm
         v-if="isCommentReported()"
@@ -389,6 +413,11 @@
         flex-wrap: wrap;
         align-items: flex-end;
       }
+      .comment-likes {
+        display: flex;
+        gap: $default-padding * 0.5;
+        line-height: 15px;
+      }
 
       .comment-info {
         .user-name {
@@ -417,7 +446,8 @@
         margin-left: $default-padding;
       }
 
-      .comment-actions {
+      .comment-actions,
+      .comment-likes {
         justify-content: flex-end;
         .icon-button {
           line-height: 15px;

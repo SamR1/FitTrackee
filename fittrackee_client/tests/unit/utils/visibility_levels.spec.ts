@@ -1,15 +1,19 @@
 import { describe, it, expect } from 'vitest'
 
-import type { TPrivacyLevels } from '@/types/user'
+import { TVisibilityLevels } from '@/types/user'
 import {
   getCommentVisibilityLevels,
   getMapVisibilityLevels,
-  getPrivacyLevelForLabel,
+  getVisibilityLevelForLabel,
   getUpdatedMapVisibility,
-} from '@/utils/privacy'
+} from '@/utils/visibility_levels'
 
 describe('getUpdatedMapVisibility', () => {
-  const testsParams: [TPrivacyLevels, TPrivacyLevels, TPrivacyLevels][] = [
+  const testsParams: [
+    TVisibilityLevels,
+    TVisibilityLevels,
+    TVisibilityLevels,
+  ][] = [
     // input map visibility, input workout visibility, excepted map visibility
     ['private', 'private', 'private'],
     ['private', 'followers_only', 'private'],
@@ -42,7 +46,7 @@ describe('getUpdatedMapVisibility', () => {
   })
 })
 
-describe('getPrivacyLevelForLabel', () => {
+describe('getVisibilityLevelForLabel', () => {
   const testsParams: [string, boolean, string][] = [
     ['private', true, 'private'],
     ['followers_only', true, 'local_followers_only'],
@@ -59,14 +63,14 @@ describe('getPrivacyLevelForLabel', () => {
       testParams[1] ? 'enabled' : ' disabled'
     }`, () => {
       expect(
-        getPrivacyLevelForLabel(testParams[0], testParams[1])
+        getVisibilityLevelForLabel(testParams[0], testParams[1])
       ).toStrictEqual(testParams[2])
     })
   })
 })
 
 describe('getMapVisibilityLevels', () => {
-  const testsParams: [TPrivacyLevels, TPrivacyLevels[]][] = [
+  const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
     ['followers_and_remote_only', ['private', 'followers_only']],
@@ -81,7 +85,7 @@ describe('getMapVisibilityLevels', () => {
 })
 
 describe('getCommentVisibilityLevels', () => {
-  const testsParams: [boolean, TPrivacyLevels, TPrivacyLevels[]][] = [
+  const testsParams: [boolean, TVisibilityLevels, TVisibilityLevels[]][] = [
     // should not be displayed in UI
     [false, 'private', ['private']],
     [false, 'followers_only', ['private', 'followers_only']],

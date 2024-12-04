@@ -5,7 +5,6 @@
   "ACCOUNT_SUSPENDED_AT": "Compte suspendu le {0}.",
   "ACTIVE_ACCOUNT": "Le compte est actif.",
   "ACTIVE_USER": "utilisateur actif | utilisateurs actifs",
-  "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
   "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
   "APPEAL_APPROVED": "Appel approuvé.",
@@ -208,6 +207,13 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Envoyer à nouveau le courriel de confirmation de compte",
   "RESET_PASSWORD": "Réinitialiser votre mot de passe",
   "REVIEW": "accepter",
+  "ROLE": "Rôle",
+  "ROLES": {
+    "admin": "Admin",
+    "moderator": "Modérateur",
+    "owner": "Propriétaire",
+    "user": "Utilisateur"
+  },
   "SHOW_PASSWORD": "afficher le mot de passe",
   "SUSPENDED": "Suspendu",
   "SUSPENDED_ACCOUNT": "Compte suspendu",

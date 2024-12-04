@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
 from ..mixins import RandomMixin
@@ -18,7 +18,7 @@ class CommentMixin(RandomMixin):
         workout: Workout,
         /,
         text: Optional[str] = None,
-        text_visibility: PrivacyLevel = PrivacyLevel.PRIVATE,
+        text_visibility: VisibilityLevel = VisibilityLevel.PRIVATE,
         created_at: Optional[datetime] = None,
         parent_comment: Optional[Comment] = None,
         with_mentions: bool = True,

@@ -9,9 +9,9 @@ from werkzeug import Response
 
 from fittrackee import db
 from fittrackee.comments.models import Comment, Mention
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
@@ -35,7 +35,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
         )
@@ -50,7 +50,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -60,7 +60,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(
@@ -78,7 +78,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -112,7 +112,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(
@@ -127,7 +127,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
     @pytest.mark.parametrize(
         'input_workout_visibility',
-        [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_returns_404_when_user_can_not_access_workout(
         self,
@@ -136,7 +136,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         client, auth_token = self.get_test_client_and_auth_token(
@@ -149,7 +149,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(
@@ -170,7 +170,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         user_2.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -182,7 +182,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
             headers=dict(
@@ -205,7 +205,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -216,7 +216,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                    text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
                 )
             ),
             headers=dict(
@@ -240,7 +240,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -272,7 +272,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment_text = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -284,7 +284,44 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=comment_text,
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        new_comment = Comment.query.filter_by(
+            user_id=user_1.id, workout_id=workout_cycling_user_2.id
+        ).first()
+        assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+
+    def test_it_creates_comment_with_wider_visibility_than_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
+        comment_text = self.random_string()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=comment_text,
+                    text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
             headers=dict(
@@ -309,7 +346,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment_text = self.random_string()
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -323,7 +360,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=comment_text,
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -338,7 +375,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment_text = "<script>alert('evil!')</script> Hello"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -350,7 +387,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=comment_text,
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(
@@ -373,7 +410,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -384,7 +421,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=f"@{user_3.username}",
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -416,7 +453,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         can_access: bool,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         (
             client,
             oauth_client,
@@ -432,7 +469,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                     workout_id=workout_cycling_user_2.short_id,
                 )
             ),
@@ -449,7 +486,7 @@ class TestPostWorkoutCommentReply(
 ):
     @pytest.mark.parametrize(
         'input_comment_visibility',
-        [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_returns_404_when_user_can_not_access_comment(
         self,
@@ -458,9 +495,9 @@ class TestPostWorkoutCommentReply(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_comment_visibility: PrivacyLevel,
+        input_comment_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
@@ -477,7 +514,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                     reply_to=comment.short_id,
                 )
             ),
@@ -496,9 +533,11 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_2.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -511,7 +550,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -534,9 +573,11 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_3.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -549,7 +590,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -568,7 +609,7 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -579,7 +620,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=self.random_short_id(),
                 )
             ),
@@ -598,11 +639,11 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -614,7 +655,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -627,6 +668,48 @@ class TestPostWorkoutCommentReply(
         data = json.loads(response.data.decode())
         assert data['comment']['reply_to'] == comment.short_id
 
+    def test_it_creates_reply_with_wider_visibility_than_parent_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.FOLLOWERS,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/comments",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    text=self.random_string(),
+                    text_visibility=VisibilityLevel.PUBLIC,
+                    reply_to=comment.short_id,
+                )
+            ),
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert data['comment']['reply_to'] == comment.short_id
+        assert (
+            data['comment']['text_visibility'] == VisibilityLevel.PUBLIC.value
+        )
+
     def test_it_returns_403_when_user_is_suspended(
         self,
         app: Flask,
@@ -635,11 +718,11 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -653,7 +736,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -670,11 +753,11 @@ class TestPostWorkoutCommentReply(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -688,7 +771,7 @@ class TestPostWorkoutCommentReply(
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.PUBLIC,
+                    text_visibility=VisibilityLevel.PUBLIC,
                     reply_to=comment.short_id,
                 )
             ),
@@ -710,7 +793,7 @@ class TestGetWorkoutCommentAsUser(
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_comment_short_id = self.random_short_id()
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -729,7 +812,8 @@ class TestGetWorkoutCommentAsUser(
         )
 
     @pytest.mark.parametrize(
-        'input_text_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_text_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
         self,
@@ -739,9 +823,9 @@ class TestGetWorkoutCommentAsUser(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -773,11 +857,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -805,11 +889,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.blocks_user(user_3)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -838,11 +922,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_3.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -871,11 +955,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -905,11 +989,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -939,11 +1023,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -970,11 +1054,11 @@ class TestGetWorkoutCommentAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1012,11 +1096,11 @@ class TestGetWorkoutCommentAsFollower(
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1036,7 +1120,8 @@ class TestGetWorkoutCommentAsFollower(
         )
 
     @pytest.mark.parametrize(
-        'input_text_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC]
+        'input_text_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -1046,11 +1131,11 @@ class TestGetWorkoutCommentAsFollower(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -1084,11 +1169,11 @@ class TestGetWorkoutCommentAsFollower(
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1119,11 +1204,11 @@ class TestGetWorkoutCommentAsFollower(
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1150,7 +1235,11 @@ class TestGetWorkoutCommentAsOwner(
 ):
     @pytest.mark.parametrize(
         'input_text_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -1160,10 +1249,10 @@ class TestGetWorkoutCommentAsOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -1196,11 +1285,11 @@ class TestGetWorkoutCommentAsOwner(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1228,11 +1317,11 @@ class TestGetWorkoutCommentAsOwner(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1259,7 +1348,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 ):
     @pytest.mark.parametrize(
         'input_text_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS],
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
         self,
@@ -1269,10 +1358,10 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -1298,11 +1387,11 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1326,11 +1415,11 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client = app.test_client()
 
@@ -1360,7 +1449,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         can_access: bool,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         (
             client,
             oauth_client,
@@ -1372,7 +1461,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         response = client.get(
@@ -1396,16 +1485,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1433,16 +1522,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_1.blocks_user(user_2)
@@ -1470,16 +1559,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_3.blocks_user(user_1)
@@ -1506,16 +1595,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         reply = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         reply.suspended_at = datetime.utcnow()
@@ -1545,17 +1634,17 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         # not visible reply
         self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1580,16 +1669,16 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1618,22 +1707,22 @@ class TestGetWorkoutCommentWithReplies(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        comment.text_visibility = PrivacyLevel.PRIVATE
+        comment.text_visibility = VisibilityLevel.PRIVATE
 
         response = client.get(
             f"/api/comments/{reply.short_id}",
@@ -1697,13 +1786,13 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         workout_cycling_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1719,7 +1808,8 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
-        'input_text_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_text_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_does_not_return_comment_when_visibility_does_not_allow_it(
         self,
@@ -1729,9 +1819,9 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -1760,11 +1850,11 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1792,11 +1882,11 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.blocks_user(user_3)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1822,11 +1912,11 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1860,7 +1950,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         can_access: bool,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         (
             client,
             oauth_client,
@@ -1895,11 +1985,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1916,7 +2006,8 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
-        'input_text_visibility', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC]
+        'input_text_visibility',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -1926,11 +2017,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -1964,11 +2055,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1990,7 +2081,11 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
 class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
     @pytest.mark.parametrize(
         'input_text_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_returns_comment_when_visibility_allows_access(
         self,
@@ -2000,10 +2095,10 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -2036,11 +2131,11 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2062,7 +2157,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
 class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
     @pytest.mark.parametrize(
         'input_text_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS],
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_return_comment_when_visibility_does_not_allow_it(
         self,
@@ -2072,10 +2167,10 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
-        input_text_visibility: PrivacyLevel,
+        input_text_visibility: VisibilityLevel,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -2098,11 +2193,11 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client = app.test_client()
 
@@ -2127,12 +2222,12 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         for _ in range(7):
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2159,12 +2254,12 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         for _ in range(7):
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2193,63 +2288,72 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         # user 3
         visible_comments = [
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
             )
         ]
-        for privacy_levels in [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]:
+        for visibility_levels in [
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ]:
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=privacy_levels,
+                text_visibility=visibility_levels,
             )
-        for privacy_levels in [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]:
+        for visibility_levels in [
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ]:
             # user_1 is mentioned in private comment
             visible_comments.append(
                 self.create_comment(
                     user_3,
                     workout_cycling_user_2,
                     text=f"@{user_1.username}",
-                    text_visibility=privacy_levels,
+                    text_visibility=visibility_levels,
                 )
             )
         # user 2 followed by user 1
-        for privacy_levels in [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS]:
+        for visibility_levels in [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+        ]:
             visible_comments.append(
                 self.create_comment(
                     user_2,
                     workout_cycling_user_2,
-                    text_visibility=privacy_levels,
+                    text_visibility=visibility_levels,
                 )
             )
         self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         # user 1
-        for privacy_levels in [
-            PrivacyLevel.PUBLIC,
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PUBLIC,
+        for visibility_levels in [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
         ]:
             visible_comments.append(
                 self.create_comment(
                     user_1,
                     workout_cycling_user_2,
-                    text_visibility=privacy_levels,
+                    text_visibility=visibility_levels,
                 )
             )
         # user_4 blocks user_1
         self.create_comment(
             user_4,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_4.blocks_user(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2283,32 +2387,32 @@ class TestGetWorkoutsCommentWithReplies(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         visible_replies = [
             # owned comment
             self.create_comment(
                 user_1,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PRIVATE,
+                text_visibility=VisibilityLevel.PRIVATE,
                 parent_comment=comment,
             ),
             # public reply
             self.create_comment(
                 user_3,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.PUBLIC,
+                text_visibility=VisibilityLevel.PUBLIC,
                 parent_comment=comment,
             ),
             # reply from following user
             self.create_comment(
                 user_2,
                 workout_cycling_user_2,
-                text_visibility=PrivacyLevel.FOLLOWERS,
+                text_visibility=VisibilityLevel.FOLLOWERS,
                 parent_comment=comment,
             ),
         ]
@@ -2316,7 +2420,7 @@ class TestGetWorkoutsCommentWithReplies(
         self.create_comment(
             user_4,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         user_4.blocks_user(user_1)
@@ -2351,7 +2455,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
 
@@ -2370,7 +2474,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment_short_id = self.random_short_id()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2388,8 +2492,8 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_returns_404_if_comment_is_not_visible_to_user(
@@ -2399,9 +2503,9 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
@@ -2429,11 +2533,11 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2453,11 +2557,11 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2479,11 +2583,11 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2505,16 +2609,16 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         reply = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2538,12 +2642,12 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text=f"@{user_3.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment_id = comment.id
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2573,7 +2677,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         (
             client,
@@ -2603,7 +2707,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
 
@@ -2613,7 +2717,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
         )
@@ -2628,7 +2732,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment_short_id = self.random_short_id()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2639,7 +2743,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -2653,8 +2757,8 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
     @pytest.mark.parametrize(
         'input_visibility',
         [
-            PrivacyLevel.FOLLOWERS,
-            PrivacyLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
         ],
     )
     def test_it_returns_404_if_comment_is_not_visible_to_user(
@@ -2664,9 +2768,9 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
@@ -2682,7 +2786,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -2701,11 +2805,11 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2717,7 +2821,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             data=json.dumps(
                 dict(
                     text=self.random_string(),
-                    text_visibility=PrivacyLevel.FOLLOWERS,
+                    text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -2732,11 +2836,11 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2758,11 +2862,11 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2786,11 +2890,11 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2806,7 +2910,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         assert response.status_code == 200
         assert comment.text == updated_text
-        assert comment.text_visibility == PrivacyLevel.PUBLIC
+        assert comment.text_visibility == VisibilityLevel.PUBLIC
         assert comment.modification_date is not None
 
     def test_it_sanitizes_text_before_storing_in_database(
@@ -2816,11 +2920,11 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2845,12 +2949,12 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text=f"@{user_3.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2877,12 +2981,12 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
             text=self.random_string(),
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2921,7 +3025,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         (
             client,
@@ -2970,7 +3074,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
         workout_cycling_user_2: Workout,
     ) -> None:
         comment_short_id = self.random_short_id()
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2995,11 +3099,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3022,11 +3126,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3051,11 +3155,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -3086,11 +3190,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         self.create_report_comment_action(user_2_admin, user_1, comment)
@@ -3116,11 +3220,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         action = self.create_report_comment_action(
@@ -3146,7 +3250,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
         appeal = ReportActionAppeal.query.filter_by(
             action_id=action.id
         ).first()
-        assert appeal.admin_user_id is None
+        assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
         assert appeal.user_id == user_1.id
@@ -3160,11 +3264,11 @@ class TestPostWorkoutCommentSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         action = self.create_report_comment_action(
@@ -3207,7 +3311,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         (
             client,

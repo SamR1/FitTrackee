@@ -130,7 +130,6 @@
     capitalize,
     computed,
     onMounted,
-    onUnmounted,
     reactive,
     ref,
     toRefs,
@@ -143,7 +142,7 @@
   import SportsMultiSelect from '@/components/User/UserEquipments/SportsMultiSelect.vue'
   import useApp from '@/composables/useApp'
   import useEquipments from '@/composables/useEquipments'
-  import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE, SPORTS_STORE } from '@/store/constants'
   import type {
     IEquipment,
     IEquipmentType,
@@ -269,9 +268,6 @@
     if (route.params.id && equipment.value?.id) {
       formatForm(equipment.value)
     }
-  })
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   })
 </script>
 

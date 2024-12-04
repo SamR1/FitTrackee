@@ -4,8 +4,8 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import ApiTestCaseMixin
@@ -14,7 +14,8 @@ from ...mixins import ApiTestCaseMixin
 @patch('fittrackee.workouts.workouts.send_to_remote_inbox')
 class TestFederationUpdateWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'workout_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'workout_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_call_sent_to_inbox_when_visibility_does_not_change_for_local_workouts(  # noqa
         self,
@@ -26,7 +27,7 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         sport_2_running: Sport,
         workout_cycling_user_1: Workout,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -46,7 +47,7 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'workout_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
         self,
@@ -58,7 +59,7 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        workout_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = workout_visibility
@@ -91,11 +92,11 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'old_workout_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     @pytest.mark.parametrize(
         'new_workout_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS],
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_calls_sent_to_inbox_with_delete_activity_when_workout_is_not_visible_anymore_on_remote(  # noqa
         self,
@@ -107,8 +108,8 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        old_workout_visibility: PrivacyLevel,
-        new_workout_visibility: PrivacyLevel,
+        old_workout_visibility: VisibilityLevel,
+        new_workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = old_workout_visibility
@@ -141,11 +142,11 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'old_workout_visibility',
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS],
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     @pytest.mark.parametrize(
         'new_workout_visibility',
-        [PrivacyLevel.FOLLOWERS_AND_REMOTE, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_with_create_activity_when_workout_is_now_visible_on_remote(  # noqa
         self,
@@ -157,8 +158,8 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         remote_user: User,
         follow_request_from_remote_user_to_user_1: FollowRequest,
-        old_workout_visibility: PrivacyLevel,
-        new_workout_visibility: PrivacyLevel,
+        old_workout_visibility: VisibilityLevel,
+        new_workout_visibility: VisibilityLevel,
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = old_workout_visibility

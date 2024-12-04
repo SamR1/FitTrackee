@@ -1,30 +1,30 @@
-import type { TPrivacyLevels } from '@/types/user'
+import type { TVisibilityLevels } from '@/types/user'
 
-export const getPrivacyLevels = (
+export const getVisibilityLevels = (
   federationEnabled: boolean
-): TPrivacyLevels[] => {
+): TVisibilityLevels[] => {
   return federationEnabled
     ? ['private', 'followers_only', 'followers_and_remote_only', 'public']
     : ['private', 'followers_only', 'public']
 }
 
-export const getPrivacyLevelForLabel = (
-  privacyLevel: TPrivacyLevels | null | undefined,
+export const getVisibilityLevelForLabel = (
+  visibilityLevel: TVisibilityLevels | null | undefined,
   federationEnabled: boolean
 ): string => {
-  if (!privacyLevel) {
+  if (!visibilityLevel) {
     return ''
   }
-  if (privacyLevel !== 'followers_only') {
-    return privacyLevel
+  if (visibilityLevel !== 'followers_only') {
+    return visibilityLevel
   }
   return federationEnabled ? 'local_followers_only' : 'followers_only'
 }
 
 export const getUpdatedMapVisibility = (
-  mapVisibility: TPrivacyLevels,
-  workoutVisibility: TPrivacyLevels
-): TPrivacyLevels => {
+  mapVisibility: TVisibilityLevels,
+  workoutVisibility: TVisibilityLevels
+): TVisibilityLevels => {
   // when workout visibility is stricter, it returns workout visibility value
   // for map visibility
   if (
@@ -40,8 +40,8 @@ export const getUpdatedMapVisibility = (
 }
 
 export const getMapVisibilityLevels = (
-  workoutVisibility: TPrivacyLevels
-): TPrivacyLevels[] => {
+  workoutVisibility: TVisibilityLevels
+): TVisibilityLevels[] => {
   // regardless federation activation, map can not be visible
   // to remote followers
   switch (workoutVisibility) {
@@ -57,9 +57,9 @@ export const getMapVisibilityLevels = (
 }
 
 export const getCommentVisibilityLevels = (
-  workoutVisibility: TPrivacyLevels,
+  workoutVisibility: TVisibilityLevels,
   federationEnabled: boolean
-): TPrivacyLevels[] => {
+): TVisibilityLevels[] => {
   switch (workoutVisibility) {
     case 'public':
       return federationEnabled

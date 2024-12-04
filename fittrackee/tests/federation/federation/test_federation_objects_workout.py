@@ -12,9 +12,9 @@ from fittrackee.federation.objects.workout import (
     convert_duration_string_to_seconds,
     convert_workout_activity,
 )
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.models import Sport, Workout
 
@@ -31,7 +31,8 @@ class WorkoutObjectTestCase(RandomMixin):
 
 class TestWorkoutObject(WorkoutObjectTestCase):
     @pytest.mark.parametrize(
-        'input_visibility', [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS]
+        'input_visibility',
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_invalid(
         self,
@@ -39,7 +40,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(
@@ -56,7 +57,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         invalid_activity_type = self.random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         with pytest.raises(
             ValueError,
             match=f"'{invalid_activity_type}' is not a valid ActivityType",
@@ -74,7 +75,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         workout_cycling_user_1.modification_date = (
             datetime.utcnow() if input_activity_type == "Update" else None
@@ -127,7 +128,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         input_activity_type: str,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.modification_date = (
             datetime.utcnow() if input_activity_type == "Update" else None
         )
@@ -190,7 +191,7 @@ Duration: {workout.duration}</p>
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = (
-            PrivacyLevel.FOLLOWERS_AND_REMOTE
+            VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         workout_cycling_user_1.modification_date = (
             datetime.utcnow() if input_activity_type == "Update" else None
@@ -237,7 +238,7 @@ Duration: {workout.duration}</p>
         input_activity_type: str,
     ) -> None:
         workout_cycling_user_1.title = self.random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.modification_date = (
             datetime.utcnow() if input_activity_type == "Update" else None
         )

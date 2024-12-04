@@ -4,8 +4,8 @@ import pytest
 from flask import Flask
 from werkzeug.test import TestResponse
 
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ...mixins import ApiTestCaseMixin
@@ -32,22 +32,22 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
                 'workout visibility: followers_and_remote_only',
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_authenticated_user_workout(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         user_1: User,
         sport_1_cycling: Sport,
@@ -70,15 +70,15 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         [
             (
                 'workout visibility: followers_and_remote_only',
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_when_visibility_allows_it(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -104,15 +104,15 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         [
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_does_return_workout_if_visibility_does_not_allow_it(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -138,15 +138,15 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         [
             (
                 'map visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('map visibility: private', PrivacyLevel.PRIVATE),
+            ('map visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_does_not_return_followed_user_workout_map_when_privacy_does_not_allow_it(  # noqa
         self,
         input_desc: str,
-        input_map_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,
@@ -155,7 +155,7 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.map_visibility = input_map_visibility
         workout_cycling_user_2.map_id = self.random_string()
         workout_cycling_user_2.map = self.random_string()
@@ -176,15 +176,15 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         [
             (
                 'workout and map visibility: followers_and_remote_only',
-                PrivacyLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout and map visibility: public', PrivacyLevel.PUBLIC),
+            ('workout and map visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_map_when_visibility_allows_it(
         self,
         input_desc: str,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
         app_with_federation: Flask,
         user_1: User,
         remote_user: User,

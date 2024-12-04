@@ -87,7 +87,7 @@
     },
     "TITLE": "Modération",
     "UNRESOLVED_REPORTS_EXIST": "Il existe des rapports non résolus.",
-    "VIEW_REPORT": "voir le report"
+    "VIEW_REPORT": "Voir le signalement"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
@@ -143,8 +143,10 @@
       }
     },
     "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Ajouter les droits d'admin",
-      "REMOVE_ADMIN_RIGHTS": "Retirer les droits d'admin"
+      "CHANGE_ROLE": "Modifier le rôle",
+      "CHANGE_TO_ADMIN": "Modifier en admin",
+      "CHANGE_TO_MODERATOR": "Modifier en modérateur",
+      "CHANGE_TO_USER": "Modifier en utilisateur"
     },
     "TITLE": "Administration - Utilisateurs"
   },

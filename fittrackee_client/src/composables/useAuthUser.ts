@@ -29,8 +29,14 @@ export default function useAuthUser() {
   const isAuthenticated: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
   )
-  const isAuthUserAdmin: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_ADMIN]
+  const authUserHasAdminRights: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.HAS_ADMIN_RIGHTS]
+  )
+  const authUserHasModeratorRights: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.HAS_MODERATOR_RIGHTS]
+  )
+  const authUserHasOwnerRights: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.HAS_OWNER_RIGHTS]
   )
   const isAuthUserSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
@@ -51,12 +57,14 @@ export default function useAuthUser() {
 
   return {
     authUser,
+    authUserHasAdminRights,
+    authUserHasModeratorRights,
+    authUserHasOwnerRights,
     authUserLoading,
     authUserSuccess,
     dateFormat,
     imperialUnits,
     isAuthenticated,
-    isAuthUserAdmin,
     isAuthUserSuspended,
     timezone,
     token,

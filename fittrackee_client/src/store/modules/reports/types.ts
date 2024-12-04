@@ -10,7 +10,7 @@ import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination, TPaginationPayload } from '@/types/api'
 import type {
   IAppealPayload,
-  IReportForAdmin,
+  IReportForModerator,
   IReport,
   IReportActionPayload,
   IReportCommentPayload,
@@ -20,8 +20,8 @@ import type {
 
 export interface IReportsState {
   unresolved: boolean
-  report: IReportForAdmin
-  reports: IReportForAdmin[]
+  report: IReportForModerator
+  reports: IReportForModerator[]
   pagination: IPagination
   reportStatus: string | null
   reportLoading: boolean
@@ -65,7 +65,7 @@ export interface IReportsGetters {
   [REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS](
     state: IReportsState
   ): boolean
-  [REPORTS_STORE.GETTERS.REPORT](state: IReportsState): IReportForAdmin
+  [REPORTS_STORE.GETTERS.REPORT](state: IReportsState): IReportForModerator
   [REPORTS_STORE.GETTERS.REPORT_LOADING](state: IReportsState): boolean
   [REPORTS_STORE.GETTERS.REPORT_STATUS](state: IReportsState): string | null
   [REPORTS_STORE.GETTERS.REPORT_UPDATE_LOADING](state: IReportsState): boolean

@@ -1,18 +1,23 @@
 <template>
-  <div id="user" class="view" v-if="user.username">
-    <UserHeader :user="user" />
-    <div class="box">
-      <router-view
-        v-if="$route.path.includes('follow')"
-        :authUser="authUser"
-        :user="user"
-      />
-      <UserInfos
-        v-else
-        :authUser="authUser"
-        :user="user"
-        :from-admin="fromAdmin"
-      />
+  <div id="user" class="view">
+    <template v-if="user.username">
+      <UserHeader :user="user" />
+      <div class="box">
+        <router-view
+          v-if="$route.path.includes('follow')"
+          :authUser="authUser"
+          :user="user"
+        />
+        <UserInfos
+          v-else
+          :authUser="authUser"
+          :user="user"
+          :from-admin="fromAdmin"
+        />
+      </div>
+    </template>
+    <div v-else>
+      <NotFound target="USER" />
     </div>
   </div>
 </template>
@@ -23,6 +28,7 @@
   import type { LocationQuery } from 'vue-router'
   import { useRoute } from 'vue-router'
 
+  import NotFound from '@/components/Common/NotFound.vue'
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
   import useAuthUser from '@/composables/useAuthUser'
