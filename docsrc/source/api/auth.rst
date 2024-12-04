@@ -22,4 +22,9 @@ Authentication and account
     auth.accept_privacy_policy,
     auth.get_user_data_export,
     auth.request_user_data_export,
-    auth.download_data_export
+    auth.download_data_export,
+    auth.get_blocked_users,
+    auth.get_user_suspension,
+    auth.appeal_user_suspension,
+    auth.get_user_sanction,
+    auth.appeal_user_sanction

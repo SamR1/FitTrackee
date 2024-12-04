@@ -23,7 +23,9 @@ equipment_types_blueprint = Blueprint('equipment_types', __name__)
 @require_auth(scopes=['equipments:read'], allow_suspended_user=True)
 def get_equipment_types(auth_user: User) -> Dict:
     """
-    Get all types of equipment
+    Get all types of equipment.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``equipments:read``
 
@@ -285,9 +287,9 @@ def update_equipment_type(
     """
     Update a type of equipment to (de)activate it.
 
-    Authenticated user must be an admin.
-
     **Scope**: ``equipments:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 

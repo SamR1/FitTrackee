@@ -45,6 +45,8 @@ def get_clients(auth_user: User) -> Dict:
     This endpoint is only accessible by FitTrackee client (first-party
     application).
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     - without parameters:
@@ -258,6 +260,8 @@ def get_client_by_client_id(
     This endpoint is only accessible by FitTrackee client (first-party
     application).
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
@@ -331,6 +335,8 @@ def get_client_by_id(
     This endpoint is only accessible by FitTrackee client (first-party
     application).
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
@@ -402,6 +408,8 @@ def delete_client(
     This endpoint is only accessible by FitTrackee client (first-party
     application).
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
@@ -450,6 +458,8 @@ def revoke_client_tokens(
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 

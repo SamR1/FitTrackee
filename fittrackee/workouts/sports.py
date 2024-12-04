@@ -27,7 +27,9 @@ sports_blueprint = Blueprint('sports', __name__)
 )
 def get_sports(auth_user: User) -> Dict:
     """
-    Get all sports
+    Get all sports.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``workouts:read``
 
@@ -314,6 +316,8 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     Authenticated user must be an admin.
 
     **Scope**: ``workouts:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 

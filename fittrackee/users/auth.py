@@ -297,6 +297,8 @@ def get_authenticated_user_profile(
     """
     Get authenticated user info (profile, account, preferences).
 
+    Suspended user can access this endpoint.
+
     **Scope**: ``profile:read``
 
     **Example request**:
@@ -423,6 +425,8 @@ def get_authenticated_user_profile(
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -602,6 +606,8 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       - one to the current address to inform user
       - another one to the new address to confirm it.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -835,6 +841,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
       - ``MMM. do, yyyy`` for ``en`` locale
       - ``d MMM yyyy`` for ``es``, ``fr``, ``gl``, ``it`` and ``nl`` locales
       - ``do MMM yyyy`` for ``de`` and ``nb`` locales
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -1272,6 +1280,8 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
 
+    Suspended user can access this endpoint.
+
     **Scope**: ``profile:write``
 
     **Example request**:
@@ -1360,6 +1370,8 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -1740,6 +1752,8 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     User logout.
     If a valid token is provided, it will be blacklisted.
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
@@ -1805,11 +1819,13 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     The authenticated user accepts the privacy policy.
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /auth/account/privacy-policy HTTP/1.1
+      POST /api/auth/account/privacy-policy HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1856,11 +1872,13 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Request a data export for authenticated user.
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /auth/account/export/request HTTP/1.1
+      POST /api/auth/account/export/request HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1935,11 +1953,13 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     - export status (``in_progress``, ``successful`` and ``errored``)
     - file name and size (in bytes) when export is successful
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /auth/account/export HTTP/1.1
+      GET /api/auth/account/export HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1998,13 +2018,15 @@ def download_data_export(
     auth_user: User, file_name: str
 ) -> Union[Response, HttpResponse]:
     """
-    Download a data export archive
+    Download a data export archive.
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
+      GET /api/auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -2048,6 +2070,90 @@ def download_data_export(
 @auth_blueprint.route('/auth/blocked-users', methods=['GET'])
 @require_auth(scopes=['profile:read'])
 def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get blocked users by authenticated user
+
+    **Scope**: ``profile:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/auth/blocked-users HTTP/1.1
+
+    - with parameters:
+
+    .. sourcecode:: http
+
+      GET /api/auth/blocked-users?page=1
+        HTTP/1.1
+
+    **Example responses**:
+
+    - with blocked users:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "blocked_users": [
+            {
+              "blocked": true,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            }
+          ],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - no blocked users:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "blocked_users": [],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
     params = request.args.copy()
     try:
         page = int(params.get('page', 1))
@@ -2081,6 +2187,62 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
 def get_user_suspension(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get suspension if exists for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/account/suspension HTTP/1.1
+
+    **Example responses**:
+
+    - suspension exists:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "status": "success",
+          "user_suspension": {
+            "action_type": "user_suspension",
+            "appeal": null,
+            "comment": null,
+            "created_at": "Wed, 04 Dec 2024 10:45:13 GMT",
+            "id": "mmy3qPL3vcFuKJGfFBnCJV",
+            "reason": "<SUSPENSION REASON>",
+            "workout": null
+          }
+        }
+
+    - no suspension:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+        {
+          "status": "not found",
+          "message": "user account is not suspended"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``user account is not suspended``
+    """
     if auth_user.suspended_at is None or auth_user.suspension_action is None:
         return NotFoundErrorResponse("user account is not suspended")
 
@@ -2098,6 +2260,45 @@ def get_user_suspension(
 def appeal_user_suspension(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal suspension for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/account/suspension/appeal HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :<json string text: text explaining appeal
+
+    :statuscode 201: appeal for suspension created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``user account is not suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     if auth_user.suspended_at is None or auth_user.suspension_action is None:
         return NotFoundErrorResponse("user account is not suspended")
 
@@ -2128,6 +2329,57 @@ def appeal_user_suspension(
 def get_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get sanction for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/account/sanctions/mmy3qPL3vcFuKJGfFBnCJV HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "sanction": {
+            "action_type": "user_suspension",
+            "appeal": {
+              "approved": null,
+              "created_at": "Wed, 04 Dec 2024 10:49:00 GMT",
+              "id": "7pDujhCVHyA4hv29JZQNgg",
+              "reason": null,
+              "text": "<APPEAL TEXT>",
+              "updated_at": null
+            },
+            "comment": null,
+            "created_at": "Wed, 04 Dec 2024 10:45:13 GMT",
+            "id": "mmy3qPL3vcFuKJGfFBnCJV",
+            "reason": "<SANCTION REASON>",
+            "workout": null
+          },
+          "status": "success"
+        }
+
+    :param string action_short_id: suspension id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``no sanction found``
+    """
     sanction = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()
@@ -2149,6 +2401,45 @@ def get_user_sanction(
 def appeal_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal a sanction
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/account/sanctions/6dxczvMrhkAR72shUz9Pwd/appeal HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :param string action_short_id: sanction id
+
+    :<json string text: text explaining appeal
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: appeal created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``no sanction found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     sanction = ReportAction.query.filter_by(
         uuid=decode_short_id(action_short_id), user_id=auth_user.id
     ).first()

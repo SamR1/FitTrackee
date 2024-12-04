@@ -30,9 +30,79 @@ comments_blueprint = Blueprint('comments', __name__)
 )
 @require_auth(scopes=["workouts:write"])
 @check_workout(only_owner=False, as_data=False)
-def add_workout_comment(
+def post_workout_comment(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Post a comment.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/2oRDfncv6vpRkfp3yrCYHt HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "comment": {
+            "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+            "id": "WJgTwtqFpnPrHYAK5eX9Pw",
+            "liked": false,
+            "likes_count": 0,
+            "mentions": [],
+            "modification_date": null,
+            "replies": [],
+            "reply_to": null,
+            "suspended_at": null,
+            "text": "Great!",
+            "text_html": "Great!",
+            "text_visibility": "private",
+            "user": {
+              "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+              "followers": 3,
+              "following": 2,
+              "nb_workouts": 10,
+              "picture": true,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "workout_id": "2oRDfncv6vpRkfp3yrCYHt"
+          },
+          "status": "created"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :<json string text: comment content
+    :<json string text_visibility: visibility level (``public``,
+           ``followers_only``, ``private``)
+    :<json string reply_to: id of the comment being replied to
+           (to be provided only for a reply)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: ``created``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``'reply_to' is invalid``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``Error during comment save.``
+    """
     comment_data = request.get_json()
     if (
         not comment_data
@@ -91,6 +161,66 @@ def add_workout_comment(
 def get_workout_comment(
     auth_user: Optional[User], comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get comment.
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/2oRDfncv6vpRkfp3yrCYHt/comment HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "comment": {
+            "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+            "id": "T2zeeUXvuy3PLA8MeeUFyk",
+            "liked": false,
+            "likes_count": 0,
+            "mentions": [],
+            "modification_date": null,
+            "replies": [],
+            "reply_to": null,
+            "suspended_at": null,
+            "text": "Nice!",
+            "text_html": "Nice!",
+            "text_visibility": "private",
+            "user": {
+              "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+              "followers": 3,
+              "following": 2,
+              "nb_workouts": 10,
+              "picture": true,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "workout_id": null
+          },
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for comment with
+        ``private`` and ``followers_only`` visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout comment not found``
+    """
     return (
         {
             'status': 'success',
@@ -108,6 +238,74 @@ def get_workout_comment(
 def get_workout_comments(
     auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
+    """
+    Get workout comments.
+
+    It returns only comments visible to authenticated user and only public
+    comments when no authentication provided.
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/2oRDfncv6vpRkfp3yrCYHt/comments HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "comments": [
+              {
+                "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+                "id": "WJgTwtqFpnPrHYAK5eX9Pw",
+                "liked": false,
+                "likes_count": 0,
+                "mentions": [],
+                "modification_date": null,
+                "replies": [],
+                "reply_to": null,
+                "suspended_at": null,
+                "text": "Great!",
+                "text_html": "Great!",
+                "text_visibility": "private",
+                "user": {
+                  "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+                  "followers": 3,
+                  "following": 2,
+                  "nb_workouts": 10,
+                  "picture": true,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "workout_id": "2oRDfncv6vpRkfp3yrCYHt"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+        ``private`` and ``followers_only`` visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``Error during comment save.``
+    """
     try:
         comments = get_comments(
             workout_id=workout.id,
@@ -133,6 +331,39 @@ def get_workout_comments(
 def delete_workout_comment(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Delete workout comment.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/comments/MzydiCYYfktG3gga2x8AfU HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :param string comment_short_id: comment short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+        ``private`` and ``followers_only`` visibility
+
+    :statuscode 204: comment deleted
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     try:
         db.session.delete(comment)
         db.session.commit()
@@ -154,6 +385,71 @@ def delete_workout_comment(
 def update_workout_comment(
     auth_user: User, comment: Comment
 ) -> Union[Dict, HttpResponse]:
+    """
+    Update comment text.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH /api/workouts/WJgTwtqFpnPrHYAK5eX9Pw HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "comment": {
+            "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+            "id": "WJgTwtqFpnPrHYAK5eX9Pw",
+            "liked": false,
+            "likes_count": 0,
+            "mentions": [],
+            "modification_date": null,
+            "replies": [],
+            "reply_to": null,
+            "suspended_at": null,
+            "text": "Great!",
+            "text_html": "Great!",
+            "text_visibility": "private",
+            "user": {
+              "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+              "followers": 3,
+              "following": 2,
+              "nb_workouts": 10,
+              "picture": true,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "workout_id": "2oRDfncv6vpRkfp3yrCYHt"
+          },
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :<json string text: comment content
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     comment_data = request.get_json()
     if not comment_data or not comment_data.get('text'):
         return InvalidPayloadErrorResponse()
@@ -180,6 +476,66 @@ def update_workout_comment(
 def like_comment(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Add a "like" to a comment.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/comments/WJgTwtqFpnPrHYAK5eX9Pw/like HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "comment": {
+            "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+            "id": "WJgTwtqFpnPrHYAK5eX9Pw",
+            "liked": true,
+            "likes_count": 1,
+            "mentions": [],
+            "modification_date": null,
+            "replies": [],
+            "reply_to": null,
+            "suspended_at": null,
+            "text": "Great!",
+            "text_html": "Great!",
+            "text_visibility": "private",
+            "user": {
+              "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+              "followers": 3,
+              "following": 2,
+              "nb_workouts": 10,
+              "picture": true,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "workout_id": "2oRDfncv6vpRkfp3yrCYHt"
+          },
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    """
     if comment.suspended_at:
         return ForbiddenErrorResponse()
     try:
@@ -203,6 +559,66 @@ def like_comment(
 def undo_comment_like(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Remove a comment "like".
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/comments/2oRDfncv6vpRkfp3yrCYHt/like/undo HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "comment": {
+            "created_at": "Sun, 01 Dec 2024 13:45:34 GMT",
+            "id": "WJgTwtqFpnPrHYAK5eX9Pw",
+            "liked": false,
+            "likes_count": 0,
+            "mentions": [],
+            "modification_date": null,
+            "replies": [],
+            "reply_to": null,
+            "suspended_at": null,
+            "text": "Great!",
+            "text_html": "Great!",
+            "text_visibility": "private",
+            "user": {
+              "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+              "followers": 3,
+              "following": 2,
+              "nb_workouts": 10,
+              "picture": true,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "workout_id": "2oRDfncv6vpRkfp3yrCYHt"
+          },
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    """
     like = CommentLike.query.filter_by(
         user_id=auth_user.id, comment_id=comment.id
     ).first()
@@ -224,6 +640,49 @@ def undo_comment_like(
 def appeal_comment_suspension(
     auth_user: User, comment: Comment
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal comment suspension.
+
+    Only comment author can appeal the suspension.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/comments/WJgTwtqFpnPrHYAK5eX9Pw/suspension/appeal HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: appeal created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+        - ``workout comment is not suspended``
+        - ``workout comment has no suspension``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     if not comment.suspended_at:
         return InvalidPayloadErrorResponse("workout comment is not suspended")
     suspension_action = comment.suspension_action

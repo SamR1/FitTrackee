@@ -521,9 +521,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     - activate account for an inactive user
     - deactivate account after report.
 
-    Only user with admin rights can modify another user.
-
     **Scope**: ``users:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 
@@ -749,6 +749,8 @@ def delete_user(
     A user with admin rights can delete all accounts except his account if
     he is the only user with admin rights.
     Only owner can delete his own account.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``users:write``
 
@@ -1213,6 +1215,45 @@ def get_following(
 @users_blueprint.route('/users/<user_name>/block', methods=['POST'])
 @require_auth(scopes=['users:write'])
 def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    """
+    Block a user
+
+    **Scope**: ``users:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/block HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 400:
+        - invalid payload
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user not found
+    """
     target_user = User.query.filter(
         func.lower(User.username) == func.lower(user_name),
     ).first()
@@ -1237,6 +1278,44 @@ def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 @users_blueprint.route('/users/<user_name>/unblock', methods=['POST'])
 @require_auth(scopes=['users:write'])
 def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
+    """
+    Unblock a user
+
+    **Scope**: ``users:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/users/sam/unblock HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :param string user_name: user name
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user not found
+
+    """
     target_user = User.query.filter(
         func.lower(User.username) == func.lower(user_name),
     ).first()
@@ -1254,6 +1333,190 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 def get_user_sanctions(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
+    """
+    Get user sanctions.
+
+    It returns sanctions only if:
+    - user name is authenticated user username
+    - user has moderation rights.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``users:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/users/Sam/sanctions HTTP/1.1
+
+    - with parameters:
+
+    .. sourcecode:: http
+
+      GET /api/users/Sam/sanctions?page=2 HTTP/1.1
+
+    **Example responses**:
+
+    - if sanctions exist (response with moderation rights)
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "sanctions": [
+              {
+                "action_type": "workout_suspension",
+                "appeal": {
+                  "approved": null,
+                  "created_at": "Wed, 04 Dec 2024 11:00:04 GMT",
+                  "id": "2ULe2hWhSnYCS2VHbsikB9",
+                  "moderator": null,
+                  "reason": null,
+                  "text": "<APPEAL TEXT>",
+                  "updated_at": null,
+                  "user": {
+                    "blocked": false,
+                    "created_at": "Wed, 04 Dec 2024 09:07:06 GMT",
+                    "email": "sam@example.com",
+                    "followers": 0,
+                    "following": 0,
+                    "follows": false,
+                    "is_active": true,
+                    "is_followed_by": false,
+                    "nb_workouts": 1,
+                    "picture": false,
+                    "role": "user",
+                    "suspended_at": null,
+                    "username": "Sam"
+                  }
+                },
+                "created_at": "Wed, 04 Dec 2024 10:59:45 GMT",
+                "id": "6dxczvMrhkAR72shUz9Pwd",
+                "moderator": {
+                  "blocked": false,
+                  "created_at": "Wed, 01 Mar 2023 12:31:17 GMT",
+                  "email": "admin@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "follows": "false",
+                  "is_active": true,
+                  "is_followed_by": "false",
+                  "nb_workouts": 0,
+                  "picture": true,
+                  "role": "admin",
+                  "suspended_at": null,
+                  "username": "admin"
+                },
+                "reason": "<SUSPENSION REASON>",
+                "report_id": 2,
+                "user": {
+                  "blocked": false,
+                  "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+                  "email": "sam@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "follows": "false",
+                  "is_active": true,
+                  "is_followed_by": "false",
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                }
+              }
+            ]
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - if sanctions exist (response for authenticated user)
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "sanctions": [
+              {
+                "action_type": "workout_suspension",
+                "appeal": {
+                  "approved": null,
+                  "created_at": "Wed, 04 Dec 2024 16:50:55 GMT",
+                  "id": "kcj6hdGQqPKaaKQmfQj8Jv",
+                  "reason": null,
+                  "text": "<APPEAL TEXT>",
+                  "updated_at": null
+                },
+                "created_at": "Wed, 04 Dec 2024 16:50:44 GMT",
+                "id": "6nvxvAyoh9Zkr8RMXhu54T",
+                "reason": "<SUSPENSION REASON>"
+              }
+            ]
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - no sanctions
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "sanctions": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :param string user_name: user name
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user not found
+
+    """
     user = User.query.filter(
         func.lower(User.username) == func.lower(user_name),
     ).first()

@@ -79,9 +79,9 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application configuration.
 
-    Authenticated user must be an admin.
-
     **Scope**: ``application:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 
