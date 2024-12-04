@@ -82,10 +82,11 @@
     }
   }
   @media screen and (max-width: $small-limit) {
-    .profile-tabs-checkboxes {
+    .profile-tabs-links {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      gap: $default-margin * 1;
 
       .profile-tab {
         padding-bottom: $default-padding * 0.5;

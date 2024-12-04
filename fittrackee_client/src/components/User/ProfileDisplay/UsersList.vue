@@ -206,9 +206,22 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .follow-request {
-        .user-name {
-          padding-left: $default-padding;
+      .item {
+        ::v-deep(.user-picture) {
+          margin-right: $default-margin;
+          min-width: 40px;
+          img {
+            height: 48px;
+            width: 48px;
+          }
+          .no-picture {
+            font-size: 3em;
+          }
+        }
+        .follow-request {
+          .user-name {
+            padding-left: $default-padding;
+          }
         }
       }
     }
