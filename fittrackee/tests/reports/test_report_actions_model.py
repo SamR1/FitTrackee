@@ -6,7 +6,6 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReportActionAppealException,
     InvalidReportActionAppealUserException,
@@ -23,6 +22,7 @@ from fittrackee.reports.models import (
     ReportActionAppeal,
 )
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
@@ -410,9 +410,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -437,9 +439,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         workout_cycling_user_2: Workout,
         input_action_type: str,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         with pytest.raises(InvalidReportActionException):
             ReportAction(
@@ -461,9 +465,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -499,9 +505,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -539,9 +547,11 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
@@ -851,9 +861,11 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_action = ReportAction(
             moderator_id=user_1_admin.id,
@@ -888,11 +900,11 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_id = self.create_report(
             reporter=user_1_admin, reported_object=comment
@@ -1024,7 +1036,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_action = self.create_report_workout_action(
             user_1_admin,
             user_2,
@@ -1080,11 +1092,11 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment, action_type="comment_unsuspension"
@@ -1107,11 +1119,11 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_action = self.create_report_comment_action(
             user_1_admin, user_2, comment

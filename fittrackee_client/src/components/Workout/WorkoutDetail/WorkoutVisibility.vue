@@ -1,28 +1,32 @@
 <template>
   <div class="workout-visibility-levels" v-if="workoutObject.workoutVisibility">
-    {{ $t('privacy.VISIBILITY') }}:
+    {{ $t('visibility_levels.VISIBILITY') }}:
     <div class="visibility">
       <span v-if="workoutObject.with_gpx" class="workout-visibility">
         {{ $t('workouts.WORKOUT') }}
       </span>
       <i
-        :class="`fa fa-${getPrivacyIcon(workoutObject.workoutVisibility)}`"
+        :class="`fa fa-${getVisibilityIcon(workoutObject.workoutVisibility)}`"
         aria-hidden="true"
-        :title="$t(`privacy.LEVELS.${workoutObject.workoutVisibility}`)"
+        :title="
+          $t(`visibility_levels.LEVELS.${workoutObject.workoutVisibility}`)
+        "
       />
       <span class="visibility-label">
-        ({{ $t(`privacy.LEVELS.${workoutObject.workoutVisibility}`) }})
+        ({{
+          $t(`visibility_levels.LEVELS.${workoutObject.workoutVisibility}`)
+        }})
       </span>
     </div>
     <div class="visibility" v-if="workoutObject.with_gpx">
       {{ $t('workouts.MAP') }}
       <i
-        :class="`fa fa-${getPrivacyIcon(workoutObject.mapVisibility)}`"
+        :class="`fa fa-${getVisibilityIcon(workoutObject.mapVisibility)}`"
         aria-hidden="true"
-        :title="$t(`privacy.LEVELS.${workoutObject.mapVisibility}`)"
+        :title="$t(`visibility_levels.LEVELS.${workoutObject.mapVisibility}`)"
       />
       <span class="visibility-label">
-        ({{ $t(`privacy.LEVELS.${workoutObject.mapVisibility}`) }})
+        ({{ $t(`visibility_levels.LEVELS.${workoutObject.mapVisibility}`) }})
       </span>
     </div>
   </div>
@@ -31,7 +35,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import type { TPrivacyLevels } from '@/types/user'
+  import type { TVisibilityLevels } from '@/types/user'
   import type { IWorkoutObject } from '@/types/workouts'
   interface Props {
     workoutObject: IWorkoutObject
@@ -39,10 +43,10 @@
   const props = defineProps<Props>()
   const { workoutObject } = toRefs(props)
 
-  function getPrivacyIcon(
-    privacyLevel: TPrivacyLevels | null | undefined
+  function getVisibilityIcon(
+    visibilityLevel: TVisibilityLevels | null | undefined
   ): string {
-    switch (privacyLevel) {
+    switch (visibilityLevel) {
       case 'public':
         return 'globe'
       case 'followers_only':

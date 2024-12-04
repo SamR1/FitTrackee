@@ -8,9 +8,9 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
@@ -303,19 +303,19 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -344,19 +344,19 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_different_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -383,18 +383,18 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
@@ -421,7 +421,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         token, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=PrivacyLevel.PRIVATE
+            app, gpx_file, workout_visibility=VisibilityLevel.PRIVATE
         )
         client = app.test_client()
         user_1.suspended_at = datetime.utcnow()
@@ -1015,19 +1015,19 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_returns_403_when_editing_a_workout_wo_gpx_from_followed_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -1062,19 +1062,19 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_403_when_editing_a_workout_wo_gpx_from_different_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -1107,18 +1107,18 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
@@ -1645,9 +1645,9 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_workout_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_updates_workout_visibility_for_workout_without_gpx(
@@ -1657,7 +1657,7 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1684,9 +1684,9 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_map_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_does_not_update_map_visibility_for_workout_without_gpx(
@@ -1696,7 +1696,7 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_description: str,
-        input_map_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1721,9 +1721,9 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_workout_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_updates_workout_visibility_for_workout_with_gpx(
@@ -1733,7 +1733,7 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_description: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.gpx = 'file.gpx'
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1761,9 +1761,9 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_map_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_updates_map_visibility_for_workout_with_gpx(
@@ -1773,7 +1773,7 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         input_description: str,
-        input_map_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_map_visibility
         workout_cycling_user_1.gpx = 'file.gpx'
@@ -1804,8 +1804,8 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_updates_valid_map_visibility_for_workout_with_gpx(
@@ -1814,8 +1814,8 @@ class TestUpdateVisibility(WorkoutApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.gpx = 'file.gpx'

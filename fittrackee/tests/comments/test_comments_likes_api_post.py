@@ -6,8 +6,8 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.comments.models import CommentLike
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
@@ -31,7 +31,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         response = client.post(
@@ -84,12 +84,12 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_1: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         user_2.approves_follow_request_from(user_1)
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -111,11 +111,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -140,11 +140,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -168,11 +168,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -190,8 +190,8 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',
         [
-            ('workout visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_creates_workout_like(
@@ -203,7 +203,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_desc: str,
-        input_workout_level: PrivacyLevel,
+        input_workout_level: VisibilityLevel,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_1.send_follow_request_to(user_3)
@@ -212,7 +212,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -246,11 +246,11 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -292,7 +292,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         (
             client,
@@ -325,7 +325,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
 
@@ -382,12 +382,12 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_1: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         user_2.approves_follow_request_from(user_1)
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PRIVATE,
+            text_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -409,11 +409,11 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -438,14 +438,14 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -462,8 +462,8 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',
         [
-            ('workout visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_removes_comment_like(
@@ -475,7 +475,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_desc: str,
-        input_workout_level: PrivacyLevel,
+        input_workout_level: VisibilityLevel,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_1.send_follow_request_to(user_3)
@@ -487,7 +487,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -522,14 +522,14 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_1.send_follow_request_to(user_3)
         user_3.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         response = client.post(
@@ -565,7 +565,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         (
             client,

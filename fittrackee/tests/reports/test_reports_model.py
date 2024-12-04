@@ -5,7 +5,6 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReporterException,
     InvalidReportException,
@@ -15,6 +14,7 @@ from fittrackee.reports.exceptions import (
 from fittrackee.reports.models import Report, ReportAction, ReportComment
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin, ReportMixin
@@ -39,11 +39,13 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         report_created_at = datetime.utcnow()
         report_note = self.random_string()
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         report = Report(
@@ -74,11 +76,13 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         report_created_at = datetime.utcnow()
         report_note = self.random_string()
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             created_at=report_created_at,
@@ -211,7 +215,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_created_at = datetime.utcnow()
         report_note = self.random_string()
 
@@ -243,7 +247,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_created_at = datetime.utcnow()
         report_note = self.random_string()
         report = Report(
@@ -339,9 +343,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             note=self.random_string(),
@@ -362,9 +368,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         workout_cycling_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             note=self.random_string(),
@@ -399,9 +407,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         # in case visibility changed
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             note=self.random_string(),
@@ -409,7 +419,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             reported_object=comment,
         )
         db.session.add(report)
-        comment.text_visibility = PrivacyLevel.FOLLOWERS
+        comment.text_visibility = VisibilityLevel.FOLLOWERS
         db.session.commit()
 
         serialized_report = report.serialize(user_1)
@@ -436,9 +446,11 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             note=self.random_string(),
@@ -536,7 +548,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = Report(
             note=self.random_string(),
             reported_by=user_1.id,
@@ -572,14 +584,14 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         # in case visibility changed
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = Report(
             note=self.random_string(),
             reported_by=user_1.id,
             reported_object=workout_cycling_user_2,
         )
         db.session.add(report)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         db.session.commit()
 
         serialized_report = report.serialize(user_1)
@@ -606,7 +618,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = Report(
             note=self.random_string(),
             reported_by=user_1.id,
@@ -684,11 +696,11 @@ class TestMinimalReportSerializerAsModerator(CommentMixin, RandomMixin):
         follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report = Report(
             note=self.random_string(),
@@ -727,11 +739,11 @@ class TestMinimalReportSerializerAsModerator(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = Report(
             note=self.random_string(),
@@ -842,7 +854,7 @@ class TestMinimalReportSerializerAsModerator(CommentMixin, RandomMixin):
         follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         report = Report(
             note=self.random_string(),
             reported_by=user_3.id,
@@ -880,7 +892,7 @@ class TestMinimalReportSerializerAsModerator(CommentMixin, RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = Report(
             note=self.random_string(),
             reported_by=user_3.id,

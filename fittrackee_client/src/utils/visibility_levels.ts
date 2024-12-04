@@ -1,12 +1,12 @@
-import type { TPrivacyLevels } from '@/types/user'
+import type { TVisibilityLevels } from '@/types/user'
 
-export const getPrivacyLevels = (): TPrivacyLevels[] => {
+export const getVisibilityLevels = (): TVisibilityLevels[] => {
   return ['private', 'followers_only', 'public']
 }
 export const getUpdatedMapVisibility = (
-  mapVisibility: TPrivacyLevels,
-  workoutVisibility: TPrivacyLevels
-): TPrivacyLevels => {
+  mapVisibility: TVisibilityLevels,
+  workoutVisibility: TVisibilityLevels
+): TVisibilityLevels => {
   // when workout visibility is stricter, it returns workout visibility value
   // for map visibility
   if (
@@ -19,8 +19,8 @@ export const getUpdatedMapVisibility = (
 }
 
 export const getMapVisibilityLevels = (
-  workoutVisibility: TPrivacyLevels
-): TPrivacyLevels[] => {
+  workoutVisibility: TVisibilityLevels
+): TVisibilityLevels[] => {
   switch (workoutVisibility) {
     case 'public':
       return ['private', 'followers_only', 'public']
@@ -32,8 +32,8 @@ export const getMapVisibilityLevels = (
 }
 
 export const getCommentVisibilityLevels = (
-  workoutVisibility: TPrivacyLevels
-): TPrivacyLevels[] => {
+  workoutVisibility: TVisibilityLevels
+): TVisibilityLevels[] => {
   switch (workoutVisibility) {
     case 'public':
       return ['private', 'followers_only', 'public']

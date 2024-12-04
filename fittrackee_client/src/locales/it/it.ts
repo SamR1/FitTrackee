@@ -9,11 +9,11 @@ import EquipmentsTranslations from './equipments.json'
 import ErrorTranslations from './error.json'
 import NotificationsTranslations from './notifications.json'
 import OAuth2Translations from './oauth2.json'
-import PrivacyLevelsTranslations from './privacy.json'
 import PrivacyPolicyTranslations from './privacy_policy.json'
 import SportsTranslations from './sports.json'
 import StatisticsTranslations from './statistics.json'
 import UserTranslations from './user.json'
+import VisibilityLevelsTranslations from './visibility_levels.json'
 import WorkoutsTranslations from './workouts.json'
 
 export default {
@@ -28,10 +28,10 @@ export default {
   equipment_types: EquipmentTypesTranslations,
   notifications: NotificationsTranslations,
   oauth2: OAuth2Translations,
-  privacy: PrivacyLevelsTranslations,
   privacy_policy: PrivacyPolicyTranslations,
   sports: SportsTranslations,
   statistics: StatisticsTranslations,
   user: UserTranslations,
+  visibility_levels: VisibilityLevelsTranslations,
   workouts: WorkoutsTranslations,
 }

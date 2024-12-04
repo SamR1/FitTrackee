@@ -28,7 +28,6 @@ from fittrackee.equipments.utils import (
     handle_equipments,
 )
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import can_view
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -43,6 +42,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import can_view
 
 from ..reports.models import ReportActionAppeal
 from .decorators import check_workout

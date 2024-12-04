@@ -19,7 +19,7 @@ from sqlalchemy.types import Enum
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import PrivacyLevel
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
 from .exceptions import (
@@ -243,12 +243,12 @@ class User(BaseModel):
         db.Boolean, default=True, nullable=False
     )
     workouts_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
     map_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )

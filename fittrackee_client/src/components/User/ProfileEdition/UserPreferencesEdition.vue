@@ -232,31 +232,35 @@
           </div>
         </div>
         <label class="form-items">
-          {{ $t('privacy.WORKOUTS_VISIBILITY') }}
+          {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
             :disabled="authUserLoading"
             @change="updateMapVisibility"
           >
-            <option v-for="level in privacyLevels" :value="level" :key="level">
-              {{ $t(`privacy.LEVELS.${level}`) }}
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          {{ $t('privacy.MAP_VISIBILITY') }}
+          {{ $t('visibility_levels.MAP_VISIBILITY') }}
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
             :disabled="authUserLoading"
           >
             <option
-              v-for="level in mapPrivacyLevels"
+              v-for="level in mapVisibilityLevels"
               :value="level"
               :key="level"
             >
-              {{ $t(`privacy.LEVELS.${level}`) }}
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
@@ -287,16 +291,16 @@
   import type {
     IUserPreferencesPayload,
     IAuthUserProfile,
-    TPrivacyLevels,
+    TVisibilityLevels,
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages, languageLabels } from '@/utils/locales'
   import {
-    getPrivacyLevels,
+    getVisibilityLevels,
     getMapVisibilityLevels,
     getUpdatedMapVisibility,
-  } from '@/utils/privacy'
+  } from '@/utils/visibility_levels'
 
   interface Props {
     user: IAuthUserProfile
@@ -418,10 +422,10 @@
         userForm.language
       )
   )
-  const privacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
-    getPrivacyLevels()
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels()
   )
-  const mapPrivacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
+  const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getMapVisibilityLevels(userForm.workouts_visibility)
   )
 

@@ -1,14 +1,18 @@
 import { describe, it, expect } from 'vitest'
 
-import { TPrivacyLevels } from '@/types/user'
+import { TVisibilityLevels } from '@/types/user'
 import {
   getCommentVisibilityLevels,
   getMapVisibilityLevels,
   getUpdatedMapVisibility,
-} from '@/utils/privacy'
+} from '@/utils/visibility_levels'
 
 describe('getUpdatedMapVisibility', () => {
-  const testsParams: [TPrivacyLevels, TPrivacyLevels, TPrivacyLevels][] = [
+  const testsParams: [
+    TVisibilityLevels,
+    TVisibilityLevels,
+    TVisibilityLevels,
+  ][] = [
     // input map visibility, input workout visibility, excepted map visibility
     ['private', 'private', 'private'],
     ['private', 'followers_only', 'private'],
@@ -31,7 +35,7 @@ describe('getUpdatedMapVisibility', () => {
 })
 
 describe('getMapVisibilityLevels', () => {
-  const testsParams: [TPrivacyLevels, TPrivacyLevels[]][] = [
+  const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
     ['public', ['private', 'followers_only', 'public']],
@@ -45,7 +49,7 @@ describe('getMapVisibilityLevels', () => {
 })
 
 describe('getCommentVisibilityLevels', () => {
-  const testsParams: [TPrivacyLevels, TPrivacyLevels[]][] = [
+  const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
     ['public', ['private', 'followers_only', 'public']],

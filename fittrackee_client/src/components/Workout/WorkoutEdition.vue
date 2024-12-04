@@ -288,7 +288,7 @@
               </div>
               <div class="form-item">
                 <label for="workout_visibility">
-                  {{ $t('privacy.WORKOUT_VISIBILITY') }}:
+                  {{ $t('visibility_levels.WORKOUT_VISIBILITY') }}:
                 </label>
                 <select
                   id="workout_visibility"
@@ -297,17 +297,17 @@
                   @change="updateMapVisibility"
                 >
                   <option
-                    v-for="level in privacyLevels"
+                    v-for="level in visibilityLevels"
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`privacy.LEVELS.${level}`) }}
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
                   </option>
                 </select>
               </div>
               <div class="form-item" v-if="withGpx">
                 <label for="map_visibility">
-                  {{ $t('privacy.MAP_VISIBILITY') }}:
+                  {{ $t('visibility_levels.MAP_VISIBILITY') }}:
                 </label>
                 <select
                   id="map_visibility"
@@ -315,11 +315,11 @@
                   :disabled="loading"
                 >
                   <option
-                    v-for="level in mapPrivacyLevels"
+                    v-for="level in mapVisibilityLevels"
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`privacy.LEVELS.${level}`) }}
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
                   </option>
                 </select>
               </div>
@@ -386,19 +386,19 @@
   import type { IEquipment } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IAuthUserProfile, TPrivacyLevels } from '@/types/user'
+  import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
   import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
-  import {
-    getPrivacyLevels,
-    getMapVisibilityLevels,
-    getUpdatedMapVisibility,
-  } from '@/utils/privacy'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
+  import {
+    getVisibilityLevels,
+    getMapVisibilityLevels,
+    getUpdatedMapVisibility,
+  } from '@/utils/visibility_levels'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -453,8 +453,8 @@
       workout.value.id ? [workout.value.sport_id] : []
     )
   )
-  const privacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
-    getPrivacyLevels()
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels()
   )
   const fileSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_single_file_size
@@ -489,7 +489,7 @@
         )
       : []
   )
-  const mapPrivacyLevels: ComputedRef<TPrivacyLevels[]> = computed(() =>
+  const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getMapVisibilityLevels(workoutForm.workoutVisibility)
   )
 

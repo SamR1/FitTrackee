@@ -6,10 +6,10 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
@@ -260,57 +260,57 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         'expected_map_visibility',
         [
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
             ),
             (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
             ),
             (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
             ),
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
             ),
         ],
     )
     def test_workout_visibility_overrides_map_visibility_when_stricter(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
-        expected_map_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+        expected_map_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -334,7 +334,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_serializes_suspended_workout(
         self,
@@ -343,7 +347,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         user_2_admin: User,
         workout_cycling_user_1: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.suspended_at = datetime.utcnow()
@@ -798,7 +802,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PRIVATE
         add_follower(user_1, user_2)
 
         with pytest.raises(WorkoutForbiddenException):
@@ -813,7 +817,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_2)
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
@@ -825,23 +829,23 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
             ),
             (
-                PrivacyLevel.PUBLIC,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
             ),
         ],
     )
     def test_serializer_returns_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -871,19 +875,19 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
             ),
         ],
     )
     def test_serializer_does_not_return_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -917,7 +921,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_running_user_1: Workout,
         user_2: User,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_2)
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
@@ -935,7 +939,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_running_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_running_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
         serialized_workout = workout_running_user_1.serialize(
@@ -952,7 +956,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_2)
 
         serialized_workout = workout_cycling_user_1.serialize(
@@ -963,7 +967,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
-        [PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
     )
     @pytest.mark.parametrize("input_for_report", [True, False])
     def test_it_raises_exception_when_workout_is_suspended(
@@ -974,7 +978,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         user_3: User,
         workout_cycling_user_1: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         input_for_report: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
@@ -983,7 +987,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
@@ -1001,12 +1005,12 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         user_3: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_3)
         self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
@@ -1062,7 +1066,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         add_follower(user_1, user_2)
 
@@ -1081,12 +1085,12 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         user_3: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_3)
         self.create_comment(
             user_3,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
 
         serialized_workout = workout_cycling_user_1.serialize(
@@ -1136,14 +1140,14 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
-            ('visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('visibility: private', PrivacyLevel.PRIVATE),
+            ('visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_raises_exception_when_workout_visibility_is_not_public(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -1164,7 +1168,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
@@ -1180,8 +1184,8 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_cycling_user_1.map_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
         workout = self.update_workout(
             workout_cycling_user_1, map_id=random_string()
         )
@@ -1191,27 +1195,29 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
         assert serialized_workout['with_gpx'] is True
-        assert serialized_workout['map_visibility'] == PrivacyLevel.PUBLIC
-        assert serialized_workout['workout_visibility'] == PrivacyLevel.PUBLIC
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PUBLIC
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
         assert serialized_workout['segments'] == []
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
             ),
         ],
     )
     def test_serializer_does_not_return_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -1244,7 +1250,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
@@ -1262,7 +1268,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_running_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_running_user_1.serialize(
             user=user_2, light=False
@@ -1278,7 +1284,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
@@ -1297,10 +1303,12 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         input_for_report: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.suspended_at = datetime.utcnow()
         self.create_comment(
-            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         with pytest.raises(WorkoutForbiddenException):
@@ -1317,9 +1325,11 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         user_3: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
-            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
@@ -1373,7 +1383,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
         serialized_workout = workout_cycling_user_1.serialize(
@@ -1391,9 +1401,11 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         user_3: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
-            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_workout = workout_cycling_user_1.serialize(
@@ -1445,14 +1457,14 @@ class TestWorkoutModelAsUnauthenticatedUser(
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
-            ('visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('visibility: private', PrivacyLevel.PRIVATE),
+            ('visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_raises_exception_when_workout_visibility_is_not_public(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -1471,7 +1483,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize(light=False)
 
@@ -1484,8 +1496,8 @@ class TestWorkoutModelAsUnauthenticatedUser(
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
-        workout_cycling_user_1.map_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
         workout = self.update_workout(
             workout_cycling_user_1, map_id=random_string()
         )
@@ -1495,27 +1507,29 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['bounds'] == workout.bounds
         assert serialized_workout['with_gpx'] is True
-        assert serialized_workout['map_visibility'] == PrivacyLevel.PUBLIC
-        assert serialized_workout['workout_visibility'] == PrivacyLevel.PUBLIC
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PUBLIC
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
         assert serialized_workout['segments'] == []
 
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
             (
-                PrivacyLevel.PRIVATE,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
             ),
             (
-                PrivacyLevel.FOLLOWERS,
-                PrivacyLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
             ),
         ],
     )
     def test_serializer_does_not_return_map_related_data(
         self,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
@@ -1546,7 +1560,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize()
 
@@ -1561,7 +1575,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_running_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_running_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_running_user_1.serialize()
 
@@ -1575,7 +1589,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
@@ -1594,7 +1608,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize()
 
@@ -1610,9 +1624,11 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
         input_for_report: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         workout_cycling_user_1.suspended_at = datetime.utcnow()
 
@@ -1627,7 +1643,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
         serialized_workout = workout_cycling_user_1.serialize(light=False)
@@ -1643,9 +1659,11 @@ class TestWorkoutModelAsUnauthenticatedUser(
         user_3: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
-            user_3, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_3,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         serialized_workout = workout_cycling_user_1.serialize(light=True)
@@ -1693,14 +1711,14 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
-            ('visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('visibility: private', PrivacyLevel.PRIVATE),
+            ('visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_raises_exception_when_workout_is_not_visible(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1_moderator: User,
@@ -1717,14 +1735,14 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
-            ('visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('visibility: private', PrivacyLevel.PRIVATE),
+            ('visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_returns_workout_when_report_flag_is_true(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1_moderator: User,
@@ -1780,14 +1798,14 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
     @pytest.mark.parametrize(
         'input_desc, input_workout_visibility',
         [
-            ('visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('visibility: private', PrivacyLevel.PRIVATE),
+            ('visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('visibility: private', VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_returns_workout_with_map_when_report_flag_is_true(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1_moderator: User,
@@ -1847,7 +1865,11 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_raises_exception_when_workout_is_suspended(
         self,
@@ -1856,7 +1878,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         user_1_moderator: User,
         user_2: User,
         workout_cycling_user_2: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -1868,7 +1890,11 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
-        [PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC],
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
     )
     def test_it_serializes_suspended_workout_for_report(
         self,
@@ -1877,7 +1903,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         user_1_moderator: User,
         user_2: User,
         workout_cycling_user_2: Workout,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.suspended_at = datetime.utcnow()
@@ -1961,7 +1987,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_2.serialize(user=user_1_admin, light=False)
@@ -1974,7 +2000,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
 
         serialized_workout = workout_cycling_user_2.serialize(
             user=user_1_admin, for_report=True, light=False
@@ -2028,8 +2054,8 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.map_visibility = PrivacyLevel.FOLLOWERS
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.map_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout(
             workout_cycling_user_2, map_id=map_id

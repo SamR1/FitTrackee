@@ -6,7 +6,6 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.comments.models import Comment, CommentLike, Mention
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import (
     COMMENT_ACTION_TYPES,
     WORKOUT_ACTION_TYPES,
@@ -15,6 +14,7 @@ from fittrackee.reports.models import (
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.exceptions import InvalidNotificationTypeException
 from fittrackee.users.models import FollowRequest, Notification, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..mixins import ReportMixin
@@ -35,14 +35,14 @@ class NotificationTestCase:
         workout: Workout,
         reply_to: Optional[int] = None,
         text: Optional[str] = None,
-        text_visibility: Optional[PrivacyLevel] = None,
+        text_visibility: Optional[VisibilityLevel] = None,
     ) -> Comment:
         comment = Comment(
             user_id=user.id,
             workout_id=workout.id,
             text=random_string() if text is None else text,
             text_visibility=(
-                text_visibility if text_visibility else PrivacyLevel.PUBLIC
+                text_visibility if text_visibility else VisibilityLevel.PUBLIC
             ),
         )
         db.session.add(comment)
@@ -363,9 +363,11 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
 
         notification = Notification.query.filter_by(
@@ -385,9 +387,11 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment_id = comment.id
 
@@ -420,8 +424,8 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
     @pytest.mark.parametrize(
         'workout_visibility, text_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.FOLLOWERS),
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),  # no mention
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),  # no mention
         ],
     )
     def test_it_does_not_create_notification_when_visibility_does_not_allowed_it(  # noqa
@@ -431,8 +435,8 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_visibility: PrivacyLevel,
-        text_visibility: PrivacyLevel,
+        workout_visibility: VisibilityLevel,
+        text_visibility: VisibilityLevel,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         # user_1 does not follow user_2, user_2 follows user_1
@@ -468,7 +472,7 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(user_2, workout_cycling_user_1)
         notification = Notification.query.filter_by(
             event_object_id=comment.id,
@@ -579,7 +583,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(user_2, workout_cycling_user_1)
         reply = self.comment_workout(
             user_3, workout_cycling_user_1, comment.id
@@ -648,17 +652,17 @@ class TestNotificationForCommentReply(NotificationTestCase):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         comment = self.comment_workout(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         reply = self.comment_workout(
             user_2,
             workout_cycling_user_1,
             comment.id,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         db.session.flush()
 
@@ -929,12 +933,12 @@ class TestNotificationForMention(NotificationTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         """comment is visible to user"""
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_1.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_mention(user_1, comment)
 
@@ -948,7 +952,8 @@ class TestNotificationForMention(NotificationTestCase):
         assert notifications[0].event_type == 'workout_comment'
 
     @pytest.mark.parametrize(
-        'input_privacy_level', [PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE]
+        'input_visibility_level',
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_creates_notification_when_mentioned_user_is_workout_owner(  # noqa
         self,
@@ -957,15 +962,15 @@ class TestNotificationForMention(NotificationTestCase):
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        input_privacy_level: PrivacyLevel,
+        input_visibility_level: VisibilityLevel,
     ) -> None:
         """comment is visible to user thanks to the mention"""
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
             user_2,
             workout_cycling_user_1,
             text=f"@{user_1.username}",
-            text_visibility=input_privacy_level,
+            text_visibility=input_visibility_level,
         )
         mention = self.create_mention(user_1, comment)
 
@@ -987,16 +992,18 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.comment_workout(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.comment_workout(
             user_3,
             workout_cycling_user_1,
             reply_to=parent_comment.id,
             text=f"@{user_2.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_mention(user_2, comment)
 
@@ -1063,7 +1070,7 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
             user_1, workout_cycling_user_1, text=f"@{user_2.username}"
         )
@@ -1309,7 +1316,7 @@ class TestNotificationForReport(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(user_3, workout_cycling_user_2)
         report = Report(
             note=random_string(),
@@ -1411,11 +1418,11 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         comment_suspension = self.create_report_comment_action(
             user_1_moderator, user_2, comment

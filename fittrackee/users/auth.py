@@ -32,7 +32,6 @@ from fittrackee.equipments.exceptions import (
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel, get_map_visibility
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
@@ -47,6 +46,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import decode_short_id, get_readable_duration
+from fittrackee.visibility_levels import VisibilityLevel, get_map_visibility
 from fittrackee.workouts.models import Sport
 
 from ..reports.models import ReportAction, ReportActionAppeal
@@ -1021,9 +1021,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.use_dark_mode = use_dark_mode
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
-        auth_user.workouts_visibility = PrivacyLevel(workouts_visibility)
+        auth_user.workouts_visibility = VisibilityLevel(workouts_visibility)
         auth_user.map_visibility = get_map_visibility(
-            PrivacyLevel(map_visibility), auth_user.workouts_visibility
+            VisibilityLevel(map_visibility), auth_user.workouts_visibility
         )
         auth_user.manually_approves_followers = manually_approves_followers
         auth_user.hide_profile_in_users_directory = (

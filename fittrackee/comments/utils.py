@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Optional, Set, Tuple
 from sqlalchemy import func
 
 from fittrackee.comments.exceptions import CommentForbiddenException
-from fittrackee.privacy_levels import can_view
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import can_view
 
 from .models import Comment
 

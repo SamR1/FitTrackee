@@ -4,11 +4,11 @@ import type { IPagePayload, TPaginationPayload } from '@/types/api'
 import type { TLanguage } from '@/types/locales'
 import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
-export type TPrivacyLevels = 'private' | 'followers_only' | 'public'
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
+export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -56,7 +56,7 @@ export interface IAuthUserProfile extends IUserProfile {
   use_raw_gpx_speed: boolean
   language: TLanguage | null
   manually_approves_followers: boolean
-  map_visibility: TPrivacyLevels
+  map_visibility: TVisibilityLevels
   nb_sports: number
   records: IRecord[]
   sports_list: number[]
@@ -66,7 +66,7 @@ export interface IAuthUserProfile extends IUserProfile {
   total_duration: string
   weekm: boolean
   use_dark_mode: boolean | null
-  workouts_visibility: TPrivacyLevels
+  workouts_visibility: TVisibilityLevels
 }
 
 export interface IUserPayload {
@@ -110,13 +110,13 @@ export interface IUserPreferencesPayload {
   imperial_units: boolean
   language: TLanguage
   manually_approves_followers: boolean
-  map_visibility: TPrivacyLevels
+  map_visibility: TVisibilityLevels
   start_elevation_at_zero: boolean
   timezone: string
   use_raw_gpx_speed: boolean
   weekm: boolean
   use_dark_mode: boolean | null
-  workouts_visibility: TPrivacyLevels
+  workouts_visibility: TVisibilityLevels
 }
 
 export interface IUserSportPreferencesResetPayload {

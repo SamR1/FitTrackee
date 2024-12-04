@@ -76,13 +76,13 @@
       </div>
     </dl>
     <dl>
-      <dt>{{ $t('privacy.WORKOUTS_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
-        {{ $t(`privacy.LEVELS.${user.workouts_visibility}`) }}
+        {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
-      <dt>{{ $t('privacy.MAP_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
       <dd>
-        {{ $t(`privacy.LEVELS.${user.map_visibility}`) }}
+        {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
     </dl>
     <div class="profile-buttons">

@@ -6,7 +6,6 @@ from sqlalchemy import exc
 
 from fittrackee import db
 from fittrackee.oauth2.server import require_auth
-from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -16,6 +15,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 from fittrackee.utils import clean_input, decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 from fittrackee.workouts.decorators import check_workout
 from fittrackee.workouts.models import Workout
 
@@ -59,7 +59,7 @@ def add_workout_comment(
             user_id=auth_user.id,
             workout_id=workout.id,
             text=clean_input(comment_data['text']),
-            text_visibility=PrivacyLevel(comment_data['text_visibility']),
+            text_visibility=VisibilityLevel(comment_data['text_visibility']),
             reply_to=comment.id if comment else None,
         )
         db.session.add(new_comment)

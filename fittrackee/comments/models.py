@@ -11,8 +11,8 @@ from sqlalchemy.sql import select, text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
-from fittrackee.privacy_levels import PrivacyLevel, can_view
 from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .exceptions import CommentForbiddenException
 
@@ -76,7 +76,7 @@ def get_comments(
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.reply_to == reply_to,
-            Comment.text_visibility == PrivacyLevel.PUBLIC,
+            Comment.text_visibility == VisibilityLevel.PUBLIC,
         ).order_by(Comment.created_at.asc())
 
     return comments_filter.all()
@@ -113,7 +113,7 @@ class Comment(BaseModel):
     modification_date = db.Column(db.DateTime, nullable=True)
     text = db.Column(db.String(), nullable=False)
     text_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
@@ -153,7 +153,7 @@ class Comment(BaseModel):
         user_id: int,
         workout_id: int,
         text: str,
-        text_visibility: PrivacyLevel,
+        text_visibility: VisibilityLevel,
         created_at: Optional[datetime.datetime] = None,
         reply_to: Optional[int] = None,
     ) -> None:
@@ -379,7 +379,7 @@ def on_comment_insert(
         #   followers
 
         create_notification = False
-        if new_comment.text_visibility == PrivacyLevel.PUBLIC:
+        if new_comment.text_visibility == VisibilityLevel.PUBLIC:
             create_notification = True
 
         workout = Workout.query.filter_by(id=new_comment.workout_id).first()
@@ -394,7 +394,7 @@ def on_comment_insert(
 
         if (
             not create_notification
-            and new_comment.text_visibility == PrivacyLevel.FOLLOWERS
+            and new_comment.text_visibility == VisibilityLevel.FOLLOWERS
         ):
             create_notification = (
                 FollowRequest.query.filter_by(

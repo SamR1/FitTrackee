@@ -5,9 +5,9 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
@@ -107,19 +107,19 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -146,19 +146,19 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_different_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -183,18 +183,18 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
@@ -219,7 +219,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         auth_token, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=PrivacyLevel.PRIVATE
+            app, gpx_file, workout_visibility=VisibilityLevel.PRIVATE
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -278,9 +278,9 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
         ).first()
-        workout.workout_visibility = PrivacyLevel.PUBLIC
+        workout.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout, text_visibility=PrivacyLevel.PUBLIC
+            user_2, workout, text_visibility=VisibilityLevel.PUBLIC
         )
         client = app.test_client()
 
@@ -417,9 +417,11 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -435,19 +437,19 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_followed_user_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -472,19 +474,19 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility,expected_status_code',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE, 404),
+            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC, 403),
+            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_different_user(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         expected_status_code: int,
         app: Flask,
         user_1: User,
@@ -507,18 +509,18 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_visibility',
         [
-            ('workout visibility: private', PrivacyLevel.PRIVATE),
+            ('workout visibility: private', VisibilityLevel.PRIVATE),
             (
                 'workout visibility: followers_only',
-                PrivacyLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
         self,
         input_desc: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,

@@ -5,8 +5,8 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.users.models import FollowRequest, User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin
@@ -42,7 +42,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -81,7 +81,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
         user_2.approves_follow_request_from(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -102,7 +102,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -117,8 +117,8 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',
         [
-            ('workout visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_creates_workout_like(
@@ -129,7 +129,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_desc: str,
-        input_workout_level: PrivacyLevel,
+        input_workout_level: VisibilityLevel,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
@@ -167,7 +167,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -257,7 +257,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -301,7 +301,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
         user_2.approves_follow_request_from(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -322,7 +322,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -337,8 +337,8 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_desc,input_workout_level',
         [
-            ('workout visibility: follower', PrivacyLevel.FOLLOWERS),
-            ('workout visibility: public', PrivacyLevel.PUBLIC),
+            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ('workout visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_removes_workout_like(
@@ -349,7 +349,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_desc: str,
-        input_workout_level: PrivacyLevel,
+        input_workout_level: VisibilityLevel,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
@@ -392,7 +392,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

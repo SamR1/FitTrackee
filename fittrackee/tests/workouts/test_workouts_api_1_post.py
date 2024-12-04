@@ -12,13 +12,13 @@ from time_machine import travel
 
 from fittrackee import VERSION, db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
     User,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
@@ -1246,9 +1246,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_desc,input_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_workout_is_created_with_user_privacy_parameters_when_no_provided(
@@ -1258,7 +1258,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         input_desc: str,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_1.map_visibility = input_visibility
         user_1.workouts_visibility = input_visibility
@@ -1294,8 +1294,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_workout_is_created_with_provided_privacy_parameters(
@@ -1304,8 +1304,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1344,8 +1344,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_workout_is_created_with_valid_privacy_parameters_when_provided(
@@ -1354,8 +1354,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         """
         when workout visibility is stricter, map visibility is initialised
@@ -2650,9 +2650,9 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_workout_is_created_with_user_privacy_parameters_when_no_provided(
@@ -2662,7 +2662,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         input_desc: str,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         user_1.map_visibility = input_visibility
         user_1.workouts_visibility = input_visibility
@@ -2699,7 +2699,11 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
     @pytest.mark.parametrize(
         'input_workout_visibility',
-        [PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE],
+        [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
     )
     def test_workout_is_created_with_provided_privacy_parameters(
         self,
@@ -2707,7 +2711,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
-        input_workout_visibility: PrivacyLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2965,9 +2969,9 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_desc,input_visibility',
         [
-            ('private', PrivacyLevel.PRIVATE),
-            ('followers_only', PrivacyLevel.FOLLOWERS),
-            ('public', PrivacyLevel.PUBLIC),
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_workouts_are_created_with_user_privacy_parameters_when_no_provided(  # noqa
@@ -2976,7 +2980,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         input_desc: str,
-        input_visibility: PrivacyLevel,
+        input_visibility: VisibilityLevel,
     ) -> None:
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         user_1.map_visibility = input_visibility
@@ -3014,8 +3018,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PUBLIC),
-            (PrivacyLevel.PRIVATE, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_workouts_are_created_with_provided_privacy_parameters(
@@ -3023,8 +3027,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3194,8 +3198,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_map_visibility,input_workout_visibility',
         [
-            (PrivacyLevel.FOLLOWERS, PrivacyLevel.PRIVATE),
-            (PrivacyLevel.PUBLIC, PrivacyLevel.FOLLOWERS),
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_workouts_are_created_with_valid_privacy_parameters_when_provided(
@@ -3203,8 +3207,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        input_map_visibility: PrivacyLevel,
-        input_workout_visibility: PrivacyLevel,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
     ) -> None:
         """
         when workout visibility is stricter, map visibility is initialised
@@ -3823,7 +3827,7 @@ class TestPostWorkoutSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

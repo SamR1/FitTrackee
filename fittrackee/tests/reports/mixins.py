@@ -1,8 +1,8 @@
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import Report
 from fittrackee.reports.reports_service import ReportService
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
 
@@ -28,11 +28,11 @@ class ReportServiceCreateReportActionMixin(CommentMixin):
         commenter: User,
         workout: Workout,
     ) -> Report:
-        workout.workout_visibility = PrivacyLevel.PUBLIC
+        workout.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             commenter,
             workout,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report = report_service.create_report(
             reporter=reporter,
@@ -48,7 +48,7 @@ class ReportServiceCreateReportActionMixin(CommentMixin):
         reporter: User,
         workout: Workout,
     ) -> Report:
-        workout.workout_visibility = PrivacyLevel.PUBLIC
+        workout.workout_visibility = VisibilityLevel.PUBLIC
         report = report_service.create_report(
             reporter=reporter,
             object_id=workout.short_id,

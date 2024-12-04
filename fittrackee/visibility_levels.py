@@ -7,19 +7,19 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
 
 
-class PrivacyLevel(str, Enum):  # to make enum serializable
+class VisibilityLevel(str, Enum):  # to make enum serializable
     PUBLIC = 'public'
-    FOLLOWERS = 'followers_only'  # only local followers in federated instances
+    FOLLOWERS = 'followers_only'  # only followers
     PRIVATE = 'private'  # in case of comments, for mentioned users only
 
 
 def get_map_visibility(
-    map_visibility: PrivacyLevel, workout_visibility: PrivacyLevel
-) -> PrivacyLevel:
-    # workout privacy overrides map privacy, when stricter
-    if workout_visibility == PrivacyLevel.PRIVATE or (
-        workout_visibility == PrivacyLevel.FOLLOWERS
-        and map_visibility == PrivacyLevel.PUBLIC
+    map_visibility: VisibilityLevel, workout_visibility: VisibilityLevel
+) -> VisibilityLevel:
+    # workout visibility overrides map visibility, when stricter
+    if workout_visibility == VisibilityLevel.PRIVATE or (
+        workout_visibility == VisibilityLevel.FOLLOWERS
+        and map_visibility == VisibilityLevel.PUBLIC
     ):
         return workout_visibility
     return map_visibility
@@ -52,7 +52,9 @@ def can_view(
         if user_comments_count == 0:
             return False
 
-    if target_object.__getattribute__(visibility) == PrivacyLevel.PUBLIC and (
+    if target_object.__getattribute__(
+        visibility
+    ) == VisibilityLevel.PUBLIC and (
         not user or not user.is_blocked_by(owner)
     ):
         return True
@@ -67,7 +69,7 @@ def can_view(
         return True
 
     if (
-        target_object.__getattribute__(visibility) == PrivacyLevel.FOLLOWERS
+        target_object.__getattribute__(visibility) == VisibilityLevel.FOLLOWERS
         and user in owner.followers.all()
     ):
         return True

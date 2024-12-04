@@ -17,12 +17,12 @@ from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
-from fittrackee.privacy_levels import (
-    PrivacyLevel,
+from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
     can_view,
     get_map_visibility,
 )
-from fittrackee.utils import encode_uuid
 
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import convert_in_duration, convert_value_to_integer
@@ -265,12 +265,12 @@ class Workout(BaseModel):
         db.String(DESCRIPTION_MAX_CHARACTERS), nullable=True
     )
     workout_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
     map_visibility = db.Column(
-        Enum(PrivacyLevel, name='privacy_levels'),
+        Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
@@ -328,7 +328,7 @@ class Workout(BaseModel):
         return encode_uuid(self.uuid)
 
     @property
-    def calculated_map_visibility(self) -> PrivacyLevel:
+    def calculated_map_visibility(self) -> VisibilityLevel:
         return get_map_visibility(self.map_visibility, self.workout_visibility)
 
     def liked_by(self, user: 'User') -> bool:

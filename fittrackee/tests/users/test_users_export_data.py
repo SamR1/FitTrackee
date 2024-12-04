@@ -8,7 +8,6 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.export_data import (
     UserDataExporter,
@@ -17,6 +16,7 @@ from fittrackee.users.export_data import (
     generate_user_data_archives,
 )
 from fittrackee.users.models import User, UserDataExport
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..utils import random_int, random_string
@@ -210,10 +210,12 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(user_1, workout_cycling_user_1)
         self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         exporter = UserDataExporter(user_1)
 
@@ -239,14 +241,16 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         parent_comment = self.create_comment(
-            user_2, workout_cycling_user_1, text_visibility=PrivacyLevel.PUBLIC
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=parent_comment,
         )
         exporter = UserDataExporter(user_1)

@@ -8,7 +8,6 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.exceptions import (
     InvalidReportActionException,
     InvalidReporterException,
@@ -30,6 +29,7 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 
@@ -59,11 +59,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.FOLLOWERS,
+            text_visibility=VisibilityLevel.FOLLOWERS,
         )
         report_service = ReportService()
 
@@ -83,11 +83,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_service = ReportService()
 
@@ -108,11 +108,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         note = self.random_string()
         now = datetime.utcnow()
@@ -161,11 +161,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         report_service = ReportService()
         report_service.create_report(
@@ -193,11 +193,11 @@ class TestReportServiceCreateForComment(CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         report_service = ReportService()
@@ -235,7 +235,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.FOLLOWERS
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         report_service = ReportService()
 
         with pytest.raises(WorkoutForbiddenException):
@@ -253,7 +253,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         report_service = ReportService()
 
         with pytest.raises(InvalidReporterException):
@@ -273,7 +273,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         note = self.random_string()
         now = datetime.utcnow()
         report_service = ReportService()
@@ -322,7 +322,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report_service = ReportService()
         # report from same user
         report_service.create_report(
@@ -350,7 +350,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         report_service = ReportService()
 
@@ -2024,11 +2024,11 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2067,11 +2067,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2108,11 +2108,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2143,11 +2143,11 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_admin, user_3, comment
@@ -2186,7 +2186,7 @@ class TestReportServiceProcessAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2224,7 +2224,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2262,7 +2262,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
@@ -2290,7 +2290,7 @@ class TestReportServiceProcessAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )

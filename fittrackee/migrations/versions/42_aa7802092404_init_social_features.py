@@ -19,17 +19,17 @@ branch_labels = None
 depends_on = None
 
 
-privacy_levels = postgresql.ENUM(
+visibility_levels = postgresql.ENUM(
     'PUBLIC',
     'FOLLOWERS_AND_REMOTE',  # for a next version, not used for now
     'FOLLOWERS',
     'PRIVATE',
-    name='privacy_levels',
+    name='visibility_levels',
 )
 
 
 def upgrade():
-    privacy_levels.create(op.get_bind())
+    visibility_levels.create(op.get_bind())
 
     op.create_table(
         'follow_requests',
@@ -74,7 +74,7 @@ def upgrade():
         'comments',
         sa.Column(
             'text_visibility',
-            privacy_levels,
+            visibility_levels,
             server_default='PRIVATE',
             nullable=False,
         ),
@@ -146,7 +146,7 @@ def upgrade():
         batch_op.add_column(
             sa.Column(
                 'workouts_visibility',
-                privacy_levels,
+                visibility_levels,
                 server_default='PRIVATE',
                 nullable=True,
             )
@@ -154,7 +154,7 @@ def upgrade():
         batch_op.add_column(
             sa.Column(
                 'map_visibility',
-                privacy_levels,
+                visibility_levels,
                 server_default='PRIVATE',
                 nullable=True,
             )
@@ -200,7 +200,7 @@ def upgrade():
         batch_op.add_column(
             sa.Column(
                 'workout_visibility',
-                privacy_levels,
+                visibility_levels,
                 server_default='PRIVATE',
                 nullable=True,
             )
@@ -208,7 +208,7 @@ def upgrade():
         batch_op.add_column(
             sa.Column(
                 'map_visibility',
-                privacy_levels,
+                visibility_levels,
                 server_default='PRIVATE',
                 nullable=True,
             )
@@ -559,4 +559,4 @@ def downgrade():
 
     op.drop_table('comments')
     op.drop_table('follow_requests')
-    privacy_levels.drop(op.get_bind())
+    visibility_levels.drop(op.get_bind())

@@ -6,7 +6,7 @@ import type {
   IUserReportAction,
   IUserLightProfile,
   IUserProfile,
-  TPrivacyLevels,
+  TVisibilityLevels,
 } from '@/types/user'
 
 export interface IWorkoutSegment {
@@ -75,7 +75,7 @@ export interface IWorkout {
   liked: boolean
   likes_count: number
   map: string | null
-  map_visibility?: TPrivacyLevels
+  map_visibility?: TVisibilityLevels
   max_alt: number | null
   max_speed: number | null
   min_alt: number | null
@@ -97,7 +97,7 @@ export interface IWorkout {
   weather_start: IWeather | null
   with_gpx: boolean
   workout_date: string
-  workout_visibility?: TPrivacyLevels
+  workout_visibility?: TVisibilityLevels
 }
 
 export interface IWorkoutObject {
@@ -111,7 +111,7 @@ export interface IWorkoutObject {
   likes_count: number
   maxAlt: number | null
   maxSpeed: number | null
-  mapVisibility: TPrivacyLevels | null | undefined
+  mapVisibility: TVisibilityLevels | null | undefined
   minAlt: number | null
   moving: string | null
   nextUrl: string | null
@@ -129,7 +129,7 @@ export interface IWorkoutObject {
   with_gpx: boolean
   workoutId: string
   workoutTime: string
-  workoutVisibility: TPrivacyLevels | null | undefined
+  workoutVisibility: TVisibilityLevels | null | undefined
 }
 
 export interface IWorkoutForm {
@@ -144,8 +144,8 @@ export interface IWorkoutForm {
   descent?: number | null
   equipment_ids: string[]
   description: string
-  map_visibility?: TPrivacyLevels
-  workout_visibility: TPrivacyLevels
+  map_visibility?: TVisibilityLevels
+  workout_visibility: TVisibilityLevels
 }
 
 export interface IWorkoutPayload {
@@ -239,7 +239,7 @@ export interface IComment {
   suspension?: IUserReportAction
   text: string | null
   text_html: string | null
-  text_visibility: TPrivacyLevels
+  text_visibility: TVisibilityLevels
   user: IUserLightProfile
   workout_id: string
 }
@@ -248,7 +248,7 @@ export interface ICommentForm {
   id?: string
   reply_to?: string
   text: string
-  text_visibility?: TPrivacyLevels
+  text_visibility?: TVisibilityLevels
   workout_id: string
 }
 

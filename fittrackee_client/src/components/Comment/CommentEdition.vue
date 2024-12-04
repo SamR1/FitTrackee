@@ -30,7 +30,7 @@
           class="form-item text-visibility"
           v-if="!comment && workout && workout.workout_visibility"
         >
-          <label> {{ $t('privacy.VISIBILITY') }}: </label>
+          <label> {{ $t('visibility_levels.VISIBILITY') }}: </label>
           <select id="text_visibility" v-model="commentTextVisibility">
             <option
               v-for="level in getCommentVisibilityLevels(
@@ -39,7 +39,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`privacy.COMMENT_LEVELS.${level}`) }}
+              {{ $t(`visibility_levels.COMMENT_LEVELS.${level}`) }}
             </option>
           </select>
         </div>
@@ -73,12 +73,12 @@
     IAuthUserProfile,
     IUserLightProfile,
     IUserProfile,
-    TPrivacyLevels,
+    TVisibilityLevels,
   } from '@/types/user'
   import type { IComment, ICommentForm, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUsernameQuery, replaceUsername } from '@/utils/inputs'
-  import { getCommentVisibilityLevels } from '@/utils/privacy'
+  import { getCommentVisibilityLevels } from '@/utils/visibility_levels'
 
   interface ISuggestion {
     position: number | null
@@ -117,7 +117,7 @@
   let suggestion: ISuggestion = { position: null, usernameQuery: null }
 
   const commentText: Ref<string> = ref(getText())
-  const commentTextVisibility: Ref<TPrivacyLevels | undefined> = ref(
+  const commentTextVisibility: Ref<TVisibilityLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
       : replyTo.value

@@ -9,7 +9,6 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
-from fittrackee.privacy_levels import PrivacyLevel
 from fittrackee.reports.models import (
     USER_ACTION_TYPES,
     Report,
@@ -18,6 +17,7 @@ from fittrackee.reports.models import (
     ReportComment,
 )
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
@@ -38,7 +38,7 @@ class ReportTestCase(
         workout_cycling_user_2: Workout,
     ) -> List[Report]:
         reports = [self.create_report(reporter=user_2, reported_object=user_4)]
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         reports.append(
             self.create_report(
                 reporter=user_3, reported_object=workout_cycling_user_2
@@ -47,7 +47,7 @@ class ReportTestCase(
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         reports.append(
             self.create_report(reporter=user_2, reported_object=comment)
@@ -231,11 +231,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -264,11 +264,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         comment.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -298,11 +298,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_1,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_report(reporter=user_1, reported_object=comment)
         db.session.commit()
@@ -333,11 +333,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -379,11 +379,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_report(reporter=user_1, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -428,11 +428,11 @@ class TestPostCommentReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_report(
             reporter=user_1, reported_object=workout_cycling_user_2
@@ -535,11 +535,11 @@ class TestPostWorkoutReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_comment(
             user_1,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         workout_cycling_user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -571,7 +571,7 @@ class TestPostWorkoutReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_report(
             reporter=user_1, reported_object=workout_cycling_user_2
         )
@@ -603,7 +603,7 @@ class TestPostWorkoutReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -644,7 +644,7 @@ class TestPostWorkoutReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         self.create_report(reporter=user_1, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -688,11 +688,11 @@ class TestPostWorkoutReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         self.create_report(reporter=user_1, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1001,7 +1001,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PRIVATE
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2653,7 +2653,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2679,7 +2679,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2708,7 +2708,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2737,7 +2737,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2774,7 +2774,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2808,7 +2808,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2844,7 +2844,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2879,7 +2879,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2915,7 +2915,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         workout_suspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2946,7 +2946,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         workout_unsuspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -2979,7 +2979,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         workout_suspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
@@ -3013,9 +3013,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3040,9 +3040,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3070,9 +3070,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3100,9 +3100,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3135,9 +3135,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3172,9 +3172,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3206,9 +3206,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3242,9 +3242,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_3, workout_cycling_user_2, PrivacyLevel.PUBLIC
+            user_3, workout_cycling_user_2, VisibilityLevel.PUBLIC
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3281,12 +3281,12 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         comment_suspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text=f"@{user_2.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
@@ -3317,12 +3317,12 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         comment_unsuspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text=f"@{user_2.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
@@ -3355,12 +3355,12 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         workout_cycling_user_2: Workout,
         comment_suspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
             text=f"@{user_2.username}",
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
@@ -3690,11 +3690,11 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_moderator, user_3, comment
@@ -3732,11 +3732,11 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2: Workout,
         comment_unsuspension_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_moderator, user_3, comment
@@ -3767,11 +3767,11 @@ class TestProcessReportActionAppeal(
         workout_cycling_user_2: Workout,
         appeal_rejected_email_mock: MagicMock,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_moderator, user_3, comment
@@ -3801,11 +3801,11 @@ class TestProcessReportActionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = PrivacyLevel.PUBLIC
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_3,
             workout_cycling_user_2,
-            text_visibility=PrivacyLevel.PUBLIC,
+            text_visibility=VisibilityLevel.PUBLIC,
         )
         suspension_action = self.create_report_comment_action(
             user_1_moderator, user_3, comment
