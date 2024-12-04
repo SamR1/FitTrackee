@@ -1,4 +1,3 @@
-import json
 from typing import Dict, Union
 
 from flask import Blueprint, request
@@ -28,7 +27,12 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
     params = request.args.copy()
     page = int(params.get('page', 1))
     order = params.get('order', 'desc')
-    read_status = params.get('read_status')
+    status = params.get('status')
+    marked_as_read = None
+    if status == 'read':
+        marked_as_read = True
+    if status == 'unread':
+        marked_as_read = False
     event_type = params.get('type')
 
     blocked_users = auth_user.get_blocked_user_ids()
@@ -48,8 +52,8 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
             Notification.to_user_id == auth_user.id,
             Notification.from_user_id.not_in(blocked_users),
             (
-                Notification.marked_as_read == json.loads(read_status)
-                if read_status is not None
+                Notification.marked_as_read == marked_as_read
+                if marked_as_read is not None
                 else True
             ),
             (
