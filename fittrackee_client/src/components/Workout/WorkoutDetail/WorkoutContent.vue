@@ -2,7 +2,13 @@
   <div id="workout-content">
     <Card>
       <template #title>
-        {{ $t(`workouts.${contentType}`) }}
+        {{
+          capitalize(
+            $t(
+              `workouts.${contentType === 'NOTES' ? 'PRIVATE_NOTES' : contentType}`
+            )
+          )
+        }}
         <button
           v-if="allowEdition"
           class="transparent icon-button"
@@ -70,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, ref, watch } from 'vue'
+  import { capitalize, computed, toRefs, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -161,7 +167,6 @@
 
   #workout-content {
     ::v-deep(.card-title) {
-      text-transform: capitalize;
       .icon-button {
         cursor: pointer;
         padding: 0;
