@@ -196,7 +196,7 @@
 
   const orderByList = [
     'is_active',
-    'admin',
+    'role',
     'created_at',
     'username',
     'workouts_count',

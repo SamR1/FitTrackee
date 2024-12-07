@@ -61,72 +61,9 @@ def _get_value_depending_on_user_rights(
     params: Dict, key: str, auth_user: Optional[User]
 ) -> str:
     value = params.get(key, 'false').lower()
-    if not auth_user or not auth_user.has_moderator_rights:
+    if not auth_user or not auth_user.has_admin_rights:
         value = 'false'
     return value
-
-
-def get_users_list(auth_user: User) -> Dict:
-    params = request.args.copy()
-
-    query = params.get('q')
-    page = int(params.get('page', 1))
-    per_page = int(params.get('per_page', USERS_PER_PAGE))
-    if per_page > 50:
-        per_page = 50
-    column = params.get('order_by', 'username')
-    if column == "admin":
-        column = "role"
-    user_column = getattr(User, column)
-    order = params.get('order', 'asc')
-    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
-    if column != 'username':
-        order_clauses.append(User.username.asc())
-    if column == "suspended_at":
-        order_clauses = [nullslast(order_clauses[0])]
-    with_inactive = _get_value_depending_on_user_rights(
-        params, 'with_inactive', auth_user
-    )
-    with_hidden_users = _get_value_depending_on_user_rights(
-        params, 'with_hidden', auth_user
-    )
-    with_suspended_users = _get_value_depending_on_user_rights(
-        params, 'with_suspended', auth_user
-    )
-    users_pagination = (
-        User.query.filter(
-            User.username.ilike('%' + query + '%') if query else True,
-            (
-                True if with_inactive == 'true' else User.is_active == True  # noqa
-            ),
-            (
-                True
-                if with_hidden_users == 'true'
-                else User.hide_profile_in_users_directory == False  # noqa
-            ),
-            (
-                True
-                if with_suspended_users == 'true'
-                else User.suspended_at == None  # noqa
-            ),
-        )
-        .order_by(*order_clauses)
-        .paginate(page=page, per_page=per_page, error_out=False)
-    )
-    users = users_pagination.items
-    return {
-        'status': 'success',
-        'data': {
-            'users': [user.serialize(current_user=auth_user) for user in users]
-        },
-        'pagination': {
-            'has_next': users_pagination.has_next,
-            'has_prev': users_pagination.has_prev,
-            'page': users_pagination.page,
-            'pages': users_pagination.pages,
-            'total': users_pagination.total,
-        },
-    }
 
 
 @users_blueprint.route('/users', methods=['GET'])
@@ -274,8 +211,17 @@ def get_users(auth_user: User) -> Dict:
     :query string q: query on user name
     :query string order: sorting order: ``asc``, ``desc`` (default: ``asc``)
     :query string order_by: sorting criteria: ``username``, ``created_at``,
-                            ``workouts_count``, ``admin``, ``is_active``
+                            ``workouts_count``, ``role``, ``is_active``
                             (default: ``username``)
+    :query boolean with_hidden_users: returns hidden users if true (only if
+           authenticated user has administration rights - for users
+           administration)
+    :query boolean with_inactive: returns inactive users if true (only if
+           authenticated user has administration rights - for users
+           administration)
+    :query boolean with_suspended: returns suspended users if true (only if
+           authenticated user has administration rights - for users
+           administration)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -286,7 +232,64 @@ def get_users(auth_user: User) -> Dict:
         - ``invalid token, please log in again``
 
     """
-    return get_users_list(auth_user)
+    params = request.args.copy()
+
+    query = params.get('q')
+    page = int(params.get('page', 1))
+    per_page = int(params.get('per_page', USERS_PER_PAGE))
+    if per_page > 50:
+        per_page = 50
+    column = params.get('order_by', 'username')
+    user_column = getattr(User, column)
+    order = params.get('order', 'asc')
+    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
+    if column != 'username':
+        order_clauses.append(User.username.asc())
+    if column == "suspended_at":
+        order_clauses = [nullslast(order_clauses[0])]
+    with_inactive = _get_value_depending_on_user_rights(
+        params, 'with_inactive', auth_user
+    )
+    with_hidden_users = _get_value_depending_on_user_rights(
+        params, 'with_hidden', auth_user
+    )
+    with_suspended_users = _get_value_depending_on_user_rights(
+        params, 'with_suspended', auth_user
+    )
+    users_pagination = (
+        User.query.filter(
+            User.username.ilike('%' + query + '%') if query else True,
+            (
+                True if with_inactive == 'true' else User.is_active == True  # noqa
+            ),
+            (
+                True
+                if with_hidden_users == 'true'
+                else User.hide_profile_in_users_directory == False  # noqa
+            ),
+            (
+                True
+                if with_suspended_users == 'true'
+                else User.suspended_at == None  # noqa
+            ),
+        )
+        .order_by(*order_clauses)
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+    users = users_pagination.items
+    return {
+        'status': 'success',
+        'data': {
+            'users': [user.serialize(current_user=auth_user) for user in users]
+        },
+        'pagination': {
+            'has_next': users_pagination.has_next,
+            'has_prev': users_pagination.has_prev,
+            'page': users_pagination.page,
+            'pages': users_pagination.pages,
+            'total': users_pagination.total,
+        },
+    }
 
 
 @users_blueprint.route('/users/<user_name>', methods=['GET'])
