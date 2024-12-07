@@ -4,7 +4,13 @@
       <div class="follows-you" v-if="user.follows === 'true'">
         {{ $t('user.RELATIONSHIPS.FOLLOWS_YOU') }}
       </div>
-      <div class="follows-you" v-else-if="user.username === authUser.username">
+      <div
+        class="follows-you"
+        v-else-if="
+          user.username === authUser.username &&
+          !$route.path.startsWith('/profile')
+        "
+      >
         {{ $t('user.YOU') }}
       </div>
       <UserPicture :user="user" />
