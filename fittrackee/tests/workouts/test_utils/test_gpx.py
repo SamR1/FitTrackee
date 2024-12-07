@@ -39,13 +39,16 @@ class TestStoppedSpeedThreshold:
         sport_id: int,
         expected_threshold: float,
     ) -> None:
-        with patch(
-            'fittrackee.workouts.utils.workouts.get_new_file_path',
-            return_value='/tmp/fitTrackee/uploads/test.png',
-        ), patch(
-            'gpxpy.gpx.GPXTrackSegment.get_moving_data',
-            return_value=moving_data,
-        ) as gpx_track_segment_mock:
+        with (
+            patch(
+                'fittrackee.workouts.utils.workouts.get_new_file_path',
+                return_value='/tmp/fitTrackee/uploads/test.png',
+            ),
+            patch(
+                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                return_value=moving_data,
+            ) as gpx_track_segment_mock,
+        ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
@@ -73,13 +76,16 @@ class TestStoppedSpeedThreshold:
     ) -> None:
         expected_threshold = 0.7
         user_1_sport_1_preference.stopped_speed_threshold = expected_threshold
-        with patch(
-            'fittrackee.workouts.utils.workouts.get_new_file_path',
-            return_value='/tmp/fitTrackee/uploads/test.png',
-        ), patch(
-            'gpxpy.gpx.GPXTrackSegment.get_moving_data',
-            return_value=moving_data,
-        ) as gpx_track_segment_mock:
+        with (
+            patch(
+                'fittrackee.workouts.utils.workouts.get_new_file_path',
+                return_value='/tmp/fitTrackee/uploads/test.png',
+            ),
+            patch(
+                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                return_value=moving_data,
+            ) as gpx_track_segment_mock,
+        ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
@@ -109,13 +115,16 @@ class TestUseRawGpxSpeed:
         input_use_raw_gpx_speed: bool,
     ) -> None:
         user_1.use_raw_gpx_speed = input_use_raw_gpx_speed
-        with patch(
-            'fittrackee.workouts.utils.workouts.get_new_file_path',
-            return_value='/tmp/fitTrackee/uploads/test.png',
-        ), patch(
-            'gpxpy.gpx.GPXTrackSegment.get_moving_data',
-            return_value=moving_data,
-        ) as gpx_track_segment_mock:
+        with (
+            patch(
+                'fittrackee.workouts.utils.workouts.get_new_file_path',
+                return_value='/tmp/fitTrackee/uploads/test.png',
+            ),
+            patch(
+                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                return_value=moving_data,
+            ) as gpx_track_segment_mock,
+        ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
