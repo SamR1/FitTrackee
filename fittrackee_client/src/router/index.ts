@@ -602,6 +602,7 @@ const routes: RouteRecordRaw[] = [
     component: AdminView,
     meta: {
       allowedToSuspendedUser: false,
+      minimumRole: 'moderator',
     },
     children: [
       {
@@ -618,6 +619,7 @@ const routes: RouteRecordRaw[] = [
         component: AdminApplication,
         meta: {
           title: 'admin.APP_CONFIG.TITLE',
+          minimumRole: 'admin',
         },
       },
       {
@@ -627,6 +629,7 @@ const routes: RouteRecordRaw[] = [
         props: { edition: true },
         meta: {
           title: 'admin.APPLICATION',
+          minimumRole: 'admin',
         },
       },
       {
@@ -635,6 +638,7 @@ const routes: RouteRecordRaw[] = [
         component: AdminEquipmentTypes,
         meta: {
           title: 'admin.EQUIPMENT_TYPES.TITLE',
+          minimumRole: 'admin',
         },
       },
       {
@@ -643,6 +647,7 @@ const routes: RouteRecordRaw[] = [
         component: AdminSports,
         meta: {
           title: 'admin.SPORTS.TITLE',
+          minimumRole: 'admin',
         },
       },
       {
@@ -677,6 +682,7 @@ const routes: RouteRecordRaw[] = [
         component: AdminUsers,
         meta: {
           title: 'admin.USERS.TITLE',
+          minimumRole: 'admin',
         },
       },
     ],

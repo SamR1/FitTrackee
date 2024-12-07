@@ -1,7 +1,13 @@
 <template>
   <div id="admin" class="view">
     <div class="container" v-if="!authUserLoading">
-      <router-view v-if="authUserHasModeratorRights" />
+      <router-view
+        v-if="
+          $route.meta.minimumRole === 'moderator'
+            ? authUserHasModeratorRights
+            : authUserHasAdminRights
+        "
+      />
       <div class="container" v-else>
         <NotFound />
       </div>
@@ -20,7 +26,11 @@
 
   const store = useStore()
 
-  const { authUserHasModeratorRights, authUserLoading } = useAuthUser()
+  const {
+    authUserHasModeratorRights,
+    authUserHasAdminRights,
+    authUserLoading,
+  } = useAuthUser()
 
   onBeforeMount(() => {
     if (authUserHasModeratorRights.value) {
