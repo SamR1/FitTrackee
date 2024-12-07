@@ -172,6 +172,7 @@
     return (
       [
         'comment_like',
+        'comment_reply',
         'comment_suspension',
         'comment_unsuspension',
         'mention',
@@ -192,6 +193,8 @@
         return 'notifications.SIGN_UP'
       case 'comment_like':
         return 'notifications.LIKED_YOUR_COMMENT'
+      case 'comment_reply':
+        return 'notifications.REPLIED_YOUR_COMMENT'
       case 'comment_suspension':
         return 'notifications.YOUR_COMMENT_HAS_BEEN_SUSPENDED'
       case 'comment_unsuspension':

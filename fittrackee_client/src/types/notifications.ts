@@ -5,6 +5,7 @@ import type { IComment, IWorkout } from '@/types/workouts'
 export type TNotificationType =
   | 'account_creation'
   | 'comment_like'
+  | 'comment_reply'
   | 'comment_suspension'
   | 'comment_unsuspension'
   | 'follow'

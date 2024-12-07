@@ -53,6 +53,7 @@ USER_LINK_TEMPLATE = (
 NOTIFICATION_TYPES = [
     'account_creation',
     'comment_like',
+    'comment_reply',
     'comment_suspension',
     'comment_unsuspension',
     'follow',
@@ -1194,6 +1195,7 @@ class Notification(BaseModel):
 
         if self.event_type in [
             "comment_like",
+            "comment_reply",
             "mention",
             "workout_comment",
         ]:

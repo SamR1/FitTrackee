@@ -168,8 +168,19 @@ def upgrade():
         )
     op.alter_column('users', 'is_remote', nullable=False)
 
+    with op.batch_alter_table('comments', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('reply_to', sa.Integer(), nullable=True))
+        batch_op.create_index(batch_op.f('ix_comments_reply_to'), ['reply_to'], unique=False)
+        batch_op.create_foreign_key('comments_reply_to_fkey', 'comments', ['reply_to'], ['id'], ondelete='SET NULL')
+
+
 
 def downgrade():
+    with op.batch_alter_table('comments', schema=None) as batch_op:
+        batch_op.drop_constraint('comments_reply_to_fkey', type_='foreignkey')
+        batch_op.drop_index(batch_op.f('ix_comments_reply_to'))
+        batch_op.drop_column('reply_to')
+
     with op.batch_alter_table('workouts', schema=None) as batch_op:
         batch_op.drop_column('remote_url')
         batch_op.drop_column('ap_id')

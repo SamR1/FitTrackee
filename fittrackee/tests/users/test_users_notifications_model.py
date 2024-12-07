@@ -33,6 +33,7 @@ class NotificationTestCase:
     def comment_workout(
         user: User,
         workout: Workout,
+        reply_to: Optional[int] = None,
         text: Optional[str] = None,
         text_visibility: Optional[VisibilityLevel] = None,
     ) -> Comment:
@@ -45,6 +46,7 @@ class NotificationTestCase:
             ),
         )
         db.session.add(comment)
+        comment.reply_to = reply_to
         db.session.commit()
         return comment
 
@@ -571,6 +573,154 @@ class TestNotificationForWorkoutReportAction(
         assert "report" not in serialized_notification
 
 
+class TestNotificationForCommentReply(NotificationTestCase):
+    def test_it_creates_notification_on_comment_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.comment_workout(user_2, workout_cycling_user_1)
+        reply = self.comment_workout(
+            user_3, workout_cycling_user_1, comment.id
+        )
+
+        notification = Notification.query.filter_by(
+            from_user_id=reply.user_id,
+            to_user_id=comment.user_id,
+            event_object_id=reply.id,
+        ).first()
+        assert notification.created_at == reply.created_at
+        assert notification.marked_as_read is False
+        assert notification.event_type == 'comment_reply'
+
+    def test_it_deletes_notification_on_comment_reply_delete(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(user_2, workout_cycling_user_1)
+        reply = self.comment_workout(
+            user_3, workout_cycling_user_1, comment.id
+        )
+        reply_id = reply.id
+
+        db.session.delete(comment)
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_3.id,
+            to_user_id=workout_cycling_user_1.user_id,
+            event_object_id=reply_id,
+            event_type='comment_reply',
+        ).first()
+        assert notification is None
+
+    def test_it_does_not_create_notification_when_user_replies_to_his_comment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(user_1, workout_cycling_user_1)
+        reply = self.comment_workout(
+            user_1, workout_cycling_user_1, comment.id
+        )
+
+        notification = Notification.query.filter_by(
+            from_user_id=reply.user_id,
+            to_user_id=workout_cycling_user_1.user_id,
+            event_object_id=reply.id,
+        ).first()
+        assert notification is None
+
+    def test_it_does_not_create_notification_when_parent_comment_user_is_not_follower(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        comment = self.comment_workout(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.FOLLOWERS,
+        )
+        reply = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            comment.id,
+            text_visibility=VisibilityLevel.FOLLOWERS,
+        )
+        db.session.flush()
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=reply.id,
+            ).first()
+            is None
+        )
+
+    def test_it_does_not_raise_error_when_user_deletes_reply_on_his_own_comment(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(user_1, workout_cycling_user_1)
+        reply = self.comment_workout(
+            user_1, workout_cycling_user_1, comment.id
+        )
+
+        db.session.delete(reply)
+
+    def test_it_serializes_comment_reply_notification(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(user_1, workout_cycling_user_1)
+        reply = self.comment_workout(
+            user_2, workout_cycling_user_1, comment.id
+        )
+        notification = Notification.query.filter_by(
+            event_object_id=reply.id,
+            event_type='comment_reply',
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["comment"] == reply.serialize(user_1)
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_2.serialize(
+            current_user=user_1
+        )
+        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["type"] == "comment_reply"
+        assert "report_action" not in serialized_notification
+        assert "report" not in serialized_notification
+        assert "workout" not in serialized_notification
+
+
 class TestNotificationForCommentLike(NotificationTestCase):
     def test_it_creates_notification_on_comment_like(
         self,
@@ -833,6 +983,39 @@ class TestNotificationForMention(NotificationTestCase):
         assert notifications[0].marked_as_read is False
         assert notifications[0].event_type == 'mention'
 
+    def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        parent_comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        comment = self.comment_workout(
+            user_3,
+            workout_cycling_user_1,
+            reply_to=parent_comment.id,
+            text=f"@{user_2.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        self.create_mention(user_2, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=user_3.id,
+            to_user_id=user_2.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == comment.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'comment_reply'
+
     def test_it_deletes_notification_on_mention_delete(
         self,
         app: Flask,
@@ -962,6 +1145,68 @@ class TestMultipleNotificationsForComment(NotificationTestCase):
                 event_type="comment_like",
             ).first()
             is None
+        )
+
+    def test_it_deletes_all_notifications_on_reply_with_mention_and_like_delete(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(
+            user_2, workout_cycling_user_1, text=f"@{user_3.username}"
+        )
+        comment_id = comment.id
+        self.create_mention(user_3, comment)
+        self.like_comment(user_3, comment)
+        reply = self.comment_workout(
+            user_1, workout_cycling_user_1, comment.id
+        )
+
+        db.session.delete(comment)
+
+        # workout_comment notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+                event_object_id=comment_id,
+                event_type="workout_comment",
+            ).first()
+            is None
+        )
+        # mention notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="mention",
+            ).first()
+            is None
+        )
+        # like notification is deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_3.id,
+                event_object_id=comment_id,
+                event_type="comment_like",
+            ).first()
+            is None
+        )
+        # comment_reply notification is not deleted
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+                event_object_id=reply.id,
+                event_type="comment_reply",
+            ).first()
+            is not None
         )
 
 

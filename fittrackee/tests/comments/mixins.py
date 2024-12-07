@@ -20,6 +20,7 @@ class CommentMixin(RandomMixin):
         text: Optional[str] = None,
         text_visibility: VisibilityLevel = VisibilityLevel.PRIVATE,
         created_at: Optional[datetime] = None,
+        parent_comment: Optional[Comment] = None,
         with_mentions: bool = True,
     ) -> Comment:
         text = self.random_string() if text is None else text
@@ -29,6 +30,7 @@ class CommentMixin(RandomMixin):
             text=text,
             text_visibility=text_visibility,
             created_at=created_at,
+            reply_to=parent_comment.id if parent_comment else None,
         )
         db.session.add(comment)
         db.session.flush()

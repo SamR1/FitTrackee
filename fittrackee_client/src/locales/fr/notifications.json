@@ -22,6 +22,7 @@
     "LABEL": "Type",
     "ALL": "toutes",
     "comment_like": "likes sur un commentaire",
+    "comment_reply": "réponses à un commentaire",
     "comment_suspension": "commentaires suspendus",
     "comment_unsuspension": "commentaires ré-activés",
     "follow": "abonnements",

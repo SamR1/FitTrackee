@@ -336,10 +336,14 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ICommentForm
   ): void {
-    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'new')
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING,
+      `new${payload.reply_to ? `_${payload.reply_to}` : ''}`
+    )
     const data = {
       text: payload.text,
       text_visibility: payload.text_visibility,
+      reply_to: payload.reply_to,
     }
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi

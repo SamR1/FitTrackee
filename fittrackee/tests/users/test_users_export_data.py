@@ -226,6 +226,43 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
                 'created_at': comment.created_at,
                 'id': comment.short_id,
                 'modification_date': comment.modification_date,
+                'reply_to': None,
+                'text': comment.text,
+                'text_visibility': comment.text_visibility.value,
+                'workout_id': workout_cycling_user_1.short_id,
+            },
+        ]
+
+    def test_it_returns_user_reply(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        parent_comment = self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        comment = self.create_comment(
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+            parent_comment=parent_comment,
+        )
+        exporter = UserDataExporter(user_1)
+
+        comments_data = exporter.get_user_comments_data()
+
+        assert comments_data == [
+            {
+                'created_at': comment.created_at,
+                'id': comment.short_id,
+                'modification_date': comment.modification_date,
+                'reply_to': parent_comment.short_id,
                 'text': comment.text,
                 'text_visibility': comment.text_visibility.value,
                 'workout_id': workout_cycling_user_1.short_id,
@@ -251,6 +288,7 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
                 'created_at': comment.created_at,
                 'id': comment.short_id,
                 'modification_date': comment.modification_date,
+                'reply_to': None,
                 'text': comment.text,
                 'text_visibility': comment.text_visibility.value,
                 'workout_id': None,

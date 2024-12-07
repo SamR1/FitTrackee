@@ -234,6 +234,8 @@ export interface IComment {
   likes_count: number
   mentions: IUserProfile[]
   modification_date: string | null
+  replies: IComment[]
+  reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
   suspension?: IUserReportAction
@@ -246,6 +248,7 @@ export interface IComment {
 
 export interface ICommentForm {
   id?: string
+  reply_to?: string
   text: string
   text_visibility?: TVisibilityLevels
   workout_id: string

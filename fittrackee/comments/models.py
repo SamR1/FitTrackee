@@ -28,7 +28,9 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-def get_comments(workout_id: int, user: Optional['User']) -> List['Comment']:
+def get_comments(
+    workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
+) -> List['Comment']:
     if user:
         params = {"workout_id": workout_id, "user_id": user.id}
         sql = """
@@ -70,7 +72,16 @@ def get_comments(workout_id: int, user: Optional['User']) -> List['Comment']:
                   AND users.is_remote IS TRUE
               ))
             )
-          )
+          )"""
+
+        if reply_to:
+            sql += """
+          AND comments.reply_to = :reply_to """
+            params["reply_to"] = reply_to
+        else:
+            sql += """
+          AND comments.reply_to IS NULL"""
+        sql += """
         ORDER BY comments.created_at;"""
 
         comments_filter = db.session.scalars(
@@ -83,6 +94,7 @@ def get_comments(workout_id: int, user: Optional['User']) -> List['Comment']:
     else:
         comments_filter = Comment.query.filter(
             Comment.workout_id == workout_id,
+            Comment.reply_to == reply_to,
             Comment.text_visibility == VisibilityLevel.PUBLIC,
         ).order_by(Comment.created_at.asc())
 
@@ -110,6 +122,12 @@ class Comment(BaseModel):
         index=True,
         nullable=True,
     )
+    reply_to = db.Column(
+        db.Integer,
+        db.ForeignKey('comments.id', ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     modification_date = db.Column(db.DateTime, nullable=True)
     text = db.Column(db.String(), nullable=False)
@@ -122,6 +140,9 @@ class Comment(BaseModel):
     ap_id = db.Column(db.Text(), nullable=True)
     remote_url = db.Column(db.Text(), nullable=True)
 
+    parent_comment = db.relationship(
+        'Comment', remote_side=[id], lazy='joined'
+    )
     mentions = db.relationship(
         "Mention",
         lazy=True,
@@ -155,6 +176,7 @@ class Comment(BaseModel):
         text: str,
         text_visibility: VisibilityLevel,
         created_at: Optional[datetime.datetime] = None,
+        reply_to: Optional[int] = None,
     ) -> None:
         if (
             text_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE
@@ -171,6 +193,7 @@ class Comment(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+        self.reply_to = reply_to
 
     @property
     def short_id(self) -> str:
@@ -265,10 +288,25 @@ class Comment(BaseModel):
     def serialize(
         self,
         user: Optional['User'] = None,
+        with_replies: bool = True,
+        get_parent_comment: bool = False,
         for_report: bool = False,
     ) -> Dict:
         if not can_view(self, 'text_visibility', user, for_report):
             raise CommentForbiddenException
+
+        try:
+            reply_to = (
+                None
+                if self.reply_to is None
+                else (
+                    self.parent_comment.serialize(user, with_replies=False)
+                    if get_parent_comment
+                    else self.parent_comment.short_id
+                )
+            )
+        except CommentForbiddenException:
+            reply_to = None
 
         # suspended comment content is only visible to its owner or
         # to admin in report only
@@ -323,6 +361,19 @@ class Comment(BaseModel):
                     for mentioned_user in self.mentioned_users
                 ]
                 if display_content
+                else []
+            ),
+            'reply_to': reply_to,
+            'replies': (
+                [
+                    reply.serialize(user)
+                    for reply in get_comments(
+                        workout_id=self.workout_id,
+                        user=user,
+                        reply_to=self.id,
+                    )
+                ]
+                if with_replies and not for_report
                 else []
             ),
             'likes_count': self.likes.count() if display_content else 0,
@@ -393,7 +444,14 @@ def on_comment_insert(
             create_notification = True
 
         workout = Workout.query.filter_by(id=new_comment.workout_id).first()
-        to_user_id = workout.user_id
+        if not workout:
+            return
+
+        if new_comment.reply_to is None:
+            to_user_id = workout.user_id
+        else:
+            comment = Comment.query.filter_by(id=new_comment.reply_to).first()
+            to_user_id = comment.user_id
 
         if new_comment.user_id == to_user_id:
             return
@@ -418,7 +476,11 @@ def on_comment_insert(
             from_user_id=new_comment.user_id,
             to_user_id=to_user_id,
             created_at=new_comment.created_at,
-            event_type='workout_comment',
+            event_type=(
+                'workout_comment'
+                if new_comment.reply_to is None
+                else 'comment_reply'
+            ),
             event_object_id=new_comment.id,
         )
         session.add(notification)
@@ -447,28 +509,43 @@ def on_mention_insert(
         from fittrackee.users.models import Notification
 
         comment = Comment.query.filter_by(id=new_mention.comment_id).first()
-
-        # `mention` notification is not created when:
-
-        # - mentioned user is comment author
         if new_mention.user_id == comment.user_id:
             return
 
-        # - mentioned user is workout owner and `workout_comment'
-        # notification does not exist
-        notification = (
-            Notification.query.join(
-                Comment, Comment.id == Notification.event_object_id
+        # `mention` notification is not created:
+        # - when mentioned user is workout owner and `workout_comment'
+        # notification does not exist)
+        if not comment.reply_to:
+            notification = (
+                Notification.query.join(
+                    Comment, Comment.id == Notification.event_object_id
+                )
+                .filter(
+                    Comment.id == comment.id,
+                    Notification.event_type == 'workout_comment',
+                    Notification.to_user_id == new_mention.user_id,
+                )
+                .first()
             )
-            .filter(
-                Comment.id == comment.id,
-                Notification.event_type == 'workout_comment',
-                Notification.to_user_id == new_mention.user_id,
+            if notification:
+                return
+
+        # - when mentioned user is parent comment owner and
+        # `comment_reply' notification already exists
+        else:
+            parent_comment_notification = (
+                Notification.query.join(
+                    Comment,
+                    Comment.id == Notification.event_object_id,
+                )
+                .filter(
+                    Notification.to_user_id == new_mention.user_id,
+                    Notification.event_type == 'comment_reply',
+                )
+                .first()
             )
-            .first()
-        )
-        if notification:
-            return
+            if parent_comment_notification:
+                return
 
         notification = Notification(
             from_user_id=comment.user_id,
