@@ -3,7 +3,7 @@ import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import asc, desc, exc, func, nullslast
+from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
 
 from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
@@ -213,6 +213,8 @@ def get_users(auth_user: User) -> Dict:
     :query string order_by: sorting criteria: ``username``, ``created_at``,
                             ``workouts_count``, ``role``, ``is_active``
                             (default: ``username``)
+    :query boolean with_following: returns hidden users followed by user if
+           true
     :query boolean with_hidden_users: returns hidden users if true (only if
            authenticated user has administration rights - for users
            administration)
@@ -256,16 +258,25 @@ def get_users(auth_user: User) -> Dict:
     with_suspended_users = _get_value_depending_on_user_rights(
         params, 'with_suspended', auth_user
     )
+    with_following = params.get('with_following', 'false').lower()
+    following_user_ids = (
+        auth_user.get_following_user_ids() if with_following == 'true' else []
+    )
+
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
             (
                 True if with_inactive == 'true' else User.is_active == True  # noqa
             ),
-            (
+            or_(
                 True
                 if with_hidden_users == 'true'
-                else User.hide_profile_in_users_directory == False  # noqa
+                else User.hide_profile_in_users_directory == False,  # noqa
+                and_(
+                    User.id.in_(following_user_ids),
+                    User.hide_profile_in_users_directory == True,  # noqa
+                ),
             ),
             (
                 True

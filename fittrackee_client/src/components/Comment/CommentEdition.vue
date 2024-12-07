@@ -151,6 +151,7 @@
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, {
       per_page: 5,
       q: usernameQuery,
+      with_following: 'true',
     })
   }
   function updateText(textareaData: ICustomTextareaData) {

@@ -573,6 +573,38 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1_admin.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1_admin)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
+
     def test_it_gets_all_users(
         self,
         app: Flask,
@@ -1583,6 +1615,38 @@ class TestGetUsersAsModerator(ApiTestCaseMixin):
             'total': 2,
         }
 
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1_moderator.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1_moderator)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_moderator.serialize(current_user=user_1_moderator)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1_moderator)
+        )
+
 
 class TestGetUsersAsUser(ApiTestCaseMixin):
     @pytest.mark.parametrize(
@@ -1637,6 +1701,38 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
             'pages': 1,
             'total': 2,
         }
+
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1)
+        )
 
     def test_it_gets_users_list_with_workouts(
         self,
