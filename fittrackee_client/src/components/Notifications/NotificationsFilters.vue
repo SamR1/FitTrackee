@@ -72,7 +72,6 @@
 
   const notificationTypes: TNotificationType[] = [
     'comment_like',
-    'comment_reply',
     'comment_suspension',
     'comment_unsuspension',
     'follow',

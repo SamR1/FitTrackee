@@ -16,8 +16,8 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
-from fittrackee.utils import clean_input, decode_short_id
-from fittrackee.visibility_levels import VisibilityLevel, can_view
+from fittrackee.utils import clean_input
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.decorators import check_workout
 from fittrackee.workouts.models import Workout
 
@@ -95,8 +95,6 @@ def post_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
-            "replies": [],
-            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -121,15 +119,12 @@ def post_workout_comment(
     :<json string text: comment content
     :<json string text_visibility: visibility level (``public``,
            ``followers_only``, ``private``)
-    :<json string reply_to: id of the comment being replied to
-           (to be provided only for a reply)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: ``created``
     :statuscode 400:
         - ``invalid payload``
-        - ``'reply_to' is invalid``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -146,26 +141,11 @@ def post_workout_comment(
     ):
         return InvalidPayloadErrorResponse()
     try:
-        reply_to = comment_data.get('reply_to')
-        comment = None
-        if reply_to:
-            comment = Comment.query.filter(
-                Comment.uuid == decode_short_id(reply_to),
-                Comment.user_id.not_in(auth_user.get_blocked_by_user_ids()),
-            ).first()
-            if (
-                not comment
-                or comment.suspended_at
-                or not can_view(comment, "text_visibility", auth_user)
-            ):
-                return InvalidPayloadErrorResponse("'reply_to' is invalid")
-
         new_comment = Comment(
             user_id=auth_user.id,
             workout_id=workout.id,
             text=clean_input(comment_data['text']),
             text_visibility=VisibilityLevel(comment_data['text_visibility']),
-            reply_to=comment.id if comment else None,
         )
         db.session.add(new_comment)
         db.session.flush()
@@ -244,8 +224,6 @@ def get_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
-            "replies": [],
-            "reply_to": null,
             "suspended_at": null,
             "text": "Nice!",
             "text_html": "Nice!",
@@ -280,7 +258,7 @@ def get_workout_comment(
     return (
         {
             'status': 'success',
-            'comment': comment.serialize(auth_user, get_parent_comment=True),
+            'comment': comment.serialize(auth_user),
         },
         200,
     )
@@ -326,8 +304,6 @@ def get_workout_comments(
                 "likes_count": 0,
                 "mentions": [],
                 "modification_date": null,
-                "replies": [],
-                "reply_to": null,
                 "suspended_at": null,
                 "text": "Great!",
                 "text_html": "Great!",
@@ -478,8 +454,6 @@ def update_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
-            "replies": [],
-            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -584,8 +558,6 @@ def like_comment(
             "likes_count": 1,
             "mentions": [],
             "modification_date": null,
-            "replies": [],
-            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -675,8 +647,6 @@ def undo_comment_like(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
-            "replies": [],
-            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",

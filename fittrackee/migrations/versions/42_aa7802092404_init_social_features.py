@@ -54,14 +54,10 @@ def upgrade():
         sa.Column('uuid', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.Column('workout_id', sa.Integer(), nullable=True),
-        sa.Column('reply_to', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
         sa.Column('modification_date', sa.DateTime(), nullable=True),
         sa.Column('text', sa.String(), nullable=False),
         sa.Column('suspended_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(
-            ['reply_to'], ['comments.id'], ondelete='SET NULL'
-        ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.ForeignKeyConstraint(
             ['workout_id'], ['workouts.id'], ondelete='SET NULL'
@@ -81,9 +77,6 @@ def upgrade():
     )
 
     with op.batch_alter_table('comments', schema=None) as batch_op:
-        batch_op.create_index(
-            batch_op.f('ix_comments_reply_to'), ['reply_to'], unique=False
-        )
         batch_op.create_index(
             batch_op.f('ix_comments_user_id'), ['user_id'], unique=False
         )
@@ -555,7 +548,6 @@ def downgrade():
     with op.batch_alter_table('comments', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_comments_workout_id'))
         batch_op.drop_index(batch_op.f('ix_comments_user_id'))
-        batch_op.drop_index(batch_op.f('ix_comments_reply_to'))
 
     op.drop_table('comments')
     op.drop_table('follow_requests')
