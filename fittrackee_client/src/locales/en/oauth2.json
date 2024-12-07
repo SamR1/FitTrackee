@@ -22,8 +22,8 @@
       "reports:write_DESCRIPTION": "grants write access to <code>reports</code> endpoints.",
       "users:read_DESCRIPTION": "grants read access to <code>users</code> endpoints.",
       "users:write_DESCRIPTION": "grants write access to <code>users</code> endpoints.",
-      "workouts:read_DESCRIPTION": "grants read access to <code>workouts</code> endpoints.",
-      "workouts:write_DESCRIPTION": "grants write access to <code>workouts</code> endpoints."
+      "workouts:read_DESCRIPTION": "grants read access to workouts and comments endpoints.",
+      "workouts:write_DESCRIPTION": "grants write access to workouts and comments endpoints."
     },
     "URL": "Application URL"
   },

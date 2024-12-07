@@ -50,6 +50,49 @@ report_service = ReportService()
 @reports_blueprint.route("/reports", methods=["POST"])
 @require_auth(scopes=["reports:write"])
 def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Create a report.
+
+    **Scope**: ``reports:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/reports HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+    :<json string note: note describing report
+    :<json string object_id: id of content reported
+    :<json string object_type: type of content reported (``comment``,
+           ``workout`` or ``user``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: report created
+    :statuscode 400:
+        - ``invalid payload``
+        - ``users can not report their own comment``
+        - ``users can not report their own profile``
+        - ``users can not report their own workout``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404:
+        - ``comment not found``
+        - ``user not found``
+        - ``workout not found``
+    :statuscode 500: ``Error during comment save.``
+    """
     data = request.get_json()
     object_id = data.get("object_id")
     object_type = data.get("object_type")
@@ -97,8 +140,129 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @reports_blueprint.route("/reports", methods=["GET"])
-@require_auth(scopes=["reports:read"])
+@require_auth(scopes=["reports:read"], role=UserRole.MODERATOR)
 def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get reports.
+
+    **Scope**: ``reports:read``
+
+    **Minimum role**: Moderator
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/reports/ HTTP/1.1
+
+    - with some query parameters:
+
+    .. sourcecode:: http
+
+      GET /api/reports?page=1&order=desc&order_by=created_at  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one report:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "reports": [
+            {
+              "created_at": "Sun, 01 Dec 2024 18:17:30 GMT",
+              "id": 1,
+              "is_reported_user_warned": false,
+              "note": "<REPORT NOTE>",
+              "object_type": "user",
+              "reported_by": {
+                "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+                "email": "moderator@example.com",
+                "followers": 0,
+                "following": 0,
+                "is_active": true,
+                "nb_workouts": 0,
+                "picture": false,
+                "role": "moderator",
+                "suspended_at": null,
+                "username": "moderator"
+              },
+              "reported_comment": null,
+              "reported_user": {
+                "blocked": false,
+                "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+                "email": "sam@example.com",
+                "followers": 0,
+                "following": 0,
+                "follows": "false",
+                "is_active": true,
+                "is_followed_by": "false",
+                "nb_workouts": 1,
+                "picture": false,
+                "role": "user",
+                "suspended_at": null,
+                "username": "Sam"
+              },
+              "reported_workout": null,
+              "resolved": false,
+              "resolved_at": null,
+              "resolved_by": null,
+              "updated_at": null
+            }
+          ],
+          "status": "success"
+        }
+
+    - returning no reports
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "reports": [],
+          "status": "success"
+        }
+
+    :query integer object_type: reported content type (``comment``, ``user``
+           or ``workout``)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
+    :query string order_by: sorting criteria: ``created_at`` or ``updated_at``
+    :query integer page: page if using pagination (default: 1)
+    :query boolean reporter: reporter username
+    :query boolean resolved: filter on report status
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``invalid 'order_by'``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
     params = request.args.copy()
     page = int(params.get("page", 1))
     object_type = params.get("object_type")
@@ -162,10 +326,86 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @reports_blueprint.route("/reports/<int:report_id>", methods=["GET"])
-@require_auth(scopes=["reports:read"])
+@require_auth(scopes=["reports:read"], role=UserRole.MODERATOR)
 def get_report(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get report.
+
+    **Scope**: ``reports:read``
+
+    **Minimum role**: Moderator
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/reports/1 HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "report": {
+            "comments": [],
+            "created_at": "Sun, 01 Dec 2024 18:17:30 GMT",
+            "id": 1,
+            "is_reported_user_warned": false,
+            "note": "<REPORT NOTE>",
+            "object_type": "user",
+            "report_actions": [],
+            "reported_by": {
+              "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+              "email": "moderator@example.com",
+              "followers": 0,
+              "following": 0,
+              "is_active": true,
+              "nb_workouts": 0,
+              "picture": false,
+              "role": "moderator",
+              "suspended_at": null,
+              "username": "moderator"
+            },
+            "reported_comment": null,
+            "reported_user": {
+              "blocked": false,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "email": "sam@example.com",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_active": true,
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "reported_workout": null,
+            "resolved": false,
+            "resolved_at": null,
+            "resolved_by": null,
+            "updated_at": null
+          },
+          "status": "success"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``report not found``
+    """
     report = Report.query.filter_by(id=report_id).first()
     if not report or (
         not auth_user.has_moderator_rights
@@ -184,6 +424,110 @@ def get_report(
 def update_report(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Update report.
+
+    **Scope**: ``reports:write``
+
+    **Minimum role**: Moderator
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH /api/reports/1 HTTP/1.1
+
+    **Example response** (report on user profile):
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "report": {
+            "comments": [
+              {
+                "comment": "<REPORT COMMENT>",
+                "created_at": "Sun, 01 Dec 2024 18:21:38 GMT",
+                "id": 1,
+                "report_id": 1,
+                "user": {
+                  "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+                  "email": "moderator@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "is_active": true,
+                  "nb_workouts": 0,
+                  "picture": false,
+                  "role": "moderator",
+                  "suspended_at": null,
+                  "username": "moderator"
+                }
+              }
+            ],
+            "created_at": "Sun, 01 Dec 2024 18:17:30 GMT",
+            "id": 1,
+            "is_reported_user_warned": false,
+            "note": "<REPORT NOTE>",
+            "object_type": "user",
+            "report_actions": [],
+            "reported_by": {
+              "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+              "email": "moderator@example.com",
+              "followers": 0,
+              "following": 0,
+              "is_active": true,
+              "nb_workouts": 0,
+              "picture": false,
+              "role": "moderator",
+              "suspended_at": null,
+              "username": "moderator"
+            },
+            "reported_comment": null,
+            "reported_user": {
+              "blocked": false,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "email": "sam@example.com",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_active": true,
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "reported_workout": null,
+            "resolved": false,
+            "resolved_at": null,
+            "resolved_by": null,
+            "updated_at": "Sun, 01 Dec 2024 18:21:38 GMT"
+          },
+          "status": "success"
+        }
+
+    :param string report_id: report id
+
+    :<json string notes: report comment (mandatory)
+    :<json boolean resolved: report status
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+    :statuscode 404:
+        - ``report not found``
+    """
     data = request.get_json()
     comment = data.get("comment")
     if not data or not comment:
@@ -210,6 +554,158 @@ def update_report(
 def create_action(
     auth_user: User, report_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Create report action.
+
+    **Scope**: ``reports:write``
+
+    **Minimum role**: Moderator
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/reports/1/actions HTTP/1.1
+
+    **Example response** (report on user profile):
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 SUCCESS
+      Content-Type: application/json
+
+        {
+          "report": {
+            "comments": [
+              {
+                "comment": "<REPORT COMMENT>",
+                "created_at": "Sun, 01 Dec 2024 18:21:38 GMT",
+                "id": 1,
+                "report_id": 1,
+                "user": {
+                  "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+                  "email": "moderator@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "is_active": true,
+                  "nb_workouts": 0,
+                  "picture": false,
+                  "role": "moderator",
+                  "suspended_at": null,
+                  "username": "moderator"
+                }
+              }
+            ],
+            "created_at": "Sun, 01 Dec 2024 18:17:30 GMT",
+            "id": 1,
+            "is_reported_user_warned": false,
+            "note": "<REPORT NOTE>",
+            "object_type": "user",
+            "report_actions": [
+              {
+                "action_type": "user_warning",
+                "appeal": null,
+                "created_at": "Wed, 04 Dec 2024 09:12:25 GMT",
+                "id": "Hv9KwVDtBHhyfvML7PHovq",
+                "moderator": {
+                  "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+                  "email": "moderator@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "is_active": true,
+                  "nb_workouts": 0,
+                  "picture": false,
+                  "role": "moderator",
+                  "suspended_at": null,
+                  "username": "moderator"
+                },
+                "reason": "<ACTION REASON>",
+                "report_id": 1,
+                "user": {
+                  "blocked": false,
+                  "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+                  "email": "sam@example.com",
+                  "followers": 0,
+                  "following": 0,
+                  "follows": "false",
+                  "is_active": true,
+                  "is_followed_by": "false",
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                }
+              }
+            ],
+            "reported_by": {
+              "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+              "email": "moderator@example.com",
+              "followers": 0,
+              "following": 0,
+              "is_active": true,
+              "nb_workouts": 0,
+              "picture": false,
+              "role": "moderator",
+              "suspended_at": null,
+              "username": "moderator"
+            },
+            "reported_comment": null,
+            "reported_user": {
+              "blocked": false,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "email": "sam@example.com",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_active": true,
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            },
+            "reported_workout": null,
+            "resolved": false,
+            "resolved_at": null,
+            "resolved_by": null,
+            "updated_at": "Sun, 01 Dec 2024 18:21:38 GMT"
+          },
+          "status": "success"
+        }
+
+    :param string report_id: report id
+
+    :<json string action_type: action type (expected value:
+           ``user_suspension``, ``user_unsuspension``, ``user_warning``,
+           ``comment_suspension``, ``comment_unsuspension``,
+           ``workout_suspension``, ``workout_unsuspension``)
+    :<json string comment_id: id of comment affected by action (type:
+           ``comment_suspension``, ``comment_suspension``)
+    :<json string reason: text explaining the reason for the action
+    :<json string username: username of user affected by action (type:
+           ``user_suspension``, ``user_unsuspension``, ``user_warning``)
+    :<json string workout_id: id of workout affected by action (type:
+           ``workout_suspension``, ``workout_unsuspension``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``invalid 'action_type'``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+    :statuscode 404:
+        - ``report not found``
+    :statuscode 500:
+        - ``Error during report save.``
+    """
     data = request.get_json()
     action_type = data.get("action_type", "")
     reason = data.get("reason")
@@ -268,6 +764,91 @@ def create_action(
 def process_appeal(
     auth_user: User, appeal_id: str
 ) -> Union[Dict, HttpResponse]:
+    """
+    Process appeal.
+
+    **Scope**: ``users:write``
+
+    **Minimum role**: Moderator
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/appeals/Z2Ze5qZrnMVmnDejPphASk HTTP/1.1
+
+    **Example response** (report on user profile):
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 SUCCESS
+      Content-Type: application/json
+
+        {
+          "appeal": {
+            "approved": true,
+            "created_at": "Wed, 04 Dec 2024 09:29:18 GMT",
+            "id": "Z2Ze5qZrnMVmnDejPphASk",
+            "moderator": {
+              "created_at": "Sun, 01 Dec 2024 17:27:56 GMT",
+              "email": "moderator@example.com",
+              "followers": 0,
+              "following": 0,
+              "is_active": true,
+              "nb_workouts": 0,
+              "picture": false,
+              "role": "moderator",
+              "suspended_at": null,
+              "username": "moderator"
+            },
+            "reason": "<REASON>",
+            "text": "<APPEAL TEXT>",
+            "updated_at": "Wed, 04 Dec 2024 09:30:21 GMT",
+            "user": {
+              "blocked": false,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "email": "sam@example.com",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_active": true,
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            }
+          },
+          "status": "success"
+        }
+
+    :param string appeal_id: appeal id
+
+    :<json boolean approved: ``true`` if appeal is approved, ``false`` if
+           rejected
+    :<json string reason: text explaining why the appeal was approved or
+           rejected
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``comment already reactivated``
+        - ``user account has already been reactivated``
+        - ``workout already reactivated``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+    :statuscode 404:
+        - ``appeal not found``
+    :statuscode 500:
+        - ``Error during report save.``
+    """
     appeal_uuid = decode_short_id(appeal_id)
     appeal = ReportActionAppeal.query.filter_by(uuid=appeal_uuid).first()
 
@@ -323,6 +904,41 @@ def process_appeal(
 def get_unresolved_reports_status(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get if unresolved reports exist.
+
+    **Scope**: ``reports:read``
+
+    **Minimum role**: Moderator
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/reports/unresolved HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 SUCCESS
+      Content-Type: application/json
+
+        {
+          "status": "success",
+          "unresolved": true
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+    """
     unresolved_reports = Report.query.filter(
         Report.resolved == False  # noqa
     ).count()

@@ -531,6 +531,8 @@ def get_application_stats(auth_user: User) -> Dict:
 
     **Scope**: ``workouts:read``
 
+    **Minimum role**: Moderator
+
     **Example requests**:
 
     .. sourcecode:: http

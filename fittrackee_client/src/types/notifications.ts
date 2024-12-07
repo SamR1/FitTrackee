@@ -36,7 +36,7 @@ export interface INotification {
 export interface INotificationsPayload {
   page?: number
   order?: string
-  read_status?: boolean
+  status?: 'unread' | 'all'
   type?: TNotificationType
 }
 

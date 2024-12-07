@@ -71,7 +71,7 @@
       payload.type = newQuery.type as TNotificationType
     }
     if ('status' in newQuery && newQuery.status === 'unread') {
-      payload.read_status = false
+      payload.status = 'unread'
     }
     return payload
   }

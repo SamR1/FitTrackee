@@ -74,6 +74,8 @@ def get_equipments(auth_user: User) -> Dict:
     Get all user equipments.
     Only the equipment owner can see his equipment.
 
+    Suspended user can access this endpoint.
+
     **Scope**: ``equipments:read``
 
     **Example request**:
@@ -183,6 +185,8 @@ def get_equipment_by_id(
     """
     Get an equipment item.
     Only the equipment owner can see his equipment.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``equipments:read``
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="visibility">
+  <span class="visibility">
     <i
       :class="`fa fa-${getVisibilityIcon(visibility)}`"
       aria-hidden="true"
@@ -9,7 +9,7 @@
         )
       "
     />
-  </div>
+  </span>
 </template>
 
 <script setup lang="ts">

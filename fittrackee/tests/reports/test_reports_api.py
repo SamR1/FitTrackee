@@ -1623,7 +1623,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
 
 
 class TestGetReportsAsUser(ReportTestCase):
-    def test_it_returns_only_reports_created_by_authenticated_user(
+    def test_it_does_not_return_reports(
         self,
         app: Flask,
         user_1: User,
@@ -1634,7 +1634,7 @@ class TestGetReportsAsUser(ReportTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         self.create_reports(user_2, user_3, user_4, workout_cycling_user_2)
-        report = self.create_report(
+        self.create_report(
             reporter=user_1, reported_object=workout_cycling_user_2
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1647,53 +1647,7 @@ class TestGetReportsAsUser(ReportTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data["status"] == "success"
-        assert data["reports"] == [jsonify_dict(report.serialize(user_1))]
-        assert data["pagination"] == {
-            "has_next": False,
-            "has_prev": False,
-            "page": 1,
-            "pages": 1,
-            "total": 1,
-        }
-
-    def test_it_ignores_reporter_parameter(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        user_3: User,
-        user_4: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-    ) -> None:
-        self.create_reports(user_2, user_3, user_4, workout_cycling_user_2)
-        report = self.create_report(
-            reporter=user_1, reported_object=workout_cycling_user_2
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            f"{self.route}?reporter={user_3.username}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data["status"] == "success"
-        assert data["reports"] == [jsonify_dict(report.serialize(user_1))]
-        assert data["pagination"] == {
-            "has_next": False,
-            "has_prev": False,
-            "page": 1,
-            "pages": 1,
-            "total": 1,
-        }
+        self.assert_403(response)
 
 
 class TestGetReportsAsUnauthenticatedUser(ReportTestCase):
@@ -1713,7 +1667,11 @@ class TestGetReportsOAuth2Scopes(ReportTestCase):
         {**OAUTH_SCOPES, "reports:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        client_scope: str,
+        can_access: bool,
     ) -> None:
         (
             client,
@@ -1721,7 +1679,7 @@ class TestGetReportsOAuth2Scopes(ReportTestCase):
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+            app, user_1_moderator, scope=client_scope
         )
 
         response = client.get(
@@ -1827,7 +1785,7 @@ class TestGetReportAsAdmin(GetReportTestCase):
 
 
 class TestGetReportAsUser(GetReportTestCase):
-    def test_it_returns_report_from_authenticated_user(
+    def test_it_does_not_return_report(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         report = self.create_report(reporter=user_1, reported_object=user_2)
@@ -1841,27 +1799,7 @@ class TestGetReportAsUser(GetReportTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data["status"] == "success"
-        assert data["report"] == jsonify_dict(report.serialize(user_1))
-
-    def test_it_does_not_return_report_from_another_user(
-        self, app: Flask, user_1: User, user_2: User, user_3: User
-    ) -> None:
-        report = self.create_report(reporter=user_2, reported_object=user_3)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            self.route.format(report_id=report.id),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-        self.assert_404_with_message(
-            response, f"report not found (id: {report.id})"
-        )
+        self.assert_403(response)
 
 
 class TestGetReportAsUnauthenticatedUser(GetReportTestCase):
@@ -1887,19 +1825,21 @@ class TestGetReportOAuth2Scopes(GetReportTestCase):
     def test_expected_scopes_are_defined(
         self,
         app: Flask,
-        user_1: User,
+        user_1_admin: User,
         user_2: User,
         client_scope: str,
         can_access: bool,
     ) -> None:
-        report = self.create_report(reporter=user_1, reported_object=user_2)
+        report = self.create_report(
+            reporter=user_1_admin, reported_object=user_2
+        )
         (
             client,
             oauth_client,
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+            app, user_1_admin, scope=client_scope
         )
 
         response = client.get(

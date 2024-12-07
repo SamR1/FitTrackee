@@ -1,4 +1,3 @@
-import json
 from typing import Dict, Union
 
 from flask import Blueprint, request
@@ -25,10 +24,105 @@ DEFAULT_NOTIFICATION_PER_PAGE = 5
 @notifications_blueprint.route('/notifications', methods=['GET'])
 @require_auth(scopes=["notifications:read"])
 def get_auth_user_notifications(auth_user: User) -> Dict:
+    """
+    Get authenticated user notifications.
+
+    **Scope**: ``notifications:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/notifications HTTP/1.1
+
+    - with some query parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts?page=2&status=unread  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one notification:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "notifications": [
+            {
+              "created_at": "Wed, 04 Dec 2024 10:06:35 GMT",
+              "from": {
+                "created_at": "Wed, 04 Dec 2024 09:07:08 GMT",
+                "followers": 0,
+                "following": 0,
+                "follows": "pending",
+                "is_followed_by": "false",
+                "nb_workouts": 0,
+                "picture": true,
+                "role": "admin",
+                "suspended_at": null,
+                "username": "admin"
+              },
+              "id": 22,
+              "marked_as_read": false,
+              "type": "follow_request"
+            }
+          ],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - returning no notifications
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "notifications": [],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :query integer page: page if using pagination (default: 1)
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
+    :query string status: notification read status (``read``, ``unread``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
     params = request.args.copy()
     page = int(params.get('page', 1))
     order = params.get('order', 'desc')
-    read_status = params.get('read_status')
+    status = params.get('status')
+    marked_as_read = None
+    if status == 'read':
+        marked_as_read = True
+    if status == 'unread':
+        marked_as_read = False
     event_type = params.get('type')
 
     blocked_users = auth_user.get_blocked_user_ids()
@@ -50,8 +144,8 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
             Notification.to_user_id == auth_user.id,
             Notification.from_user_id.not_in(blocked_users),
             (
-                Notification.marked_as_read == json.loads(read_status)
-                if read_status is not None
+                Notification.marked_as_read == marked_as_read
+                if marked_as_read is not None
                 else True
             ),
             (
@@ -143,6 +237,62 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
 def update_user_notifications(
     auth_user: User, notification_id: int
 ) -> Union[Dict, HttpResponse]:
+    """
+    Update authenticated user notification read status.
+
+    **Scope**: ``notifications:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      PATCH /api/notifications/22 HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+       {
+          "notification": {
+            "created_at": "Wed, 04 Dec 2024 10:06:35 GMT",
+            "from": {
+              "created_at": "Wed, 04 Dec 2024 09:07:08 GMT",
+              "followers": 0,
+              "following": 0,
+              "follows": "pending",
+              "is_followed_by": "false",
+              "nb_workouts": 0,
+              "picture": true,
+              "role": "admin",
+              "suspended_at": null,
+              "username": "admin"
+            },
+            "id": 22,
+            "marked_as_read": true,
+            "type": "follow_request"
+          },
+          "status": "success"
+        }
+
+    :param string notification_id: notification id
+
+    :<json boolean read_status: notification read status
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``notification not found``
+    :statuscode 500:
+        - ``error, please try again or contact the administrator``
+    """
     notification = Notification.query.filter_by(
         id=notification_id, to_user_id=auth_user.id
     ).first()
@@ -168,6 +318,37 @@ def update_user_notifications(
 @notifications_blueprint.route("/notifications/unread", methods=["GET"])
 @require_auth(scopes=["notifications:read"])
 def get_status(auth_user: User) -> Dict:
+    """
+    Get if unread notifications exist for authenticated user.
+
+    **Scope**: ``notifications:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/notifications/unread HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+       {
+          "status": "success",
+          "unread": false
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
     (
         local_following_ids,
         remote_following_ids,
@@ -253,6 +434,40 @@ def get_status(auth_user: User) -> Dict:
 )
 @require_auth(scopes=["notifications:write"])
 def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Mark all authenticated user notifications as read.
+
+    **Scope**: ``notifications:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/notifications/mark-all-as-read HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+       {
+          "status": "success"
+        }
+
+    :<json boolean type: notification type (optional)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500:
+        - ``error, please try again or contact the administrator``
+    """
     params = request.get_json(silent=True)
     event_type = params.get('type') if params else None
     try:

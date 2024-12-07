@@ -137,7 +137,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
 
         response = client.get(
-            f"{self.route}?read_status=false",
+            f"{self.route}?status=unread",
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -183,7 +183,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
 
         response = client.get(
-            f"{self.route}?read_status=true",
+            f"{self.route}?status=read",
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )

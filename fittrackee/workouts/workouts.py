@@ -145,7 +145,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "duration": "0:17:04",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -204,12 +207,24 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -449,7 +464,10 @@ def get_workout(
                 "duration": "0:45:00",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 16,
                 "min_alt": null,
@@ -462,12 +480,24 @@ def get_workout(
                 "records": [],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": "biking on sunday morning",
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false,
-                "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT"
+                "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -988,76 +1018,120 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
       HTTP/1.1 201 CREATED
       Content-Type: application/json
 
-       {
+        {
           "data": {
             "workouts": [
               {
-                "ascent": null,
-                "ave_speed": 10.0,
-                "bounds": [],
+                "ascent": 435.621,
+                "ave_speed": 13.14,
+                "bounds": [
+                  43.93706,
+                  4.517587,
+                  43.981933,
+                  4.560627
+                ],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
-                "descent": null,
+                "descent": 427.499,
                 "description": null,
-                "distance": 10.0,
-                "duration": "0:17:04",
+                "distance": 23.478,
+                "duration": "2:08:35",
                 "equipments": [],
-                "id": "kjxavSTUrJvoAh2wvCeGEF",
-                "map": null,
-                "max_alt": null,
-                "max_speed": 10.0,
-                "min_alt": null,
+                "id": "PsjeeXbJZ2JJNQcTCPxVvF",
+                "liked": false,
+                "likes_count": 0,
+                "map": "ac075ec36dc25dcc20c270d2005f0398",
+                "map_visibility": "private",
+                "max_alt": 158.41,
+                "max_speed": 25.59,
+                "min_alt": 55.03,
                 "modification_date": null,
-                "moving": "0:17:04",
-                "next_workout": 3,
-                "notes": null,
-                "pauses": null,
-                "previous_workout": null,
+                "moving": "1:47:11",
+                "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
+                "notes": "",
+                "pauses": "0:20:32",
+                "previous_workout": "HgzYFXgvWKCEpdq3vYk67q",
                 "records": [
                   {
-                    "id": 4,
-                    "record_type": "MS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 3,
-                    "record_type": "LD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": "0:17:04",
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF",
-                  },
-                  {
-                    "id": 2,
-                    "record_type": "FD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 1,
+                    "id": 6,
                     "record_type": "AS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 13.14,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 7,
+                    "record_type": "FD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 23.478,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 9,
+                    "record_type": "LD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": "1:47:11",
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 10,
+                    "record_type": "MS",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 25.59,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 8,
+                    "record_type": "HA",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 435.621,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
                   }
                 ],
-                "segments": [],
-                "sport_id": 1,
-                "title": null,
-                "user": "admin",
+                "segments": [
+                  {
+                    "ascent": 435.621,
+                    "ave_speed": 13.14,
+                    "descent": 427.499,
+                    "distance": 23.478,
+                    "duration": "2:08:35",
+                    "max_alt": 158.41,
+                    "max_speed": 25.59,
+                    "min_alt": 55.03,
+                    "moving": "1:47:11",
+                    "pauses": "0:20:32",
+                    "segment_id": 0,
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  }
+                ],
+                "sport_id": 4,
+                "suspended": false,
+                "suspended_at": null,
+                "title": "VTT dans le Gard",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 3,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
-                "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "with_gpx": true,
+                "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -1233,8 +1307,12 @@ def post_workout_no_gpx(
                 "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "id": "Kd5wyhwLtVozw6o3AU5M4J",
+                "liked": false,
+                "likes_count": 0,
                 "equipments": [],
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -1284,13 +1362,25 @@ def post_workout_no_gpx(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -1440,7 +1530,7 @@ def update_workout(
 
     .. sourcecode:: http
 
-      PATCH /api/workouts/1 HTTP/1.1
+      PATCH /api/workouts/2oRDfncv6vpRkfp3yrCYHt HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1463,7 +1553,11 @@ def update_workout(
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
+                "id": "2oRDfncv6vpRkfp3yrCYHt",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -1513,13 +1607,25 @@ def update_workout(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -1538,19 +1644,23 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
-    :<json string notes: notes (max length: 500 characters, otherwise they
-        will be truncated)
-    :<json integer sport_id: workout sport id
-    :<json string title: workout title (max length: 255 characters, otherwise
-        it will be truncated)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
         **Note**: for now only one equipment can be associated.
         If an empty array, equipment for this workout will be removed.
+    :<json string map_visibility: map and location data visibility
+        (``private``, ``followers_only`` or ``public``)
+    :<json string notes: notes (max length: 500 characters, otherwise they
+        will be truncated)
+    :<json integer sport_id: workout sport id
+    :<json string title: workout title (max length: 255 characters, otherwise
+        it will be truncated)
     :<json string workout_date: workout date in user timezone
         (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
+    :<json string workout_visibility: workout visibility (``private``,
+        ``followers_only`` or ``public``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1742,6 +1852,90 @@ def delete_workout(
 def like_workout(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Add a "like" to a workout.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/HgzYFXgvWKCEpdq3vYk67q/like HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": [
+              {
+                "ascent": 231.208,
+                "ave_speed": 13.12,
+                "bounds": [],
+                "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
+                "descent": 234.208,
+                "description": null,
+                "distance": 23.41,
+                "duration": "3:32:27",
+                "equipments": [],
+                "id": "HgzYFXgvWKCEpdq3vYk67q",
+                "liked": true,
+                "likes_count": 1,
+                "map": null,
+                "map_visibility": "private",
+                "max_alt": 104.44,
+                "max_speed": 25.59,
+                "min_alt": 19.0,
+                "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
+                "moving": "1:47:04",
+                "next_workout": null,
+                "notes": null,
+                "pauses": "1:23:51",
+                "previous_workout": null,
+                "records": [],
+                "segments": [],
+                "sport_id": 1,
+                "suspended": false,
+                "title": "Cycling (Sport) - 2016-04-26 16:42:27",
+                "user": {
+                  "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false,
+                "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
+                "workout_visibility": "public"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    """
     try:
         like = WorkoutLike(user_id=auth_user.id, workout_id=workout.id)
         db.session.add(like)
@@ -1770,6 +1964,90 @@ def like_workout(
 def undo_workout_like(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Remove workout "like".
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/HgzYFXgvWKCEpdq3vYk67q/like/undo HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": [
+              {
+                "ascent": 231.208,
+                "ave_speed": 13.12,
+                "bounds": [],
+                "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
+                "descent": 234.208,
+                "description": null,
+                "distance": 23.41,
+                "duration": "3:32:27",
+                "equipments": [],
+                "id": "HgzYFXgvWKCEpdq3vYk67q",
+                "liked": false,
+                "likes_count": 0,
+                "map": null,
+                "map_visibility": "private",
+                "max_alt": 104.44,
+                "max_speed": 25.59,
+                "min_alt": 19.0,
+                "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
+                "moving": "1:47:04",
+                "next_workout": null,
+                "notes": null,
+                "pauses": "1:23:51",
+                "previous_workout": null,
+                "records": [],
+                "segments": [],
+                "sport_id": 1,
+                "suspended": false,
+                "title": "Cycling (Sport) - 2016-04-26 16:42:27",
+                "user": {
+                  "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false,
+                "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
+                "workout_visibility": "public"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``comment not found``
+    """
     like = WorkoutLike.query.filter_by(
         user_id=auth_user.id, workout_id=workout.id
     ).first()
@@ -1797,9 +2075,52 @@ def undo_workout_like(
 )
 @require_auth(scopes=["workouts:write"])
 @check_workout(only_owner=True)
-def appeal_comment_suspension(
+def appeal_workout_suspension(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal workout suspension.
+
+    Only workout author can appeal the suspension.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/2oRDfncv6vpRkfp3yrCYHt/suspension/appeal HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: appeal created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+        - ``workout is not suspended``
+        - ``workout has no suspension``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
     if not workout.suspended_at:
         return InvalidPayloadErrorResponse("workout is not suspended")
     suspension_action = workout.suspension_action
