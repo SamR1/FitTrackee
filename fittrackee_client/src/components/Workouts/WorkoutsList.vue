@@ -72,6 +72,7 @@
                     aria-hidden="true"
                   />
                   <span class="title">{{ workout.title }}</span>
+                  <VisibilityIcon :visibility="workout.workout_visibility" />
                 </router-link>
                 <StaticMap
                   v-if="workout.with_gpx && hoverWorkoutId === workout.id"
@@ -360,6 +361,9 @@
           .static-map {
             display: none;
             box-shadow: 3px 3px 3px 1px var(--workout-static-map-shadow-color);
+          }
+          .visibility {
+            padding-left: $default-padding * 0.5;
           }
         }
         .workout-title:hover .static-map {
