@@ -22,8 +22,8 @@
       "reports:write_DESCRIPTION": "donne les droits en écriture aux routes <code>reports</code>.",
       "users:read_DESCRIPTION": "donne les droits en lecture aux routes <code>users</code>.",
       "users:write_DESCRIPTION": "donne les droits en écriture aux routes <code>users</code>.",
-      "workouts:read_DESCRIPTION": "donne les droits en lecture aux routes <code>workouts</code>.",
-      "workouts:write_DESCRIPTION": "donne les droits en écriture aux routes <code>workouts</code>."
+      "workouts:read_DESCRIPTION": "donne les droits en lecture aux routes liées aux séances et aux commentaires.",
+      "workouts:write_DESCRIPTION": "donne les droits en écriture aux routes liées aux séances et aux commentaires."
     },
     "URL": "URL de l'application"
   },
