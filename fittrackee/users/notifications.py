@@ -152,16 +152,11 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                         and_(
                             (
                                 or_(
-                                    Notification.event_type.not_in(
-                                        ['workout_comment', 'comment_reply']
-                                    ),
+                                    Notification.event_type
+                                    != "workout_comment",
                                     and_(
-                                        Notification.event_type.in_(
-                                            [
-                                                'workout_comment',
-                                                'comment_reply',
-                                            ]
-                                        ),
+                                        Notification.event_type
+                                        == "workout_comment",
                                         Notification.from_user_id.not_in(
                                             blocked_by_users
                                         ),
@@ -354,16 +349,11 @@ def get_status(auth_user: User) -> Dict:
                         and_(
                             (
                                 or_(
-                                    Notification.event_type.not_in(
-                                        ['workout_comment', 'comment_reply']
-                                    ),
+                                    Notification.event_type
+                                    != "workout_comment",
                                     and_(
-                                        Notification.event_type.in_(
-                                            [
-                                                'workout_comment',
-                                                'comment_reply',
-                                            ]
-                                        ),
+                                        Notification.event_type
+                                        == "workout_comment",
                                         Notification.from_user_id.not_in(
                                             auth_user.get_blocked_by_user_ids()
                                         ),

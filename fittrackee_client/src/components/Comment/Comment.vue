@@ -101,14 +101,6 @@
           </span>
         </button>
         <button
-          v-if="displayCommentIcon()"
-          class="transparent icon-button"
-          @click="() => displayCommentEdition('add')"
-          :title="$t('workouts.COMMENTS.ADD')"
-        >
-          <i class="fa fa-comment-o" aria-hidden="true" />
-        </button>
-        <button
           v-if="displayReportButton"
           class="transparent icon-button"
           @click="reportComment(comment)"
@@ -183,17 +175,6 @@
           :name="`text-${comment.id}`"
           :authUser="authUser"
           :mentions="comment.mentions"
-        />
-        <Comment
-          v-for="reply in comment.replies"
-          :key="reply.id"
-          :comment="reply"
-          :workout="workout"
-          :authUser="authUser"
-          :comments-loading="commentsLoading"
-          :current-comment-edition="currentCommentEdition"
-          :action="reply.suspension"
-          @deleteComment="deleteComment(reply)"
         />
       </template>
     </div>
@@ -322,14 +303,6 @@
     return (
       currentCommentEdition.value?.type === 'add' &&
       currentCommentEdition.value?.comment?.id === comment.value.id
-    )
-  }
-  function displayCommentIcon() {
-    return (
-      authUser.value.username &&
-      !comment.value.suspended &&
-      comment.value.workout_id &&
-      !forNotification.value
     )
   }
   function deleteComment(commentToDelete: IComment) {

@@ -210,8 +210,6 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
             **suspended_at,
@@ -242,8 +240,6 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             'mentions': [],
             'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -272,8 +268,6 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             'mentions': [],
             'suspended_at': comment.suspended_at,
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -308,8 +302,6 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             'suspended_at': comment.suspended_at,
             'suspension': expected_report_action.serialize(user_1, full=False),
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -388,8 +380,6 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -424,8 +414,6 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -483,8 +471,6 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -518,8 +504,6 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -551,8 +535,6 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -630,8 +612,6 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
             **suspended_at,
@@ -669,8 +649,6 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
             'mentions': [],
             'suspended': True,
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -727,8 +705,6 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
             'suspended': True,
@@ -786,8 +762,6 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -818,509 +792,6 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-
-class TestWorkoutCommentModelSerializeForReplies(CommentMixin):
-    def test_it_serializes_comment_with_reply(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-
-        serialized_comment = parent_comment.serialize(user_1)
-
-        assert serialized_comment == {
-            'id': parent_comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': parent_comment.text,
-            'text_html': parent_comment.text,  # no mention
-            'text_visibility': parent_comment.text_visibility,
-            'created_at': parent_comment.created_at,
-            'mentions': [],
-            'suspended_at': parent_comment.suspended_at,
-            'modification_date': parent_comment.modification_date,
-            'reply_to': None,
-            'replies': [comment.serialize(user_1)],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_serializes_comment_with_suspended_reply(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        suspended_comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-        suspended_comment.suspended_at = datetime.utcnow()
-
-        serialized_comment = parent_comment.serialize(user_1)
-
-        assert serialized_comment == {
-            'id': parent_comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': parent_comment.text,
-            'text_html': parent_comment.text,  # no mention
-            'text_visibility': parent_comment.text_visibility,
-            'created_at': parent_comment.created_at,
-            'mentions': [],
-            'suspended_at': parent_comment.suspended_at,
-            'modification_date': parent_comment.modification_date,
-            'reply_to': None,
-            'replies': [suspended_comment.serialize(user_1)],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_serializes_parent_comment_without_replies(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-
-        serialized_comment = parent_comment.serialize(
-            user_1, with_replies=False
-        )
-
-        assert serialized_comment == {
-            'id': parent_comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': parent_comment.text,
-            'text_html': parent_comment.text,  # no mention
-            'text_visibility': parent_comment.text_visibility,
-            'created_at': parent_comment.created_at,
-            'mentions': [],
-            'suspended_at': parent_comment.suspended_at,
-            'modification_date': parent_comment.modification_date,
-            'reply_to': None,
-            'replies': [],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_serializes_comment_reply(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-
-        serialized_comment = comment.serialize(user_1)
-
-        assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_2.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'reply_to': parent_comment.short_id,
-            'replies': [],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_serializes_comment_reply_with_serialized_parent(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-
-        serialized_comment = comment.serialize(user_1, get_parent_comment=True)
-
-        assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_2.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'reply_to': parent_comment.serialize(user_1, with_replies=False),
-            'replies': [],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_serializes_comment_reply_when_workout_is_deleted(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        comment = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=parent_comment,
-        )
-        db.session.delete(workout_cycling_user_1)
-        db.session.commit()
-
-        serialized_comment = comment.serialize(user_1)
-
-        assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_2.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'reply_to': parent_comment.short_id,
-            'replies': [],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_returns_only_visible_replies_for_a_user(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-        user_3: User,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-        follow_request_from_user_2_to_user_1: FollowRequest,
-        follow_request_from_user_3_to_user_1: FollowRequest,
-    ) -> None:
-        user_2.approves_follow_request_from(user_1)
-        user_1.approves_follow_request_from(user_2)
-        user_1.approves_follow_request_from(user_3)
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        # replies
-        self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PRIVATE,
-            parent_comment=comment,
-        )
-        visible_replies = [
-            self.create_comment(
-                user_3,
-                workout_cycling_user_1,
-                text_visibility=VisibilityLevel.PUBLIC,
-                parent_comment=comment,
-            )
-        ]
-        self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.FOLLOWERS,
-            parent_comment=comment,
-        )
-        visible_replies.append(
-            self.create_comment(
-                user_1,
-                workout_cycling_user_1,
-                text_visibility=VisibilityLevel.FOLLOWERS,
-                parent_comment=comment,
-            ),
-        )
-
-        serialized_comment = comment.serialize(user_3)
-
-        assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'reply_to': None,
-            'replies': [
-                visible_reply.serialize(user_3)
-                for visible_reply in visible_replies
-            ],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_returns_only_visible_replies_for_unauthenticated_user(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        user_2: User,
-        user_3: User,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-        follow_request_from_user_2_to_user_1: FollowRequest,
-        follow_request_from_user_3_to_user_1: FollowRequest,
-    ) -> None:
-        user_2.approves_follow_request_from(user_1)
-        user_1.approves_follow_request_from(user_2)
-        user_1.approves_follow_request_from(user_3)
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        # replies
-        self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PRIVATE,
-            parent_comment=comment,
-        )
-        visible_reply = self.create_comment(
-            user_3,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=comment,
-        )
-        self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.FOLLOWERS,
-            parent_comment=comment,
-        )
-        suspended_reply = self.create_comment(
-            user_2,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-            parent_comment=comment,
-        )
-        suspended_reply.suspended_at = datetime.utcnow()
-
-        serialized_comment = comment.serialize(user_3)
-
-        assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'reply_to': None,
-            'replies': [
-                visible_reply.serialize(user_3),
-                suspended_reply.serialize(user_3),
-            ],
-            'likes_count': 0,
-            'liked': False,
-        }
-
-    def test_it_returns_all_replies(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-        visible_replies = []
-        for _ in range(7):
-            visible_replies.append(
-                self.create_comment(
-                    user_1,
-                    workout_cycling_user_1,
-                    text_visibility=VisibilityLevel.PUBLIC,
-                    parent_comment=comment,
-                ),
-            )
-
-        serialized_comment = comment.serialize(user_1)
-
-        assert serialized_comment['replies'] == [
-            visible_reply.serialize(user_1)
-            for visible_reply in visible_replies
-        ]
-
-
-class TestWorkoutCommentModelSerializeForRepliesForAdmin(CommentMixin):
-    @pytest.mark.parametrize(
-        'input_visibility',
-        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
-    )
-    def test_it_raises_error_when_comments_are_not_visible(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_3_to_user_2: FollowRequest,
-        input_visibility: VisibilityLevel,
-    ) -> None:
-        user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_2,
-            workout_cycling_user_2,
-            text_visibility=VisibilityLevel.FOLLOWERS,
-        )
-        self.create_comment(
-            user_3,
-            workout_cycling_user_2,
-            text_visibility=VisibilityLevel.FOLLOWERS,
-            parent_comment=parent_comment,
-        )
-
-        with pytest.raises(CommentForbiddenException):
-            parent_comment.serialize(user_1_admin)
-
-    @pytest.mark.parametrize(
-        'input_visibility',
-        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
-    )
-    def test_it_serializes_comment_with_reply(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_3: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_3_to_user_2: FollowRequest,
-        input_visibility: VisibilityLevel,
-    ) -> None:
-        # for report only parent comment is returned
-        user_2.approves_follow_request_from(user_3)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        parent_comment = self.create_comment(
-            user_2,
-            workout_cycling_user_2,
-            text_visibility=input_visibility,
-        )
-        self.create_comment(
-            user_3,
-            workout_cycling_user_2,
-            text_visibility=input_visibility,
-            parent_comment=parent_comment,
-        )
-
-        serialized_comment = parent_comment.serialize(
-            user_1_admin, for_report=True
-        )
-
-        assert serialized_comment == {
-            'id': parent_comment.short_id,
-            'user': user_2.serialize(),
-            'workout_id': workout_cycling_user_2.short_id,
-            'text': parent_comment.text,
-            'text_html': parent_comment.text,  # no mention
-            'text_visibility': parent_comment.text_visibility,
-            'created_at': parent_comment.created_at,
-            'mentions': [],
-            'suspended_at': parent_comment.suspended_at,
-            'modification_date': parent_comment.modification_date,
-            'reply_to': None,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
@@ -1526,8 +997,6 @@ class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
             'created_at': comment.created_at,
             'mentions': [user_2.serialize()],
             'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
             'likes_count': 0,
             'liked': False,
         }
