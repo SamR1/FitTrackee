@@ -760,8 +760,8 @@
             .form-item {
               display: flex;
               flex-direction: column;
-              padding: $default-padding * 0.5 $default-padding $default-padding *
-                0.25;
+              padding: $default-padding * 0.5 $default-padding
+                $default-padding * 0.25;
 
               .workout-date-time {
                 display: flex;

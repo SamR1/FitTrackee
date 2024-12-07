@@ -424,8 +424,9 @@ class TestCliUserUpdate:
         previous_email = user_1.email
         new_password = random_string()
 
-        with app.app_context(), patch.object(
-            secrets, 'token_urlsafe', return_value=new_password
+        with (
+            app.app_context(),
+            patch.object(secrets, 'token_urlsafe', return_value=new_password),
         ):
             result = runner.invoke(
                 cli,

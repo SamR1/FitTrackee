@@ -999,9 +999,12 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetGetWorkoutChartDataTestCase):
         )
         chart_data: List = []
         workout_cycling_user_1.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1091,9 +1094,12 @@ class TestGetWorkoutChartDataAsFollower(
         )
         chart_data: List = []
         workout_cycling_user_2.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1200,9 +1206,12 @@ class TestGetWorkoutChartDataAsUser(
         )
         chart_data: List = []
         workout_cycling_user_2.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1296,9 +1305,12 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         chart_data: List = []
         self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
         client = app.test_client()
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1804,9 +1816,12 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         )
         chart_data: List = []
         workout_cycling_user_1.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1903,9 +1918,12 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         )
         chart_data: List = []
         workout_cycling_user_1.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -1940,9 +1958,12 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         )
         chart_data: List = []
 
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -2025,9 +2046,12 @@ class TestGetWorkoutSegmentChartDataAsUser(
             app, user_2.email
         )
         workout_cycling_user_1.gpx = 'file.gpx'
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -2058,9 +2082,12 @@ class TestGetWorkoutSegmentChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
@@ -2132,9 +2159,12 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         chart_data: List = []
         self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
         client = app.test_client()
-        with patch('builtins.open', new_callable=mock_open), patch(
-            'fittrackee.workouts.workouts.get_chart_data',
-            return_value=chart_data,
+        with (
+            patch('builtins.open', new_callable=mock_open),
+            patch(
+                'fittrackee.workouts.workouts.get_chart_data',
+                return_value=chart_data,
+            ),
         ):
             response = client.get(
                 self.route.format(
