@@ -45,24 +45,34 @@ USER_LINK_TEMPLATE = (
     '{username}</a>'
 )
 
-NOTIFICATION_TYPES = [
+ADMINISTRATOR_NOTIFICATION_TYPES = [
     'account_creation',
-    'comment_like',
-    'comment_suspension',
-    'comment_unsuspension',
-    'follow',
-    'follow_request',
-    'mention',
+]
+
+MODERATOR_NOTIFICATION_TYPES = [
     'report',
     'suspension_appeal',
-    'user_warning',
     'user_warning_appeal',
-    'user_warning_lifting',
-    'workout_comment',
-    'workout_like',
-    'workout_suspension',
-    'workout_unsuspension',
 ]
+
+NOTIFICATION_TYPES = (
+    ADMINISTRATOR_NOTIFICATION_TYPES
+    + MODERATOR_NOTIFICATION_TYPES
+    + [
+        'comment_like',
+        'comment_suspension',
+        'comment_unsuspension',
+        'follow',
+        'follow_request',
+        'mention',
+        'user_warning',
+        'user_warning_lifting',
+        'workout_comment',
+        'workout_like',
+        'workout_suspension',
+        'workout_unsuspension',
+    ]
+)
 
 
 class FollowRequest(BaseModel):

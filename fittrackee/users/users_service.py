@@ -19,7 +19,12 @@ from fittrackee.users.exceptions import (
     UserCreationException,
     UserNotFoundException,
 )
-from fittrackee.users.models import User
+from fittrackee.users.models import (
+    ADMINISTRATOR_NOTIFICATION_TYPES,
+    MODERATOR_NOTIFICATION_TYPES,
+    Notification,
+    User,
+)
 from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.controls import is_valid_email, register_controls
 
@@ -95,6 +100,18 @@ class UserManagerService:
             user.role = UserRole[role.upper()].value
             if user.role >= UserRole.MODERATOR.value:
                 activate = True
+            if user.role < UserRole.MODERATOR.value:
+                db.session.query(Notification).filter(
+                    Notification.to_user_id == user.id,
+                    Notification.event_type.in_(MODERATOR_NOTIFICATION_TYPES),
+                ).delete()
+            if user.role < UserRole.ADMIN.value:
+                db.session.query(Notification).filter(
+                    Notification.to_user_id == user.id,
+                    Notification.event_type.in_(
+                        ADMINISTRATOR_NOTIFICATION_TYPES
+                    ),
+                ).delete()
             user_updated = True
 
         if activate is not None:

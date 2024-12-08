@@ -15,14 +15,15 @@ from fittrackee.users.exceptions import (
     UserCreationException,
     UserNotFoundException,
 )
-from fittrackee.users.models import User
+from fittrackee.users.models import Notification, User
 from fittrackee.users.roles import UserRole
 from fittrackee.users.users_service import UserManagerService
 
+from ..mixins import ReportMixin
 from ..utils import random_email, random_string
 
 
-class TestUserManagerServiceUserUpdate:
+class TestUserManagerServiceUserUpdate(ReportMixin):
     @staticmethod
     def generate_user_report(admin: User, user: User) -> Report:
         report = Report(
@@ -77,6 +78,288 @@ class TestUserManagerServiceUserUpdate:
 
         with pytest.raises(InvalidUserRole):
             user_manager_service.update(role="invalid")
+
+    def test_it_keeps_moderation_notifications_when_role_changed_from_moderator_to_admin(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        # report creation (only for admin and moderator)
+        report = self.create_user_report(user_1_admin, user_3)
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_admin.id,
+            event_type='report',
+            event_object_id=report.id,
+        ).first()
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_admin.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        db.session.commit()
+        user_manager_service = UserManagerService(
+            username=user_2_admin.username
+        )
+
+        user_manager_service.update(role="admin")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_admin.id
+        ).all()
+        assert set(notifications) == {
+            follow_request_notification,
+            report_notification,
+        }
+
+    def test_it_deletes_moderation_notifications_when_role_changed_from_moderator_to_user(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_moderator: User,
+        user_3: User,
+    ) -> None:
+        # report creation (only for admin and moderator)
+        self.create_user_report(user_1_admin, user_3)
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_moderator.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        db.session.commit()
+        user_manager_service = UserManagerService(
+            username=user_2_moderator.username
+        )
+
+        user_manager_service.update(role="user")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_moderator.id
+        ).all()
+        assert set(notifications) == {follow_request_notification}
+
+    def test_it_deletes_administration_notifications_when_role_changed_from_admin_to_moderator(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        # user registration (only for admin)
+        user_creation_notification = Notification(
+            from_user_id=user_3.id,
+            to_user_id=user_2_admin.id,
+            event_type='account_creation',
+            created_at=user_3.created_at,
+        )
+        db.session.add(user_creation_notification)
+        # report creation (only for admin and moderator)
+        report = self.create_user_report(user_1_admin, user_3)
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_admin.id,
+            event_type='report',
+            event_object_id=report.id,
+        ).first()
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_admin.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        user_manager_service = UserManagerService(
+            username=user_2_admin.username
+        )
+
+        user_manager_service.update(role="moderator")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_admin.id
+        ).all()
+        assert set(notifications) == {
+            follow_request_notification,
+            report_notification,
+        }
+
+    def test_it_deletes_admin_and_moderation_notifications_when_role_changed_from_admin_to_user(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        # user registration (only for admin)
+        user_creation_notification = Notification(
+            from_user_id=user_3.id,
+            to_user_id=user_2_admin.id,
+            event_type='account_creation',
+            created_at=user_3.created_at,
+        )
+        db.session.add(user_creation_notification)
+        # report creation (only for admin and moderator)
+        self.create_user_report(user_1_admin, user_3)
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_admin.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        user_manager_service = UserManagerService(
+            username=user_2_admin.username
+        )
+
+        user_manager_service.update(role="user")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_admin.id
+        ).all()
+        assert notifications == [follow_request_notification]
+
+    def test_it_deletes_administration_notifications_when_role_changed_from_owner_to_moderator(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_owner: User,
+        user_3: User,
+    ) -> None:
+        # user registration (only for admin)
+        user_creation_notification = Notification(
+            from_user_id=user_3.id,
+            to_user_id=user_2_owner.id,
+            event_type='account_creation',
+            created_at=user_3.created_at,
+        )
+        db.session.add(user_creation_notification)
+        # report creation (only for admin and moderator)
+        report = self.create_user_report(user_1_admin, user_3)
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_owner.id,
+            event_type='report',
+            event_object_id=report.id,
+        ).first()
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_owner.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        user_manager_service = UserManagerService(
+            username=user_2_owner.username
+        )
+
+        user_manager_service.update(role="moderator")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_owner.id
+        ).all()
+        assert set(notifications) == {
+            follow_request_notification,
+            report_notification,
+        }
+
+    def test_it_deletes_admin_and_moderation_notifications_when_role_changed_from_owner_to_user(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_owner: User,
+        user_3: User,
+    ) -> None:
+        # user registration (only for admin)
+        user_creation_notification = Notification(
+            from_user_id=user_3.id,
+            to_user_id=user_2_owner.id,
+            event_type='account_creation',
+            created_at=user_3.created_at,
+        )
+        db.session.add(user_creation_notification)
+        # report creation (only for admin and moderator)
+        self.create_user_report(user_1_admin, user_3)
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_owner.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        user_manager_service = UserManagerService(
+            username=user_2_owner.username
+        )
+
+        user_manager_service.update(role="user")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_owner.id
+        ).all()
+        assert notifications == [follow_request_notification]
+
+    def test_it_keeps_all_notifications_when_role_changed_from_owner_to_admin(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_owner: User,
+        user_3: User,
+    ) -> None:
+        # user registration (only for admin)
+        user_creation_notification = Notification(
+            from_user_id=user_3.id,
+            to_user_id=user_2_owner.id,
+            event_type='account_creation',
+            created_at=user_3.created_at,
+        )
+        db.session.add(user_creation_notification)
+        # report creation (only for admin and moderator)
+        report = self.create_user_report(user_1_admin, user_3)
+        report_notification = Notification.query.filter_by(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_owner.id,
+            event_type='report',
+            event_object_id=report.id,
+        ).first()
+        # follow request
+        follow_request = user_1_admin.send_follow_request_to(user_1_admin)
+        follow_request_notification = Notification(
+            from_user_id=user_1_admin.id,
+            to_user_id=user_2_owner.id,
+            event_type='follow_request',
+            created_at=follow_request.created_at,
+        )
+        db.session.add(follow_request_notification)
+        user_manager_service = UserManagerService(
+            username=user_2_owner.username
+        )
+
+        user_manager_service.update(role="admin")
+
+        notifications = Notification.query.filter_by(
+            to_user_id=user_2_owner.id
+        ).all()
+        assert set(notifications) == {
+            user_creation_notification,
+            follow_request_notification,
+            report_notification,
+        }
 
     def test_it_return_updated_user_flag_to_true(
         self, app: Flask, user_1: User

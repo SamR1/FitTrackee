@@ -1920,7 +1920,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize('input_role', ["admin", "user"])
-    def test_it_updates_moderator_role(
+    def test_it_updates_role_for_moderator(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1965,7 +1965,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize('input_role', ["moderator", "user"])
-    def test_it_updates_admin_role(
+    def test_it_updates_role_for_admin_user(
         self,
         app: Flask,
         user_1_admin: User,

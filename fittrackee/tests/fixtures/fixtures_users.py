@@ -137,6 +137,18 @@ def user_2() -> User:
 
 
 @pytest.fixture()
+def user_2_owner() -> User:
+    user = User(username='toto', email='toto@toto.com', password='12345678')
+    user.is_active = True
+    user.hide_profile_in_users_directory = False
+    user.role = UserRole.OWNER.value
+    user.accepted_policy = datetime.datetime.utcnow()
+    db.session.add(user)
+    db.session.commit()
+    return user
+
+
+@pytest.fixture()
 def user_2_admin() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
