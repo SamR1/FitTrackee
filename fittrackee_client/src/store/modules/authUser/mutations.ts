@@ -5,7 +5,12 @@ import type {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
-import type { IAuthUserProfile, IExportRequest } from '@/types/user'
+import type {
+  IUserReportAction,
+  IAuthUserProfile,
+  IExportRequest,
+  IUserProfile,
+} from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {
@@ -36,6 +41,12 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   ) {
     state.isSuccess = isSuccess
   },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS](
+    state: IAuthUserState,
+    followRequests: IUserProfile[]
+  ) {
+    state.followRequests = followRequests
+  },
   [AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING](
     state: IAuthUserState,
     loading: boolean
@@ -47,5 +58,23 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
     exportRequest: IExportRequest
   ) {
     state.exportRequest = exportRequest
+  },
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS](
+    state: IAuthUserState,
+    blockedUsers: IUserProfile[]
+  ) {
+    state.blockedUsers = blockedUsers
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION](
+    state: IAuthUserState,
+    accountSuspension: IUserReportAction
+  ) {
+    state.userReportAction = accountSuspension
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION](
+    state: IAuthUserState,
+    sanction: IUserReportAction
+  ) {
+    state.userReportAction = sanction
   },
 }

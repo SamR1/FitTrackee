@@ -37,7 +37,8 @@
   import { computed, ref, onBeforeMount, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
   import { getPasswordStrength, setZxcvbnOptions } from '@/utils/password'
 
@@ -48,9 +49,9 @@
   const { password } = toRefs(props)
 
   const store = useStore()
-  const language: ComputedRef<string> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
+
+  const { appLanguage } = useApp()
+
   const isSuccess: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUCCESS]
   )
@@ -59,7 +60,7 @@
   const passwordSuggestions: Ref<string[]> = ref([])
   const backgroundSize = ref('0% 100%')
 
-  onBeforeMount(async () => await setZxcvbnOptions(language.value))
+  onBeforeMount(async () => await setZxcvbnOptions(appLanguage.value))
 
   function calculatePasswordStrength(password: string) {
     const zxcvbnResult = zxcvbn(password)
@@ -70,7 +71,7 @@
   }
 
   watch(
-    () => language.value,
+    () => appLanguage.value,
     async (newLanguageValue) => {
       await setZxcvbnOptions(newLanguageValue)
     }

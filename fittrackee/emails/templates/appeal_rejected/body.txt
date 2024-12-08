@@ -1,0 +1,9 @@
+{% extends "layout.txt" %}{% block content %}{% if action_type == "user_suspension" %}{{ _('Your appeal on your account suspension has been rejected') }}{% elif action_type == "user_warning" %}{{ _('Your appeal on your warning has been rejected') }}{% else %}{{ _('Your appeal on the following content suspension has been rejected') }}{% endif %}.{% if action_type != "user_suspension" and comment_url %}
+
+{{ _('Comment:') }} {{ text }}
+
+{{ _('Link:') }} {{ comment_url }}{% endif %}{% if action_type != "user_suspension" and workout_url %}
+
+{{ _('Workout:') }} {{ title }}
+
+{{ _('Link:') }} {{ workout_url }}{% endif %}{% endblock %}

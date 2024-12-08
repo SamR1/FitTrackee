@@ -8,17 +8,24 @@
   "DESCRIPTION": "Description",
   "DISPLAYED": "Affiché",
   "DOCUMENTATION": "documentation",
+  "EDITED": "édité",
   "HERE": "ici",
   "HIDDEN": "Masqué",
+  "HIDE": "Masquer",
   "HOME": "Accueil",
   "HOURS": "heure|heures",
   "INACTIVE": "inactif",
   "LABEL": "Nom",
+  "LAST_UPDATED_ON": "Dernière mise à jour le",
   "MINUTES": "minute|minutes",
   "NEXT": "suivant",
-  "NO_DESCRIPTION": "pas de description",
+  "NO_DESCRIPTION": "Pas de description",
+  "NO_NOTES": "Pas de notes",
   "PREVIOUS": "prédédent",
+  "REPORT_PLACEHOLDER": "préciser la raison du signalement",
+  "REPORT_SUBMITTED": "Signalement envoyé.",
   "SECONDS": "seconde|secondes",
+  "SEE_REPORT": "Voir le signalement {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascendant",
@@ -33,5 +40,6 @@
     }
   },
   "TOTAL": "Total",
-  "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises"
+  "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises",
+  "TYPE": "type"
 }

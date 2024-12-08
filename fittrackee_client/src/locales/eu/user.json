@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Kontua baieztatzea",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Ez duzu jarraibiderik jaso?",
   "ACCOUNT_CONFIRMATION_SENT": "Begiratu zure eposta. Esandako helbidera baieztapen mezu bat bidali dizugu.",
-  "ADMIN": "Kudeatzailea",
   "ALREADY_HAVE_ACCOUNT": "Baduzu kontu bat?",
   "CONFIRM_ACCOUNT_DELETION": "Ziur zaude zure kontua ezabatu nahi duzula? Datu guztiak ezabatu egingo dira eta hori ezin da desegin.",
   "CURRENT_PASSWORD": "Uneko pasahitza",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Berriz bidali baieztapen eposta",
   "RESET_PASSWORD": "Berrezarri zure pasahitza",
   "REVIEW": "errebisatu",
+  "ROLES": {
+    "admin": "Kudeatzailea"
+  },
   "SHOW_PASSWORD": "erakutsi pasahitza",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Erabiltzaile honen kontua desaktibatuta dago.",
   "TOGGLE_THEME": "Aldatu itxura (argia edo iluna)",

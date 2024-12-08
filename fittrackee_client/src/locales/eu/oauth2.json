@@ -31,7 +31,6 @@
   "NEW_APP": "Gehitu aplikazioa",
   "NO_APP": "Aplikazioa ez da aurkitu!",
   "NO_APPS": "ez dago aplikaziorik",
-  "NO_DESCRIPTION": "deskribapenik ez",
   "REVOKE_ALL_TOKENS": "Baliogabetu token guztiak",
   "TOKENS_REVOCATION_CONFIRMATION": "Ziur zaude token guztiak baliogabetu nahi dituzula?",
   "TOKENS_REVOKED": "Lotutako token guztiak baliogabetu egin dira."

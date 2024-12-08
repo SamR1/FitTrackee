@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Confirmación da conta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non recibiches instrucións?",
   "ACCOUNT_CONFIRMATION_SENT": "Comproba o correo. Enviouse un correo de confirmación ao enderezo proporcionado.",
-  "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Xa tes unha conta?",
   "CONFIRM_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta? Todos os datos serán borrados, e non poderás restablecelos.",
   "CURRENT_PASSWORD": "Contrasinal actual",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Reenviar o correo de confirmación de conta",
   "RESET_PASSWORD": "Restablece o contrasinal",
   "REVIEW": "revisar",
+  "ROLES": {
+    "admin": "Admin"
+  },
   "SHOW_PASSWORD": "mostrar contrasinal",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuaria está desactivada.",
   "TOGGLE_THEME": "Cambiar decorado (modo Claro ou Escuro)",

@@ -100,17 +100,17 @@
         </div>
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
-          <button class="confirm" type="submit" :disabled="loading">
+          <button class="confirm" type="submit" :disabled="equipmentsLoading">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button
             class="cancel"
-            :disabled="loading"
+            :disabled="equipmentsLoading"
             @click.prevent="
               () =>
                 $router.push(
                   equipment?.id
-                    ? route.query.fromEdition
+                    ? $route.query.fromEdition
                       ? '/profile/edit/equipments'
                       : `/profile/equipments/${equipment.id}`
                     : '/profile/equipments'
@@ -130,7 +130,6 @@
     capitalize,
     computed,
     onMounted,
-    onUnmounted,
     reactive,
     ref,
     toRefs,
@@ -141,10 +140,11 @@
   import { useRoute } from 'vue-router'
 
   import SportsMultiSelect from '@/components/User/UserEquipments/SportsMultiSelect.vue'
-  import { EQUIPMENTS_STORE, ROOT_STORE, SPORTS_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useEquipments from '@/composables/useEquipments'
+  import { EQUIPMENTS_STORE, SPORTS_STORE } from '@/store/constants'
   import type {
     IEquipment,
-    IEquipmentError,
     IEquipmentType,
     ITranslatedEquipmentType,
   } from '@/types/equipments'
@@ -154,24 +154,19 @@
   import { translateSports } from '@/utils/sports'
 
   interface Props {
-    equipments: IEquipment[]
     translatedEquipmentTypes: ITranslatedEquipmentType[]
+    equipmentsLoading: boolean
   }
   const props = defineProps<Props>()
+  const { equipmentsLoading, translatedEquipmentTypes } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
   const { t } = useI18n()
 
-  const { equipments, translatedEquipmentTypes } = toRefs(props)
-  const loading: ComputedRef<boolean> = computed(
-    () => store.getters[EQUIPMENTS_STORE.GETTERS.LOADING]
-  )
-  const equipment: ComputedRef<IEquipment | null> = computed(() =>
-    getEquipment(equipments.value)
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+  const { errorMessages } = useApp()
+  const { equipment } = useEquipments()
+
   const equipmentForm = reactive({
     id: '',
     label: '',
@@ -180,6 +175,8 @@
     isActive: true,
     defaultForSportIds: [] as number[],
   })
+  const formErrors = ref(false)
+
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
   )
@@ -204,31 +201,7 @@
         (et) => et.is_active || equipment.value?.equipment_type.id === et.id
       )
     )
-  const formErrors = ref(false)
 
-  onMounted(() => {
-    const colorInput = document.getElementById('equipment-label')
-    colorInput?.focus()
-    if (!route.params.id) {
-      return
-    }
-    if (route.params.id && equipment.value?.id) {
-      formatForm(equipment.value)
-    }
-  })
-
-  function getEquipment(equipmentsList: IEquipment[]) {
-    if (!route.params.id) {
-      return null
-    }
-    const filteredEquipmentList = equipmentsList.filter((equipment) =>
-      route.params.id ? equipment.id === route.params.id : null
-    )
-    if (filteredEquipmentList.length === 0) {
-      return null
-    }
-    return filteredEquipmentList[0]
-  }
   function setEquipmentSports(equipment: IEquipment) {
     equipmentTranslatedSports.value = translateSports(
       translatedSports.value,
@@ -264,10 +237,6 @@
     equipmentForm.defaultForSportIds = selectedIds
   }
 
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
-
   watch(
     () => equipment.value,
     (equipment) => {
@@ -289,6 +258,17 @@
       }
     }
   )
+
+  onMounted(() => {
+    const colorInput = document.getElementById('equipment-label')
+    colorInput?.focus()
+    if (!route.params.id) {
+      return
+    }
+    if (route.params.id && equipment.value?.id) {
+      formatForm(equipment.value)
+    }
+  })
 </script>
 
 <style scoped lang="scss">

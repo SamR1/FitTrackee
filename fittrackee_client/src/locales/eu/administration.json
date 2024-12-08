@@ -68,10 +68,6 @@
         "WORKOUTS_COUNT": "entrenamendu kopurua"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Gehitu kudeatzaile baimenak",
-      "REMOVE_ADMIN_RIGHTS": "Kendu kudeatzaile baimenak"
-    },
     "TITLE": "Kudeaketa - Erabiltzaileak"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Eposta helbidea eguneratu egin da."

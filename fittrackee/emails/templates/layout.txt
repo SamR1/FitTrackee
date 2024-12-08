@@ -2,6 +2,6 @@
 
 {% block content %}{% endblock %}
 
-{{ _('Thanks,') }}
-{{ _('The FitTrackee Team') }}
+{% if not without_user_action %}{{ _('Thanks,') }}
+{% endif %}{{ _('The FitTrackee Team') }}
 {{fittrackee_url}}

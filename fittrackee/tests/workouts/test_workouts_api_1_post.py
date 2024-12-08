@@ -8,14 +8,17 @@ from unittest.mock import Mock, patch
 import pytest
 from flask import Flask
 from sqlalchemy.dialects.postgresql import insert
+from time_machine import travel
 
 from fittrackee import VERSION, db
 from fittrackee.equipments.models import Equipment
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
     User,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
@@ -24,17 +27,20 @@ from fittrackee.workouts.models import (
     Workout,
 )
 
-from ..mixins import ApiTestCaseMixin, CallArgsMixin
+from ..mixins import BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
+from .mixins import WorkoutApiTestCaseMixin
 
 
-def assert_workout_data_with_gpx(data: Dict) -> None:
+def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
     assert 'creation_date' in data['data']['workouts'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['workouts'][0]['workout_date']
     )
-    assert 'test' == data['data']['workouts'][0]['user']
+    assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        user.serialize()
+    )
     assert 1 == data['data']['workouts'][0]['sport_id']
     assert '0:04:10' == data['data']['workouts'][0]['duration']
     assert data['data']['workouts'][0]['ascent'] == 0.4
@@ -72,14 +78,14 @@ def assert_workout_data_with_gpx(data: Dict) -> None:
     assert len(records) == 5
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[0]['record_type'] == 'MS'
+    assert records[0]['record_type'] == 'AS'
     assert records[0]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[0]['value'] == 5.12
+    assert records[0]['value'] == 4.61
     assert records[1]['sport_id'] == 1
     assert records[1]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[1]['record_type'] == 'LD'
+    assert records[1]['record_type'] == 'FD'
     assert records[1]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[1]['value'] == '0:04:10'
+    assert records[1]['value'] == 0.32
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[2]['record_type'] == 'HA'
@@ -87,23 +93,25 @@ def assert_workout_data_with_gpx(data: Dict) -> None:
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
     assert records[3]['sport_id'] == 1
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'FD'
+    assert records[3]['record_type'] == 'LD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 0.32
+    assert records[3]['value'] == '0:04:10'
     assert records[4]['sport_id'] == 1
     assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[4]['record_type'] == 'AS'
+    assert records[4]['record_type'] == 'MS'
     assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[4]['value'] == 4.61
+    assert records[4]['value'] == 5.12
 
 
-def assert_workout_data_with_gpx_segments(data: Dict) -> None:
+def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert 'creation_date' in data['data']['workouts'][0]
     assert (
         'Tue, 13 Mar 2018 12:44:45 GMT'
         == data['data']['workouts'][0]['workout_date']
     )
-    assert 'test' == data['data']['workouts'][0]['user']
+    assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        user.serialize()
+    )
     assert 1 == data['data']['workouts'][0]['sport_id']
     assert '0:04:10' == data['data']['workouts'][0]['duration']
     assert data['data']['workouts'][0]['ascent'] == 0.4
@@ -155,37 +163,40 @@ def assert_workout_data_with_gpx_segments(data: Dict) -> None:
     assert len(records) == 5
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[0]['record_type'] == 'MS'
+    assert records[0]['record_type'] == 'AS'
     assert records[0]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[0]['value'] == 5.25
+    assert records[0]['value'] == 4.59
     assert records[1]['sport_id'] == 1
     assert records[1]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[1]['record_type'] == 'LD'
+    assert records[1]['record_type'] == 'FD'
     assert records[1]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[1]['value'] == '0:03:55'
+    assert records[1]['value'] == 0.3
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
     assert records[2]['record_type'] == 'HA'
     assert records[2]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
+    assert records[2]['value'] == 0.4
     assert records[3]['sport_id'] == 1
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'FD'
+    assert records[3]['record_type'] == 'LD'
     assert records[3]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[3]['value'] == 0.3
+    assert records[3]['value'] == '0:03:55'
     assert records[4]['sport_id'] == 1
     assert records[4]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[4]['record_type'] == 'AS'
+    assert records[4]['record_type'] == 'MS'
     assert records[4]['workout_date'] == 'Tue, 13 Mar 2018 12:44:45 GMT'
-    assert records[4]['value'] == 4.59
+    assert records[4]['value'] == 5.25
 
 
-def assert_workout_data_wo_gpx(data: Dict) -> None:
+def assert_workout_data_wo_gpx(data: Dict, user: User) -> None:
     assert 'creation_date' in data['data']['workouts'][0]
     assert (
         data['data']['workouts'][0]['workout_date']
         == 'Tue, 15 May 2018 14:05:00 GMT'
     )
-    assert data['data']['workouts'][0]['user'] == 'test'
+    assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        user.serialize()
+    )
     assert data['data']['workouts'][0]['sport_id'] == 1
     assert data['data']['workouts'][0]['duration'] == '1:00:00'
     assert (
@@ -214,22 +225,22 @@ def assert_workout_data_wo_gpx(data: Dict) -> None:
     assert len(records) == 4
     assert records[0]['sport_id'] == 1
     assert records[0]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[0]['record_type'] == 'MS'
+    assert records[0]['record_type'] == 'AS'
     assert records[0]['workout_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[0]['value'] == 10.0
     assert records[1]['sport_id'] == 1
     assert records[1]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[1]['record_type'] == 'LD'
+    assert records[1]['record_type'] == 'FD'
     assert records[1]['workout_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
-    assert records[1]['value'] == '1:00:00'
+    assert records[1]['value'] == 10.0
     assert records[2]['sport_id'] == 1
     assert records[2]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[2]['record_type'] == 'FD'
+    assert records[2]['record_type'] == 'LD'
     assert records[2]['workout_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
-    assert records[2]['value'] == 10.0
+    assert records[2]['value'] == '1:00:00'
     assert records[3]['sport_id'] == 1
     assert records[3]['workout_id'] == data['data']['workouts'][0]['id']
-    assert records[3]['record_type'] == 'AS'
+    assert records[3]['record_type'] == 'MS'
     assert records[3]['workout_date'] == 'Tue, 15 May 2018 14:05:00 GMT'
     assert records[3]['value'] == 10.0
 
@@ -252,7 +263,7 @@ def assert_files_are_deleted(
     )
 
 
-class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
+class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -268,6 +279,31 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         )
 
         self.assert_401(response)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        self.assert_403(response)
 
     def test_it_adds_a_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -288,12 +324,12 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 201
+        data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
-        assert_workout_data_with_gpx(data)
+        assert_workout_data_with_gpx(data, user_1)
 
     def test_it_adds_a_workout_with_gpx_file_and_title_exceeding_limits(
         self,
@@ -328,7 +364,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert (
             len(data['data']['workouts'][0]['title']) == TITLE_MAX_CHARACTERS
         )
-        assert_workout_data_with_gpx(data)
+        assert_workout_data_with_gpx(data, user_1)
 
     def test_it_adds_a_workout_with_gpx_file_raw_speed(
         self,
@@ -448,7 +484,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             == f"workouts/1/2018-03-13_12-44-45_1_{expected_suffix}.png"
         )
 
-    def test_it_adds_a_workout_with_gpx_without_name(
+    def test_it_adds_a_workout_without_name(
         self,
         app: Flask,
         user_1: User,
@@ -471,15 +507,15 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 201
+        data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
             f'{sport_1_cycling.label} - 2018-03-13 12:44:45'
             == data['data']['workouts'][0]['title']
         )
-        assert_workout_data_with_gpx(data)
+        assert_workout_data_with_gpx(data, user_1)
 
     def test_it_adds_a_workout_with_provided_title(
         self,
@@ -511,7 +547,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['title'] == title
 
-    def test_it_adds_a_workout_with_gpx_without_name_timezone(
+    def test_it_adds_a_workout_when_user_has_specified_timezone(
         self,
         app: Flask,
         user_1: User,
@@ -535,15 +571,15 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 201
+        data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
             f'{sport_1_cycling.label} - 2018-03-13 13:44:45'
             == data['data']['workouts'][0]['title']
         )
-        assert_workout_data_with_gpx(data)
+        assert_workout_data_with_gpx(data, user_1)
 
     @pytest.mark.parametrize('input_user_timezone', [None, 'Europe/Paris'])
     def test_it_adds_a_workout_with_gpx_with_offset(
@@ -578,7 +614,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert response.status_code == 201
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert_workout_data_with_gpx(data)
+        assert_workout_data_with_gpx(data, user_1)
 
     def test_it_adds_a_workout_without_elevation(
         self,
@@ -652,7 +688,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
             ('notes with special characters', "test \n'workout'©"),
         ],
     )
-    def test_it_adds_a_workout_with_gpx_notes(
+    def test_it_adds_a_workout_with_notes(
         self,
         input_description: str,
         input_notes: str,
@@ -676,9 +712,9 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
                 Authorization=f'Bearer {auth_token}',
             ),
         )
-        data = json.loads(response.data.decode())
 
         assert response.status_code == 201
+        data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
         assert data['data']['workouts'][0]['notes'] == input_notes
@@ -1207,6 +1243,158 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
 
+    @pytest.mark.parametrize(
+        'input_desc,input_visibility',
+        [
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_workout_is_created_with_user_privacy_parameters_when_no_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_desc: str,
+        input_visibility: VisibilityLevel,
+    ) -> None:
+        user_1.map_visibility = input_visibility
+        user_1.workouts_visibility = input_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == user_1.map_visibility.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == user_1.workouts_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_workout_is_created_with_provided_privacy_parameters(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{input_map_visibility.value}", '
+                    f'"workout_visibility": '
+                    f'"{input_workout_visibility.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == input_map_visibility.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_workout_is_created_with_valid_privacy_parameters_when_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        """
+        when workout visibility is stricter, map visibility is initialised
+        with workout visibility value
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts',
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{input_map_visibility.value}", '
+                    f'"workout_visibility": '
+                    f'"{input_workout_visibility.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type='multipart/form-data',
+                Authorization=f'Bearer {auth_token}',
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == input_workout_visibility.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_visibility.value
+        )
+
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
         app: Flask,
@@ -1278,6 +1466,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_default_static_map, user_1.email
         )
+
         client.post(
             '/api/workouts',
             data=dict(
@@ -1322,7 +1511,6 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         )
 
         call_kwargs = self.get_kwargs(static_map_get_mock.call_args)
-
         assert call_kwargs['headers'] == {
             'User-Agent': f'FitTrackee v{VERSION}'
         }
@@ -1452,7 +1640,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
         self.assert_400(response)
 
-    def test_it_returns_500_if_sport_id_does_not_exists(
+    def test_it_returns_500_if_sport_id_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1491,7 +1679,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
 
         self.assert_400(response, 'no file part', 'fail')
 
-    def test_it_returns_error_if_file_size_exceeds_limit(
+    def test_it_returns_error_when_file_size_exceeds_limit(
         self,
         app_with_max_file_size: Flask,
         user_1: User,
@@ -1645,7 +1833,7 @@ class TestPostWorkoutWithGpx(ApiTestCaseMixin, CallArgsMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -1688,11 +1876,34 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 201
+        data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert_workout_data_wo_gpx(data)
+        assert_workout_data_wo_gpx(data, user_1)
+
+    def test_it_returns_error_when_user_is_suspended(
+        self, app: Flask, suspended_user: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
 
     def test_it_adds_a_workout_without_gpx_and_title(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -2437,6 +2648,100 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         self.assert_400(response, "only one equipment can be added")
 
     @pytest.mark.parametrize(
+        'input_desc,input_visibility',
+        [
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_workout_is_created_with_user_privacy_parameters_when_no_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_desc: str,
+        input_visibility: VisibilityLevel,
+    ) -> None:
+        user_1.map_visibility = input_visibility
+        user_1.workouts_visibility = input_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == user_1.map_visibility.value
+        )
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == user_1.workouts_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        'input_workout_visibility',
+        [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
+    )
+    def test_workout_is_created_with_provided_privacy_parameters(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            '/api/workouts/no_gpx',
+            content_type='application/json',
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date='2018-05-15 14:05',
+                    distance=10,
+                    workout_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['workout_visibility']
+            == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
         'client_scope, can_access',
         {**OAUTH_SCOPES, 'workouts:write': True}.items(),
     )
@@ -2468,12 +2773,12 @@ class TestPostWorkoutWithoutGpx(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
+class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     def test_it_adds_workouts_with_zip_archive(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app, user_1.email
@@ -2490,8 +2795,8 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = json.loads(response.data.decode())
             assert response.status_code == 201
+            data = json.loads(response.data.decode())
             assert 'created' in data['status']
             assert len(data['data']['workouts']) == 3
             assert 'creation_date' in data['data']['workouts'][0]
@@ -2499,7 +2804,9 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 'Tue, 13 Mar 2018 12:44:45 GMT'
                 == data['data']['workouts'][0]['workout_date']
             )
-            assert 'test' == data['data']['workouts'][0]['user']
+            assert data['data']['workouts'][0]['user'] == jsonify_dict(
+                user_1.serialize()
+            )
             assert 1 == data['data']['workouts'][0]['sport_id']
             assert '0:04:10' == data['data']['workouts'][0]['duration']
             assert data['data']['workouts'][0]['ascent'] == 0.4
@@ -2536,11 +2843,14 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
     def test_it_returns_400_if_folder_is_present_in_zip_archive(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
+        # 'gpx_test_folder.zip' contains 3 gpx files (same data) and 1 non-gpx
+        # file in a folder
         file_path = os.path.join(
             app.root_path, 'tests/files/gpx_test_folder.zip'
         )
-        # 'gpx_test_folder.zip' contains 3 gpx files (same data) and 1 non-gpx
-        # file in a folder
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app, user_1.email
@@ -2564,10 +2874,13 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
     def test_it_returns_500_if_one_file_in_zip_archive_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
+        # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
         file_path = os.path.join(
             app.root_path, 'tests/files/gpx_test_incorrect.zip'
         )
-        # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app, user_1.email
@@ -2626,10 +2939,10 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
     ) -> None:
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
             app_with_max_zip_file_size.root_path, 'tests/files/gpx_test.zip'
         )
-        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         with open(file_path, 'rb') as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app_with_max_zip_file_size, user_1.email
@@ -2653,21 +2966,30 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             )
             assert 'data' not in data
 
-    def test_it_returns_error_if_a_file_from_archive_size_exceeds_limit(
+    @pytest.mark.parametrize(
+        'input_desc,input_visibility',
+        [
+            ('private', VisibilityLevel.PRIVATE),
+            ('followers_only', VisibilityLevel.FOLLOWERS),
+            ('public', VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_workouts_are_created_with_user_privacy_parameters_when_no_provided(  # noqa
         self,
-        app_with_max_file_size: Flask,
+        app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
+        input_desc: str,
+        input_visibility: VisibilityLevel,
     ) -> None:
-        file_path = os.path.join(
-            app_with_max_file_size.root_path, 'tests/files/gpx_test.zip'
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        user_1.map_visibility = input_visibility
+        user_1.workouts_visibility = input_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
-        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
-        with open(file_path, 'rb') as zip_file:
-            client, auth_token = self.get_test_client_and_auth_token(
-                app_with_max_file_size, user_1.email
-            )
 
+        with open(file_path, 'rb') as zip_file:
             response = client.post(
                 '/api/workouts',
                 data=dict(
@@ -2679,13 +3001,71 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_400(
-                response,
-                'at least one file in zip archive exceeds size limit, '
-                'please check the archive',
-                'fail',
+            assert response.status_code == 201
+            data = json.loads(response.data.decode())
+            assert 'created' in data['status']
+            assert len(data['data']['workouts']) == 3
+            for n in range(3):
+                assert (
+                    data['data']['workouts'][n]['map_visibility']
+                    == user_1.map_visibility.value
+                )
+                assert (
+                    data['data']['workouts'][n]['workout_visibility']
+                    == user_1.workouts_visibility.value
+                )
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_workouts_are_created_with_provided_privacy_parameters(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with open(file_path, 'rb') as zip_file:
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'),
+                    data=(
+                        f'{{"sport_id": 1, "map_visibility": '
+                        f'"{input_map_visibility.value}", '
+                        f'"workout_visibility": '
+                        f'"{input_workout_visibility.value}"}}'
+                    ),
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
             )
-            assert 'data' not in data
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 3
+        for n in range(3):
+            assert (
+                data['data']['workouts'][n]['map_visibility']
+                == input_map_visibility.value
+            )
+            assert (
+                data['data']['workouts'][n]['workout_visibility']
+                == input_workout_visibility.value
+            )
 
     def test_it_cleans_uploaded_file_on_error(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -2818,8 +3198,64 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
 
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_workout_visibility',
+        [
+            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
+            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_workouts_are_created_with_valid_privacy_parameters_when_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        """
+        when workout visibility is stricter, map visibility is initialised
+        with workout visibility value
+        """
+        file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
-class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
+        with open(file_path, 'rb') as zip_file:
+            response = client.post(
+                '/api/workouts',
+                data=dict(
+                    file=(zip_file, 'gpx_test.zip'),
+                    data=(
+                        f'{{"sport_id": 1, "map_visibility": '
+                        f'"{input_map_visibility.value}", '
+                        f'"workout_visibility": '
+                        f'"{input_workout_visibility.value}"}}'
+                    ),
+                ),
+                headers=dict(
+                    content_type='multipart/form-data',
+                    Authorization=f'Bearer {auth_token}',
+                ),
+            )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert 'created' in data['status']
+        assert len(data['data']['workouts']) == 3
+        for n in range(3):
+            assert (
+                data['data']['workouts'][n]['map_visibility']
+                == input_workout_visibility.value
+            )
+            assert (
+                data['data']['workouts'][n]['workout_visibility']
+                == input_workout_visibility.value
+            )
+
+
+class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
     def workout_assertion(
         self, app: Flask, user_1: User, gpx_file: str, with_segments: bool
     ) -> None:
@@ -2844,9 +3280,9 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert 'just a workout' == data['data']['workouts'][0]['title']
         if with_segments:
-            assert_workout_data_with_gpx_segments(data)
+            assert_workout_data_with_gpx_segments(data, user_1)
         else:
-            assert_workout_data_with_gpx(data)
+            assert_workout_data_with_gpx(data, user_1)
         map_id = data['data']['workouts'][0]['map']
         workout_short_id = data['data']['workouts'][0]['id']
 
@@ -3024,7 +3460,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             'time': 'Tue, 13 Mar 2018 12:44:45 GMT',
         }
 
-    def test_it_returns_403_on_getting_chart_data_if_workout_belongs_to_another_user(  # noqa
+    def test_it_returns_404_on_getting_chart_data_if_workout_belongs_to_another_user(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -3057,7 +3493,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        self.assert_403(response)
+        self.assert_404(response)
 
     def test_it_returns_500_on_invalid_segment_id(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -3117,7 +3553,7 @@ class TestPostAndGetWorkoutWithGpx(ApiTestCaseMixin):
         assert 'data' not in data
 
 
-class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
+class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -3149,7 +3585,7 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
         assert response.status_code == 200
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
-        assert_workout_data_wo_gpx(data)
+        assert_workout_data_wo_gpx(data, user_1)
 
     def test_it_adds_and_gets_a_workout_wo_gpx_notes(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -3186,7 +3622,7 @@ class TestPostAndGetWorkoutWithoutGpx(ApiTestCaseMixin):
         assert 'new test with notes' == data['data']['workouts'][0]['notes']
 
 
-class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
+class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx_with_timezone(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
@@ -3344,3 +3780,238 @@ class TestPostAndGetWorkoutUsingTimezones(ApiTestCaseMixin):
             f'{sport_1_cycling.label} - 2018-01-01 00:00:00'
             == data['data']['workouts'][1]['title']
         )
+
+
+class TestPostWorkoutSuspensionAppeal(
+    WorkoutApiTestCaseMixin, ReportMixin, BaseTestMixin
+):
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client = app.test_client()
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_404_if_workout_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        workout_short_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = self.assert_404(response)
+        assert len(data['data']['workouts']) == 0
+
+    def test_it_returns_403_if_user_is_not_workout_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_2.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_400_if_workout_is_not_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message="workout is not suspended")
+
+    def test_it_returns_400_if_suspended_workout_has_no_report_action(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message="workout has no suspension")
+
+    @pytest.mark.parametrize(
+        'input_data', [{}, {"text": ""}, {"comment": "some text"}]
+    )
+    def test_it_returns_400_when_appeal_text_is_missing(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_data: Dict,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        self.create_report_workout_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type="application/json",
+            data=json.dumps(input_data),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, 'no text provided')
+
+    def test_user_can_appeal_comment_suspension(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        action = self.create_report_workout_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        text = self.random_string()
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            response = client.post(
+                f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+                content_type='application/json',
+                data=json.dumps(dict(text=text)),
+                headers=dict(Authorization=f'Bearer {auth_token}'),
+            )
+
+        assert response.status_code == 201
+        assert response.json == {"status": "success"}
+        appeal = ReportActionAppeal.query.filter_by(
+            action_id=action.id
+        ).first()
+        assert appeal.moderator_id is None
+        assert appeal.approved is None
+        assert appeal.created_at == now
+        assert appeal.user_id == user_1.id
+        assert appeal.updated_at is None
+
+    def test_user_can_appeal_comment_suspension_only_once(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2_admin: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        action = self.create_report_workout_action(
+            user_2_admin, user_1, workout_cycling_user_1
+        )
+        db.session.flush()
+        appeal = ReportActionAppeal(
+            action_id=action.id,
+            user_id=user_1.id,
+            text=self.random_string(),
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='you can appeal only once')
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

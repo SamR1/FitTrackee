@@ -66,10 +66,6 @@
         "WORKOUTS_COUNT": "número de treinos"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Conceda permissão de administrador",
-      "REMOVE_ADMIN_RIGHTS": "Remover permissão de administrador"
-    },
     "TITLE": "Administração - Usuários"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "O endereço de e-mail foi atualizado."

@@ -1,5 +1,5 @@
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Tuple
 
 import pytest
@@ -30,6 +30,24 @@ class TestGetEquipments(ApiTestCaseMixin):
         response = client.get('/api/equipments')
 
         self.assert_401(response)
+
+    def test_it_does_not_return_error_if_user_suspended(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/equipments',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['equipments'] == []
 
     def test_it_gets_all_user_equipments(
         self,
@@ -176,6 +194,30 @@ class TestGetEquipment(ApiTestCaseMixin):
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'success' in data['status']
+        assert data['data']['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]
+
+    def test_suspended_user_can_get_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        user_1.suspended_at = datetime.utcnow()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

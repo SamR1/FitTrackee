@@ -35,18 +35,39 @@ class UserDataExporter:
         )
 
     def get_user_info(self) -> Dict:
-        return self.user.serialize(self.user)
+        return self.user.serialize(current_user=self.user)
 
     def get_user_workouts_data(self) -> List[Dict]:
         workouts_data = []
         for workout in self.user.workouts:
-            workout_data = workout.get_workout_data()
+            workout_data = workout.get_workout_data(
+                self.user, additional_data=True, light=False
+            )
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
                 workout.gpx.split('/')[-1] if workout.gpx else None
             )
             workouts_data.append(workout_data)
         return workouts_data
+
+    def get_user_comments_data(self) -> List[Dict]:
+        comments_data = []
+        for comment in self.user.comments:
+            comments_data.append(
+                {
+                    'created_at': comment.created_at,
+                    'id': comment.short_id,
+                    'modification_date': comment.modification_date,
+                    'text': comment.text,
+                    'text_visibility': comment.text_visibility.value,
+                    'workout_id': (
+                        comment.workout.short_id
+                        if comment.workout_id
+                        else None
+                    ),
+                }
+            )
+        return comments_data
 
     def get_user_equipments_data(self) -> List[Dict]:
         return [equipment.serialize() for equipment in self.user.equipments]
@@ -70,6 +91,9 @@ class UserDataExporter:
             equipments_data_file_name = self.export_data(
                 self.get_user_equipments_data(), "equipments_data"
             )
+            comments_data_file_name = self.export_data(
+                self.get_user_comments_data(), "comments_data"
+            )
             zip_file = f"archive_{secrets.token_urlsafe(15)}.zip"
             zip_path = os.path.join(self.export_directory, zip_file)
             with ZipFile(zip_path, 'w') as zip_object:
@@ -79,6 +103,9 @@ class UserDataExporter:
                 )
                 zip_object.write(
                     equipments_data_file_name, "user_equipments_data.json"
+                )
+                zip_object.write(
+                    comments_data_file_name, "user_comments_data.json"
                 )
                 if self.user.picture:
                     picture_path = get_absolute_file_path(self.user.picture)
@@ -130,11 +157,11 @@ def export_user_data(export_request_id: int) -> None:
             db.session.commit()
 
             if current_app.config['CAN_SEND_EMAILS']:
-                ui_url = current_app.config['UI_URL']
+                fittrackee_url = current_app.config['UI_URL']
                 email_data = {
                     'username': user.username,
-                    'fittrackee_url': ui_url,
-                    'account_url': f'{ui_url}/profile/edit/account',
+                    'fittrackee_url': fittrackee_url,
+                    'account_url': f'{fittrackee_url}/profile/edit/account',
                 }
                 user_data = {
                     'language': get_language(user.language),

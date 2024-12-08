@@ -20,7 +20,6 @@
   "NEW_APP": "Legg til et program",
   "NO_APP": "Fant ikke program!",
   "NO_APPS": "ingen programmer",
-  "NO_DESCRIPTION": "ingen beskrivelse",
   "REVOKE_ALL_TOKENS": "Tilbakekall alle symboler",
   "TOKENS_REVOCATION_CONFIRMATION": "Tilbakekall alle symboler?",
   "TOKENS_REVOKED": "Alle eksisterende tilknyttede symbol tilbakekalt."

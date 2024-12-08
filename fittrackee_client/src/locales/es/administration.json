@@ -68,10 +68,6 @@
         "WORKOUTS_COUNT": "número de entramientos"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Otorgar permiso de admin",
-      "REMOVE_ADMIN_RIGHTS": "Retirar permiso de admin"
-    },
     "TITLE": "Administración - Usuarios"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "La dirección de email ha sido actualizada."

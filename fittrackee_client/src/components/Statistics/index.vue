@@ -47,19 +47,20 @@
     isDisabled: boolean
   }
   const props = defineProps<Props>()
+  const { sports, user } = toRefs(props)
 
   const { t } = useI18n()
 
-  const { sports, user } = toRefs(props)
   const selectedTimeFrame: Ref<TStatisticsTimeFrame> = ref('month')
   const selectedStatsType: Ref<TStatisticsType> = ref('total')
   const chartParams: Ref<IStatisticsDateParams> = ref(
     getChartParams(selectedTimeFrame.value, selectedStatsType.value)
   )
+  const selectedSportIds: Ref<number[]> = ref(getSports(sports.value))
+
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(props.sports, t)
   )
-  const selectedSportIds: Ref<number[]> = ref(getSports(sports.value))
 
   function updateTimeFrame(timeFrame: TStatisticsTimeFrame) {
     selectedTimeFrame.value = timeFrame

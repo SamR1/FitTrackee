@@ -1,6 +1,13 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment } from '@/types/equipments'
+import type { TCoordinates } from '@/types/map'
+import type {
+  IUserReportAction,
+  IUserLightProfile,
+  IUserProfile,
+  TVisibilityLevels,
+} from '@/types/user'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -58,14 +65,17 @@ export interface IWorkout {
   ascent: number | null
   ave_speed: number | null
   bounds: number[]
-  creation_date: string
+  creation_date: string | null
   descent: number | null
   description: string
-  distance: number
-  duration: string
+  distance: number | null
+  duration: string | null
   equipments: IEquipment[]
   id: string
+  liked: boolean
+  likes_count: number
   map: string | null
+  map_visibility?: TVisibilityLevels
   max_alt: number | null
   max_speed: number | null
   min_alt: number | null
@@ -78,12 +88,16 @@ export interface IWorkout {
   records: IRecord[]
   segments: IWorkoutSegment[]
   sport_id: number
+  suspended?: boolean
+  suspended_at?: string | null
+  suspension?: IUserReportAction
   title: string
-  user: string
+  user: IUserProfile
   weather_end: IWeather | null
   weather_start: IWeather | null
   with_gpx: boolean
   workout_date: string
+  workout_visibility?: TVisibilityLevels
 }
 
 export interface IWorkoutObject {
@@ -93,8 +107,11 @@ export interface IWorkoutObject {
   distance: number | null
   duration: string | null
   equipments: IEquipment[] | null
+  liked: boolean
+  likes_count: number
   maxAlt: number | null
   maxSpeed: number | null
+  mapVisibility: TVisibilityLevels | null | undefined
   minAlt: number | null
   moving: string | null
   nextUrl: string | null
@@ -102,6 +119,7 @@ export interface IWorkoutObject {
   previousUrl: string | null
   records: IRecord[]
   segmentId: number | null
+  suspended: boolean
   title: string
   type: string
   workoutDate: string
@@ -111,6 +129,7 @@ export interface IWorkoutObject {
   with_gpx: boolean
   workoutId: string
   workoutTime: string
+  workoutVisibility: TVisibilityLevels | null | undefined
 }
 
 export interface IWorkoutForm {
@@ -125,6 +144,8 @@ export interface IWorkoutForm {
   descent?: number | null
   equipment_ids: string[]
   description: string
+  map_visibility?: TVisibilityLevels
+  workout_visibility: TVisibilityLevels
 }
 
 export interface IWorkoutPayload {
@@ -170,11 +191,20 @@ export interface IWorkoutApiChartData {
   time: string
 }
 
+export interface ICurrentCommentEdition {
+  type?: string
+  comment?: IComment
+}
+
 export interface IWorkoutData {
   gpx: string
   loading: boolean
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
+  comments: IComment[]
+  commentsLoading: string | null
+  currentCommentEdition: ICurrentCommentEdition
+  currentReporting: boolean
 }
 
 export type TWorkoutDatasetKeys = 'speed' | 'elevation'
@@ -183,15 +213,49 @@ export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
 }
 
-export type TCoordinatesKeys = 'latitude' | 'longitude'
-
-export type TCoordinates = {
-  [key in TCoordinatesKeys]: number | null
-}
-
 export interface IWorkoutChartData {
   distance_labels: unknown[]
   duration_labels: unknown[]
   datasets: TWorkoutDatasets
   coordinates: TCoordinates[]
+}
+
+export interface IDuration {
+  days: string
+  duration: string
+}
+
+export interface IComment {
+  created_at: string
+  id: string
+  liked: boolean
+  likes_count: number
+  mentions: IUserProfile[]
+  modification_date: string | null
+  suspended?: boolean
+  suspended_at?: string | null
+  suspension?: IUserReportAction
+  text: string | null
+  text_html: string | null
+  text_visibility: TVisibilityLevels
+  user: IUserLightProfile
+  workout_id: string
+}
+
+export interface ICommentForm {
+  id?: string
+  text: string
+  text_visibility?: TVisibilityLevels
+  workout_id: string
+}
+
+export interface ICommentPayload {
+  workoutId: string
+  commentId: string
+}
+
+export interface IAppealPayload {
+  objectId: string
+  objectType: 'comment' | 'workout'
+  text: string
 }

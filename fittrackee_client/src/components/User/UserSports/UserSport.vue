@@ -66,16 +66,18 @@
       </dd>
     </dl>
     <div class="sport-buttons">
-      <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
-        {{ $t('buttons.EDIT') }}
-      </button>
-      <button
-        :disabled="loading"
-        class="danger"
-        @click.prevent="updateDisplayModal(true)"
-      >
-        {{ $t('buttons.RESET') }}
-      </button>
+      <template v-if="!authUser.suspended_at">
+        <button @click="$router.push(`/profile/edit/sports/${sport.id}`)">
+          {{ $t('buttons.EDIT') }}
+        </button>
+        <button
+          :disabled="authUserLoading"
+          class="danger"
+          @click.prevent="updateDisplayModal(true)"
+        >
+          {{ $t('buttons.RESET') }}
+        </button>
+      </template>
       <button
         @click="
           $router.push(
@@ -98,35 +100,30 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onUnmounted, toRefs, watch } from 'vue'
+  import { capitalize, computed, toRefs, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
 
   interface Props {
     authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
+  const { translatedSports } = toRefs(props)
 
-  const store = useStore()
   const route = useRoute()
 
-  const { translatedSports } = toRefs(props)
-  const {
-    displayModal,
-    errorMessages,
-    loading,
-    sportColors,
-    resetSport,
-    updateDisplayModal,
-  } = userSportComponent()
+  const { errorMessages } = useApp()
+  const { displayModal, sportColors, resetSport, updateDisplayModal } =
+    useSports()
+  const { authUserLoading } = useAuthUser()
 
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
@@ -145,11 +142,8 @@
     return filteredSportList[0]
   }
 
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-  })
   watch(
-    () => loading.value,
+    () => authUserLoading.value,
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         updateDisplayModal(false)

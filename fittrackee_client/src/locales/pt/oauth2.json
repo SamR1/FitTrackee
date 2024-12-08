@@ -31,7 +31,6 @@
   "NEW_APP": "Adicionar um aplicativo",
   "NO_APP": "Aplicação não encontrada!",
   "NO_APPS": "sem aplicativos",
-  "NO_DESCRIPTION": "sem descrição",
   "REVOKE_ALL_TOKENS": "Revogar todas as chaves",
   "TOKENS_REVOCATION_CONFIRMATION": "Tem certeza de revogar todas as chaves?",
   "TOKENS_REVOKED": "Todas as chaves associadas foram revogadas."

@@ -1,6 +1,8 @@
 import json
 import time
+from datetime import datetime
 from typing import Dict, List, Optional, Tuple, Union
+from unittest.mock import Mock
 from urllib.parse import parse_qs
 from uuid import uuid4
 
@@ -10,10 +12,13 @@ from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
+from fittrackee.comments.models import Comment
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
+from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
+from fittrackee.workouts.models import Workout
 
 from .custom_asserts import (
     assert_errored_response,
@@ -21,10 +26,41 @@ from .custom_asserts import (
 )
 from .utils import (
     TEST_OAUTH_CLIENT_METADATA,
+    get_date_string,
     random_email,
     random_int,
     random_string,
 )
+
+
+class BaseTestMixin:
+    """call args are returned differently between Python 3.7 and 3.7+"""
+
+    @staticmethod
+    def get_args(call_args: Tuple) -> Tuple:
+        if len(call_args) == 2:
+            args, _ = call_args
+        else:
+            _, args, _ = call_args
+        return args
+
+    @staticmethod
+    def get_kwargs(call_args: Tuple) -> Dict:
+        if len(call_args) == 2:
+            _, kwargs = call_args
+        else:
+            _, _, kwargs = call_args
+        return kwargs
+
+    def assert_call_args_keys_equal(
+        self, mock: Mock, expected_keys: List
+    ) -> None:
+        args_list = self.get_kwargs(mock.call_args)
+        assert list(args_list.keys()) == expected_keys
+
+    @staticmethod
+    def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
+        assert subset.items() <= container.items()
 
 
 class RandomMixin:
@@ -45,12 +81,22 @@ class RandomMixin:
         return random_email()
 
     @staticmethod
-    def random_int(min_val: int = 0, max_val: int = 999999) -> int:
-        return random_int(min_val, max_val)
+    def random_int(min_value: int = 0, max_value: int = 999999) -> int:
+        return random_int(min_value, max_value)
 
     @staticmethod
     def random_short_id() -> str:
         return encode_uuid(uuid4())
+
+    @staticmethod
+    def get_date_string(
+        *,
+        date_format: Optional[str] = None,
+        date: Optional[datetime] = None,
+    ) -> str:
+        return get_date_string(
+            date_format if date_format else '%a, %d %b %Y %H:%M:%S GMT', date
+        )
 
 
 class OAuth2Mixin(RandomMixin):
@@ -305,22 +351,173 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         else:
             self.assert_insufficient_scope(response)
 
+    @staticmethod
+    def assert_return_not_found(
+        url: str, client: FlaskClient, auth_token: str, message: str
+    ) -> None:
+        response = client.post(
+            url,
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
 
-class CallArgsMixin:
-    """call args are returned differently between Python 3.7 and 3.7+"""
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert data['status'] == 'not found'
+        assert data['message'] == message
+
+    def assert_return_user_not_found(
+        self, url: str, client: FlaskClient, auth_token: str
+    ) -> None:
+        self.assert_return_not_found(
+            url, client, auth_token, 'user does not exist'
+        )
+
+
+class ReportMixin(RandomMixin):
+    def create_report(
+        self,
+        *,
+        reporter: User,
+        reported_object: Union[Comment, User, Workout],
+        note: Optional[str] = None,
+    ) -> Report:
+        report = Report(
+            note=note if note else self.random_string(),
+            reported_by=reporter.id,
+            reported_object=reported_object,
+        )
+        db.session.add(report)
+        db.session.commit()
+        return report
+
+    def create_user_report(self, reporter: User, user: User) -> Report:
+        return self.create_report(reporter=reporter, reported_object=user)
 
     @staticmethod
-    def get_args(call_args: Tuple) -> Tuple:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
+    def create_report_action(
+        moderator: User,
+        user: User,
+        report_id: int,
+        *,
+        action_type: Optional[str] = None,
+        comment_id: Optional[int] = None,
+        workout_id: Optional[int] = None,
+    ) -> ReportAction:
+        report_action = ReportAction(
+            moderator_id=moderator.id,
+            action_type=action_type if action_type else "user_suspension",
+            comment_id=(
+                comment_id
+                if (
+                    comment_id
+                    and action_type
+                    and action_type.startswith("comment_")
+                )
+                else None
+            ),
+            report_id=report_id,
+            user_id=user.id,
+            workout_id=(
+                workout_id
+                if (
+                    workout_id
+                    and action_type
+                    and action_type.startswith("workout_")
+                )
+                else None
+            ),
+        )
+        db.session.add(report_action)
+        db.session.commit()
+        return report_action
 
-    @staticmethod
-    def get_kwargs(call_args: Tuple) -> Dict:
-        if len(call_args) == 2:
-            _, kwargs = call_args
-        else:
-            _, _, kwargs = call_args
-        return kwargs
+    def create_report_user_action(
+        self,
+        admin: User,
+        user: User,
+        action_type: str = "user_suspension",
+        report_id: Optional[int] = None,
+    ) -> ReportAction:
+        report_id = (
+            report_id if report_id else self.create_user_report(admin, user).id
+        )
+        report_action = self.create_report_action(
+            admin, user, action_type=action_type, report_id=report_id
+        )
+        user.suspended_at = (
+            datetime.utcnow() if action_type == "user_suspension" else None
+        )
+        db.session.commit()
+        return report_action
+
+    def create_report_workout_action(
+        self,
+        admin: User,
+        user: User,
+        workout: Workout,
+        action_type: str = "workout_suspension",
+    ) -> ReportAction:
+        report_action = ReportAction(
+            action_type=action_type,
+            moderator_id=admin.id,
+            report_id=self.create_report(
+                reporter=admin, reported_object=workout
+            ).id,
+            workout_id=workout.id,
+            user_id=user.id,
+        )
+        db.session.add(report_action)
+        return report_action
+
+    def create_report_comment_action(
+        self,
+        admin: User,
+        user: User,
+        comment: Comment,
+        action_type: str = "comment_suspension",
+    ) -> ReportAction:
+        report_action = ReportAction(
+            action_type=action_type,
+            moderator_id=admin.id,
+            comment_id=comment.id,
+            report_id=self.create_report(
+                reporter=admin, reported_object=comment
+            ).id,
+            user_id=user.id,
+        )
+        db.session.add(report_action)
+        comment.suspended_at = (
+            datetime.utcnow() if action_type == "comment_suspension" else None
+        )
+        return report_action
+
+    def create_report_comment_actions(
+        self, admin: User, user: User, comment: Comment
+    ) -> ReportAction:
+        for n in range(2):
+            action_type = (
+                "comment_suspension" if n % 2 == 0 else "comment_unsuspension"
+            )
+            report_action = self.create_report_comment_action(
+                admin, user, comment, action_type
+            )
+            db.session.add(report_action)
+        report_action = self.create_report_comment_action(
+            admin, user, comment, "comment_suspension"
+        )
+        db.session.add(report_action)
+        return report_action
+
+    def create_action_appeal(
+        self, action_id: int, user: User, with_commit: bool = True
+    ) -> ReportActionAppeal:
+        report_action_appeal = ReportActionAppeal(
+            action_id=action_id,
+            user_id=user.id,
+            text=self.random_string(),
+        )
+        db.session.add(report_action_appeal)
+        if with_commit:
+            db.session.commit()
+        return report_action_appeal

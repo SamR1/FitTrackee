@@ -1,7 +1,6 @@
 {
   "ACCOUNT_CONFIRMATION": "Kontobekreftelse",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Mottok du ikke noen instruks?",
-  "ADMIN": "Administrator",
   "ALREADY_HAVE_ACCOUNT": "Har du allerede en konto?",
   "CURRENT_PASSWORD": "Nåværende passord",
   "EMAIL": "E-post",
@@ -105,6 +104,9 @@
   "REGISTER_DISABLED": "Registrering er avskrudd.",
   "RESENT_ACCOUNT_CONFIRMATION": "Send kontobekreftelse per e-post igjen",
   "RESET_PASSWORD": "Tilbakestill passordet ditt",
+  "ROLES": {
+    "admin": "Administrator"
+  },
   "SHOW_PASSWORD": "vis passord",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Denne brukerkontoen er inaktiv.",
   "USERNAME": "Brukernavn",

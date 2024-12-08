@@ -1,11 +1,13 @@
 import datetime
 
+import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Record, Sport, Workout
 
 
+@pytest.mark.disable_autouse_update_records_patch
 class TestRecordModel:
     def test_record_model(
         self,

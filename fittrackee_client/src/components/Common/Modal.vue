@@ -16,8 +16,14 @@
             <i class="fa fa-exclamation-triangle" aria-hidden="true" />
             {{ warning }}
           </div>
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-          <div class="modal-buttons">
+          <ErrorMessage
+            :message="errorMessages"
+            v-if="errorMessages && !hideErrorMessage"
+          />
+          <div v-if="loading">
+            <Loader />
+          </div>
+          <div class="modal-buttons" v-else>
             <button
               class="confirm"
               :class="{ danger: warning }"
@@ -43,31 +49,30 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onUnmounted, onMounted, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { onUnmounted, onMounted, toRefs } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
-  import { useStore } from '@/use/useStore'
+  import useApp from '@/composables/useApp'
 
   interface Props {
     title: string
     message: string
     strongMessage?: string | null
+    loading?: boolean
     warning?: string
+    hideErrorMessage?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
+    loading: false,
     strongMessage: () => '',
     warning: () => '',
+    hideErrorMessage: false,
   })
+  const { title, message, strongMessage } = toRefs(props)
 
   const emit = defineEmits(['cancelAction', 'confirmAction'])
 
-  const store = useStore()
+  const { errorMessages } = useApp()
 
-  const { title, message, strongMessage } = toRefs(props)
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null
@@ -93,7 +98,6 @@
     document.addEventListener('keydown', focusTrap)
   })
   onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     document.removeEventListener('keydown', focusTrap)
     previousFocusedElement?.focus()
   })
@@ -152,6 +156,12 @@
             margin: 0 $default-margin $default-margin;
           }
         }
+      }
+      .loader {
+        border-width: 5px;
+        height: 20px;
+        margin-left: 45%;
+        width: 20px;
       }
     }
   }

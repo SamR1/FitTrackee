@@ -68,11 +68,13 @@ def handle_default_sports(
 
 
 @equipments_blueprint.route('/equipments', methods=['GET'])
-@require_auth(scopes=['equipments:read'])
+@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
 def get_equipments(auth_user: User) -> Dict:
     """
     Get all user equipments.
     Only the equipment owner can see his equipment.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``equipments:read``
 
@@ -176,13 +178,15 @@ def get_equipments(auth_user: User) -> Dict:
 @equipments_blueprint.route(
     '/equipments/<string:equipment_short_id>', methods=['GET']
 )
-@require_auth(scopes=['equipments:read'])
+@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
 def get_equipment_by_id(
     auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get an equipment item.
     Only the equipment owner can see his equipment.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``equipments:read``
 
