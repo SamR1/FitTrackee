@@ -271,7 +271,6 @@
           ::v-deep(.user-picture) {
             min-width: min-content;
             align-items: flex-start;
-            background-color: var(--comment-background);
             img {
               height: 25px;
               width: 25px;
