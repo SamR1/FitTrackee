@@ -155,7 +155,7 @@
     if (comment?.value) {
       return comment.value.text || ''
     }
-    // reply w/ mention
+    // comment w/ mention
     if (mentions.value.length > 0) {
       const filteredMentions = mentions.value.filter(
         (m) => m.username !== authUser.value.username
@@ -184,7 +184,7 @@
     ) {
       return `@${workout.value?.user.username} `
     }
-    // no mentions in reply
+    // no mentions in comment
     return ''
   }
   function searchUsers(usernameQuery: string) {

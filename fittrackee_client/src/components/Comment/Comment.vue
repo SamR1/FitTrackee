@@ -176,29 +176,6 @@
           </span>
         </div>
       </div>
-      <template v-if="!forNotification">
-        <CommentEdition
-          v-if="isNewReply()"
-          class="add-comment-reply"
-          :workout="workout"
-          :reply-to="comment"
-          :comments-loading="commentsLoading"
-          :name="`text-${comment.id}`"
-          :authUser="authUser"
-          :mentions="comment.mentions"
-        />
-        <Comment
-          v-for="reply in comment.replies"
-          :key="reply.id"
-          :comment="reply"
-          :workout="workout"
-          :authUser="authUser"
-          :comments-loading="commentsLoading"
-          :current-comment-edition="currentCommentEdition"
-          :action="reply.suspension"
-          @deleteComment="deleteComment(reply)"
-        />
-      </template>
     </div>
   </div>
 </template>
@@ -319,12 +296,6 @@
   function isCommentReported() {
     return (
       currentCommentEdition.value?.type === 'report' &&
-      currentCommentEdition.value?.comment?.id === comment.value.id
-    )
-  }
-  function isNewReply() {
-    return (
-      currentCommentEdition.value?.type === 'add' &&
       currentCommentEdition.value?.comment?.id === comment.value.id
     )
   }
@@ -483,9 +454,6 @@
         margin-top: $default-padding;
       }
 
-      .add-comment-reply {
-        margin: 0 0 40px;
-      }
       .likes {
         .likes-count {
           padding-left: $default-padding * 0.3;
