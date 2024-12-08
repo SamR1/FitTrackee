@@ -243,6 +243,17 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert "reported_count" not in serialized_user
         assert serialized_user["sanctions_count"] == 0
 
+    def test_it_does_return_reports_info_when_user_has_admin_rights(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        serialized_user = user_1_admin.serialize(
+            current_user=user_1_admin, light=False
+        )
+
+        assert serialized_user["created_reports_count"] == 0
+        assert serialized_user["reported_count"] == 0
+        assert serialized_user["sanctions_count"] == 0
+
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
     def test_it_returns_user_account_infos(

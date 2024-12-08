@@ -751,7 +751,7 @@ class User(BaseModel):
         if is_auth_user(role) or has_admin_rights(role):
             serialized_user['email_to_confirm'] = self.email_to_confirm
 
-        if has_moderator_rights(role):
+        if current_user and has_moderator_rights(UserRole(current_user.role)):
             reports_count = self.all_reports_count
             serialized_user['created_reports_count'] = reports_count[
                 'created_reports_count'
