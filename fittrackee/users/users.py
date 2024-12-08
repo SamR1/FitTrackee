@@ -215,13 +215,13 @@ def get_users(auth_user: User) -> Dict:
                             (default: ``username``)
     :query boolean with_following: returns hidden users followed by user if
            true
-    :query boolean with_hidden_users: returns hidden users if true (only if
+    :query boolean with_hidden_users: returns hidden users if ``true`` (only if
            authenticated user has administration rights - for users
            administration)
-    :query boolean with_inactive: returns inactive users if true (only if
+    :query boolean with_inactive: returns inactive users if ``true`` (only if
            authenticated user has administration rights - for users
            administration)
-    :query boolean with_suspended: returns suspended users if true (only if
+    :query boolean with_suspended: returns suspended users if ``true`` (only if
            authenticated user has administration rights - for users
            administration)
 
@@ -636,7 +636,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :param string user_name: user name
 
     :<json boolean activate: (de-)activate user account
-    :<json boolean role: user role ('user', 'admin', 'owner')
+    :<json boolean role: user role (``user``, ``admin``, ``moderator``).
+                   ``owner`` can only be set via **CLI**.
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
 

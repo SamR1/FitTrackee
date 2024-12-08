@@ -180,7 +180,7 @@ def accept_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Accept a follow request.
+    Accept a follow request from user.
 
     **Scope**: ``follow:write``
 
@@ -229,7 +229,7 @@ def reject_follow_request(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Reject a follow request.
+    Reject a follow request from user.
 
     **Scope**: ``follow:write``
 

@@ -234,8 +234,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
                             ``duration``, ``workout_date`` (default:
                             ``workout_date``)
-    :query string equipment_id: equipment id (if 'none', only workouts without
-                            equipments will be returned)
+    :query string equipment_id: equipment id (if ``none``, only workouts
+                            without equipments will be returned)
     :query string notes: any part (or all) of the workout notes,
                          notes matching is case-insensitive
     :query string description: any part of the workout description;
@@ -489,7 +489,8 @@ def get_workout(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``public`` or ``followers_only`` visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
@@ -605,7 +606,8 @@ def get_workout_gpx(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``public`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
@@ -674,7 +676,8 @@ def get_workout_chart_data(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``public`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
@@ -726,7 +729,8 @@ def get_segment_gpx(
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``public`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``
@@ -797,7 +801,8 @@ def get_segment_chart_data(
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``public`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``

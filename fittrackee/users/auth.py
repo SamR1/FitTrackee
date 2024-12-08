@@ -954,22 +954,22 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
-    :<json boolean hide_profile_in_users_directory: if true, user does not
+    :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                                                     appear in users directory
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
-    :<json string map_visibility: workouts map visibility
-                                  ('public', 'followers_only', 'private')
-    :<json boolean manually_approves_followers: if false, follow requests are
-                        automatically approved
+    :<json string map_visibility: workout map visibility
+                  (``public``, ``followers_only``, ``private``)
+    :<json boolean manually_approves_followers: if ``false``, follow requests
+                  are automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
-    :<json boolean use_dark_mode: Display interface with dark mode if true.
-                   If null, it uses browser preferences.
+    :<json boolean use_dark_mode: Display interface with dark mode if ``true``.
+                   If ``null``, it uses browser preferences.
     :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
     :<json string workouts_visibility: user workouts visibility
-                                      ('public', 'followers_only', 'private')
+                  (``public``, ``followers_only``, ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
