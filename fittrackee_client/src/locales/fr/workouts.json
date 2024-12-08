@@ -71,6 +71,7 @@
   "PREVIOUS_SEGMENT": "Segment précédent",
   "PREVIOUS_WORKOUT": "Séance précédente",
   "PRIVATE_NOTES": "Notes personnelles",
+  "PRIVATE_NOTES_FIELD_HELP": "ces notes ne sont visibles que par vous.",
   "RECORD": "record | records",
   "RECORD_AS": "Vitesse moy.",
   "RECORD_FD": "Distance la + longue",
