@@ -11,6 +11,10 @@
             :placeholder="$t('workouts.COMMENTS.ADD')"
             @updateValue="updateText"
           />
+          <div class="markdown-hints info-box">
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('workouts.MARKDOWN_SYNTAX') }}
+          </div>
           <ul class="users-suggestions" v-if="matchingUsers.length > 0">
             <li
               v-for="user in matchingUsers"
@@ -224,7 +228,7 @@
   .add-comment {
     margin: $default-margin * 2 0;
     .comment {
-      padding: $default-padding 0;
+      padding: $default-padding 0 0;
     }
     .form-select-buttons {
       display: flex;

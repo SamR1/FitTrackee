@@ -41,6 +41,7 @@
   "LIKES": "like | likes",
   "LIKE_WORKOUT": "Liker la séance",
   "MAP": "carte",
+  "MARKDOWN_SYNTAX": "La syntaxe Markdown suivante peut être utilisée : _italique_, **gras**, [lien](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "altitude max",
   "MAX_FILES": "fichiers max. ",
   "MAX_SIZE": "taille max. ",
