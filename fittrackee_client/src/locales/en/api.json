@@ -17,6 +17,7 @@
     "error on getting configuration": "Error on getting configuration.",
     "error when saving workout": "Error when saving workout.",
     "error when updating configuration": "Error when updating configuration",
+    "error while fetching comments": "Error while fetching comments",
     "error, please try again or contact the administrator": "Error, please try again or contact the administrator.",
     "error, registration is disabled": "Error, registration is disabled.",
     "file extension not allowed": "File extension not allowed.",

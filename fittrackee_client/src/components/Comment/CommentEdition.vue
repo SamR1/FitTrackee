@@ -11,6 +11,10 @@
             :placeholder="$t('workouts.COMMENTS.ADD')"
             @updateValue="updateText"
           />
+          <div class="markdown-hints info-box">
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('workouts.MARKDOWN_SYNTAX') }}
+          </div>
           <ul class="users-suggestions" v-if="matchingUsers.length > 0">
             <li
               v-for="user in matchingUsers"
@@ -187,6 +191,7 @@
     store.dispatch(USERS_STORE.ACTIONS.GET_USERS, {
       per_page: 5,
       q: usernameQuery,
+      with_following: 'true',
     })
   }
   function updateText(textareaData: ICustomTextareaData) {
@@ -265,7 +270,7 @@
   .add-comment {
     margin: $default-margin * 2 0;
     .comment {
-      padding: $default-padding 0;
+      padding: $default-padding 0 0;
     }
     .form-select-buttons {
       display: flex;
@@ -308,7 +313,6 @@
           ::v-deep(.user-picture) {
             min-width: min-content;
             align-items: flex-start;
-            background-color: var(--comment-background);
             img {
               height: 25px;
               width: 25px;

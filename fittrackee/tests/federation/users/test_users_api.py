@@ -178,12 +178,15 @@ class TestGetRemoteUsers(ApiTestCaseMixin):
             app_with_federation, user_1.email
         )
 
-        with patch(
-            'fittrackee.federation.utils.user.fetch_account_from_webfinger',
-            return_value=random_actor.get_webfinger(),
-        ), patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
-            return_value=random_actor.get_remote_user_object(),
+        with (
+            patch(
+                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                return_value=random_actor.get_webfinger(),
+            ),
+            patch(
+                'fittrackee.federation.utils.user.get_remote_actor_url',
+                return_value=random_actor.get_remote_user_object(),
+            ),
         ):
             response = client.get(
                 f'/api/users/remote?q=@{random_actor.fullname}',

@@ -574,6 +574,38 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1_admin.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1_admin)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_admin.serialize(current_user=user_1_admin)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1_admin)
+        )
+
     def test_it_gets_all_users(
         self,
         app: Flask,
@@ -933,7 +965,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_admin_rights(
+    def test_it_gets_users_list_ordered_by_role(
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -941,7 +973,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=admin',
+            '/api/users?order_by=role',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -960,7 +992,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_admin_rights_ascending(
+    def test_it_gets_users_list_ordered_by_role_ascending(
         self, app: Flask, user_2: User, user_1_admin: User, user_3: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -968,7 +1000,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=admin&order=asc',
+            '/api/users?order_by=role&order=asc',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -987,7 +1019,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             'total': 3,
         }
 
-    def test_it_gets_users_list_ordered_by_admin_rights_descending(
+    def test_it_gets_users_list_ordered_by_role_descending(
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -995,7 +1027,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=admin&order=desc',
+            '/api/users?order_by=role&order=desc',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -1530,6 +1562,93 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
+class TestGetUsersAsModerator(ApiTestCaseMixin):
+    @pytest.mark.parametrize(
+        'input_description, input_params',
+        [
+            ("without params", ""),
+            ("with inactive users", "?with_inactive=true"),
+            ("with hidden users", "?with_hidden=true"),
+            ("with suspended users", "?with_suspended=true"),
+            (
+                "all params",
+                "?with_hidden=true&with_inactive=true&with_suspended=true",
+            ),
+        ],
+    )
+    def test_it_gets_users_list_without_inactive_hidden_or_suspended_users(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        inactive_user: User,
+        user_3: User,
+        user_4: User,
+        input_description: str,
+        input_params: str,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_4.suspended_at = datetime.utcnow()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.get(
+            f'/api/users{input_params}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_moderator.serialize(current_user=user_1_moderator)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_3.serialize(current_user=user_1_moderator)
+        )
+        assert data['pagination'] == {
+            'has_next': False,
+            'has_prev': False,
+            'page': 1,
+            'pages': 1,
+            'total': 2,
+        }
+
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1_moderator.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1_moderator)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_moderator.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1_moderator.serialize(current_user=user_1_moderator)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1_moderator)
+        )
+
+
 class TestGetUsersAsUser(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description, input_params',
@@ -1583,6 +1702,38 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
             'pages': 1,
             'total': 2,
         }
+
+    def test_it_gets_following_user_when_profile_is_hidden(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+    ) -> None:
+        user_2.hide_profile_in_users_directory = True
+        user_3.hide_profile_in_users_directory = True
+        user_1.send_follow_request_to(user_2)
+        user_2.approves_follow_request_from(user_1)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users?with_following=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert data['status'] == 'success'
+        assert len(data['data']['users']) == 2
+        assert data['data']['users'][0] == jsonify_dict(
+            user_1.serialize(current_user=user_1)
+        )
+        assert data['data']['users'][1] == jsonify_dict(
+            user_2.serialize(current_user=user_1)
+        )
 
     def test_it_gets_users_list_with_workouts(
         self,
@@ -1791,7 +1942,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize('input_role', ["admin", "user"])
-    def test_it_updates_moderator_role(
+    def test_it_updates_role_for_moderator(
         self,
         app: Flask,
         user_1_admin: User,
@@ -1836,7 +1987,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize('input_role', ["moderator", "user"])
-    def test_it_updates_admin_role(
+    def test_it_updates_role_for_admin_user(
         self,
         app: Flask,
         user_1_admin: User,

@@ -54,12 +54,15 @@ class TestGetMentionedUsers:
     ) -> None:
         text = f"@{random_actor.fullname} {random_string()}"
 
-        with patch(
-            'fittrackee.federation.utils.user.fetch_account_from_webfinger',
-            return_value=random_actor.get_webfinger(),
-        ), patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
-            return_value=random_actor.get_remote_user_object(),
+        with (
+            patch(
+                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                return_value=random_actor.get_webfinger(),
+            ),
+            patch(
+                'fittrackee.federation.utils.user.get_remote_actor_url',
+                return_value=random_actor.get_remote_user_object(),
+            ),
         ):
             _, mentioned_users = handle_mentions(text)
 

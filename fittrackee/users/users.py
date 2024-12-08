@@ -4,7 +4,7 @@ import shutil
 from typing import Any, Dict, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
-from sqlalchemy import asc, desc, exc, func, nullslast
+from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
 
 from fittrackee import appLog, db, limiter
 from fittrackee.emails.tasks import (
@@ -69,7 +69,7 @@ def _get_value_depending_on_user_rights(
     params: Dict, key: str, auth_user: Optional[User]
 ) -> str:
     value = params.get(key, 'false').lower()
-    if not auth_user or not auth_user.has_moderator_rights:
+    if not auth_user or not auth_user.has_admin_rights:
         value = 'false'
     return value
 
@@ -104,8 +104,6 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     if per_page > 50:
         per_page = 50
     column = params.get('order_by', 'username')
-    if column == "admin":
-        column = "role"
     user_column = getattr(User, column)
     order = params.get('order', 'asc')
     order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
@@ -122,6 +120,12 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     with_suspended_users = _get_value_depending_on_user_rights(
         params, 'with_suspended', auth_user
     )
+    with_following = params.get('with_following', 'false').lower()
+    following_user_ids = (
+        auth_user.get_following_user_ids()
+        if with_following == 'true'
+        else ([], [])
+    )
     users_pagination = (
         User.query.filter(
             User.username.ilike('%' + query + '%') if query else True,
@@ -129,10 +133,15 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             (
                 True if with_inactive == 'true' else User.is_active == True  # noqa
             ),
-            (
+            or_(
                 True
                 if with_hidden_users == 'true' or remote
-                else User.hide_profile_in_users_directory == False  # noqa
+                else User.hide_profile_in_users_directory == False,  # noqa
+                # TODO: handle remote users?
+                and_(
+                    User.id.in_(following_user_ids[0]),
+                    User.hide_profile_in_users_directory == True,  # noqa
+                ),
             ),
             (
                 True
@@ -306,8 +315,19 @@ def get_users(auth_user: User) -> Dict:
     :query string q: query on user name
     :query string order: sorting order: ``asc``, ``desc`` (default: ``asc``)
     :query string order_by: sorting criteria: ``username``, ``created_at``,
-                            ``workouts_count``, ``admin``, ``is_active``
+                            ``workouts_count``, ``role``, ``is_active``
                             (default: ``username``)
+    :query boolean with_following: returns hidden users followed by user if
+           true
+    :query boolean with_hidden_users: returns hidden users if ``true`` (only if
+           authenticated user has administration rights - for users
+           administration)
+    :query boolean with_inactive: returns inactive users if ``true`` (only if
+           authenticated user has administration rights - for users
+           administration)
+    :query boolean with_suspended: returns suspended users if ``true`` (only if
+           authenticated user has administration rights - for users
+           administration)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -744,7 +764,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     :param string user_name: user name
 
     :<json boolean activate: (de-)activate user account
-    :<json boolean role: user role ('user', 'admin', 'owner')
+    :<json boolean role: user role (``user``, ``admin``, ``moderator``).
+                   ``owner`` can only be set via **CLI**.
     :<json boolean new_email: new user email
     :<json boolean reset_password: reset user password
 

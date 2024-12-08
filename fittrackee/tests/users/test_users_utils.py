@@ -145,13 +145,11 @@ class TestRegisterControls:
     valid_password = random_string()
 
     def test_it_calls_all_validators(self) -> None:
-        with patch(
-            self.module_path + 'check_password'
-        ) as check_passwords_mock, patch(
-            self.module_path + 'check_username'
-        ) as check_username_mock, patch(
-            self.module_path + 'is_valid_email'
-        ) as is_valid_email_mock:
+        with (
+            patch(self.module_path + 'check_password') as check_passwords_mock,
+            patch(self.module_path + 'check_username') as check_username_mock,
+            patch(self.module_path + 'is_valid_email') as is_valid_email_mock,
+        ):
             register_controls(
                 self.valid_username,
                 self.valid_email,

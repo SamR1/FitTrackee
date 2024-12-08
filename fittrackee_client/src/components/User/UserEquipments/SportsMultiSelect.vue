@@ -108,8 +108,8 @@
     color: var(--multiselect-option-selected-highlight-color);
   }
   ::v-deep(
-      .multiselect__option--selected.multiselect__option--highlight::after
-    ) {
+    .multiselect__option--selected.multiselect__option--highlight::after
+  ) {
     background: var(--multiselect-option-selected-highlight-after-bg-color);
     color: var(--multiselect-option-selected-highlight-after-color);
   }

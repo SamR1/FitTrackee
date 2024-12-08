@@ -568,3 +568,9 @@ button {
   display: flex;
   align-items: center;
 }
+
+.markdown-hints {
+  font-size: 0.8em;
+  font-style: normal;
+  margin: $default-margin * 0.5 0 $default-margin;
+}

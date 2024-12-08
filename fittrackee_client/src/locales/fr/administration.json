@@ -135,9 +135,9 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "status administrateur",
         "CREATED_AT": "date d'inscription",
         "IS_ACTIVE": "statut du compte",
+        "ROLE": "rôle",
         "USERNAME": "nom d'utilisateur",
         "WORKOUTS_COUNT": "nombre de séances"
       }

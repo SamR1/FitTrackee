@@ -19,13 +19,16 @@ class TestUpdateRemoteServer:
                 'version': expected_software_version,
             },
         }
-        with patch(
-            'fittrackee.federation.tasks.remote_server.'
-            'get_remote_server_node_info_url'
-        ), patch(
-            'fittrackee.federation.tasks.remote_server.'
-            'get_remote_server_node_info_data',
-            return_value=node_info_data,
+        with (
+            patch(
+                'fittrackee.federation.tasks.remote_server.'
+                'get_remote_server_node_info_url'
+            ),
+            patch(
+                'fittrackee.federation.tasks.remote_server.'
+                'get_remote_server_node_info_data',
+                return_value=node_info_data,
+            ),
         ):
             update_remote_server(remote_domain.name)
 

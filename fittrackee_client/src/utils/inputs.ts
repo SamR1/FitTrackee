@@ -8,11 +8,8 @@ export const linkifyAndClean = (input: string): string => {
   return sanitizeHtml(
     linkifyHtml(
       marked.parseInline(input, {
-        mangle: false,
-        headerIds: false,
-        headerPrefix: '',
         pedantic: true,
-      }),
+      }) as string,
       {
         target: '_blank',
         validate: {

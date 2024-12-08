@@ -176,7 +176,7 @@ def get_sports(auth_user: User) -> Dict:
 
     :query boolean check_workouts: check if sport has workouts
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token if user is authenticated
 
     :statuscode 200: ``success``
     :statuscode 401:

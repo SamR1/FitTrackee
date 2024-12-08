@@ -197,7 +197,7 @@
 
   const orderByList = [
     'is_active',
-    'admin',
+    'role',
     'created_at',
     'username',
     'workouts_count',
@@ -280,6 +280,7 @@
   onBeforeMount(() => loadUsers(query))
   onUnmounted(() => {
     store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
   })
 </script>
 

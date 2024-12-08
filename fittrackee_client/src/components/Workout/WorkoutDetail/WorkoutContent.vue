@@ -32,6 +32,10 @@
               :rows="contentType === 'NOTES' ? 2 : 5"
               @updateValue="updateContent"
             />
+            <div class="markdown-hints info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('workouts.MARKDOWN_SYNTAX') }}
+            </div>
             <div class="form-buttons">
               <button class="confirm" type="submit" :disabled="loading">
                 {{ $t('buttons.SUBMIT') }}

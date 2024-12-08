@@ -357,13 +357,19 @@
                 </div>
               </div>
               <div class="form-item" v-if="isCreation">
-                <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
+                <label for="notes"> {{ $t('workouts.PRIVATE_NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
                   :input="workoutForm.notes"
                   :disabled="loading"
                   @updateValue="updateNotes"
                 />
+                <div class="field-help" v-if="isCreation">
+                  <span class="info-box">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.PRIVATE_NOTES_FIELD_HELP') }}
+                  </span>
+                </div>
               </div>
             </div>
             <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -775,8 +781,8 @@
             .form-item {
               display: flex;
               flex-direction: column;
-              padding: $default-padding * 0.5 $default-padding $default-padding *
-                0.25;
+              padding: $default-padding * 0.5 $default-padding
+                $default-padding * 0.25;
 
               .workout-date-time {
                 display: flex;

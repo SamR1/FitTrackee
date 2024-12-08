@@ -411,7 +411,11 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         }
       })
       .catch((error) => {
-        handleError(context, error)
+        handleError(
+          context,
+          error.status === 500 ? null : error,
+          'error when getting comments'
+        )
       })
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
