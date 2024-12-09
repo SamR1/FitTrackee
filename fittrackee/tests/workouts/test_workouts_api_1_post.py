@@ -2695,9 +2695,12 @@ class TestPostWorkoutWithZipArchive(ApiTestCaseMixin):
         )
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
-        with open(file_path, 'rb') as zip_file, patch(
-            'fittrackee.workouts.utils.workouts.generate_map',
-            side_effect=Exception(),
+        with (
+            open(file_path, 'rb') as zip_file,
+            patch(
+                'fittrackee.workouts.utils.workouts.generate_map',
+                side_effect=Exception(),
+            ),
         ):
             client.post(
                 '/api/workouts',
