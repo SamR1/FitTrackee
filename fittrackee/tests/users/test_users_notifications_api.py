@@ -1957,3 +1957,193 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
+    route = "/api/notifications/types"
+
+    def test_it_returns_error_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(self.route, content_type="application/json")
+
+        self.assert_401(response)
+
+    def test_it_returns_error_if_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_empty_list_when_no_notifications(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notification_types"] == []
+
+    @pytest.mark.parametrize('input_params', ['', '?status=all'])
+    def test_it_returns_all_users_notifications_types(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_params: str,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+            with_mentions=True,
+        )
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        like_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1.id,
+            event_type="workout_like",
+        ).first()
+        like_notification.marked_as_read = True
+        db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}{input_params}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert set(data["notification_types"]) == {
+            "workout_comment",
+            "workout_like",
+        }
+
+    def test_it_returns_only_unread_notifications(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+            with_mentions=True,
+        )
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        like_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1.id,
+            event_type="workout_like",
+        ).first()
+        like_notification.marked_as_read = True
+        db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?status=unread",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notification_types"] == [
+            "workout_comment",
+        ]
+
+    def test_it_returns_only_read_notifications(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        self.create_comment(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+            with_mentions=True,
+        )
+        like = WorkoutLike(
+            user_id=user_2.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(like)
+        like_notification = Notification.query.filter_by(
+            from_user_id=user_2.id,
+            to_user_id=user_1.id,
+            event_type="workout_like",
+        ).first()
+        like_notification.marked_as_read = True
+        db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?status=read",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["notification_types"] == [
+            "workout_like",
+        ]

@@ -134,7 +134,8 @@ def post_workout_comment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``Error during comment save.``
     """
@@ -275,6 +276,8 @@ def get_workout_comment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout comment not found``
     """
     return (
@@ -351,7 +354,7 @@ def get_workout_comments(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+    :reqheader Authorization: OAuth 2.0 Bearer Token for comments with
         ``private`` and ``followers_only`` visibility
 
     :statuscode 200: ``success``
@@ -359,6 +362,8 @@ def get_workout_comments(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``Error during comment save.``
     """
@@ -408,15 +413,16 @@ def delete_workout_comment(
 
     :param string comment_short_id: comment short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-        ``private`` and ``followers_only`` visibility
+    :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 204: comment deleted
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
@@ -512,7 +518,9 @@ def update_workout_comment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
@@ -614,7 +622,9 @@ def like_comment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     """
     if comment.suspended_at:
@@ -705,7 +715,9 @@ def undo_comment_like(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     """
     like = CommentLike.query.filter_by(
@@ -777,7 +789,9 @@ def appeal_comment_suspension(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """

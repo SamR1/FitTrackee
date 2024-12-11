@@ -12,15 +12,21 @@ import type {
   INotification,
   INotificationPayload,
   INotificationsPayload,
+  TNotificationType,
 } from '@/types/notifications'
 
 export interface INotificationsState {
   notifications: INotification[]
   unread: boolean
   pagination: IPagination
+  types: TNotificationType[]
 }
 
 export interface INotificationsActions {
+  [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATION_TYPES](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationsPayload
+  ): void
   [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS](
     context: ActionContext<INotificationsState, IRootState>,
     payload: INotificationsPayload
@@ -45,6 +51,9 @@ export interface INotificationsGetters {
   [NOTIFICATIONS_STORE.GETTERS.PAGINATION](
     state: INotificationsState
   ): IPagination
+  [NOTIFICATIONS_STORE.GETTERS.TYPES](
+    state: INotificationsState
+  ): TNotificationType[]
   [NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS](
     state: INotificationsState
   ): boolean
@@ -58,6 +67,10 @@ export type TNotificationsMutations<S = INotificationsState> = {
   [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_PAGINATION](
     state: S,
     pagination: IPagination
+  ): void
+  [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_TYPES](
+    state: S,
+    types: TNotificationType[]
   ): void
   [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_UNREAD_STATUS](
     state: S,

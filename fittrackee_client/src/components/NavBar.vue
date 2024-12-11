@@ -80,6 +80,7 @@
               v-if="!isAuthUserSuspended"
               class="nav-item nav-profile-img notifications"
               to="/notifications?status=unread"
+              :title="capitalize($t('notifications.NOTIFICATIONS', 0))"
               @click="closeMenu"
             >
               <i
@@ -376,12 +377,15 @@
         .nav-button-text {
           display: none;
         }
+        &.logout-button {
+          padding: $default-padding * 0.6 0 0 $default-padding * 0.6;
+        }
       }
 
       .clear-theme {
         filter: var(--workout-img-color);
         height: 20px;
-        margin-bottom: -5px;
+        margin-bottom: -3px;
       }
     }
 
@@ -499,7 +503,7 @@
         }
       }
       .theme-button {
-        margin-left: $default-padding * 2;
+        margin-left: $default-padding * 1.5;
       }
     }
     .fa-language {

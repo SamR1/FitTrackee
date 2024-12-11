@@ -1,6 +1,7 @@
 OAuth 2.0
 #########
-(*new in 0.7.0*)
+
+.. versionadded:: 0.7.0
 
 FitTrackee provides a REST API (see `documentation <api/index.html>`__) whose
 most endpoints require authentication/authorization.
@@ -28,12 +29,18 @@ The following scopes are available:
 - ``application:write``: grants write access to application configuration (only for users with administration rights),
 - ``equipments:read``: grants read access to equipments endpoints (*new in 0.8.0*),
 - ``equipments:write``: grants write access to equipments endpoints (*new in 0.8.0*),
+- ``follow:read``: grants read access to follow requests and followers endpoints (*new in 0.9.0*),
+- ``follow:write``: grants write access to requests and followers endpoints (*new in 0.9.0*),
+- ``notifications:read``: grants read access to notifications endpoints (*new in 0.9.0*),
+- ``notifications:write``: grants write access to notifications endpoints (*new in 0.9.0*),
 - ``profile:read``: grants read access to auth endpoints,
 - ``profile:write``: grants write access to auth endpoints,
+- ``reports:read``: grants read access to reports endpoints (*new in 0.9.0*),
+- ``reports:write``: grants write access to reports endpoints (*new in 0.9.0*),
 - ``users:read``: grants read access to users endpoints,
 - ``users:write``: grants write access to users endpoints,
-- ``workouts:read``: grants read access to workouts-related endpoints,
-- ``workouts:write``: grants write access to workouts-related endpoints.
+- ``workouts:read``: grants read access to workouts and comments endpoints (*changed in 0.9.0*),
+- ``workouts:write``: grants write access to workouts and comments endpoints (*changed in 0.9.0*).
 
 
 Flow
@@ -41,7 +48,7 @@ Flow
 
 - The user creates an App (client) on FitTrackee for a third-party application.
 
-  .. figure:: _images/fittrackee_screenshot-07.png
+  .. figure:: _images/oauth2-client-creation.png
    :alt: OAuth2 client creation on FitTrackee
 
   | After registration, the client id and secret are shown.
@@ -49,7 +56,7 @@ Flow
 
 - | The 3rd-party app needs to redirect to FitTrackee, in order for the user to authorize the 3rd-party app to access user data on FitTrackee.
 
-  .. figure:: _images/fittrackee_screenshot-08.png
+  .. figure:: _images/oauth2-app-authorization.png
    :alt: App authorization on FitTrackee
 
   | The authorization URL is ``https://<FITTRACKEE_HOST>/profile/apps/authorize``.
@@ -72,7 +79,7 @@ Flow
   | ``https://<FITTRACKEE_HOST>/profile/apps/authorize?response_type=code&client_id=<CLIENT_ID>&scope=profile%3Aread+workouts%3Awrite&state=<STATE>&code_challenge=<CODE_CHALLENGE>&code_challenge_method=S256``
 
 
-- | After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint `/api/oauth/token <https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token>`_).
+- | After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint `/api/oauth/token <api/oauth2.html#post--api-oauth-token>`_).
   | Example of a redirect URL:
   | ``https://example.com/callback?code=<AUTHORIZATION_CODE>&state=<STATE>``
 

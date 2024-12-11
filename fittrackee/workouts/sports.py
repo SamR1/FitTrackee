@@ -282,6 +282,8 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport not found``
 
     """
@@ -373,12 +375,15 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: sport updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 

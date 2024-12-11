@@ -191,7 +191,10 @@ def get_workouts_by_time(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 404: ``user does not exist``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404:
+        - ``user does not exist``
 
     """
     try:
@@ -437,6 +440,8 @@ def get_workouts_by_sport(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``user does not exist``
         - ``sport does not exist``
@@ -564,7 +569,9 @@ def get_application_stats(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     """
 
     total_workouts = Workout.query.filter().count()

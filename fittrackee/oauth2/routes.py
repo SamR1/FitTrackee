@@ -189,6 +189,8 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     client_metadata = request.get_json()
     if not client_metadata:
@@ -551,6 +553,8 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     data = request.form
     if (

@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
 </ul>
@@ -681,25 +686,29 @@
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.3.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.5.3: </span>Les informations d’identification et le port peuvent être omis</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.5: </span>Désactivation de l’envoi des courriels</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.24: </span>gestion des caractères spéciaux dans le mot de passe</p>
+</div>
 <p>Pour l’envoi des courriels, une valeur valide pour la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> doit être fourni :</p>
 <ul class="simple">
 <li><p>avec un SMTP server sans chiffrement : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
 <li><p>avec SSL : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>avec STARTTLS : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
+<p>Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>. Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code>, the port utilisé par défault est 25.</p>
+<p>Le mot de passe peut être encodé s’il contient des caractères spéciaux. Par exemple avec le mot de passe <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, le mot de passe encodé sera <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
 <div class="line">Si l’URL du serveur est invalide, l’envoi des courriels sera désactivé.</div>
 <div class="line">L’envoi de courriels avec Office365 peut ne pas fonctionner si l’authentification SMTP est désactivée.</div>
 </div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.5.3.</span></p>
-</div>
-<div class="line-block">
-<div class="line">Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
-<div class="line">Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis, the port par défaut est 25.</div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -714,21 +723,23 @@
 <li><p>changement d’adresse électronique (vers l’ancienne et la nouvelle adresse)</p></li>
 <li><p>changement de mot de passe</p></li>
 <li><p>notification lorsqu’une archive d’export de données est prête à être téléchargée (<em>ajouté dans la version 0.7.13</em>)</p></li>
+<li><p>suspension et avertissement (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>levée de suspension et d’avertissement (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>appel rejeté (<em>nouveau dans la version 0.9.0</em>)</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
-</div>
 <p>Dans le cas des instances avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
 <p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.24.</span></p>
-</div>
-<p>Le mot de passe peut être encodé s’il contient des caractères spéciaux. Par exemple avec le mot de passe <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, le mot de passe encodé sera <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 </section>
 <section id="map-tile-server">
 <h2>Serveur de tuiles<a class="headerlink" href="#map-tile-server" title="Lien vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.4.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.10: </span>Gestion des sous-domaines du serveur de tuile</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.23: </span>Le serveur de tuiles par défaut (<strong>OpenStreetMap</strong>) ne nécessite plus de sous-domaines.</p>
 </div>
 <p>Le serveur de tuiles par défaut est maintenant le serveur standard d”<strong>OpenStreetMap</strong> (si les variables d’environnements ne sont pas initialisées). Le serveur de tuile peut être changé en modifiant les variables <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> et <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers">liste des serveurs de tuiles</a>).</p>
 <p>Pour conserver <strong>ThunderForest Outdoors</strong>, la configuration est :</p>
@@ -742,9 +753,6 @@
 <div class="line">Vérifier les conditions d’utilisation du fournisseur de tuiles pour l’attribution des cartes.</div>
 </div>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.6.10.</span></p>
-</div>
 <p>Depuis que le serveur de tuiles peut être utilisé pour la génération des images statiques de cartes, certains serveurs nécessitent un sous-domaine.</p>
 <p>Par exemple, pour configurer le serveur d'OSM France, les valeurs attendues sont :</p>
 <ul class="simple">
@@ -753,10 +761,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
 </ul>
 <p>Le sous-domaine sera choisi de manière aléatoire.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Ajouté dans la version 0.7.23.</span></p>
-</div>
-<p>L’URL par défaut a été mise à jour : le serveur de tuiles <strong>OpenStreetMap</strong> ne nécessite plus de sous-domaines.</p>
+<p>Le serveur de tuiles par défault (<strong>OpenStreetMap</strong>) ne nécessite plus de sous-domaines.</p>
 </section>
 <section id="api-rate-limits">
 <h2>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien vers cette rubrique">¶</a></h2>
@@ -800,20 +805,23 @@ Commands:
 <section id="weather-data">
 <h2>Données météo<a class="headerlink" href="#weather-data" title="Lien vers cette rubrique">¶</a></h2>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.11.</span></p>
+<p><span class="versionmodified changed">Modifié dans la version 0.7.11: </span>Ajout de Visual Crossing parmi les fournisseurs de données météo.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.15: </span>Suppression de Darksky des fournisseurs de données météo.</p>
 </div>
 <p>Les fournisseurs de données météo suivants sont pris en charge par <strong>FitTrackee</strong> :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong> : les données historiques sont fournies sur une période d’une heure)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
+</div>
 <p>Pour configurer un fournisseur de données météo, initialiser les variables d’environnement suivantes :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code> : clé d’API correspondant au fournisseur de données météo</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.15.</span></p>
-</div>
-<p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
 </section>
 <section id="id2">
 <h2>Installation<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
@@ -1183,12 +1191,12 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Pour gérer les fichiers de taille importante, une valeur plus importante pour le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> peut être configurée.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Plus d’informations sur le déploiement avec Gunicorn dans sa <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
@@ -1263,8 +1271,8 @@ server {
 }
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Si besoin, modifier la configuration pour gérer les fichiers de taille importante (cf. <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
 </section>

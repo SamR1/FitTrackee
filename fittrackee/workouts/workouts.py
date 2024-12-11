@@ -280,6 +280,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -521,14 +523,16 @@ def get_workout(
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-               ``public`` or ``followers_only`` visibility
+               ``private`` or ``followers_only`` visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
 
     """
@@ -638,13 +642,16 @@ def get_workout_gpx(
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-               ``public`` or ``followers_only`` map visibility
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for this workout``
@@ -708,13 +715,16 @@ def get_workout_chart_data(
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-               ``public`` or ``followers_only`` map visibility
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for this workout``
@@ -761,7 +771,7 @@ def get_segment_gpx(
     :param integer segment_id: segment id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-               ``public`` or ``followers_only`` map visibility
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``
@@ -769,6 +779,9 @@ def get_segment_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -833,7 +846,7 @@ def get_segment_chart_data(
     :param integer segment_id: segment id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
-               ``public`` or ``followers_only`` map visibility
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``
@@ -841,6 +854,9 @@ def get_segment_chart_data(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -882,6 +898,8 @@ def download_workout_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for workout``
@@ -937,6 +955,8 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``map does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1180,6 +1200,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 413: ``error during picture update: file size exceeds 1.0MB``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1427,6 +1449,8 @@ def post_workout_no_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -1654,7 +1678,7 @@ def update_workout(
         equipment for this workout will be replaced).
         **Note**: for now only one equipment can be associated.
         If an empty array, equipment for this workout will be removed.
-    :<json string map_visibility: map and location data visibility
+    :<json string map_visibility: map and analysis data visibility
         (``private``, ``followers_only`` or ``public``)
     :<json string notes: notes (max length: 500 characters, otherwise they
         will be truncated)
@@ -1681,6 +1705,8 @@ def update_workout(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1825,6 +1851,8 @@ def delete_workout(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1938,7 +1966,9 @@ def like_workout(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     """
     try:
@@ -2050,7 +2080,9 @@ def undo_workout_like(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``comment not found``
     """
     like = WorkoutLike.query.filter_by(

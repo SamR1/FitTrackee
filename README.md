@@ -37,7 +37,7 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 **Under heavy development (some features may be unstable).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more info.)  
 
-![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/en/_images/fittrackee_screenshot-01.png)
+![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/en/_images/dashboard.png)
 
 ## Translations
 

@@ -102,24 +102,24 @@ class Report(BaseModel):
     reported_comment = db.relationship(
         'Comment',
         lazy=True,
-        backref=db.backref('comment_reports', lazy='joined'),
+        backref=db.backref('comment_reports', lazy='select'),
     )
     reported_user = db.relationship(
         'User',
         primaryjoin=reported_user_id == User.id,
-        backref=db.backref('user_reports', lazy='joined'),
+        backref=db.backref('user_reports', lazy='select'),
     )
     reported_workout = db.relationship(
         'Workout',
         lazy=True,
-        backref=db.backref('workouts_reports', lazy='joined'),
+        backref=db.backref('workouts_reports', lazy='select'),
     )
     reporter = db.relationship(
         'User',
         primaryjoin=reported_by == User.id,
         backref=db.backref(
             'user_own_reports',
-            lazy='joined',
+            lazy='select',
             single_parent=True,
         ),
     )
@@ -128,18 +128,18 @@ class Report(BaseModel):
         primaryjoin=resolved_by == User.id,
         backref=db.backref(
             'user_resolved_reports',
-            lazy='joined',
+            lazy='select',
             single_parent=True,
         ),
     )
     comments = db.relationship(
         'ReportComment',
-        backref=db.backref('report', lazy='joined'),
+        backref=db.backref('report', lazy='select'),
     )
     report_actions = db.relationship(
         'ReportAction',
         lazy=True,
-        backref=db.backref('report', lazy='joined', single_parent=True),
+        backref=db.backref('report', lazy='select', single_parent=True),
         order_by='ReportAction.created_at.asc()',
     )
 
@@ -306,7 +306,7 @@ class ReportComment(BaseModel):
 
     user = db.relationship(
         'User',
-        backref=db.backref('user_report_comments', lazy='joined'),
+        backref=db.backref('user_report_comments', lazy='select'),
     )
 
     def __init__(

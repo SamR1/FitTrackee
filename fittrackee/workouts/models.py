@@ -301,7 +301,7 @@ class Workout(BaseModel):
     comments = db.relationship(
         Comment,
         lazy=True,
-        backref=db.backref('workout', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='select', single_parent=True),
     )
     likes = db.relationship(
         "User",
@@ -424,7 +424,11 @@ class Workout(BaseModel):
             'max_alt': None if self.max_alt is None else float(self.max_alt),
             'descent': None if self.descent is None else float(self.descent),
             'ascent': None if self.ascent is None else float(self.ascent),
-            'map_visibility': self.calculated_map_visibility.value,
+            'map_visibility': (
+                self.calculated_map_visibility.value
+                if can_see_map_data
+                else VisibilityLevel.PRIVATE
+            ),
         }
 
         if light:

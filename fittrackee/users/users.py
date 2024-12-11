@@ -336,6 +336,8 @@ def get_users(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
 
     """
     return get_users_list(auth_user)
@@ -587,6 +589,8 @@ def get_single_user(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``user does not exist``
     """
@@ -781,8 +785,11 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
-    :statuscode 404: ``user does not exist``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404:
+        - ``user does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
     user_data = request.get_json()
@@ -925,7 +932,8 @@ def delete_user(
     :statuscode 403:
         - ``you do not have permissions``
         - ``you can not delete your account, no other user has admin rights``
-    :statuscode 404: ``user does not exist``
+    :statuscode 404:
+        - ``user does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -1044,14 +1052,14 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
-    :statuscode 403:
-        - you do not have permissions
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     successful_response_dict = {
@@ -1122,14 +1130,15 @@ def unfollow_user(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
-    :statuscode 500: error, please try again or contact the administrator
+        - ``user does not exist``
+    :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     successful_response_dict = {
@@ -1272,13 +1281,14 @@ def get_followers(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
+        - ``user does not exist``
 
     """
     return get_user_relationships(auth_user, user_name, 'followers')
@@ -1366,13 +1376,14 @@ def get_following(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
+        - ``user does not exist``
 
     """
     return get_user_relationships(auth_user, user_name, 'following')
@@ -1410,15 +1421,16 @@ def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 400:
-        - invalid payload
+        - ``invalid payload``
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user not found
+        - ``user not found``
     """
     target_user = User.query.filter(
         func.lower(User.username) == func.lower(user_name),
@@ -1473,13 +1485,14 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user not found
+        - ``user not found``
 
     """
     target_user = User.query.filter(
@@ -1674,13 +1687,13 @@ def get_user_sanctions(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
     :statuscode 404:
-        - user not found
+        - ``user not found``
 
     """
     user = User.query.filter(

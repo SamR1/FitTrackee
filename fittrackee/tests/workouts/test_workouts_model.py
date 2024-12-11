@@ -1234,7 +1234,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
         assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert (
             serialized_workout['workout_visibility']
             == input_workout_visibility
@@ -1545,7 +1545,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout['map'] is None
         assert serialized_workout['bounds'] == []
         assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert (
             serialized_workout['workout_visibility']
             == input_workout_visibility

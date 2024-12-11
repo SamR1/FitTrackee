@@ -310,7 +310,7 @@ class User(BaseModel):
     workouts = db.relationship(
         'Workout',
         lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
+        backref=db.backref('user', lazy='select', single_parent=True),
     )
     records = db.relationship(
         'Record',
@@ -369,7 +369,7 @@ class User(BaseModel):
         lazy=True,
         backref=db.backref(
             'user',
-            lazy='joined',
+            lazy='select',
             single_parent=True,
         ),
         cascade='all, delete-orphan',

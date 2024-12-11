@@ -15,6 +15,9 @@ export const getters: GetterTree<INotificationsState, IRootState> &
   [NOTIFICATIONS_STORE.GETTERS.PAGINATION]: (state: INotificationsState) => {
     return state.pagination
   },
+  [NOTIFICATIONS_STORE.GETTERS.TYPES]: (state: INotificationsState) => {
+    return state.types
+  },
   [NOTIFICATIONS_STORE.GETTERS.UNREAD_STATUS]: (state: INotificationsState) => {
     return state.unread
   },

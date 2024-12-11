@@ -5,4 +5,5 @@ export const notificationsState: INotificationsState = {
   notifications: [],
   unread: false,
   pagination: <IPagination>{},
+  types: [],
 }
