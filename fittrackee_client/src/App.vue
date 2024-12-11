@@ -29,34 +29,24 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onBeforeMount, onMounted } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { ref, onBeforeMount, onMounted } from 'vue'
+  import type { Ref } from 'vue'
 
   import Footer from '@/components/Footer.vue'
   import NavBar from '@/components/NavBar.vue'
   import NoConfig from '@/components/NoConfig.vue'
+  import useApp from '@/composables/useApp'
   import { ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
   import type { TLanguage } from '@/types/locales'
   import { useStore } from '@/use/useStore'
   import { isLanguageSupported } from '@/utils/locales'
 
   const store = useStore()
 
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const appLoading: ComputedRef<boolean> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_LOADING]
-  )
-  const hideScrollBar = ref(false)
-  const displayScrollButton = ref(false)
+  const { appConfig, appLoading } = useApp()
 
-  onBeforeMount(() => {
-    initLanguage()
-    store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
-  })
-  onMounted(() => scroll())
+  const hideScrollBar: Ref<Boolean> = ref(false)
+  const displayScrollButton: Ref<Boolean> = ref(false)
 
   function updateHideScrollBar(isMenuOpen: boolean) {
     hideScrollBar.value = isMenuOpen
@@ -94,6 +84,12 @@
     }
     store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE, language)
   }
+
+  onBeforeMount(() => {
+    initLanguage()
+    store.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_CONFIG)
+  })
+  onMounted(() => scroll())
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css" />

@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
 </ul>
@@ -400,18 +405,17 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.7.15.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.8.4: </span>La préférence de l’utilisateur pour la langue de l’interface est ajoutée.</p>
+</div>
 <p>Créer un compte utilisateur.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
 <li><p>le compte nouvellement créé est déjà actif.</p></li>
-<li><p>le CLI permet de créer des utilisateurs lorsque l’enregistrement est désactivé.</p></li>
+<li><p>la CLI permet de créer des utilisateurs lorsque l’enregistrement est désactivé.</p></li>
 </ul>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.8.4.</span></p>
-</div>
-<p>La préférence de l’utilisateur pour la langue de l’interface est ajoutée.</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -470,7 +474,10 @@ Commands:
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.6.5.</span></p>
 </div>
-<p>Modifier le compte d’un utilisateur (droits d’administration, statut actif, email et mot de passe).</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Add <code class="docutils literal notranslate"><span class="pre">--set-role</span></code> option. <code class="docutils literal notranslate"><span class="pre">--set-admin</span></code> is now deprecated.</p>
+</div>
+<p>Modifier le compte d’un utilisateur (rôle, statut actif, email et mot de passe).</p>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
 <colgroup>
@@ -487,15 +494,18 @@ Commands:
 <td><p>Nom de l’utilisateur.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--set-admin</span> <span class="pre">BOOLEAN</span></code></p></td>
-<td><p>Ajouter/supprimer des droits d’administration (lors de l’ajout de droits d’administration, le compte de l’utilisateur est également activé s’il ne l’est pas.</p></td>
+<td><p>[DÉPRÉCIÉ] Ajouter/supprimer des droits d’administration (lors de l’ajout de droits d’administration, le compte de l’utilisateur est également activé s’il ne l’est pas).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--set-role</span> <span class="pre">ROLE</span></code></p></td>
+<td><p>Configurer le rôle (lors de la configuration des rôles “moderator”, “admin”  et “owner”, le compte de l’utilisateur est également activé s’il ne l’est pas.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
 <td><p>Activer le compte d’un utilisateur.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--reset-password</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--reset-password</span></code></p></td>
 <td><p>Réinitialiser le mot de passe de l’utilisateur (un nouveau mot de passe sera affiché).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--update-email</span> <span class="pre">EMAIL</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--update-email</span> <span class="pre">EMAIL</span></code></p></td>
 <td><p>Mettre à jour l’adresse électronique de l’utilisateur.</p></td>
 </tr>
 </tbody>

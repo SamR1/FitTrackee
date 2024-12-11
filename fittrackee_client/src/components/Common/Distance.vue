@@ -28,7 +28,6 @@
     speed: false,
     strong: false,
   })
-
   const {
     digits,
     displayUnit,
@@ -38,12 +37,13 @@
     unitFrom,
     useImperialUnits,
   } = toRefs(props)
+
   const unitTo: ComputedRef<TUnit> = computed(() =>
     useImperialUnits.value
       ? units[unitFrom.value].defaultTarget
       : unitFrom.value
   )
-  const convertedDistance = computed(() =>
+  const convertedDistance: ComputedRef<number> = computed(() =>
     useImperialUnits.value
       ? convertDistance(
           distance.value,

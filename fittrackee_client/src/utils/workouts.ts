@@ -1,8 +1,8 @@
+import type { TCoordinates } from '@/types/map'
 import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,
-  TCoordinates,
   TWorkoutDatasets,
 } from '@/types/workouts'
 import { convertStatsDistance } from '@/utils/units'

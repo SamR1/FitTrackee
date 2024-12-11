@@ -12,6 +12,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.controls import is_valid_email
 
 from .models import AppConfig
@@ -73,14 +74,14 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
 
 @config_blueprint.route('/config', methods=['PATCH'])
-@require_auth(scopes=['application:write'], as_admin=True)
+@require_auth(scopes=['application:write'], role=UserRole.ADMIN)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application configuration.
 
-    Authenticated user must be an admin.
-
     **Scope**: ``application:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 
@@ -144,7 +145,9 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
         - ``valid email must be provided for admin contact``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error when updating configuration``
     """
     config_data = request.get_json()

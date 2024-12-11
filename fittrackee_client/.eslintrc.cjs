@@ -35,6 +35,7 @@ module.exports = {
         },
       },
     ],
+    'no-console': ['warn', { allow: ['error'] }],
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'vue/define-props-declaration': ['error', 'type-based'],
     'vue/multi-word-component-names': 'off',

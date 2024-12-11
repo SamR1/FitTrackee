@@ -60,7 +60,7 @@
                   <th class="text-left">
                     {{ $t('common.ACTIVE') }}
                   </th>
-                  <th v-if="isEdition">
+                  <th v-if="isEdition && !authUser.suspended_at">
                     {{ $t('common.ACTION') }}
                   </th>
                   <th />
@@ -119,7 +119,10 @@
                       aria-hidden="true"
                     />
                   </td>
-                  <td v-if="isEdition" class="action-buttons">
+                  <td
+                    v-if="isEdition && !authUser.suspended_at"
+                    class="action-buttons"
+                  >
                     <span class="cell-heading">
                       {{ $t('user.PROFILE.SPORT.ACTION') }}
                     </span>
@@ -142,13 +145,13 @@
     </div>
     <div class="equipments-list-buttons">
       <button
-        v-if="!isEdition && equipments.length > 0"
+        v-if="!isEdition && !authUser.suspended_at && equipments.length > 0"
         @click="$router.push('/profile/edit/equipments')"
       >
         {{ $t('equipments.EDIT_EQUIPMENTS') }}
       </button>
       <button
-        v-if="!isEdition"
+        v-if="!isEdition && !authUser.suspended_at"
         @click="$router.push('/profile/equipments/new')"
       >
         {{ $t('equipments.NEW_EQUIPMENT') }}
@@ -163,6 +166,7 @@
 
 <script setup lang="ts">
   import { capitalize, computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
   import type { IAuthUserProfile } from '@/types/user'
@@ -175,13 +179,13 @@
     isEdition: boolean
   }
   const props = defineProps<Props>()
-
   const { authUser, isEdition, equipments, translatedEquipmentTypes } =
     toRefs(props)
 
-  const equipmentByTypes = computed(() =>
-    formatEquipmentsList(equipments.value)
+  const equipmentByTypes: ComputedRef<Record<number, IEquipment[]>> = computed(
+    () => formatEquipmentsList(equipments.value)
   )
+
   function formatEquipmentsList(equipments: IEquipment[]) {
     const equipmentByTypes: Record<number, IEquipment[]> = {}
     equipments.map((equipment) => {
@@ -198,7 +202,7 @@
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
   #user-equipments-list {
-    padding: $default-padding 0;
+    padding: 0 0 $default-padding;
     h1 {
       font-size: 1.05em;
       font-weight: bold;

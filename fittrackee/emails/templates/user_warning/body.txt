@@ -1,0 +1,14 @@
+{% extends "layout.txt" %}{% block content %}{{ _('You received a warning') }}.
+
+{% if reason %}{{ _('Reason:') }} {{ reason }}
+
+{% endif %}{% if comment_url %}{{ _('Comment:') }} {{ text }}
+
+{{ _('Link:') }} {{ comment_url }}
+
+{% endif %}{% if workout_url %}{{ _('Workout:') }} {{ title }}
+
+{{ _('Link:') }} {{ workout_url }}
+
+{% endif %}{{ _('If you think this is an error, you can appeal:') }}
+{{ appeal_url }}{% endblock %}

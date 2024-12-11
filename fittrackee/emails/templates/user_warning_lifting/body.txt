@@ -1,0 +1,9 @@
+{% extends "layout.txt" %}{% block content %}{{ _('Your warning has been lifted') }}.{% if comment_url %}
+
+{{ _('Comment:') }} {{ text }}
+
+{{ _('Link:') }} {{ comment_url }}{% endif %}{% if workout_url %}
+
+{{ _('Workout:') }} {{ title }}
+
+{{ _('Link:') }} {{ workout_url }}{% endif %}{% endblock %}

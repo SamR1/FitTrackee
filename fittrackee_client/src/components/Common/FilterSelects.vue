@@ -26,6 +26,7 @@
         </option>
       </select>
     </label>
+    <slot name="additionalFilters"></slot>
     <label>
       {{ $t('common.SELECTS.PER_PAGE.LABEL') }}:
       <select
@@ -54,10 +55,10 @@
     message: string
   }
   const props = defineProps<Props>()
+  const { order_by, query, sort, message } = toRefs(props)
 
   const emit = defineEmits(['updateSelect'])
 
-  const { order_by, query, sort, message } = toRefs(props)
   const perPage = [10, 25, 50, 100]
 
   function onSelectUpdate(event: Event) {
@@ -68,30 +69,3 @@
     )
   }
 </script>
-
-<style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
-
-  .table-selects {
-    display: flex;
-    justify-content: space-between;
-    margin: $default-margin 0;
-
-    label {
-      select {
-        margin-left: $default-margin;
-        padding: $default-padding * 0.5;
-      }
-    }
-
-    @media screen and (max-width: $small-limit) {
-      flex-wrap: wrap;
-      label {
-        margin-bottom: $default-margin;
-        select {
-          margin-left: 0;
-        }
-      }
-    }
-  }
-</style>

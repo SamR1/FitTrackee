@@ -49,10 +49,6 @@
         "USERNAME": "имя пользователя",
         "WORKOUTS_COUNT": "количество тренировок"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Добавить права администратора",
-      "REMOVE_ADMIN_RIGHTS": "Удалить права администратора"
     }
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Адрес электронной почты был обновлен."

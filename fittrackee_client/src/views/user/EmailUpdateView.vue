@@ -19,33 +19,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, onUnmounted, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
-  import type { LocationQueryValue } from 'vue-router'
+  import { onBeforeMount, watch } from 'vue'
+  import { useRouter } from 'vue-router'
 
   import ErrorImg from '@/components/Common/Images/ErrorImg.vue'
-  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { IAuthUserProfile } from '@/types/user'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
-  const route = useRoute()
   const router = useRouter()
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const isAuthenticated: ComputedRef<boolean> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const token: ComputedRef<LocationQueryValue | LocationQueryValue[]> =
-    computed(() => route.query.token)
-
-  onBeforeMount(() => confirmEmail())
+  const { errorMessages } = useApp()
+  const { authUser, isAuthenticated, token } = useAuthUser()
 
   function confirmEmail() {
     if (token.value) {
@@ -58,8 +45,6 @@
     }
   }
 
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
-
   watch(
     () => errorMessages.value,
     (newValue) => {
@@ -68,6 +53,8 @@
       }
     }
   )
+
+  onBeforeMount(() => confirmEmail())
 </script>
 
 <style lang="scss" scoped>

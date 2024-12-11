@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('Warning for %(username)s', username=username) }}{% endblock %}
+{% block preheader %}{{ _('You received a warning') }}.{% endblock %}
+{% block content %}<p>{{ _('You received a warning') }}.</p>
+                        {% if reason %}<p>{{ _('Reason:') }} {{ reason }}</p>{% endif %}
+                        {% if comment_url %}
+                        <p>{{ _('Comment:') }}</p>
+                        <table class="body-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td>
+                              <img class="user-picture" src="{{ user_image_url }}" alt="">
+                              <strong>{{ username }}</strong>
+                            </td>
+                           </tr>
+                          <tr>
+                            <td>{{ text }}</td>
+                          </tr>
+                          <tr>
+                            <td class="content-date"><a href="{{ comment_url }}" target="_blank">{{ created_at }}</a></td>
+                          </tr>
+                        </table>{% endif %}
+                        {% if workout_url %}
+                        <p>{{ _('Workout:') }}</p>
+                        <table class="body-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td>
+                              <img class="user-picture" src="{{ user_image_url }}" alt="">
+                              <strong>{{ username }}</strong>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{{ title }}</td>
+                          </tr>
+                          {% if map %}<tr>
+                            <td><img class="map" src="{{ map }}" alt=""></td>
+                           </tr>{% endif %}
+                          <tr>
+                            <td class="content-date"><a href="{{ workout_url }}" target="_blank">{{ workout_date }}</a></td>
+                          </tr>
+                        </table>{% endif %}
+                        <p>{{ _('If you think this is an error, you can appeal:') }}</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{appeal_url}}" class="f-fallback button button--green" target="_blank">{{ _('Appeal') }}</a>
+                                  </td>
+                                </tr>
+                               </table>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}
+                        {% block url_to_paste %}<table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">{{ _("If you're having trouble with the button above, copy and paste the URL below into your web browser.") }}</p>
+                              <p class="f-fallback sub">{{appeal_url}}</p>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}

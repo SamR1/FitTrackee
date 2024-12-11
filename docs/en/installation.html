@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Comments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Equipments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Equipment Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Timeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Workouts</a></li>
 </ul>
@@ -686,25 +691,31 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.3.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.3: </span>Credentials and port can be omitted</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.5: </span>Disable email sending</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.24: </span>Handle special characters in password</p>
+</div>
 <p>To send emails, a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> must be provided:</p>
 <ul class="simple">
 <li><p>with an unencrypted SMTP server: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
 <li><p>with SSL: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>with STARTTLS: <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
+<p>Credentials can be omitted: <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> is omitted, the port defaults to 25.</p>
+<p>Password can be encoded if it contains special characters.
+For instance with password <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, the encoded password will be: <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
 <div class="line">If the email URL is invalid, the application may not start.</div>
 <div class="line">Sending emails with Office365 may not work if SMTP auth is disabled.</div>
 </div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.5.3.</span></p>
-</div>
-<div class="line-block">
-<div class="line">Credentials can be omitted: <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
-<div class="line">If <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> is omitted, the port defaults to 25.</div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -719,22 +730,23 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <li><p>email change (to old and new email addresses)</p></li>
 <li><p>password change</p></li>
 <li><p>notification when a data export archive is ready to download (<em>new in 0.7.13</em>)</p></li>
+<li><p>suspension and warning (<em>new in 0.9.0</em>)</p></li>
+<li><p>suspension and warning lifting (<em>new in 0.9.0</em>)</p></li>
+<li><p>rejected appeal (<em>new in 0.9.0</em>)</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.6.5.</span></p>
-</div>
-<p>For single-user instance, it is possible to disable email sending with an empty <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> (in this case, no need to start dramatiq workers).</p>
+<p>On single-user instance, it is possible to disable email sending with an empty <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> (in this case, no need to start dramatiq workers).</p>
 <p>A <a class="reference external" href="cli.html#ftcli-users-update">CLI</a> is available to activate account, modify email and password and handle data export requests.</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.24.</span></p>
-</div>
-<p>Password can be encoded if it contains special characters.
-For instance with password <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, the encoded password will be: <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 </section>
 <section id="map-tile-server">
 <h2>Map tile server<a class="headerlink" href="#map-tile-server" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.4.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.10: </span>Handle tile server subdomains</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.23: </span>Default tile server (<strong>OpenStreetMap</strong>) no longer requires subdomains</p>
 </div>
 <p>Default tile server is now <strong>OpenStreetMap</strong>’s standard tile layer (if environment variables are not initialized).
 The tile server can be changed by updating <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> and <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> variables (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers">list of tile servers</a>).</p>
@@ -749,9 +761,6 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="line">Check the terms of service of tile provider for map attribution.</div>
 </div>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.6.10.</span></p>
-</div>
 <p>Since the tile server can be used for static map generation, some servers require a subdomain.</p>
 <p>For instance, to set OSM France tile server, the expected values are:</p>
 <ul class="simple">
@@ -760,10 +769,7 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
 </ul>
 <p>The subdomain will be chosen randomly.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.7.23.</span></p>
-</div>
-<p>The default URL is updated: <strong>OpenStreetMap</strong>’s tile server no longer requires subdomains.</p>
+<p>The default tile server (<strong>OpenStreetMap</strong>) no longer requires subdomains.</p>
 </section>
 <section id="api-rate-limits">
 <h2>API rate limits<a class="headerlink" href="#api-rate-limits" title="Link to this heading">¶</a></h2>
@@ -807,20 +813,23 @@ Commands:
 <section id="weather-data">
 <h2>Weather data<a class="headerlink" href="#weather-data" title="Link to this heading">¶</a></h2>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.11.</span></p>
+<p><span class="versionmodified changed">Changed in version 0.7.11: </span>Add Visual Crossing to weather providers</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.15: </span>Remove Darksky from weather providers</p>
 </div>
 <p>The following weather data providers are supported by <strong>FitTrackee</strong>:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong>: historical data are provided on hourly period)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>DarkSky</strong> support is discontinued, since the service shut down on March 31, 2023.</p>
+</div>
 <p>To configure a weather provider, set the following environment variables:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code>: the key to the corresponding weather provider</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.15.</span></p>
-</div>
-<p><strong>DarkSky</strong> support is discontinued, since the service shut down on March 31, 2023.</p>
 </section>
 <section id="id2">
 <h2>Installation<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
@@ -1196,12 +1205,12 @@ One way is to use a <strong>systemd</strong> services and <strong>Nginx</strong>
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <p>To handle large files, a higher value for <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> can be set.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <p>More information on deployment with Gunicorn in its <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
@@ -1276,8 +1285,8 @@ server {
 }
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
 <p>If needed, update configuration to handle larger files (see <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
 </section>

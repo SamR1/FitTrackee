@@ -92,6 +92,7 @@ button {
   box-shadow: 2px 2px 2px var(--app-shadow-color);
   color: var(--app-color);
   padding: 6px 14px;
+  cursor: pointer;
 
   &.transparent {
     font-family: 'PT Sans', Helvetica, Arial, sans-serif;
@@ -118,6 +119,14 @@ button {
       border-color: var(--disabled-border-color);
       color: var(--disabled-color);
     }
+  }
+  &.icon-button {
+    cursor: pointer;
+    padding: 0;
+  }
+  &.small {
+    font-size: 0.9em;
+    padding: 3px 7px;
   }
 
   &:hover {
@@ -240,7 +249,13 @@ button {
   font-weight: bold;
   padding-top: $default-padding * 1.5;
   padding-left: $default-padding;
-  text-transform: capitalize;
+  .title {
+    padding-left: $default-padding * 0.5;
+    text-transform: capitalize;
+  }
+}
+.section-title::first-letter {
+  text-transform: uppercase;
 }
 
 .no-map {
@@ -333,6 +348,10 @@ button {
   text-align: left;
 }
 
+.deleted-object {
+  font-style: italic;
+}
+
 .responsive-table {
   margin-bottom: 15px;
   /* responsive table, adapted from: */
@@ -415,13 +434,87 @@ button {
 
 .profile-buttons {
   display: flex;
+  align-items: baseline;
   gap: $default-padding;
+}
+
+.user-role,
+.follows-you,
+.blocked {
+  font-size: 0.7em;
+  font-style: italic;
+  text-transform: uppercase;
+  padding: $default-padding * 0.5 $default-padding;
+  background-color: var(--text-background-color);
+  border-radius: $border-radius;
+  max-height: 16px;
 }
 
 .medium-sport-img {
   height: 35px;
   width: 35px;
   margin: 0 auto;
+}
+
+.hidden-content {
+  display: none;
+}
+
+.items-list-view {
+  .items-list-container {
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: $medium-limit) {
+      flex-direction: column;
+    }
+
+    .filters-container,
+    .list-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filters-container {
+      width: 25%;
+      @media screen and (max-width: $medium-limit) {
+        width: 100%;
+
+        @media screen and (max-width: $small-limit) {
+          &.hidden {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .display-filters {
+      display: none;
+      font-size: 0.8em;
+      padding: 0 $default-padding * 2;
+
+      span {
+        cursor: pointer;
+        font-weight: bold;
+        padding-left: $default-padding * 0.5;
+      }
+      .fa {
+        cursor: pointer;
+      }
+
+      @media screen and (max-width: $small-limit) {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+    }
+
+    .list-container {
+      width: 75%;
+      @media screen and (max-width: $medium-limit) {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .visually-hidden {
@@ -433,4 +526,51 @@ button {
   padding: 0;
   position: absolute;
   width: 1px;
+}
+
+.visually-hidden:focus {
+  clip: auto;
+  height: auto;
+  overflow: auto;
+  position: absolute;
+  width: auto;
+}
+
+.table-selects {
+  display: flex;
+  justify-content: space-between;
+  margin: $default-margin 0;
+
+  label {
+    select {
+      margin-left: $default-margin;
+      padding: $default-padding * 0.5;
+    }
+  }
+
+  @media screen and (max-width: $small-limit) {
+    flex-wrap: wrap;
+    label {
+      margin-bottom: $default-margin;
+      select {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+.suspended {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.action-loading {
+  display: flex;
+  align-items: center;
+}
+
+.markdown-hints {
+  font-size: 0.8em;
+  font-style: normal;
+  margin: $default-margin * 0.5 0 $default-margin;
 }

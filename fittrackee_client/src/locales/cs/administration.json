@@ -62,10 +62,6 @@
         "IS_ACTIVE": "stav účtu",
         "USERNAME": "uživatelské jméno"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Přidat oprávnění správce",
-      "REMOVE_ADMIN_RIGHTS": "Odstranit oprávnění správce"
     }
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "E-mailová adresa byla upravena."

@@ -67,7 +67,7 @@
           {{
             client.client_description
               ? client.client_description
-              : $t('oauth2.NO_DESCRIPTION')
+              : $t('common.NO_DESCRIPTION')
           }}
         </dd>
         <dt>{{ $t('oauth2.APP.URL') }}:</dt>
@@ -121,7 +121,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
+  import { OAUTH2_STORE } from '@/store/constants'
   import type { IOAuth2Client } from '@/types/oauth'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -134,28 +134,23 @@
   const props = withDefaults(defineProps<Props>(), {
     afterCreation: false,
   })
+  const { afterCreation, authUser } = toRefs(props)
+
   const route = useRoute()
   const store = useStore()
 
-  const { afterCreation, authUser } = toRefs(props)
-  const client: ComputedRef<IOAuth2Client> = computed(
-    () => store.getters[OAUTH2_STORE.GETTERS.CLIENT]
-  )
-  const revocationSuccessful: ComputedRef<boolean> = computed(
-    () => store.getters[OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]
-  )
   const displayModal: Ref<boolean> = ref(false)
   const messageToDisplay: Ref<string> = ref('')
   const idCopied: Ref<boolean> = ref(false)
   const secretCopied: Ref<boolean> = ref(false)
   const clipboardSupport: Ref<boolean> = ref(false)
 
-  onBeforeMount(() => {
-    loadClient()
-    if (navigator.clipboard) {
-      clipboardSupport.value = true
-    }
-  })
+  const client: ComputedRef<IOAuth2Client> = computed(
+    () => store.getters[OAUTH2_STORE.GETTERS.CLIENT]
+  )
+  const revocationSuccessful: ComputedRef<boolean> = computed(
+    () => store.getters[OAUTH2_STORE.GETTERS.REVOCATION_SUCCESSFUL]
+  )
 
   function loadClient() {
     // after creation, client is already in store
@@ -204,11 +199,6 @@
       }, 3000)
     }
   }
-  onUnmounted(() => {
-    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    store.commit(OAUTH2_STORE.MUTATIONS.EMPTY_CLIENT)
-    store.commit(OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL, false)
-  })
 
   watch(
     () => revocationSuccessful.value,
@@ -218,6 +208,17 @@
       }
     }
   )
+
+  onBeforeMount(() => {
+    loadClient()
+    if (navigator.clipboard) {
+      clipboardSupport.value = true
+    }
+  })
+  onUnmounted(() => {
+    store.commit(OAUTH2_STORE.MUTATIONS.EMPTY_CLIENT)
+    store.commit(OAUTH2_STORE.MUTATIONS.SET_REVOCATION_SUCCESSFUL, false)
+  })
 </script>
 
 <style scoped lang="scss">

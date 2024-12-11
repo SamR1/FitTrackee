@@ -60,6 +60,16 @@ export const getQuery = (
   } else {
     delete query.description
   }
+  if (typeof locationQuery.object_type === 'string') {
+    query.object_type = locationQuery.object_type
+  } else {
+    delete query.object_type
+  }
+  if (typeof locationQuery.resolved === 'string') {
+    query.resolved = locationQuery.resolved
+  } else {
+    delete query.resolved
+  }
 
   return query
 }

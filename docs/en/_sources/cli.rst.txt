@@ -97,6 +97,7 @@ Remove blacklisted tokens expired for more than provided number of days.
 ``ftcli users create``
 """"""""""""""""""""""
 .. versionadded:: 0.7.15
+.. versionchanged:: 0.8.4  User preference for interface language is added.
 
 Create a user account.
 
@@ -104,9 +105,6 @@ Create a user account.
   - the newly created account is already active.
   - the CLI allows to create users when registration is disabled.
 
-.. versionchanged:: 0.8.4
-
-User preference for interface language is added.
 
 .. cssclass:: table-bordered
 .. list-table::
@@ -147,8 +145,9 @@ Can be used if redis is not set (no dramatiq workers running).
 ``ftcli users update``
 """"""""""""""""""""""
 .. versionadded:: 0.6.5
+.. versionchanged:: 0.9.0  Add ``--set-role`` option. ``--set-admin`` is now deprecated.
 
-Modify a user account (admin rights, active status, email and password).
+Modify a user account (role, active status, email and password).
 
 .. cssclass:: table-bordered
 .. list-table::
@@ -160,7 +159,9 @@ Modify a user account (admin rights, active status, email and password).
    * - ``USERNAME``
      - Username.
    * - ``--set-admin BOOLEAN``
-     - Add/remove admin rights (when adding admin rights, it also activates user account if not active).
+     - [DEPRECATED] Add/remove admin rights (when adding admin rights, it also activates user account if not active).
+   * - ``--set-role ROLE``
+     - Set user role (when setting 'moderator', 'admin' and 'owner' role, it also activates user account if not active).
    * - ``--activate``
      - Activate user account.
    * - ``--reset-password``

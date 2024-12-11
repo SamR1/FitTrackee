@@ -1,7 +1,6 @@
 {
   "ACCOUNT_CONFIRMATION": "Potvrzení účtu",
   "ACCOUNT_CONFIRMATION_SENT": "Zkontrolujte Váš e-mail. Byl odeslán nový e-mail pro potvrzení zadané adresy.",
-  "ADMIN": "Správce",
   "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
   "CONFIRM_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat Váš účet? Všechna data budou smazána, toto nejde vrátit.",
   "CURRENT_PASSWORD": "Současné heslo",
@@ -76,5 +75,8 @@
       "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Vybavení spojené s cvičením.",
       "IS_ACTIVE": "aktivní"
     }
+  },
+  "ROLES": {
+    "admin": "Správce"
   }
 }

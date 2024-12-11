@@ -68,10 +68,6 @@
         "WORKOUTS_COUNT": "Trainingsanzahl"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Administratorrechte hinzufügen",
-      "REMOVE_ADMIN_RIGHTS": "Administratorrechte entfernen"
-    },
     "TITLE": "Administration - Benutzer"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert."

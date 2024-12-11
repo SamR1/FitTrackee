@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Comments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Equipments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Equipment Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Timeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Workouts</a></li>
 </ul>
@@ -283,7 +288,9 @@
         <article role="main" id="furo-main-content">
           <section id="oauth-2-0">
 <h1>OAuth 2.0<a class="headerlink" href="#oauth-2-0" title="Link to this heading">¶</a></h1>
-<p>(<em>new in 0.7.0</em>)</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.0.</span></p>
+</div>
 <p>FitTrackee provides a REST API (see <a class="reference external" href="api/index.html">documentation</a>) whose
 most endpoints require authentication/authorization.</p>
 <p>To allow a third-party application to interact with API endpoints, an
@@ -307,12 +314,18 @@ It is recommended to use PKCE to provide a better security.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">application:write</span></code>: grants write access to application configuration (only for users with administration rights),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipments:read</span></code>: grants read access to equipments endpoints (<em>new in 0.8.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipments:write</span></code>: grants write access to equipments endpoints (<em>new in 0.8.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">follow:read</span></code>: grants read access to follow requests and followers endpoints (<em>new in 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">follow:write</span></code>: grants write access to requests and followers endpoints (<em>new in 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notifications:read</span></code>: grants read access to notifications endpoints (<em>new in 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notifications:write</span></code>: grants write access to notifications endpoints (<em>new in 0.9.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">profile:read</span></code>: grants read access to auth endpoints,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">profile:write</span></code>: grants write access to auth endpoints,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reports:read</span></code>: grants read access to reports endpoints (<em>new in 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reports:write</span></code>: grants write access to reports endpoints (<em>new in 0.9.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users:read</span></code>: grants read access to users endpoints,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users:write</span></code>: grants write access to users endpoints,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code>: grants read access to workouts-related endpoints,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code>: grants write access to workouts-related endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code>: grants read access to workouts and comments endpoints (<em>changed in 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code>: grants write access to workouts and comments endpoints (<em>changed in 0.9.0</em>).</p></li>
 </ul>
 </section>
 <section id="flow">
@@ -320,7 +333,7 @@ It is recommended to use PKCE to provide a better security.</p>
 <ul>
 <li><p>The user creates an App (client) on FitTrackee for a third-party application.</p>
 <figure class="align-default">
-<img alt="OAuth2 client creation on FitTrackee" src="_images/fittrackee_screenshot-07.png" />
+<img alt="OAuth2 client creation on FitTrackee" src="_images/oauth2-client-creation.png" />
 </figure>
 <div class="line-block">
 <div class="line">After registration, the client id and secret are shown.</div>
@@ -331,7 +344,7 @@ It is recommended to use PKCE to provide a better security.</p>
 <div class="line">The 3rd-party app needs to redirect to FitTrackee, in order for the user to authorize the 3rd-party app to access user data on FitTrackee.</div>
 </div>
 <figure class="align-default">
-<img alt="App authorization on FitTrackee" src="_images/fittrackee_screenshot-08.png" />
+<img alt="App authorization on FitTrackee" src="_images/oauth2-app-authorization.png" />
 </figure>
 <div class="line-block">
 <div class="line">The authorization URL is <code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize</span></code>.</div>
@@ -361,7 +374,7 @@ It is recommended to use PKCE to provide a better security.</p>
 </div>
 </li>
 <li><div class="line-block">
-<div class="line">After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint <a class="reference external" href="https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
+<div class="line">After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint <a class="reference external" href="api/oauth2.html#post--api-oauth-token">/api/oauth/token</a>).</div>
 <div class="line">Example of a redirect URL:</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">https://example.com/callback?code=&lt;AUTHORIZATION_CODE&gt;&amp;state=&lt;STATE&gt;</span></code></div>
 </div>

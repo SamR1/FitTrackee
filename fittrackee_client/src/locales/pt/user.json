@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Confirmação da conta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Você não recebeu instruções?",
   "ACCOUNT_CONFIRMATION_SENT": "Verifique o e-mail. Um novo e-mail de confirmação foi enviado para o endereço fornecido.",
-  "ADMIN": "Administrador",
   "ALREADY_HAVE_ACCOUNT": "Você já tem uma conta?",
   "CONFIRM_ACCOUNT_DELETION": "Tem certeza de que deseja excluir sua conta? Todos os dados serão apagados, a decisão não é reversível.",
   "CURRENT_PASSWORD": "Senha atual",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Re-enviar e-mail de confirmação da conta",
   "RESET_PASSWORD": "Restaurar senha",
   "REVIEW": "análise",
+  "ROLES": {
+    "admin": "Administrador"
+  },
   "SHOW_PASSWORD": "mostrar senha",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuário não está ativa.",
   "TOGGLE_THEME": "Alternar tema (modo claro ou escuro)",

@@ -1,6 +1,7 @@
 <template>
   <div id="workout-card-title">
     <button
+      v-if="isWorkoutOwner"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
       :disabled="!workoutObject.previousUrl"
@@ -19,37 +20,96 @@
     </button>
     <div class="workout-card-title">
       <SportImage :sport-label="sport.label" :color="sport.color" />
-      <div class="workout-title-date">
+      <div
+        class="workout-title-date"
+        v-if="isWorkoutOwner || !workoutObject.suspended"
+      >
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
-          <button
-            class="transparent icon-button"
-            @click="
-              $router.push({
-                name: 'EditWorkout',
-                params: { workoutId: workoutObject.workoutId },
-              })
-            "
-            :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+          <div v-if="isAuthenticated">
+            <button
+              class="transparent icon-button likes"
+              @click="updateLike(workoutObject)"
+              :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
+                'workouts.LIKES',
+                workoutObject.likes_count
+              )})`"
+            >
+              <i
+                class="fa"
+                :class="{
+                  'fa-heart': workoutObject.likes_count > 0,
+                  'fa-heart-o': workoutObject.likes_count === 0,
+                  liked: workoutObject.liked,
+                }"
+                aria-hidden="true"
+              />
+              <span class="likes-count" v-if="workoutObject.likes_count > 0">
+                {{ workoutObject.likes_count }}
+              </span>
+            </button>
+            <button
+              class="transparent icon-button"
+              v-if="isWorkoutOwner"
+              @click="
+                $router.push({
+                  name: 'EditWorkout',
+                  params: { workoutId: workoutObject.workoutId },
+                })
+              "
+              :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+            >
+              <i class="fa fa-edit" aria-hidden="true" />
+            </button>
+            <button
+              v-if="workoutObject.with_gpx && isWorkoutOwner"
+              class="transparent icon-button"
+              @click.prevent="downloadGpx(workoutObject.workoutId)"
+              :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
+            >
+              <i class="fa fa-download" aria-hidden="true" />
+            </button>
+            <button
+              v-if="isWorkoutOwner"
+              id="delete-workout-button"
+              class="transparent icon-button"
+              @click.prevent="displayDeleteModal"
+              :aria-label="$t(`workouts.DELETE_WORKOUT`)"
+            >
+              <i class="fa fa-trash" aria-hidden="true" />
+            </button>
+            <button
+              v-if="
+                !isWorkoutOwner &&
+                !currentlyReporting &&
+                reportStatus !== `workout-${workoutObject.workoutId}-created`
+              "
+              class="transparent icon-button"
+              @click.prevent="displayReportForm"
+              :title="$t('workouts.REPORT_WORKOUT')"
+            >
+              <i class="fa fa-flag" aria-hidden="true" />
+            </button>
+          </div>
+          <div
+            v-else
+            :title="`${workoutObject.likes_count} ${$t(
+              'workouts.LIKES',
+              workoutObject.likes_count
+            )}`"
           >
-            <i class="fa fa-edit" aria-hidden="true" />
-          </button>
-          <button
-            v-if="workoutObject.with_gpx"
-            class="transparent icon-button"
-            @click.prevent="downloadGpx(workoutObject.workoutId)"
-            :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
-          >
-            <i class="fa fa-download" aria-hidden="true" />
-          </button>
-          <button
-            id="delete-workout-button"
-            class="transparent icon-button"
-            @click.prevent="displayDeleteModal"
-            :aria-label="$t(`workouts.DELETE_WORKOUT`)"
-          >
-            <i class="fa fa-trash" aria-hidden="true" />
-          </button>
+            <i
+              class="fa"
+              :class="{
+                'fa-heart': workoutObject.likes_count > 0,
+                'fa-heart-o': workoutObject.likes_count === 0,
+                liked: workoutObject.liked,
+              }"
+            />
+            <span class="likes-count" v-if="workoutObject.likes_count > 0">
+              {{ workoutObject.likes_count }}
+            </span>
+          </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
           {{ workoutObject.title }}
@@ -79,6 +139,7 @@
       </div>
     </div>
     <button
+      v-if="isWorkoutOwner"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
       :disabled="!workoutObject.nextUrl"
@@ -97,21 +158,36 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import authApi from '@/api/authApi'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
   import type { IWorkoutObject } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     sport: ISport
     workoutObject: IWorkoutObject
+    isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
+  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
-  const { sport, workoutObject } = toRefs(props)
+  const store = useStore()
+
+  const { isAuthenticated } = useAuthUser()
+
+  const currentlyReporting: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
+  )
 
   async function downloadGpx(workoutId: string) {
     await authApi
@@ -131,6 +207,17 @@
   }
   function displayDeleteModal() {
     emit('displayModal', true)
+  }
+  function updateLike(workout: IWorkoutObject) {
+    store.dispatch(
+      workout.liked
+        ? WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT
+        : WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT,
+      workout.workoutId
+    )
+  }
+  function displayReportForm() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING, true)
   }
 </script>
 
@@ -163,6 +250,9 @@
         }
       }
       .workout-title {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
         span {
           margin-right: $default-margin * 0.5;
         }
@@ -181,9 +271,10 @@
       .fa {
         padding: 0 $default-padding * 0.3;
       }
+      .fa-heart.liked {
+        color: var(--like-color);
+      }
       .icon-button {
-        cursor: pointer;
-        padding: 0;
         margin-left: 2px;
       }
     }
@@ -199,6 +290,11 @@
           .fa-edit {
             padding: 0 $default-padding * 0.7;
           }
+        }
+
+        .workout-title {
+          display: flex;
+          flex-direction: column;
         }
       }
     }

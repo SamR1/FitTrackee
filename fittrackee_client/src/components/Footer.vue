@@ -33,7 +33,6 @@
     adminContact?: string
   }
   const props = defineProps<Props>()
-
   const { adminContact, version } = toRefs(props)
 </script>
 

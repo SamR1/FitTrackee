@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Equipments" href="equipments.html" /><link rel="prev" title="Authentication and account" href="auth.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Comments" href="comments.html" /><link rel="prev" title="Authentication and account" href="auth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Configuration - FitTrackee 0.8.12 documentation</title>
@@ -215,12 +215,17 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication and account</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comments.html">Comments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipments.html">Equipments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Equipment Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeline.html">Timeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="users.html">Users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts.html">Workouts</a></li>
 </ul>
@@ -331,8 +336,8 @@
 <dt class="sig sig-object http" id="patch--api-config">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/config</span></span><a class="headerlink" href="#patch--api-config" title="Link to this definition">¶</a></dt>
 <dd><p>Update Application configuration.</p>
-<p>Authenticated user must be an admin.</p>
 <p><strong>Scope</strong>: <code class="docutils literal notranslate"><span class="pre">application:write</span></code></p>
+<p><strong>Minimum role</strong>: Administrator</p>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/config</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -404,7 +409,11 @@ statistics</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">admin</span> <span class="pre">contact</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">when</span> <span class="pre">updating</span> <span class="pre">configuration</span></code></p></li>
 </ul>
 </dd>
@@ -446,12 +455,12 @@ statistics</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="equipments.html">
+          <a class="next-page" href="comments.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Equipments</div>
+                <div class="title">Comments</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

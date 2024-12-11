@@ -68,10 +68,6 @@
         "WORKOUTS_COUNT": "брой тренировки"
       }
     },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Добави административни права",
-      "REMOVE_ADMIN_RIGHTS": "Отстрани административни права"
-    },
     "TITLE": "Администриране - Потребители"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Имейл адресът бе променен."

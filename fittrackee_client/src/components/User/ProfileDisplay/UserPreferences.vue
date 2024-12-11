@@ -9,9 +9,32 @@
       <dt>{{ $t('user.PROFILE.TIMEZONE') }}:</dt>
       <dd>{{ timezone }}</dd>
       <dt>{{ $t('user.PROFILE.DATE_FORMAT') }}:</dt>
-      <dd>{{ getDateFormat(date_format, appLanguage) }}</dd>
+      <dd>{{ dateFormat }}</dd>
       <dt>{{ $t('user.PROFILE.FIRST_DAY_OF_WEEK') }}:</dt>
       <dd>{{ $t(`user.PROFILE.${fistDayOfWeek}`) }}</dd>
+    </dl>
+    <div class="preferences-section">{{ $t('user.PROFILE.TABS.ACCOUNT') }}</div>
+    <dl>
+      <dt>{{ $t('user.PROFILE.FOLLOW_REQUESTS_APPROVAL.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.FOLLOW_REQUESTS_APPROVAL.${
+              user.manually_approves_followers ? 'MANUALLY' : 'AUTOMATICALLY'
+            }`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('user.PROFILE.PROFILE_IN_USERS_DIRECTORY.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.PROFILE_IN_USERS_DIRECTORY.${
+              user.hide_profile_in_users_directory ? 'HIDDEN' : 'DISPLAYED'
+            }`
+          )
+        }}
+      </dd>
     </dl>
     <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
     <dl>
@@ -52,6 +75,16 @@
         </span>
       </div>
     </dl>
+    <dl>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
+      </dd>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
+      </dd>
+    </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
         {{ $t('user.PROFILE.EDIT_PREFERENCES') }}
@@ -62,45 +95,34 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
-  import { ROOT_STORE } from '@/store/constants'
-  import type { TLanguage } from '@/types/locales'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile } from '@/types/user'
-  import { useStore } from '@/use/useStore'
-  import { getDateFormat } from '@/utils/dates'
   import { languageLabels } from '@/utils/locales'
 
   interface Props {
     user: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
-  const store = useStore()
+  const { dateFormat, timezone } = useAuthUser()
 
-  const appLanguage: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const userLanguage = computed(() =>
-    props.user.language && props.user.language in languageLabels
-      ? languageLabels[props.user.language]
+  const userLanguage: ComputedRef<string> = computed(() =>
+    user.value.language && user.value.language in languageLabels
+      ? languageLabels[user.value.language]
       : languageLabels['en']
   )
-  const fistDayOfWeek = computed(() => (props.user.weekm ? 'MONDAY' : 'SUNDAY'))
-  const timezone = computed(() =>
-    props.user.timezone ? props.user.timezone : 'Europe/Paris'
-  )
-  const date_format = computed(() =>
-    props.user.date_format ? props.user.date_format : 'MM/dd/yyyy'
-  )
+  const fistDayOfWeek = computed(() => (user.value.weekm ? 'MONDAY' : 'SUNDAY'))
   const display_ascent = computed(() =>
-    props.user.display_ascent ? 'DISPLAYED' : 'HIDDEN'
+    user.value.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
   const darkMode = computed(() =>
-    props.user.use_dark_mode === true
+    user.value.use_dark_mode === true
       ? 'DARK'
-      : props.user.use_dark_mode === false
+      : user.value.use_dark_mode === false
         ? 'LIGHT'
         : 'DEFAULT'
   )
@@ -109,7 +131,7 @@
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
   #user-preferences {
-    padding-top: $default-padding;
+    padding: $default-padding * 0.5 0 $default-padding;
     .preferences-section {
       font-weight: bold;
       text-transform: uppercase;

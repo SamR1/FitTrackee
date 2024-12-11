@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-11-17 19:34+0100\n"
+"POT-Creation-Date: 2024-12-11 16:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -49,9 +49,11 @@ msgstr ""
 msgid "error on registration:"
 msgstr ""
 
-#: ../source/api/auth.rst ../source/api/configuration.rst
-#: ../source/api/equipment_types.rst ../source/api/equipments.rst
-#: ../source/api/sports.rst ../source/api/users.rst ../source/api/workouts.rst
+#: ../source/api/auth.rst ../source/api/comments.rst
+#: ../source/api/configuration.rst ../source/api/equipment_types.rst
+#: ../source/api/equipments.rst ../source/api/notifications.rst
+#: ../source/api/reports.rst ../source/api/sports.rst ../source/api/users.rst
+#: ../source/api/workouts.rst
 msgid "Request JSON Object"
 msgstr ""
 
@@ -77,10 +79,13 @@ msgstr ""
 msgid "``true`` if user accepted privacy policy"
 msgstr ""
 
-#: ../source/api/auth.rst ../source/api/configuration.rst
-#: ../source/api/equipment_types.rst ../source/api/equipments.rst
-#: ../source/api/oauth2.rst ../source/api/records.rst ../source/api/sports.rst
-#: ../source/api/stats.rst ../source/api/users.rst ../source/api/workouts.rst
+#: ../source/api/auth.rst ../source/api/comments.rst
+#: ../source/api/configuration.rst ../source/api/equipment_types.rst
+#: ../source/api/equipments.rst ../source/api/follow_requests.rst
+#: ../source/api/notifications.rst ../source/api/oauth2.rst
+#: ../source/api/records.rst ../source/api/reports.rst ../source/api/sports.rst
+#: ../source/api/stats.rst ../source/api/timeline.rst ../source/api/users.rst
+#: ../source/api/workouts.rst
 msgid "Status Codes"
 msgstr ""
 
@@ -200,13 +205,20 @@ msgid "Get authenticated user info (profile, account, preferences)."
 msgstr ""
 
 #: ../../<autoflask>:1
+msgid "Suspended user can access this endpoint."
+msgstr ""
+
+#: ../../<autoflask>:1
 msgid "**Scope**: ``profile:read``"
 msgstr ""
 
-#: ../source/api/auth.rst ../source/api/configuration.rst
-#: ../source/api/equipment_types.rst ../source/api/equipments.rst
-#: ../source/api/oauth2.rst ../source/api/records.rst ../source/api/sports.rst
-#: ../source/api/stats.rst ../source/api/users.rst ../source/api/workouts.rst
+#: ../source/api/auth.rst ../source/api/comments.rst
+#: ../source/api/configuration.rst ../source/api/equipment_types.rst
+#: ../source/api/equipments.rst ../source/api/follow_requests.rst
+#: ../source/api/notifications.rst ../source/api/oauth2.rst
+#: ../source/api/records.rst ../source/api/reports.rst ../source/api/sports.rst
+#: ../source/api/stats.rst ../source/api/timeline.rst ../source/api/users.rst
+#: ../source/api/workouts.rst
 msgid "Request Headers"
 msgstr ""
 
@@ -310,11 +322,23 @@ msgid "display highest ascent records and total"
 msgstr ""
 
 #: ../../<autoflask>:1
+msgid "if ``true``, user does not appear in users directory"
+msgstr ""
+
+#: ../../<autoflask>:1
 msgid "display distance in imperial units"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid "language preferences"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "workout map visibility (``public``, ``followers_only``, ``private``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "if ``false``, follow requests are automatically approved"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -327,8 +351,8 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"Display interface with dark mode if true. If null, it uses browser "
-"preferences."
+"Display interface with dark mode if ``true``. If ``null``, it uses "
+"browser preferences."
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -337,6 +361,10 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "does week start on Monday?"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "user workouts visibility (``public``, ``followers_only``, ``private``)"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -429,10 +457,11 @@ msgstr ""
 msgid "Reset authenticated user preferences for a given sport."
 msgstr ""
 
-#: ../../<autoflask> ../source/api/auth.rst ../source/api/equipment_types.rst
-#: ../source/api/equipments.rst ../source/api/oauth2.rst
-#: ../source/api/sports.rst ../source/api/stats.rst ../source/api/users.rst
-#: ../source/api/workouts.rst
+#: ../../<autoflask> ../source/api/auth.rst ../source/api/comments.rst
+#: ../source/api/equipment_types.rst ../source/api/equipments.rst
+#: ../source/api/follow_requests.rst ../source/api/notifications.rst
+#: ../source/api/oauth2.rst ../source/api/reports.rst ../source/api/sports.rst
+#: ../source/api/stats.rst ../source/api/users.rst ../source/api/workouts.rst
 msgid "Parameters"
 msgstr ""
 
@@ -673,7 +702,7 @@ msgid "``completed request already exists``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Download a data export archive"
+msgid "Download a data export archive."
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -684,7 +713,235 @@ msgstr ""
 msgid "``file not found``"
 msgstr ""
 
-#: ../source/api/configuration.rst:2
+#: ../../<autoflask>:1
+msgid "Get blocked users by authenticated user"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Example requests**:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "without parameters:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with parameters:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with blocked users:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "no blocked users:"
+msgstr ""
+
+#: ../source/api/auth.rst ../source/api/equipments.rst
+#: ../source/api/follow_requests.rst ../source/api/notifications.rst
+#: ../source/api/oauth2.rst ../source/api/reports.rst ../source/api/sports.rst
+#: ../source/api/stats.rst ../source/api/timeline.rst ../source/api/users.rst
+#: ../source/api/workouts.rst
+msgid "Query Parameters"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "page if using pagination (default: 1)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get suspension if exists for authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "suspension exists:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "no suspension:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``user account is not suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Appeal suspension for authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "text explaining appeal"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "appeal for suspension created"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``no text provided`` - ``you can appeal only once``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``no text provided``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``you can appeal only once``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get sanction for authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "suspension id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``no sanction found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Appeal a sanction"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "sanction id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "appeal created"
+msgstr ""
+
+#: ../source/api/comments.rst:2 ../source/features.rst:174
+msgid "Comments"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get workout comments."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"It returns only comments visible to authenticated user and only public "
+"comments when no authentication provided."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``workouts:read``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "workout short id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"OAuth 2.0 Bearer Token for comments with ``private`` and "
+"``followers_only`` visibility"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``Error during comment save.``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get comment."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "comment short id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"OAuth 2.0 Bearer Token for comment with ``private`` and "
+"``followers_only`` visibility"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout comment not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Post a comment."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``workouts:write``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "comment content"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "visibility level (``public``, ``followers_only``, ``private``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``created``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``invalid payload``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``you do not have permissions``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Update comment text."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``comment not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Add a \"like\" to a comment."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Remove a comment \"like\"."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Appeal comment suspension."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Only comment author can appeal the suspension."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"- ``no text provided`` - ``you can appeal only once`` - ``workout comment"
+" is not suspended`` - ``workout comment has no suspension``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout comment is not suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout comment has no suspension``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Delete workout comment."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "comment deleted"
+msgstr ""
+
+#: ../source/api/configuration.rst:2 ../source/features.rst:374
 msgid "Configuration"
 msgstr ""
 
@@ -795,10 +1052,6 @@ msgid ""
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "``you do not have permissions``"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid "``error when updating configuration``"
 msgstr ""
 
@@ -806,7 +1059,7 @@ msgstr ""
 msgid "health check endpoint"
 msgstr ""
 
-#: ../source/api/equipment_types.rst:2 ../source/features.rst:279
+#: ../source/api/equipment_types.rst:2 ../source/features.rst:477
 msgid "Equipment Types"
 msgstr ""
 
@@ -870,8 +1123,8 @@ msgstr ""
 msgid "equipment type active status"
 msgstr ""
 
-#: ../source/api/equipments.rst:2 ../source/features.rst:185
-#: ../source/features.rst:343
+#: ../source/api/equipments.rst:2 ../source/features.rst:320
+#: ../source/features.rst:550
 msgid "Equipments"
 msgstr ""
 
@@ -881,12 +1134,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "with some query parameters (get all equipment of type \"Shoes\")"
-msgstr ""
-
-#: ../source/api/equipments.rst ../source/api/oauth2.rst
-#: ../source/api/sports.rst ../source/api/stats.rst ../source/api/users.rst
-#: ../source/api/workouts.rst
-msgid "Query Parameters"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1059,12 +1306,191 @@ msgid ""
 "without 'force' parameter``"
 msgstr ""
 
+#: ../source/api/follow_requests.rst:2
+msgid "Follow requests"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get follow requests to process, received by authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``follow:read``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "without parameters"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with some query parameters"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "number of follow requests per page (default: 10, max: 50)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "sorting order (default: ``asc``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"- provide a valid auth token - signature expired, please log in again - "
+"invalid token, please log in again"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "provide a valid auth token"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "signature expired, please log in again"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "invalid token, please log in again"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Accept a follow request from user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``follow:write``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "user name"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- Follow request from user 'user_name' already accepted."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Follow request from user 'user_name' already accepted."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- user does not exist - Follow request does not exist."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "user does not exist"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Follow request does not exist."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Reject a follow request from user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- Follow request from user 'user_name' already rejected."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Follow request from user 'user_name' already rejected."
+msgstr ""
+
 #: ../source/api/index.rst:4
 msgid "Endpoints:"
 msgstr ""
 
 #: ../source/api/index.rst:2
 msgid "API documentation"
+msgstr ""
+
+#: ../source/api/notifications.rst:2 ../source/features.rst:196
+#: ../source/features.rst:560
+msgid "Notifications"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get authenticated user notifications."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``notifications:read``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with some query parameters:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning at least one notification:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning no notifications"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "sorting order: ``asc``, ``desc`` (default: ``desc``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "notification read status (``read``, ``unread``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``you do not have permissions, your account is suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``you do not have permissions, your account is suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Update authenticated user notification read status."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``notifications:write``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "notification id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "notification read status"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``notification not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``notification not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``error, please try again or contact the administrator``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get if unread notifications exist for authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Mark all authenticated user notifications as read."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "notification type (optional)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get types of notifications received by authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with query parameter:"
 msgstr ""
 
 #: ../source/api/oauth2.rst:2 ../source/cli.rst:40
@@ -1081,10 +1507,6 @@ msgstr ""
 msgid ""
 "This endpoint is only accessible by FitTrackee client (first-party "
 "application)."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "without parameters:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1274,10 +1696,6 @@ msgid "maximum speed (record_type: ``MS``)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "**Scope**: ``workouts:read``"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid "returning records"
 msgstr ""
 
@@ -1285,7 +1703,242 @@ msgstr ""
 msgid "no records"
 msgstr ""
 
-#: ../source/api/sports.rst:2 ../source/features.rst:284
+#: ../source/api/reports.rst:2
+msgid "Reports"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get reports."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``reports:read``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Minimum role**: Moderator"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning at least one report:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning no reports"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "reported content type (``comment``, ``user`` or ``workout``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "sorting criteria: ``created_at`` or ``updated_at``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "reporter username"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "filter on report status"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``invalid payload`` - ``invalid 'order_by'``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``invalid 'order_by'``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get report."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``report not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``report not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get if unresolved reports exist."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``you do not have permissions``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Create a report."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``reports:write``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "note describing report"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "id of content reported"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "type of content reported (``comment``, ``workout`` or ``user``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "report created"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"- ``invalid payload`` - ``users can not report their own comment`` - "
+"``users can not report their own profile`` - ``users can not report their"
+" own workout``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``users can not report their own comment``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``users can not report their own profile``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``users can not report their own workout``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``comment not found`` - ``user not found`` - ``workout not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``user not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Update report."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Example response** (report on user profile):"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "report id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "report comment (mandatory)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "report status"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Create report action."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"action type (expected value: ``user_suspension``, ``user_unsuspension``, "
+"``user_warning``, ``comment_suspension``, ``comment_unsuspension``, "
+"``workout_suspension``, ``workout_unsuspension``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"id of comment affected by action (type: ``comment_suspension``, "
+"``comment_suspension``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "text explaining the reason for the action"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"username of user affected by action (type: ``user_suspension``, "
+"``user_unsuspension``, ``user_warning``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"id of workout affected by action (type: ``workout_suspension``, "
+"``workout_unsuspension``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``invalid payload`` - ``invalid 'action_type'``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``invalid 'action_type'``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``Error during report save.``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``Error during report save.``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Process appeal."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``users:write``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "appeal id"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``true`` if appeal is approved, ``false`` if rejected"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "text explaining why the appeal was approved or rejected"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"- ``invalid payload`` - ``comment already reactivated`` - ``user account "
+"has already been reactivated`` - ``workout already reactivated``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``comment already reactivated``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``user account has already been reactivated``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout already reactivated``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``appeal not found``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``appeal not found``"
+msgstr ""
+
+#: ../source/api/sports.rst:2 ../source/features.rst:17
+#: ../source/features.rst:486
 msgid "Sports"
 msgstr ""
 
@@ -1326,10 +1979,6 @@ msgid "Update a sport."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "**Scope**: ``workouts:write``"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid "sport active status"
 msgstr ""
 
@@ -1337,7 +1986,8 @@ msgstr ""
 msgid "sport updated"
 msgstr ""
 
-#: ../source/api/stats.rst:2 ../source/features.rst:335
+#: ../source/api/stats.rst:2 ../source/features.rst:233
+#: ../source/features.rst:541
 msgid "Statistics"
 msgstr ""
 
@@ -1345,14 +1995,6 @@ msgstr ""
 msgid ""
 "Get workouts statistics for a user by time. For now only authenticated "
 "users can access their statistics."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "**Example requests**:"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "with parameters:"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1481,14 +2123,31 @@ msgstr ""
 msgid "Get all application statistics."
 msgstr ""
 
-#: ../source/api/users.rst:2 ../source/cli.rst:61 ../source/features.rst:266
+#: ../source/api/timeline.rst:2
+msgid "Timeline"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get workouts visible to authenticated user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning at least one workout:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returning no workouts"
+msgstr ""
+
+#: ../source/api/users.rst:2 ../source/cli.rst:61 ../source/features.rst:158
+#: ../source/features.rst:411
 msgid "Users"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"Get all users (regardless their account status), if authenticated user "
-"has admin rights."
+"Get all users. If authenticated user has admin rights, users email is "
+"returned."
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1497,14 +2156,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "**Scope**: ``users:read``"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "with some query parameters:"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "page if using pagination (default: 1)"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1522,17 +2173,52 @@ msgstr ""
 #: ../../<autoflask>:1
 msgid ""
 "sorting criteria: ``username``, ``created_at``, ``workouts_count``, "
-"``admin``, ``is_active`` (default: ``username``)"
+"``role``, ``is_active`` (default: ``username``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "returns hidden users followed by user if true"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"Get single user details. Only user with admin rights can get other users "
-"details."
+"returns hidden users if ``true`` (only if authenticated user has "
+"administration rights - for users administration)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user name"
+msgid ""
+"returns inactive users if ``true`` (only if authenticated user has "
+"administration rights - for users administration)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"returns suspended users if ``true`` (only if authenticated user has "
+"administration rights - for users administration)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"Get single user details. If a user is authenticated, it returns "
+"relationships. If authenticated user has admin rights, user email is "
+"returned."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "**Scope**: ``users:read`` for Oauth 2.0 client"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "when a user is authenticated:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "when no authentication:"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "OAuth 2.0 Bearer Token if user is authenticated"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1574,19 +2260,21 @@ msgid "activate account for an inactive user"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Only user with admin rights can modify another user."
+msgid "deactivate account after report."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "**Scope**: ``users:write``"
+msgid "**Minimum role**: Administrator"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "activate user account"
+msgid "(de-)activate user account"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "does the user have administrator rights"
+msgid ""
+"user role (``user``, ``admin``, ``moderator``). ``owner`` can only be set"
+" via **CLI**."
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1599,8 +2287,12 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"- ``invalid payload`` - ``valid email must be provided`` - ``new email "
-"must be different than current email``"
+"- ``invalid payload`` - ``invalid role`` - ``valid email must be "
+"provided`` - ``new email must be different than current email``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``invalid role``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1621,8 +2313,9 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"An admin can delete all accounts except his account if he's the only one "
-"admin."
+"A user with admin rights can delete all accounts except his account if he"
+" is the only user with admin rights. Only owner can delete his own "
+"account."
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1639,20 +2332,99 @@ msgstr ""
 msgid "``you can not delete your account, no other user has admin rights``"
 msgstr ""
 
+#: ../../<autoflask>:1
+msgid "Send a follow request to a user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- you do not have permissions"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "you do not have permissions"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- user does not exist"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "error, please try again or contact the administrator"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Unfollow a user."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"Get user followers. If the authenticated user has admin rights, it "
+"returns following users with additional field 'email'"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "with page parameter"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"Get user following. If the authenticate user has admin rights, it returns"
+" following users with additional field 'email'"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Block a user"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- invalid payload"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "invalid payload"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- user not found"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "user not found"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Unblock a user"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Get user sanctions."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"It returns sanctions only if: - user name is authenticated user username "
+"- user has moderation rights."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "if sanctions exist (response with moderation rights)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "if sanctions exist (response for authenticated user)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "no sanctions"
+msgstr ""
+
 #: ../source/api/workouts.rst:2 ../source/features.rst:14
+#: ../source/features.rst:60
 msgid "Workouts"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Get workouts for the authenticated user."
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "returning at least one workout:"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "returning no workouts"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1696,10 +2468,6 @@ msgid "maximal max. speed"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "sorting order: ``asc``, ``desc`` (default: ``desc``)"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid ""
 "sorting criteria: ``ave_speed``, ``distance``, ``duration``, "
 "``workout_date`` (default: ``workout_date``)"
@@ -1707,7 +2475,7 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid ""
-"equipment id (if 'none', only workouts without equipments will be "
+"equipment id (if ``none``, only workouts without equipments will be "
 "returned)"
 msgstr ""
 
@@ -1730,15 +2498,19 @@ msgid "workout not found:"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "workout short id"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "``workout not found``"
+msgid ""
+"OAuth 2.0 Bearer Token for workout with ``private`` or ``followers_only``"
+" visibility"
 msgstr ""
 
 #: ../../<autoflask>:1
 msgid "Get gpx file for a workout displayed on map with Leaflet."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"OAuth 2.0 Bearer Token for workout with ``private`` or ``followers_only``"
+" map visibility"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1966,14 +2738,6 @@ msgid "workout duration in seconds (only for workout without gpx)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "notes (max length: 500 characters, otherwise they will be truncated)"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "workout title (max length: 255 characters, otherwise it will be truncated)"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid ""
 "the id of the equipment to associate with this workout (any existing "
 "equipment for this workout will be replaced). **Note**: for now only one "
@@ -1982,10 +2746,28 @@ msgid ""
 msgstr ""
 
 #: ../../<autoflask>:1
+msgid ""
+"map and analysis data visibility (``private``, ``followers_only`` or "
+"``public``)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "notes (max length: 500 characters, otherwise they will be truncated)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "workout title (max length: 255 characters, otherwise it will be truncated)"
+msgstr ""
+
+#: ../../<autoflask>:1
 #, python-format
 msgid ""
 "workout date in user timezone (format: ``%Y-%m-%d %H:%M``) (only for "
 "workout without gpx)"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "workout visibility (``private``, ``followers_only`` or ``public``)"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1998,6 +2780,36 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "workout deleted"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Add a \"like\" to a workout."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Remove workout \"like\"."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Appeal workout suspension."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "Only workout author can appeal the suspension."
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid ""
+"- ``no text provided`` - ``you can appeal only once`` - ``workout is not "
+"suspended`` - ``workout has no suspension``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout is not suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``workout has no suspension``"
 msgstr ""
 
 #: ../source/changelog.md:1
@@ -2104,7 +2916,7 @@ msgstr ""
 #: ../source/changelog.md:1269 ../source/changelog.md:1283
 #: ../source/changelog.md:1308 ../source/changelog.md:1317
 #: ../source/changelog.md:1328 ../source/changelog.md:1347
-#: ../source/changelog.md:1433 ../source/features.rst:289
+#: ../source/changelog.md:1433 ../source/features.rst:492
 msgid "Translations"
 msgstr ""
 
@@ -4821,29 +5633,29 @@ msgstr ""
 msgid "6 sports supported:"
 msgstr ""
 
-#: ../source/changelog.md:2001 ../source/features.rst:16
+#: ../source/changelog.md:2001 ../source/features.rst:21
 msgid "Cycling (Sport)"
 msgstr ""
 
-#: ../source/changelog.md:2002 ../source/features.rst:17
+#: ../source/changelog.md:2002 ../source/features.rst:22
 msgid "Cycling (Transport)"
 msgstr ""
 
-#: ../source/changelog.md:2003 ../source/features.rst:20
-#: ../source/features.rst:36
+#: ../source/changelog.md:2003 ../source/features.rst:25
+#: ../source/features.rst:42
 msgid "Hiking"
 msgstr ""
 
-#: ../source/changelog.md:2004 ../source/features.rst:21
+#: ../source/changelog.md:2004 ../source/features.rst:26
 msgid "Mountain Biking"
 msgstr ""
 
-#: ../source/changelog.md:2005 ../source/features.rst:27
+#: ../source/changelog.md:2005 ../source/features.rst:32
 msgid "Running"
 msgstr ""
 
-#: ../source/changelog.md:2006 ../source/features.rst:33
-#: ../source/features.rst:44
+#: ../source/changelog.md:2006 ../source/features.rst:38
+#: ../source/features.rst:50
 msgid "Walking"
 msgstr ""
 
@@ -4880,22 +5692,22 @@ msgstr ""
 msgid "Records by sports:"
 msgstr ""
 
-#: ../source/changelog.md:2014 ../source/features.rst:101
-#: ../source/features.rst:112 ../source/features.rst:131
-#: ../source/features.rst:137
+#: ../source/changelog.md:2014 ../source/features.rst:140
+#: ../source/features.rst:148 ../source/features.rst:224
+#: ../source/features.rst:259
 msgid "average speed"
 msgstr ""
 
-#: ../source/changelog.md:2015 ../source/features.rst:113
+#: ../source/changelog.md:2015 ../source/features.rst:225
 msgid "farthest distance"
 msgstr ""
 
-#: ../source/changelog.md:2016 ../source/features.rst:115
+#: ../source/changelog.md:2016 ../source/features.rst:227
 msgid "longest duration"
 msgstr ""
 
-#: ../source/changelog.md:2017 ../source/features.rst:116
-#: ../source/features.rst:132
+#: ../source/changelog.md:2017 ../source/features.rst:141
+#: ../source/features.rst:228
 msgid "maximum speed"
 msgstr ""
 
@@ -4988,12 +5800,12 @@ msgid "Remove tokens expired for more than provided number of days"
 msgstr ""
 
 #: ../source/cli.rst:53 ../source/cli.rst:74 ../source/cli.rst:91
-#: ../source/cli.rst:141
+#: ../source/cli.rst:139
 msgid "Options"
 msgstr ""
 
 #: ../source/cli.rst:54 ../source/cli.rst:75 ../source/cli.rst:92
-#: ../source/cli.rst:117 ../source/cli.rst:142 ../source/cli.rst:159
+#: ../source/cli.rst:115 ../source/cli.rst:140 ../source/cli.rst:158
 msgid "Description"
 msgstr ""
 
@@ -5027,117 +5839,131 @@ msgstr ""
 msgid "``ftcli users create``"
 msgstr ""
 
-#: ../source/cli.rst:101
-msgid "Create a user account."
-msgstr ""
-
-#: ../source/cli.rst:104
-msgid "the newly created account is already active."
-msgstr ""
-
-#: ../source/cli.rst:105
-msgid "the CLI allows to create users when registration is disabled."
-msgstr ""
-
-#: ../source/cli.rst:109
+#: ../source/cli.rst:100
 msgid "User preference for interface language is added."
 msgstr ""
 
-#: ../source/cli.rst:116 ../source/cli.rst:158
+#: ../source/cli.rst:102
+msgid "Create a user account."
+msgstr ""
+
+#: ../source/cli.rst:105
+msgid "the newly created account is already active."
+msgstr ""
+
+#: ../source/cli.rst:106
+msgid "the CLI allows to create users when registration is disabled."
+msgstr ""
+
+#: ../source/cli.rst:114 ../source/cli.rst:157
 msgid "Arguments/options"
 msgstr ""
 
-#: ../source/cli.rst:118 ../source/cli.rst:160
+#: ../source/cli.rst:116 ../source/cli.rst:159
 msgid "``USERNAME``"
 msgstr ""
 
-#: ../source/cli.rst:119 ../source/cli.rst:161
+#: ../source/cli.rst:117 ../source/cli.rst:160
 msgid "Username."
 msgstr ""
 
-#: ../source/cli.rst:120
+#: ../source/cli.rst:118
 msgid "``--email EMAIL``"
 msgstr ""
 
-#: ../source/cli.rst:121
+#: ../source/cli.rst:119
 msgid "User email (mandatory)."
 msgstr ""
 
-#: ../source/cli.rst:122
+#: ../source/cli.rst:120
 msgid "``--password PASSWORD``"
 msgstr ""
 
-#: ../source/cli.rst:123
+#: ../source/cli.rst:121
 msgid "User password (if not provided, a random password is generated)."
 msgstr ""
 
-#: ../source/cli.rst:124
+#: ../source/cli.rst:122
 msgid "``--lang LANGUAGE``"
 msgstr ""
 
-#: ../source/cli.rst:125
+#: ../source/cli.rst:123
 msgid ""
 "User preference for interface language (two-letter code, ISO 639-1). If "
 "not provided or not supported, it falls back to English ('en')."
 msgstr ""
 
-#: ../source/cli.rst:130
+#: ../source/cli.rst:128
 msgid "``ftcli users export_archives``"
 msgstr ""
 
-#: ../source/cli.rst:133
+#: ../source/cli.rst:131
 msgid ""
 "Process incomplete user export requests. Can be used if redis is not set "
 "(no dramatiq workers running)."
 msgstr ""
 
-#: ../source/cli.rst:143
+#: ../source/cli.rst:141
 msgid "``--max``"
 msgstr ""
 
-#: ../source/cli.rst:144
+#: ../source/cli.rst:142
 msgid "Maximum number of export requests to process."
 msgstr ""
 
-#: ../source/cli.rst:148
+#: ../source/cli.rst:146
 msgid "``ftcli users update``"
 msgstr ""
 
-#: ../source/cli.rst:151
-msgid "Modify a user account (admin rights, active status, email and password)."
+#: ../source/cli.rst:148
+msgid "Add ``--set-role`` option. ``--set-admin`` is now deprecated."
 msgstr ""
 
-#: ../source/cli.rst:162
+#: ../source/cli.rst:150
+msgid "Modify a user account (role, active status, email and password)."
+msgstr ""
+
+#: ../source/cli.rst:161
 msgid "``--set-admin BOOLEAN``"
 msgstr ""
 
-#: ../source/cli.rst:163
+#: ../source/cli.rst:162
 msgid ""
-"Add/remove admin rights (when adding admin rights, it also activates user"
-" account if not active)."
+"[DEPRECATED] Add/remove admin rights (when adding admin rights, it also "
+"activates user account if not active)."
+msgstr ""
+
+#: ../source/cli.rst:163
+msgid "``--set-role ROLE``"
 msgstr ""
 
 #: ../source/cli.rst:164
-msgid "``--activate``"
+msgid ""
+"Set user role (when setting 'moderator', 'admin' and 'owner' role, it "
+"also activates user account if not active)."
 msgstr ""
 
 #: ../source/cli.rst:165
-msgid "Activate user account."
+msgid "``--activate``"
 msgstr ""
 
 #: ../source/cli.rst:166
-msgid "``--reset-password``"
+msgid "Activate user account."
 msgstr ""
 
 #: ../source/cli.rst:167
-msgid "Reset user password (a new password will be displayed)."
+msgid "``--reset-password``"
 msgstr ""
 
 #: ../source/cli.rst:168
-msgid "``--update-email EMAIL``"
+msgid "Reset user password (a new password will be displayed)."
 msgstr ""
 
 #: ../source/cli.rst:169
+msgid "``--update-email EMAIL``"
+msgstr ""
+
+#: ../source/cli.rst:170
 msgid "Update user email."
 msgstr ""
 
@@ -5153,8 +5979,9 @@ msgstr ""
 
 #: ../source/features.rst:6
 msgid ""
-"For now, this app is kind of a single-user application. Even if several "
-"users can register, a user can only view his own workouts."
+"If registration is enabled, multiple users can register and interact with"
+" other users (comments, likes). Workouts and comments are visible to "
+"other users according to visibility levels."
 msgstr ""
 
 #: ../source/features.rst:8
@@ -5168,94 +5995,94 @@ msgid ""
 "detail and for static map generation."
 msgstr ""
 
-#: ../source/features.rst:15
+#: ../source/features.rst:19
 msgid "18 sports are supported:"
 msgstr ""
 
-#: ../source/features.rst:18
+#: ../source/features.rst:23
 msgid "Cycling (Trekking)  (*new in 0.7.27*)"
 msgstr ""
 
-#: ../source/features.rst:19
+#: ../source/features.rst:24
 msgid "Cycling (Virtual)  (*new in 0.7.3*)"
 msgstr ""
 
-#: ../source/features.rst:22
+#: ../source/features.rst:27
 msgid "Mountain Biking (Electric)  (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:23
+#: ../source/features.rst:28
 msgid "Mountaineering  (*new in 0.7.9*)"
 msgstr ""
 
-#: ../source/features.rst:24
+#: ../source/features.rst:29
 msgid "Open Water Swimming  (*new in 0.7.20*)"
 msgstr ""
 
-#: ../source/features.rst:25
+#: ../source/features.rst:30
 msgid "Paragliding  (*new in 0.7.19*)"
 msgstr ""
 
-#: ../source/features.rst:26
+#: ../source/features.rst:31
 msgid "Rowing  (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:28
+#: ../source/features.rst:33
 msgid "Skiing (Alpine) (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:29
+#: ../source/features.rst:34
 msgid "Skiing (Cross Country)  (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:30
+#: ../source/features.rst:35
 msgid "Snowshoes (*new in 0.5.2*)"
 msgstr ""
 
-#: ../source/features.rst:31
+#: ../source/features.rst:36
 msgid "Swimrun (*new in 0.8.7*)"
 msgstr ""
 
-#: ../source/features.rst:32
+#: ../source/features.rst:37
 msgid "Trail (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:35
+#: ../source/features.rst:40
 msgid ""
 "(*new in 0.5.0*) Stopped speed threshold used by `gpxpy "
 "<https://github.com/tkrajina/gpxpy>`_ is not the default one for the "
 "following sports (0.1 km/h instead of 1 km/h):"
 msgstr ""
 
-#: ../source/features.rst:37
+#: ../source/features.rst:43
 msgid "Mountaineering"
 msgstr ""
 
-#: ../source/features.rst:38
+#: ../source/features.rst:44
 msgid "Open Water Swimming"
 msgstr ""
 
-#: ../source/features.rst:39
+#: ../source/features.rst:45
 msgid "Paragliding"
 msgstr ""
 
-#: ../source/features.rst:40
+#: ../source/features.rst:46
 msgid "Skiing (Cross Country)"
 msgstr ""
 
-#: ../source/features.rst:41
+#: ../source/features.rst:47
 msgid "Snowshoes"
 msgstr ""
 
-#: ../source/features.rst:42
+#: ../source/features.rst:48
 msgid "Swimrun"
 msgstr ""
 
-#: ../source/features.rst:43
+#: ../source/features.rst:49
 msgid "Trail"
 msgstr ""
 
-#: ../source/features.rst:47
+#: ../source/features.rst:53
 msgid "It can be overridden in user preferences."
 msgstr ""
 
@@ -5271,18 +6098,22 @@ msgid ""
 "segments for now."
 msgstr ""
 
-#: ../source/features.rst:53
-msgid ""
-"Dashboard with month calendar displaying workouts and record. The week "
-"can start on Sunday or Monday (which can be changed in the user "
-"preferences). The calendar displays up to 100 workouts."
+#: ../source/features.rst:62
+msgid "A workout can be created by:"
 msgstr ""
 
-#: ../source/features.rst:54
+#: ../source/features.rst:64
 msgid ""
-"Workout creation by uploading manually a gpx file or a zip archive "
-"containing a limited number of gpx files (related data are stored in "
-"database in metric system)."
+"uploading manually a gpx file or a zip archive containing a limited "
+"number of gpx files,"
+msgstr ""
+
+#: ../source/features.rst
+msgid "or entering date, time, duration and distance (without gpx file)."
+msgstr ""
+
+#: ../source/features.rst
+msgid "Ascent and descent can also be provided (*new in 0.7.10*)."
 msgstr ""
 
 #: ../source/features.rst
@@ -5295,6 +6126,10 @@ msgstr ""
 msgid ""
 "Calculated values may differ from values calculated by the application "
 "that originally generated the gpx files, in particular the maximum speed."
+msgstr ""
+
+#: ../source/features.rst
+msgid "Related data are stored in database in metric system."
 msgstr ""
 
 #: ../source/features.rst
@@ -5315,32 +6150,18 @@ msgid "User can add title while uploading gpx file (*new in 0.8.10*)."
 msgstr ""
 
 #: ../source/features.rst
-msgid "The user can add description (*new in 0.8.9*) and note."
+msgid "The user can add description (*new in 0.8.9*) and private notes."
 msgstr ""
 
 #: ../source/features.rst
-msgid ""
-"This \"Description\" field is longer than the \"Notes\" field and will "
-"have the same visibility as the workout in a next version (see `#125 "
-"<https://github.com/SamR1/FitTrackee/issues/125>`__). The \"Notes\" field"
-" will remain private."
+msgid "A limited Markdown syntax can be used (*new in 0.9.0*)."
 msgstr ""
 
-#: ../source/features.rst:72
+#: ../source/features.rst:84
 msgid ""
 "If present and no description is provided by the user, the description "
 "from the gpx file (``<desc></desc>``) is used as the workout description "
 "(*new in 0.8.10*)."
-msgstr ""
-
-#: ../source/features.rst
-msgid ""
-"A workout can even be created without gpx (the user must enter date, "
-"time, duration and distance)."
-msgstr ""
-
-#: ../source/features.rst
-msgid "Ascent and descent can also be provided (*new in 0.7.10*)."
 msgstr ""
 
 #: ../source/features.rst
@@ -5367,102 +6188,430 @@ msgid ""
 "in 0.5.5*)."
 msgstr ""
 
-#: ../source/features.rst:79
+#: ../source/features.rst
 msgid ""
 "An `equipment <features.html#equipments>`__ can be associated with a "
 "workout (*new in 0.8.0*). For now, only one equipment can be associated."
 msgstr ""
 
-#: ../source/features.rst:80
-msgid "Segments can be displayed."
-msgstr ""
-
-#: ../source/features.rst:81
-msgid "Workout gpx file can be downloaded (*new in 0.5.1*)"
-msgstr ""
-
-#: ../source/features.rst:82
-msgid "Workout edition and deletion."
-msgstr ""
-
-#: ../source/features.rst:83
-msgid "User statistics, by time period (week, month, year) and sport:"
-msgstr ""
-
-#: ../source/features.rst:84
-msgid "totals:"
-msgstr ""
-
-#: ../source/features.rst:85 ../source/features.rst:199
-msgid "total distance"
-msgstr ""
-
-#: ../source/features.rst:86 ../source/features.rst:200
-msgid "total duration"
-msgstr ""
-
-#: ../source/features.rst:87 ../source/features.rst:98
-#: ../source/features.rst:201
-msgid "total workouts"
-msgstr ""
-
-#: ../source/features.rst:88
-msgid "total ascent  (*new in 0.5.0*)"
-msgstr ""
-
-#: ../source/features.rst:89
-msgid "total descent  (*new in 0.5.0*)"
-msgstr ""
-
-#: ../source/features.rst:90
-msgid "averages:"
+#: ../source/features.rst
+msgid "Equipment is only visible to workout owner."
 msgstr ""
 
 #: ../source/features.rst:91
-msgid "average speed  (*new in 0.5.1*)"
+msgid "Segments can be displayed."
 msgstr ""
 
 #: ../source/features.rst:92
-msgid "average distance  (*new in 0.8.5*)"
-msgstr ""
-
-#: ../source/features.rst:93
-msgid "average duration  (*new in 0.8.5*)"
-msgstr ""
-
-#: ../source/features.rst:94
-msgid "average workouts  (*new in 0.8.5*)"
+msgid "Records associated with the workout are displayed."
 msgstr ""
 
 #: ../source/features.rst:95
-msgid "average ascent  (*new in 0.8.5*)"
-msgstr ""
-
-#: ../source/features.rst:96
-msgid "average descent  (*new in 0.8.5*)"
+msgid ""
+"Records may differ from records displayed by the application that "
+"originally generated the gpx files."
 msgstr ""
 
 #: ../source/features.rst:97
-msgid "User statistics by sport (*new in 0.8.5*):"
+msgid ""
+"Visibility level can be set separately for workout data and map and "
+"analysis data (*new in 0.9.0*):"
 msgstr ""
 
 #: ../source/features.rst:99
-msgid "distance (total and average)"
+msgid "private: only owner can see the workout,"
 msgstr ""
 
 #: ../source/features.rst:100
+msgid "followers only: only owner and followers can see the workout,"
+msgstr ""
+
+#: ../source/features.rst:101
+msgid "public: anyone can see the workout even unauthenticated users."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"A workout with a gpx file whose visibility for map and analysis data does"
+" not allow them to be viewed appears as a workout without a gpx file."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"Default visibility is private. All workouts created before **FitTrackee**"
+" 0.9.0 are private."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"Please keep in mind that the server operating team or the moderation team"
+" may view content with restricted visibility."
+msgstr ""
+
+#: ../source/features.rst:112
+msgid "Workout can be edited:"
+msgstr ""
+
+#: ../source/features.rst:114
+msgid "sport"
+msgstr ""
+
+#: ../source/features.rst:115
+msgid "title"
+msgstr ""
+
+#: ../source/features.rst:116
+msgid "equipment"
+msgstr ""
+
+#: ../source/features.rst:117 ../source/features.rst:136
+msgid "description (*new in 0.8.9*)"
+msgstr ""
+
+#: ../source/features.rst:118
+msgid "private notes"
+msgstr ""
+
+#: ../source/features.rst:119
+msgid "workout visibility (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/features.rst:120
+msgid "map and analysis visibility (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/features.rst:121
+msgid "date (only workouts without gpx)"
+msgstr ""
+
+#: ../source/features.rst:122
+msgid "duration (only workouts without gpx)"
+msgstr ""
+
+#: ../source/features.rst:123
+msgid "distance (only workouts without gpx)"
+msgstr ""
+
+#: ../source/features.rst:124
+msgid "ascent and descent (only workouts without gpx) (*new in 0.7.10*)"
+msgstr ""
+
+#: ../source/features.rst:126
+msgid "Workout gpx file can be downloaded (*new in 0.5.1*)."
+msgstr ""
+
+#: ../source/features.rst:127
+msgid "Workout can be deleted."
+msgstr ""
+
+#: ../source/features.rst:128
+msgid "Workouts list."
+msgstr ""
+
+#: ../source/features.rst:130
+msgid "The user can filter workouts on:"
+msgstr ""
+
+#: ../source/features.rst:132 ../source/features.rst:145
+msgid "date"
+msgstr ""
+
+#: ../source/features.rst:133
+msgid "sports (only sports with workouts are displayed in sport dropdown)"
+msgstr ""
+
+#: ../source/features.rst:134
+msgid ""
+"equipment (only equipments with workouts are displayed in equipment "
+"dropdown) (*new in 0.8.0*)"
+msgstr ""
+
+#: ../source/features.rst:135
+msgid "title (*new in 0.7.15*)"
+msgstr ""
+
+#: ../source/features.rst:137
+msgid "notes (*new in 0.8.0*)"
+msgstr ""
+
+#: ../source/features.rst:138 ../source/features.rst:146
+msgid "distance"
+msgstr ""
+
+#: ../source/features.rst:139 ../source/features.rst:147
+msgid "duration"
+msgstr ""
+
+#: ../source/features.rst:143
+msgid "Workouts can be sorted by:"
+msgstr ""
+
+#: ../source/features.rst:150
+msgid ""
+"A user can report a workout that violates instance rules. This will send "
+"a notification to moderators and administrators."
+msgstr ""
+
+#: ../source/features.rst:153
+msgid "Interactions"
+msgstr ""
+
+#: ../source/features.rst
+msgid "Users directory."
+msgstr ""
+
+#: ../source/features.rst
+msgid "A user can configure visibility in directory in the user preferences."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"This has an impact on username completion when writing comments (only "
+"profiles visible in users directory or followed users are suggested)."
+msgstr ""
+
+#: ../source/features.rst:164
+msgid "A user profile remains accessible via its URL."
+msgstr ""
+
+#: ../source/features.rst
+msgid "User can send follow request to others users."
+msgstr ""
+
+#: ../source/features.rst
+msgid "Follow request can be approved or rejected."
+msgstr ""
+
+#: ../source/features.rst
+msgid "In order to hide unwanted content, a user can block another user."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"Blocking users hides their workouts on timeline and comments. All "
+"notifications from blocked users are not displayed."
+msgstr ""
+
+#: ../source/features.rst
+msgid ""
+"Blocked users cannot see workouts and comments from users who have "
+"blocked them, or follow them (if they followed them, they are forced to "
+"unfollow them)."
+msgstr ""
+
+#: ../source/features.rst:171
+msgid ""
+"A user can report a user profile that violates instance rules. This will "
+"send a notification to moderators and administrators."
+msgstr ""
+
+#: ../source/features.rst
+msgid "Depending on visibility, a user can comment on a workout."
+msgstr ""
+
+#: ../source/features.rst
+msgid "A limited Markdown syntax can be used."
+msgstr ""
+
+#: ../source/features.rst:178
+msgid "The visibility levels for comment are:"
+msgstr ""
+
+#: ../source/features.rst:180
+msgid "private: only author and mentioned users can see the comment,"
+msgstr ""
+
+#: ../source/features.rst:181
+msgid ""
+"followers only: only author, followers and mentioned users can see the "
+"comment,"
+msgstr ""
+
+#: ../source/features.rst:182
+msgid "public: anyone can see the comment even unauthenticated users."
+msgstr ""
+
+#: ../source/features.rst:187
+msgid "Comment text can be modified (visibility level cannot be changed)."
+msgstr ""
+
+#: ../source/features.rst:188
+msgid ""
+"A user can report a comment that violates instance rules. This will send "
+"a notification to moderators and administrators."
+msgstr ""
+
+#: ../source/features.rst:191
+msgid "Likes"
+msgstr ""
+
+#: ../source/features.rst:193
+msgid ""
+"Depending on visibility, a user can like or \"unlike\" a workout or a "
+"comment."
+msgstr ""
+
+#: ../source/features.rst:198
+msgid "Notifications are sent for the following event:"
+msgstr ""
+
+#: ../source/features.rst:200
+msgid "follow request and follow"
+msgstr ""
+
+#: ../source/features.rst:201
+msgid "like on comment or workout"
+msgstr ""
+
+#: ../source/features.rst:202
+msgid "comment on workout"
+msgstr ""
+
+#: ../source/features.rst:203
+msgid "mention on comment"
+msgstr ""
+
+#: ../source/features.rst:204
+msgid "suspension or warning (an email is also sent if email sending is enabled)"
+msgstr ""
+
+#: ../source/features.rst:205
+msgid ""
+"suspension or warning lifting (an email is also sent if email sending is "
+"enabled)"
+msgstr ""
+
+#: ../source/features.rst:207
+msgid "Users with moderation rights can also receive notifications on:"
+msgstr ""
+
+#: ../source/features.rst:209
+msgid "report creation"
+msgstr ""
+
+#: ../source/features.rst:210
+msgid "appeal on suspension or warning"
+msgstr ""
+
+#: ../source/features.rst:212
+msgid ""
+"Users with administration rights can also receive notifications on user "
+"creation."
+msgstr ""
+
+#: ../source/features.rst:213
+msgid "Users can mark notifications as read or unread."
+msgstr ""
+
+#: ../source/features.rst:216 ../source/features.rst:520
+msgid "Dashboard"
+msgstr ""
+
+#: ../source/features.rst:218
+msgid "A dashboard displays:"
+msgstr ""
+
+#: ../source/features.rst:220
+msgid "a graph with monthly statistics"
+msgstr ""
+
+#: ../source/features.rst:221
+msgid ""
+"a monthly calendar displaying workouts and record. The week can start on "
+"Sunday or Monday (which can be changed in the user preferences). The "
+"calendar displays up to 100 workouts."
+msgstr ""
+
+#: ../source/features.rst:222
+msgid "user records by sports:"
+msgstr ""
+
+#: ../source/features.rst:226
+msgid "highest ascent (*new in 0.6.11*, can be hidden, see user preferences)"
+msgstr ""
+
+#: ../source/features.rst:230
+msgid "a timeline with workouts visible to user"
+msgstr ""
+
+#: ../source/features.rst:235
+msgid "User statistics, by time period (week, month, year) and sport:"
+msgstr ""
+
+#: ../source/features.rst:237
+msgid "totals:"
+msgstr ""
+
+#: ../source/features.rst:239 ../source/features.rst:338
+msgid "total distance"
+msgstr ""
+
+#: ../source/features.rst:240 ../source/features.rst:339
+msgid "total duration"
+msgstr ""
+
+#: ../source/features.rst:241 ../source/features.rst:256
+#: ../source/features.rst:340
+msgid "total workouts"
+msgstr ""
+
+#: ../source/features.rst:242
+msgid "total ascent  (*new in 0.5.0*)"
+msgstr ""
+
+#: ../source/features.rst:243
+msgid "total descent  (*new in 0.5.0*)"
+msgstr ""
+
+#: ../source/features.rst:245
+msgid "averages:"
+msgstr ""
+
+#: ../source/features.rst:247
+msgid "average speed  (*new in 0.5.1*)"
+msgstr ""
+
+#: ../source/features.rst:248
+msgid "average distance  (*new in 0.8.5*)"
+msgstr ""
+
+#: ../source/features.rst:249
+msgid "average duration  (*new in 0.8.5*)"
+msgstr ""
+
+#: ../source/features.rst:250
+msgid "average workouts  (*new in 0.8.5*)"
+msgstr ""
+
+#: ../source/features.rst:251
+msgid "average ascent  (*new in 0.8.5*)"
+msgstr ""
+
+#: ../source/features.rst:252
+msgid "average descent  (*new in 0.8.5*)"
+msgstr ""
+
+#: ../source/features.rst:254
+msgid "User statistics by sport (*new in 0.8.5*):"
+msgstr ""
+
+#: ../source/features.rst:257
+msgid "distance (total and average)"
+msgstr ""
+
+#: ../source/features.rst:258
 msgid "duration (total and average)"
 msgstr ""
 
-#: ../source/features.rst:102
+#: ../source/features.rst:260
 msgid "ascent (total and average)"
 msgstr ""
 
-#: ../source/features.rst:103
+#: ../source/features.rst:261
 msgid "descent (total and average)"
 msgstr ""
 
-#: ../source/features.rst:104
+#: ../source/features.rst:262
 msgid "records"
 msgstr ""
 
@@ -5482,172 +6631,126 @@ msgid ""
 "limit."
 msgstr ""
 
-#: ../source/features.rst:111
-msgid "User records by sports:"
-msgstr ""
-
-#: ../source/features.rst:114
-msgid "highest ascent (*new in 0.6.11*, can be hidden, see user preferences)"
-msgstr ""
-
-#: ../source/features.rst:119
-msgid ""
-"Records may differ from records displayed by the application that "
-"originally generated the gpx files."
-msgstr ""
-
-#: ../source/features.rst:121
-msgid "Workouts list."
-msgstr ""
-
-#: ../source/features.rst:122
-msgid "The user can filter workouts on:"
-msgstr ""
-
-#: ../source/features.rst:123 ../source/features.rst:134
-msgid "date"
-msgstr ""
-
-#: ../source/features.rst:124
-msgid "sports (only sports with workouts are displayed in sport dropdown)"
-msgstr ""
-
-#: ../source/features.rst:125
-msgid ""
-"equipment (only equipments with workouts are displayed in equipment "
-"dropdown) (*new in 0.8.0*)"
-msgstr ""
-
-#: ../source/features.rst:126
-msgid "title (*new in 0.7.15*)"
-msgstr ""
-
-#: ../source/features.rst:127
-msgid "description (*new in 0.8.9*)"
-msgstr ""
-
-#: ../source/features.rst:128
-msgid "notes (*new in 0.8.0*)"
-msgstr ""
-
-#: ../source/features.rst:129 ../source/features.rst:135
-msgid "distance"
-msgstr ""
-
-#: ../source/features.rst:130 ../source/features.rst:136
-msgid "duration"
-msgstr ""
-
-#: ../source/features.rst:133
-msgid "Workouts can be sorted by:"
-msgstr ""
-
-#: ../source/features.rst:140
-msgid "For now, only the owner of the workout can see it."
-msgstr ""
-
-#: ../source/features.rst:144
+#: ../source/features.rst:270
 msgid "Account & preferences"
 msgstr ""
 
-#: ../source/features.rst:145
+#: ../source/features.rst:272
 msgid "A user can create, update and deleted his account."
 msgstr ""
 
-#: ../source/features.rst:146
+#: ../source/features.rst:273
 msgid ""
 "The user must agree to the privacy policy to register. If a more recent "
 "policy is available, a message is displayed on the dashboard to review "
 "the new version (*new in 0.7.13*)."
 msgstr ""
 
-#: ../source/features.rst:147
+#: ../source/features.rst:274
 msgid ""
 "On registration, the user account is created with selected language in "
 "dropdown as user preference (*new in 0.6.9*)."
 msgstr ""
 
-#: ../source/features.rst:148
+#: ../source/features.rst:275
 msgid ""
 "After registration, the user account is inactive and an email with "
 "confirmation instructions is sent to activate it. A user with an inactive"
 " account cannot log in. (*new in 0.6.0*)."
 msgstr ""
 
-#: ../source/features.rst:152
+#: ../source/features.rst:279
 msgid ""
 "In case email sending is not configured, a `command line <cli.html#ftcli-"
 "users-update>`__ allows to activate users account."
 msgstr ""
 
-#: ../source/features.rst:154
+#: ../source/features.rst:281
 msgid "A user can reset his password (*new in 0.3.0*)"
 msgstr ""
 
-#: ../source/features.rst:155
+#: ../source/features.rst:282
 msgid "A user can change his email address (*new in 0.6.0*)"
 msgstr ""
 
-#: ../source/features.rst:156
+#: ../source/features.rst:283
 msgid "A user can set language, timezone and first day of week."
 msgstr ""
 
-#: ../source/features.rst:157
+#: ../source/features.rst:284
+msgid ""
+"A user can set follow requests approval: manually (default) or "
+"automatically. (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/features.rst:285
+msgid ""
+"A user can set profile visibility in users directory: hidden (default) or"
+" displayed (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/features.rst:286
 msgid ""
 "A user can set the interface theme (light, dark or according to browser "
 "preferences) (*new in 0.7.27*)."
 msgstr ""
 
-#: ../source/features.rst:158
+#: ../source/features.rst:287
 msgid ""
 "A user can choose between metric system and imperial system for distance,"
 " elevation and speed display (*new in 0.5.0*)"
 msgstr ""
 
-#: ../source/features.rst:159
+#: ../source/features.rst:288
 msgid ""
 "A user can choose to display or hide ascent records and total on "
 "Dashboard (*new in 0.6.11*)"
 msgstr ""
 
-#: ../source/features.rst:160
+#: ../source/features.rst:289
 msgid "A user can choose format used to display dates (*new in 0.7.3*)"
 msgstr ""
 
-#: ../source/features.rst:161
+#: ../source/features.rst:290
 msgid ""
 "A user can choose elevation chart axis start: zero or minimum altitude "
 "(*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:162
+#: ../source/features.rst:291
 msgid ""
 "A user can choose to exclude extreme values (which may be GPS errors) "
 "when calculating the maximum speed (by default, extreme values are "
 "excluded) (*new in 0.7.16*)"
 msgstr ""
 
-#: ../source/features.rst:165
+#: ../source/features.rst:294
 msgid "Changing this preference will only affect next file uploads."
 msgstr ""
 
-#: ../source/features.rst:167
+#: ../source/features.rst:296
+msgid ""
+"A user can set default visibility for workout data and map and analysis "
+"(*new in 0.9.0*)."
+msgstr ""
+
+#: ../source/features.rst:297
 msgid "A user can set sport preferences (*new in 0.5.0*):"
 msgstr ""
 
-#: ../source/features.rst:168
+#: ../source/features.rst:299
 msgid "change sport color (used for sport image and charts)"
 msgstr ""
 
-#: ../source/features.rst:169
+#: ../source/features.rst:300
 msgid "can override stopped speed threshold (for next uploaded gpx files)"
 msgstr ""
 
-#: ../source/features.rst:170
+#: ../source/features.rst:301
 msgid "disable/enable a sport"
 msgstr ""
 
-#: ../source/features.rst:171
+#: ../source/features.rst:302
 msgid "define default `equipments <features.html#equipments>`__ (*new in 0.8.0*)."
 msgstr ""
 
@@ -5680,61 +6783,69 @@ msgid ""
 "workouts data) and all uploaded gpx files."
 msgstr ""
 
-#: ../source/features.rst:182
+#: ../source/features.rst:313
 msgid ""
 "For now, it's not possible to import these files into another "
 "**FitTrackee** instance."
 msgstr ""
 
-#: ../source/features.rst:186
-msgid "(*new in 0.8.0*)"
+#: ../source/features.rst:315
+msgid "A user can display blocked users (*new in 0.9.0*)."
 msgstr ""
 
-#: ../source/features.rst:188
+#: ../source/features.rst:316
+msgid "A user can view follow requests to approve or reject (*new in 0.9.0*)."
+msgstr ""
+
+#: ../source/features.rst:317
+msgid "A user can view received sanctions and appeal (*new in 0.9.0*)."
+msgstr ""
+
+#: ../source/features.rst:324
 msgid "A user can create equipments that can be associated with workouts."
 msgstr ""
 
-#: ../source/features.rst:189
+#: ../source/features.rst:325
 msgid "The following equipment types are available, depending on the sport:"
 msgstr ""
 
-#: ../source/features.rst:190
+#: ../source/features.rst:327
 msgid "Shoes: Hiking, Mountaineering, Running, Trail and Walking,"
 msgstr ""
 
-#: ../source/features.rst:191
+#: ../source/features.rst:328
 msgid ""
 "Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain "
 "Biking (Electric),"
 msgstr ""
 
-#: ../source/features.rst:192
+#: ../source/features.rst:329
 msgid "Bike Trainer: Cycling (Virtual),"
 msgstr ""
 
-#: ../source/features.rst:193
+#: ../source/features.rst:330
 msgid "Kayak/Boat: Rowing,"
 msgstr ""
 
-#: ../source/features.rst:194
+#: ../source/features.rst:331
 msgid "Skis: Skiing (Alpine and Cross Country),"
 msgstr ""
 
-#: ../source/features.rst:195
+#: ../source/features.rst:332
 msgid "Snowshoes: Snowshoes."
 msgstr ""
 
-#: ../source/features.rst:196
+#: ../source/features.rst:334
 msgid "Equipment is visible only to its owner."
 msgstr ""
 
-#: ../source/features.rst:197
+#: ../source/features.rst:335
 msgid ""
 "For now only, only one piece of equipment can be associated with a "
 "workout."
 msgstr ""
 
-#: ../source/features.rst:198
+#: ../source/features.rst:336
 msgid "Following totals are displayed for each piece of equipment:"
 msgstr ""
 
@@ -5744,20 +6855,20 @@ msgid ""
 "possible to recalculate totals."
 msgstr ""
 
-#: ../source/features.rst:206
+#: ../source/features.rst:345
 msgid ""
 "It is possible to define default equipments for sports: when adding a "
 "workout, the equipment will automatically be displayed in the dropdown "
 "list depending on selected sport."
 msgstr ""
 
-#: ../source/features.rst:207
+#: ../source/features.rst:346
 msgid ""
 "An equipment can be edited (label, equipment type, description, active "
 "status and default sports)."
 msgstr ""
 
-#: ../source/features.rst:212
+#: ../source/features.rst:351
 msgid ""
 "Deactivated equipment will not appear in dropdown when **a workout is "
 "added**. It remains displayed in the details of the workout, to which it "
@@ -5768,71 +6879,63 @@ msgstr ""
 msgid "An equipment type can be deactivated by an administrator."
 msgstr ""
 
-#: ../source/features.rst:218
+#: ../source/features.rst:357
 msgid "OAuth Apps"
 msgstr ""
 
-#: ../source/features.rst:219 ../source/oauth.rst:3
-msgid "(*new in 0.7.0*)"
-msgstr ""
-
-#: ../source/features.rst:221
+#: ../source/features.rst:361
 msgid "A user can create `clients <oauth.html>`__ for third-party applications."
 msgstr ""
 
-#: ../source/features.rst:224 ../source/features.rst:352
+#: ../source/features.rst:364 ../source/features.rst:574
 msgid "Administration"
 msgstr ""
 
-#: ../source/features.rst:225
-msgid "(*new in 0.3.0*)"
-msgstr ""
-
-#: ../source/features.rst:228
+#: ../source/features.rst:369
 msgid "Application"
 msgstr ""
 
-#: ../source/features.rst:230
-msgid "**Configuration**"
+#: ../source/features.rst:371
+msgid "Only users if administration rights can access application administration."
 msgstr ""
 
-#: ../source/features.rst:232
+#: ../source/features.rst:376
 msgid "The following parameters can be set:"
 msgstr ""
 
-#: ../source/features.rst:234
+#: ../source/features.rst:378
 msgid ""
 "active users limit (default: 0). If 0, registration is enabled (no limit "
 "defined)."
 msgstr ""
 
-#: ../source/features.rst:235
+#: ../source/features.rst:379
 msgid ""
 "maximum size of gpx file (individually uploaded or in a zip archive, "
 "default: 1Mb) (*changed in 0.7.4*)"
 msgstr ""
 
-#: ../source/features.rst:236
+#: ../source/features.rst:380
 msgid "maximum size of zip archive (default: 10Mb)"
 msgstr ""
 
-#: ../source/features.rst:237
+#: ../source/features.rst:381
 msgid ""
 "maximum number of files in the zip archive (default: 10) (*changed in "
 "0.7.4*)"
 msgstr ""
 
-#: ../source/features.rst:238
+#: ../source/features.rst:382
 msgid ""
 "maximum number of workouts for sport statistics (default: 10.000). If 0, "
 "all workouts are fetched to calculate statistics (*new in 0.8.5*)"
 msgstr ""
 
-#: ../source/features.rst:239
+#: ../source/features.rst:383
 msgid "administrator email for contact (*new in 0.6.0*)"
 msgstr ""
 
-#: ../source/features.rst:242
+#: ../source/features.rst:386
 msgid ""
 "Updating server configuration may be necessary to handle large files "
 "(like `nginx "
@@ -5840,211 +6943,359 @@ msgid ""
 " for instance)."
 msgstr ""
 
-#: ../source/features.rst:245
+#: ../source/features.rst:389
 msgid "If email sending is disabled, a warning is displayed."
 msgstr ""
 
-#: ../source/features.rst:247
-msgid "**About**"
+#: ../source/features.rst:392
+msgid "About"
 msgstr ""
 
-#: ../source/features.rst:249 ../source/features.rst:257
-msgid "(*new in 0.7.13*)"
-msgstr ""
-
-#: ../source/features.rst:251
+#: ../source/features.rst:396
 msgid ""
 "It is possible displayed additional information that may be useful to "
-"users in **About** page."
+"users in **About** page (like instance rules)."
 msgstr ""
 
-#: ../source/features.rst:252
+#: ../source/features.rst:397
 msgid "Markdown syntax can be used."
 msgstr ""
 
-#: ../source/features.rst:255
-msgid "**Privacy policy**"
+#: ../source/features.rst:400
+msgid "Privacy policy"
 msgstr ""
 
-#: ../source/features.rst:259
+#: ../source/features.rst:404
 msgid ""
 "A default privacy policy is available (originally adapted from the "
 "`Discourse <https://github.com/discourse/discourse>`__ privacy policy)."
 msgstr ""
 
-#: ../source/features.rst:260
+#: ../source/features.rst:405
 msgid ""
 "A custom privacy policy can set if needed (Markdown syntax can be used). "
 "A policy update will display a message on users dashboard to review it."
 msgstr ""
 
-#: ../source/features.rst:263
+#: ../source/features.rst:408
 msgid ""
 "Only the default privacy policy is translated (if the translation is "
 "available)."
 msgstr ""
 
-#: ../source/features.rst:268
+#: ../source/features.rst:413
+msgid "Add moderator and owner role"
+msgstr ""
+
+#: ../source/features.rst:415
+msgid "Only users with administration rights can access users administration."
+msgstr ""
+
+#: ../source/features.rst:416
+msgid "Roles:"
+msgstr ""
+
+#: ../source/features.rst:418
+msgid "user"
+msgstr ""
+
+#: ../source/features.rst:420
+msgid "no moderation or administration rights"
+msgstr ""
+
+#: ../source/features.rst:422
+msgid "moderator (*new in 0.9.0*):"
+msgstr ""
+
+#: ../source/features.rst:424
+msgid "can only access moderation entry in administration"
+msgstr ""
+
+#: ../source/features.rst:425
+msgid "can see reports"
+msgstr ""
+
+#: ../source/features.rst:426
+msgid "perform report actions"
+msgstr ""
+
+#: ../source/features.rst:428
+msgid "administrator"
+msgstr ""
+
+#: ../source/features.rst:430
+msgid "has moderator rights (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/features.rst:431
+msgid "can access all entries in administration:"
+msgstr ""
+
+#: ../source/features.rst:433
+msgid "application"
+msgstr ""
+
+#: ../source/features.rst:434
+msgid "moderation"
+msgstr ""
+
+#: ../source/features.rst:435
+msgid "equipment types"
+msgstr ""
+
+#: ../source/features.rst:436
+msgid "sports"
+msgstr ""
+
+#: ../source/features.rst:437
+msgid "users"
+msgstr ""
+
+#: ../source/features.rst:439
+msgid "owner (*new in 0.9.0*) :"
+msgstr ""
+
+#: ../source/features.rst:441
+msgid "has admin rights"
+msgstr ""
+
+#: ../source/features.rst:442
+msgid "role can not be modified by other administrator/owner on application"
+msgstr ""
+
+#: ../source/features.rst:444
 msgid "display and filter users list"
 msgstr ""
 
-#: ../source/features.rst:269
+#: ../source/features.rst:445
 msgid "edit a user to:"
 msgstr ""
 
-#: ../source/features.rst:271
-msgid "add/remove administration rights"
+#: ../source/features.rst:447
+msgid ""
+"update role (*updated in 0.9.0*). A user with owner role can not be "
+"modified by other users. Owner role can only be assigned or removed with "
+"**FitTrackee** CLI."
 msgstr ""
 
-#: ../source/features.rst:272
+#: ../source/features.rst:448
 msgid "activate his account (*new in 0.6.0*)"
 msgstr ""
 
-#: ../source/features.rst:273
+#: ../source/features.rst:449
 msgid "update his email (in case his account is locked) (*new in 0.6.0*)"
 msgstr ""
 
-#: ../source/features.rst:274
+#: ../source/features.rst:450
 msgid ""
 "reset his password (in case his account is locked) (*new in 0.6.0*). If "
 "email sending is disabled, it is only possible via CLI."
 msgstr ""
 
-#: ../source/features.rst:275
+#: ../source/features.rst:452
 msgid "delete a user"
 msgstr ""
 
-#: ../source/features.rst:280
+#: ../source/features.rst:455
+msgid "Moderation"
+msgstr ""
+
+#: ../source/features.rst:459
+msgid "Only users with administration or moderation rights can access moderation."
+msgstr ""
+
+#: ../source/features.rst:460
+msgid "Display and filter reports list."
+msgstr ""
+
+#: ../source/features.rst:461
+msgid "Manage a report:"
+msgstr ""
+
+#: ../source/features.rst:463
+msgid "add a comment"
+msgstr ""
+
+#: ../source/features.rst:464
+msgid "send a warning"
+msgstr ""
+
+#: ../source/features.rst:465
+msgid "suspend or reactive workout or comment"
+msgstr ""
+
+#: ../source/features.rst:466
+msgid "suspend or reactive user account"
+msgstr ""
+
+#: ../source/features.rst:467
+msgid "mark report as resolved or unresolved"
+msgstr ""
+
+#: ../source/features.rst:470
+msgid "Report content is visible regardless the visibility level."
+msgstr ""
+
+#: ../source/features.rst:472
+msgid "A user can appeal suspension or warning."
+msgstr ""
+
+#: ../source/features.rst:473
+msgid ""
+"Suspended user can only access his account, appeal the account "
+"suspension, request and data export or delete his account. His sessions "
+"and comments are no longer visible."
+msgstr ""
+
+#: ../source/features.rst:481
+msgid ""
+"Only users with administration rights can access equipment types "
+"administration."
+msgstr ""
+
+#: ../source/features.rst:482
 msgid ""
 "enable or disable an equipment type in order to match disabled sports (a "
 "equipment type can be disabled even if equipment with this type exists)  "
-"(*new in 0.8.0*)"
+"(*new in 0.8.0*)."
 msgstr ""
 
-#: ../source/features.rst:285
+#: ../source/features.rst:487
+msgid "Only users with administration rights can access sports administration."
+msgstr ""
+
+#: ../source/features.rst:488
 msgid ""
-"enable or disable a sport (a sport can be disabled even if workout with "
-"this sport exists)"
+"Enable or disable a sport (a sport can be disabled even if workout with "
+"this sport exists)."
 msgstr ""
 
-#: ../source/features.rst:290
+#: ../source/features.rst:494
 msgid ""
 "FitTrackee is available in the following languages (which can be saved in"
 " the user preferences):"
 msgstr ""
 
-#: ../source/features.rst:292
+#: ../source/features.rst:496
 msgid "English"
 msgstr ""
 
-#: ../source/features.rst:293
+#: ../source/features.rst:497
 msgid "French (*new in 0.2.3*)"
 msgstr ""
 
-#: ../source/features.rst:294
+#: ../source/features.rst:498
 msgid "German (*new in 0.6.9*)"
 msgstr ""
 
-#: ../source/features.rst:295
+#: ../source/features.rst:499
 msgid "Dutch (*new in 0.7.8*)"
 msgstr ""
 
-#: ../source/features.rst:296
+#: ../source/features.rst:500
 msgid "Italian (*new in 0.7.10*)"
 msgstr ""
 
-#: ../source/features.rst:297
+#: ../source/features.rst:501
 msgid "Galician (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:298
+#: ../source/features.rst:502
 msgid "Spanish (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:299
+#: ../source/features.rst:503
 msgid "Norwegian Bokmål (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:300
+#: ../source/features.rst:504
 msgid "Polish (*new in 0.7.18*)"
 msgstr ""
 
-#: ../source/features.rst:301
+#: ../source/features.rst:505
 msgid "Basque (*new in 0.7.31*)"
 msgstr ""
 
-#: ../source/features.rst:302
+#: ../source/features.rst:506
 msgid "Czech (*new in 0.8.1*)"
 msgstr ""
 
-#: ../source/features.rst:303
+#: ../source/features.rst:507
 msgid "Portuguese (*new in 0.8.4*)"
 msgstr ""
 
-#: ../source/features.rst:304
+#: ../source/features.rst:508
 msgid "Bulgarian (*new in 0.8.8*)"
 msgstr ""
 
-#: ../source/features.rst:305
+#: ../source/features.rst:509
 msgid "Russian (*new in 0.8.10*)"
 msgstr ""
 
-#: ../source/features.rst:307
+#: ../source/features.rst:511
 msgid ""
 "Application translations status on `Weblate "
 "<https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the "
 "released version):"
 msgstr ""
 
-#: ../source/features.rst:313
+#: ../source/features.rst:517
 msgid "Screenshots"
 msgstr ""
 
-#: ../source/features.rst:316
-msgid "Dashboard"
-msgstr ""
-
-#: ../source/features.rst:318 ../source/index.rst:24
+#: ../source/features.rst:522 ../source/index.rst:24
 msgid "FitTrackee Dashboard"
 msgstr ""
 
-#: ../source/features.rst:323
+#: ../source/features.rst:527
 msgid "Workout detail"
 msgstr ""
 
-#: ../source/features.rst:324
+#: ../source/features.rst:529
 msgid "FitTrackee Workout"
 msgstr ""
 
-#: ../source/features.rst:329
+#: ../source/features.rst:534
 msgid "Workouts list"
 msgstr ""
 
-#: ../source/features.rst:330
+#: ../source/features.rst:536
 msgid "FitTrackee Workouts"
 msgstr ""
 
-#: ../source/features.rst:336
+#: ../source/features.rst:543
 msgid "FitTrackee Statistics"
 msgstr ""
 
-#: ../source/features.rst:339
+#: ../source/features.rst:546
 msgid "FitTrackee Sport Statistics"
 msgstr ""
 
-#: ../source/features.rst:344
+#: ../source/features.rst:552
 msgid "FitTrackee Equipments"
 msgstr ""
 
-#: ../source/features.rst:347
-msgid "FitTrackee Equipment detail"
+#: ../source/features.rst:555
+msgid "FitTrackee Equipment Detail"
 msgstr ""
 
-#: ../source/features.rst:353
+#: ../source/features.rst:562
+msgid "FitTrackee Notifications"
+msgstr ""
+
+#: ../source/features.rst:567
+msgid "Users directory"
+msgstr ""
+
+#: ../source/features.rst:569
+msgid "FitTrackee Users Directory"
+msgstr ""
+
+#: ../source/features.rst:576
 msgid "FitTrackee Administration"
 msgstr ""
 
-#: ../source/features.rst:356
+#: ../source/features.rst:579
 msgid "FitTrackee Sports Administration"
 msgstr ""
 
@@ -6106,8 +7357,8 @@ msgstr ""
 msgid "Table of contents"
 msgstr ""
 
-#: ../source/installation.rst:2 ../source/installation.rst:395
-#: ../source/installation.rst:838
+#: ../source/installation.rst:2 ../source/installation.rst:393
+#: ../source/installation.rst:836
 msgid "Installation"
 msgstr ""
 
@@ -6467,7 +7718,7 @@ msgid ""
 "DEFAULT_STATICMAP>`__)"
 msgstr ""
 
-#: ../source/installation.rst:206 ../source/installation.rst:337
+#: ../source/installation.rst:206
 msgid ""
 "The default URL is updated: **OpenStreetMap**'s tile server no longer "
 "requires subdomains."
@@ -6549,34 +7800,52 @@ msgstr ""
 msgid "Emails"
 msgstr ""
 
+#: ../source/installation.rst:268
+msgid "Credentials and port can be omitted"
+msgstr ""
+
 #: ../source/installation.rst:269
+msgid "Disable email sending"
+msgstr ""
+
+#: ../source/installation.rst:270
+msgid "Handle special characters in password"
+msgstr ""
+
+#: ../source/installation.rst:272
 msgid "To send emails, a valid ``EMAIL_URL`` must be provided:"
 msgstr ""
 
-#: ../source/installation.rst:271
+#: ../source/installation.rst:274
 msgid ""
 "with an unencrypted SMTP server: "
 "``smtp://username:password@smtp.example.com:25``"
 msgstr ""
 
-#: ../source/installation.rst:272
+#: ../source/installation.rst:275
 msgid "with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``"
 msgstr ""
 
-#: ../source/installation.rst:273
+#: ../source/installation.rst:276
 msgid "with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``"
+msgstr ""
+
+#: ../source/installation.rst:278
+msgid ""
+"Credentials can be omitted: ``smtp://smtp.example.com:25``. If "
+"``:<port>`` is omitted, the port defaults to 25."
+msgstr ""
+
+#: ../source/installation.rst:281
+#, python-format
+msgid ""
+"Password can be encoded if it contains special characters. For instance "
+"with password ``passwordwith@and&and?``, the encoded password will be: "
+"``passwordwith%40and%26and%3F``."
 msgstr ""
 
 #: ../source/installation.rst
 msgid "Sending emails with Office365 may not work if SMTP auth is disabled."
-msgstr ""
-
-#: ../source/installation.rst:281
-msgid "Credentials can be omitted: ``smtp://smtp.example.com:25``."
-msgstr ""
-
-#: ../source/installation.rst:282
-msgid "If ``:<port>`` is omitted, the port defaults to 25."
 msgstr ""
 
 #: ../source/installation.rst
@@ -6585,57 +7854,69 @@ msgid ""
 "confirmation instructions is sent after registration)."
 msgstr ""
 
-#: ../source/installation.rst:287
+#: ../source/installation.rst:291
 msgid "Emails sent by FitTrackee are:"
 msgstr ""
 
-#: ../source/installation.rst:289
+#: ../source/installation.rst:293
 msgid "account confirmation instructions"
 msgstr ""
 
-#: ../source/installation.rst:290
+#: ../source/installation.rst:294
 msgid "password reset request"
 msgstr ""
 
-#: ../source/installation.rst:291
+#: ../source/installation.rst:295
 msgid "email change (to old and new email addresses)"
 msgstr ""
 
-#: ../source/installation.rst:292
+#: ../source/installation.rst:296
 msgid "password change"
 msgstr ""
 
-#: ../source/installation.rst:293
+#: ../source/installation.rst:297
 msgid ""
 "notification when a data export archive is ready to download (*new in "
 "0.7.13*)"
 msgstr ""
 
-#: ../source/installation.rst:297
-msgid ""
-"For single-user instance, it is possible to disable email sending with an"
-" empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers)."
+#: ../source/installation.rst:298
+msgid "suspension and warning (*new in 0.9.0*)"
 msgstr ""
 
 #: ../source/installation.rst:299
+msgid "suspension and warning lifting (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/installation.rst:300
+msgid "rejected appeal (*new in 0.9.0*)"
+msgstr ""
+
+#: ../source/installation.rst:303
+msgid ""
+"On single-user instance, it is possible to disable email sending with an "
+"empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers)."
+msgstr ""
+
+#: ../source/installation.rst:305
 msgid ""
 "A `CLI <cli.html#ftcli-users-update>`__ is available to activate account,"
 " modify email and password and handle data export requests."
 msgstr ""
 
-#: ../source/installation.rst:303
-#, python-format
-msgid ""
-"Password can be encoded if it contains special characters. For instance "
-"with password ``passwordwith@and&and?``, the encoded password will be: "
-"``passwordwith%40and%26and%3F``."
-msgstr ""
-
-#: ../source/installation.rst:308
+#: ../source/installation.rst:309
 msgid "Map tile server"
 msgstr ""
 
 #: ../source/installation.rst:311
+msgid "Handle tile server subdomains"
+msgstr ""
+
+#: ../source/installation.rst:312
+msgid "Default tile server (**OpenStreetMap**) no longer requires subdomains"
+msgstr ""
+
+#: ../source/installation.rst:314
 msgid ""
 "Default tile server is now **OpenStreetMap**'s standard tile layer (if "
 "environment variables are not initialized). The tile server can be "
@@ -6644,17 +7925,17 @@ msgid ""
 "<https://wiki.openstreetmap.org/wiki/Raster_tile_providers>`__)."
 msgstr ""
 
-#: ../source/installation.rst:314
+#: ../source/installation.rst:317
 msgid "To keep using **ThunderForest Outdoors**, the configuration is:"
 msgstr ""
 
-#: ../source/installation.rst:316
+#: ../source/installation.rst:319
 msgid ""
 "``TILE_SERVER_URL=https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX``"
 " where **XXXX** is **ThunderForest** API key"
 msgstr ""
 
-#: ../source/installation.rst:317
+#: ../source/installation.rst:320
 msgid ""
 "``MAP_ATTRIBUTION=&copy; <a "
 "href=\"http://www.thunderforest.com/\">Thunderforest</a>, &copy; <a "
@@ -6697,18 +7978,22 @@ msgstr ""
 msgid "The subdomain will be chosen randomly."
 msgstr ""
 
-#: ../source/installation.rst:341
+#: ../source/installation.rst:335
+msgid "The default tile server (**OpenStreetMap**) no longer requires subdomains."
+msgstr ""
+
+#: ../source/installation.rst:339
 msgid "API rate limits"
 msgstr ""
 
-#: ../source/installation.rst:344
+#: ../source/installation.rst:342
 msgid ""
 "API rate limits are managed by `Flask-Limiter <https://flask-"
 "limiter.readthedocs.io/en/stable>`_, based on IP with fixed window "
 "strategy."
 msgstr ""
 
-#: ../source/installation.rst:345
+#: ../source/installation.rst:343
 msgid "To enable rate limits, **Redis** must be available."
 msgstr ""
 
@@ -6718,11 +8003,11 @@ msgid ""
 "start."
 msgstr ""
 
-#: ../source/installation.rst:350
+#: ../source/installation.rst:348
 msgid "All endpoints are subject to rate limits, except endpoints serving assets."
 msgstr ""
 
-#: ../source/installation.rst:351
+#: ../source/installation.rst:349
 msgid ""
 "Limits can be modified by setting the environment variable "
 "``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https"
@@ -6730,43 +8015,51 @@ msgid ""
 "string-notation>`_)."
 msgstr ""
 
-#: ../source/installation.rst:352
+#: ../source/installation.rst:350
 msgid "Rate limits must be separated by a comma, for instance:"
 msgstr ""
 
-#: ../source/installation.rst:358
+#: ../source/installation.rst:356
 msgid ""
 "**Flask-Limiter** provides a `Command Line Interface <https://flask-"
 "limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and "
 "diagnostic purposes."
 msgstr ""
 
-#: ../source/installation.rst:377
+#: ../source/installation.rst:375
 msgid "Weather data"
 msgstr ""
 
-#: ../source/installation.rst:380
+#: ../source/installation.rst:376
+msgid "Add Visual Crossing to weather providers"
+msgstr ""
+
+#: ../source/installation.rst:377
+msgid "Remove Darksky from weather providers"
+msgstr ""
+
+#: ../source/installation.rst:379
 msgid "The following weather data providers are supported by **FitTrackee**:"
 msgstr ""
 
-#: ../source/installation.rst:382
+#: ../source/installation.rst:381
 msgid ""
 "`Visual Crossing <https://www.visualcrossing.com>`__ (**note**: "
 "historical data are provided on hourly period)"
 msgstr ""
 
-#: ../source/installation.rst:384
-msgid "To configure a weather provider, set the following environment variables:"
-msgstr ""
-
-#: ../source/installation.rst:386
-msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
-msgstr ""
-
-#: ../source/installation.rst:391
+#: ../source/installation.rst:385
 msgid ""
 "**DarkSky** support is discontinued, since the service shut down on March"
 " 31, 2023."
+msgstr ""
+
+#: ../source/installation.rst:387
+msgid "To configure a weather provider, set the following environment variables:"
+msgstr ""
+
+#: ../source/installation.rst:389
+msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
 msgstr ""
 
 #: ../source/installation.rst
@@ -6775,7 +8068,7 @@ msgid ""
 " unstable."
 msgstr ""
 
-#: ../source/installation.rst:401 ../source/installation.rst:591
+#: ../source/installation.rst:399 ../source/installation.rst:589
 msgid "From PyPI"
 msgstr ""
 
@@ -6783,21 +8076,21 @@ msgstr ""
 msgid "Simplest way to install FitTrackee."
 msgstr ""
 
-#: ../source/installation.rst:406
+#: ../source/installation.rst:404
 msgid ""
 "Create and activate a `virtualenv "
 "<https://docs.python.org/3/library/venv.html>`__"
 msgstr ""
 
-#: ../source/installation.rst:408
+#: ../source/installation.rst:406
 msgid "Install **FitTrackee** with pip"
 msgstr ""
 
-#: ../source/installation.rst:414
+#: ../source/installation.rst:412
 msgid "Create ``fittrackee`` database"
 msgstr ""
 
-#: ../source/installation.rst:416
+#: ../source/installation.rst:414
 msgid "Example :"
 msgstr ""
 
@@ -6807,27 +8100,27 @@ msgid ""
 "schemas.html>`_ for schema and privileges."
 msgstr ""
 
-#: ../source/installation.rst:427
+#: ../source/installation.rst:425
 msgid ""
 "Initialize environment variables, see `Environment variables "
 "<installation.html#environment-variables>`__"
 msgstr ""
 
-#: ../source/installation.rst:429
+#: ../source/installation.rst:427
 msgid ""
 "For instance, copy and update ``.env`` file from ``.env.example`` and "
 "source the file."
 msgstr ""
 
-#: ../source/installation.rst:436
+#: ../source/installation.rst:434
 msgid "Initialize database schema"
 msgstr ""
 
-#: ../source/installation.rst:442
+#: ../source/installation.rst:440
 msgid "Start the application"
 msgstr ""
 
-#: ../source/installation.rst:448
+#: ../source/installation.rst:446
 msgid ""
 "Start task queue workers **if email sending is enabled**, with flask-"
 "dramatiq CLI:"
@@ -6839,23 +8132,23 @@ msgid ""
 "`Deployment <installation.html#deployment>`__"
 msgstr ""
 
-#: ../source/installation.rst:457 ../source/installation.rst:566
+#: ../source/installation.rst:455 ../source/installation.rst:564
 msgid "Open http://localhost:5000 and register"
 msgstr ""
 
-#: ../source/installation.rst:459 ../source/installation.rst:517
-#: ../source/installation.rst:568 ../source/installation.rst:860
+#: ../source/installation.rst:457 ../source/installation.rst:515
+#: ../source/installation.rst:566 ../source/installation.rst:858
 msgid ""
 "To set admin rights to the newly created account, use the following "
 "command line:"
 msgstr ""
 
-#: ../source/installation.rst:466 ../source/installation.rst:524
-#: ../source/installation.rst:575 ../source/installation.rst:867
+#: ../source/installation.rst:464 ../source/installation.rst:522
+#: ../source/installation.rst:573 ../source/installation.rst:865
 msgid "If the user account is inactive, it activates it."
 msgstr ""
 
-#: ../source/installation.rst:469 ../source/installation.rst:621
+#: ../source/installation.rst:467 ../source/installation.rst:619
 msgid "From sources"
 msgstr ""
 
@@ -6875,39 +8168,39 @@ msgid ""
 "<https://python-poetry.org/docs/configuration/#virtualenvsin-project>`__."
 msgstr ""
 
-#: ../source/installation.rst:483 ../source/installation.rst:628
+#: ../source/installation.rst:481 ../source/installation.rst:626
 msgid "Dev environment"
 msgstr ""
 
-#: ../source/installation.rst:485
+#: ../source/installation.rst:483
 msgid "Clone this repo:"
 msgstr ""
 
-#: ../source/installation.rst:492 ../source/installation.rst:541
+#: ../source/installation.rst:490 ../source/installation.rst:539
 msgid ""
 "Create **.env** from example and update it (see `Environment variables "
 "<installation.html#environment-variables>`__)."
 msgstr ""
 
-#: ../source/installation.rst:495
+#: ../source/installation.rst:493
 msgid ""
 "Install Python virtualenv, Vue and all related packages and initialize "
 "the database:"
 msgstr ""
 
-#: ../source/installation.rst:503
+#: ../source/installation.rst:501
 msgid "Start the server and the client:"
 msgstr ""
 
-#: ../source/installation.rst:509 ../source/installation.rst:656
+#: ../source/installation.rst:507 ../source/installation.rst:654
 msgid "Run dramatiq workers:"
 msgstr ""
 
-#: ../source/installation.rst:515
+#: ../source/installation.rst:513
 msgid "Open http://localhost:3000 and register"
 msgstr ""
 
-#: ../source/installation.rst:527
+#: ../source/installation.rst:525
 msgid "Production environment"
 msgstr ""
 
@@ -6917,29 +8210,29 @@ msgid ""
 "unstable."
 msgstr ""
 
-#: ../source/installation.rst:532
+#: ../source/installation.rst:530
 msgid "Download the last release (for now, it is the release v0.8.12):"
 msgstr ""
 
-#: ../source/installation.rst:544
+#: ../source/installation.rst:542
 msgid "Install Python virtualenv and all related packages:"
 msgstr ""
 
-#: ../source/installation.rst:550
+#: ../source/installation.rst:548
 msgid ""
 "Initialize the database (**after updating** ``db/create.sql`` **to change"
 " database credentials**):"
 msgstr ""
 
-#: ../source/installation.rst:557
+#: ../source/installation.rst:555
 msgid "Start the server and dramatiq workers:"
 msgstr ""
 
-#: ../source/installation.rst:564 ../source/installation.rst:699
+#: ../source/installation.rst:562 ../source/installation.rst:697
 msgid "If email sending is disabled: ``$ make run-server``"
 msgstr ""
 
-#: ../source/installation.rst:578
+#: ../source/installation.rst:576
 msgid "Upgrade"
 msgstr ""
 
@@ -6959,7 +8252,7 @@ msgid ""
 "#environment-variables>`__)"
 msgstr ""
 
-#: ../source/installation.rst:587
+#: ../source/installation.rst:585
 msgid ""
 "For now, releases do not follow `semantic versioning "
 "<https://semver.org>`__). Any version may contain backward-incompatible "
@@ -6970,28 +8263,28 @@ msgstr ""
 msgid "Only if **FitTrackee** was initially installed from **PyPI**"
 msgstr ""
 
-#: ../source/installation.rst:596
+#: ../source/installation.rst:594
 msgid ""
 "Stop the application and activate the `virtualenv "
 "<https://docs.python.org/3/library/venv.html>`__"
 msgstr ""
 
-#: ../source/installation.rst:598
+#: ../source/installation.rst:596
 msgid "Upgrade with pip"
 msgstr ""
 
-#: ../source/installation.rst:604
+#: ../source/installation.rst:602
 msgid ""
 "Update environment variables if needed and source environment variables "
 "file"
 msgstr ""
 
-#: ../source/installation.rst:611 ../source/installation.rst:644
-#: ../source/installation.rst:686
+#: ../source/installation.rst:609 ../source/installation.rst:642
+#: ../source/installation.rst:684
 msgid "Upgrade database if needed (see changelog for migrations):"
 msgstr ""
 
-#: ../source/installation.rst:617
+#: ../source/installation.rst:615
 msgid ""
 "Restart the application and task queue workers (if email sending is "
 "enabled)."
@@ -7001,172 +8294,172 @@ msgstr ""
 msgid "Only if **FitTrackee** was initially installed from sources."
 msgstr ""
 
-#: ../source/installation.rst:630
+#: ../source/installation.rst:628
 msgid "Stop the application and pull the repository:"
 msgstr ""
 
-#: ../source/installation.rst:636 ../source/installation.rst:678
+#: ../source/installation.rst:634 ../source/installation.rst:676
 msgid ""
 "Update **.env** if needed (see `Environment variables <installation.html"
 "#environment-variables>`__)."
 msgstr ""
 
-#: ../source/installation.rst:638 ../source/installation.rst:680
+#: ../source/installation.rst:636 ../source/installation.rst:678
 msgid "Upgrade packages:"
 msgstr ""
 
-#: ../source/installation.rst:650
+#: ../source/installation.rst:648
 msgid "Restart the server:"
 msgstr ""
 
-#: ../source/installation.rst:663
+#: ../source/installation.rst:661
 msgid "Prod environment"
 msgstr ""
 
-#: ../source/installation.rst:665
+#: ../source/installation.rst:663
 msgid "Stop the application"
 msgstr ""
 
-#: ../source/installation.rst:667
+#: ../source/installation.rst:665
 msgid "Change to the directory where FitTrackee directory is located"
 msgstr ""
 
-#: ../source/installation.rst:669
+#: ../source/installation.rst:667
 msgid ""
 "Download the last release (for now, it is the release v0.8.12) and "
 "overwrite existing files:"
 msgstr ""
 
-#: ../source/installation.rst:692
+#: ../source/installation.rst:690
 msgid "Restart the server and dramatiq workers:"
 msgstr ""
 
-#: ../source/installation.rst:702
+#: ../source/installation.rst:700
 msgid "Deployment"
 msgstr ""
 
-#: ../source/installation.rst:704
+#: ../source/installation.rst:702
 msgid ""
 "There are several ways to start **FitTrackee** web application and task "
 "queue library. One way is to use a **systemd** services and **Nginx** to "
 "proxy pass to **Gunicorn**."
 msgstr ""
 
-#: ../source/installation.rst:708
+#: ../source/installation.rst:706
 msgid "Examples:"
 msgstr ""
 
-#: ../source/installation.rst:711
+#: ../source/installation.rst:709
 msgid "To adapt depending on your instance configuration and operating system"
 msgstr ""
 
-#: ../source/installation.rst:713
+#: ../source/installation.rst:711
 msgid "for application: ``fittrackee.service``"
 msgstr ""
 
-#: ../source/installation.rst:753
+#: ../source/installation.rst:751
 msgid ""
 "To handle large files, a higher value for `timeout "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be "
 "set."
 msgstr ""
 
-#: ../source/installation.rst:756
+#: ../source/installation.rst:754
 msgid ""
 "More information on deployment with Gunicorn in its `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
 msgstr ""
 
-#: ../source/installation.rst:758
+#: ../source/installation.rst:756
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr ""
 
-#: ../source/installation.rst:793
+#: ../source/installation.rst:791
 msgid "**Nginx** configuration:"
 msgstr ""
 
-#: ../source/installation.rst:831
+#: ../source/installation.rst:829
 msgid ""
 "If needed, update configuration to handle larger files (see "
 "`client_max_body_size "
 "<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
 msgstr ""
 
-#: ../source/installation.rst:835
+#: ../source/installation.rst:833
 msgid "Docker"
 msgstr ""
 
-#: ../source/installation.rst:842
+#: ../source/installation.rst:840
 msgid ""
 "For **evaluation** purposes, docker files are available, installing "
 "**FitTrackee** from **sources**."
 msgstr ""
 
-#: ../source/installation.rst:845
+#: ../source/installation.rst:843
 msgid "Docker files are not suitable for production installation."
 msgstr ""
 
-#: ../source/installation.rst:847
+#: ../source/installation.rst:845
 msgid "To install and run **FitTrackee**:"
 msgstr ""
 
-#: ../source/installation.rst:856
+#: ../source/installation.rst:854
 msgid "Open http://localhost:5000 and register."
 msgstr ""
 
-#: ../source/installation.rst:858
+#: ../source/installation.rst:856
 msgid ""
 "Open http://localhost:8025 to access `MailHog interface "
 "<https://github.com/mailhog/MailHog>`_ (email testing tool)"
 msgstr ""
 
-#: ../source/installation.rst:869
+#: ../source/installation.rst:867
 msgid "To stop **Fittrackee**:"
 msgstr ""
 
-#: ../source/installation.rst:875
+#: ../source/installation.rst:873
 msgid "To run shell inside **Fittrackee** container:"
 msgstr ""
 
-#: ../source/installation.rst:883
+#: ../source/installation.rst:881
 msgid "Development"
 msgstr ""
 
-#: ../source/installation.rst:887
+#: ../source/installation.rst:885
 msgid "an additional step is needed to install ``fittrackee_client``"
 msgstr ""
 
-#: ../source/installation.rst:893
+#: ../source/installation.rst:891
 msgid "to start **FitTrackee** with client dev tools:"
 msgstr ""
 
-#: ../source/installation.rst:899
+#: ../source/installation.rst:897
 msgid "Open http://localhost:3000"
 msgstr ""
 
-#: ../source/installation.rst:902
+#: ../source/installation.rst:900
 msgid "Some environment variables need to be updated like ``UI_URL``"
 msgstr ""
 
-#: ../source/installation.rst:904
+#: ../source/installation.rst:902
 msgid "to run lint or tests:"
 msgstr ""
 
-#: ../source/installation.rst:915
+#: ../source/installation.rst:913
 msgid "Yunohost"
 msgstr ""
 
-#: ../source/installation.rst:917
+#: ../source/installation.rst:915
 msgid ""
 "Thanks to contributors, a package is available, see https://github.com"
 "/YunoHost-Apps/fittrackee_ynh."
 msgstr ""
 
-#: ../source/installation.rst:921
+#: ../source/installation.rst:919
 msgid "NixOS"
 msgstr ""
 
-#: ../source/installation.rst:923
+#: ../source/installation.rst:921
 msgid ""
 "Thanks to contributors, a package is available on NixOS, see "
 "https://mynixos.com/nixpkgs/package/fit-trackee."
@@ -7176,27 +8469,27 @@ msgstr ""
 msgid "OAuth 2.0"
 msgstr ""
 
-#: ../source/oauth.rst:5
+#: ../source/oauth.rst:6
 msgid ""
 "FitTrackee provides a REST API (see `documentation <api/index.html>`__) "
 "whose most endpoints require authentication/authorization."
 msgstr ""
 
-#: ../source/oauth.rst:8
+#: ../source/oauth.rst:9
 msgid ""
 "To allow a third-party application to interact with API endpoints, an "
 "`OAuth2 <https://datatracker.ietf.org/doc/html/rfc6749>`_ client can be "
 "created in user settings ('apps' tab)."
 msgstr ""
 
-#: ../source/oauth.rst:13
+#: ../source/oauth.rst:14
 msgid ""
 "OAuth2 endpoints requiring authentication are not accessible by third-"
 "party applications (`documentation <api/oauth2.html>`__), only by "
 "FitTrackee client (first-party application)."
 msgstr ""
 
-#: ../source/oauth.rst:17
+#: ../source/oauth.rst:18
 msgid ""
 "FitTrackee supports only `Authorization Code "
 "<https://datatracker.ietf.org/doc/html/rfc6749#section-1.3.1>`_ flow "
@@ -7206,67 +8499,107 @@ msgid ""
 "use PKCE to provide a better security."
 msgstr ""
 
-#: ../source/oauth.rst:24
+#: ../source/oauth.rst:25
 msgid "Scopes"
 msgstr ""
 
-#: ../source/oauth.rst:26
+#: ../source/oauth.rst:27
 msgid "The following scopes are available:"
 msgstr ""
 
-#: ../source/oauth.rst:28
+#: ../source/oauth.rst:29
 msgid ""
 "``application:write``: grants write access to application configuration "
 "(only for users with administration rights),"
 msgstr ""
 
-#: ../source/oauth.rst:29
+#: ../source/oauth.rst:30
 msgid ""
 "``equipments:read``: grants read access to equipments endpoints (*new in "
 "0.8.0*),"
 msgstr ""
 
-#: ../source/oauth.rst:30
+#: ../source/oauth.rst:31
 msgid ""
 "``equipments:write``: grants write access to equipments endpoints (*new "
 "in 0.8.0*),"
 msgstr ""
 
-#: ../source/oauth.rst:31
-msgid "``profile:read``: grants read access to auth endpoints,"
-msgstr ""
-
 #: ../source/oauth.rst:32
-msgid "``profile:write``: grants write access to auth endpoints,"
+msgid ""
+"``follow:read``: grants read access to follow requests and followers "
+"endpoints (*new in 0.9.0*),"
 msgstr ""
 
 #: ../source/oauth.rst:33
-msgid "``users:read``: grants read access to users endpoints,"
+msgid ""
+"``follow:write``: grants write access to requests and followers endpoints"
+" (*new in 0.9.0*),"
 msgstr ""
 
 #: ../source/oauth.rst:34
-msgid "``users:write``: grants write access to users endpoints,"
+msgid ""
+"``notifications:read``: grants read access to notifications endpoints "
+"(*new in 0.9.0*),"
 msgstr ""
 
 #: ../source/oauth.rst:35
-msgid "``workouts:read``: grants read access to workouts-related endpoints,"
+msgid ""
+"``notifications:write``: grants write access to notifications endpoints "
+"(*new in 0.9.0*),"
 msgstr ""
 
 #: ../source/oauth.rst:36
-msgid "``workouts:write``: grants write access to workouts-related endpoints."
+msgid "``profile:read``: grants read access to auth endpoints,"
+msgstr ""
+
+#: ../source/oauth.rst:37
+msgid "``profile:write``: grants write access to auth endpoints,"
+msgstr ""
+
+#: ../source/oauth.rst:38
+msgid ""
+"``reports:read``: grants read access to reports endpoints (*new in "
+"0.9.0*),"
+msgstr ""
+
+#: ../source/oauth.rst:39
+msgid ""
+"``reports:write``: grants write access to reports endpoints (*new in "
+"0.9.0*),"
 msgstr ""
 
 #: ../source/oauth.rst:40
-msgid "Flow"
+msgid "``users:read``: grants read access to users endpoints,"
+msgstr ""
+
+#: ../source/oauth.rst:41
+msgid "``users:write``: grants write access to users endpoints,"
 msgstr ""
 
 #: ../source/oauth.rst:42
+msgid ""
+"``workouts:read``: grants read access to workouts and comments endpoints "
+"(*changed in 0.9.0*),"
+msgstr ""
+
+#: ../source/oauth.rst:43
+msgid ""
+"``workouts:write``: grants write access to workouts and comments "
+"endpoints (*changed in 0.9.0*)."
+msgstr ""
+
+#: ../source/oauth.rst:47
+msgid "Flow"
+msgstr ""
+
+#: ../source/oauth.rst:49
 msgid ""
 "The user creates an App (client) on FitTrackee for a third-party "
 "application."
 msgstr ""
 
-#: ../source/oauth.rst:44
+#: ../source/oauth.rst:51
 msgid "OAuth2 client creation on FitTrackee"
 msgstr ""
 
@@ -7284,7 +8617,7 @@ msgid ""
 "to authorize the 3rd-party app to access user data on FitTrackee."
 msgstr ""
 
-#: ../source/oauth.rst:52
+#: ../source/oauth.rst:59
 msgid "App authorization on FitTrackee"
 msgstr ""
 
@@ -7298,17 +8631,17 @@ msgstr ""
 msgid "The required parameters are:"
 msgstr ""
 
-#: ../source/oauth.rst:58
+#: ../source/oauth.rst:65
 msgid "``client_id``: the client id displayed after registration"
 msgstr ""
 
-#: ../source/oauth.rst:59
+#: ../source/oauth.rst:66
 msgid ""
 "``response_type``:  ``code``, since FitTrackee only supports "
 "Authorization Code flow."
 msgstr ""
 
-#: ../source/oauth.rst:60
+#: ../source/oauth.rst:67
 msgid "``scope``: scopes separated with space."
 msgstr ""
 
@@ -7316,7 +8649,7 @@ msgstr ""
 msgid "and optional parameters:"
 msgstr ""
 
-#: ../source/oauth.rst:64
+#: ../source/oauth.rst:71
 msgid "``state``: unique value to prevent cross-site request forgery"
 msgstr ""
 
@@ -7324,11 +8657,11 @@ msgstr ""
 msgid "For PKCE, the following parameters are mandatory:"
 msgstr ""
 
-#: ../source/oauth.rst:68
+#: ../source/oauth.rst:75
 msgid "``code_challenge``: string generated from a code verifier"
 msgstr ""
 
-#: ../source/oauth.rst:69
+#: ../source/oauth.rst:76
 msgid ""
 "``code_challenge_method``: method used to create challenge, for instance "
 "\"S256\""
@@ -7347,9 +8680,7 @@ msgid ""
 "After the authorization, FitTrackee redirects to the 3rd-party app, so "
 "the 3rd-party app can get the authorization code from the redirect URL "
 "and then fetches an access token with the client id and secret (endpoint "
-"`/api/oauth/token "
-"<https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-"
-"token>`_)."
+"`/api/oauth/token <api/oauth2.html#post--api-oauth-token>`_)."
 msgstr ""
 
 #: ../source/oauth.rst
@@ -7360,7 +8691,7 @@ msgstr ""
 msgid "``https://example.com/callback?code=<AUTHORIZATION_CODE>&state=<STATE>``"
 msgstr ""
 
-#: ../source/oauth.rst:81
+#: ../source/oauth.rst:88
 msgid ""
 "OAuth2 support is implemented with `Authlib "
 "<https://docs.authlib.org/en/latest/>`_ library."
@@ -7376,15 +8707,15 @@ msgstr ""
 msgid "For instance for ``nginx``:"
 msgstr ""
 
-#: ../source/oauth.rst:92
+#: ../source/oauth.rst:99
 msgid "Resources"
 msgstr ""
 
-#: ../source/oauth.rst:94
+#: ../source/oauth.rst:101
 msgid "Some resources about OAuth 2.0:"
 msgstr ""
 
-#: ../source/oauth.rst:96
+#: ../source/oauth.rst:103
 msgid ""
 "`OAuth 2.0 Simplified <https://www.oauth.com>`_ by `Aaron Parecki "
 "<https://aaronparecki.com>`_ (example for `authorization code flow with "
@@ -7392,21 +8723,21 @@ msgid ""
 "flow/>`_)"
 msgstr ""
 
-#: ../source/oauth.rst:97
+#: ../source/oauth.rst:104
 msgid ""
 "`Web App Example of OAuth 2 web application flow <https://requests-"
 "oauthlib.readthedocs.io/en/latest/examples/real_world_example.html>`_ "
 "with Requests-OAuthlib (python)"
 msgstr ""
 
-#: ../source/oauth.rst:98
+#: ../source/oauth.rst:105
 msgid ""
 "`OAuth 2 Session "
 "<https://docs.authlib.org/en/latest/client/oauth2.html#oauth-2-session>`_"
 " with Authlib (python)"
 msgstr ""
 
-#: ../source/oauth.rst:99
+#: ../source/oauth.rst:106
 msgid ""
 "`Minimal example of an application interacting with FitTrackee "
 "<https://codeberg.org/SamR1/ft-oauth-client>`_ (python)"

@@ -115,6 +115,8 @@ def get_records(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
 
     """
     records = (

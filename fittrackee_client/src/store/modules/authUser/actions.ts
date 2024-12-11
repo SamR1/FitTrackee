@@ -3,9 +3,11 @@ import type { ActionContext, ActionTree } from 'vuex'
 import authApi from '@/api/authApi'
 import api from '@/api/defaultApi'
 import router from '@/router'
+import store from '@/store'
 import {
   AUTH_USER_STORE,
   EQUIPMENTS_STORE,
+  NOTIFICATIONS_STORE,
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
@@ -18,7 +20,9 @@ import type {
 } from '@/store/modules/authUser/types'
 import type { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
+import type { IPagePayload } from '@/types/api'
 import type {
+  IFollowRequestsActionPayload,
   ILoginOrRegisterData,
   IUserAccountPayload,
   IUserDeletionPayload,
@@ -30,6 +34,7 @@ import type {
   IUserPreferencesPayload,
   IUserSportPreferencesPayload,
   IUserSportPreferencesResetPayload,
+  IUserAppealPayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -41,6 +46,7 @@ const removeAuthUserData = (
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_SPORT_STATS)
   context.commit(AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
+  context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS, [])
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
@@ -139,6 +145,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             // refresh privacy policy
             context.dispatch(ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY)
           }
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
+            res.data.data
+          )
           if (profileNotLoaded || updateUI) {
             if (res.data.data.language) {
               context.dispatch(
@@ -151,9 +161,22 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
               res.data.data.use_dark_mode
             )
           }
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
+            res.data.data
+          )
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
           context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
           context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+
+          if (res.data.data.suspended_at === null) {
+            store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
+          } else if (
+            !router.currentRoute.value.path.startsWith('/profile') &&
+            !router.currentRoute.value.meta.allowedToSuspendedUser
+          ) {
+            router.push('/profile')
+          }
         } else {
           handleError(context, null)
           removeAuthUserData(context)
@@ -165,6 +188,61 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           removeAuthUserData(context)
         }
       })
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('auth/account/suspension')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ACCOUNT_SUSPENSION,
+            res.data.user_suspension
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('follow-requests', { params: payload })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS,
+            res.data.data.follow_requests
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
   [AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER](
     context: ActionContext<IAuthUserState, IRootState>,
@@ -220,6 +298,60 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.APPEAL](
+    context: ActionContext<IAuthUserState, IRootState>,
+    appealPayload: IUserAppealPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    const url =
+      appealPayload.actionType === 'user_suspension'
+        ? 'auth/account/suspension/appeal'
+        : `auth/account/sanctions/${appealPayload.actionId}/appeal`
+    authApi
+      .post(url, { text: appealPayload.text })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IFollowRequestsActionPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post(`follow-requests/${payload.username}/${payload.action}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          if (payload.getFollowRequests) {
+            context
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS)
+              .then(() =>
+                context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              )
+          }
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
   [AUTH_USER_STORE.ACTIONS.UPDATE_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
@@ -282,6 +414,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         if (res.data.status === 'success') {
           context.commit(
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          context.commit(
+            ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
             res.data.data
           )
           context.commit(
@@ -511,5 +647,61 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_BLOCKED_USERS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: IPagePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get('auth/blocked-users', { params: payload })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_BLOCKED_USERS,
+            res.data.blocked_users
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_USER_SANCTION](
+    context: ActionContext<IAuthUserState, IRootState>,
+    actionId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .get(`auth/account/sanctions/${actionId}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_USER_SANCTION,
+            res.data.sanction
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
   },
 }
