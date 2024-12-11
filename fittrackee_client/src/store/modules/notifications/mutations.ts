@@ -6,7 +6,7 @@ import type {
   TNotificationsMutations,
 } from '@/store/modules/notifications/types'
 import type { IPagination } from '@/types/api'
-import type { INotification } from '@/types/notifications'
+import type { INotification, TNotificationType } from '@/types/notifications'
 
 export const mutations: MutationTree<INotificationsState> &
   TNotificationsMutations = {
@@ -21,6 +21,12 @@ export const mutations: MutationTree<INotificationsState> &
     pagination: IPagination
   ) {
     state.pagination = pagination
+  },
+  [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_TYPES](
+    state: INotificationsState,
+    types: TNotificationType[]
+  ) {
+    state.types = types
   },
   [NOTIFICATIONS_STORE.MUTATIONS.UPDATE_UNREAD_STATUS](
     state: INotificationsState,

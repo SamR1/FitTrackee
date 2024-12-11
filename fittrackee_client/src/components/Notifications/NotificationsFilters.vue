@@ -31,15 +31,18 @@
               <label> {{ $t('notifications.TYPES.LABEL') }}</label>
               <select
                 name="type"
+                :disabled="notificationOptions.length === 0"
                 :value="$route.query.type"
                 @change="filterOnType"
               >
-                <option :value="''">
-                  {{ $t('notifications.TYPES.ALL') }}
-                </option>
-                <option disabled>──────</option>
+                <template v-if="notificationOptions.length > 0">
+                  <option :value="''">
+                    {{ $t('notifications.TYPES.ALL') }}
+                  </option>
+                  <option disabled>──────</option>
+                </template>
                 <option
-                  v-for="option in getNotificationsOptions()"
+                  v-for="option in notificationOptions"
                   :value="option.value"
                   :key="option.value"
                 >
@@ -55,38 +58,28 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
-  import type { Ref } from 'vue'
+  import { computed, onBeforeMount, onUnmounted, ref, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery, LocationQueryValue } from 'vue-router'
 
   import useAuthUser from '@/composables/useAuthUser'
+  import { NOTIFICATIONS_STORE } from '@/store/constants.ts'
   import type { TNotificationType } from '@/types/notifications'
+  import { useStore } from '@/use/useStore.ts'
 
   const route = useRoute()
   const router = useRouter()
+  const store = useStore()
   const { t } = useI18n()
 
-  const { authUserHasModeratorRights } = useAuthUser()
+  const { authUserHasModeratorRights, isAuthUserSuspended } = useAuthUser()
 
-  const notificationTypes: TNotificationType[] = [
-    'comment_like',
-    'comment_suspension',
-    'comment_unsuspension',
-    'follow',
-    'follow_request',
-    'mention',
-    'report',
-    'suspension_appeal',
-    'user_warning',
-    'user_warning_appeal',
-    'user_warning_lifting',
-    'workout_comment',
-    'workout_like',
-    'workout_suspension',
-    'workout_unsuspension',
-  ]
+  const notificationTypes: ComputedRef<TNotificationType[]> = computed(
+    () => store.getters[NOTIFICATIONS_STORE.GETTERS.TYPES]
+  )
+  const notificationOptions = computed(() => getNotificationsOptions())
   let params: LocationQuery = Object.assign({}, route.query)
 
   const notificationsStatus: Ref<LocationQueryValue | LocationQueryValue[]> =
@@ -121,9 +114,14 @@
   ): number {
     return a.label > b.label ? 1 : a.label < b.label ? -1 : 0
   }
+  function loadNotificationTypes() {
+    if (!isAuthUserSuspended.value) {
+      store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATION_TYPES, params)
+    }
+  }
   function getNotificationsOptions() {
     const options: Record<string, string>[] = []
-    notificationTypes
+    notificationTypes.value
       .filter(
         (type) =>
           !['report', 'suspension_appeal', 'user_warning_appeal'].includes(
@@ -144,8 +142,14 @@
     (newQuery) => {
       params = Object.assign({}, newQuery)
       notificationsStatus.value = getStatusFromQuery(newQuery)
+      loadNotificationTypes()
     }
   )
+
+  onBeforeMount(() => loadNotificationTypes())
+  onUnmounted(() => {
+    store.commit(NOTIFICATIONS_STORE.MUTATIONS.UPDATE_TYPES, [])
+  })
 </script>
 
 <style lang="scss" scoped>

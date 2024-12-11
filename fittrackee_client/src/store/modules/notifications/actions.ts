@@ -30,6 +30,29 @@ export const actions: ActionTree<INotificationsState, IRootState> &
       })
       .catch((error) => handleError(context, error))
   },
+  [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATION_TYPES](
+    context: ActionContext<INotificationsState, IRootState>,
+    payload: INotificationsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('notifications/types', { params: payload })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            NOTIFICATIONS_STORE.MUTATIONS.UPDATE_TYPES,
+            res.data.notification_types
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        if (error.message !== 'canceled') {
+          handleError(context, error)
+        }
+      })
+  },
   [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATIONS](
     context: ActionContext<INotificationsState, IRootState>,
     payload: INotificationsPayload

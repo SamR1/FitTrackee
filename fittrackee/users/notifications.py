@@ -41,7 +41,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
 
     .. sourcecode:: http
 
-      GET /api/workouts?page=2&status=unread  HTTP/1.1
+      GET /api/notifications?page=2&status=unread  HTTP/1.1
 
     **Example responses**:
 
@@ -113,6 +113,8 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     params = request.args.copy()
     page = int(params.get('page', 1))
@@ -448,3 +450,75 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
     except Exception as e:
         return handle_error_and_return_response(e, db=db)
     return {"status": "success"}
+
+
+@notifications_blueprint.route("/notifications/types", methods=["GET"])
+@require_auth(scopes=["notifications:read"])
+def get_notification_types(auth_user: User) -> Dict:
+    """
+    Get types for authenticated user notifications.
+
+    **Scope**: ``notifications:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/notifications/types HTTP/1.1
+
+    - with query parameter:
+
+    .. sourcecode:: http
+
+      GET /api/notifications/types?status=unread  HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+       {
+          "notification_types": [
+            "mention"
+          ],
+          "status": "success"
+       }
+
+    :query string status: notification read status (``read``, ``unread``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    """
+    status = request.args.copy().get('status')
+    marked_as_read = None
+    if status == 'read':
+        marked_as_read = True
+    if status == 'unread':
+        marked_as_read = False
+    notification_types = (
+        db.session.query(Notification.event_type)
+        .filter(
+            Notification.to_user_id == auth_user.id,
+            True
+            if marked_as_read is None
+            else Notification.marked_as_read == marked_as_read,
+        )
+        .all()
+    )
+    return {
+        "notification_types": [
+            notification_type[0] for notification_type in notification_types
+        ],
+        "status": "success",
+    }
