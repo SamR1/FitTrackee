@@ -3,7 +3,11 @@
     <form @submit.prevent="submitComment">
       <div class="form-items">
         <div class="form-item add-comment-label">
+          <label for="comment" class="visually-hidden">
+            {{ $t('workouts.COMMENTS.ADD') }}
+          </label>
           <CustomTextArea
+            id="comment"
             class="comment"
             :name="name"
             :input="commentText"
@@ -34,7 +38,9 @@
           class="form-item text-visibility"
           v-if="!comment && workout && workout.workout_visibility"
         >
-          <label> {{ $t('visibility_levels.VISIBILITY') }}: </label>
+          <label for="text_visibility">
+            {{ $t('visibility_levels.VISIBILITY') }}:
+          </label>
           <select id="text_visibility" v-model="commentTextVisibility">
             <option
               v-for="level in getCommentVisibilityLevels(
