@@ -295,7 +295,7 @@ class Workout(BaseModel):
     comments = db.relationship(
         Comment,
         lazy=True,
-        backref=db.backref('workout', lazy='joined', single_parent=True),
+        backref=db.backref('workout', lazy='select', single_parent=True),
     )
     likes = db.relationship(
         "User",
