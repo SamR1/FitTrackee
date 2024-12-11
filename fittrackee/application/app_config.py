@@ -145,7 +145,9 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
         - ``valid email must be provided for admin contact``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error when updating configuration``
     """
     config_data = request.get_json()

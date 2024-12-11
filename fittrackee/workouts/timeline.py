@@ -154,7 +154,9 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """

@@ -86,7 +86,9 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``comment not found``
         - ``user not found``

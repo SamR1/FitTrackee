@@ -152,7 +152,8 @@ def get_equipments(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
 
     """
     params = request.args.copy()
@@ -255,7 +256,8 @@ def get_equipment_by_id(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
     :statuscode 404: ``equipment not found``
 
     """
@@ -347,7 +349,9 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``equipment not found``
     :statuscode 500: ``Error during equipment save``
     """
@@ -544,7 +548,9 @@ def update_equipment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``equipment not found``
     :statuscode 500: ``Error during equipment update``
 
@@ -782,7 +788,9 @@ def refresh_equipment(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``equipment not found``
     :statuscode 500: ``Error during equipment save``
     """
@@ -885,6 +893,7 @@ def delete_equipment(
         - ``invalid token, please log in again``
     :statuscode 403:
         - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
         - ``you cannot delete equipment that has workouts associated with it
           without 'force' parameter``
     :statuscode 404: ``equipment not found``

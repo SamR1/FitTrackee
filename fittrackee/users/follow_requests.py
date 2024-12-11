@@ -97,9 +97,11 @@ def get_follow_requests(auth_user: User) -> Dict:
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500:
 
     """
@@ -208,14 +210,16 @@ def accept_follow_request(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 400:
-        - Follow request from user 'user_name' already accepted.
+        - ``Follow request from user 'user_name' already accepted.``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
-        - Follow request does not exist.
+        - ``user does not exist``
+        - ``Follow request does not exist.``
 
     """
     return process_follow_request(auth_user, user_name, 'accept')
@@ -257,14 +261,16 @@ def reject_follow_request(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 400:
-        - Follow request from user 'user_name' already rejected.
+        - ``Follow request from user 'user_name' already rejected.``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
-        - user does not exist
-        - Follow request does not exist.
+        - ``user does not exist``
+        - ``Follow request does not exist.``
 
     """
     return process_follow_request(auth_user, user_name, 'reject')

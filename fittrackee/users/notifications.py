@@ -272,6 +272,8 @@ def update_user_notifications(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``notification not found``
     :statuscode 500:
@@ -332,6 +334,8 @@ def get_status(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     unread_notifications = (
         Notification.query.join(
@@ -429,6 +433,8 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500:
         - ``error, please try again or contact the administrator``
     """
@@ -456,7 +462,7 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
 @require_auth(scopes=["notifications:read"])
 def get_notification_types(auth_user: User) -> Dict:
     """
-    Get types for authenticated user notifications.
+    Get types of notifications received by authenticated user.
 
     **Scope**: ``notifications:read``
 
