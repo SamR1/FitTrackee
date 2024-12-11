@@ -33,6 +33,9 @@ class TestWorkout:
         selenium.find_element(By.NAME, 'workout-distance').send_keys('10')
 
         confirm_button = selenium.find_elements(By.CLASS_NAME, 'confirm')[-1]
+        selenium.execute_script(
+            "arguments[0].scrollIntoView()", confirm_button
+        )
         confirm_button.click()
 
         WebDriverWait(selenium, 10).until(
@@ -58,9 +61,10 @@ class TestWorkout:
         gpx_input = selenium.find_element(By.XPATH, "//input[@type='file']")
         gpx_input.send_keys(os.getcwd() + "/e2e/test.gpx")
 
-        selenium.execute_script("window.scrollTo(0, 1080)")
-
         confirm_button = selenium.find_elements(By.CLASS_NAME, 'confirm')[-1]
+        selenium.execute_script(
+            "arguments[0].scrollIntoView()", confirm_button
+        )
         confirm_button.click()
 
         WebDriverWait(selenium, 30).until(
