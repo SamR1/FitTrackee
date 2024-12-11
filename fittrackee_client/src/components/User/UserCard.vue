@@ -5,7 +5,11 @@
         <UserPicture :user="user" />
         <router-link
           class="user-name"
-          :to="`${$route.path.startsWith('/admin') ? '/admin' : ''}/users/${user.username}?from=users`"
+          :to="
+            $route.path.startsWith('/admin')
+              ? `/admin/users/${user.username}`
+              : `/users/${user.username}?from=users`
+          "
           :title="user.username"
         >
           {{ user.username }}
