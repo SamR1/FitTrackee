@@ -61,7 +61,7 @@ class ReportEmailService:
             "created_at": get_date_string_for_user(
                 comment.created_at, reported_user
             ),
-            "text": comment.handle_mentions()[0],
+            "text": comment.text,
         }
         if comment.workout_id:
             comment_email_data["comment_url"] = (
@@ -70,7 +70,7 @@ class ReportEmailService:
             )
         else:
             comment_email_data["comment_url"] = (
-                f"{fittrackee_url}/comments" f"/{comment.short_id}"
+                f"{fittrackee_url}/comments/{comment.short_id}"
             )
 
         return comment_email_data
@@ -93,7 +93,7 @@ class ReportEmailService:
             "workout_date": get_date_string_for_user(
                 workout.workout_date, reported_user
             ),
-            "workout_url": f'{fittrackee_url}/workouts/{workout.short_id}',
+            "workout_url": f"{fittrackee_url}/workouts/{workout.short_id}",
         }
 
     def _send_user_suspension_email(
@@ -148,7 +148,8 @@ class ReportEmailService:
                 fittrackee_url,
             )
         email_data["appeal_url"] = (
-            f"{fittrackee_url}/profile/moderation/sanctions/{report_action.short_id}"
+            f"{fittrackee_url}/profile/moderation/"
+            f"sanctions/{report_action.short_id}"
         )
         user_warning_email.send(user_data, email_data)
 
