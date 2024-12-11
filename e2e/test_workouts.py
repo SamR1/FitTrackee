@@ -11,7 +11,7 @@ class TestWorkout:
     def test_user_can_add_workout_without_gpx(self, selenium):
         register_valid_user(selenium)
         app_menu = selenium.find_element(By.CLASS_NAME, 'nav-items-app-menu')
-        add_workout_link = app_menu.find_elements(By.CLASS_NAME, 'nav-item')[3]
+        add_workout_link = app_menu.find_elements(By.CLASS_NAME, 'nav-item')[4]
 
         add_workout_link.click()
         selenium.implicitly_wait(1)
@@ -48,7 +48,7 @@ class TestWorkout:
     def test_user_can_add_workout_with_gpx(self, selenium):
         register_valid_user(selenium)
         app_menu = selenium.find_element(By.CLASS_NAME, 'nav-items-app-menu')
-        add_workout_link = app_menu.find_elements(By.CLASS_NAME, 'nav-item')[3]
+        add_workout_link = app_menu.find_elements(By.CLASS_NAME, 'nav-item')[4]
 
         add_workout_link.click()
         selenium.implicitly_wait(1)
@@ -57,6 +57,8 @@ class TestWorkout:
         select.select_by_index(1)
         gpx_input = selenium.find_element(By.XPATH, "//input[@type='file']")
         gpx_input.send_keys(os.getcwd() + "/e2e/test.gpx")
+
+        selenium.execute_script("window.scrollTo(0, 1080)")
 
         confirm_button = selenium.find_elements(By.CLASS_NAME, 'confirm')[-1]
         confirm_button.click()
