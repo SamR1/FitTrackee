@@ -1,5 +1,23 @@
 # Change log
 
+## Version 0.9.0b1 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1s part]
+  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
+  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
+  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
+  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
 ## Version 0.8.12 (2024/11/17)
 
 ### Bugs Fixed
