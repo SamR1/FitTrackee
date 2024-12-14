@@ -3,7 +3,7 @@
     <StatCard
       icon="users"
       :value="appStatistics.users"
-      :text="$t('admin.USER', appStatistics.users)"
+      :text="$t('user.ACTIVE_USER', appStatistics.users)"
     />
     <StatCard
       icon="tags"
@@ -34,8 +34,8 @@
     appStatistics: IAppStatistics
   }
   const props = defineProps<Props>()
-
   const { appStatistics } = toRefs(props)
+
   const uploadDirSize = computed(() =>
     getReadableFileSize(appStatistics.value.uploads_dir_size)
   )

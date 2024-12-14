@@ -7,7 +7,7 @@ import pytz
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
-from fittrackee.tests.mixins import CallArgsMixin
+from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
 from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
 from fittrackee.workouts.utils.weather.weather_service import WeatherService
@@ -46,7 +46,7 @@ VISUAL_CROSSING_RESPONSE = {
 }
 
 
-class WeatherTestCase:
+class WeatherTestCase(BaseTestMixin):
     api_key = random_string()
 
     @staticmethod
@@ -88,7 +88,7 @@ class TestVisualCrossingGetTimestamp(WeatherTestCase):
         )
 
 
-class TestVisualCrossingGetWeather(WeatherTestCase, CallArgsMixin):
+class TestVisualCrossingGetWeather(WeatherTestCase):
     @staticmethod
     def get_response() -> Mock:
         response_mock = Mock()

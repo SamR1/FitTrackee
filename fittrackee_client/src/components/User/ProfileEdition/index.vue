@@ -13,9 +13,11 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
+  import useAuthUser from '@/composables/useAuthUser'
   import type { IUserProfile } from '@/types/user'
 
   interface Props {
@@ -23,15 +25,21 @@
     tab: string
   }
   const props = defineProps<Props>()
-
   const { user, tab } = toRefs(props)
-  const tabs = [
-    'PROFILE',
-    'ACCOUNT',
-    'PICTURE',
-    'PREFERENCES',
-    'SPORTS',
-    'EQUIPMENTS',
-    'PRIVACY-POLICY',
-  ]
+
+  const { isAuthUserSuspended } = useAuthUser()
+
+  const tabs: ComputedRef<string[]> = computed(() =>
+    isAuthUserSuspended.value
+      ? ['PROFILE', 'ACCOUNT', 'PICTURE', 'PREFERENCES', 'PRIVACY-POLICY']
+      : [
+          'PROFILE',
+          'ACCOUNT',
+          'PICTURE',
+          'PREFERENCES',
+          'SPORTS',
+          'EQUIPMENTS',
+          'PRIVACY-POLICY',
+        ]
+  )
 </script>

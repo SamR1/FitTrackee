@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Account-Bestätigung",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Hast du keine Anweisungen erhalten?",
   "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungs-E-Mail wurde an die angegebene Adresse geschickt.",
-  "ADMIN": "Admin",
   "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
   "CONFIRM_ACCOUNT_DELETION": "Möchtest du dein Konto wirklich löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
   "CURRENT_PASSWORD": "Aktuelles Passwort",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",
   "RESET_PASSWORD": "Passwort zurücksetzen",
   "REVIEW": "überprüfen",
+  "ROLES": {
+    "admin": "Admin"
+  },
   "SHOW_PASSWORD": "Passwort anzeigen",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
   "TOGGLE_THEME": "Thema ändern (Heller oder dunkler Modus)",

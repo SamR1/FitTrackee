@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('Your account has been suspended') }}{% endblock %}
+{% block preheader %}{{ _('Your account has been suspended') }}. {{ _('You can no longer use your account and your profile is no longer accessible') }}.{% endblock %}
+{% block content %}<p>{{ _('Your account has been suspended') }}.</p>
+                        <p>{{ _('You can no longer use your account and your profile is no longer accessible') }}. {{ _('You can still log in to request an export of your data or delete your account') }}.</p>
+                        {% if reason %}<p>{{ _('Reason:') }} {{ reason }}</p>{% endif %}
+                        <p>{{ _('If you think this is an error, you can appeal:') }}</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{appeal_url}}" class="f-fallback button button--green" target="_blank">{{ _('Appeal') }}</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}
+{% block url_to_paste %}<table class="body-sub" role="presentation">
+                          <tr>
+                            <td>
+                              <p class="f-fallback sub">{{ _("If you're having trouble with the button above, copy and paste the URL below into your web browser.") }}</p>
+                              <p class="f-fallback sub">{{appeal_url}}</p>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}

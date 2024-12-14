@@ -31,7 +31,6 @@
   "NEW_APP": "Aggiungi applicazione",
   "NO_APP": "Applicazione non trovata!",
   "NO_APPS": "nessuna applicazione",
-  "NO_DESCRIPTION": "nessuna descrizione",
   "REVOKE_ALL_TOKENS": "Rimuovi tutti i tokens",
   "TOKENS_REVOCATION_CONFIRMATION": "Sei sicuro di voler rimuovere tutti i token?",
   "TOKENS_REVOKED": "Tutti i token esistenti associati sono stati rimossi."

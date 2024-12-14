@@ -6,6 +6,8 @@
       :maxLength="charLimit"
       :disabled="disabled"
       :rows="rows"
+      :required="required"
+      :placeholder="placeholder"
       v-model="text"
       @input="updateText"
     />
@@ -24,12 +26,16 @@
     disabled?: boolean
     input?: string | null
     rows?: number
+    required?: boolean
+    placeholder?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     charLimit: 500,
     disabled: false,
     input: '',
     rows: 2,
+    required: false,
+    placeholder: '',
   })
 
   const emit = defineEmits(['updateValue'])
@@ -38,7 +44,11 @@
   const text = ref(input.value ? input.value : '')
 
   function updateText(event: Event) {
-    emit('updateValue', (event.target as HTMLInputElement).value)
+    const target = event.target as HTMLInputElement
+    emit('updateValue', {
+      value: target.value,
+      selectionStart: target.selectionStart,
+    })
   }
 
   watch(

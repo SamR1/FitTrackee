@@ -2,7 +2,6 @@
   "ACCOUNT_CONFIRMATION": "Потвърждение на акаунта",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Не получихте инструкции?",
   "ACCOUNT_CONFIRMATION_SENT": "Проверете имейла си. Изпратен е нов имейл за потвърждение на посочения адрес.",
-  "ADMIN": "Админ",
   "ALREADY_HAVE_ACCOUNT": "Вече имате акаунт?",
   "CONFIRM_ACCOUNT_DELETION": "Сигурни ли сте, че искате да изтриете акаунта си? Всички данни ще бъдат изтрити, това не може да бъде отменено.",
   "CURRENT_PASSWORD": "Текуща парола",
@@ -158,6 +157,9 @@
   "RESENT_ACCOUNT_CONFIRMATION": "Повторно изпращане на имейл за потвърждение на акаунта",
   "RESET_PASSWORD": "Нулирайте паролата си",
   "REVIEW": "преглед",
+  "ROLES": {
+    "admin": "Админ"
+  },
   "SHOW_PASSWORD": "покажи паролата",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Този потребителски акаунт е неактивен.",
   "TOGGLE_THEME": "Превключване на темата (светъл или тъмен режим)",

@@ -44,6 +44,7 @@
     displayHover: false,
   })
   const { displayHover } = toRefs(props)
+
   const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
 </script>
 

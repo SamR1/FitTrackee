@@ -1,1 +1,2 @@
-class InvalidEmailUrlScheme(Exception): ...
+class InvalidEmailUrlScheme(Exception):
+    pass

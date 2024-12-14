@@ -3,7 +3,7 @@
     "DESCRIPTION": "Any additional information that may be useful to your users. Markdown syntax can be used.",
     "TEXT": "Detailed instance information"
   },
-  "ACTION": "Action",
+  "ACTION": "Action | Actions",
   "ACTIVATE_USER_ACCOUNT": "Activate account",
   "ACTIVE": "Active",
   "ADMIN": "Admin",
@@ -22,10 +22,81 @@
     "TITLE": "Application configuration",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. size of zip archive (in Mb)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Add a comment",
+      "MARK_AS_RESOLVED": "Mark as resolved",
+      "MARK_AS_UNRESOLVED": "Mark as unresolved",
+      "SEND_WARNING_EMAIL": "Send a warning",
+      "SUSPEND_ACCOUNT": "Suspend user account",
+      "SUSPEND_CONTENT": "Suspend content",
+      "UNSUSPEND_ACCOUNT": "Reactivate user account",
+      "UNSUSPEND_CONTENT": "Reactivate content"
+    },
+    "APPEAL": {
+      "APPROVED": "This appeal has been approved {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "This appeal was approved by lifting the suspension.",
+      "HIDE": "Hide appeal",
+      "REASON_IS": "The reason is:",
+      "REJECTED": "This appeal has been rejected {0}.",
+      "SEE": "See appeal"
+    },
+    "DESCRIPTION": "Reports management.",
+    "NOTES_AND_ACTIONS": "Notes and actions",
+    "NO_REPORTS_FOUND": "No reports",
+    "ORDER_BY": {
+      "CREATED_AT": "creation date",
+      "UPDATED_AT": "update date"
+    },
+    "REASON": "Reason",
+    "REPORT": "report | reports",
+    "REPORTED_BY": "Reported by",
+    "REPORTED_CONTENT": "Reported content",
+    "REPORTED_USER": "Reported user",
+    "REPORTER": "reporter",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "The comment has been suspended by {1} {2}.",
+      "comment_unsuspension": "The comment suspension has been lifted by {1} {2}.",
+      "report_reopening": "The report has been reopened by {1} {2}.",
+      "report_resolution": "The report has been marked as resolved by {1} {2}.",
+      "user_suspension": "{0} has been suspended by {1} {2}.",
+      "user_unsuspension": "The {0} suspension has been lifted by {1} {2}.",
+      "user_warning": "A warning has been sent to {0} by {1} {2}.",
+      "user_warning_lifting": "The {0} warning has been lifted by {1} {2}.",
+      "workout_suspension": "The workout has been suspended by {1} {2}.",
+      "workout_unsuspension": "The workout suspension has been lifted by {1} {2}."
+    },
+    "REPORT_NOTE": "Note by",
+    "RESOLVED": {
+      "FALSE": "Unresolved",
+      "TRUE": "Resolved"
+    },
+    "RESOLVED_AT": "Resolved at",
+    "RESOLVED_BY": "Resolved by",
+    "STATUS": "status",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Add comment, action taken or any other useful information.",
+      "INFORMATION_VISIBLE_TO_USER": "This information will be visible to the user.",
+      "MARK_AS_RESOLVED": "Indicate the reason for resolution.",
+      "MARK_AS_UNRESOLVED": "Indicate the reason for non-resolution.",
+      "SEND_WARNING_EMAIL": "Indicate the reason for warning (not mandatory).",
+      "SUSPEND": "Indicate the reason for suspension (not mandatory).",
+      "UNSUSPEND": "Add a comment (not mandatory).",
+      "UPDATE_APPEAL": "Indicate the reason for this appeal processing."
+    },
+    "TITLE": "Moderation",
+    "UNRESOLVED_REPORTS_EXIST": "There are unresolved reports.",
+    "VIEW_REPORT": "View report"
+  },
   "BACK_TO_ADMIN": "Back to admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
+  "CONFIRM_SUSPEND_ACCOUNT": "Are you sure you want to suspend {0} account?",
+  "CONFIRM_SUSPEND_CONTENT": "Are you sure you want to suspend reported content?",
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "CURRENT_EMAIL": "Current email",
+  "DELETED_COMMENT": "Deleted comment",
+  "DELETED_USER": "Deleted user",
+  "DELETED_WORKOUT": "Deleted workout",
   "DELETE_USER": "Delete user",
   "EMAIL_SENDING_DISABLED": "Email sending is disabled.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Enable/disable equipment types.",
@@ -61,16 +132,18 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "admin status",
         "CREATED_AT": "registration date",
         "IS_ACTIVE": "account status",
+        "ROLE": "role",
         "USERNAME": "username",
         "WORKOUTS_COUNT": "workout count"
       }
     },
     "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Add admin rights",
-      "REMOVE_ADMIN_RIGHTS": "Remove admin rights"
+      "CHANGE_ROLE": "Change role",
+      "CHANGE_TO_ADMIN": "Change to admin",
+      "CHANGE_TO_MODERATOR": "Change to moderator",
+      "CHANGE_TO_USER": "Change to user"
     },
     "TITLE": "Administration - Users"
   },

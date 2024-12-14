@@ -22,7 +22,7 @@
             type="color"
             required
             v-model="sportPayload.color"
-            :disabled="loading"
+            :disabled="authUserLoading"
             @invalid="invalidateForm"
           />
         </div>
@@ -40,7 +40,7 @@
             step="0.1"
             required
             v-model="sportPayload.stopped_speed_threshold"
-            :disabled="loading"
+            :disabled="authUserLoading"
             @invalid="invalidateForm"
           />
         </div>
@@ -54,7 +54,7 @@
             type="checkbox"
             :checked="sport.is_active_for_user"
             @change="updateIsActive"
-            :disabled="loading"
+            :disabled="authUserLoading"
           />
         </div>
         <div class="form-item">
@@ -64,7 +64,7 @@
           <select
             id="sport-default-equipment"
             @invalid="invalidateForm"
-            :disabled="loading"
+            :disabled="authUserLoading"
             v-model="defaultEquipmentId"
           >
             <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
@@ -80,13 +80,13 @@
       </div>
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="form-buttons">
-        <button class="confirm" type="submit" :disabled="loading">
+        <button class="confirm" type="submit" :disabled="authUserLoading">
           {{ $t('buttons.SUBMIT') }}
         </button>
         <button
           class="cancel"
           @click.prevent="() => $router.push(`/profile/sports/${sport?.id}`)"
-          :disabled="loading"
+          :disabled="authUserLoading"
         >
           {{ $t('buttons.CANCEL') }}
         </button>
@@ -97,11 +97,13 @@
 
 <script setup lang="ts">
   import { capitalize, computed, onMounted, ref, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ISport, ITranslatedSport } from '@/types/sports'
@@ -115,22 +117,24 @@
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
+  const { authUser, translatedSports } = toRefs(props)
 
   const { t } = useI18n()
   const store = useStore()
   const route = useRoute()
 
-  const { authUser, translatedSports } = toRefs(props)
+  const { errorMessages } = useApp()
   const {
     defaultColor,
     defaultEquipmentId,
-    errorMessages,
-    loading,
     sportColors,
     sportPayload,
     updateIsActive,
     updateSport,
-  } = userSportComponent()
+  } = useSports()
+  const { authUserLoading } = useAuthUser()
+
+  const formErrors: Ref<boolean> = ref(false)
 
   const sport: ComputedRef<ITranslatedSport | null> = computed(() =>
     getSport(translatedSports.value)
@@ -149,18 +153,6 @@
         )
       : []
   )
-  const formErrors = ref(false)
-
-  onMounted(() => {
-    const labelInput = document.getElementById('sport-color')
-    labelInput?.focus()
-    if (!route.params.id) {
-      return
-    }
-    if (route.params.id && sport.value?.id) {
-      formatSportForm(sport.value, true)
-    }
-  })
 
   function getSport(sportsList: ITranslatedSport[]) {
     if (!route.params.id) {
@@ -215,6 +207,17 @@
       }
     }
   )
+
+  onMounted(() => {
+    const labelInput = document.getElementById('sport-color')
+    labelInput?.focus()
+    if (!route.params.id) {
+      return
+    }
+    if (route.params.id && sport.value?.id) {
+      formatSportForm(sport.value, true)
+    }
+  })
 </script>
 
 <style scoped lang="scss">

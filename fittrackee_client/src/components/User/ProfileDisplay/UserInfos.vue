@@ -17,7 +17,7 @@
       @cancelAction="updateDisplayModal('')"
       @keydown.esc="updateDisplayModal('')"
     />
-    <div class="info-box success-message" v-if="isSuccess">
+    <div class="info-box success-message" v-if="usersSuccess">
       {{
         $t(
           `admin.${
@@ -30,9 +30,12 @@
     </div>
     <AlertMessage
       message="user.THIS_USER_ACCOUNT_IS_INACTIVE"
-      v-if="!user.is_active"
+      v-if="authUserHasModeratorRights && !user.is_active"
     />
-    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+    <ErrorMessage
+      :message="errorMessages"
+      v-if="errorMessages && !currentUserReporting"
+    />
     <div class="email-form form-box" v-if="displayUserEmailForm">
       <form
         :class="{ errors: formErrors }"
@@ -62,58 +65,116 @@
         <dd>
           <time>{{ registrationDate }}</time>
         </dd>
-        <dt>{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
-        <dd>{{ user.first_name }}</dd>
-        <dt>{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
-        <dd>{{ user.last_name }}</dd>
-        <dt>{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
-        <dd>
-          <time v-if="birthDate">{{ birthDate }}</time>
-        </dd>
-        <dt>{{ $t('user.PROFILE.LOCATION') }}:</dt>
-        <dd>{{ user.location }}</dd>
-        <dt>{{ $t('user.PROFILE.BIO') }}:</dt>
-        <dd class="user-bio">
-          {{ user.bio }}
-        </dd>
+        <template v-if="isAuthenticated">
+          <dt v-if="fromAdmin">{{ $t('user.EMAIL') }}:</dt>
+          <dd v-if="fromAdmin">{{ user.email }}</dd>
+          <dt v-if="user.first_name">{{ $t('user.PROFILE.FIRST_NAME') }}:</dt>
+          <dd v-if="user.first_name">{{ user.first_name }}</dd>
+          <dt v-if="user.last_name">{{ $t('user.PROFILE.LAST_NAME') }}:</dt>
+          <dd v-if="user.last_name">{{ user.last_name }}</dd>
+          <dt v-if="birthDate">{{ $t('user.PROFILE.BIRTH_DATE') }}:</dt>
+          <dd v-if="birthDate">
+            <time>{{ birthDate }}</time>
+          </dd>
+          <dt v-if="user.location">{{ $t('user.PROFILE.LOCATION') }}:</dt>
+          <dd v-if="user.location">{{ user.location }}</dd>
+          <dt v-if="user.bio">{{ $t('user.PROFILE.BIO') }}:</dt>
+          <dd v-if="user.bio" class="user-bio">
+            {{ user.bio }}
+          </dd>
+        </template>
       </dl>
-      <div class="profile-buttons" v-if="fromAdmin">
-        <button
-          class="danger"
-          v-if="authUser.username !== user.username"
-          @click.prevent="updateDisplayModal('delete')"
-        >
-          {{ $t('admin.DELETE_USER') }}
-        </button>
-        <button
-          v-if="!user.is_active"
-          @click.prevent="confirmUserAccount(user.username)"
-        >
-          {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
-        </button>
-        <button
-          v-if="authUser.username !== user.username"
-          @click.prevent="displayEmailForm"
-        >
-          {{ $t('admin.UPDATE_USER_EMAIL') }}
-        </button>
-        <button
-          v-if="
-            authUser.username !== user.username &&
-            appConfig.is_email_sending_enabled
-          "
-          @click.prevent="updateDisplayModal('reset')"
-        >
-          {{ $t('admin.RESET_USER_PASSWORD') }}
-        </button>
-        <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+      <div
+        class="report-submitted"
+        v-if="reportStatus === `user-${user.username}-created`"
+      >
+        <div class="info-box">
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('common.REPORT_SUBMITTED') }}
+          </span>
+        </div>
       </div>
-      <div class="profile-buttons" v-else>
-        <button @click="$router.push('/profile/edit')">
-          {{ $t('user.PROFILE.EDIT') }}
-        </button>
-        <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
-      </div>
+      <ReportForm
+        v-if="currentUserReporting"
+        :object-id="user.username"
+        object-type="user"
+      />
+      <template v-else>
+        <div v-if="authUser && authUserHasModeratorRights && fromAdmin">
+          <UserAdminReports :authUser="authUser" :user="user" />
+        </div>
+        <template v-if="isAuthenticated">
+          <div class="profile-buttons" v-if="fromAdmin">
+            <template v-if="user.role !== 'owner' && authUserHasAdminRights">
+              <button
+                class="danger"
+                v-if="authUser?.username !== user.username"
+                @click.prevent="updateDisplayModal('delete')"
+              >
+                {{ $t('admin.DELETE_USER') }}
+              </button>
+              <button
+                v-if="!user.is_active"
+                @click.prevent="confirmUserAccount(user.username)"
+              >
+                {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
+              </button>
+              <button
+                v-if="authUser?.username !== user.username"
+                @click.prevent="displayEmailForm"
+              >
+                {{ $t('admin.UPDATE_USER_EMAIL') }}
+              </button>
+              <button
+                v-if="
+                  authUser?.username !== user.username &&
+                  appConfig.is_email_sending_enabled
+                "
+                @click.prevent="updateDisplayModal('reset')"
+              >
+                {{ $t('admin.RESET_USER_PASSWORD') }}
+              </button>
+              <UserRelationshipActions
+                v-if="authUser?.username"
+                :authUser="authUser"
+                :user="user"
+                from="userInfos"
+              />
+            </template>
+            <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+          </div>
+          <div class="profile-buttons" v-else>
+            <button
+              v-if="
+                $route.path === '/profile' ||
+                user.username === authUser?.username
+              "
+              @click="$router.push('/profile/edit')"
+            >
+              {{ $t('user.PROFILE.EDIT') }}
+            </button>
+            <UserRelationshipActions
+              v-if="authUser?.username"
+              :authUser="authUser"
+              :user="user"
+              from="userInfos"
+            />
+            <button
+              v-if="
+                $route.name === 'User' &&
+                user.username !== authUser?.username &&
+                user.suspended_at === null &&
+                reportStatus !== `user-${user.username}-created`
+              "
+              @click="displayReportForm"
+            >
+              {{ $t('user.REPORT') }}
+            </button>
+            <button @click="$router.go(-1)">{{ $t('buttons.BACK') }}</button>
+          </div>
+        </template>
+      </template>
     </div>
   </div>
 </template>
@@ -123,10 +184,12 @@
   import { computed, ref, toRefs, watch, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
-  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { TLanguage } from '@/types/locales'
+  import UserAdminReports from '@/components/Administration/UserAdminReports.vue'
+  import ReportForm from '@/components/Common/ReportForm.vue'
+  import UserRelationshipActions from '@/components/User/UserRelationshipActions.vue'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { IAuthUserProfile, IUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
@@ -134,52 +197,56 @@
 
   interface Props {
     user: IUserProfile
+    authUser?: IAuthUserProfile
     fromAdmin?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     fromAdmin: false,
   })
+  const { authUser, user, fromAdmin } = toRefs(props)
 
   const store = useStore()
 
-  const { user, fromAdmin } = toRefs(props)
-  const language: ComputedRef<TLanguage> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LANGUAGE]
-  )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const registrationDate = computed(() =>
-    props.user.created_at
-      ? formatDate(
-          props.user.created_at,
-          authUser.value.timezone,
-          authUser.value.date_format
-        )
-      : ''
-  )
-  const birthDate = computed(() =>
-    props.user.birth_date
-      ? format(
-          new Date(props.user.birth_date),
-          `${getDateFormat(authUser.value.date_format, language.value)}`,
-          { locale: localeFromLanguage[language.value] }
-        )
-      : ''
-  )
-  const isSuccess = computed(
-    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
+  const { appConfig, appLanguage, displayOptions, errorMessages } = useApp()
+  const {
+    authUserHasModeratorRights,
+    authUserHasAdminRights,
+    isAuthenticated,
+  } = useAuthUser()
+
   const displayModal: Ref<string> = ref('')
-  const formErrors = ref(false)
+  const formErrors: Ref<boolean> = ref(false)
   const displayUserEmailForm: Ref<boolean> = ref(false)
   const newUserEmail: Ref<string> = ref('')
   const currentAction: Ref<string> = ref('')
+
+  const currentUserReporting: ComputedRef<boolean> = computed(
+    () => store.getters[USERS_STORE.GETTERS.USER_CURRENT_REPORTING]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
+  )
+  const registrationDate: ComputedRef<string> = computed(() =>
+    user.value.created_at
+      ? formatDate(
+          user.value.created_at,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat
+        )
+      : ''
+  )
+  const birthDate: ComputedRef<string> = computed(() =>
+    user.value.birth_date
+      ? format(
+          new Date(user.value.birth_date),
+          `${getDateFormat(displayOptions.value.dateFormat, appLanguage.value)}`,
+          { locale: localeFromLanguage[appLanguage.value] }
+        )
+      : ''
+  )
+  const usersSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
 
   function updateDisplayModal(value: string) {
     displayModal.value = value
@@ -224,13 +291,16 @@
   function resetErrorsAndSuccess() {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING, false)
+    store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
     currentAction.value = ''
   }
-
-  onUnmounted(() => resetErrorsAndSuccess())
+  function displayReportForm() {
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING, true)
+  }
 
   watch(
-    () => isSuccess.value,
+    () => usersSuccess.value,
     (newIsSuccess) => {
       if (newIsSuccess) {
         updateDisplayModal('')
@@ -238,11 +308,15 @@
       }
     }
   )
+
+  onUnmounted(() => resetErrorsAndSuccess())
 </script>
 
 <style lang="scss" scoped>
   @import '~@/scss/vars.scss';
+
   #user-infos {
+    padding: 0 0 $default-padding;
     .user-bio {
       white-space: pre-wrap;
     }
@@ -254,6 +328,9 @@
     .profile-buttons {
       display: flex;
       flex-wrap: wrap;
+      ::v-deep(.actions-buttons) {
+        gap: $default-padding;
+      }
     }
 
     .email-form {
@@ -266,6 +343,15 @@
         gap: $default-padding;
         margin-top: $default-margin;
       }
+    }
+    .report-submitted {
+      display: flex;
+      .info-box {
+        margin-bottom: $default-margin;
+      }
+    }
+    .suspended {
+      margin-top: $default-margin;
     }
   }
 </style>

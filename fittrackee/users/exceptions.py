@@ -1,10 +1,61 @@
-class InvalidEmailException(Exception): ...
+class BlockUserException(Exception):
+    pass
 
 
-class UserControlsException(Exception): ...
+class FollowRequestAlreadyProcessedError(Exception):
+    pass
 
 
-class UserCreationException(Exception): ...
+class FollowRequestAlreadyRejectedError(Exception):
+    pass
 
 
-class UserNotFoundException(Exception): ...
+class InvalidEmailException(Exception):
+    pass
+
+
+class InvalidNotificationTypeException(Exception):
+    pass
+
+
+class InvalidUserRole(Exception):
+    def __init__(self) -> None:
+        super().__init__('invalid role')
+
+
+class MissingAdminIdException(Exception):
+    pass
+
+
+class MissingReportIdException(Exception):
+    pass
+
+
+class NotExistingFollowRequestError(Exception):
+    pass
+
+
+class OwnerException(Exception):
+    pass
+
+
+class UserAlreadyReactivatedException(Exception):
+    def __init__(self) -> None:
+        super().__init__("user account already reactivated")
+
+
+class UserAlreadySuspendedException(Exception):
+    def __init__(self) -> None:
+        super().__init__("user account already suspended")
+
+
+class UserControlsException(Exception):
+    pass
+
+
+class UserCreationException(Exception):
+    pass
+
+
+class UserNotFoundException(Exception):
+    pass

@@ -4,15 +4,12 @@ from typing import Dict
 from flask import current_app
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
 
-from fittrackee import VERSION, db
+from fittrackee import BaseModel, db
 from fittrackee.users.models import User
-
-BaseModel: DeclarativeMeta = db.Model
 
 
 class AppConfig(BaseModel):
@@ -55,10 +52,10 @@ class AppConfig(BaseModel):
             'privacy_policy': self.privacy_policy,
             'privacy_policy_date': self.privacy_policy_date,
             'stats_workouts_limit': self.stats_workouts_limit,
-            'version': VERSION,
+            'version': current_app.config['VERSION'],
             'weather_provider': (
                 weather_provider
-                if weather_provider in ['darksky', 'visualcrossing']
+                if weather_provider in ['visualcrossing']
                 else None
             ),
         }

@@ -1,0 +1,8 @@
+{% extends "layout.txt" %}{% block content %}{{ _('Your workout has been suspended, it is no longer visible') }}.
+
+{% if reason %}{{ _('Reason:') }} {{ reason }}
+
+{% endif %}{{ _('Workout:') }} {{ title }}
+
+{{ _('If you think this is an error, you can appeal:') }}
+{{ workout_url }}{% endblock %}

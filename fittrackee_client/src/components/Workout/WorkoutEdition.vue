@@ -286,6 +286,43 @@
                   </option>
                 </select>
               </div>
+              <div class="form-item">
+                <label for="workout_visibility">
+                  {{ $t('visibility_levels.WORKOUT_VISIBILITY') }}:
+                </label>
+                <select
+                  id="workout_visibility"
+                  v-model="workoutForm.workoutVisibility"
+                  :disabled="loading"
+                  @change="updateMapVisibility"
+                >
+                  <option
+                    v-for="level in visibilityLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-item" v-if="withGpx">
+                <label for="map_visibility">
+                  {{ $t('visibility_levels.MAP_VISIBILITY') }}:
+                </label>
+                <select
+                  id="map_visibility"
+                  v-model="workoutForm.mapVisibility"
+                  :disabled="loading"
+                >
+                  <option
+                    v-for="level in mapVisibilityLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                  </option>
+                </select>
+              </div>
               <div class="form-item" v-if="isCreation">
                 <label for="description">
                   {{ $t('workouts.DESCRIPTION') }}:
@@ -306,13 +343,19 @@
                 </div>
               </div>
               <div class="form-item" v-if="isCreation">
-                <label for="notes"> {{ $t('workouts.NOTES') }}: </label>
+                <label for="notes"> {{ $t('workouts.PRIVATE_NOTES') }}: </label>
                 <CustomTextArea
                   name="notes"
                   :input="workoutForm.notes"
                   :disabled="loading"
                   @updateValue="updateNotes"
                 />
+                <div class="field-help" v-if="isCreation">
+                  <span class="info-box">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.PRIVATE_NOTES_FIELD_HELP') }}
+                  </span>
+                </div>
               </div>
             </div>
             <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -335,28 +378,21 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    computed,
-    reactive,
-    ref,
-    toRefs,
-    watch,
-    onMounted,
-    onUnmounted,
-  } from 'vue'
+  import { computed, reactive, ref, toRefs, watch, onMounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
+  import useApp from '@/composables/useApp'
   import {
     EQUIPMENTS_STORE,
     ROOT_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
-  import type { IEquipment, IEquipmentError } from '@/types/equipments'
+  import type { IEquipment } from '@/types/equipments'
+  import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -364,6 +400,11 @@
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
+  import {
+    getVisibilityLevels,
+    getMapVisibilityLevels,
+    getUpdatedMapVisibility,
+  } from '@/utils/visibility_levels'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -377,32 +418,16 @@
     loading: false,
     workout: () => ({}) as IWorkout,
   })
-
-  const { t } = useI18n()
-  const store = useStore()
-  const router = useRouter()
-
   const { authUser, workout, isCreation, loading } = toRefs(props)
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(
-      props.sports,
-      t,
-      'is_active_for_user',
-      workout.value.id ? [workout.value.sport_id] : []
-    )
-  )
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const fileSizeLimit = appConfig.value.max_single_file_size
-    ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
-    : ''
-  const gpx_limit_import = appConfig.value.gpx_limit_import
-  const zipSizeLimit = appConfig.value.max_zip_file_size
-    ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
-    : ''
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+
+  const router = useRouter()
+  const store = useStore()
+  const { t } = useI18n()
+
+  const { appConfig, errorMessages } = useApp()
+
+  let gpxFile: File | null = null
+
   const workoutForm = reactive({
     sport_id: '',
     title: '',
@@ -417,13 +442,40 @@
     workoutDescent: '',
     equipment_id: '',
     description: '',
+    mapVisibility: authUser.value.map_visibility,
+    workoutVisibility: authUser.value.workouts_visibility,
   })
-  const withGpx = ref(
-    workout.value.id ? workout.value.with_gpx : isCreation.value
+  const withGpx: Ref<boolean> = ref(
+    workout.value.id && workout.value.with_gpx ? true : isCreation.value
   )
-  let gpxFile: File | null = null
-  const formErrors = ref(false)
+  const formErrors: Ref<boolean> = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
+
+  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
+    translateSports(
+      props.sports,
+      t,
+      'is_active_for_user',
+      workout.value.id ? [workout.value.sport_id] : []
+    )
+  )
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels()
+  )
+  const fileSizeLimit: ComputedRef<string> = computed(() =>
+    appConfig.value.max_single_file_size
+      ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
+      : ''
+  )
+  const gpx_limit_import: ComputedRef<number> = computed(
+    () => appConfig.value.gpx_limit_import
+  )
+  const zipSizeLimit: ComputedRef<string> = computed(() =>
+    appConfig.value.max_zip_file_size
+      ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
+      : ''
+  )
+
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
@@ -443,25 +495,15 @@
         )
       : []
   )
+  const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getMapVisibilityLevels(workoutForm.workoutVisibility)
+  )
 
-  onMounted(() => {
-    let element
-    if (props.workout.id) {
-      formatWorkoutForm(props.workout)
-      element = document.getElementById('sport')
-    } else {
-      element = document.getElementById('withGpx')
-    }
-    if (element) {
-      element.focus()
-    }
-  })
-
-  function updateNotes(value: string) {
-    workoutForm.notes = value
+  function updateNotes(textareaData: ICustomTextareaData) {
+    workoutForm.notes = textareaData.value
   }
-  function updateDescription(value: string) {
-    workoutForm.description = value
+  function updateDescription(textareaData: ICustomTextareaData) {
+    workoutForm.description = textareaData.value
   }
   function updateWithGpx() {
     withGpx.value = !withGpx.value
@@ -479,22 +521,32 @@
     workoutForm.notes = workout.notes
     workoutForm.equipment_id =
       workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
+    workoutForm.workoutVisibility = workout.workout_visibility
+      ? workout.workout_visibility
+      : 'private'
+    workoutForm.mapVisibility = workout.map_visibility
+      ? workout.map_visibility
+      : 'private'
     if (!workout.with_gpx) {
       const workoutDateTime = formatWorkoutDate(
         getDateWithTZ(workout.workout_date, props.authUser.timezone),
         'yyyy-MM-dd'
       )
-      const duration = workout.duration.split(':')
-      workoutForm.workoutDistance = `${
-        authUser.value.imperial_units
-          ? convertDistance(workout.distance, 'km', 'mi', 3)
-          : parseFloat(workout.distance.toFixed(3))
-      }`
+      if (workout.duration) {
+        const duration = workout.duration.split(':')
+        workoutForm.workoutDurationHour = duration[0]
+        workoutForm.workoutDurationMinutes = duration[1]
+        workoutForm.workoutDurationSeconds = duration[2]
+      }
+      if (workout.distance) {
+        workoutForm.workoutDistance = `${
+          authUser.value.imperial_units
+            ? convertDistance(workout.distance, 'km', 'mi', 3)
+            : parseFloat(workout.distance.toFixed(3))
+        }`
+      }
       workoutForm.workoutDate = workoutDateTime.workout_date
       workoutForm.workoutTime = workoutDateTime.workout_time
-      workoutForm.workoutDurationHour = duration[0]
-      workoutForm.workoutDurationMinutes = duration[1]
-      workoutForm.workoutDurationSeconds = duration[2]
       workoutForm.workoutAscent =
         workout.ascent === null
           ? ''
@@ -558,6 +610,7 @@
     ) {
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
+    payload.workout_visibility = workoutForm.workoutVisibility
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
@@ -570,9 +623,12 @@
           ? [workoutForm.equipment_id]
           : [],
       title: workoutForm.title,
+      workout_visibility: workoutForm.workoutVisibility,
     }
     if (props.workout.id) {
-      if (!props.workout.with_gpx) {
+      if (props.workout.with_gpx) {
+        payload.map_visibility = workoutForm.mapVisibility
+      } else {
         formatPayload(payload)
       }
       if (payloadErrorMessages.value.length > 0) {
@@ -594,6 +650,7 @@
           return
         }
         payload.file = gpxFile
+        payload.map_visibility = workoutForm.mapVisibility
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
       } else {
         formatPayload(payload)
@@ -624,8 +681,12 @@
   function invalidateForm() {
     formErrors.value = true
   }
-
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES))
+  function updateMapVisibility() {
+    workoutForm.mapVisibility = getUpdatedMapVisibility(
+      workoutForm.mapVisibility,
+      workoutForm.workoutVisibility
+    )
+  }
 
   watch(
     () => props.workout,
@@ -650,6 +711,19 @@
       }
     }
   )
+
+  onMounted(() => {
+    let element
+    if (props.workout.id) {
+      formatWorkoutForm(props.workout)
+      element = document.getElementById('sport')
+    } else {
+      element = document.getElementById('withGpx')
+    }
+    if (element) {
+      element.focus()
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -674,6 +748,9 @@
 
             input {
               height: 20px;
+            }
+            label {
+              text-transform: lowercase;
             }
 
             .workout-date-duration {

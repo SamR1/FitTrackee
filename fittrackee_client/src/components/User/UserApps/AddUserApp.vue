@@ -69,6 +69,7 @@
             </div>
           </div>
         </div>
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         <div class="form-buttons">
           <button class="confirm" type="submit" :disabled="scopes.length === 0">
             {{ $t('buttons.SUBMIT') }}
@@ -87,19 +88,21 @@
 
 <script setup lang="ts">
   import { computed, reactive } from 'vue'
+  import type { ComputedRef, Reactive } from 'vue'
 
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
   import { OAUTH2_STORE } from '@/store/constants'
+  import type { ICustomTextareaData } from '@/types/forms'
   import type { IOAuth2ClientPayload } from '@/types/oauth'
-  import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { admin_oauth2_scopes, oauth2_scopes } from '@/utils/oauth'
 
-  interface Props {
-    authUser: IAuthUserProfile
-  }
-  const props = defineProps<Props>()
-
   const store = useStore()
+
+  const { errorMessages } = useApp()
+  const { authUserHasAdminRights } = useAuthUser()
+
   const appForm = reactive({
     client_name: '',
     client_uri: '',
@@ -107,9 +110,10 @@
     description: '',
     redirect_uri: '',
   })
-  const scopes: string[] = reactive([])
-  const filtered_scopes = computed(() =>
-    getScopes(props.authUser, admin_oauth2_scopes, oauth2_scopes)
+  const scopes: Reactive<string[]> = reactive([])
+
+  const filtered_scopes: ComputedRef<string[]> = computed(() =>
+    getScopes(authUserHasAdminRights.value, admin_oauth2_scopes, oauth2_scopes)
   )
 
   function createApp() {
@@ -122,8 +126,8 @@
     }
     store.dispatch(OAUTH2_STORE.ACTIONS.CREATE_CLIENT, payload)
   }
-  function updateDescription(value: string) {
-    appForm.client_description = value
+  function updateDescription(textareaData: ICustomTextareaData) {
+    appForm.client_description = textareaData.value
   }
   function updateScopes(scope: string) {
     const index = scopes.indexOf(scope)
@@ -134,12 +138,12 @@
     }
   }
   function getScopes(
-    authUser: IAuthUserProfile,
+    hasAdminRights: boolean,
     admin_scopes: string[],
     scopes: string[]
   ) {
     const filtered_scopes = [...scopes]
-    if (authUser.admin) {
+    if (hasAdminRights) {
       filtered_scopes.push(...admin_scopes)
     }
     return filtered_scopes.sort()
