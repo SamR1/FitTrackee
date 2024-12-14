@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.9.0b2 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [#657](https://github.com/SamR1/FitTrackee/issues/657) - can not display next workouts in timeline
+
+
 ## Version 0.9.0b1 (2024/12/14)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
