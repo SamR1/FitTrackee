@@ -903,9 +903,9 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
+<li><p>To set owner role to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-admin<span class="w"> </span><span class="nb">true</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-role<span class="w"> </span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -964,9 +964,9 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
+<li><p>To set owner role to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1018,9 +1018,9 @@ database credentials</strong>):</p></li>
 </div>
 <ul class="simple">
 <li><p>Open <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> and register</p></li>
-<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
+<li><p>To set owner role to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1316,9 +1316,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-run
 </ul>
 <p>Open <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> to access <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog interface</a> (email testing tool)</p>
 <ul class="simple">
-<li><p>To set admin rights to the newly created account, use the following command line:</p></li>
+<li><p>To set owner role to the newly created account, use the following command line:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">

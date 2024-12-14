@@ -92,7 +92,11 @@ docker-serve-client:
 	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
 
 docker-set-admin:
+	# deprecated command
 	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-admin true
+
+docker-set-role:
+	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-role $(ROLE)
 
 docker-shell:
 	docker compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
@@ -239,10 +243,6 @@ serve-python-dev:
 	echo 'Running on https://$(HOST):$(PORT)'
 	$(FLASK) run --with-threads -h $(HOST) -p $(PORT) --cert=adhoc
 
-set-admin:
-	echo "Deprecated command, will be removed in a next version. Use 'user-set-admin' instead."
-	$(FTCLI) users update $(USERNAME) --set-admin true
-
 test-all: test-client test-python
 
 test-e2e:
@@ -287,7 +287,11 @@ user-reset-password:
 
 ADMIN := true
 user-set-admin:
+	# deprecated command
 	$(FTCLI) users update $(USERNAME) --set-admin $(ADMIN)
+
+user-set-role:
+	$(FTCLI) users update $(USERNAME) --set-role $(ROLE)
 
 user-update-email:
 	$(FTCLI) users update $(USERNAME) --update-email $(EMAIL)

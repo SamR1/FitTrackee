@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.8.12\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 16:02+0100\n"
+"POT-Creation-Date: 2024-12-14 10:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -440,6 +440,14 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "``equipment with id <equipment_id> is inactive``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "- ``you do not have permissions, your account is suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``you do not have permissions, your account is suspended``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -884,11 +892,15 @@ msgid "- ``invalid payload``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "``you do not have permissions``"
+msgid "Update comment text."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Update comment text."
+msgid "- ``you do not have permissions`` - ``you do not have permissions, your account is suspended``"
+msgstr ""
+
+#: ../../<autoflask>:1
+msgid "``you do not have permissions``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1037,7 +1049,7 @@ msgid "health check endpoint"
 msgstr ""
 
 #: ../source/api/equipment_types.rst:2
-#: ../source/features.rst:477
+#: ../source/features.rst:481
 msgid "Equipment Types"
 msgstr ""
 
@@ -1103,7 +1115,7 @@ msgstr ""
 
 #: ../source/api/equipments.rst:2
 #: ../source/features.rst:320
-#: ../source/features.rst:550
+#: ../source/features.rst:554
 msgid "Equipments"
 msgstr ""
 
@@ -1285,22 +1297,6 @@ msgid "sorting order (default: ``asc``)"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- provide a valid auth token - signature expired, please log in again - invalid token, please log in again"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "provide a valid auth token"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "signature expired, please log in again"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "invalid token, please log in again"
-msgstr ""
-
-#: ../../<autoflask>:1
 msgid "Accept a follow request from user."
 msgstr ""
 
@@ -1313,23 +1309,23 @@ msgid "user name"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- Follow request from user 'user_name' already accepted."
+msgid "- ``Follow request from user 'user_name' already accepted.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Follow request from user 'user_name' already accepted."
+msgid "``Follow request from user 'user_name' already accepted.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- user does not exist - Follow request does not exist."
+msgid "- ``user does not exist`` - ``Follow request does not exist.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "user does not exist"
+msgid "``user does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Follow request does not exist."
+msgid "``Follow request does not exist.``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1337,11 +1333,11 @@ msgid "Reject a follow request from user."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- Follow request from user 'user_name' already rejected."
+msgid "- ``Follow request from user 'user_name' already rejected.``"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "Follow request from user 'user_name' already rejected."
+msgid "``Follow request from user 'user_name' already rejected.``"
 msgstr ""
 
 #: ../source/api/index.rst:4
@@ -1354,7 +1350,7 @@ msgstr ""
 
 #: ../source/api/notifications.rst:2
 #: ../source/features.rst:196
-#: ../source/features.rst:560
+#: ../source/features.rst:564
 msgid "Notifications"
 msgstr ""
 
@@ -1384,14 +1380,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "notification read status (``read``, ``unread``)"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "- ``you do not have permissions, your account is suspended``"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "``you do not have permissions, your account is suspended``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -1861,7 +1849,7 @@ msgstr ""
 
 #: ../source/api/sports.rst:2
 #: ../source/features.rst:17
-#: ../source/features.rst:486
+#: ../source/features.rst:490
 msgid "Sports"
 msgstr ""
 
@@ -1911,7 +1899,7 @@ msgstr ""
 
 #: ../source/api/stats.rst:2
 #: ../source/features.rst:233
-#: ../source/features.rst:541
+#: ../source/features.rst:545
 msgid "Statistics"
 msgstr ""
 
@@ -1993,10 +1981,6 @@ msgstr ""
 
 #: ../../<autoflask>:1
 msgid "``invalid time period``"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "``user does not exist``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -2227,19 +2211,7 @@ msgid "Send a follow request to a user."
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- you do not have permissions"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "you do not have permissions"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "- user does not exist"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "error, please try again or contact the administrator"
+msgid "- ``provide a valid auth token`` - ``signature expired, please log in again`` - ``invalid token, please log in again`` - ``you do not have permissions`` - ``you do not have permissions, your account is suspended``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -2263,19 +2235,7 @@ msgid "Block a user"
 msgstr ""
 
 #: ../../<autoflask>:1
-msgid "- invalid payload"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "invalid payload"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "- user not found"
-msgstr ""
-
-#: ../../<autoflask>:1
-msgid "user not found"
+msgid "- ``user not found``"
 msgstr ""
 
 #: ../../<autoflask>:1
@@ -2799,7 +2759,7 @@ msgstr ""
 #: ../source/changelog.md:1328
 #: ../source/changelog.md:1347
 #: ../source/changelog.md:1433
-#: ../source/features.rst:492
+#: ../source/features.rst:496
 msgid "Translations"
 msgstr ""
 
@@ -6364,7 +6324,7 @@ msgid "In order to hide unwanted content, a user can block another user."
 msgstr ""
 
 #: ../source/features.rst:0
-msgid "Blocking users hides their workouts on timeline and comments. All notifications from blocked users are not displayed."
+msgid "Blocking users hides their workouts on timeline and comments. Notifications from blocked users are not displayed."
 msgstr ""
 
 #: ../source/features.rst:0
@@ -6464,7 +6424,7 @@ msgid "Users can mark notifications as read or unread."
 msgstr ""
 
 #: ../source/features.rst:216
-#: ../source/features.rst:520
+#: ../source/features.rst:524
 msgid "Dashboard"
 msgstr ""
 
@@ -6793,7 +6753,7 @@ msgid "A user can create `clients <oauth.html>`__ for third-party applications."
 msgstr ""
 
 #: ../source/features.rst:364
-#: ../source/features.rst:574
+#: ../source/features.rst:578
 msgid "Administration"
 msgstr ""
 
@@ -6949,220 +6909,224 @@ msgstr ""
 msgid "role can not be modified by other administrator/owner on application"
 msgstr ""
 
-#: ../source/features.rst:444
-msgid "display and filter users list"
-msgstr ""
-
-#: ../source/features.rst:445
-msgid "edit a user to:"
-msgstr ""
-
-#: ../source/features.rst:447
-msgid "update role (*updated in 0.9.0*). A user with owner role can not be modified by other users. Owner role can only be assigned or removed with **FitTrackee** CLI."
+#: ../source/features.rst:446
+msgid "Roles defined prior to version 0.9.0 remain unchanged."
 msgstr ""
 
 #: ../source/features.rst:448
-msgid "activate his account (*new in 0.6.0*)"
+msgid "display and filter users list"
 msgstr ""
 
 #: ../source/features.rst:449
-msgid "update his email (in case his account is locked) (*new in 0.6.0*)"
+msgid "edit a user to:"
 msgstr ""
 
-#: ../source/features.rst:450
-msgid "reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI."
+#: ../source/features.rst:451
+msgid "update role (*updated in 0.9.0*). A user with owner role can not be modified by other users. Owner role can only be assigned or removed with **FitTrackee** CLI."
 msgstr ""
 
 #: ../source/features.rst:452
+msgid "activate his account (*new in 0.6.0*)"
+msgstr ""
+
+#: ../source/features.rst:453
+msgid "update his email (in case his account is locked) (*new in 0.6.0*)"
+msgstr ""
+
+#: ../source/features.rst:454
+msgid "reset his password (in case his account is locked) (*new in 0.6.0*). If email sending is disabled, it is only possible via CLI."
+msgstr ""
+
+#: ../source/features.rst:456
 msgid "delete a user"
 msgstr ""
 
-#: ../source/features.rst:455
+#: ../source/features.rst:459
 msgid "Moderation"
 msgstr ""
 
-#: ../source/features.rst:459
+#: ../source/features.rst:463
 msgid "Only users with administration or moderation rights can access moderation."
 msgstr ""
 
-#: ../source/features.rst:460
+#: ../source/features.rst:464
 msgid "Display and filter reports list."
 msgstr ""
 
-#: ../source/features.rst:461
+#: ../source/features.rst:465
 msgid "Manage a report:"
 msgstr ""
 
-#: ../source/features.rst:463
+#: ../source/features.rst:467
 msgid "add a comment"
 msgstr ""
 
-#: ../source/features.rst:464
+#: ../source/features.rst:468
 msgid "send a warning"
 msgstr ""
 
-#: ../source/features.rst:465
+#: ../source/features.rst:469
 msgid "suspend or reactive workout or comment"
 msgstr ""
 
-#: ../source/features.rst:466
+#: ../source/features.rst:470
 msgid "suspend or reactive user account"
 msgstr ""
 
-#: ../source/features.rst:467
+#: ../source/features.rst:471
 msgid "mark report as resolved or unresolved"
 msgstr ""
 
-#: ../source/features.rst:470
+#: ../source/features.rst:474
 msgid "Report content is visible regardless the visibility level."
 msgstr ""
 
-#: ../source/features.rst:472
+#: ../source/features.rst:476
 msgid "A user can appeal suspension or warning."
 msgstr ""
 
-#: ../source/features.rst:473
+#: ../source/features.rst:477
 msgid "Suspended user can only access his account, appeal the account suspension, request and data export or delete his account. His sessions and comments are no longer visible."
 msgstr ""
 
-#: ../source/features.rst:481
+#: ../source/features.rst:485
 msgid "Only users with administration rights can access equipment types administration."
 msgstr ""
 
-#: ../source/features.rst:482
+#: ../source/features.rst:486
 msgid "enable or disable an equipment type in order to match disabled sports (a equipment type can be disabled even if equipment with this type exists)  (*new in 0.8.0*)."
 msgstr ""
 
-#: ../source/features.rst:487
+#: ../source/features.rst:491
 msgid "Only users with administration rights can access sports administration."
 msgstr ""
 
-#: ../source/features.rst:488
+#: ../source/features.rst:492
 msgid "Enable or disable a sport (a sport can be disabled even if workout with this sport exists)."
 msgstr ""
 
-#: ../source/features.rst:494
+#: ../source/features.rst:498
 msgid "FitTrackee is available in the following languages (which can be saved in the user preferences):"
 msgstr ""
 
-#: ../source/features.rst:496
+#: ../source/features.rst:500
 msgid "English"
 msgstr ""
 
-#: ../source/features.rst:497
+#: ../source/features.rst:501
 msgid "French (*new in 0.2.3*)"
 msgstr ""
 
-#: ../source/features.rst:498
+#: ../source/features.rst:502
 msgid "German (*new in 0.6.9*)"
 msgstr ""
 
-#: ../source/features.rst:499
+#: ../source/features.rst:503
 msgid "Dutch (*new in 0.7.8*)"
 msgstr ""
 
-#: ../source/features.rst:500
+#: ../source/features.rst:504
 msgid "Italian (*new in 0.7.10*)"
 msgstr ""
 
-#: ../source/features.rst:501
+#: ../source/features.rst:505
 msgid "Galician (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:502
+#: ../source/features.rst:506
 msgid "Spanish (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:503
+#: ../source/features.rst:507
 msgid "Norwegian Bokmål (*new in 0.7.15*)"
 msgstr ""
 
-#: ../source/features.rst:504
+#: ../source/features.rst:508
 msgid "Polish (*new in 0.7.18*)"
 msgstr ""
 
-#: ../source/features.rst:505
+#: ../source/features.rst:509
 msgid "Basque (*new in 0.7.31*)"
 msgstr ""
 
-#: ../source/features.rst:506
+#: ../source/features.rst:510
 msgid "Czech (*new in 0.8.1*)"
 msgstr ""
 
-#: ../source/features.rst:507
+#: ../source/features.rst:511
 msgid "Portuguese (*new in 0.8.4*)"
 msgstr ""
 
-#: ../source/features.rst:508
+#: ../source/features.rst:512
 msgid "Bulgarian (*new in 0.8.8*)"
 msgstr ""
 
-#: ../source/features.rst:509
+#: ../source/features.rst:513
 msgid "Russian (*new in 0.8.10*)"
 msgstr ""
 
-#: ../source/features.rst:511
+#: ../source/features.rst:515
 msgid "Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):"
 msgstr ""
 
-#: ../source/features.rst:517
+#: ../source/features.rst:521
 msgid "Screenshots"
 msgstr ""
 
-#: ../source/features.rst:522
+#: ../source/features.rst:526
 #: ../source/index.rst:24
 msgid "FitTrackee Dashboard"
 msgstr ""
 
-#: ../source/features.rst:527
+#: ../source/features.rst:531
 msgid "Workout detail"
 msgstr ""
 
-#: ../source/features.rst:529
+#: ../source/features.rst:533
 msgid "FitTrackee Workout"
 msgstr ""
 
-#: ../source/features.rst:534
+#: ../source/features.rst:538
 msgid "Workouts list"
 msgstr ""
 
-#: ../source/features.rst:536
+#: ../source/features.rst:540
 msgid "FitTrackee Workouts"
 msgstr ""
 
-#: ../source/features.rst:543
+#: ../source/features.rst:547
 msgid "FitTrackee Statistics"
 msgstr ""
 
-#: ../source/features.rst:546
+#: ../source/features.rst:550
 msgid "FitTrackee Sport Statistics"
 msgstr ""
 
-#: ../source/features.rst:552
+#: ../source/features.rst:556
 msgid "FitTrackee Equipments"
 msgstr ""
 
-#: ../source/features.rst:555
+#: ../source/features.rst:559
 msgid "FitTrackee Equipment Detail"
 msgstr ""
 
-#: ../source/features.rst:562
+#: ../source/features.rst:566
 msgid "FitTrackee Notifications"
 msgstr ""
 
-#: ../source/features.rst:567
+#: ../source/features.rst:571
 msgid "Users directory"
 msgstr ""
 
-#: ../source/features.rst:569
+#: ../source/features.rst:573
 msgid "FitTrackee Users Directory"
 msgstr ""
 
-#: ../source/features.rst:576
+#: ../source/features.rst:580
 msgid "FitTrackee Administration"
 msgstr ""
 
-#: ../source/features.rst:579
+#: ../source/features.rst:583
 msgid "FitTrackee Sports Administration"
 msgstr ""
 
@@ -7856,7 +7820,7 @@ msgstr ""
 #: ../source/installation.rst:515
 #: ../source/installation.rst:566
 #: ../source/installation.rst:858
-msgid "To set admin rights to the newly created account, use the following command line:"
+msgid "To set owner role to the newly created account, use the following command line:"
 msgstr ""
 
 #: ../source/installation.rst:464

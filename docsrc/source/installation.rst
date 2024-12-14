@@ -454,11 +454,11 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ ftcli users update <username> --set-admin true
+   $ ftcli users update <username> --set-role owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -512,11 +512,11 @@ Dev environment
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make user-set-admin USERNAME=<username>
+   $ make user-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -563,11 +563,11 @@ Production environment
 
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make user-set-admin USERNAME=<username>
+   $ make user-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -855,11 +855,11 @@ For **evaluation** purposes, docker files are available, installing **FitTrackee
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make docker-set-admin USERNAME=<username>
+   $ make docker-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
