@@ -35,7 +35,13 @@ const getWorkouts = (
     .then((res) => {
       if (res.data.status === 'success') {
         context.commit(WORKOUTS_STORE.MUTATIONS[target], res.data.data.workouts)
-        if (target === WorkoutsMutations['SET_USER_WORKOUTS']) {
+        if (
+          [
+            WorkoutsMutations['SET_USER_WORKOUTS'],
+            WorkoutsMutations['SET_TIMELINE_WORKOUTS'],
+            WorkoutsMutations['ADD_TIMELINE_WORKOUTS'],
+          ].includes(target)
+        ) {
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
             res.data.pagination
