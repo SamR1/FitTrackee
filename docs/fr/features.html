@@ -477,8 +477,8 @@
 <li><p>les notes (<em>nouveau dans la version 0.8.0</em>)</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
-<li><p>vitesse moyenne</p></li>
-<li><p>vitesse maximale</p></li>
+<li><p>la vitesse moyenne</p></li>
+<li><p>la vitesse maximale</p></li>
 </ul>
 </li>
 <li><p>Les séances peuvent être triées par :</p>
@@ -486,7 +486,7 @@
 <li><p>la date</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
-<li><p>vitesse moyenne</p></li>
+<li><p>la vitesse moyenne</p></li>
 </ul>
 </li>
 </ul>
@@ -522,8 +522,8 @@
 </li>
 <li><div class="line-block">
 <div class="line">Afin de masquer du contenu indésirable, l’utilisateur peut bloquer un autre utilisateur.</div>
-<div class="line">Le blocage des utilisateurs masque leurs entraînements sur le flux d’activités et dans les commentaires. Toutes les notifications des utilisateurs bloqués ne s’affichent pas.</div>
-<div class="line">Les utilisateurs bloqués ne peuvent pas voir les séances et les commentaires des utilisateurs qui les ont bloqués, ni les suivre (s’ils les suivaient, les abonnements sont automatiquement supprimés.</div>
+<div class="line">Le blocage des utilisateurs masque leurs séances sur le flux d’activités et les commentaires. Les notifications des utilisateurs bloqués ne s’affichent pas.</div>
+<div class="line">Les utilisateurs bloqués ne peuvent pas voir les séances et les commentaires des utilisateurs qui les ont bloqués, ni les suivre (s’ils les suivaient, les abonnements sont automatiquement supprimés).</div>
 </div>
 </li>
 <li><p>Un utilisateur peut signaler un profil qui enfreint les règles de l’instance. Une notification sera envoyée aux modérateurs et administrateurs.</p></li>
@@ -595,14 +595,14 @@
 <li><p>un calendrier mensuel affichant les séances et les records. La semaine peut commencer le dimanche ou le lundi (ce qui peut être modifié dans les préférences de l’utilisateur). Le calendrier affiche jusqu’à 100 séances.</p></li>
 <li><p>records de l’utilisateur par sport :</p>
 <ul>
-<li><p>vitesse moyenne</p></li>
-<li><p>la plus grande distance</p></li>
+<li><p>la vitesse moyenne</p></li>
+<li><p>la distance la plus grande</p></li>
 <li><p>dénivelé positif le plus élevé (<em>nouveau dans la version 0.6.11</em>, peut être masqué, cf. préférences utilisateur)</p></li>
-<li><p>durée la plus longue</p></li>
-<li><p>vitesse maximale</p></li>
+<li><p>la durée la plus longue</p></li>
+<li><p>la vitesse maximale</p></li>
 </ul>
 </li>
-<li><p>un flux avec les séances visibles par l’utilisateur</p></li>
+<li><p>un flux d’activités affichant avec les séances visibles par l’utilisateur</p></li>
 </ul>
 </li>
 </ul>
@@ -638,7 +638,7 @@
 <li><p>nombre total de séances</p></li>
 <li><p>distance (total et moyenne)</p></li>
 <li><p>durée (total et moyenne)</p></li>
-<li><p>vitesse moyenne</p></li>
+<li><p>la vitesse moyenne</p></li>
 <li><p>dénivelé positif (total et moyenne)</p></li>
 <li><p>dénivelé négatif (total et moyenne)</p></li>
 <li><p>records</p></li>
@@ -879,10 +879,16 @@
 </li>
 </ul>
 </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Roles defined prior to version 0.9.0 remain unchanged.</p>
+</div>
+<ul class="simple">
 <li><p>afficher et filtrer la liste des utilisateurs</p></li>
 <li><p>modifier le compte d’un utilisateur pour :</p>
 <ul>
-<li><p>mettre à jour le rôle (<em>nouveau dans la version 0.9.0</em>). Un utilisateur avec un rôle de propriétaire ne peut pas être modifié par un autre utilisateur.Le rôle de propriétaire ne peut être assigné ou retiré qu’avec la CLI de <strong>FitTrackee</strong>.</p></li>
+<li><p>mettre à jour le rôle (<em>nouveau dans la version 0.9.0</em>). Un utilisateur avec un rôle de propriétaire ne peut pas être modifié par un autre utilisateur. Le rôle de propriétaire ne peut être assigné ou retiré qu’avec la CLI de <strong>FitTrackee</strong>.</p></li>
 <li><p>activer son compte (<em>nouveau dans la version 0.6.0</em>)</p></li>
 <li><p>mettre à jour son adresse électronique (au cas où son compte serait bloqué) (<em>nouveau dans la version 0.6.0</em>)</p></li>
 <li><p>réinitialiser son mot de passe (dans le cas où son compte est verrouillé) (<em>nouveau dans la version 0.6.0</em>). Si l’envoi des courriels est désactivé, cela n’est possible que via l’interface de ligne de commande (CLI).</p></li>
@@ -899,7 +905,7 @@
 <ul class="simple">
 <li><p>Seul l’utilisateur ayant des droits d’administration peut modifier un autre utilisateur.</p></li>
 <li><p>Afficher et filtrer la liste des utilisateurs.</p></li>
-<li><p>Gérer un signalement:</p>
+<li><p>Gérer un signalement :</p>
 <ul>
 <li><p>ajouter un commentaire</p></li>
 <li><p>envoyer un avertissement</p></li>

@@ -166,7 +166,7 @@ Users
 - | User can send follow request to others users.
   | Follow request can be approved or rejected.
 - | In order to hide unwanted content, a user can block another user.
-  | Blocking users hides their workouts on timeline and comments. All notifications from blocked users are not displayed.
+  | Blocking users hides their workouts on timeline and comments. Notifications from blocked users are not displayed.
   | Blocked users cannot see workouts and comments from users who have blocked them, or follow them (if they followed them, they are forced to unfollow them).
 - A user can report a user profile that violates instance rules. This will send a notification to moderators and administrators.
 
@@ -440,6 +440,10 @@ Users
 
     - has admin rights
     - role can not be modified by other administrator/owner on application
+
+.. note::
+
+  Roles defined prior to version 0.9.0 remain unchanged.
 
 - display and filter users list
 - edit a user to:

@@ -895,9 +895,9 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-admin<span class="w"> </span><span class="nb">true</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-role<span class="w"> </span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -954,9 +954,9 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1006,9 +1006,9 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1302,9 +1302,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-run
 </ul>
 <p>Ouvrir l’URL <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> pour accéder à l’interface de <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> (outil de test)</p>
 <ul class="simple">
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
