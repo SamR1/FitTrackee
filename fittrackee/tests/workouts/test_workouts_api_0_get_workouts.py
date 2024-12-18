@@ -1400,3 +1400,53 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
             'pages': 2,
             'total': 7,
         }
+
+
+class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
+    @pytest.mark.parametrize('input_params', ['', '?return_equipments=false'])
+    def test_it_returns_workout_without_equipments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        input_params: str,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f'/api/workouts{input_params}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['workouts'][0]['equipments'] == []
+
+    def test_it_returns_workout_with_equipments_when_flag_is_true(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/workouts?return_equipments=true',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data['data']['workouts'][0]['equipments'] == [
+            jsonify_dict(equipment_bike_user_1.serialize())
+        ]

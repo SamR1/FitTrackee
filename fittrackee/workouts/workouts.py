@@ -240,6 +240,11 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                          notes matching is case-insensitive
     :query string description: any part of the workout description;
                          description matching is case-insensitive
+    :query string return_equipments: return workouts with equipment
+                         (by default, equipment is not returned).
+                         **Note**: It's not a filter.
+                         **Warning**: Needed for 3rd-party applications
+                         updating equipments.
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -375,11 +380,18 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         )
 
         workouts = workouts_pagination.items
+        with_equipments = (
+            params.get('return_equipments', 'false').lower() == 'true'
+        )
         return {
             'status': 'success',
             'data': {
                 'workouts': [
-                    workout.serialize(user=auth_user, params=params)
+                    workout.serialize(
+                        user=auth_user,
+                        params=params,
+                        with_equipments=with_equipments,
+                    )
                     for workout in workouts
                 ]
             },
