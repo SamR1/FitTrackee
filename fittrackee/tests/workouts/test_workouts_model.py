@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 import pytest
 from flask import Flask
@@ -615,6 +615,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             == workout_running_user_1.short_id
         )
 
+    @pytest.mark.parametrize(
+        'input_args,',
+        [
+            {'light': False},
+            {'light': False, 'with_equipments': True},
+            {'light': False, 'with_equipments': False},
+            {'light': True, 'with_equipments': True},
+        ],
+    )
     def test_it_returns_equipments(
         self,
         app: Flask,
@@ -622,16 +631,35 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
+        input_args: Dict,
     ) -> None:
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
         serialized_workout = workout_cycling_user_1.serialize(
-            user=user_1, light=False
+            user=user_1, **input_args
         )
 
         assert serialized_workout['equipments'] == [
             equipment_bike_user_1.serialize()
         ]
+
+    @pytest.mark.parametrize('input_args,', [{}, {'light': True}])
+    def test_serializer_does_not_return_equipments(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        input_args: Dict,
+    ) -> None:
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, **input_args
+        )
+
+        assert serialized_workout['equipments'] == []
 
     def test_it_raises_exception_when_workout_is_deleted_before_removing_equipment(  # noqa
         self,
@@ -1071,7 +1099,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         add_follower(user_1, user_2)
 
         serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
+            user=user_2, light=False, with_equipments=True
         )
 
         assert serialized_workout["equipments"] == []
@@ -1387,7 +1415,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
         serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
+            user=user_2, light=False, with_equipments=True
         )
 
         assert serialized_workout["equipments"] == []
@@ -1646,7 +1674,9 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
-        serialized_workout = workout_cycling_user_1.serialize(light=False)
+        serialized_workout = workout_cycling_user_1.serialize(
+            light=False, with_equipments=True
+        )
 
         assert serialized_workout["equipments"] == []
 

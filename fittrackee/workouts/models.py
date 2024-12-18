@@ -358,6 +358,7 @@ class Workout(BaseModel):
         for_report: bool = False,
         additional_data: bool = False,
         light: bool = True,
+        with_equipments: bool = False,  # for workouts list
     ) -> Dict:
         """
         Used by Workout serializer and data export
@@ -370,7 +371,10 @@ class Workout(BaseModel):
             or workout is displayed in report and current user has moderation
             rights
         - light: when true, only workouts data needed for workout lists
-          and timeline
+          and timeline.
+          If 'light' is False, 'with_equipments' is ignored.
+        - with_equipments: only used when 'light' is True. Needed for
+          3rd-party apps updating workouts equipments
         """
         for_report = (
             for_report and user is not None and user.has_moderator_rights
@@ -425,6 +429,13 @@ class Workout(BaseModel):
             ),
         }
 
+        if not light or with_equipments:
+            workout_data['equipments'] = (
+                [equipment.serialize() for equipment in self.equipments]
+                if user and user.id == self.user_id
+                else []
+            )
+
         if light:
             return workout_data
 
@@ -433,11 +444,6 @@ class Workout(BaseModel):
             'creation_date': self.creation_date,
             'modification_date': self.modification_date,
             'pauses': str(self.pauses) if self.pauses else None,
-            'equipments': [
-                equipment.serialize() for equipment in self.equipments
-            ]
-            if user and user.id == self.user_id
-            else [],
             'records': (
                 []
                 if for_report
@@ -465,7 +471,12 @@ class Workout(BaseModel):
         params: Optional[Dict] = None,
         for_report: bool = False,
         light: bool = True,  # for workouts list and timeline
+        with_equipments: bool = False,  # for workouts list
     ) -> Dict:
+        """
+        If 'light' is False, 'with_equipments' is ignored.
+        """
+
         for_report = (
             for_report and user is not None and user.has_moderator_rights
         )
@@ -486,6 +497,7 @@ class Workout(BaseModel):
             for_report=for_report,
             additional_data=additional_data,
             light=light,
+            with_equipments=with_equipments,
         )
 
         workout["map"] = (
