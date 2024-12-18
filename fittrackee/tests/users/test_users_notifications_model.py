@@ -72,8 +72,8 @@ class TestNotification:
     ) -> None:
         with pytest.raises(InvalidNotificationTypeException):
             Notification(
-                from_user_id=user_1,
-                to_user_id=user_2,
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
                 created_at=datetime.utcnow(),
                 event_type=random_string(),
                 event_object_id=random_int(),
@@ -212,7 +212,7 @@ class TestNotificationForFollowRequest:
             "follows": user_1.follows(user_2),
             "is_followed_by": user_1.is_followed_by(user_2),
         }
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow_request"
         assert "report_action" not in serialized_notification
@@ -238,7 +238,7 @@ class TestNotificationForFollowRequest:
             "follows": user_1.follows(user_2),
             "is_followed_by": user_1.is_followed_by(user_2),
         }
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "follow"
         assert "report_action" not in serialized_notification
@@ -341,7 +341,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "workout_like"
         assert serialized_notification[
@@ -484,7 +484,7 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "workout_comment"
         assert "report_action" not in serialized_notification
@@ -561,7 +561,7 @@ class TestNotificationForWorkoutReportAction(
         ] == report_action.serialize(user_2)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == input_report_action
         assert serialized_notification[
@@ -667,7 +667,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "comment_like"
         assert "report_action" not in serialized_notification
@@ -743,7 +743,7 @@ class TestNotificationForCommentReportAction(
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["comment"] == comment.serialize(user_3)
         assert serialized_notification["from"] is None
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == input_report_action
         assert "report" not in serialized_notification
@@ -906,7 +906,7 @@ class TestNotificationForMention(NotificationTestCase):
         assert serialized_notification["from"] == user_1.serialize(
             current_user=user_2
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == "mention"
         assert "report_action" not in serialized_notification
@@ -1091,7 +1091,7 @@ class TestNotificationForReport(NotificationTestCase):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1_moderator
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
             user_1_moderator
@@ -1219,7 +1219,7 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1_moderator
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
             user_1_moderator
@@ -1290,7 +1290,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         ] == report_action.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == input_action_type
         assert "comment" not in serialized_notification
@@ -1364,7 +1364,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         ] == report_action.serialize(user_2)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == input_action_type
         assert serialized_notification[
@@ -1439,7 +1439,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert serialized_notification["comment"] == comment.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["from"] is None
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["type"] == input_action_type
         assert "report" not in serialized_notification
@@ -1512,7 +1512,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         assert serialized_notification["from"] == user_2.serialize(
             current_user=user_1_moderator
         )
-        assert serialized_notification["id"] == notification.id
+        assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
         assert serialized_notification["report"] == report.serialize(
             user_1_moderator

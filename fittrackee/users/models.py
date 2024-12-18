@@ -1,11 +1,12 @@
 import os
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from uuid import uuid4
 
 import jwt
 from flask import current_app
 from sqlalchemy import and_, func
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.dialects.postgresql import UUID, insert
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -19,6 +20,7 @@ from sqlalchemy.types import Enum
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
+from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
@@ -973,6 +975,12 @@ class Notification(BaseModel):
         ),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     from_user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -1004,10 +1012,14 @@ class Notification(BaseModel):
         self.event_type = event_type
         self.event_object_id = event_object_id
 
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
     def serialize(self) -> Dict:
         serialized_notification = {
             "created_at": self.created_at,
-            "id": self.id,
+            "id": self.short_id,
             "marked_as_read": self.marked_as_read,
             "type": self.event_type,
         }

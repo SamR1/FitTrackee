@@ -1079,7 +1079,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.patch(
-            self.route.format(notification_id=self.random_int()),
+            self.route.format(notification_id=self.random_short_id()),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
         )
@@ -1089,13 +1089,12 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_suspended(
         self, app: Flask, suspended_user: User
     ) -> None:
-        notification_id = self.random_int()
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
 
         response = client.patch(
-            self.route.format(notification_id=notification_id),
+            self.route.format(notification_id=self.random_short_id()),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1106,7 +1105,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
     def test_it_returns_404_if_notification_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
-        notification_id = self.random_int()
+        notification_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1135,14 +1134,14 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            self.route.format(notification_id=notification.id),
+            self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
-            response, f"notification not found (id: {notification.id})"
+            response, f"notification not found (id: {notification.short_id})"
         )
 
     @pytest.mark.parametrize('input_read_status', [True, False])
@@ -1167,7 +1166,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            self.route.format(notification_id=notification.id),
+            self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=input_read_status)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1198,7 +1197,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            self.route.format(notification_id=notification.id),
+            self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=self.random_string())),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1227,7 +1226,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            self.route.format(notification_id=self.random_int()),
+            self.route.format(notification_id=self.random_short_id()),
             content_type='application/json',
             headers=dict(Authorization=f'Bearer {access_token}'),
         )
