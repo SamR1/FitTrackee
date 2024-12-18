@@ -1787,7 +1787,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["notification_types"] == []
 
     @pytest.mark.parametrize('input_params', ['', '?status=all'])
-    def test_it_returns_all_users_notifications_types(
+    def test_it_returns_all_user_notifications_types(
         self,
         app: Flask,
         user_1: User,
@@ -1810,6 +1810,10 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
         db.session.add(like)
+        another_like = WorkoutLike(
+            user_id=user_3.id, workout_id=workout_cycling_user_1.id
+        )
+        db.session.add(another_like)
         like_notification = Notification.query.filter_by(
             from_user_id=user_2.id,
             to_user_id=user_1.id,
@@ -1831,6 +1835,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
+        assert len(data["notification_types"]) == 2
         assert set(data["notification_types"]) == {
             "workout_comment",
             "workout_like",
