@@ -17,6 +17,7 @@
               displayOptions.dateFormat
             )
           "
+          @click="$emit('commentLinkClicked')"
         >
           {{
             formatDistance(new Date(comment.created_at), new Date(), {

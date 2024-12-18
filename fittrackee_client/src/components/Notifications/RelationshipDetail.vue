@@ -3,7 +3,10 @@
     <div class="follow-request-user">
       <UserPicture :user="notification.from" />
       <div class="user-name">
-        <router-link :to="`/users/${notification.from.username}`">
+        <router-link
+          :to="`/users/${notification.from.username}`"
+          @click="$emit('userLinkClicked')"
+        >
           {{ notification.from.username }}
         </router-link>
       </div>
@@ -54,7 +57,7 @@
   const props = defineProps<Props>()
   const { authUser, notification } = toRefs(props)
 
-  const emit = defineEmits(['updatedUserRelationship'])
+  const emit = defineEmits(['updatedUserRelationship', 'userLinkClicked'])
 
   const store = useStore()
 

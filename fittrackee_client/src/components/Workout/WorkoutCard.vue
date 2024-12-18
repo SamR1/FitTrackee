@@ -14,6 +14,7 @@
               name: 'Workout',
               params: { workoutId: workout.id },
             }"
+            @click="$emit('workoutLinkClicked')"
           >
             {{ workout.title }}
           </router-link>
@@ -39,13 +40,18 @@
         </div>
       </div>
       <div class="workout-map">
-        <StaticMap v-if="workout.with_gpx" :workout="workout" />
+        <StaticMap
+          v-if="workout.with_gpx"
+          :workout="workout"
+          @workoutLinkClicked="$emit('workoutLinkClicked')"
+        />
         <router-link
           v-else-if="workout.id"
           :to="{
             name: 'Workout',
             params: { workoutId: workout.id },
           }"
+          @click="$emit('workoutLinkClicked')"
         >
           <div class="no-map">
             {{ $t('workouts.NO_MAP') }}
@@ -55,14 +61,7 @@
       <div
         class="workout-data"
         :class="{ 'without-elevation': !hasElevation(workout) }"
-        @click="
-          workout.id
-            ? $router.push({
-                name: 'Workout',
-                params: { workoutId: workout.id },
-              })
-            : null
-        "
+        @click="navigateToWorkout(workout)"
       >
         <div class="img">
           <SportImage
@@ -138,6 +137,7 @@
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import useApp from '@/composables/useApp'
+  import router from '@/router'
   import type { ISport } from '@/types/sports'
   import type { IUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
@@ -160,6 +160,8 @@
 
   const { locale } = useApp()
 
+  const emit = defineEmits(['workoutLinkClicked'])
+
   const workoutDateWithTZ = computed(() =>
     formatDate(workout.value.workout_date, timezone.value, dateFormat.value)
   )
@@ -175,6 +177,15 @@
       workout.ascent !== null &&
       workout.descent !== null
     )
+  }
+  function navigateToWorkout(workout: IWorkout) {
+    if (workout.id) {
+      router.push({
+        name: 'Workout',
+        params: { workoutId: workout.id },
+      })
+      emit('workoutLinkClicked')
+    }
   }
 </script>
 
