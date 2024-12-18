@@ -521,7 +521,7 @@ def get_notification_types(auth_user: User) -> Dict:
             if marked_as_read is None
             else Notification.marked_as_read == marked_as_read,
         )
-        .all()
+        .distinct()
     )
     return {
         "notification_types": [

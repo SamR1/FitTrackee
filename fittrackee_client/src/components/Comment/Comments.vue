@@ -27,8 +27,7 @@
           :action="comment.suspension"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
-          <span v-else>{{ $t('workouts.COMMENTS.NO_COMMENTS') }}</span>
+          {{ $t('workouts.COMMENTS.NO_COMMENTS') }}
         </div>
         <div class="add-comment" v-if="displayAddComment">
           <CommentEdition
@@ -66,7 +65,6 @@
   import { useRoute } from 'vue-router'
 
   import CommentEdition from '@/components/Comment/CommentEdition.vue'
-  import useApp from '@/composables/useApp.ts'
   import { WORKOUTS_STORE } from '@/store/constants'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IComment, IWorkoutData } from '@/types/workouts'
@@ -81,8 +79,6 @@
 
   const route = useRoute()
   const store = useStore()
-
-  const { errorMessages } = useApp()
 
   const timer: Ref<number | undefined> = ref()
 
@@ -182,9 +178,6 @@
       div:not(:nth-last-child(-n + 2)) {
         border-bottom: 1px solid var(--comment-border-color);
       }
-    }
-    .error-message {
-      margin: 0 0 $default-margin;
     }
   }
 </style>
