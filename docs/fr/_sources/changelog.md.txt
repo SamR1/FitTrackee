@@ -1,5 +1,27 @@
 # Change log
 
+## Version 0.9.0b3 (2024/12/18)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#660](https://github.com/SamR1/FitTrackee/issues/660) - mark notification as read on click on workout/comment/...
+
+### Bugs Fixed
+
+* [PR#659](https://github.com/SamR1/FitTrackee/pull/659) - API - get workouts list with equipment
+* [PR#662](https://github.com/SamR1/FitTrackee/pull/662) - Minor fixes and improvements
+
+### Misc
+
+* [189071](https://github.com/SamR1/FitTrackee/commit/189071a949ef7cb0c01e8dedcb267af742daefa4) - use uuid instead of id for notifications
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.9.0b2 (2024/12/14)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  

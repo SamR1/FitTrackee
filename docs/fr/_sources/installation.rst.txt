@@ -143,7 +143,10 @@ deployment method.
 
 .. envvar:: UI_URL
 
-    **FitTrackee** URL, needed for links in emails.
+    **FitTrackee** URL, needed for links in emails and mentions.
+
+    .. warning::
+        UI_URL must contains url scheme (``https://``).
 
 
 .. envvar:: EMAIL_URL
