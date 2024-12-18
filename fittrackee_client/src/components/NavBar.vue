@@ -14,6 +14,19 @@
         <router-link class="nav-item app-name" to="/"> FitTrackee </router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
+        <router-link
+          v-if="!isAuthUserSuspended"
+          class="nav-item nav-profile-img notifications"
+          to="/notifications?status=unread"
+          :title="capitalize($t('notifications.NOTIFICATIONS', 0))"
+          @click="closeMenu"
+        >
+          <i
+            class="notifications-icons"
+            :class="`fa fa-bell${hasUnreadNotifications ? '-ringing' : ''}-o`"
+            aria-hidden="true"
+          />
+        </router-link>
         <button class="menu-button transparent" @click="openMenu()">
           <i class="fa fa-bars hamburger-icon"></i>
         </button>
@@ -394,8 +407,10 @@
         display: block;
       }
       .nav-icon-open {
-        display: block;
+        display: flex;
         text-align: right;
+        justify-content: flex-end;
+        gap: $default-padding;
         width: 100%;
       }
       .nav-icon-open.menu-open {
