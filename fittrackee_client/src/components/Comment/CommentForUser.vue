@@ -11,6 +11,7 @@
       comments-loading="null"
       :for-notification="true"
       :action="action"
+      @commentLinkClicked="$emit('commentLinkClicked')"
     />
   </div>
 </template>

@@ -9,6 +9,7 @@
     :useImperialUnits="imperialUnits"
     :dateFormat="dateFormat"
     :timezone="timezone"
+    @workoutLinkClicked="$emit('workoutLinkClicked')"
   />
   <WorkoutActionAppeal
     v-if="action && displayWorkoutAppeal"

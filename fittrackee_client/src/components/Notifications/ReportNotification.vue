@@ -28,7 +28,7 @@
       </span>
     </div>
     <div class="report-button">
-      <button @click="$router.push(`/admin/reports/${report.id}`)">
+      <button @click="displayReport(report.id)">
         {{ $t('admin.APP_MODERATION.VIEW_REPORT') }} #{{ report.id }}
       </button>
     </div>
@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
   import { toRefs } from 'vue'
+  import { useRouter } from 'vue-router'
 
   import CommentForUser from '@/components/Comment/CommentForUser.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
@@ -48,6 +49,15 @@
   }
   const props = defineProps<Props>()
   const { report } = toRefs(props)
+
+  const emit = defineEmits(['reportButtonClicked'])
+
+  const router = useRouter()
+
+  function displayReport(reportId: number) {
+    router.push(`/admin/reports/${reportId}`)
+    emit('reportButtonClicked')
+  }
 </script>
 
 <style scoped lang="scss">
