@@ -23,6 +23,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.utils import get_readable_duration
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
 from ..reports.models import ReportAction
@@ -55,6 +56,7 @@ EMPTY_USERS_RESPONSE = {
         'total': 0,
     },
 }
+WORKOUTS_PER_PAGE = 5
 
 
 def _get_value_depending_on_user_rights(
@@ -1592,5 +1594,182 @@ def get_user_sanctions(
             'page': paginated_sanctions.page,
             'pages': paginated_sanctions.pages,
             'total': paginated_sanctions.total,
+        },
+    }
+
+
+@users_blueprint.route('/users/<user_name>/workouts', methods=['GET'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+def get_user_latest_workouts(
+    auth_user: User, user_name: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get user last 5 visible workouts.
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+      GET /api/users/Sam/workouts HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": [
+              {
+                "ascent": null,
+                "ave_speed": 10.0,
+                "bounds": [],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": null,
+                "description": null,
+                "distance": 10.0,
+                "duration": "0:17:04",
+                "equipments": [],
+                "id": "kjxavSTUrJvoAh2wvCeGEF",
+                "liked": false,
+                "likes_count": 0,
+                "map": null,
+                "map_visibility": "private",
+                "max_alt": null,
+                "max_speed": 10.0,
+                "min_alt": null,
+                "modification_date": null,
+                "moving": "0:17:04",
+                "next_workout": 3,
+                "notes": null,
+                "pauses": null,
+                "previous_workout": null,
+                "records": [
+                  {
+                    "id": 4,
+                    "record_type": "MS",
+                    "sport_id": 1,
+                    "user": "admin",
+                    "value": 10.0,
+                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                  },
+                  {
+                    "id": 13,
+                    "record_type": "HA",
+                    "sport_id": 1,
+                    "user": "Sam",
+                    "value": 43.97,
+                    "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+                    "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+                  },
+                  {
+                    "id": 3,
+                    "record_type": "LD",
+                    "sport_id": 1,
+                    "user": "admin",
+                    "value": "0:17:04",
+                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                  },
+                  {
+                    "id": 2,
+                    "record_type": "FD",
+                    "sport_id": 1,
+                    "user": "admin",
+                    "value": 10.0,
+                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                  },
+                  {
+                    "id": 1,
+                    "record_type": "AS",
+                    "sport_id": 1,
+                    "user": "admin",
+                    "value": 10.0,
+                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                  }
+                ],
+                "segments": [],
+                "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
+                "title": null,
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_gpx": false,
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string user_name: user name
+
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token if user is authenticated
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403:
+        - you do not have permissions
+    :statuscode 404:
+        - user not found
+    """
+    user = User.query.filter(
+        func.lower(User.username) == func.lower(user_name),
+    ).first()
+    if not user:
+        appLog.error(f"Error: user {user_name} not found")
+        return UserNotFoundErrorResponse()
+    if user.suspended_at:
+        return {'status': 'success', 'data': {'workouts': []}}
+
+    workouts_query = Workout.query.filter(
+        Workout.suspended_at == None,  # noqa
+        Workout.user_id == user.id,
+    )
+    if not auth_user or (
+        auth_user.id != user.id
+        and auth_user.id not in user.get_followers_user_ids()
+    ):
+        workouts_query = workouts_query.filter(
+            Workout.workout_visibility == VisibilityLevel.PUBLIC
+        )
+    elif auth_user.id in user.get_followers_user_ids():
+        workouts_query = workouts_query.filter(
+            Workout.workout_visibility.in_(
+                [VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS]
+            )
+        )
+    workouts = (
+        workouts_query.order_by(Workout.workout_date.desc())
+        .limit(WORKOUTS_PER_PAGE)
+        .all()
+    )
+    return {
+        'status': 'success',
+        'data': {
+            'workouts': [
+                workout.serialize(user=auth_user) for workout in workouts
+            ]
         },
     }

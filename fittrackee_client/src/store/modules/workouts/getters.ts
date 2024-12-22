@@ -24,7 +24,7 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]: (state: IWorkoutsState) => {
     return state.timeline_workouts
   },
-  [WORKOUTS_STORE.GETTERS.USER_WORKOUTS]: (state: IWorkoutsState) => {
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]: (state: IWorkoutsState) => {
     return state.user_workouts
   },
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION]: (state: IWorkoutsState) => {

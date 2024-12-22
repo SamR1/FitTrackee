@@ -110,7 +110,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
     getWorkouts(context, payload, WorkoutsMutations['SET_CALENDAR_WORKOUTS'])
   },
-  [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void {

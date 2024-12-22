@@ -15,6 +15,7 @@
           :from-admin="fromAdmin"
         />
       </div>
+      <UserWorkoutsList :user="user" v-if="user.nb_workouts > 0" />
     </template>
     <div v-else>
       <NotFound target="USER" />
@@ -31,6 +32,7 @@
   import NotFound from '@/components/Common/NotFound.vue'
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+  import UserWorkoutsList from '@/components/User/ProfileDisplay/UserWorkoutsList.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { USERS_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'
