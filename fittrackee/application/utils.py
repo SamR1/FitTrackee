@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, List
 
 from flask import Flask
@@ -35,7 +36,14 @@ def update_app_config_from_database(
     current_app.config['is_registration_enabled'] = (
         db_config.is_registration_enabled
     )
-    current_app.config['privacy_policy_date'] = db_config.privacy_policy_date
+    current_app.config['privacy_policy_date'] = (
+        db_config.privacy_policy_date
+        if db_config.privacy_policy_date
+        else datetime.strptime(
+            current_app.config['DEFAULT_PRIVACY_POLICY_DATA'],
+            '%a, %d %b %Y %H:%M:%S GMT',
+        )
+    )
     current_app.config['stats_workouts_limit'] = db_config.stats_workouts_limit
 
 

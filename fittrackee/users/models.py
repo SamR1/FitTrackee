@@ -764,12 +764,10 @@ class User(BaseModel):
             ]
 
         if is_auth_user(role):
-            accepted_privacy_policy = False
+            accepted_privacy_policy = None
             if self.accepted_policy_date:
                 accepted_privacy_policy = (
-                    True
-                    if current_app.config['privacy_policy_date'] is None
-                    else current_app.config['privacy_policy_date']
+                    current_app.config['privacy_policy_date']
                     < self.accepted_policy_date
                 )
             serialized_user = {

@@ -187,27 +187,34 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         self.assert_workouts_keys_are_present(serialized_user)
 
-    def test_it_returns_user_did_not_accept_default_privacy_policy(
+    def test_it_returns_none_when_user_did_not_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        # default privacy policy
-        app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = None
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert serialized_user['accepted_privacy_policy'] is False
+        assert serialized_user['accepted_privacy_policy'] is None
 
-    def test_it_returns_user_did_accept_default_privacy_policy(
+    def test_it_returns_true_user_did_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        # default privacy policy
-        app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = datetime.utcnow()
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
 
-    def test_it_returns_user_did_not_accept_last_policy(
+    def test_it_returns_false_when_user_did_not_accept_last_default_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.accepted_policy_date = datetime.strptime(
+            app.config['DEFAULT_PRIVACY_POLICY_DATA'],
+            '%a, %d %b %Y %H:%M:%S GMT',
+        ) - timedelta(days=1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_false_when_user_did_not_accept_last_custom_policy(
         self, app: Flask, user_1: User
     ) -> None:
         user_1.accepted_policy_date = datetime.utcnow()

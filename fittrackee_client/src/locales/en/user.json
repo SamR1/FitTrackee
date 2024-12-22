@@ -71,6 +71,7 @@
     "WEAK": "weak"
   },
   "PASSWORD_UPDATED": "Your password have been updated. Click {0} to log in.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Please {0} the privacy policy before proceeding.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account edition",
     "ASCENT_DATA": "Ascent-related data (records, total)",

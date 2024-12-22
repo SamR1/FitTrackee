@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from flask import Flask
 
-from fittrackee import VERSION
+from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
@@ -93,7 +93,20 @@ class TestConfigModel:
             == expected_weather_provider
         )
 
-    def test_it_returns_privacy_policy(self, app: Flask) -> None:
+    def test_it_returns_only_privacy_policy_date_when_no_custom_privacy(
+        self, app: Flask
+    ) -> None:
+        app_config = AppConfig.query.first()
+
+        serialized_app_config = app_config.serialize()
+
+        assert serialized_app_config["privacy_policy"] is None
+        assert (
+            serialized_app_config["privacy_policy_date"]
+            == DEFAULT_PRIVACY_POLICY_DATA
+        )
+
+    def test_it_returns_custom_privacy_policy(self, app: Flask) -> None:
         app_config = AppConfig.query.first()
         privacy_policy = random_string()
         privacy_policy_date = datetime.utcnow()
