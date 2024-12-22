@@ -462,7 +462,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         ] == privacy_policy_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
     @pytest.mark.parametrize('input_privacy_policy', ['', None])
-    def test_it_empties_privacy_policy_date_when_no_privacy_policy(
+    def test_it_return_default_privacy_policy_date_when_no_privacy_policy(
         self,
         app: Flask,
         user_1_admin: User,
@@ -487,7 +487,10 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['privacy_policy'] is None
-        assert data['data']['privacy_policy_date'] is None
+        assert (
+            data['data']['privacy_policy_date']
+            == app.config['DEFAULT_PRIVACY_POLICY_DATA']
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

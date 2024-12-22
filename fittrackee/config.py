@@ -6,7 +6,7 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 from sqlalchemy.pool import NullPool
 
-from fittrackee import VERSION
+from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.languages import SUPPORTED_LANGUAGES
 
 broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
@@ -68,6 +68,7 @@ class BaseConfig:
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
     VERSION = VERSION
+    DEFAULT_PRIVACY_POLICY_DATA = DEFAULT_PRIVACY_POLICY_DATA
 
 
 class DevelopmentConfig(BaseConfig):

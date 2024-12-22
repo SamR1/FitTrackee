@@ -115,7 +115,9 @@ export const getDateFormat = (
   dateFormat: string,
   language: TLanguage
 ): string => {
-  return dateFormat === 'date_string' ? dateStringFormats[language] : dateFormat
+  return dateFormat === 'date_string'
+    ? dateStringFormats[language]
+    : dateFormat || 'MM/dd/yyyy'
 }
 
 export const formatDate = (

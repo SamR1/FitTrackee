@@ -50,7 +50,11 @@ class AppConfig(BaseModel):
             'max_users': self.max_users,
             'map_attribution': self.map_attribution,
             'privacy_policy': self.privacy_policy,
-            'privacy_policy_date': self.privacy_policy_date,
+            'privacy_policy_date': (
+                self.privacy_policy_date
+                if self.privacy_policy
+                else current_app.config['DEFAULT_PRIVACY_POLICY_DATA']
+            ),
             'stats_workouts_limit': self.stats_workouts_limit,
             'version': current_app.config['VERSION'],
             'weather_provider': (

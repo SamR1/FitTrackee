@@ -47,7 +47,7 @@ export interface IUserProfile extends IUserLightProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
-  accepted_privacy_policy: boolean
+  accepted_privacy_policy: boolean | null
   display_ascent: boolean
   email: string
   hide_profile_in_users_directory: boolean
