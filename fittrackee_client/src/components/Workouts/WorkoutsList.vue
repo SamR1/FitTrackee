@@ -218,7 +218,7 @@
   const hoverWorkoutId: Ref<string | null> = ref(null)
 
   const workouts: ComputedRef<IWorkout[]> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.USER_WORKOUTS]
+    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
@@ -227,7 +227,7 @@
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
       store.dispatch(
-        WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS,
+        WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
         user.value.imperial_units ? getConvertedPayload(payload) : payload
       )
     }

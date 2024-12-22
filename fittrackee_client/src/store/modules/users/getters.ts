@@ -23,6 +23,12 @@ export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USER_SANCTIONS_PAGINATION]: (state: IUsersState) => {
     return state.userSanctions.pagination
   },
+  [USERS_STORE.GETTERS.USER_WORKOUTS]: (state: IUsersState) => {
+    return state.userWorkouts.workouts
+  },
+  [USERS_STORE.GETTERS.USER_WORKOUTS_LOADING]: (state: IUsersState) => {
+    return state.userWorkouts.loading
+  },
   [USERS_STORE.GETTERS.USERS]: (state: IUsersState) => {
     return state.users
   },

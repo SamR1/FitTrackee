@@ -148,6 +148,32 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
         )
       )
   },
+  [USERS_STORE.ACTIONS.GET_USER_WORKOUTS](
+    context: ActionContext<IUsersState, IRootState>,
+    username: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS_LOADING, true)
+    authApi
+      .get(`users/${username}/workouts`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS,
+            res.data.data.workouts
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(
+          USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS_LOADING,
+          false
+        )
+      )
+  },
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
     payload: TUsersPayload

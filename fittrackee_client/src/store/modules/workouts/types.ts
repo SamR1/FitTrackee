@@ -41,7 +41,7 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void
-  [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void
@@ -125,7 +125,7 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.CURRENT_REPORTING](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
-  [WORKOUTS_STORE.GETTERS.USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
     state: IWorkoutsState
   ): IWorkoutContentEdition

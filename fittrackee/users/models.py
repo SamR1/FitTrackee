@@ -536,6 +536,9 @@ class User(BaseModel):
     def get_following_user_ids(self) -> List:
         return [following.id for following in self.following]
 
+    def get_followers_user_ids(self) -> List:
+        return [followers.id for followers in self.followers]
+
     def get_user_url(self) -> str:
         """Return user url on user interface"""
         return f"{current_app.config['UI_URL']}/users/{self.username}"
