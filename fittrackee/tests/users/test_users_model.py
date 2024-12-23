@@ -212,7 +212,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     ) -> None:
         user_1.accepted_policy_date = datetime.strptime(
             app.config['DEFAULT_PRIVACY_POLICY_DATA'],
-            '%a, %d %b %Y %H:%M:%S GMT',
+            '%Y-%m-%d %H:%M:%S',
         ) - timedelta(days=1)
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 

@@ -1726,13 +1726,13 @@ def get_user_latest_workouts(
 
     :statuscode 200: success
     :statuscode 401:
-        - provide a valid auth token
-        - signature expired, please log in again
-        - invalid token, please log in again
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
     :statuscode 403:
-        - you do not have permissions
+        - ``you do not have permissions``
     :statuscode 404:
-        - user not found
+        - ``user not found``
     """
     user = User.query.filter(
         func.lower(User.username) == func.lower(user_name),

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.9.0b3 documentation</title>
+        <title>Features - FitTrackee 0.9.0b4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.9.0b3
+      <a href="index.html"><div class="brand">FitTrackee 0.9.0b4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.0b3
+  <span class="sidebar-brand-text">FitTrackee 0.9.0b4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -420,19 +420,28 @@
 <p class="admonition-title">Note</p>
 <p>Records may differ from records displayed by the application that originally generated the gpx files.</p>
 </div>
-<ul class="simple">
-<li><p>Visibility level can be set separately for workout data and map and analysis data (<em>new in 0.9.0</em>):</p>
 <ul>
-<li><p>private: only owner can see the workout,</p></li>
-<li><p>followers only: only owner and followers can see the workout,</p></li>
-<li><p>public: anyone can see the workout even unauthenticated users.</p></li>
+<li><p>Visibility level can be set separately for workout data, analysis and map (<em>new in 0.9.0</em>):</p>
+<ul class="simple">
+<li><p>private: only owner can see data,</p></li>
+<li><p>followers only: only owner and followers can see data,</p></li>
+<li><p>public: anyone can see data even unauthenticated users.</p></li>
 </ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Workout visibility applies to title, description, records and workout data except elevation.</div>
+<div class="line">Analysis visibility applies to chart data, elevation and segments, if workout is associated with a gpx file.</div>
+<div class="line">Map visibility applies to the map, if workout is associated with a gpx file.</div>
+<div class="line"><br /></div>
+<div class="line">Default visibility can be set in user preferences.</div>
+</div>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">A workout with a gpx file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a gpx file.</div>
+<div class="line">Max speed is returned regardless analysis visibility.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -456,7 +465,8 @@
 <li><p>description (<em>new in 0.8.9</em>)</p></li>
 <li><p>private notes</p></li>
 <li><p>workout visibility (<em>new in 0.9.0</em>)</p></li>
-<li><p>map and analysis visibility (<em>new in 0.9.0</em>)</p></li>
+<li><p>analysis visibility (<em>new in 0.9.0</em>)</p></li>
+<li><p>map visibility (<em>new in 0.9.0</em>)</p></li>
 <li><p>date (only workouts without gpx)</p></li>
 <li><p>duration (only workouts without gpx)</p></li>
 <li><p>distance (only workouts without gpx)</p></li>
@@ -505,8 +515,8 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Users directory.</div>
-<div class="line">A user can configure visibility in directory in the user preferences.</div>
-<div class="line">This has an impact on username completion when writing comments (only profiles visible in users directory or followed users are suggested).</div>
+<div class="line">A user can configure visibility in directory in the user preferences (hidden by default).</div>
+<div class="line">This affects username completion when writing comments (only profiles visible in users directory or followed users are suggested).</div>
 </div>
 </li>
 </ul>
@@ -515,6 +525,10 @@
 <p>A user profile remains accessible via its URL.</p>
 </div>
 <ul>
+<li><div class="line-block">
+<div class="line">User profile displays the last 5 visible workouts.</div>
+</div>
+</li>
 <li><div class="line-block">
 <div class="line">User can send follow request to others users.</div>
 <div class="line">Follow request can be approved or rejected.</div>
@@ -551,6 +565,12 @@
 <div class="line">Please keep in mind that the server operating team or the moderation team may view content with restricted visibility.</div>
 </div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Changing workout visibility will not affect visibility of existing comments.</div>
+</div>
+</div>
 <ul class="simple">
 <li><p>Comment text can be modified (visibility level cannot be changed).</p></li>
 <li><p>A user can report a comment that violates instance rules. This will send a notification to moderators and administrators.</p></li>
@@ -565,9 +585,10 @@
 <section id="notifications">
 <h3>Notifications<a class="headerlink" href="#notifications" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Notifications are sent for the following event:</p>
+<li><p>Notifications are created for the following event:</p>
 <ul>
 <li><p>follow request and follow</p></li>
+<li><p>follow request approval when follow request approval is manual</p></li>
 <li><p>like on comment or workout</p></li>
 <li><p>comment on workout</p></li>
 <li><p>mention on comment</p></li>
@@ -1142,7 +1163,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f1207a33"></script>
+</div><script src="_static/documentation_options.js?v=3aa9eafe"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

@@ -1,5 +1,31 @@
 # Change log
 
+## Version 0.9.0b4 (2024/12/23)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user detail
+* [#668](https://github.com/SamR1/FitTrackee/issues/668) - add analysis visibility
+* [PR#67](https://github.com/SamR1/FitTrackee/pull/670) - create notification when follow request is approved
+
+### Bugs Fixed
+
+* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
+
+### Translations
+
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
+
+Thanks to the contributors:
+- @xmgz
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.9.0b3 (2024/12/18)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  

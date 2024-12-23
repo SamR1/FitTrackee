@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.0b3</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.9.0b4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b3
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b4
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b3
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b4
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -420,19 +420,28 @@
 <p class="admonition-title">Note</p>
 <p>Les records peuvent différer des records affichés par l’application qui a généré les fichiers gpx à l’origine.</p>
 </div>
-<ul class="simple">
-<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance d’une part et la carte et l’analyse d’autre part (<em>nouveau dans la version 0.9.0</em>)</p>
 <ul>
-<li><p>privé: seul le propriétaire de la séance peut afficher la séance,</p></li>
-<li><p>abonnés seulement: seul le propriétaire de la séance et les abonnés peuvent afficher la séance,</p></li>
-<li><p>public: tout le monde peut voir la séance, même les utilisateurs non authentifiés.</p></li>
+<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance, l’analyse et la carte (<em>nouveau dans la version 0.9.0</em>)</p>
+<ul class="simple">
+<li><p>privé: seul le propriétaire de la séance peut voir les données,</p></li>
+<li><p>abonnés seulement: seul le propriétaire de la séance et les abonnés peuvent voir les données,</p></li>
+<li><p>public: tout le monde peut voir les données, même les utilisateurs non authentifiés.</p></li>
 </ul>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">La visibilité de la séance s’applique sur le titre, la description, les records et données de la séances à l’exception de l’altitude.</div>
+<div class="line">La visibilité de l’analyse s’applique sur les données du graphique, l’altitude et les segments, si la séance est associée à un fichier gpx.</div>
+<div class="line">La visibilité de la carte s’applique sur la carte, si la séance est associée à un fichier gpx.</div>
+<div class="line"><br /></div>
+<div class="line">La visibilité peut être configurée dans les préférences de l’utilisateur.</div>
+</div>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">Une séance avec un fichier gpx dont la visibilité pour la carte et l’analyse est privée apparait comme une séance sans fichier gpx.</div>
+<div class="line">La vitesse maximale est renvoyée quelque soit la visibilité de l’analyse.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -456,7 +465,8 @@
 <li><p>description (<em>nouveau dans la version 0.8.9</em>)</p></li>
 <li><p>notes personnelles</p></li>
 <li><p>visibilité de la séance (<em>nouveau dans la version 0.9.0</em>)</p></li>
-<li><p>visibilité de la carte et de l’analyse (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>visibilité de l’analyse (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>visibilité de la carte (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>date (seulement pour les séances sans gpx)</p></li>
 <li><p>durée (seulement pour les séances sans gpx)</p></li>
 <li><p>distance (seulement pour les séances sans gpx)</p></li>
@@ -505,7 +515,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Répertoire des utilisateurs.</div>
-<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire dans les préférences utilisateur.</div>
+<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire dans les préférences utilisateur (masquée par défaut).</div>
 <div class="line">Cela impacte également la complétion des noms d’utilisateurs lors de la rédaction d’un commentaire (seuls les utilisateurs visibles dans le répertoire et les utilisateurs suivis sont proposés).</div>
 </div>
 </li>
@@ -515,6 +525,10 @@
 <p>Le profil d’un utilisateur reste accessible via son URL.</p>
 </div>
 <ul>
+<li><div class="line-block">
+<div class="line">Le profil de l’utilisateur affiche les 5 dernières séances visibles.</div>
+</div>
+</li>
 <li><div class="line-block">
 <div class="line">Un utilisateur peut envoyer des demandes de suivi à d’autres utilisateurs</div>
 <div class="line">Une demande de suivi peut être acceptée ou rejetée.</div>
@@ -551,6 +565,12 @@
 <div class="line">Veuillez garder à l’esprit que l’équipe d’exploitation du serveur ou l’équipe de modération peuvent visualiser les contenus à visibilité restreinte.</div>
 </div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Changer la visibilité de la séance n’affectera pas celle des commentaires existants.</div>
+</div>
+</div>
 <ul class="simple">
 <li><p>Le texte du commentaire peut être modifié (le niveau de visibilité ne peut pas être modifié).</p></li>
 <li><p>Un utilisateur peut signaler un commentaire qui enfreint les règles de l’instance. Une notification sera envoyée aux modérateurs et administrateurs.</p></li>
@@ -565,9 +585,10 @@
 <section id="notifications">
 <h3>Notifications<a class="headerlink" href="#notifications" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
-<li><p>Des notifications peuvent être envoyées pour les évènements suivants :</p>
+<li><p>Des notifications sont créées pour les évènements suivants :</p>
 <ul>
 <li><p>demande de suivi et suivi</p></li>
+<li><p>demande d’abonnement acceptée si l’approbation des demandes est manuelle</p></li>
 <li><p>« like » sur un commentaire ou une séance</p></li>
 <li><p>commentaire sur une séance</p></li>
 <li><p>mention dans un commentaire</p></li>
@@ -839,7 +860,7 @@
 <section id="id2">
 <h3>Utilisateurs<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Ajouter des rôles de modérateur et propriétaire</p>
+<p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Ajout des rôles de modérateur et propriétaire</p>
 </div>
 <ul class="simple">
 <li><p>Seuls les utilisateurs ayant des droits d’administration peuvent accéder à l’administration des utilisateurs.</p></li>
@@ -1141,7 +1162,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=79ac9631"></script>
+</div><script src="_static/documentation_options.js?v=b22506fc"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
