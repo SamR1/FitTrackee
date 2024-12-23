@@ -192,9 +192,12 @@
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
-    return ['follow', 'follow_request', 'account_creation'].includes(
-      notificationType
-    )
+    return [
+      'account_creation',
+      'follow',
+      'follow_request',
+      'follow_request_approved',
+    ].includes(notificationType)
   }
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {
@@ -210,6 +213,8 @@
         return 'user.RELATIONSHIPS.FOLLOWS_YOU'
       case 'follow_request':
         return 'notifications.SEND_FOLLOW_REQUEST_TO_YOU'
+      case 'follow_request_approved':
+        return 'notifications.ACCEPTED_FOLLOW_REQUEST'
       case 'mention':
         return 'notifications.MENTIONED_YOU'
       case 'suspension_appeal':
@@ -242,6 +247,7 @@
     switch (notificationType) {
       case 'follow':
       case 'follow_request':
+      case 'follow_request_approved':
         return 'user-plus'
       case 'mention':
         return 'at'

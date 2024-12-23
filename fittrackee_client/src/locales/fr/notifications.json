@@ -1,4 +1,5 @@
 {
+  "ACCEPTED_FOLLOW_REQUEST": "a accepté votre demande d'abonnement",
   "ALL": "Toutes",
   "APPEALED_SUSPENSION": "a fait appel de la suspension",
   "APPEALED_USER_WARNING": "a fait appel de l'avertissement",
@@ -26,6 +27,7 @@
     "comment_unsuspension": "commentaires ré-activés",
     "follow": "abonnements",
     "follow_request": "demandes d'abonnement",
+    "follow_request_approved": "abonnements acceptés",
     "mention": "mentions",
     "report": "signalements",
     "suspension_appeal": "appels des suspensions",
