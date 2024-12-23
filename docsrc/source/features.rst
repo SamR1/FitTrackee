@@ -207,9 +207,10 @@ Likes
 Notifications
 -------------
 
-- Notifications are sent for the following event:
+- Notifications are created for the following event:
 
   - follow request and follow
+  - follow request approval when follow request approval is manual
   - like on comment or workout
   - comment on workout
   - mention on comment

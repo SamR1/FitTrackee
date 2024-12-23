@@ -66,6 +66,7 @@ NOTIFICATION_TYPES = (
         'comment_unsuspension',
         'follow',
         'follow_request',
+        'follow_request_approved',
         'mention',
         'user_warning',
         'user_warning_lifting',
@@ -160,6 +161,13 @@ def on_follow_request_update(
                         marked_as_read=False,
                     )
                 )
+                notification = Notification(
+                    from_user_id=follow_request.followed_user_id,
+                    to_user_id=follow_request.follower_user_id,
+                    created_at=datetime.utcnow(),
+                    event_type='follow_request_approved',
+                )
+                session.add(notification)
             if (
                 not follow_request.is_approved
                 and follow_request.updated_at is not None
@@ -181,6 +189,11 @@ def on_follow_request_delete(
             Notification.from_user_id == old_follow_request.follower_user_id,
             Notification.to_user_id == old_follow_request.followed_user_id,
             Notification.event_type.in_(['follow', 'follow_request']),
+        ).delete()
+        Notification.query.filter(
+            Notification.from_user_id == old_follow_request.followed_user_id,
+            Notification.to_user_id == old_follow_request.follower_user_id,
+            Notification.event_type == 'follow_request_approved',
         ).delete()
 
 

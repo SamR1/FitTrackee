@@ -1,4 +1,5 @@
 {
+  "ACCEPTED_FOLLOW_REQUEST": "accepted your follow request",
   "ALL": "All",
   "APPEALED_SUSPENSION": "appealed the suspension",
   "APPEALED_USER_WARNING": "appealed the warning",
@@ -26,6 +27,7 @@
     "comment_unsuspension": "comment re-activations",
     "follow": "follow",
     "follow_request": "follow requests",
+    "follow_request_approved": "follow requests accepted",
     "mention": "mentions",
     "report": "reports",
     "suspension_appeal": "suspension appeals",
