@@ -172,6 +172,7 @@ Users
 .. note::
     A user profile remains accessible via its URL.
 
+- | User profile displays the last 5 visible workouts.
 - | User can send follow request to others users.
   | Follow request can be approved or rejected.
 - | In order to hide unwanted content, a user can block another user.

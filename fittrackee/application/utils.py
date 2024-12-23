@@ -38,10 +38,10 @@ def update_app_config_from_database(
     )
     current_app.config['privacy_policy_date'] = (
         db_config.privacy_policy_date
-        if db_config.privacy_policy_date
+        if db_config.privacy_policy
         else datetime.strptime(
             current_app.config['DEFAULT_PRIVACY_POLICY_DATA'],
-            '%a, %d %b %Y %H:%M:%S GMT',
+            '%Y-%m-%d %H:%M:%S',
         )
     )
     current_app.config['stats_workouts_limit'] = db_config.stats_workouts_limit
