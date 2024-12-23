@@ -172,11 +172,7 @@
     )
   }
   function hasUphillValue(workout: IWorkout): boolean {
-    return (
-      hasElevation(workout) &&
-      workout.ascent !== null &&
-      workout.descent !== null
-    )
+    return workout.ascent !== null && workout.descent !== null
   }
   function navigateToWorkout(workout: IWorkout) {
     if (workout.id) {

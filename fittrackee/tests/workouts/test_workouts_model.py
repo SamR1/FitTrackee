@@ -11,7 +11,12 @@ from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
-from fittrackee.workouts.models import Sport, Workout, WorkoutLike
+from fittrackee.workouts.models import (
+    Sport,
+    Workout,
+    WorkoutLike,
+    WorkoutSegment,
+)
 
 from ..mixins import ReportMixin
 from ..utils import random_string
@@ -21,17 +26,25 @@ from .utils import add_follower
 @pytest.mark.disable_autouse_update_records_patch
 class WorkoutModelTestCase(ReportMixin):
     @staticmethod
-    def update_workout(
+    def update_workout_with_gpx_data(
         workout: Workout,
         map_id: Optional[str] = None,
         gpx_path: Optional[str] = None,
         bounds: Optional[List[float]] = None,
+        ascent: Optional[int] = 26,
+        descent: Optional[int] = 12,
+        max_alt: Optional[int] = 260,
+        min_alt: Optional[int] = 236,
     ) -> Workout:
         workout.map_id = map_id
         workout.map = random_string() if map_id is None else map_id
         workout.gpx = random_string() if gpx_path is None else gpx_path
         workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
         workout.pauses = timedelta(minutes=15)
+        workout.ascent = ascent
+        workout.descent = descent
+        workout.max_alt = max_alt
+        workout.min_alt = min_alt
         return workout
 
 
@@ -115,6 +128,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         serialized_workout = workout.serialize(user=user_1, light=False)
 
         assert serialized_workout == {
+            'analysis_visibility': workout.analysis_visibility.value,
             'ascent': None,
             'ave_speed': float(workout.ave_speed),
             'bounds': [],
@@ -149,6 +163,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'weather_start': None,
             'workout_date': workout.workout_date,
             'workout_visibility': workout.workout_visibility.value,
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -166,6 +181,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         serialized_workout = workout.serialize(user=user_1, light=False)
 
         assert serialized_workout == {
+            'analysis_visibility': workout.analysis_visibility.value,
             'ascent': float(workout.ascent),
             'ave_speed': float(workout.ave_speed),
             'bounds': [],
@@ -200,6 +216,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'weather_start': None,
             'workout_date': workout.workout_date,
             'workout_visibility': workout.workout_visibility.value,
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -211,13 +228,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: Workout,
     ) -> None:
-        workout = self.update_workout(workout_cycling_user_1)
-        workout.ascent = 0
-        workout.descent = 10
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
         assert serialized_workout == {
+            'analysis_visibility': workout.analysis_visibility.value,
             'ascent': float(workout.ascent),
             'ave_speed': float(workout.ave_speed),
             'bounds': workout.bounds,
@@ -232,9 +248,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'likes_count': 0,
             'map': None,
             'map_visibility': workout.map_visibility.value,
-            'max_alt': None,
+            'max_alt': float(workout.max_alt),
             'max_speed': float(workout.max_speed),
-            'min_alt': None,
+            'min_alt': float(workout.min_alt),
             'modification_date': workout.modification_date,
             'moving': str(workout.moving),
             'next_workout': None,
@@ -252,11 +268,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'weather_start': None,
             'workout_date': workout.workout_date,
             'workout_visibility': workout.workout_visibility.value,
+            'with_analysis': True,
             'with_gpx': True,
         }
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility,'
+        'input_map_visibility,input_analysis_visibility,'
         'expected_map_visibility',
         [
             (
@@ -309,15 +326,16 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     def test_workout_visibility_overrides_map_visibility_when_stricter(
         self,
         input_map_visibility: VisibilityLevel,
-        input_workout_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         expected_map_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
 
         assert (
             workout_cycling_user_1.calculated_map_visibility
@@ -360,6 +378,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -399,6 +420,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -414,6 +436,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -449,6 +474,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -459,15 +485,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout = self.update_workout(workout_cycling_user_1)
-        workout.ascent = 0
-        workout.descent = 10
+        workout_cycling_user_1 = self.update_workout_with_gpx_data(
+            workout_cycling_user_1
+        )
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_1, light=True
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': float(workout_cycling_user_1.ascent),
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -481,9 +510,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'likes_count': 0,
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
-            'max_alt': None,
+            'max_alt': float(workout_cycling_user_1.max_alt),
             'max_speed': float(workout_cycling_user_1.max_speed),
-            'min_alt': None,
+            'min_alt': float(workout_cycling_user_1.min_alt),
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
             'next_workout': None,
@@ -503,6 +532,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': True,
             'with_gpx': True,
         }
 
@@ -524,6 +554,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -562,6 +595,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -571,7 +605,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         assert (
             f'<Segment \'{workout_cycling_user_1_segment.segment_id}\' '
@@ -854,7 +888,115 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout['notes'] is None
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_analysis_visibility,input_workout_visibility',
+        [
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+            ),
+        ],
+    )
+    def test_serializer_returns_analysis_related_data(
+        self,
+        input_analysis_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
+        )
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility']
+            == input_workout_visibility
+        )
+
+    @pytest.mark.parametrize(
+        'input_analysis_visibility,input_workout_visibility',
+        [
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+            ),
+        ],
+    )
+    def test_serializer_does_not_return_analysis_related_data(
+        self,
+        input_analysis_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
+        )
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] is None
+        assert serialized_workout['min_alt'] is None
+        assert serialized_workout['segments'] == []
+        assert serialized_workout['with_analysis'] is False
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility']
+            == input_workout_visibility
+        )
+
+    @pytest.mark.parametrize(
+        'input_map_visibility,input_analysis_visibility',
         [
             (
                 VisibilityLevel.FOLLOWERS,
@@ -873,34 +1015,46 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     def test_serializer_returns_map_related_data(
         self,
         input_map_visibility: VisibilityLevel,
-        input_workout_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         user_2: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout(
+        workout = self.update_workout_with_gpx_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
-        assert serialized_workout['map'] == workout.map
-        assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['with_gpx'] is True
-        assert serialized_workout['map_visibility'] == input_map_visibility
         assert (
-            serialized_workout['workout_visibility']
-            == input_workout_visibility
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
         )
-        assert serialized_workout['segments'] == []
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == workout.bounds
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] == workout.map
+        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is True
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility',
         [
             (
                 VisibilityLevel.PRIVATE,
@@ -915,29 +1069,41 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     def test_serializer_does_not_return_map_related_data(
         self,
         input_map_visibility: VisibilityLevel,
-        input_workout_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         user_2: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
-        assert serialized_workout['map'] is None
-        assert serialized_workout['bounds'] == []
-        assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == input_map_visibility
         assert (
-            serialized_workout['workout_visibility']
-            == input_workout_visibility
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
         )
-        assert serialized_workout['segments'] == []
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -1078,6 +1244,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             'user': user_1.serialize(),
             'weather_end': None,
             'weather_start': None,
+            'with_analysis': False,
             'with_gpx': False,
             'workout_date': workout_cycling_user_1.workout_date,
             'workout_visibility': (
@@ -1126,6 +1293,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -1160,6 +1330,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -1204,6 +1375,95 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
 
         assert serialized_workout['notes'] is None
 
+    def test_serializer_returns_analysis_related_data_when_visibility_is_public(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PRIVATE
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout['analysis_visibility'] == VisibilityLevel.PUBLIC
+        )
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+
+    @pytest.mark.parametrize(
+        'input_analysis_visibility,input_workout_visibility',
+        [
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+            ),
+        ],
+    )
+    def test_serializer_does_not_return_analysis_related_data(
+        self,
+        input_analysis_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout['analysis_visibility']
+            == VisibilityLevel.PRIVATE
+        )
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] is None
+        assert serialized_workout['min_alt'] is None
+        assert serialized_workout['segments'] == []
+        assert serialized_workout['with_analysis'] is False
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility']
+            == input_workout_visibility
+        )
+
     def test_serializer_returns_map_related_data_when_visibility_is_public(
         self,
         app: Flask,
@@ -1213,24 +1473,30 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
-        workout = self.update_workout(
+        workout = self.update_workout_with_gpx_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
-        assert serialized_workout['map'] == workout.map
+        assert serialized_workout['ascent'] == float(workout.ascent)
         assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['with_gpx'] is True
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] == workout.map
         assert serialized_workout['map_visibility'] == VisibilityLevel.PUBLIC
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == []
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is True
         assert (
             serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
         )
-        assert serialized_workout['segments'] == []
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility',
         [
             (
                 VisibilityLevel.PRIVATE,
@@ -1245,28 +1511,37 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     def test_serializer_does_not_return_map_related_data(
         self,
         input_map_visibility: VisibilityLevel,
-        input_workout_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
-        assert serialized_workout['map'] is None
-        assert serialized_workout['bounds'] == []
-        assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert (
-            serialized_workout['workout_visibility']
-            == input_workout_visibility
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
         )
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
         assert serialized_workout['segments'] == []
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -1397,6 +1672,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'user': user_1.serialize(),
             'weather_end': None,
             'weather_start': None,
+            'with_analysis': False,
             'with_gpx': False,
             'workout_date': workout_cycling_user_1.workout_date,
             'workout_visibility': workout_cycling_user_1.workout_visibility,
@@ -1441,6 +1717,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -1475,6 +1754,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -1517,32 +1797,127 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         assert serialized_workout['notes'] is None
 
+    def test_serializer_returns_analysis_related_data_when_visibility_is_public(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['analysis_visibility'] == VisibilityLevel.PUBLIC
+        )
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
+
+    @pytest.mark.parametrize(
+        'input_analysis_visibility,input_workout_visibility',
+        [
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+            ),
+        ],
+    )
+    def test_serializer_does_not_return_analysis_related_data(
+        self,
+        input_analysis_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] is None
+        assert serialized_workout['min_alt'] is None
+        assert serialized_workout['segments'] == []
+        assert serialized_workout['with_analysis'] is False
+        assert serialized_workout['with_gpx'] is False
+        assert (
+            serialized_workout['analysis_visibility']
+            == VisibilityLevel.PRIVATE
+        )
+        assert (
+            serialized_workout['workout_visibility']
+            == input_workout_visibility
+        )
+
     def test_serializer_returns_map_related_data_when_visibility_is_public(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
-        workout = self.update_workout(
+        workout = self.update_workout_with_gpx_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
         serialized_workout = workout.serialize(light=False)
 
+        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['descent'] == float(workout.descent)
         assert serialized_workout['map'] == workout.map
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
         assert serialized_workout['bounds'] == workout.bounds
+        assert serialized_workout['with_analysis'] is True
         assert serialized_workout['with_gpx'] is True
         assert serialized_workout['map_visibility'] == VisibilityLevel.PUBLIC
         assert (
+            serialized_workout['analysis_visibility'] == VisibilityLevel.PUBLIC
+        )
+        assert (
             serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
         )
-        assert serialized_workout['segments'] == []
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility',
         [
             (
                 VisibilityLevel.PRIVATE,
@@ -1557,27 +1932,39 @@ class TestWorkoutModelAsUnauthenticatedUser(
     def test_serializer_does_not_return_map_related_data(
         self,
         input_map_visibility: VisibilityLevel,
-        input_workout_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = input_workout_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout(workout_cycling_user_1)
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
 
-        serialized_workout = workout.serialize()
+        serialized_workout = workout.serialize(light=False)
 
-        assert serialized_workout['map'] is None
+        assert serialized_workout['ascent'] == float(workout.ascent)
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['with_gpx'] is False
+        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout['max_alt'] == float(workout.max_alt)
+        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['segments'] == [
+            workout_cycling_user_1_segment.serialize()
+        ]
+        assert serialized_workout['with_analysis'] is True
+        assert serialized_workout['with_gpx'] is False
         assert (
-            serialized_workout['workout_visibility']
-            == input_workout_visibility
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
         )
-        assert serialized_workout['segments'] == []
+        assert (
+            serialized_workout['workout_visibility'] == VisibilityLevel.PUBLIC
+        )
 
     def test_serializer_does_not_return_next_workout(
         self,
@@ -1699,6 +2086,9 @@ class TestWorkoutModelAsUnauthenticatedUser(
         serialized_workout = workout_cycling_user_1.serialize(light=True)
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_1.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_1.ave_speed),
             'bounds': [],
@@ -1733,6 +2123,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             'workout_visibility': (
                 workout_cycling_user_1.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -1786,6 +2177,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_2.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_2.ave_speed),
             'bounds': [],
@@ -1822,6 +2216,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_2.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -1843,9 +2238,10 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.map_visibility = input_workout_visibility
+        workout_cycling_user_2.analysis_visibility = input_workout_visibility
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         map_id = random_string()
-        workout_cycling_user_2 = self.update_workout(
+        workout_cycling_user_2 = self.update_workout_with_gpx_data(
             workout_cycling_user_2, map_id=map_id
         )
 
@@ -1854,11 +2250,14 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
-            'ascent': None,
+            'analysis_visibility': (
+                workout_cycling_user_2.analysis_visibility.value
+            ),
+            'ascent': float(workout_cycling_user_2.ascent),
             'ave_speed': float(workout_cycling_user_2.ave_speed),
             'bounds': workout_cycling_user_2.bounds,
             'creation_date': workout_cycling_user_2.creation_date,
-            'descent': None,
+            'descent': float(workout_cycling_user_2.descent),
             'description': None,
             'distance': float(workout_cycling_user_2.distance),
             'duration': str(workout_cycling_user_2.duration),
@@ -1868,9 +2267,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'likes_count': 0,
             'map': map_id,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
-            'max_alt': None,
+            'max_alt': float(workout_cycling_user_2.max_alt),
             'max_speed': float(workout_cycling_user_2.max_speed),
-            'min_alt': None,
+            'min_alt': float(workout_cycling_user_2.min_alt),
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
             'next_workout': None,
@@ -1890,6 +2289,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_2.workout_visibility.value
             ),
+            'with_analysis': True,
             'with_gpx': True,
         }
 
@@ -1969,6 +2369,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_2.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_2.ave_speed),
             'bounds': [],
@@ -2004,6 +2407,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_2.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -2037,6 +2441,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
+            'analysis_visibility': (
+                workout_cycling_user_2.analysis_visibility.value
+            ),
             'ascent': None,
             'ave_speed': float(workout_cycling_user_2.ave_speed),
             'bounds': [],
@@ -2073,6 +2480,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_2.workout_visibility.value
             ),
+            'with_analysis': False,
             'with_gpx': False,
         }
 
@@ -2085,9 +2493,10 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.map_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_2.analysis_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
         map_id = random_string()
-        workout_cycling_user_2 = self.update_workout(
+        workout_cycling_user_2 = self.update_workout_with_gpx_data(
             workout_cycling_user_2, map_id=map_id
         )
 
@@ -2096,11 +2505,14 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         )
 
         assert serialized_workout == {
-            'ascent': None,
+            'analysis_visibility': (
+                workout_cycling_user_2.analysis_visibility.value
+            ),
+            'ascent': float(workout_cycling_user_2.ascent),
             'ave_speed': float(workout_cycling_user_2.ave_speed),
             'bounds': workout_cycling_user_2.bounds,
             'creation_date': workout_cycling_user_2.creation_date,
-            'descent': None,
+            'descent': float(workout_cycling_user_2.descent),
             'description': None,
             'distance': float(workout_cycling_user_2.distance),
             'duration': str(workout_cycling_user_2.duration),
@@ -2110,9 +2522,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'likes_count': 0,
             'map': map_id,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
-            'max_alt': None,
+            'max_alt': float(workout_cycling_user_2.max_alt),
             'max_speed': float(workout_cycling_user_2.max_speed),
-            'min_alt': None,
+            'min_alt': float(workout_cycling_user_2.min_alt),
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
             'next_workout': None,
@@ -2132,5 +2544,6 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'workout_visibility': (
                 workout_cycling_user_2.workout_visibility.value
             ),
+            'with_analysis': True,
             'with_gpx': True,
         }

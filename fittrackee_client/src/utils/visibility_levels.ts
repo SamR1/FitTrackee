@@ -1,27 +1,28 @@
 import type { TVisibilityLevels } from '@/types/user'
 
-export const getVisibilityLevels = (): TVisibilityLevels[] => {
-  return ['private', 'followers_only', 'public']
-}
-export const getUpdatedMapVisibility = (
-  mapVisibility: TVisibilityLevels,
-  workoutVisibility: TVisibilityLevels
+export const visibilityLevels: TVisibilityLevels[] = [
+  'private',
+  'followers_only',
+  'public',
+]
+
+export const getUpdatedVisibility = (
+  visibility: TVisibilityLevels,
+  parentVisibility: TVisibilityLevels
 ): TVisibilityLevels => {
-  // when workout visibility is stricter, it returns workout visibility value
-  // for map visibility
   if (
-    workoutVisibility === 'private' ||
-    (workoutVisibility === 'followers_only' && mapVisibility == 'public')
+    parentVisibility === 'private' ||
+    (parentVisibility === 'followers_only' && visibility == 'public')
   ) {
-    return workoutVisibility
+    return parentVisibility
   }
-  return mapVisibility
+  return visibility
 }
 
-export const getMapVisibilityLevels = (
-  workoutVisibility: TVisibilityLevels
+export const getVisibilityLevels = (
+  inputVisibility: TVisibilityLevels
 ): TVisibilityLevels[] => {
-  switch (workoutVisibility) {
+  switch (inputVisibility) {
     case 'public':
       return ['private', 'followers_only', 'public']
     case 'followers_only':

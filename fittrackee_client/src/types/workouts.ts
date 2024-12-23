@@ -62,6 +62,7 @@ export interface IWeather {
 }
 
 export interface IWorkout {
+  analysis_visibility?: TVisibilityLevels
   ascent: number | null
   ave_speed: number | null
   bounds: number[]
@@ -95,12 +96,14 @@ export interface IWorkout {
   user: IUserProfile
   weather_end: IWeather | null
   weather_start: IWeather | null
+  with_analysis: boolean
   with_gpx: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
 }
 
 export interface IWorkoutObject {
+  analysisVisibility: TVisibilityLevels | null | undefined
   ascent: number | null
   aveSpeed: number | null
   descent: number | null
@@ -126,6 +129,7 @@ export interface IWorkoutObject {
   weatherEnd: IWeather | null
   workoutFullDate: string
   weatherStart: IWeather | null
+  with_analysis: boolean
   with_gpx: boolean
   workoutId: string
   workoutTime: string
@@ -144,6 +148,7 @@ export interface IWorkoutForm {
   descent?: number | null
   equipment_ids: string[]
   description: string
+  analysis_visibility?: TVisibilityLevels
   map_visibility?: TVisibilityLevels
   workout_visibility: TVisibilityLevels
 }

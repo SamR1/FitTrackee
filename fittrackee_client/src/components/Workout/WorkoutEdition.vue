@@ -294,10 +294,29 @@
                   id="workout_visibility"
                   v-model="workoutForm.workoutVisibility"
                   :disabled="loading"
-                  @change="updateMapVisibility"
+                  @change="updateAnalysisAndMapVisibility"
                 >
                   <option
                     v-for="level in visibilityLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-item" v-if="withGpx">
+                <label for="analysis_visibility">
+                  {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:
+                </label>
+                <select
+                  id="analysis_visibility"
+                  v-model="workoutForm.analysisVisibility"
+                  @change="updateMapVisibility"
+                  :disabled="loading"
+                >
+                  <option
+                    v-for="level in analysisVisibilityLevels"
                     :value="level"
                     :key="level"
                   >
@@ -401,9 +420,9 @@
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import {
+    visibilityLevels,
     getVisibilityLevels,
-    getMapVisibilityLevels,
-    getUpdatedMapVisibility,
+    getUpdatedVisibility,
   } from '@/utils/visibility_levels'
 
   interface Props {
@@ -443,6 +462,7 @@
     equipment_id: '',
     description: '',
     mapVisibility: authUser.value.map_visibility,
+    analysisVisibility: authUser.value.analysis_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
   })
   const withGpx: Ref<boolean> = ref(
@@ -458,9 +478,6 @@
       'is_active_for_user',
       workout.value.id ? [workout.value.sport_id] : []
     )
-  )
-  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getVisibilityLevels()
   )
   const fileSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_single_file_size
@@ -495,8 +512,11 @@
         )
       : []
   )
+  const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
+    () => getVisibilityLevels(workoutForm.workoutVisibility)
+  )
   const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getMapVisibilityLevels(workoutForm.workoutVisibility)
+    getVisibilityLevels(workoutForm.analysisVisibility)
   )
 
   function updateNotes(textareaData: ICustomTextareaData) {
@@ -523,6 +543,9 @@
       workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
     workoutForm.workoutVisibility = workout.workout_visibility
       ? workout.workout_visibility
+      : 'private'
+    workoutForm.analysisVisibility = workout.analysis_visibility
+      ? workout.analysis_visibility
       : 'private'
     workoutForm.mapVisibility = workout.map_visibility
       ? workout.map_visibility
@@ -627,6 +650,7 @@
     }
     if (props.workout.id) {
       if (props.workout.with_gpx) {
+        payload.analysis_visibility = workoutForm.analysisVisibility
         payload.map_visibility = workoutForm.mapVisibility
       } else {
         formatPayload(payload)
@@ -650,6 +674,7 @@
           return
         }
         payload.file = gpxFile
+        payload.analysis_visibility = workoutForm.analysisVisibility
         payload.map_visibility = workoutForm.mapVisibility
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
       } else {
@@ -681,10 +706,17 @@
   function invalidateForm() {
     formErrors.value = true
   }
-  function updateMapVisibility() {
-    workoutForm.mapVisibility = getUpdatedMapVisibility(
-      workoutForm.mapVisibility,
+  function updateAnalysisAndMapVisibility() {
+    workoutForm.analysisVisibility = getUpdatedVisibility(
+      workoutForm.analysisVisibility,
       workoutForm.workoutVisibility
+    )
+    updateMapVisibility()
+  }
+  function updateMapVisibility() {
+    workoutForm.mapVisibility = getUpdatedVisibility(
+      workoutForm.mapVisibility,
+      workoutForm.analysisVisibility
     )
   }
 
@@ -708,6 +740,16 @@
           newSport?.default_equipments.length > 0
             ? `${newSport.default_equipments[0].id}`
             : ''
+      }
+    }
+  )
+  watch(
+    () => authUser.value,
+    (newAuthUser: IAuthUserProfile) => {
+      if (newAuthUser && isCreation) {
+        workoutForm.workoutVisibility = newAuthUser.workouts_visibility
+        workoutForm.analysisVisibility = newAuthUser.analysis_visibility
+        workoutForm.mapVisibility = newAuthUser.map_visibility
       }
     }
   )

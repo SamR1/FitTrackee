@@ -80,6 +80,10 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
+      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
+      </dd>
       <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}

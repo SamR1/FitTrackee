@@ -21,7 +21,7 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
-    get_map_visibility,
+    get_calculated_visibility,
 )
 
 from .exceptions import WorkoutForbiddenException
@@ -275,6 +275,11 @@ class Workout(BaseModel):
         nullable=False,
     )
     suspended_at = db.Column(db.DateTime, nullable=True)
+    analysis_visibility = db.Column(
+        Enum(VisibilityLevel, name='visibility_levels'),
+        server_default='PRIVATE',
+        nullable=False,
+    )
 
     segments = db.relationship(
         'WorkoutSegment',
@@ -328,8 +333,18 @@ class Workout(BaseModel):
         return encode_uuid(self.uuid)
 
     @property
+    def calculated_analysis_visibility(self) -> VisibilityLevel:
+        return get_calculated_visibility(
+            visibility=self.analysis_visibility,
+            parent_visibility=self.workout_visibility,
+        )
+
+    @property
     def calculated_map_visibility(self) -> VisibilityLevel:
-        return get_map_visibility(self.map_visibility, self.workout_visibility)
+        return get_calculated_visibility(
+            visibility=self.map_visibility,
+            parent_visibility=self.analysis_visibility,
+        )
 
     def liked_by(self, user: 'User') -> bool:
         return user in self.likes.all()
@@ -354,6 +369,7 @@ class Workout(BaseModel):
         self,
         user: Optional['User'],
         *,
+        can_see_analysis_data: Optional[bool] = None,
         can_see_map_data: Optional[bool] = None,
         for_report: bool = False,
         additional_data: bool = False,
@@ -363,7 +379,8 @@ class Workout(BaseModel):
         """
         Used by Workout serializer and data export
 
-        - can_see_map_data: if user can see map related data
+        - can_see_analysis_data: if user can see charts
+        - can_see_map_data: if user can see map
         - for_report: privacy levels are overridden on report
         - additional_data is False when:
           - workout is not suspended
@@ -379,6 +396,13 @@ class Workout(BaseModel):
         for_report = (
             for_report and user is not None and user.has_moderator_rights
         )
+        if can_see_analysis_data is None:
+            can_see_analysis_data = can_view(
+                self,
+                "calculated_analysis_visibility",
+                user=user,
+                for_report=for_report,
+            )
         if can_see_map_data is None:
             can_see_map_data = can_view(
                 self,
@@ -418,10 +442,23 @@ class Workout(BaseModel):
             'max_speed': (
                 None if self.max_speed is None else float(self.max_speed)
             ),
-            'min_alt': None if self.min_alt is None else float(self.min_alt),
-            'max_alt': None if self.max_alt is None else float(self.max_alt),
+            'min_alt': (
+                float(self.min_alt)
+                if self.min_alt is not None and can_see_analysis_data
+                else None
+            ),
+            'max_alt': (
+                float(self.max_alt)
+                if self.max_alt is not None and can_see_analysis_data
+                else None
+            ),
             'descent': None if self.descent is None else float(self.descent),
             'ascent': None if self.ascent is None else float(self.ascent),
+            'analysis_visibility': (
+                self.calculated_analysis_visibility.value
+                if can_see_analysis_data
+                else VisibilityLevel.PRIVATE
+            ),
             'map_visibility': (
                 self.calculated_map_visibility.value
                 if can_see_map_data
@@ -451,7 +488,7 @@ class Workout(BaseModel):
             ),
             'segments': (
                 [segment.serialize() for segment in self.segments]
-                if can_see_map_data
+                if can_see_analysis_data
                 else []
             ),
             'weather_start': self.weather_start,
@@ -484,6 +521,12 @@ class Workout(BaseModel):
             self, "workout_visibility", user=user, for_report=for_report
         ):
             raise WorkoutForbiddenException()
+        can_see_analysis_data = can_view(
+            self,
+            "calculated_analysis_visibility",
+            user=user,
+            for_report=for_report,
+        )
         can_see_map_data = can_view(
             self, "calculated_map_visibility", user=user, for_report=for_report
         )
@@ -493,6 +536,7 @@ class Workout(BaseModel):
 
         workout = self.get_workout_data(
             user,
+            can_see_analysis_data=can_see_analysis_data,
             can_see_map_data=can_see_map_data,
             for_report=for_report,
             additional_data=additional_data,
@@ -507,6 +551,9 @@ class Workout(BaseModel):
         )
         workout["with_gpx"] = (
             self.gpx is not None and can_see_map_data and additional_data
+        )
+        workout["with_analysis"] = (
+            self.gpx is not None and can_see_analysis_data and additional_data
         )
         workout["suspended"] = is_workout_suspended
         workout["user"] = self.user.serialize()

@@ -172,6 +172,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user['workouts_visibility']
             == user_1.workouts_visibility
         )
+        assert (
+            serialized_user['analysis_visibility']
+            == user_1.analysis_visibility
+        )
         assert serialized_user['map_visibility'] == user_1.map_visibility
         assert (
             serialized_user['manually_approves_followers']
@@ -299,6 +303,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert 'use_raw_gpx_speed' not in serialized_user
         assert 'use_dark_mode' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
@@ -383,6 +388,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert 'use_raw_gpx_speed' not in serialized_user
         assert 'use_dark_mode' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
@@ -460,6 +466,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
