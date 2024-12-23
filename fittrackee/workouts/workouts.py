@@ -104,6 +104,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -191,6 +192,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
@@ -437,6 +439,7 @@ def get_workout(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 16,
                 "bounds": [],
@@ -478,6 +481,7 @@ def get_workout(
                 },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT",
                 "workout_visibility": "private"
@@ -539,7 +543,13 @@ def get_workout_data(
     if not workout:
         return not_found_response
 
-    if not can_view(workout, 'calculated_map_visibility', auth_user):
+    if not can_view(
+        workout,
+        'calculated_analysis_visibility'
+        if data_type == 'chart_data'
+        else 'calculated_map_visibility',
+        auth_user,
+    ):
         return not_found_response
 
     if not workout.gpx or workout.gpx == '':
@@ -1028,6 +1038,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": 435.621,
                 "ave_speed": 13.14,
                 "bounds": [
@@ -1135,6 +1146,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": true,
                 "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
                 "workout_visibility": "private"
@@ -1145,10 +1157,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id, description, title and notes,
+    :form data: sport id, equipment id, description, title, notes, visibility
+       for workout, analysis and map
        for example:
        ``{"sport_id": 1, "notes": "", "title": "", "description": "",
-       "equipment_ids": []}``.
+       "analysis_visibility": "private", "map_visibility": "private",
+       "workout_visibility": "private", "equipment_ids": []}``.
        Double quotes in notes, description and title must be escaped.
 
        The maximum length is 500 characters for notes, 10000 characters for
@@ -1162,7 +1176,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description, title and equipment ids are not mandatory.
+       Notes, description, title, equipment ids and visibility
+       for workout, analysis and map are not mandatory.
+       Visibility levels default to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1290,6 +1306,7 @@ def post_workout_no_gpx(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -1369,6 +1386,7 @@ def post_workout_no_gpx(
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
@@ -1378,6 +1396,9 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
+    :<json string analysis_visibility: analysis visibility
+        (``private``, ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json float ascent: workout ascent (not mandatory,
            must be provided with descent)
     :<json float descent: workout descent (not mandatory,
@@ -1391,6 +1412,9 @@ def post_workout_no_gpx(
         **Note**: for now only one equipment can be associated.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
+    :<json string map_visibility: map visibility
+        (``private``, ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
@@ -1398,6 +1422,9 @@ def post_workout_no_gpx(
         characters, otherwise it will be truncated)
     :<json string workout_date: workout date, in user timezone
         (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_visibility: workout visibility (``private``,
+        ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1527,6 +1554,7 @@ def update_workout(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -1606,6 +1634,7 @@ def update_workout(
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
@@ -1617,6 +1646,8 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
+    :<json string analysis_visibility: analysis visibility
+        (``private``, ``followers_only`` or ``public``)
     :<json float ascent: workout ascent
         (only for workout without gpx, must be provided with descent)
     :<json float descent: workout descent
@@ -1632,7 +1663,7 @@ def update_workout(
         equipment for this workout will be replaced).
         **Note**: for now only one equipment can be associated.
         If an empty array, equipment for this workout will be removed.
-    :<json string map_visibility: map and analysis data visibility
+    :<json string map_visibility: map visibility
         (``private``, ``followers_only`` or ``public``)
     :<json string notes: notes (max length: 500 characters, otherwise they
         will be truncated)
@@ -1836,6 +1867,7 @@ def like_workout(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": 231.208,
                 "ave_speed": 13.12,
                 "bounds": [],
@@ -1876,6 +1908,7 @@ def like_workout(
                 },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
                 "workout_visibility": "public"
@@ -1943,6 +1976,7 @@ def undo_workout_like(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": 231.208,
                 "ave_speed": 13.12,
                 "bounds": [],
@@ -1983,6 +2017,7 @@ def undo_workout_like(
                 },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
                 "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
                 "workout_visibility": "public"

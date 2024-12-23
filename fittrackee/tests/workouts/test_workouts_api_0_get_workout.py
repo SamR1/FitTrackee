@@ -18,25 +18,32 @@ from .mixins import WorkoutApiTestCaseMixin
 
 class GetWorkoutGpxAsFollowerMixin:
     @staticmethod
-    def init_test_data(
+    def init_test_data_for_follower(
         workout: Workout,
+        *,
+        analysis_visibility: VisibilityLevel = VisibilityLevel.FOLLOWERS,
         map_visibility: VisibilityLevel,
         follower: User,
         followed: User,
     ) -> None:
         workout.gpx = 'file.gpx'
-        workout.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout.workout_visibility = analysis_visibility
+        workout.analysis_visibility = analysis_visibility
         workout.map_visibility = map_visibility
         followed.approves_follow_request_from(follower)
 
 
 class GetWorkoutGpxPublicVisibilityMixin:
     @staticmethod
-    def init_test_data(
-        workout: Workout, map_visibility: VisibilityLevel
+    def init_test_data_for_public_workout(
+        workout: Workout,
+        *,
+        analysis_visibility: VisibilityLevel = VisibilityLevel.PUBLIC,
+        map_visibility: VisibilityLevel,
     ) -> None:
         workout.gpx = 'file.gpx'
-        workout.workout_visibility = VisibilityLevel.PUBLIC
+        workout.workout_visibility = analysis_visibility
+        workout.analysis_visibility = VisibilityLevel.PUBLIC
         workout.map_visibility = map_visibility
 
 
@@ -438,6 +445,10 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
             == VisibilityLevel.PRIVATE.value
         )
         assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
             data['data']['workouts'][0]['workout_visibility']
             == VisibilityLevel.PUBLIC.value
         )
@@ -551,6 +562,10 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
             == VisibilityLevel.PRIVATE.value
         )
         assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
             data['data']['workouts'][0]['workout_visibility']
             == VisibilityLevel.PUBLIC.value
         )
@@ -651,8 +666,11 @@ class TestGetWorkoutGpxAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_2, VisibilityLevel.PRIVATE, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_1,
+            followed=user_2,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -692,8 +710,11 @@ class TestGetWorkoutGpxAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_2, input_map_visibility, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            map_visibility=input_map_visibility,
+            follower=user_1,
+            followed=user_2,
         )
         gpx_content = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -723,8 +744,11 @@ class TestGetWorkoutGpxAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_2, VisibilityLevel.FOLLOWERS, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            map_visibility=VisibilityLevel.FOLLOWERS,
+            follower=user_1,
+            followed=user_2,
         )
         gpx_content = self.random_string()
         user_1.suspended_at = datetime.utcnow()
@@ -784,7 +808,9 @@ class TestGetWorkoutGpxAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=input_map_visibility
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -813,7 +839,9 @@ class TestGetWorkoutGpxAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
+        )
         gpx_content = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -841,7 +869,9 @@ class TestGetWorkoutGpxAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
+        )
         gpx_content = self.random_string()
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -895,7 +925,9 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
         client = app.test_client()
         with patch(
             'builtins.open',
@@ -921,7 +953,9 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_content = self.random_string()
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
         client = app.test_client()
         with patch(
             'builtins.open', new_callable=mock_open, read_data=gpx_content
@@ -938,11 +972,11 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         assert data['data']['gpx'] == gpx_content
 
 
-class GetGetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
+class GetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
     route = '/api/workouts/{workout_uuid}/chart_data'
 
 
-class TestGetWorkoutChartDataAsWorkoutOwner(GetGetWorkoutChartDataTestCase):
+class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
     def test_it_returns_404_if_workout_have_no_chart_data(
         self,
         app: Flask,
@@ -1040,9 +1074,9 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetGetWorkoutChartDataTestCase):
 
 
 class TestGetWorkoutChartDataAsFollower(
-    GetGetWorkoutChartDataTestCase, GetWorkoutGpxAsFollowerMixin
+    GetWorkoutChartDataTestCase, GetWorkoutGpxAsFollowerMixin
 ):
-    def test_it_returns_404_when_map_visibility_is_private(
+    def test_it_returns_404_when_analysis_visibility_is_private(
         self,
         app: Flask,
         user_1: User,
@@ -1051,8 +1085,12 @@ class TestGetWorkoutChartDataAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_2, VisibilityLevel.PRIVATE, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            analysis_visibility=VisibilityLevel.PRIVATE,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_1,
+            followed=user_2,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1069,16 +1107,16 @@ class TestGetWorkoutChartDataAsFollower(
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('map visibility: public', VisibilityLevel.PUBLIC),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
-    def test_it_returns_chart_data_for_followed_user_workout(
+    def test_it_returns_chart_data_when_visibile_to_follower(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -1086,8 +1124,12 @@ class TestGetWorkoutChartDataAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_2, input_map_visibility, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_1,
+            followed=user_2,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1123,8 +1165,12 @@ class TestGetWorkoutChartDataAsFollower(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         workout_cycling_user_2.gpx = 'file.gpx'
-        self.init_test_data(
-            workout_cycling_user_2, VisibilityLevel.FOLLOWERS, user_1, user_2
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            analysis_visibility=VisibilityLevel.FOLLOWERS,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_1,
+            followed=user_2,
         )
         user_1.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1140,7 +1186,7 @@ class TestGetWorkoutChartDataAsFollower(
 
 
 class TestGetWorkoutChartDataAsUser(
-    GetGetWorkoutChartDataTestCase, GetWorkoutGpxPublicVisibilityMixin
+    GetWorkoutChartDataTestCase, GetWorkoutGpxPublicVisibilityMixin
 ):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask, user_1: User
@@ -1161,23 +1207,27 @@ class TestGetWorkoutChartDataAsUser(
         assert data['data']['chart_data'] == ''
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: private', VisibilityLevel.PRIVATE),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
         ],
     )
-    def test_it_returns_404_when_map_visibility_is_not_public(
+    def test_it_returns_404_when_analysis_visibility_is_not_public(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1192,7 +1242,7 @@ class TestGetWorkoutChartDataAsUser(
             f'workout not found (id: {workout_cycling_user_2.short_id})',
         )
 
-    def test_it_returns_chart_data_when_map_visibility_is_public(
+    def test_it_returns_chart_data_when_analysis_visibility_is_public(
         self,
         app: Flask,
         user_1: User,
@@ -1200,7 +1250,11 @@ class TestGetWorkoutChartDataAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1233,7 +1287,11 @@ class TestGetWorkoutChartDataAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1250,7 +1308,7 @@ class TestGetWorkoutChartDataAsUser(
 
 
 class TestGetWorkoutChartDataAsUnauthenticatedUser(
-    GetGetWorkoutChartDataTestCase, GetWorkoutGpxPublicVisibilityMixin
+    GetWorkoutChartDataTestCase, GetWorkoutGpxPublicVisibilityMixin
 ):
     def test_it_returns_404_if_workout_does_not_exist(
         self, app: Flask
@@ -1268,22 +1326,26 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         assert data['data']['chart_data'] == ''
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: private', VisibilityLevel.PRIVATE),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client = app.test_client()
 
         response = client.get(
@@ -1303,7 +1365,11 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         workout_cycling_user_1: Workout,
     ) -> None:
         chart_data: List = []
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client = app.test_client()
         with (
             patch('builtins.open', new_callable=mock_open),
@@ -1450,8 +1516,11 @@ class TestGetWorkoutSegmentGpxAsFollower(
         follow_request_from_user_2_to_user_1: FollowRequest,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_1, VisibilityLevel.PRIVATE, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1494,8 +1563,11 @@ class TestGetWorkoutSegmentGpxAsFollower(
         follow_request_from_user_2_to_user_1: FollowRequest,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_1, input_map_visibility, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=input_map_visibility,
+            follower=user_2,
+            followed=user_1,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1528,8 +1600,11 @@ class TestGetWorkoutSegmentGpxAsFollower(
         follow_request_from_user_2_to_user_1: FollowRequest,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_1, VisibilityLevel.FOLLOWERS, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.FOLLOWERS,
+            follower=user_2,
+            followed=user_1,
         )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1592,7 +1667,9 @@ class TestGetWorkoutSegmentGpxAsUser(
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -1623,7 +1700,9 @@ class TestGetWorkoutSegmentGpxAsUser(
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -1654,7 +1733,9 @@ class TestGetWorkoutSegmentGpxAsUser(
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1707,7 +1788,9 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
         client = app.test_client()
         with patch(
             'builtins.open',
@@ -1735,7 +1818,9 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
         client = app.test_client()
         with patch(
             'builtins.open',
@@ -1862,7 +1947,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
 class TestGetWorkoutSegmentChartDataAsFollower(
     GetWorkoutSegmentChartDataTestCase, GetWorkoutGpxAsFollowerMixin
 ):
-    def test_it_returns_404_when_map_visibility_is_private(
+    def test_it_returns_404_when_analysis_visibility_is_private(
         self,
         app: Flask,
         user_1: User,
@@ -1872,8 +1957,12 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         workout_cycling_user_1_segment: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_1, VisibilityLevel.PRIVATE, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PRIVATE,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1892,16 +1981,16 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('map visibility: public', VisibilityLevel.PUBLIC),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: public', VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_chart_data_for_follower_user_workout(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -1910,8 +1999,12 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         workout_cycling_user_1_segment: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        self.init_test_data(
-            workout_cycling_user_1, input_map_visibility, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1948,8 +2041,12 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         workout_cycling_user_1.gpx = 'file.gpx'
-        self.init_test_data(
-            workout_cycling_user_1, VisibilityLevel.FOLLOWERS, user_2, user_1
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.FOLLOWERS,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
         )
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -1997,16 +2094,16 @@ class TestGetWorkoutSegmentChartDataAsUser(
         assert data['data']['chart_data'] == ''
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: private', VisibilityLevel.PRIVATE),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
         ],
     )
-    def test_it_returns_404_when_map_visibility_is_not_public(
+    def test_it_returns_404_when_analysis_visibility_is_not_public(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         user_2: User,
@@ -2014,7 +2111,11 @@ class TestGetWorkoutSegmentChartDataAsUser(
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -2031,7 +2132,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
             f'workout not found (id: {workout_cycling_user_1.short_id})',
         )
 
-    def test_it_returns_chart_data_when_map_visibility_is_public(
+    def test_it_returns_chart_data_when_analysis_visibility_is_public(
         self,
         app: Flask,
         user_1: User,
@@ -2041,7 +2142,11 @@ class TestGetWorkoutSegmentChartDataAsUser(
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         chart_data: List = []
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -2075,7 +2180,11 @@ class TestGetWorkoutSegmentChartDataAsUser(
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         chart_data: List = []
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         workout_cycling_user_1.gpx = 'file.gpx'
         user_2.suspended_at = datetime.utcnow()
         db.session.commit()
@@ -2118,23 +2227,27 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         assert data['data']['chart_data'] == ''
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        'input_desc,input_analysis_visibility',
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ('analysis visibility: private', VisibilityLevel.PRIVATE),
+            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
         self,
         input_desc: str,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, input_map_visibility)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=input_analysis_visibility,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client = app.test_client()
 
         response = client.get(
@@ -2148,7 +2261,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
             f'workout not found (id: {workout_cycling_user_1.short_id})',
         )
 
-    def test_it_returns_chart_data_when_map_visibility_is_public(
+    def test_it_returns_chart_data_when_analysis_visibility_is_public(
         self,
         app: Flask,
         user_1: User,
@@ -2157,7 +2270,11 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         chart_data: List = []
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PRIVATE,
+        )
         client = app.test_client()
         with (
             patch('builtins.open', new_callable=mock_open),
@@ -2396,6 +2513,7 @@ class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.gpx = 'file.gpx'
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2442,7 +2560,9 @@ class TestDownloadWorkoutGpxAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_2, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2468,7 +2588,9 @@ class TestDownloadWorkoutGpxAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        self.init_test_data(workout_cycling_user_1, VisibilityLevel.PUBLIC)
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
         client = app.test_client()
 
         response = client.get(

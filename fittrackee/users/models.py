@@ -273,6 +273,11 @@ class User(BaseModel):
         nullable=False,
         default=UserRole.USER.value,
     )
+    analysis_visibility = db.Column(
+        Enum(VisibilityLevel, name='visibility_levels'),
+        server_default='PRIVATE',
+        nullable=False,
+    )
 
     workouts = db.relationship(
         'Workout',
@@ -787,6 +792,7 @@ class User(BaseModel):
                     'use_raw_gpx_speed': self.use_raw_gpx_speed,
                     'weekm': self.weekm,
                     'map_visibility': self.map_visibility.value,
+                    'analysis_visibility': self.analysis_visibility.value,
                     'workouts_visibility': self.workouts_visibility.value,
                     'manually_approves_followers': (
                         self.manually_approves_followers

@@ -386,6 +386,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_visibility
+        workout_cycling_user_2.analysis_visibility = input_visibility
         workout_cycling_user_2.map_visibility = input_visibility
         map_id = self.random_string()
         workout_cycling_user_2.map_id = map_id

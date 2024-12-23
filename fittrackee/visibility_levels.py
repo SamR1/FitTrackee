@@ -13,16 +13,17 @@ class VisibilityLevel(str, Enum):  # to make enum serializable
     PRIVATE = 'private'  # in case of comments, for mentioned users only
 
 
-def get_map_visibility(
-    map_visibility: VisibilityLevel, workout_visibility: VisibilityLevel
+def get_calculated_visibility(
+    *, visibility: VisibilityLevel, parent_visibility: VisibilityLevel
 ) -> VisibilityLevel:
-    # workout visibility overrides map visibility, when stricter
-    if workout_visibility == VisibilityLevel.PRIVATE or (
-        workout_visibility == VisibilityLevel.FOLLOWERS
-        and map_visibility == VisibilityLevel.PUBLIC
+    # - workout visibility overrides analysis visibility, when stricter,
+    # - analysis visibility overrides map visibility, when stricter.
+    if parent_visibility == VisibilityLevel.PRIVATE or (
+        parent_visibility == VisibilityLevel.FOLLOWERS
+        and visibility == VisibilityLevel.PUBLIC
     ):
-        return workout_visibility
-    return map_visibility
+        return parent_visibility
+    return visibility
 
 
 def can_view(

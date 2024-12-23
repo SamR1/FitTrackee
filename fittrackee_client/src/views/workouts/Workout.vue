@@ -21,7 +21,8 @@
           />
           <WorkoutChart
             v-if="
-              workoutData.workout.with_gpx && workoutData.chartData.length > 0
+              workoutData.workout.with_analysis &&
+              workoutData.chartData.length > 0
             "
             :workoutData="workoutData"
             :authUser="authUser"

@@ -192,16 +192,17 @@
       displayOptions.value.dateFormat
     )
     return {
+      analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       equipments: segment ? null : workout.equipments,
-      mapVisibility: segment ? null : workout.map_visibility,
-      maxAlt: segment ? segment.max_alt : workout.max_alt,
       liked: workout.liked,
       likes_count: workout.likes_count,
+      mapVisibility: workout.map_visibility,
+      maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
@@ -221,10 +222,11 @@
         displayOptions.value.dateFormat
       ),
       weatherStart: segment ? null : workout.weather_start,
+      with_analysis: workout.with_analysis,
       with_gpx: workout.with_gpx,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
-      workoutVisibility: segment ? null : workout.workout_visibility,
+      workoutVisibility: workout.workout_visibility,
     }
   }
   function updateDisplayModal(value: boolean) {

@@ -151,7 +151,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
             res.data.data.workouts[0]
           )
-          if (res.data.data.workouts[0].with_gpx) {
+          if (res.data.data.workouts[0].with_analysis) {
             authApi
               .get(`workouts/${payload.workoutId}/chart_data${segmentUrl}`)
               .then((res) => {
@@ -162,6 +162,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
+          }
+          if (res.data.data.workouts[0].with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {

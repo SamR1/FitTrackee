@@ -3,11 +3,11 @@ import { describe, it, expect } from 'vitest'
 import { TVisibilityLevels } from '@/types/user'
 import {
   getCommentVisibilityLevels,
-  getMapVisibilityLevels,
-  getUpdatedMapVisibility,
+  getVisibilityLevels,
+  getUpdatedVisibility,
 } from '@/utils/visibility_levels'
 
-describe('getUpdatedMapVisibility', () => {
+describe('getUpdatedVisibility', () => {
   const testsParams: [
     TVisibilityLevels,
     TVisibilityLevels,
@@ -27,14 +27,14 @@ describe('getUpdatedMapVisibility', () => {
 
   testsParams.map((testParams) => {
     it(`get map visibility (input value: '${testParams[0]}') when workout visibility is '${testParams[1]}'`, () => {
-      expect(
-        getUpdatedMapVisibility(testParams[0], testParams[1])
-      ).toStrictEqual(testParams[2])
+      expect(getUpdatedVisibility(testParams[0], testParams[1])).toStrictEqual(
+        testParams[2]
+      )
     })
   })
 })
 
-describe('getMapVisibilityLevels', () => {
+describe('getVisibilityLevels', () => {
   const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
@@ -43,7 +43,7 @@ describe('getMapVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (input value: '${testParams[0]}')`, () => {
-      expect(getMapVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
+      expect(getVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
     })
   })
 })
