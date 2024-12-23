@@ -94,14 +94,22 @@ Workouts
 .. note::
   Records may differ from records displayed by the application that originally generated the gpx files.
 
-- Visibility level can be set separately for workout data and map and analysis data (*new in 0.9.0*):
+- Visibility level can be set separately for workout data, analysis and map (*new in 0.9.0*):
 
-  - private: only owner can see the workout,
-  - followers only: only owner and followers can see the workout,
-  - public: anyone can see the workout even unauthenticated users.
+  - private: only owner can see data,
+  - followers only: only owner and followers can see data,
+  - public: anyone can see data even unauthenticated users.
+
+  |
+  | Workout visibility applies to title, description, records and workout data except elevation.
+  | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a gpx file.
+  | Map visibility applies to the map, if workout is associated with a gpx file.
+  |
+  | Default visibility can be set in user preferences.
 
 .. note::
   | A workout with a gpx file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a gpx file.
+  | Max speed is returned regardless analysis visibility.
 
 .. note::
   | Default visibility is private. All workouts created before **FitTrackee** 0.9.0 are private.
@@ -117,7 +125,8 @@ Workouts
   - description (*new in 0.8.9*)
   - private notes
   - workout visibility (*new in 0.9.0*)
-  - map and analysis visibility (*new in 0.9.0*)
+  - analysis visibility (*new in 0.9.0*)
+  - map visibility (*new in 0.9.0*)
   - date (only workouts without gpx)
   - duration (only workouts without gpx)
   - distance (only workouts without gpx)
@@ -157,8 +166,8 @@ Interactions
 Users
 -----
 - | Users directory.
-  | A user can configure visibility in directory in the user preferences.
-  | This has an impact on username completion when writing comments (only profiles visible in users directory or followed users are suggested).
+  | A user can configure visibility in directory in the user preferences (hidden by default).
+  | This affects username completion when writing comments (only profiles visible in users directory or followed users are suggested).
 
 .. note::
     A user profile remains accessible via its URL.
@@ -183,6 +192,9 @@ Comments
 
 .. important::
   | Please keep in mind that the server operating team or the moderation team may view content with restricted visibility.
+
+.. note::
+  | Changing workout visibility will not affect visibility of existing comments.
 
 - Comment text can be modified (visibility level cannot be changed).
 - A user can report a comment that violates instance rules. This will send a notification to moderators and administrators.
