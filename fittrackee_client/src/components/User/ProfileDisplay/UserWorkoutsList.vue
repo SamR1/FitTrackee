@@ -26,7 +26,7 @@
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import useAuthUser from '@/composables/useAuthUser.ts'
   import useSports from '@/composables/useSports.ts'
-  import { USERS_STORE } from '@/store/constants'
+  import { SPORTS_STORE, USERS_STORE } from '@/store/constants'
   import type { IUserLightProfile } from '@/types/user.ts'
   import type { IWorkout } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore'
@@ -62,6 +62,9 @@
 
   onBeforeMount(() => {
     getUserWorkouts(user.value.username)
+    if (sports.value.length === 0 && user.value.nb_workouts > 0) {
+      store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+    }
   })
   onUnmounted(() =>
     store.commit(USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS, [])
