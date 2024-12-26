@@ -1,6 +1,4 @@
-FROM node:18
-
-MAINTAINER SamR1@users.noreply.github.com
+FROM node:23-slim
 
 # set working directory
 RUN mkdir /usr/src/app
