@@ -27,6 +27,8 @@ services:
     container_name: fittrackee
     env_file:
       - .env
+# TODO: to update on next release
+#    image: fittrackee/fittrackee:v0.8.13
     build: .
     volumes:
       - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
@@ -58,6 +60,8 @@ services:
 #    container_name: fittrackee-workers
 #    env_file:
 #      - .env
+## TODO: to update on next release
+##    image: fittrackee/fittrackee:v0.8.13
 #    build: .
 #    volumes:
 #      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
