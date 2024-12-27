@@ -7,6 +7,10 @@
 .coverage
 .eslintcache
 docker-compose-dev.yml
+docker-compose.yml
 Makefile.custom.config
 *.log
 data
+
+**/__pycache__/
+**/*.py[cod]
