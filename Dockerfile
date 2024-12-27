@@ -3,7 +3,7 @@ FROM node:23-alpine AS node-builder
 RUN mkdir -p /usr/src/app/fittrackee_client /usr/src/app/fittrackee
 WORKDIR /usr/src/app/fittrackee_client
 
-ENV PATH /usr/src/app/fittrackee_client/node_modules/.bin:$PATH
+ENV PATH=/usr/src/app/fittrackee_client/node_modules/.bin:$PATH
 COPY fittrackee_client/package.json /usr/src/app/fittrackee_client/package.json
 COPY fittrackee_client/yarn.lock /usr/src/app/fittrackee_client/yarn.lock
 RUN yarn install --silent --network-timeout 300000
