@@ -1,4 +1,5 @@
 # docker compose for production
+# (minimal version: Docker Compose version 2.30.0)
 #
 # minimal application (for single user) only needs fittrackee and fittrackee-db containers.
 #

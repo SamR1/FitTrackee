@@ -834,15 +834,42 @@ Examples:
 Docker
 ~~~~~~
 
-Installation
-^^^^^^^^^^^^
-
 .. versionadded:: 0.4.4
+.. versionchanged:: 0.5.0 add client application for development
+.. versionchanged:: 0.8.13 add docker image for production
 
-For **evaluation** purposes, docker files are available, installing **FitTrackee** from **sources**.
 
-.. warning::
-    Docker files are not suitable for production installation.
+Production
+^^^^^^^^^^
+
+An image is available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry <https://github.com/SamR1/FitTrackee/packages>`_.
+
+- create a ``docker-compose.yml`` file as needed (see the example in the repository):
+
+  - the minimal set up requires at least the database and the web application.
+  - to activate the rate limit, redis is required.
+  - to send e-mails, redis and workers are required and EMAIL_URL must be set in ``.env``.
+
+.. note::
+    The same image is used by the web application and workers.
+
+- create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <installation.html#environment-variables>`__).
+
+- to start the application:
+
+.. code:: bash
+
+   $ docker compose up -d
+
+- to run a CLI command, for instance to give admin rights:
+
+.. code:: bash
+
+   $ docker compose exec fittrackee ftcli users update <username> --set-admin true
+
+
+Development
+^^^^^^^^^^^
 
 - To install and run **FitTrackee**:
 
@@ -850,7 +877,6 @@ For **evaluation** purposes, docker files are available, installing **FitTrackee
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
-    $ cp .env.docker .env
     $ make docker-run
 
 - Open http://localhost:5000 and register.
@@ -877,12 +903,6 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-shell
-
-
-Development
-^^^^^^^^^^^
-
-.. versionadded:: 0.5.0
 
 - an additional step is needed to install ``fittrackee_client``
 
