@@ -23,6 +23,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
 
 COPY pyproject.toml poetry.lock README.md /usr/src/app/
 COPY fittrackee/. /usr/src/app/fittrackee/
+RUN rm -rf /usr/src/app/fittrackee/tests
 
 RUN python3 -m venv $VIRTUAL_ENV && pip install --upgrade pip
 RUN pip install poetry==1.8.5 && . $VIRTUAL_ENV/bin/activate && poetry install --only main --no-interaction --quiet
