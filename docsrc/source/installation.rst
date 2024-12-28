@@ -260,6 +260,48 @@ deployment method.
 
     .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
 
+    **FitTrackee** API URL, only needed in dev environment.
+
+Docker
+^^^^^^
+
+.. versionadded:: 0.8.13
+
+Environment variables for ``docker-compose.yml``
+
+.. envvar:: DATABASE_DIR
+
+    Host directory for PostgreSQL data volume
+
+
+.. envvar:: POSTGRES_USER
+
+    User for PostgreSQL database
+
+
+.. envvar:: POSTGRES_PASSWORD
+
+    Password for PostgreSQL user
+
+
+.. envvar:: POSTGRES_DB
+
+    Database name for FitTrackee application
+
+
+.. envvar:: REDIS_DIR
+
+    Host directory for redis data volume
+
+
+.. envvar:: LOG_DIR
+
+    Host directory for logs volume
+
+
+.. envvar:: UPLOAD_DIR
+
+    Host directory for uploaded files volume
 
 
 Emails
@@ -842,13 +884,17 @@ Docker
 Production
 ^^^^^^^^^^
 
-An image is available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry <https://github.com/SamR1/FitTrackee/packages>`_.
+Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry <https://github.com/SamR1/FitTrackee/packages>`_.
+
+.. note::
+
+    Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. Only ``linux/amd64`` image has been tested.
 
 - create a ``docker-compose.yml`` file as needed (see the example in the repository):
 
-  - the minimal set up requires at least the database and the web application.
-  - to activate the rate limit, redis is required.
-  - to send e-mails, redis and workers are required and EMAIL_URL must be set in ``.env``.
+  - the minimal set up requires at least the database and the web application
+  - to activate the rate limit, redis is required
+  - to send e-mails, redis and workers are required and a valid ``EMAIL_URL`` variable must be set in ``.env``
 
 .. note::
     The same image is used by the web application and workers.
@@ -860,6 +906,10 @@ An image is available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrac
 .. code:: bash
 
    $ docker compose up -d
+
+.. warning::
+
+    Migrations are executed at startup. Please backup data before updating FitTrackee image version.
 
 - to run a CLI command, for instance to give admin rights:
 
