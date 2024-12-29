@@ -13,6 +13,8 @@ env:
   EMAIL_URL: "smtp://none:none@0.0.0.0:1025"
   FLASK_APP: fittrackee/__main__.py
   SENDER_EMAIL: fittrackee@example.com
+  GITHUB_REGISTRY: ghcr.io
+  GITHUB_IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   python:
@@ -269,3 +271,61 @@ jobs:
         gh release upload
         "$GITHUB_REF_NAME" dist/**
         --repo "$GITHUB_REPOSITORY"
+
+  push_to_registries:
+    if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
+    name: Push Docker image to multiple registries
+    needs: ["end2end", "end2end_package", "end2end_package_update"]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.GITHUB_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            fittrackee/fittrackee
+            ${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_IMAGE_NAME}}
+
+      - name: Build and push Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_IMAGE_NAME}}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
