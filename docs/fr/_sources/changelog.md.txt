@@ -1,5 +1,38 @@
 # Change log
 
+## Version 0.8.13 (2024/12/29)
+
+### Translations
+
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galicien)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 98%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 81%
+- Norwegian Bokmål: 52%
+- Polish: 100%
+- Portuguese: 97%
+- Russian: 62%
+- Spanish: 100%
+
+### Misc
+
+* [#126](https://github.com/SamR1/FitTrackee/issues/126) - Docker's Container on docker hub
+* [PR#673](https://github.com/SamR1/FitTrackee/pull/673) - Publish package on PyPI using GitHub Actions workflow
+
+
+Thanks to the contributors:
+- @DavidHenryThoreau
+- @xmgz
+
+
 ## Version 0.8.12 (2024/11/17)
 
 ### Bugs Fixed
@@ -9,7 +42,6 @@
 ### Misc
 
 * [PR#651](https://github.com/SamR1/FitTrackee/pull/651) - Tests - add databases to parallelize more tests
-
 
 
 ## Version 0.8.11 (2024/10/30)
