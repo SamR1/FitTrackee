@@ -10,7 +10,7 @@
 [![code formatter: prettier](https://img.shields.io/badge/code%20formatter-prettier-ff69b4.svg)](https://github.com/prettier/prettier) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee.svg)](https://pypi.org/project/fittrackee/)  [![docker: fittrackee/fittrackee](https://img.shields.io/badge/docker-fittrackee/fittrackee-2f7bee)](https://hub.docker.com/r/fittrackee/fittrackee)  
-[![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)
+[![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
 ---
