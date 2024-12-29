@@ -1261,6 +1261,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         input_visibility: VisibilityLevel,
     ) -> None:
         user_1.map_visibility = input_visibility
+        user_1.analysis_visibility = input_visibility
         user_1.workouts_visibility = input_visibility
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1287,15 +1288,32 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
             == user_1.map_visibility.value
         )
         assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == user_1.analysis_visibility.value
+        )
+        assert (
             data['data']['workouts'][0]['workout_visibility']
             == user_1.workouts_visibility.value
         )
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,input_workout_visibility',
         [
-            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
-            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+            ),
         ],
     )
     def test_workout_is_created_with_provided_privacy_parameters(
@@ -1305,6 +1323,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1318,6 +1337,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{input_map_visibility.value}", '
+                    f'"analysis_visibility": '
+                    f'"{input_analysis_visibility.value}", '
                     f'"workout_visibility": '
                     f'"{input_workout_visibility.value}"}}'
                 ),
@@ -1337,15 +1358,40 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
             == input_map_visibility.value
         )
         assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == input_analysis_visibility.value
+        )
+        assert (
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_visibility.value
         )
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,'
+        'input_workout_visibility,expected_map_visibility,'
+        'expected_analysis_visibility',
         [
-            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
-            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+            ),
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+            ),
         ],
     )
     def test_workout_is_created_with_valid_privacy_parameters_when_provided(
@@ -1355,7 +1401,10 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
+        expected_map_visibility: VisibilityLevel,
+        expected_analysis_visibility: VisibilityLevel,
     ) -> None:
         """
         when workout visibility is stricter, map visibility is initialised
@@ -1372,6 +1421,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{input_map_visibility.value}", '
+                    f'"analysis_visibility": '
+                    f'"{input_analysis_visibility.value}", '
                     f'"workout_visibility": '
                     f'"{input_workout_visibility.value}"}}'
                 ),
@@ -1388,7 +1439,11 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert len(data['data']['workouts']) == 1
         assert (
             data['data']['workouts'][0]['map_visibility']
-            == input_workout_visibility.value
+            == expected_map_visibility.value
+        )
+        assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == expected_analysis_visibility.value
         )
         assert (
             data['data']['workouts'][0]['workout_visibility']
@@ -2708,6 +2763,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         input_visibility: VisibilityLevel,
     ) -> None:
         user_1.map_visibility = input_visibility
+        user_1.analysis_visibility = input_visibility
         user_1.workouts_visibility = input_visibility
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2733,7 +2789,11 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert len(data['data']['workouts']) == 1
         assert (
             data['data']['workouts'][0]['map_visibility']
-            == user_1.map_visibility.value
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == VisibilityLevel.PRIVATE.value
         )
         assert (
             data['data']['workouts'][0]['workout_visibility']
@@ -2779,6 +2839,14 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'created' in data['status']
         assert len(data['data']['workouts']) == 1
+        assert (
+            data['data']['workouts'][0]['map_visibility']
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data['data']['workouts'][0]['analysis_visibility']
+            == VisibilityLevel.PRIVATE.value
+        )
         assert (
             data['data']['workouts'][0]['workout_visibility']
             == input_workout_visibility.value
@@ -3058,6 +3126,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     ) -> None:
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         user_1.map_visibility = input_visibility
+        user_1.analysis_visibility = input_visibility
         user_1.workouts_visibility = input_visibility
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3085,15 +3154,27 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
                     == user_1.map_visibility.value
                 )
                 assert (
+                    data['data']['workouts'][n]['analysis_visibility']
+                    == user_1.analysis_visibility.value
+                )
+                assert (
                     data['data']['workouts'][n]['workout_visibility']
                     == user_1.workouts_visibility.value
                 )
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,input_workout_visibility',
         [
-            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC),
-            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+            ),
         ],
     )
     def test_workouts_are_created_with_provided_privacy_parameters(
@@ -3102,6 +3183,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
     ) -> None:
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
@@ -3117,6 +3199,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
                     data=(
                         f'{{"sport_id": 1, "map_visibility": '
                         f'"{input_map_visibility.value}", '
+                        f'"analysis_visibility": '
+                        f'"{input_analysis_visibility.value}", '
                         f'"workout_visibility": '
                         f'"{input_workout_visibility.value}"}}'
                     ),
@@ -3135,6 +3219,10 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert (
                 data['data']['workouts'][n]['map_visibility']
                 == input_map_visibility.value
+            )
+            assert (
+                data['data']['workouts'][n]['analysis_visibility']
+                == input_analysis_visibility.value
             )
             assert (
                 data['data']['workouts'][n]['workout_visibility']
@@ -3273,10 +3361,20 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         ]
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_visibility',
         [
-            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
-            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+            ),
         ],
     )
     def test_workouts_are_created_with_valid_privacy_parameters_when_provided(
@@ -3285,11 +3383,15 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
+        expected_visibility: VisibilityLevel,
     ) -> None:
         """
-        when workout visibility is stricter, map visibility is initialised
+        when workout visibility is stricter, analysis visibility is initialised
         with workout visibility value
+        when analysis visibility is stricter, map visibility is initialised
+        with analysis visibility value
         """
         file_path = os.path.join(app.root_path, 'tests/files/gpx_test.zip')
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3304,6 +3406,8 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
                     data=(
                         f'{{"sport_id": 1, "map_visibility": '
                         f'"{input_map_visibility.value}", '
+                        f'"analysis_visibility": '
+                        f'"{input_analysis_visibility.value}", '
                         f'"workout_visibility": '
                         f'"{input_workout_visibility.value}"}}'
                     ),
@@ -3321,7 +3425,11 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         for n in range(3):
             assert (
                 data['data']['workouts'][n]['map_visibility']
-                == input_workout_visibility.value
+                == expected_visibility.value
+            )
+            assert (
+                data['data']['workouts'][n]['analysis_visibility']
+                == expected_visibility.value
             )
             assert (
                 data['data']['workouts'][n]['workout_visibility']

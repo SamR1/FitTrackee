@@ -35,7 +35,13 @@ const getWorkouts = (
     .then((res) => {
       if (res.data.status === 'success') {
         context.commit(WORKOUTS_STORE.MUTATIONS[target], res.data.data.workouts)
-        if (target === WorkoutsMutations['SET_USER_WORKOUTS']) {
+        if (
+          [
+            WorkoutsMutations['SET_USER_WORKOUTS'],
+            WorkoutsMutations['SET_TIMELINE_WORKOUTS'],
+            WorkoutsMutations['ADD_TIMELINE_WORKOUTS'],
+          ].includes(target)
+        ) {
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
             res.data.pagination
@@ -104,7 +110,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
     getWorkouts(context, payload, WorkoutsMutations['SET_CALENDAR_WORKOUTS'])
   },
-  [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void {
@@ -145,7 +151,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
             res.data.data.workouts[0]
           )
-          if (res.data.data.workouts[0].with_gpx) {
+          if (res.data.data.workouts[0].with_analysis) {
             authApi
               .get(`workouts/${payload.workoutId}/chart_data${segmentUrl}`)
               .then((res) => {
@@ -156,6 +162,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
+          }
+          if (res.data.data.workouts[0].with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {

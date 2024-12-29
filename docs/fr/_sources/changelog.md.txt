@@ -1,5 +1,114 @@
 # Change log
 
+## Version 0.8.13 (2024/12/29)
+
+### Translations
+
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galicien)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 98%
+- Czech: 72%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 81%
+- Norwegian Bokmål: 52%
+- Polish: 100%
+- Portuguese: 97%
+- Russian: 62%
+- Spanish: 100%
+
+### Misc
+
+* [#126](https://github.com/SamR1/FitTrackee/issues/126) - Docker's Container on docker hub
+* [PR#673](https://github.com/SamR1/FitTrackee/pull/673) - Publish package on PyPI using GitHub Actions workflow
+
+
+Thanks to the contributors:
+- @DavidHenryThoreau
+- @xmgz
+
+
+## Version 0.9.0b4 (2024/12/23)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user detail
+* [#668](https://github.com/SamR1/FitTrackee/issues/668) - add analysis visibility
+* [PR#67](https://github.com/SamR1/FitTrackee/pull/670) - create notification when follow request is approved
+
+### Bugs Fixed
+
+* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
+
+### Translations
+
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
+
+Thanks to the contributors:
+- @xmgz
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
+## Version 0.9.0b3 (2024/12/18)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#660](https://github.com/SamR1/FitTrackee/issues/660) - mark notification as read on click on workout/comment/...
+
+### Bugs Fixed
+
+* [PR#659](https://github.com/SamR1/FitTrackee/pull/659) - API - get workouts list with equipment
+* [PR#662](https://github.com/SamR1/FitTrackee/pull/662) - Minor fixes and improvements
+
+### Misc
+
+* [189071](https://github.com/SamR1/FitTrackee/commit/189071a949ef7cb0c01e8dedcb267af742daefa4) - use uuid instead of id for notifications
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
+## Version 0.9.0b2 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [#657](https://github.com/SamR1/FitTrackee/issues/657) - can not display next workouts in timeline
+
+
+## Version 0.9.0b1 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1s part]
+  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
+  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
+  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
+  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
 ## Version 0.8.12 (2024/11/17)
 
 ### Bugs Fixed

@@ -1603,7 +1603,8 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     use_dark_mode=True,
                     use_raw_gpx_speed=True,
                     date_format='yyyy-MM-dd',
-                    map_visibility='followers_only',
+                    map_visibility='private',
+                    analysis_visibility='followers_only',
                     workouts_visibility='public',
                     manually_approves_followers=False,
                     hide_profile_in_users_directory=False,
@@ -1629,10 +1630,36 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data['data']['hide_profile_in_users_directory'] is False
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility',
         [
-            (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),
-            (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+            ),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+            ),
         ],
     )
     def test_it_updates_user_preferences_with_valid_map_visibility(
@@ -1640,7 +1667,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
+        expected_map_visibility: VisibilityLevel,
+        expected_analysis_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1657,13 +1687,14 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=True,
                     date_format='MM/dd/yyyy',
-                    map_visibility=input_map_visibility.value,
                     start_elevation_at_zero=False,
                     use_raw_gpx_speed=False,
-                    workouts_visibility=input_workout_visibility.value,
                     manually_approves_followers=True,
                     hide_profile_in_users_directory=True,
                     use_dark_mode=None,
+                    map_visibility=input_map_visibility.value,
+                    analysis_visibility=input_analysis_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -1671,7 +1702,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['map_visibility'] == input_workout_visibility.value
+        assert data['data']['map_visibility'] == expected_map_visibility.value
+        assert (
+            data['data']['analysis_visibility']
+            == expected_analysis_visibility.value
+        )
         assert (
             data['data']['workouts_visibility']
             == input_workout_visibility.value
@@ -1691,6 +1726,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             content_type='application/json',
             data=json.dumps(
                 dict(
+                    analysis_visibility=VisibilityLevel.PUBLIC.value,
                     timezone='America/New_York',
                     weekm=True,
                     language='fr',
@@ -1712,6 +1748,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['data']['map_visibility'] == VisibilityLevel.PUBLIC.value
+        assert (
+            data['data']['analysis_visibility'] == VisibilityLevel.PUBLIC.value
+        )
         assert (
             data['data']['workouts_visibility'] == VisibilityLevel.PUBLIC.value
         )

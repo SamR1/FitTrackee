@@ -1,11 +1,12 @@
 import os
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from uuid import uuid4
 
 import jwt
 from flask import current_app
 from sqlalchemy import and_, func
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.dialects.postgresql import UUID, insert
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -24,6 +25,7 @@ from fittrackee.federation.models import Actor, Domain
 from fittrackee.federation.objects.follow_request import FollowRequestObject
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.files import get_absolute_file_path
+from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
@@ -70,6 +72,7 @@ NOTIFICATION_TYPES = (
         'comment_unsuspension',
         'follow',
         'follow_request',
+        'follow_request_approved',
         'mention',
         'user_warning',
         'user_warning_lifting',
@@ -182,6 +185,13 @@ def on_follow_request_update(
                         marked_as_read=False,
                     )
                 )
+                notification = Notification(
+                    from_user_id=follow_request.followed_user_id,
+                    to_user_id=follow_request.follower_user_id,
+                    created_at=datetime.utcnow(),
+                    event_type='follow_request_approved',
+                )
+                session.add(notification)
             if (
                 not follow_request.is_approved
                 and follow_request.updated_at is not None
@@ -203,6 +213,11 @@ def on_follow_request_delete(
             Notification.from_user_id == old_follow_request.follower_user_id,
             Notification.to_user_id == old_follow_request.followed_user_id,
             Notification.event_type.in_(['follow', 'follow_request']),
+        ).delete()
+        Notification.query.filter(
+            Notification.from_user_id == old_follow_request.followed_user_id,
+            Notification.to_user_id == old_follow_request.follower_user_id,
+            Notification.event_type == 'follow_request_approved',
         ).delete()
 
 
@@ -304,6 +319,11 @@ class User(BaseModel):
         ),
         nullable=False,
         default=UserRole.USER.value,
+    )
+    analysis_visibility = db.Column(
+        Enum(VisibilityLevel, name='visibility_levels'),
+        server_default='PRIVATE',
+        nullable=False,
     )
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -620,6 +640,9 @@ class User(BaseModel):
                 local_following_ids.append(following.id)
         return local_following_ids, remote_following_ids
 
+    def get_followers_user_ids(self) -> List:
+        return [followers.id for followers in self.followers]
+
     @federation_required
     def get_followers_shared_inboxes(self) -> Dict[str, List[str]]:
         """
@@ -910,12 +933,10 @@ class User(BaseModel):
             ]
 
         if is_auth_user(role):
-            accepted_privacy_policy = False
+            accepted_privacy_policy = None
             if self.accepted_policy_date:
                 accepted_privacy_policy = (
-                    True
-                    if current_app.config['privacy_policy_date'] is None
-                    else current_app.config['privacy_policy_date']
+                    current_app.config['privacy_policy_date']
                     < self.accepted_policy_date
                 )
             serialized_user = {
@@ -932,6 +953,7 @@ class User(BaseModel):
                     'use_raw_gpx_speed': self.use_raw_gpx_speed,
                     'weekm': self.weekm,
                     'map_visibility': self.map_visibility.value,
+                    'analysis_visibility': self.analysis_visibility.value,
                     'workouts_visibility': self.workouts_visibility.value,
                     'manually_approves_followers': (
                         self.manually_approves_followers
@@ -1121,6 +1143,12 @@ class Notification(BaseModel):
         ),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(
+        UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     from_user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -1152,10 +1180,14 @@ class Notification(BaseModel):
         self.event_type = event_type
         self.event_object_id = event_object_id
 
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
     def serialize(self) -> Dict:
         serialized_notification = {
             "created_at": self.created_at,
-            "id": self.id,
+            "id": self.short_id,
             "marked_as_read": self.marked_as_read,
             "type": self.event_type,
         }

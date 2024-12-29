@@ -17,6 +17,7 @@ import type {
   IUserRelationshipsPayload,
   TUsersPayload,
 } from '@/types/user'
+import type { IWorkout } from '@/types/workouts.ts'
 
 export interface IUsersState {
   user: IUserProfile
@@ -24,6 +25,10 @@ export interface IUsersState {
     sanctions: IReportAction[]
     loading: boolean
     pagination: IPagination
+  }
+  userWorkouts: {
+    workouts: IWorkout[]
+    loading: boolean
   }
   user_relationships: IUserProfile[]
   users: IUserProfile[]
@@ -50,6 +55,10 @@ export interface IUsersActions {
   [USERS_STORE.ACTIONS.GET_USER_SANCTIONS](
     context: ActionContext<IUsersState, IRootState>,
     payload: TUsersPayload
+  ): void
+  [USERS_STORE.ACTIONS.GET_USER_WORKOUTS](
+    context: ActionContext<IUsersState, IRootState>,
+    username: string
   ): void
   [USERS_STORE.ACTIONS.GET_USERS](
     context: ActionContext<IUsersState, IRootState>,
@@ -86,6 +95,8 @@ export interface IUsersGetters {
   [USERS_STORE.GETTERS.USER_SANCTIONS_PAGINATION](
     state: IUsersState
   ): IPagination
+  [USERS_STORE.GETTERS.USER_WORKOUTS](state: IUsersState): IWorkout[]
+  [USERS_STORE.GETTERS.USER_WORKOUTS_LOADING](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS](state: IUsersState): IUserProfile[]
   [USERS_STORE.GETTERS.USERS_IS_SUCCESS](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_LOADING](state: IUsersState): boolean
@@ -128,6 +139,14 @@ export type TUsersMutations<S = IUsersState> = {
   [USERS_STORE.MUTATIONS.UPDATE_USER_CURRENT_REPORTING](
     state: S,
     currentReporting: boolean
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS](
+    state: S,
+    userWorkouts: IWorkout[]
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS_LOADING](
+    state: S,
+    loading: boolean
   ): void
 }
 

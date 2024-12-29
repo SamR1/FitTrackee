@@ -71,6 +71,8 @@
     "WEAK": "faible"
   },
   "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
+
+  "PRIVACY_POLICY_TO_VALIDATE": "Veuillez {0} la politique de confidentialité avant de poursuivre.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Mise à jour du compte",
     "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",

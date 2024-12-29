@@ -14,4 +14,5 @@ Users
     users.get_following,
     users.block_user,
     users.unblock_user,
-    users.get_user_sanctions
+    users.get_user_sanctions,
+    users.get_user_latest_workouts

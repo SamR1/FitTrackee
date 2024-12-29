@@ -174,6 +174,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user['workouts_visibility']
             == user_1.workouts_visibility
         )
+        assert (
+            serialized_user['analysis_visibility']
+            == user_1.analysis_visibility
+        )
         assert serialized_user['map_visibility'] == user_1.map_visibility
         assert (
             serialized_user['manually_approves_followers']
@@ -189,27 +193,34 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         self.assert_workouts_keys_are_present(serialized_user)
 
-    def test_it_returns_user_did_not_accept_default_privacy_policy(
+    def test_it_returns_none_when_user_did_not_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        # default privacy policy
-        app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = None
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert serialized_user['accepted_privacy_policy'] is False
+        assert serialized_user['accepted_privacy_policy'] is None
 
-    def test_it_returns_user_did_accept_default_privacy_policy(
+    def test_it_returns_true_user_did_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        # default privacy policy
-        app.config['privacy_policy_date'] = None
         user_1.accepted_policy_date = datetime.utcnow()
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
 
-    def test_it_returns_user_did_not_accept_last_policy(
+    def test_it_returns_false_when_user_did_not_accept_last_default_policy(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.accepted_policy_date = datetime.strptime(
+            app.config['DEFAULT_PRIVACY_POLICY_DATA'],
+            '%Y-%m-%d %H:%M:%S',
+        ) - timedelta(days=1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert serialized_user['accepted_privacy_policy'] is False
+
+    def test_it_returns_false_when_user_did_not_accept_last_custom_policy(
         self, app: Flask, user_1: User
     ) -> None:
         user_1.accepted_policy_date = datetime.utcnow()
@@ -294,6 +305,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert 'use_raw_gpx_speed' not in serialized_user
         assert 'use_dark_mode' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
@@ -378,6 +390,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert 'use_raw_gpx_speed' not in serialized_user
         assert 'use_dark_mode' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
@@ -455,6 +468,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'timezone' not in serialized_user
         assert 'weekm' not in serialized_user
         assert 'workouts_visibility' not in serialized_user
+        assert 'analysis_visibility' not in serialized_user
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user

@@ -1,6 +1,6 @@
 import type { TVisibilityLevels } from '@/types/user'
 
-export const getVisibilityLevels = (
+export const getAllVisibilityLevels = (
   federationEnabled: boolean
 ): TVisibilityLevels[] => {
   return federationEnabled
@@ -21,30 +21,28 @@ export const getVisibilityLevelForLabel = (
   return federationEnabled ? 'local_followers_only' : 'followers_only'
 }
 
-export const getUpdatedMapVisibility = (
-  mapVisibility: TVisibilityLevels,
-  workoutVisibility: TVisibilityLevels
+export const getUpdatedVisibility = (
+  visibility: TVisibilityLevels,
+  parentVisibility: TVisibilityLevels
 ): TVisibilityLevels => {
-  // when workout visibility is stricter, it returns workout visibility value
-  // for map visibility
   if (
-    workoutVisibility === 'private' ||
-    (workoutVisibility === 'followers_only' &&
-      ['followers_and_remote_only', 'public'].includes(mapVisibility)) ||
-    (workoutVisibility === 'followers_and_remote_only' &&
-      mapVisibility === 'public')
+    parentVisibility === 'private' ||
+    (parentVisibility === 'followers_only' &&
+      ['followers_and_remote_only', 'public'].includes(visibility)) ||
+    (parentVisibility === 'followers_and_remote_only' &&
+      visibility === 'public')
   ) {
-    return workoutVisibility
+    return parentVisibility
   }
-  return mapVisibility
+  return visibility
 }
 
-export const getMapVisibilityLevels = (
-  workoutVisibility: TVisibilityLevels
+export const getVisibilityLevels = (
+  inputVisibility: TVisibilityLevels
 ): TVisibilityLevels[] => {
   // regardless federation activation, map can not be visible
   // to remote followers
-  switch (workoutVisibility) {
+  switch (inputVisibility) {
     case 'public':
       return ['private', 'followers_only', 'public']
     case 'followers_and_remote_only':

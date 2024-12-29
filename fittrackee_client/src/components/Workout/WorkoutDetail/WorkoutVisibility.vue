@@ -2,7 +2,7 @@
   <div class="workout-visibility-levels" v-if="workoutObject.workoutVisibility">
     {{ $t('visibility_levels.VISIBILITY') }}:
     <div class="visibility">
-      <span v-if="workoutObject.with_gpx" class="workout-visibility">
+      <span v-if="workoutObject.with_analysis" class="workout-visibility">
         {{ $t('workouts.WORKOUT') }}
       </span>
       <i
@@ -20,6 +20,23 @@
               appConfig.federation_enabled
             )}`
           )
+        }})
+      </span>
+    </div>
+    <div class="visibility" v-if="workoutObject.with_analysis">
+      <span v-if="workoutObject.with_analysis" class="workout-visibility">
+        {{ $t('workouts.ANALYSIS') }}
+      </span>
+      <i
+        :class="`fa fa-${getVisibilityIcon(workoutObject.analysisVisibility)}`"
+        aria-hidden="true"
+        :title="
+          $t(`visibility_levels.LEVELS.${workoutObject.analysisVisibility}`)
+        "
+      />
+      <span class="visibility-label">
+        ({{
+          $t(`visibility_levels.LEVELS.${workoutObject.analysisVisibility}`)
         }})
       </span>
     </div>

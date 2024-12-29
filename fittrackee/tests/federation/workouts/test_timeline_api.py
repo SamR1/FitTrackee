@@ -175,10 +175,14 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         'input_desc,input_visibility',
         [
             (
-                'workout and map visibility: followers_and_remote_only',
+                'workout, analysis and map visibility: '
+                'followers_and_remote_only',
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout and map visibility: public', VisibilityLevel.PUBLIC),
+            (
+                'workout, analysis and map visibility: public',
+                VisibilityLevel.PUBLIC,
+            ),
         ],
     )
     def test_it_returns_followed_user_workout_map_when_visibility_allows_it(
@@ -194,6 +198,7 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_visibility
+        workout_cycling_user_2.analysis_visibility = input_visibility
         workout_cycling_user_2.map_visibility = input_visibility
         map_id = self.random_string()
         workout_cycling_user_2.map_id = map_id

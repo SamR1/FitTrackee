@@ -67,10 +67,24 @@ class TestUserRegistration:
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_map_visibility,input_analysis_visibility,'
+        'input_workout_visibility,expected_map_visibility,'
+        'expected_analysis_visibility',
         [
-            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC),
-            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
+            (
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+            ),
         ],
     )
     def test_it_updates_user_preferences_with_remote_level(
@@ -78,7 +92,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         app_with_federation: Flask,
         user_1: User,
         input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
+        expected_map_visibility: VisibilityLevel,
+        expected_analysis_visibility: VisibilityLevel,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -95,13 +112,14 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     imperial_units=True,
                     display_ascent=True,
                     date_format='MM/dd/yyyy',
-                    map_visibility=input_map_visibility.value,
                     start_elevation_at_zero=False,
-                    workouts_visibility=input_workout_visibility.value,
                     use_raw_gpx_speed=True,
                     manually_approves_followers=False,
                     hide_profile_in_users_directory=False,
                     use_dark_mode=True,
+                    map_visibility=input_map_visibility.value,
+                    analysis_visibility=input_analysis_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
                 )
             ),
             headers=dict(Authorization=f'Bearer {auth_token}'),
@@ -109,7 +127,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['map_visibility'] == input_map_visibility.value
+        assert data['data']['map_visibility'] == expected_map_visibility.value
+        assert (
+            data['data']['analysis_visibility']
+            == expected_analysis_visibility.value
+        )
         assert (
             data['data']['workouts_visibility']
             == input_workout_visibility.value

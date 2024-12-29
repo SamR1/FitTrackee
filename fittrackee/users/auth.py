@@ -46,7 +46,10 @@ from fittrackee.responses import (
 )
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import decode_short_id, get_readable_duration
-from fittrackee.visibility_levels import VisibilityLevel, get_map_visibility
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    get_calculated_visibility,
+)
 from fittrackee.workouts.models import Sport
 
 from ..reports.models import ReportAction, ReportActionAppeal
@@ -322,6 +325,7 @@ def get_authenticated_user_profile(
         "data": {
           "accepted_privacy_policy": true,
           "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -452,6 +456,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "accepted_privacy_policy": true,
           "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -634,6 +639,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "accepted_privacy_policy": true,
           "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -869,6 +875,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "accepted_privacy_policy": true,
           "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -958,6 +965,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
+    :<json string analysis_visibility: workout analysis visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
@@ -992,6 +1001,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
+        'analysis_visibility',
         'date_format',
         'display_ascent',
         'hide_profile_in_users_directory',
@@ -1019,6 +1029,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
     map_visibility = post_data.get('map_visibility')
+    analysis_visibility = post_data.get('analysis_visibility')
     workouts_visibility = post_data.get('workouts_visibility')
     manually_approves_followers = post_data.get('manually_approves_followers')
     hide_profile_in_users_directory = post_data.get(
@@ -1042,8 +1053,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
         auth_user.workouts_visibility = VisibilityLevel(workouts_visibility)
-        auth_user.map_visibility = get_map_visibility(
-            VisibilityLevel(map_visibility), auth_user.workouts_visibility
+        auth_user.analysis_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(analysis_visibility),
+            parent_visibility=auth_user.workouts_visibility,
+        )
+        auth_user.map_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(map_visibility),
+            parent_visibility=auth_user.analysis_visibility,
         )
         auth_user.manually_approves_followers = manually_approves_followers
         auth_user.hide_profile_in_users_directory = (

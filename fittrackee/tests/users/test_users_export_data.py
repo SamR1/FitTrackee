@@ -87,6 +87,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 'description': None,
                 'liked': workout_cycling_user_1.liked_by(user_1),
                 'likes_count': workout_cycling_user_1.likes.count(),
+                'analysis_visibility': (
+                    workout_cycling_user_1.calculated_analysis_visibility.value
+                ),
                 'map_visibility': (
                     workout_cycling_user_1.calculated_map_visibility.value
                 ),
@@ -140,6 +143,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 'description': None,
                 'liked': workout.liked_by(user_1),
                 'likes_count': workout.likes.count(),
+                'analysis_visibility': (
+                    workout.calculated_analysis_visibility.value
+                ),
                 'map_visibility': workout.calculated_map_visibility.value,
                 'workout_visibility': workout.workout_visibility.value,
             }

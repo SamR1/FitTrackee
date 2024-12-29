@@ -73,6 +73,7 @@
           :display-object-name="notification.type.startsWith('user_warning')"
           :comment="notification.comment"
           :action="notification.report_action"
+          @commentLinkClicked="markAsReadOnClick(notification)"
         />
       </template>
       <RelationshipDetail
@@ -80,6 +81,7 @@
         :notification="notification"
         :authUser="authUser"
         @updatedUserRelationship="emitReload"
+        @userLinkClicked="markAsReadOnClick(notification)"
       />
       <ReportNotification
         v-else-if="
@@ -88,6 +90,7 @@
           ) && notification.report
         "
         :report="notification.report"
+        @reportButtonClicked="markAsReadOnClick(notification)"
       />
       <template v-else-if="notification.workout">
         <WorkoutForUser
@@ -95,6 +98,7 @@
           :display-appeal="notification.type !== 'user_warning'"
           :display-object-name="notification.type.startsWith('user_warning')"
           :workout="notification.workout"
+          @workoutLinkClicked="markAsReadOnClick(notification)"
         />
       </template>
       <div
@@ -126,6 +130,7 @@
           v-else-if="!notification.report_action?.appeal"
           class="appeal-link"
           :to="`profile/moderation/sanctions/${notification.report_action.id}`"
+          @click="markAsReadOnClick(notification)"
         >
           {{ $t('user.APPEAL') }}
         </router-link>
@@ -168,6 +173,11 @@
   function updateReadStatus(notificationId: number, markedAsRead: boolean) {
     emit('updateReadStatus', { notificationId, markedAsRead })
   }
+  function markAsReadOnClick(notification: INotification) {
+    if (!notification.marked_as_read) {
+      updateReadStatus(notification.id, true)
+    }
+  }
   function displayCommentCard(notificationType: TNotificationType): boolean {
     return (
       [
@@ -183,9 +193,12 @@
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
-    return ['follow', 'follow_request', 'account_creation'].includes(
-      notificationType
-    )
+    return [
+      'account_creation',
+      'follow',
+      'follow_request',
+      'follow_request_approved',
+    ].includes(notificationType)
   }
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {
@@ -203,6 +216,8 @@
         return 'user.RELATIONSHIPS.FOLLOWS_YOU'
       case 'follow_request':
         return 'notifications.SEND_FOLLOW_REQUEST_TO_YOU'
+      case 'follow_request_approved':
+        return 'notifications.ACCEPTED_FOLLOW_REQUEST'
       case 'mention':
         return 'notifications.MENTIONED_YOU'
       case 'suspension_appeal':
@@ -235,6 +250,7 @@
     switch (notificationType) {
       case 'follow':
       case 'follow_request':
+      case 'follow_request_approved':
         return 'user-plus'
       case 'mention':
         return 'at'

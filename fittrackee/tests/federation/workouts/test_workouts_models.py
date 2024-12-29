@@ -51,7 +51,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             workout_cycling_user_1.serialize(user=remote_user)
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_analysis_visibility,input_workout_visibility',
         [
             (
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
@@ -67,9 +67,9 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             ),
         ],
     )
-    def test_serializer_returns_map_related_data(
+    def test_serializer_returns_analysis_related_data(
         self,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         sport_1_cycling: Sport,
@@ -80,17 +80,21 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
     ) -> None:
         add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
-        workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout(
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        workout = self.update_workout_with_gpx_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
         serialized_workout = workout.serialize(user=remote_user, light=False)
 
-        assert serialized_workout['map'] == workout.map
-        assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['with_gpx'] is True
-        assert serialized_workout['map_visibility'] == input_map_visibility
+        assert serialized_workout['map'] is None
+        assert serialized_workout['bounds'] == []
+        assert serialized_workout['with_gpx'] is False
+        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert (
+            serialized_workout['analysis_visibility']
+            == input_analysis_visibility
+        )
         assert (
             serialized_workout['workout_visibility']
             == input_workout_visibility
@@ -100,7 +104,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         ]
 
     @pytest.mark.parametrize(
-        'input_map_visibility,input_workout_visibility',
+        'input_analysis_visibility,input_workout_visibility',
         [
             (
                 VisibilityLevel.FOLLOWERS,
@@ -112,9 +116,9 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             ),
         ],
     )
-    def test_serializer_does_not_return_map_related_data(
+    def test_serializer_does_not_return_analysis_related_data(
         self,
-        input_map_visibility: VisibilityLevel,
+        input_analysis_visibility: VisibilityLevel,
         input_workout_visibility: VisibilityLevel,
         app_with_federation: Flask,
         sport_1_cycling: Sport,
@@ -125,8 +129,8 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
     ) -> None:
         add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
-        workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout(workout_cycling_user_1)
+        workout_cycling_user_1.analysis_visibility = input_analysis_visibility
+        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=remote_user)
 
@@ -134,6 +138,10 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         assert serialized_workout['bounds'] == []
         assert serialized_workout['with_gpx'] is False
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert (
+            serialized_workout['analysis_visibility']
+            == VisibilityLevel.PRIVATE
+        )
         assert (
             serialized_workout['workout_visibility']
             == input_workout_visibility

@@ -39,15 +39,23 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python 3.9+
-    - PostgreSQL 12+
+
+  - installation from sources or package:
+
+    - `Python <https://www.python.org/>`__ 3.9+
+    - `PostgreSQL <https://www.postgresql.org/>`__ 12+
+
+  - installation with Docker:
+
+    - `Docker <https://docs.docker.com/get-started/>`__ and `Docker Compose <https://docs.docker.com/compose/>`__ v2.30+
+
 - optional
-    - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
-    - SMTP provider (if email sending is enabled)
-    - API key from a `weather data provider <installation.html#weather-data>`__
-    - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
-    - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
-    -  Docker and Docker Compose (for development or evaluation purposes)
+
+  - `Redis <https://redis.io/>`__ for task queue (if email sending is enabled and for data export requests) and API rate limits (for installation from sources or package)
+  - SMTP provider (if email sending is enabled)
+  - API key from a `weather data provider <installation.html#weather-data>`__
+  - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
+  - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
 
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
@@ -143,7 +151,10 @@ deployment method.
 
 .. envvar:: UI_URL
 
-    **FitTrackee** URL, needed for links in emails.
+    **FitTrackee** URL, needed for links in emails and mentions.
+
+    .. warning::
+        UI_URL must contains url scheme (``https://``).
 
 
 .. envvar:: EMAIL_URL
@@ -260,6 +271,53 @@ deployment method.
 
     .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
 
+    **FitTrackee** API URL, only needed in dev environment.
+
+Docker
+^^^^^^
+
+.. versionadded:: 0.8.13
+
+Environment variables for ``docker-compose.yml``
+
+.. envvar:: APP_PORT
+
+    Application container port
+
+
+.. envvar:: DATABASE_DIR
+
+    Host directory for PostgreSQL data volume
+
+
+.. envvar:: POSTGRES_USER
+
+    User for PostgreSQL database
+
+
+.. envvar:: POSTGRES_PASSWORD
+
+    Password for PostgreSQL user
+
+
+.. envvar:: POSTGRES_DB
+
+    Database name for FitTrackee application
+
+
+.. envvar:: REDIS_DIR
+
+    Host directory for redis data volume
+
+
+.. envvar:: LOG_DIR
+
+    Host directory for logs volume
+
+
+.. envvar:: UPLOAD_DIR
+
+    Host directory for uploaded files volume
 
 
 Emails
@@ -527,13 +585,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.8.12):
+-  Download the last release (for now, it is the release v0.8.13):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-   $ tar -xzf v0.8.12.tar.gz
-   $ mv FitTrackee-0.8.12 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+   $ tar -xzf v0.8.13.tar.gz
+   $ mv FitTrackee-0.8.13 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -664,13 +722,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.8.12) and overwrite existing files:
+- Download the last release (for now, it is the release v0.8.13) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-   $ tar -xzf v0.8.12.tar.gz
-   $ cp -R FitTrackee-0.8.12/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+   $ tar -xzf v0.8.13.tar.gz
+   $ cp -R FitTrackee-0.8.13/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -832,15 +890,50 @@ Examples:
 Docker
 ~~~~~~
 
-Installation
-^^^^^^^^^^^^
-
 .. versionadded:: 0.4.4
+.. versionchanged:: 0.5.0 add client application for development
+.. versionchanged:: 0.8.13 add docker image for production
 
-For **evaluation** purposes, docker files are available, installing **FitTrackee** from **sources**.
+
+Production
+^^^^^^^^^^
+
+Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry <https://github.com/SamR1/FitTrackee/packages>`_.
+
+.. note::
+
+    Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. Only ``linux/amd64`` image has been tested.
+
+- create a ``docker-compose.yml`` file as needed (see the example in the repository):
+
+  - the minimal set up requires at least the database and the web application
+  - to activate the rate limit, redis is required
+  - to send e-mails, redis and workers are required and a valid ``EMAIL_URL`` variable must be set in ``.env``
+
+.. note::
+    The same image is used by the web application and workers.
+
+- create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <installation.html#environment-variables>`__).
+
+- to start the application:
+
+.. code:: bash
+
+   $ docker compose up -d
 
 .. warning::
-    Docker files are not suitable for production installation.
+
+    Migrations are executed at startup. Please backup data before updating FitTrackee image version.
+
+- to run a CLI command, for instance to give admin rights:
+
+.. code:: bash
+
+   $ docker compose exec fittrackee ftcli users update <username> --set-admin true
+
+
+Development
+^^^^^^^^^^^
 
 - To install and run **FitTrackee**:
 
@@ -848,7 +941,6 @@ For **evaluation** purposes, docker files are available, installing **FitTrackee
 
     $ git clone https://github.com/SamR1/FitTrackee.git
     $ cd FitTrackee
-    $ cp .env.docker .env
     $ make docker-run
 
 - Open http://localhost:5000 and register.
@@ -875,12 +967,6 @@ Open http://localhost:8025 to access `MailHog interface <https://github.com/mail
 .. code-block:: bash
 
     $ make docker-shell
-
-
-Development
-^^^^^^^^^^^
-
-.. versionadded:: 0.5.0
 
 - an additional step is needed to install ``fittrackee_client``
 

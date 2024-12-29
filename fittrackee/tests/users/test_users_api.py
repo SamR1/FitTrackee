@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Tuple
+from typing import List, Tuple
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -23,6 +23,7 @@ from fittrackee.users.models import (
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.utils import get_readable_duration
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, ReportMixin
@@ -3518,3 +3519,227 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert len(data['data']['sanctions']) == 0
+
+
+class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
+    route = '/api/users/{username}/workouts'
+
+    def test_it_returns_error_when_user_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=self.random_string()),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_404_with_entity(response, 'user')
+
+    def test_it_returns_empty_list_when_user_has_no_workout(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == []
+
+    def test_it_returns_empty_list_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        user_2.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_2.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == []
+
+    def test_it_returns_only_public_workout_when_user_is_not_authenticated(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+    ) -> None:
+        seven_workouts_user_1[1].workout_visibility = VisibilityLevel.PUBLIC
+        seven_workouts_user_1[4].workout_visibility = VisibilityLevel.FOLLOWERS
+        db.session.commit()
+        client = app.test_client()
+
+        response = client.get(self.route.format(username=user_1.username))
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == [
+            jsonify_dict(seven_workouts_user_1[1].serialize())
+        ]
+
+    def test_it_returns_workouts_visible_to_authenticated_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        seven_workouts_user_1[1].workout_visibility = VisibilityLevel.PUBLIC
+        seven_workouts_user_1[4].workout_visibility = VisibilityLevel.FOLLOWERS
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == [
+            jsonify_dict(seven_workouts_user_1[1].serialize(user=user_2))
+        ]
+
+    def test_it_returns_workouts_visible_to_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        seven_workouts_user_1[1].workout_visibility = VisibilityLevel.PUBLIC
+        seven_workouts_user_1[4].workout_visibility = VisibilityLevel.FOLLOWERS
+        user_2.send_follow_request_to(user_1)
+        user_1.approves_follow_request_from(user_2)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == [
+            jsonify_dict(seven_workouts_user_1[4].serialize(user=user_2)),
+            jsonify_dict(seven_workouts_user_1[1].serialize(user=user_2)),
+        ]
+
+    def test_it_returns_last_five_workouts_visible_to_workout_owner(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        seven_workouts_user_1[1].workout_visibility = VisibilityLevel.PUBLIC
+        seven_workouts_user_1[4].workout_visibility = VisibilityLevel.FOLLOWERS
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == [
+            jsonify_dict(seven_workouts_user_1[6].serialize(user=user_1)),
+            jsonify_dict(seven_workouts_user_1[5].serialize(user=user_1)),
+            jsonify_dict(seven_workouts_user_1[3].serialize(user=user_1)),
+            jsonify_dict(seven_workouts_user_1[4].serialize(user=user_1)),
+            jsonify_dict(seven_workouts_user_1[2].serialize(user=user_1)),
+        ]
+
+    def test_it_does_not_return_suspended_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data']['workouts'] == []
+
+    @pytest.mark.parametrize(
+        'client_scope, can_access',
+        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            self.route.format(username=user_1.username),
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {access_token}'),
+        )
+
+        self.assert_response_scope(response, can_access)

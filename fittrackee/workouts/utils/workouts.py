@@ -18,7 +18,7 @@ from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
-    get_map_visibility,
+    get_calculated_visibility,
 )
 
 from ..constants import WORKOUT_DATE_FORMAT
@@ -180,11 +180,27 @@ def create_workout(
     new_workout.workout_visibility = VisibilityLevel(
         workout_data.get('workout_visibility', user.workouts_visibility.value)
     )
-    new_workout.map_visibility = get_map_visibility(
-        VisibilityLevel(
-            workout_data.get('map_visibility', user.map_visibility.value)
-        ),
-        new_workout.workout_visibility,
+    new_workout.analysis_visibility = (
+        get_calculated_visibility(
+            visibility=VisibilityLevel(
+                workout_data.get(
+                    'analysis_visibility', user.analysis_visibility.value
+                )
+            ),
+            parent_visibility=new_workout.workout_visibility,
+        )
+        if gpx_data
+        else VisibilityLevel.PRIVATE
+    )
+    new_workout.map_visibility = (
+        get_calculated_visibility(
+            visibility=VisibilityLevel(
+                workout_data.get('map_visibility', user.map_visibility.value)
+            ),
+            parent_visibility=new_workout.analysis_visibility,
+        )
+        if gpx_data
+        else VisibilityLevel.PRIVATE
     )
 
     if title is not None and title != '':
@@ -312,12 +328,21 @@ def edit_workout(
             workout.descent = workout_data.get('descent')
 
     else:
+        if workout_data.get('analysis_visibility') is not None:
+            analysis_visibility = VisibilityLevel(
+                workout_data.get('analysis_visibility')
+            )
+            workout.analysis_visibility = get_calculated_visibility(
+                visibility=analysis_visibility,
+                parent_visibility=workout.workout_visibility,
+            )
         if workout_data.get('map_visibility') is not None:
             map_visibility = VisibilityLevel(
                 workout_data.get('map_visibility')
             )
-            workout.map_visibility = get_map_visibility(
-                map_visibility, workout.workout_visibility
+            workout.map_visibility = get_calculated_visibility(
+                visibility=map_visibility,
+                parent_visibility=workout.analysis_visibility,
             )
     return workout
 

@@ -38,9 +38,11 @@
     </div>
     <div
       class="container privacy-policy-message"
-      v-if="!authUser.accepted_privacy_policy"
+      v-if="authUser.accepted_privacy_policy !== true"
     >
-      <PrivacyPolicyToAccept />
+      <PrivacyPolicyToAccept
+        :is-privacy-updated="authUser.accepted_privacy_policy === false"
+      />
     </div>
     <div class="container">
       <UserStatsCards :user="authUser" />

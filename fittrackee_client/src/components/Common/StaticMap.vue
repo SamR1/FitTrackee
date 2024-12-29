@@ -16,6 +16,7 @@
         backgroundImage: `url(${imageUrl})`,
       }"
       :aria-label="$t('workouts.WORKOUT_MAP')"
+      @click="$emit('workoutLinkClicked')"
     />
     <div class="map-attribution">
       <a

@@ -10,6 +10,7 @@ export type TNotificationType =
   | 'comment_unsuspension'
   | 'follow'
   | 'follow_request'
+  | 'follow_request_approved'
   | 'mention'
   | 'report'
   | 'suspension_appeal'

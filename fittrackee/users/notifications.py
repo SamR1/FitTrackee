@@ -11,6 +11,7 @@ from fittrackee.responses import (
     NotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel
 
 from .models import Notification, User
@@ -68,7 +69,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                 "suspended_at": null,
                 "username": "admin"
               },
-              "id": 22,
+              "id": "be26f35a-1239-44ff-a012-12fb835fa26c",
               "marked_as_read": false,
               "type": "follow_request"
             }
@@ -233,11 +234,11 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
 
 
 @notifications_blueprint.route(
-    "/notifications/<int:notification_id>", methods=["PATCH"]
+    "/notifications/<string:notification_id>", methods=["PATCH"]
 )
 @require_auth(scopes=["notifications:write"])
 def update_user_notifications(
-    auth_user: User, notification_id: int
+    auth_user: User, notification_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user notification read status.
@@ -248,7 +249,7 @@ def update_user_notifications(
 
     .. sourcecode:: http
 
-      PATCH /api/notifications/22 HTTP/1.1
+      PATCH /api/notifications/be26f35a-1239-44ff-a012-12fb835fa26c HTTP/1.1
 
     **Example response**:
 
@@ -272,14 +273,14 @@ def update_user_notifications(
               "suspended_at": null,
               "username": "admin"
             },
-            "id": 22,
+            "id": "be26f35a-1239-44ff-a012-12fb835fa26c",
             "marked_as_read": true,
             "type": "follow_request"
           },
           "status": "success"
         }
 
-    :param string notification_id: notification id
+    :param string notification_id: notification short id
 
     :<json boolean read_status: notification read status
 
@@ -298,7 +299,7 @@ def update_user_notifications(
         - ``error, please try again or contact the administrator``
     """
     notification = Notification.query.filter_by(
-        id=notification_id, to_user_id=auth_user.id
+        uuid=decode_short_id(notification_id), to_user_id=auth_user.id
     ).first()
     if not notification:
         return NotFoundErrorResponse(
@@ -558,7 +559,7 @@ def get_notification_types(auth_user: User) -> Dict:
             if marked_as_read is None
             else Notification.marked_as_read == marked_as_read,
         )
-        .all()
+        .distinct()
     )
     return {
         "notification_types": [

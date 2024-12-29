@@ -5,6 +5,7 @@ import type { IUsersState, TUsersMutations } from '@/store/modules/users/types'
 import type { IPagination } from '@/types/api'
 import type { IReportAction } from '@/types/reports'
 import type { IUserProfile } from '@/types/user'
+import type { IWorkout } from '@/types/workouts.ts'
 import { getUserName } from '@/utils/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
@@ -86,5 +87,17 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     currentReporting: boolean
   ) {
     state.currentReporting = currentReporting
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS](
+    state: IUsersState,
+    userWorkouts: IWorkout[]
+  ) {
+    state.userWorkouts.workouts = userWorkouts
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS_LOADING](
+    state: IUsersState,
+    loading: boolean
+  ) {
+    state.userWorkouts.loading = loading
   },
 }

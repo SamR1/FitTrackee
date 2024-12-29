@@ -27,7 +27,7 @@
         :key="workout.id"
       />
       <NoWorkouts v-if="workouts.length === 0" />
-      <div v-if="moreWorkoutsExist" class="more-workouts">
+      <div v-if="pagination.has_next" class="more-workouts">
         <button @click="loadMoreWorkouts">
           {{ $t('workouts.LOAD_MORE_WORKOUT') }}
         </button>
@@ -37,13 +37,14 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onBeforeMount, toRefs } from 'vue'
+  import { computed, ref, onBeforeMount, toRefs, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
   import useAuthUser from '@/composables/useAuthUser'
   import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IPagination } from '@/types/api.ts'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
@@ -73,10 +74,8 @@
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
   )
-  const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
-    workouts.value.length > 0
-      ? workouts.value[workouts.value.length - 1].previous_workout !== null
-      : false
+  const pagination: ComputedRef<IPagination> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
   )
   const isSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
@@ -103,6 +102,12 @@
   }
 
   onBeforeMount(() => loadWorkouts())
+  onUnmounted(() =>
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
+      {} as IPagination
+    )
+  )
 </script>
 
 <style lang="scss" scoped>

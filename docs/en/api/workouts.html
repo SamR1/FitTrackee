@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Troubleshooting" href="../troubleshooting/index.html" /><link rel="prev" title="Users" href="users.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Workouts - FitTrackee 0.8.12 documentation</title>
+        <title>Workouts - FitTrackee 0.9.0b4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.8.12
+      <a href="../index.html"><div class="brand">FitTrackee 0.9.0b4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.12
+  <span class="sidebar-brand-text">FitTrackee 0.9.0b4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -317,6 +317,7 @@
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -404,6 +405,7 @@
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
@@ -457,6 +459,11 @@ without equipments will be returned)</p></li>
 notes matching is case-insensitive</p></li>
 <li><p><strong>description</strong> (<em>string</em>) – any part of the workout description;
 description matching is case-insensitive</p></li>
+<li><p><strong>return_equipments</strong> (<em>string</em>) – return workouts with equipment
+(by default, equipment is not returned).
+<strong>Note</strong>: It’s not a filter.
+<strong>Warning</strong>: Needed for 3rd-party applications
+updating equipments.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers<span class="colon">:</span></dt>
@@ -502,6 +509,7 @@ description matching is case-insensitive</p></li>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -543,6 +551,7 @@ description matching is case-insensitive</p></li>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 07 Jul 2019 07:00:00 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
@@ -996,6 +1005,7 @@ description matching is case-insensitive</p></li>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">435.621</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.14</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -1103,6 +1113,7 @@ description matching is case-insensitive</p></li>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
@@ -1117,10 +1128,12 @@ description matching is case-insensitive</p></li>
 <dt class="field-odd">Form Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – gpx file (allowed extensions: .gpx, .zip)</p></li>
-<li><p><strong>data</strong> – <p>sport id, equipment id, description, title and notes,
+<li><p><strong>data</strong> – <p>sport id, equipment id, description, title, notes, visibility
+for workout, analysis and map
 for example:
 <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;title&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;&quot;,</span>
-<span class="pre">&quot;equipment_ids&quot;:</span> <span class="pre">[]}</span></code>.
+<span class="pre">&quot;analysis_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span> <span class="pre">&quot;map_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span>
+<span class="pre">&quot;workout_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span> <span class="pre">&quot;equipment_ids&quot;:</span> <span class="pre">[]}</span></code>.
 Double quotes in notes, description and title must be escaped.</p>
 <p>The maximum length is 500 characters for notes, 10000 characters for
 description and 255 for title. Otherwise, they will be truncated.
@@ -1131,7 +1144,9 @@ this workout.
 <strong>Note</strong>: for now only one equipment can be associated.
 If not provided and default equipment exists for sport,
 default equipment will be associated.</p>
-<p>Notes, description, title and equipment ids are not mandatory.</p>
+<p>Notes, description, title, equipment ids and visibility
+for workout, analysis and map are not mandatory.
+Visibility levels default to user preferences.</p>
 </p></li>
 </ul>
 </dd>
@@ -1190,6 +1205,7 @@ default equipment will be associated.</p>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1269,6 +1285,7 @@ default equipment will be associated.</p>
 <span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
@@ -1282,6 +1299,9 @@ default equipment will be associated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>analysis_visibility</strong> (<em>string</em>) – analysis visibility
+(<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>). Not mandatory,
+defaults to user preferences.</p></li>
 <li><p><strong>ascent</strong> (<em>float</em>) – workout ascent (not mandatory,
 must be provided with descent)</p></li>
 <li><p><strong>descent</strong> (<em>float</em>) – workout descent (not mandatory,
@@ -1294,6 +1314,9 @@ max length: 10000 characters, otherwise it will be truncated)</p></li>
 <strong>Note</strong>: for now only one equipment can be associated.
 If not provided and default equipment exists for sport,
 default equipment will be associated.</p></li>
+<li><p><strong>map_visibility</strong> (<em>string</em>) – map visibility
+(<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>). Not mandatory,
+defaults to user preferences.</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (not mandatory, max length: 500
 characters, otherwise they will be truncated)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – workout sport id</p></li>
@@ -1301,6 +1324,9 @@ characters, otherwise they will be truncated)</p></li>
 characters, otherwise it will be truncated)</p></li>
 <li><p><strong>workout_date</strong> (<em>string</em>) – workout date, in user timezone
 (format: <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>workout_visibility</strong> (<em>string</em>) – workout visibility (<code class="docutils literal notranslate"><span class="pre">private</span></code>,
+<code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>). Not mandatory,
+defaults to user preferences.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Request Headers<span class="colon">:</span></dt>
@@ -1354,6 +1380,7 @@ characters, otherwise it will be truncated)</p></li>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1433,6 +1460,7 @@ characters, otherwise it will be truncated)</p></li>
 <span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
@@ -1451,6 +1479,8 @@ characters, otherwise it will be truncated)</p></li>
 </dd>
 <dt class="field-even">Request JSON Object<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
+<li><p><strong>analysis_visibility</strong> (<em>string</em>) – analysis visibility
+(<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 <li><p><strong>ascent</strong> (<em>float</em>) – workout ascent
 (only for workout without gpx, must be provided with descent)</p></li>
 <li><p><strong>descent</strong> (<em>float</em>) – workout descent
@@ -1465,7 +1495,7 @@ characters, otherwise it will be truncated)</p></li>
 equipment for this workout will be replaced).
 <strong>Note</strong>: for now only one equipment can be associated.
 If an empty array, equipment for this workout will be removed.</p></li>
-<li><p><strong>map_visibility</strong> (<em>string</em>) – map and analysis data visibility
+<li><p><strong>map_visibility</strong> (<em>string</em>) – map visibility
 (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (max length: 500 characters, otherwise they
 will be truncated)</p></li>
@@ -1577,6 +1607,7 @@ it will be truncated)</p></li>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">231.208</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.12</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1617,6 +1648,7 @@ it will be truncated)</p></li>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:27 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span>
@@ -1676,6 +1708,7 @@ it will be truncated)</p></li>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">231.208</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.12</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1716,6 +1749,7 @@ it will be truncated)</p></li>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:27 GMT&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span>
@@ -1867,7 +1901,7 @@ it will be truncated)</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=ad8d0c89"></script>
+</div><script src="../_static/documentation_options.js?v=3aa9eafe"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

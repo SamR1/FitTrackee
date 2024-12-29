@@ -3,18 +3,18 @@ import { describe, it, expect } from 'vitest'
 import { TVisibilityLevels } from '@/types/user'
 import {
   getCommentVisibilityLevels,
-  getMapVisibilityLevels,
+  getVisibilityLevels,
+  getUpdatedVisibility,
   getVisibilityLevelForLabel,
-  getUpdatedMapVisibility,
 } from '@/utils/visibility_levels'
 
-describe('getUpdatedMapVisibility', () => {
+describe('getUpdatedVisibility', () => {
   const testsParams: [
     TVisibilityLevels,
     TVisibilityLevels,
     TVisibilityLevels,
   ][] = [
-    // input map visibility, input workout visibility, excepted map visibility
+    // input visibility, input parent visibility, excepted updated visibility
     ['private', 'private', 'private'],
     ['private', 'followers_only', 'private'],
     ['private', 'followers_and_remote_only', 'private'],
@@ -38,10 +38,10 @@ describe('getUpdatedMapVisibility', () => {
   ]
 
   testsParams.map((testParams) => {
-    it(`get map visibility (input value: '${testParams[0]}') when workout visibility is '${testParams[1]}'`, () => {
-      expect(
-        getUpdatedMapVisibility(testParams[0], testParams[1])
-      ).toStrictEqual(testParams[2])
+    it(`get visibility (input value: '${testParams[0]}') when parent visibility is '${testParams[1]}'`, () => {
+      expect(getUpdatedVisibility(testParams[0], testParams[1])).toStrictEqual(
+        testParams[2]
+      )
     })
   })
 })
@@ -69,7 +69,7 @@ describe('getVisibilityLevelForLabel', () => {
   })
 })
 
-describe('getMapVisibilityLevels', () => {
+describe('getVisibilityLevels', () => {
   const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
@@ -79,7 +79,7 @@ describe('getMapVisibilityLevels', () => {
 
   testsParams.map((testParams) => {
     it(`get visibility levels depending on workout visibility (input value: '${testParams[0]}')`, () => {
-      expect(getMapVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
+      expect(getVisibilityLevels(testParams[0])).toStrictEqual(testParams[1])
     })
   })
 })

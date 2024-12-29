@@ -1,4 +1,5 @@
 {
+  "ANALYSIS_VISIBILITY": "Visibilité de l'analyse",
   "COMMENT_LEVELS": {
     "followers_and_remote_only": "Abonnées locaux et distants uniquement",
     "followers_only": "Abonnées uniquement",
@@ -13,7 +14,7 @@
     "private": "Privé (seulement moi)",
     "public": "Public (tout le monde)"
   },
-  "MAP_VISIBILITY": "Visibilité de la carte et de l'analyse",
+  "MAP_VISIBILITY": "Visibilité de la carte",
   "VISIBILITY": "visibilité",
   "WORKOUTS_VISIBILITY": "Visibilité des données relatives aux séances",
   "WORKOUT_VISIBILITY": "Visibilité de la séance"

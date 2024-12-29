@@ -1,0 +1,86 @@
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        default: 3.13
+      postgres-version:
+        type: string
+        default: 17
+      previous-version:
+        type: boolean
+        default: false
+
+jobs:
+  test_package:
+    runs-on: ubuntu-latest
+    container: python:${{ inputs.python-version }}
+    services:
+      postgres:
+        image: postgres:${{ inputs.postgres-version }}
+        env:
+          POSTGRES_DB: fittrackee_test
+          POSTGRES_USER: fittrackee
+          POSTGRES_PASSWORD: fittrackee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      selenium:
+        image: selenium/standalone-firefox
+      mailhog:
+        image: mailhog/mailhog:latest
+      redis:
+        image: redis:latest
+    env:
+      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
+      DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
+      FLASK_APP: fittrackee
+      EMAIL_URL: "smtp://mailhog:1025"
+      REDIS_URL: "redis://redis:6379"
+      HOST: "0.0.0.0"
+      PORT: 5000
+      SENDER_EMAIL: fittrackee@example.com
+      UI_URL: https://0.0.0.0:5000
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install previous version of FitTrackee from PyPI
+        if: inputs.python-version.previous-version
+        run: python3 -m pip install fittrackee
+
+      - name: Run migrations
+        if: inputs.python-version.previous-version
+        run: ftcli db upgrade
+
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Create and source virtual environment
+        run: | 
+          python3 -m venv .venv 
+          . .venv/bin/activate
+
+      - name: Install fittrackee package
+        run: python3 -m pip install dist/fittrackee-$(cat VERSION).tar.gz
+
+      - name: Run migrations
+        run: ftcli db upgrade
+
+      - name: Install pytest and selenium
+        run: python3 -m pip install pytest==8.2.0 pytest-selenium==4.1.0 selenium==4.20.0 pytest-html==4.1.1
+
+      - name: Start application and run tests with Selenium
+        run: |
+          setsid nohup fittrackee >> nohup.out 2>&1 &
+          export TEST_APP_URL=http://$(hostname --ip-address):5000
+          sleep 5
+          nohup flask worker --processes=1 >> nohup.out 2>&1 &
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1

@@ -53,7 +53,8 @@ export interface IUserProfile extends IUserLightProfile {
 }
 
 export interface IAuthUserProfile extends IUserProfile {
-  accepted_privacy_policy: boolean
+  analysis_visibility: TVisibilityLevels
+  accepted_privacy_policy: boolean | null
   display_ascent: boolean
   email: string
   hide_profile_in_users_directory: boolean
@@ -110,6 +111,7 @@ export interface IUserRelationshipActionPayload {
 }
 
 export interface IUserPreferencesPayload {
+  analysis_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
   hide_profile_in_users_directory: boolean

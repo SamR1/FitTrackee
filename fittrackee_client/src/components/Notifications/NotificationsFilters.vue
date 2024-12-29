@@ -28,8 +28,12 @@
           </div>
           <div class="form-items-group">
             <div class="form-item">
-              <label> {{ $t('notifications.TYPES.LABEL') }}</label>
+              <label for="notification-labels">
+                {{ $t('notifications.TYPES.LABEL') }}</label
+              >
               <select
+                class="notification-labels"
+                id="notification-labels"
                 name="type"
                 :disabled="notificationOptions.length === 0"
                 :value="$route.query.type"
@@ -246,6 +250,10 @@
             .form-item-title {
               padding-top: 0;
             }
+
+            .notification-labels {
+              min-width: 100px;
+            }
           }
         }
       }
@@ -255,7 +263,9 @@
         .form-all-items {
           flex-direction: column;
           padding-top: 0;
-
+          .notification-labels {
+            min-width: 10px;
+          }
           .form-items-group {
             padding: $default-padding * 0.5;
 

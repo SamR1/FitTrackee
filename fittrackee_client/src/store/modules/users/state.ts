@@ -9,6 +9,10 @@ export const usersState: IUsersState = {
     loading: false,
     pagination: <IPagination>{},
   },
+  userWorkouts: {
+    workouts: [],
+    loading: false,
+  },
   user_relationships: [],
   users: [],
   loading: false,

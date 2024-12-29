@@ -237,7 +237,7 @@
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
             :disabled="authUserLoading"
-            @change="updateMapVisibility"
+            @change="updateAnalysisAndMapVisibility"
           >
             <option
               v-for="level in visibilityLevels"
@@ -252,6 +252,23 @@
                   )}`
                 )
               }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}
+          <select
+            id="analysis_visibility"
+            v-model="userForm.analysis_visibility"
+            :disabled="authUserLoading"
+            @change="updateMapVisibility"
+          >
+            <option
+              v-for="level in analysisVisibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
@@ -311,10 +328,10 @@
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages, languageLabels } from '@/utils/locales'
   import {
+    getAllVisibilityLevels,
     getVisibilityLevels,
     getVisibilityLevelForLabel,
-    getMapVisibilityLevels,
-    getUpdatedMapVisibility,
+    getUpdatedVisibility,
   } from '@/utils/visibility_levels'
 
   interface Props {
@@ -414,6 +431,7 @@
   ]
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
+    analysis_visibility: 'private',
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
     hide_profile_in_users_directory: true,
@@ -437,14 +455,20 @@
         userForm.language
       )
   )
-  const visibilityLevels = computed(() =>
-    getVisibilityLevels(appConfig.value.federation_enabled)
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
+  )
+  const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
+    () => getVisibilityLevels(userForm.workouts_visibility)
   )
   const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getMapVisibilityLevels(userForm.workouts_visibility)
+    getVisibilityLevels(userForm.analysis_visibility)
   )
 
   function updateUserForm(user: IAuthUserProfile) {
+    userForm.analysis_visibility = user.analysis_visibility
+      ? user.analysis_visibility
+      : 'private'
     userForm.display_ascent = user.display_ascent
     userForm.start_elevation_at_zero = user.start_elevation_at_zero
       ? user.start_elevation_at_zero
@@ -480,10 +504,17 @@
     // @ts-ignore
     userForm[key] = value
   }
-  function updateMapVisibility() {
-    userForm.map_visibility = getUpdatedMapVisibility(
-      userForm.map_visibility,
+  function updateAnalysisAndMapVisibility() {
+    userForm.analysis_visibility = getUpdatedVisibility(
+      userForm.analysis_visibility,
       userForm.workouts_visibility
+    )
+    updateMapVisibility()
+  }
+  function updateMapVisibility() {
+    userForm.map_visibility = getUpdatedVisibility(
+      userForm.map_visibility,
+      userForm.analysis_visibility
     )
   }
 
@@ -533,6 +564,7 @@
     #date_format,
     #use_dark_mode,
     #map_visibility,
+    #analysis_visibility,
     #workouts_visibility {
       padding: $default-padding * 0.5;
     }

@@ -1,28 +1,10 @@
 #!/bin/bash
 set -e
 
-# Change to the application directory
-cd /usr/src/app || exit 1
-
-# Check if the .env file exists and source it
-if [[ -f .env ]]; then
-    source .env
-else
-    echo ".env file not found!"
-    exit 1
-fi
-
-# Init database
-echo "Initializing database..."
+# Upgrade database
+echo "Upgrading database..."
 ftcli db upgrade || { echo "Failed to upgrade database!"; exit 1; }
 
-# Run workers
-echo "Initializing workers..."
-flask worker --processes="${WORKERS_PROCESSES:-1}" >> dramatiq.log 2>&1 &
-
-# Wait for workers to start
-sleep 3
-
-# Run app
-echo "Initializing app..."
-exec flask run --with-threads --host=0.0.0.0
+# Run app w/ gunicorn
+echo "Running app..."
+exec gunicorn -b 0.0.0.0:5000 "fittrackee:create_app()" --error-logfile /usr/src/app/logs/gunicorn.log

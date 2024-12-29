@@ -1,7 +1,9 @@
 <template>
   <div class="privacy-policy-message">
     <span>
-      <i18n-t keypath="user.LAST_PRIVACY_POLICY_TO_VALIDATE">
+      <i18n-t
+        :keypath="`user.${isPrivacyUpdated ? 'LAST_' : ''}PRIVACY_POLICY_TO_VALIDATE`"
+      >
         <router-link to="/profile/edit/privacy-policy" class="policy-link">
           {{ $t('user.REVIEW') }}
         </router-link>
@@ -9,6 +11,17 @@
     </span>
   </div>
 </template>
+
+<script lang="ts" setup>
+  import { toRefs } from 'vue'
+
+  interface Props {
+    isPrivacyUpdated: boolean
+  }
+  const props = defineProps<Props>()
+
+  const { isPrivacyUpdated } = toRefs(props)
+</script>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';

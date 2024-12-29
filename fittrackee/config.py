@@ -6,7 +6,7 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 from sqlalchemy.pool import NullPool
 
-from fittrackee import VERSION
+from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.federation.utils import remove_url_scheme
 from fittrackee.languages import SUPPORTED_LANGUAGES
 
@@ -69,6 +69,7 @@ class BaseConfig:
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
     VERSION = VERSION
+    DEFAULT_PRIVACY_POLICY_DATA = DEFAULT_PRIVACY_POLICY_DATA
     # ActivityPub
     FEDERATION_ENABLED = (
         os.environ.get('FEDERATION_ENABLED', 'false').lower() == 'true'
