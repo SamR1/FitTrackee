@@ -341,25 +341,29 @@
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><dl class="simple">
-<dt>mandatory</dt><dd><ul>
-<li><p>Python 3.9+</p></li>
-<li><p>PostgreSQL 12+</p></li>
+<li><p>mandatory</p>
+<ul>
+<li><p>installation from sources or package:</p>
+<ul>
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.9+</p></li>
+<li><p><a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> 12+</p></li>
 </ul>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt>optional</dt><dd><ul>
-<li><p>Redis for task queue (if email sending is enabled and for data export requests) and API rate limits</p></li>
+<li><p>installation with Docker:</p>
+<ul>
+<li><p><a class="reference external" href="https://docs.docker.com/get-started/">Docker</a> and <a class="reference external" href="https://docs.docker.com/compose/">Docker Compose</a> v2.30+</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>optional</p>
+<ul>
+<li><p><a class="reference external" href="https://redis.io/">Redis</a> for task queue (if email sending is enabled and for data export requests) and API rate limits (for installation from sources or package)</p></li>
 <li><p>SMTP provider (if email sending is enabled)</p></li>
 <li><p>API key from a <a class="reference external" href="installation.html#weather-data">weather data provider</a></p></li>
 <li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> 1.2+ (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 18+ and <a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
-<li><p>Docker and Docker Compose (for development or evaluation purposes)</p></li>
 </ul>
-</dd>
-</dl>
 </li>
 </ul>
 <div class="admonition note">
@@ -687,8 +691,64 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dd><div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.7.26: </span>⚠️ replaces <code class="docutils literal notranslate"><span class="pre">VUE_APP_API_URL</span></code></p>
 </div>
+<p><strong>FitTrackee</strong> API URL, only needed in dev environment.</p>
 </dd></dl>
 
+<section id="docker">
+<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.8.13.</span></p>
+</div>
+<p>Environment variables for <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></p>
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-APP_PORT">
+<span class="sig-name descname"><span class="pre">APP_PORT</span></span><a class="headerlink" href="#envvar-APP_PORT" title="Link to this definition">¶</a></dt>
+<dd><p>Application container port</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-DATABASE_DIR">
+<span class="sig-name descname"><span class="pre">DATABASE_DIR</span></span><a class="headerlink" href="#envvar-DATABASE_DIR" title="Link to this definition">¶</a></dt>
+<dd><p>Host directory for PostgreSQL data volume</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-POSTGRES_USER">
+<span class="sig-name descname"><span class="pre">POSTGRES_USER</span></span><a class="headerlink" href="#envvar-POSTGRES_USER" title="Link to this definition">¶</a></dt>
+<dd><p>User for PostgreSQL database</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-POSTGRES_PASSWORD">
+<span class="sig-name descname"><span class="pre">POSTGRES_PASSWORD</span></span><a class="headerlink" href="#envvar-POSTGRES_PASSWORD" title="Link to this definition">¶</a></dt>
+<dd><p>Password for PostgreSQL user</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-POSTGRES_DB">
+<span class="sig-name descname"><span class="pre">POSTGRES_DB</span></span><a class="headerlink" href="#envvar-POSTGRES_DB" title="Link to this definition">¶</a></dt>
+<dd><p>Database name for FitTrackee application</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-REDIS_DIR">
+<span class="sig-name descname"><span class="pre">REDIS_DIR</span></span><a class="headerlink" href="#envvar-REDIS_DIR" title="Link to this definition">¶</a></dt>
+<dd><p>Host directory for redis data volume</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-LOG_DIR">
+<span class="sig-name descname"><span class="pre">LOG_DIR</span></span><a class="headerlink" href="#envvar-LOG_DIR" title="Link to this definition">¶</a></dt>
+<dd><p>Host directory for logs volume</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-UPLOAD_DIR">
+<span class="sig-name descname"><span class="pre">UPLOAD_DIR</span></span><a class="headerlink" href="#envvar-UPLOAD_DIR" title="Link to this definition">¶</a></dt>
+<dd><p>Host directory for uploaded files volume</p>
+</dd></dl>
+
+</section>
 </section>
 <section id="emails">
 <h2>Emails<a class="headerlink" href="#emails" title="Link to this heading">¶</a></h2>
@@ -987,11 +1047,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.8.12):</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.13):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.12.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.12<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.13.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.13<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1127,11 +1187,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.8.12) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.8.13) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.12.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.12/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.13.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.13/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1294,24 +1354,62 @@ server {
 <p>If needed, update configuration to handle larger files (see <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
 </section>
-<section id="docker">
-<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h2>
 <section id="id6">
-<h3>Installation<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<h2>Docker<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.4.4.</span></p>
 </div>
-<p>For <strong>evaluation</strong> purposes, docker files are available, installing <strong>FitTrackee</strong> from <strong>sources</strong>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.0: </span>add client application for development</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.13: </span>add docker image for production</p>
+</div>
+<section id="production">
+<h3>Production<a class="headerlink" href="#production" title="Link to this heading">¶</a></h3>
+<p>Images are available on <a class="reference external" href="https://hub.docker.com/r/fittrackee/fittrackee">DockerHub</a> or <a class="reference external" href="https://github.com/SamR1/FitTrackee/packages">Github registry</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Images are available for <code class="docutils literal notranslate"><span class="pre">linux/amd64</span></code> and <code class="docutils literal notranslate"><span class="pre">linux/arm64</span></code> platforms. Only <code class="docutils literal notranslate"><span class="pre">linux/amd64</span></code> image has been tested.</p>
+</div>
+<ul class="simple">
+<li><p>create a <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> file as needed (see the example in the repository):</p>
+<ul>
+<li><p>the minimal set up requires at least the database and the web application</p></li>
+<li><p>to activate the rate limit, redis is required</p></li>
+<li><p>to send e-mails, redis and workers are required and a valid <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> variable must be set in <code class="docutils literal notranslate"><span class="pre">.env</span></code></p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The same image is used by the web application and workers.</p>
+</div>
+<ul class="simple">
+<li><p>create <code class="docutils literal notranslate"><span class="pre">.env</span></code> from example (<code class="docutils literal notranslate"><span class="pre">.env.docker.example</span></code>) and update it (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>).</p></li>
+<li><p>to start the application:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Docker files are not suitable for production installation.</p>
+<p>Migrations are executed at startup. Please backup data before updating FitTrackee image version.</p>
 </div>
+<ul class="simple">
+<li><p>to run a CLI command, for instance to give admin rights:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>fittrackee<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-admin<span class="w"> </span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="development">
+<h3>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>To install and run <strong>FitTrackee</strong>:</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/SamR1/FitTrackee.git
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
-$<span class="w"> </span>cp<span class="w"> </span>.env.docker<span class="w"> </span>.env
 $<span class="w"> </span>make<span class="w"> </span>docker-run
 </pre></div>
 </div>
@@ -1340,12 +1438,6 @@ $<span class="w"> </span>make<span class="w"> </span>docker-run
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-shell
 </pre></div>
-</div>
-</section>
-<section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h3>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.5.0.</span></p>
 </div>
 <ul class="simple">
 <li><p>an additional step is needed to install <code class="docutils literal notranslate"><span class="pre">fittrackee_client</span></code></p></li>
@@ -1447,7 +1539,10 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#main-dependencies">Main dependencies</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
+<li><a class="reference internal" href="#docker">Docker</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#emails">Emails</a></li>
 <li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
 <li><a class="reference internal" href="#api-rate-limits">API rate limits</a></li>
@@ -1471,8 +1566,8 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </ul>
 </li>
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
-<li><a class="reference internal" href="#docker">Docker</a><ul>
-<li><a class="reference internal" href="#id6">Installation</a></li>
+<li><a class="reference internal" href="#id6">Docker</a><ul>
+<li><a class="reference internal" href="#production">Production</a></li>
 <li><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
