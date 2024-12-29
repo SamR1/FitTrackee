@@ -67,7 +67,8 @@ docker-lint-client:
 	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) type-check
 
 docker-lint-python: docker-run
-	docker compose -f docker-compose-dev.yml exec fittrackee docker/lint-python.sh
+	docker compose -f docker-compose-dev.yml exec fittrackee mypy fittrackee
+	docker compose -f docker-compose-dev.yml exec fittrackee ruff check fittrackee e2e
 
 docker-logs:
 	docker compose -f docker-compose-dev.yml logs --follow
@@ -95,7 +96,7 @@ docker-set-admin:
 	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-admin true
 
 docker-shell:
-	docker compose -f docker-compose-dev.yml exec fittrackee docker/shell.sh
+	docker compose -f docker-compose-dev.yml exec fittrackee /bin/bash
 
 docker-stop:
 	docker compose -f docker-compose-dev.yml stop
@@ -114,7 +115,7 @@ docker-test-e2e: docker-run
 	docker compose -f docker-compose-dev.yml exec fittrackee docker/test-e2e.sh $(PYTEST_ARGS)
 
 docker-test-python: docker-run
-	docker compose -f docker-compose-dev.yml exec fittrackee docker/test-python.sh $(PYTEST_ARGS)
+	docker compose -f docker-compose-dev.yml exec fittrackee pytest fittrackee $(PYTEST_ARGS)
 
 docker-type-check:
 	echo 'Running mypy in docker...'

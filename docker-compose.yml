@@ -1,0 +1,97 @@
+# docker compose for production
+# (minimal version: Docker Compose version 2.30.0)
+#
+# minimal application (for single user) only needs fittrackee and fittrackee-db containers.
+#
+# for multi-users application, uncomment the following containers:
+# - fittrackee-workers for email sending (EMAIL_URL must be set in .env to enable emails)
+# - fittrackee-redis container for API rate limits and email sending
+
+services:
+  fittrackee-db:
+    container_name: fittrackee-db
+    image: postgres:17-alpine
+    env_file:
+      - .env
+    volumes:
+      - ${DATABASE_DIR:-./data/db}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 15s
+      retries: 3
+    networks:
+      - internal_network
+    restart: unless-stopped
+
+  fittrackee:
+    container_name: fittrackee
+    env_file:
+      - .env
+# TODO: to update on next release
+#    image: fittrackee/fittrackee:v0.8.13
+    build: .
+    volumes:
+      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
+      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
+    post_start:
+      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs
+        user: root
+    ports:
+      - "${APP_PORT:-5000}:5000"
+    command: 'sh docker-entrypoint.sh'
+    depends_on:
+      fittrackee-db:
+        condition: service_healthy
+# Uncomment the following lines for API rate limit and email sending
+#      fittrackee-redis:
+#        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://127.0.0.1:5000/api/ping || exit 1"]
+      interval: 5s
+      timeout: 15s
+      retries: 3
+    networks:
+      - external_network
+      - internal_network
+    restart: unless-stopped
+
+# Uncomment the following lines for email sending
+#  fittrackee-workers:
+#    container_name: fittrackee-workers
+#    env_file:
+#      - .env
+## TODO: to update on next release
+##    image: fittrackee/fittrackee:v0.8.13
+#    build: .
+#    volumes:
+#      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
+#    post_start:
+#      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
+#        user: root
+#    command: "flask worker --processes 2 >> /usr/src/app/logs/dramatiq.log 2>&1"
+#    depends_on:
+#      fittrackee:
+#        condition: service_healthy
+#    networks:
+#      - internal_network
+#      - external_network
+#    restart: unless-stopped
+
+# Uncomment the following lines for API rate limit and email sending
+#  fittrackee-redis:
+#    image: "redis:7.4"
+#    container_name: fittrackee-redis
+#    hostname: redis
+#    volumes:
+#      - ${REDIS_DIR:-./data/redis}:/data
+#    healthcheck:
+#      test: ['CMD', 'redis-cli', 'ping']
+#    networks:
+#      - internal_network
+#    restart: unless-stopped
+
+networks:
+  external_network:
+  internal_network:
+    internal: true

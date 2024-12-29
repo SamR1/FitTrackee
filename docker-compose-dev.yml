@@ -1,7 +1,10 @@
+# docker compose for evaluation and development only
+# not suitable for production
+
 services:
   fittrackee-db:
     container_name: fittrackee-db
-    image: postgres:13
+    image: postgres:17-alpine
     ports:
       - "5435:5432"
     environment:
@@ -18,11 +21,13 @@ services:
 
   fittrackee:
     container_name: fittrackee
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
     ports:
       - "5000:5000"
     env_file:
-      - .env
+      - .env.docker.dev
     depends_on:
       fittrackee-db:
         condition: service_healthy
@@ -32,7 +37,8 @@ services:
         condition: service_started
     volumes:
       - .:/usr/src/app
-      - ./data/uploads:/usr/src/app/uploads
+      - ./data/uploads:/usr/src/app/data/uploads
+      - ./data/logs:/usr/src/app/data/logs
 
   fittrackee_client:
     container_name: fittrackee_client
@@ -54,7 +60,7 @@ services:
 
   redis:
     container_name: fittrackee-redis
-    image: "redis:latest"
+    image: "redis:7.4"
     hostname: redis
     ports:
       - "6379:6379"
