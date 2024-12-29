@@ -314,7 +314,7 @@
   import { availableDateFormatOptions } from '@/utils/dates'
   import { availableLanguages, languageLabels } from '@/utils/locales'
   import {
-    visibilityLevels,
+    getAllVisibilityLevels,
     getVisibilityLevels,
     getUpdatedVisibility,
   } from '@/utils/visibility_levels'
@@ -440,7 +440,9 @@
         userForm.language
       )
   )
-
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels()
+  )
   const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
     () => getVisibilityLevels(userForm.workouts_visibility)
   )

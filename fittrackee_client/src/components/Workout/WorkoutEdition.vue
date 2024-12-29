@@ -420,7 +420,7 @@
   import { translateSports } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import {
-    visibilityLevels,
+    getAllVisibilityLevels,
     getVisibilityLevels,
     getUpdatedVisibility,
   } from '@/utils/visibility_levels'
@@ -511,6 +511,9 @@
           isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
         )
       : []
+  )
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels()
   )
   const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
     () => getVisibilityLevels(workoutForm.workoutVisibility)

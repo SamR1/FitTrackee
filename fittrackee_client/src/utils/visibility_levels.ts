@@ -1,10 +1,8 @@
 import type { TVisibilityLevels } from '@/types/user'
 
-export const visibilityLevels: TVisibilityLevels[] = [
-  'private',
-  'followers_only',
-  'public',
-]
+export const getAllVisibilityLevels = (): TVisibilityLevels[] => {
+  return ['private', 'followers_only', 'public']
+}
 
 export const getUpdatedVisibility = (
   visibility: TVisibilityLevels,
