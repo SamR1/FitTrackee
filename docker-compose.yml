@@ -28,9 +28,10 @@ services:
     container_name: fittrackee
     env_file:
       - .env
-# TODO: to update on next release
-#    image: fittrackee/fittrackee:v0.8.13
-    build: .
+# Image from Docker Hub
+    image: fittrackee/fittrackee:v0.8.13
+# Uncomment following line to build image instead of using pre-built image
+#    build: .
     volumes:
       - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
       - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
@@ -61,9 +62,10 @@ services:
 #    container_name: fittrackee-workers
 #    env_file:
 #      - .env
-## TODO: to update on next release
-##    image: fittrackee/fittrackee:v0.8.13
-#    build: .
+## Image from Docker Hub
+#    image: fittrackee/fittrackee:v0.8.13
+## Uncomment following line to build image instead of using pre-built image
+##    build: .
 #    volumes:
 #      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
 #    post_start:
