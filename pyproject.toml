@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.8.12"
+version = "0.8.13"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -22,6 +22,11 @@ classifiers = [
     "Programming Language :: JavaScript"
 ]
 exclude = ["fittrackee/tests"]
+
+[tool.poetry.urls]
+Issues = "https://github.com/SamR1/FitTrackee/issues"
+Changelog = "https://samr1.github.io/FitTrackee/en/changelog.html"
+"Release Notes" = "https://github.com/SamR1/FitTrackee/releases"
 
 [tool.poetry.dependencies]
 python = "^3.9"

@@ -39,15 +39,23 @@ Prerequisites
 ~~~~~~~~~~~~~
 
 - mandatory
-    - Python 3.9+
-    - PostgreSQL 12+
+
+  - installation from sources or package:
+
+    - `Python <https://www.python.org/>`__ 3.9+
+    - `PostgreSQL <https://www.postgresql.org/>`__ 12+
+
+  - installation with Docker:
+
+    - `Docker <https://docs.docker.com/get-started/>`__ and `Docker Compose <https://docs.docker.com/compose/>`__ v2.30+
+
 - optional
-    - Redis for task queue (if email sending is enabled and for data export requests) and API rate limits
-    - SMTP provider (if email sending is enabled)
-    - API key from a `weather data provider <installation.html#weather-data>`__
-    - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
-    - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
-    -  Docker and Docker Compose (for development or evaluation purposes)
+
+  - `Redis <https://redis.io/>`__ for task queue (if email sending is enabled and for data export requests) and API rate limits (for installation from sources or package)
+  - SMTP provider (if email sending is enabled)
+  - API key from a `weather data provider <installation.html#weather-data>`__
+  - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
+  - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
 
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
@@ -268,6 +276,11 @@ Docker
 .. versionadded:: 0.8.13
 
 Environment variables for ``docker-compose.yml``
+
+.. envvar:: APP_PORT
+
+    Application container port
+
 
 .. envvar:: DATABASE_DIR
 
@@ -571,13 +584,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.8.12):
+-  Download the last release (for now, it is the release v0.8.13):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-   $ tar -xzf v0.8.12.tar.gz
-   $ mv FitTrackee-0.8.12 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+   $ tar -xzf v0.8.13.tar.gz
+   $ mv FitTrackee-0.8.13 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -708,13 +721,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.8.12) and overwrite existing files:
+- Download the last release (for now, it is the release v0.8.13) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.12.tar.gz
-   $ tar -xzf v0.8.12.tar.gz
-   $ cp -R FitTrackee-0.8.12/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
+   $ tar -xzf v0.8.13.tar.gz
+   $ cp -R FitTrackee-0.8.13/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
