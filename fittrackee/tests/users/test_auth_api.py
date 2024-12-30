@@ -21,6 +21,7 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
@@ -299,6 +300,26 @@ class TestUserRegistration(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert 'auth_token' not in data
+
+    def test_it_creates_user_with_user_role(self, app: Flask) -> None:
+        client = app.test_client()
+        username = self.random_string()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=username,
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(username=username).first()
+        assert new_user.role == UserRole.USER.value
 
     def test_it_creates_user_with_default_date_format(
         self, app: Flask

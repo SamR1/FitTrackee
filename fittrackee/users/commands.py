@@ -46,15 +46,22 @@ def users_cli() -> None:
         f' Supported languages: {", ".join(SUPPORTED_LANGUAGES)}.'
     ),
 )
+@click.option(
+    '--role', type=click.Choice(UserRole.db_choices()), help='Set user role.'
+)
 def create_user(
-    username: str, email: str, password: Optional[str], lang: Optional[str]
+    username: str,
+    email: str,
+    password: Optional[str],
+    lang: Optional[str],
+    role: Optional[str],
 ) -> None:
     """Create an active user account."""
     with app.app_context():
         try:
             user_manager_service = UserManagerService(username)
             user, user_password = user_manager_service.create_user(
-                email=email, password=password, check_email=True
+                email=email, password=password, check_email=True, role=role
             )
             if user:
                 db.session.add(user)
