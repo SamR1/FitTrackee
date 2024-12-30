@@ -98,6 +98,7 @@ Remove blacklisted tokens expired for more than provided number of days.
 """"""""""""""""""""""
 .. versionadded:: 0.7.15
 .. versionchanged:: 0.8.4  User preference for interface language is added.
+.. versionchanged:: 0.9.0  Role is added.
 
 Create a user account.
 
@@ -121,6 +122,8 @@ Create a user account.
      - User password (if not provided, a random password is generated).
    * - ``--lang LANGUAGE``
      - User preference for interface language (two-letter code, ISO 639-1). If not provided or not supported, it falls back to English ('en').
+   * - ``--role [owner|admin|moderator|user]``
+     - User role (default: 'user').
 
 
 
@@ -160,7 +163,7 @@ Modify a user account (role, active status, email and password).
      - Username.
    * - ``--set-admin BOOLEAN``
      - [DEPRECATED] Add/remove admin rights (when adding admin rights, it also activates user account if not active).
-   * - ``--set-role ROLE``
+   * - ``--set-role [owner|admin|moderator|user]``
      - Set user role (when setting 'moderator', 'admin' and 'owner' role, it also activates user account if not active).
    * - ``--activate``
      - Activate user account.
