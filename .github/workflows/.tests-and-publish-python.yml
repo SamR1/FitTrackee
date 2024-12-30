@@ -312,6 +312,8 @@ jobs:
           images: |
             fittrackee/fittrackee
             ${{ env.GITHUB_REGISTRY }}/${{ env.GITHUB_IMAGE_NAME}}
+          tags: |
+            type=pep440,pattern={{version}},prefix=v
 
       - name: Build and push Docker images
         id: push
