@@ -159,6 +159,7 @@ class UserManagerService:
         email: str,
         password: Optional[str] = None,
         check_email: bool = False,
+        role: Optional[str] = None,
     ) -> Tuple[Optional[User], Optional[str]]:
         if not password:
             password = secrets.token_urlsafe(30)
@@ -192,6 +193,12 @@ class UserManagerService:
         new_user.timezone = USER_TIMEZONE
         new_user.date_format = USER_DATE_FORMAT
         new_user.confirmation_token = secrets.token_urlsafe(30)
+
+        if role is not None:
+            if role not in UserRole.db_choices():
+                raise InvalidUserRole()
+            new_user.role = UserRole[role.upper()].value
+
         db.session.add(new_user)
         db.session.flush()
 
@@ -201,10 +208,11 @@ class UserManagerService:
         self,
         email: str,
         password: Optional[str] = None,
+        role: Optional[str] = None,
     ) -> Tuple[Optional[User], Optional[str]]:
         try:
             new_user, password = self.create_user(
-                email, password, check_email=True
+                email, password, check_email=True, role=role
             )
             if new_user:
                 new_user.language = 'en'
