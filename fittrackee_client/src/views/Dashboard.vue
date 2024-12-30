@@ -37,7 +37,7 @@
       </div>
     </div>
     <div
-      class="container privacy-policy-message"
+      class="container policy-container"
       v-if="authUser.accepted_privacy_policy !== true"
     >
       <PrivacyPolicyToAccept
@@ -132,7 +132,7 @@
       display: none;
     }
 
-    .privacy-policy-message {
+    .policy-container {
       display: flex;
       justify-content: center;
     }
@@ -188,7 +188,7 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .privacy-policy-message {
+      .policy-container {
         margin: 0 $default-margin * 0.5;
       }
     }

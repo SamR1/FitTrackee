@@ -1,5 +1,5 @@
 <template>
-  <div class="privacy-policy-message">
+  <div class="policy-message">
     <span>
       <i18n-t
         :keypath="`user.${isPrivacyUpdated ? 'LAST_' : ''}PRIVACY_POLICY_TO_VALIDATE`"
@@ -26,7 +26,7 @@
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
 
-  .privacy-policy-message {
+  .policy-message {
     background: var(--alert-background-color);
     color: var(--alert-color);
     border-radius: $border-radius;
