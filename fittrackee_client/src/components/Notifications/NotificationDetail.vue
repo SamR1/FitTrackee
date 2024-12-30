@@ -245,6 +245,8 @@
   }
   function getIcon(notificationType: TNotificationType): string {
     switch (notificationType) {
+      case 'account_creation':
+        return 'user'
       case 'follow':
       case 'follow_request':
       case 'follow_request_approved':
@@ -264,8 +266,10 @@
       case 'comment_like':
       case 'workout_like':
         return 'heart'
-      default:
+      case 'workout_comment':
         return 'comment'
+      default:
+        return 'bell'
     }
   }
 </script>
