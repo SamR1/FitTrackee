@@ -1,14 +1,12 @@
 {
   "ANALYSIS_VISIBILITY": "Visibilité de l'analyse",
   "COMMENT_LEVELS": {
-    "followers_only": "Abonnées uniquement",
-    "local_followers_only": "Abonnées locaux uniquement",
+    "followers_only": "Abonnés uniquement",
     "private": "Privé (seulement les utilisateurs mentionnés)",
     "public": "Public (tout le monde)"
   },
   "LEVELS": {
-    "followers_only": "Abonnées uniquement",
-    "local_followers_only": "Abonnées locaux uniquement",
+    "followers_only": "Abonnés uniquement",
     "private": "Privé (seulement moi)",
     "public": "Public (tout le monde)"
   },

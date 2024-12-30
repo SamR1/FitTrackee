@@ -2,13 +2,11 @@
   "ANALYSIS_VISIBILITY": "Analysis visibility",
   "COMMENT_LEVELS": {
     "followers_only": "Followers only",
-    "local_followers_only": "Local followers only",
     "private": "Private (only mentioned users)",
     "public": "Public (everyone)"
   },
   "LEVELS": {
     "followers_only": "Followers only",
-    "local_followers_only": "Local followers only",
     "private": "Private (only me)",
     "public": "Public (everyone)"
   },
