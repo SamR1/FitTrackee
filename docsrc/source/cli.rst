@@ -98,7 +98,7 @@ Remove blacklisted tokens expired for more than provided number of days.
 """"""""""""""""""""""
 .. versionadded:: 0.7.15
 .. versionchanged:: 0.8.4  User preference for interface language is added.
-.. versionchanged:: 0.9.0  Role is added.
+.. versionchanged:: 0.9.0  Add option for user role.
 
 Create a user account.
 

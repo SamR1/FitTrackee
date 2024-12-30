@@ -1,10 +1,32 @@
 # Change log
 
+## Version 0.9.0b5 (2024/12/30)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+
+### Features and enhancements
+
+* [PR#675](https://github.com/SamR1/FitTrackee/pull/675) - CLI - create user with provided role
+
+### Bugs Fixed
+
+* [PR#671](https://github.com/SamR1/FitTrackee/pull/671) - Fix sport icon when unauthenticated user displays user profile
+* [PR#674](https://github.com/SamR1/FitTrackee/pull/674) - Fix display of privacy policy message with privacy extension
+* [2e9f9d](https://github.com/SamR1/FitTrackee/commit/2e9f9d69eb38d5f310236944d45b4b60d8faff20) - fix translations
+* [edc677](https://github.com/SamR1/FitTrackee/commit/edc6776c922925746762f7ac76c267feda7cde2f) - Fix notification icons
+
+### Misc
+
+* [174240](https://github.com/SamR1/FitTrackee/commit/174240f1d9dc702d4346c85e6add4022af2a88c6) - add tags input to docker image build job
+
+
 ## Version 0.8.13 (2024/12/29)
 
 ### Translations
 
-* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galicien)
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
 
 Translation status:
 - Basque: 100%
