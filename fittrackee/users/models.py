@@ -7,7 +7,7 @@ import jwt
 from flask import current_app
 from jsonschema import validate
 from sqlalchemy import and_, func
-from sqlalchemy.dialects.postgresql import UUID, insert
+from sqlalchemy.dialects.postgresql import JSONB, UUID, insert
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -16,7 +16,7 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.schema import CheckConstraint
 from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
-from sqlalchemy.types import JSON, Enum
+from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
@@ -290,7 +290,7 @@ class User(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
-    notification_preferences = db.Column(JSON, nullable=True)
+    notification_preferences = db.Column(JSONB, nullable=True)
 
     workouts = db.relationship(
         'Workout',
