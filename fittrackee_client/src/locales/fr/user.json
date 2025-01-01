@@ -6,8 +6,9 @@
   "ACTIVE_ACCOUNT": "Le compte est actif.",
   "ACTIVE_USER": "utilisateur actif | utilisateurs actifs",
   "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
-  "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
+  "APPEAL": "Faire appel",
   "APPEAL_APPROVED": "Appel approuvé.",
+  "APPEAL_IN_PROGRESS": "Appel en cours de traitement.",
   "APPEAL_REJECTED": "Appel rejeté.",
   "APPEAL_SUBMITTED": "Appel envoyé.",
   "CONFIRM_ACCOUNT_DELETION": "Êtes-vous sûr·e de vouloir supprimer votre compte ? Toutes les données seront définitivement effacées.",
@@ -36,7 +37,6 @@
   "LOGOUT": "Se déconnecter",
   "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
   "LOG_IN": "connecter",
-  "APPEAL": "Faire appel",
   "NEW_PASSWORD": "Nouveau mot de passe",
   "NO_SPORT_FOUND": "Aucun sport trouvé.",
   "NO_USERS_FOUND": "Aucun utilisateur trouvé.",
@@ -71,7 +71,6 @@
     "WEAK": "faible"
   },
   "PASSWORD_UPDATED": "Votre mot de passe a été mis à jour. Cliquez {0} pour vous connecter.",
-
   "PRIVACY_POLICY_TO_VALIDATE": "Veuillez {0} la politique de confidentialité avant de poursuivre.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Mise à jour du compte",
@@ -114,7 +113,6 @@
     "LATEST_SANCTIONS_RECEIVED": "Dernières sanctions reçues",
     "LOCATION": "Lieu",
     "MONDAY": "Lundi",
-    "NO_SANCTIONS": "Pas de sanctions",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
       "comment_like": "Quelqu'un aime votre commentaire",
@@ -125,8 +123,9 @@
       "workout_comment": "Quelqu'un a commenté votre séance",
       "workout_like": "Quelqu'un aime votre séance"
     },
-    "NOTIFICATION_PREFERENCES": "Préférences de notification",
     "NOTIFICATIONS_EDITION": "Edition des préférences de notification",
+    "NOTIFICATION_PREFERENCES": "Préférences de notification",
+    "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
     "PICTURE_REMOVE": "Supprimer",
@@ -147,12 +146,12 @@
       "user_warning": "Avertissement ({date})",
       "workout_suspension": "Suspension de séance ({date})"
     },
+    "SANCTIONS_RECEIVED": "Sanctions reçues",
     "SANCTION_APPEAL": {
       "APPROVED": "votre appel a été approuvé",
       "IN_PROGRESS": "votre appel est en cours de traitement",
       "REJECTED": "votre appel a été rejeté"
     },
-    "SANCTIONS_RECEIVED": "Sanctions reçues",
     "SPORT": {
       "ACTION": "action",
       "COLOR": "couleur",
@@ -198,13 +197,13 @@
       "LABEL": "Unités pour les distances",
       "METRIC": "Système métrique (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "Cet utilisateur a reçu {count} sanction.|Cet utilisateur a reçu {count} sanctions.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtré",
       "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
       "LABEL": "Calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
-    },
-    "USER_RECEIVED_SANCTIONS": "Cet utilisateur a reçu {count} sanction.|Cet utilisateur a reçu {count} sanctions."
+    }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",
   "REGISTER": "S'inscrire",
@@ -240,9 +239,9 @@
   "USERNAME_INFO": "3 à 30 caractères requis, seuls les caractères alphanumériques et le caractère _ sont autorisés.",
   "USER_PICTURE": "photo de l'utilisateur",
   "USER_PROFILE": "profil de l'utilisateur",
+  "WARNING_REASON": "Raison de l'avertissement",
   "YOU": "vous",
-  "YOU_CAN_APPEAL_ONCE": "Vous ne pouvez faire appel qu'une seule fois.",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}.",
   "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Votre compte a été suspendu",
-  "WARNING_REASON": "Raison de l'avertissement"
+  "YOU_CAN_APPEAL_ONCE": "Vous ne pouvez faire appel qu'une seule fois.",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Vous avez accepté la {0}."
 }
