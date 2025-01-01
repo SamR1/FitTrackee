@@ -8,6 +8,7 @@ import type {
 import { AUTH_USER_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagePayload } from '@/types/api'
+import type { TNotificationPreferences } from '@/types/notifications.ts'
 import type {
   IAuthUserProfile,
   IFollowRequestsActionPayload,
@@ -163,6 +164,11 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.GET_USER_SANCTION](
     context: ActionContext<IAuthUserState, IRootState>,
     actionId: string
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_NOTIFICATIONS_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: TNotificationPreferences
   ): void
 }
 

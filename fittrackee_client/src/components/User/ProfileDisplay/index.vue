@@ -37,7 +37,9 @@
       : ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS']
   )
   const tabGroup2 = computed(() =>
-    isSuspended.value ? [] : ['FOLLOW-REQUESTS', 'BLOCKED-USERS', 'MODERATION']
+    isSuspended.value
+      ? []
+      : ['FOLLOW-REQUESTS', 'BLOCKED-USERS', 'NOTIFICATIONS', 'MODERATION']
   )
 </script>
 

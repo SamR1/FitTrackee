@@ -323,7 +323,6 @@ def get_authenticated_user_profile(
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
           "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
@@ -345,6 +344,15 @@ def get_authenticated_user_profile(
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": True,
+            "workout_comment": True,
+            "workout_like": True
+          }
           "picture": false,
           "records": [
             {
@@ -393,6 +401,7 @@ def get_authenticated_user_profile(
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -453,7 +462,6 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
           "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
@@ -475,6 +483,15 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": True,
+            "workout_comment": True,
+            "workout_like": True
+          }
           "picture": false,
           "records": [
             {
@@ -523,6 +540,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -635,7 +653,6 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
           "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
@@ -655,6 +672,15 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": True,
+            "workout_comment": True,
+            "workout_like": True
+          }
           "picture": false,
           "records": [
             {
@@ -703,6 +729,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -871,7 +898,6 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
           "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
@@ -893,6 +919,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": True,
+            "workout_comment": True,
+            "workout_like": True
+          }
           "picture": false,
           "records": [
             {
@@ -941,6 +976,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -1235,6 +1271,182 @@ def edit_user_sport_preferences(
         )
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route('/auth/profile/edit/notifications', methods=['POST'])
+@require_auth(scopes=['profile:write'])
+def edit_user_notifications_preferences(
+    auth_user: User,
+) -> Union[Dict, HttpResponse]:
+    """
+    Edit authenticated user preferences for UI notifications.
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/preferences HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "data": {
+          "accepted_privacy_policy": true,
+          "analysis_visibility": "private",
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
+          "display_ascent": true,
+          "email": "sam@example.com",
+          "email_to_confirm": null,
+          "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
+          "imperial_units": false,
+          "is_active": true,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": False,
+            "workout_comment": False,
+            "workout_like": False
+          }
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "start_elevation_at_zero": false,
+          "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "use_dark_mode": null,
+          "use_raw_gpx_speed": false,
+          "username": "sam",
+          "weekm": false,
+          "workouts_visibility": "private"
+        },
+        "status": "success"
+      }
+
+    :<json boolean account_creation: notification for user registration
+           (only for user with administration rights)
+    :<json boolean comment_like: notification for comment likes
+    :<json boolean follow: notification for follow
+    :<json boolean follow_request: notification for follow requests
+    :<json boolean follow_request_approved: notification for follow request
+           approval
+    :<json boolean mention: notification for mention
+    :<json boolean workout_comment: notification for comments on workout
+    :<json boolean workout_like: notification for workout likes
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``user preferences updated``
+    :statuscode 400:
+        - ``invalid payload``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    preferences_data = request.get_json()
+    mandatory_data = {
+        "comment_like",
+        "follow",
+        "follow_request",
+        "follow_request_approved",
+        "mention",
+        "workout_comment",
+        "workout_like",
+    }
+    if not preferences_data or not preferences_data.keys() >= mandatory_data:
+        return InvalidPayloadErrorResponse()
+    if (
+        auth_user.role >= UserRole.ADMIN.value
+        and "account_creation" not in preferences_data
+    ):
+        return InvalidPayloadErrorResponse()
+
+    auth_user.update_preferences(preferences_data)
+    db.session.commit()
+
+    return {
+        "data": auth_user.serialize(current_user=auth_user, light=False),
+        "status": "success",
+    }
 
 
 @auth_blueprint.route(

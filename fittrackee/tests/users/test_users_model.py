@@ -34,6 +34,17 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin, ReportMixin
 
+NOTIFICATION_TYPES_FOR_PREFERENCES = [
+    "account_creation",
+    "comment_like",
+    "follow",
+    "follow_request",
+    "follow_request_approved",
+    "mention",
+    "workout_comment",
+    "workout_like",
+]
+
 
 class TestUserModel:
     def test_it_returns_username_in_string_value(
@@ -156,6 +167,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_preferences(
         self, app: Flask, user_1: User
     ) -> None:
+        user_1.update_preferences({"mention": True})
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['imperial_units'] == user_1.imperial_units
@@ -186,6 +198,17 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user['hide_profile_in_users_directory']
             == user_1.hide_profile_in_users_directory
         )
+        assert (
+            serialized_user['notification_preferences']
+            == user_1.notification_preferences
+        )
+
+    def test_it_returns_empty_dict_when_notification_preferences_are_none(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert serialized_user['notification_preferences'] == {}
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
@@ -308,6 +331,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
+        assert 'notification_preferences' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -393,6 +417,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
+        assert 'notification_preferences' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -471,6 +496,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert 'map_visibility' not in serialized_user
         assert 'manually_approves_followers' not in serialized_user
         assert 'hide_profile_in_users_directory' not in serialized_user
+        assert 'notification_preferences' not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
@@ -1728,18 +1754,6 @@ class TestUserSanctionsCount(ReportMixin, CommentMixin):
         )
 
         assert user_1.sanctions_count == 0
-
-
-NOTIFICATION_TYPES_FOR_PREFERENCES = [
-    "account_creation",
-    "comment_like",
-    "follow",
-    "follow_request",
-    "follow_request_approved",
-    "mention",
-    "workout_comment",
-    "workout_like",
-]
 
 
 class TestUserNotificationsPreferencesUpdate:
