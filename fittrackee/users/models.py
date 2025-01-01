@@ -5,6 +5,7 @@ from uuid import uuid4
 
 import jwt
 from flask import current_app
+from jsonschema import validate
 from sqlalchemy import and_, func
 from sqlalchemy.dialects.postgresql import UUID, insert
 from sqlalchemy.engine.base import Connection
@@ -15,7 +16,7 @@ from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.schema import CheckConstraint
 from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
-from sqlalchemy.types import Enum
+from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
@@ -24,7 +25,11 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
-from .constants import NOTIFICATION_TYPES, USER_LINK_TEMPLATE
+from .constants import (
+    NOTIFICATION_TYPES,
+    NOTIFICATIONS_PREFERENCES_SCHEMA,
+    USER_LINK_TEMPLATE,
+)
 from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyProcessedError,
@@ -257,6 +262,7 @@ class User(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    notification_preferences = db.Column(JSON, nullable=True)
 
     workouts = db.relationship(
         'Workout',
@@ -644,6 +650,27 @@ class User(BaseModel):
             "reported_count": result[1],
             "sanctions_count": result[2],
         }
+
+    def update_preferences(self, updated_preferences: Dict) -> None:
+        notification_preferences = {
+            **(
+                self.notification_preferences
+                if self.notification_preferences
+                else {}
+            ),
+            **updated_preferences,
+        }
+        validate(
+            instance=notification_preferences,
+            schema=NOTIFICATIONS_PREFERENCES_SCHEMA,
+        )
+        self.notification_preferences = notification_preferences
+        db.session.commit()
+
+    def is_notification_enabled(self, notification_type: str) -> bool:
+        if not self.notification_preferences:
+            return True
+        return self.notification_preferences.get(notification_type, True)
 
     def serialize(
         self,

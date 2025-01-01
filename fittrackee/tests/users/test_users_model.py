@@ -4,6 +4,7 @@ from typing import Dict
 
 import pytest
 from flask import Flask
+from jsonschema import ValidationError
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from time_machine import travel
@@ -1727,3 +1728,135 @@ class TestUserSanctionsCount(ReportMixin, CommentMixin):
         )
 
         assert user_1.sanctions_count == 0
+
+
+NOTIFICATION_TYPES_FOR_PREFERENCES = [
+    "account_creation",
+    "comment_like",
+    "follow",
+    "follow_request",
+    "follow_request_approved",
+    "mention",
+    "workout_comment",
+    "workout_like",
+]
+
+
+class TestUserNotificationsPreferencesUpdate:
+    def test_it_raises_error_when_notification_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {}
+
+        with pytest.raises(ValidationError):
+            user_1.update_preferences({"invalid": True})
+
+    def test_it_raises_error_when_value_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {}
+
+        with pytest.raises(ValidationError):
+            user_1.update_preferences({"mention": "invalid"})
+
+    @pytest.mark.parametrize('input_value', [True, False])
+    def test_it_updates_preference_for_given_type(
+        self, app: Flask, user_1: User, input_value: bool
+    ) -> None:
+        user_1.notification_preferences = {}
+
+        user_1.update_preferences({"mention": input_value})
+
+        assert user_1.notification_preferences == {"mention": input_value}
+
+    def test_it_updates_preferences_when_preferences_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {
+            "mention": True,
+            "follow_request": False,
+        }
+
+        user_1.update_preferences(
+            {"mention": False, "workout_like": True, "comment_like": True}
+        )
+
+        assert user_1.notification_preferences == {
+            "mention": False,
+            "follow_request": False,
+            "workout_like": True,
+            "comment_like": True,
+        }
+
+    def test_it_updates_all_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {
+            "mention": True,
+            "follow_request": False,
+        }
+        updated_preferences = {
+            "account_creation": True,
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": False,
+            "workout_comment": False,
+            "workout_like": False,
+        }
+
+        user_1.update_preferences(updated_preferences)
+
+        assert user_1.notification_preferences == updated_preferences
+
+
+class TestUserNotificationsPreferencesIsEnabled:
+    @pytest.mark.parametrize(
+        "input_notif_type", NOTIFICATION_TYPES_FOR_PREFERENCES
+    )
+    def test_it_returns_true_when_notification_type_is_not_in_preferences(
+        self, app: Flask, user_1: User, input_notif_type: str
+    ) -> None:
+        user_1.notification_preferences = {}
+
+        assert user_1.is_notification_enabled(input_notif_type) is True
+
+    def test_it_returns_true_when_preferences_is_none(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = None
+
+        assert user_1.is_notification_enabled("mention") is True
+
+    def test_it_returns_true_when_notification_type_is_not_in_schema(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {
+            "account_creation": True,
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": False,
+            "workout_comment": False,
+            "workout_like": False,
+        }
+
+        assert user_1.is_notification_enabled("report") is True
+
+    def test_it_returns_if_notification_is_enabled(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.notification_preferences = {
+            "account_creation": True,
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": False,
+            "workout_comment": False,
+            "workout_like": False,
+        }
+
+        assert user_1.is_notification_enabled("mention") is False
