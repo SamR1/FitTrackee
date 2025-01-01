@@ -95,15 +95,21 @@ def on_follow_request_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
+        to_user = User.query.filter_by(
+            id=new_follow_request.followed_user_id
+        ).first()
+        event_type = (
+            'follow' if new_follow_request.is_approved else 'follow_request'
+        )
+
+        if not to_user.is_notification_enabled(event_type):
+            return
+
         notification = Notification(
             from_user_id=new_follow_request.follower_user_id,
             to_user_id=new_follow_request.followed_user_id,
             created_at=new_follow_request.created_at,
-            event_type=(
-                'follow'
-                if new_follow_request.is_approved
-                else 'follow_request'
-            ),
+            event_type=event_type,
         )
         session.add(notification)
 
@@ -117,28 +123,50 @@ def on_follow_request_update(
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Connection) -> None:
             if follow_request.is_approved:
-                notification_table = Notification.__table__
-                connection.execute(
-                    notification_table.update()
-                    .where(
-                        notification_table.c.from_user_id
-                        == follow_request.follower_user_id,
-                        notification_table.c.to_user_id
-                        == follow_request.followed_user_id,
-                        notification_table.c.event_type == 'follow_request',
+                if follow_request.to_user.is_notification_enabled("follow"):
+                    follow_request_notification = Notification.query.filter_by(
+                        from_user_id=follow_request.follower_user_id,
+                        to_user_id=follow_request.followed_user_id,
+                        event_type="follow_request",
+                    ).first()
+
+                    if follow_request_notification:
+                        notification_table = Notification.__table__
+                        connection.execute(
+                            notification_table.update()
+                            .where(
+                                notification_table.c.from_user_id
+                                == follow_request.follower_user_id,
+                                notification_table.c.to_user_id
+                                == follow_request.followed_user_id,
+                                notification_table.c.event_type
+                                == 'follow_request',
+                            )
+                            .values(
+                                event_type='follow',
+                                marked_as_read=False,
+                            )
+                        )
+                    else:
+                        follow_notification = Notification(
+                            from_user_id=follow_request.follower_user_id,
+                            to_user_id=follow_request.followed_user_id,
+                            created_at=datetime.utcnow(),
+                            event_type='follow',
+                        )
+                        session.add(follow_notification)
+
+                if follow_request.from_user.is_notification_enabled(
+                    "follow_request_approved"
+                ):
+                    notification = Notification(
+                        from_user_id=follow_request.followed_user_id,
+                        to_user_id=follow_request.follower_user_id,
+                        created_at=datetime.utcnow(),
+                        event_type='follow_request_approved',
                     )
-                    .values(
-                        event_type='follow',
-                        marked_as_read=False,
-                    )
-                )
-                notification = Notification(
-                    from_user_id=follow_request.followed_user_id,
-                    to_user_id=follow_request.follower_user_id,
-                    created_at=datetime.utcnow(),
-                    event_type='follow_request_approved',
-                )
-                session.add(notification)
+                    session.add(notification)
+
             if (
                 not follow_request.is_approved
                 and follow_request.updated_at is not None

@@ -193,6 +193,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
                 User.role == UserRole.ADMIN.value,
                 User.is_active == True,  # noqa
             ).all():
+                if not admin.is_notification_enabled("account_creation"):
+                    continue
                 notification = Notification(
                     from_user_id=new_user.id,
                     to_user_id=admin.id,

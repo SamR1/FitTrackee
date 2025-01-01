@@ -544,6 +544,37 @@ class TestUserRegistration(ApiTestCaseMixin):
                 user_2_admin.id,
             ]
 
+    def test_it_does_not_create_notifications_for_admin_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        user_1_admin.update_preferences({"account_creation": False})
+        email = self.random_email()
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=email,
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(email=email).first()
+        notifications = Notification.query.filter_by(
+            event_type='account_creation', event_object_id=new_user.id
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].to_user_id == user_2_admin.id
+
 
 class TestUserLogin(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(self, app: Flask) -> None:
