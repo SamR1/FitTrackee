@@ -1003,12 +1003,16 @@ def on_workout_like_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
-        from fittrackee.users.models import Notification
+        from fittrackee.users.models import Notification, User
 
         workout = Workout.query.filter_by(
             id=new_workout_like.workout_id
         ).first()
         if new_workout_like.user_id != workout.user_id:
+            to_user = User.query.filter_by(id=workout.user_id).first()
+            if not to_user.is_notification_enabled('workout_like'):
+                return
+
             notification = Notification(
                 from_user_id=new_workout_like.user_id,
                 to_user_id=workout.user_id,

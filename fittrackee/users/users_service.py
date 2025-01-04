@@ -6,7 +6,12 @@ from sqlalchemy import func
 
 from fittrackee import db
 from fittrackee.reports.models import ReportAction
-from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
+from fittrackee.users.constants import (
+    ADMINISTRATOR_NOTIFICATION_TYPES,
+    MODERATOR_NOTIFICATION_TYPES,
+    USER_DATE_FORMAT,
+    USER_TIMEZONE,
+)
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     InvalidUserRole,
@@ -20,8 +25,6 @@ from fittrackee.users.exceptions import (
     UserNotFoundException,
 )
 from fittrackee.users.models import (
-    ADMINISTRATOR_NOTIFICATION_TYPES,
-    MODERATOR_NOTIFICATION_TYPES,
     Notification,
     User,
 )

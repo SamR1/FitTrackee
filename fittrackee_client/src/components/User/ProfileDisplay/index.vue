@@ -2,8 +2,7 @@
   <div id="user-profile">
     <UserHeader :user="user" />
     <div class="box">
-      <UserProfileTabs :tabs="tabGroup1" :selectedTab="tab" :edition="false" />
-      <UserProfileTabs :tabs="tabGroup2" :selectedTab="tab" :edition="false" />
+      <UserProfileTabs :tabs="tabs" :selectedTab="tab" :edition="false" />
       <router-view :user="user"></router-view>
     </div>
   </div>
@@ -31,13 +30,20 @@
   const isSuspended: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
-  const tabGroup1 = computed(() =>
+  const tabs = computed(() =>
     isSuspended.value
       ? ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS', 'MODERATION']
-      : ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS']
-  )
-  const tabGroup2 = computed(() =>
-    isSuspended.value ? [] : ['FOLLOW-REQUESTS', 'BLOCKED-USERS', 'MODERATION']
+      : [
+          'PROFILE',
+          'PREFERENCES',
+          'SPORTS',
+          'EQUIPMENTS',
+          'APPS',
+          'FOLLOW-REQUESTS',
+          'BLOCKED-USERS',
+          'NOTIFICATIONS',
+          'MODERATION',
+        ]
   )
 </script>
 

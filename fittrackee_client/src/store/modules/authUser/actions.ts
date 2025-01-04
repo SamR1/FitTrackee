@@ -21,6 +21,7 @@ import type {
 import type { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
 import type { IPagePayload } from '@/types/api'
+import type { TNotificationPreferences } from '@/types/notifications.ts'
 import type {
   IFollowRequestsActionPayload,
   ILoginOrRegisterData,
@@ -700,6 +701,30 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           handleError(context, error)
         }
       })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_NOTIFICATIONS_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: TNotificationPreferences
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit/notifications', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          router.push('/profile/notifications')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
       .finally(() =>
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )

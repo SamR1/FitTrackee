@@ -225,6 +225,7 @@ Notifications
 
 - Users with administration rights can also receive notifications on user creation.
 - Users can mark notifications as read or unread.
+- Notifications can be disabled or enabled in user preferences.
 
 Dashboard
 =========

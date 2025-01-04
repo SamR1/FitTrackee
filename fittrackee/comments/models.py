@@ -317,7 +317,7 @@ def on_comment_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
-        from fittrackee.users.models import FollowRequest, Notification
+        from fittrackee.users.models import FollowRequest, Notification, User
         from fittrackee.workouts.models import Workout
 
         # it creates notification on comment creation only when:
@@ -335,6 +335,10 @@ def on_comment_insert(
         to_user_id = workout.user_id
 
         if new_comment.user_id == to_user_id:
+            return
+
+        to_user = User.query.filter_by(id=to_user_id).first()
+        if not to_user.is_notification_enabled('workout_comment'):
             return
 
         if (
@@ -383,7 +387,7 @@ def on_mention_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
-        from fittrackee.users.models import Notification
+        from fittrackee.users.models import Notification, User
 
         comment = Comment.query.filter_by(id=new_mention.comment_id).first()
 
@@ -391,6 +395,10 @@ def on_mention_insert(
 
         # - mentioned user is comment author
         if new_mention.user_id == comment.user_id:
+            return
+
+        to_user = User.query.filter_by(id=new_mention.user_id).first()
+        if not to_user.is_notification_enabled("mention"):
             return
 
         # - mentioned user is workout owner and `workout_comment'
@@ -476,12 +484,16 @@ def on_comment_like_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
-        from fittrackee.users.models import Notification
+        from fittrackee.users.models import Notification, User
 
         comment = Comment.query.filter_by(
             id=new_comment_like.comment_id
         ).first()
         if new_comment_like.user_id != comment.user_id:
+            to_user = User.query.filter_by(id=comment.user_id).first()
+            if not to_user.is_notification_enabled("comment_like"):
+                return
+
             notification = Notification(
                 from_user_id=new_comment_like.user_id,
                 to_user_id=comment.user_id,

@@ -2,6 +2,7 @@ import type { LocationQueryValue } from 'vue-router'
 
 import type { IPagePayload, TPaginationPayload } from '@/types/api'
 import type { TLanguage } from '@/types/locales'
+import type { TNotificationPreferences } from '@/types/notifications.ts'
 import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
@@ -58,6 +59,7 @@ export interface IAuthUserProfile extends IUserProfile {
   language: TLanguage | null
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
+  notification_preferences: TNotificationPreferences
   nb_sports: number
   records: IRecord[]
   sports_list: number[]
