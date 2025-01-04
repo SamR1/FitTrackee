@@ -7,13 +7,11 @@
       <template v-for="type in notificationTypes" :key="type">
         <dt>{{ capitalize($t(`user.PROFILE.NOTIFICATIONS.${type}`)) }}:</dt>
         <dd>
-          {{
-            type in user.notification_preferences
-              ? $t(
-                  `common.${user.notification_preferences[type] ? 'EN' : 'DIS'}ABLED`
-                )
-              : $t('common.ENABLED')
-          }}
+          <i
+            :class="`fa fa-${isNotificationEnabled(type) ? 'check' : 'times'} fa-padding`"
+            aria-hidden="true"
+          />
+          {{ $t(`common.${isNotificationEnabled(type) ? 'EN' : 'DIS'}ABLED`) }}
         </dd>
       </template>
     </dl>
@@ -45,6 +43,13 @@
 
   const notificationTypes: ComputedRef<TNotificationTypeWithPreferences[]> =
     computed(() => getNotificationTypes(user.value.role))
+
+  function isNotificationEnabled(type: TNotificationTypeWithPreferences) {
+    if (!(type in user.value.notification_preferences)) {
+      return true
+    }
+    return user.value.notification_preferences[type]
+  }
 </script>
 
 <style lang="scss" scoped>
