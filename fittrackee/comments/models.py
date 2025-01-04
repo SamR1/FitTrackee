@@ -460,6 +460,7 @@ class CommentLike(BaseModel):
         db.Integer,
         db.ForeignKey('comments.id', ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
 
     user = db.relationship("User", lazy=True)

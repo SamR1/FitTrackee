@@ -105,7 +105,9 @@
   function updateDisplayColumn(target: string) {
     isSelected.value = target
   }
-  onBeforeMount(() => store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE))
+  onBeforeMount(() =>
+    store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
+  )
 </script>
 
 <style lang="scss" scoped>

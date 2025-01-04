@@ -64,6 +64,7 @@ import UsersView from '@/views/UsersView.vue'
 import AddWorkout from '@/views/workouts/AddWorkout.vue'
 import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
+import Likes from '@/views/workouts/Likes.vue'
 import Workout from '@/views/workouts/Workout.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
 
@@ -583,6 +584,17 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/workouts/:workoutId/likes',
+    name: 'WorkoutLikes',
+    component: Likes,
+    props: { objectType: 'workout' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
     path: '/workouts/:workoutId/edit',
     name: 'EditWorkout',
     component: EditWorkout,
@@ -614,12 +626,34 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/workouts/:workoutId/comments/:commentId/likes',
+    name: 'WorkoutCommentLikes',
+    component: Likes,
+    props: { objectType: 'comment' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
     path: '/comments/:commentId',
     name: 'Comment',
     component: CommentView,
     meta: {
       allowedToSuspendedUser: false,
       withoutChecks: true,
+    },
+  },
+  {
+    path: '/comments/:commentId/likes',
+    name: 'CommentLikes',
+    component: Likes,
+    props: { objectType: 'comment' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
   },
   {

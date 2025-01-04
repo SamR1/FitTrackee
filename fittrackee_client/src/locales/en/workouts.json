@@ -4,6 +4,7 @@
   "ASCENT": "ascent",
   "AVERAGE_SPEED": "average speed",
   "AVE_SPEED": "ave. speed",
+  "BACK_TO_COMMENT": "back to comment",
   "BACK_TO_WORKOUT": "back to workout",
   "COMMENTS": {
     "ADD": "add a comment",
@@ -59,6 +60,7 @@
   "NO_DATA_CLEANING": "data from gpx, without any cleaning",
   "NO_FILE_PROVIDED": "No file provided",
   "NO_FOLDER": "no folder inside",
+  "NO_LIKES": "No likes",
   "NO_MAP": "No map",
   "NO_NEXT_SEGMENT": "No next segment",
   "NO_NEXT_WORKOUT": "No next workout",

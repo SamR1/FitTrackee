@@ -20,6 +20,7 @@
       :pagination="pagination"
       :query="query"
     />
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
   </div>
 </template>
 
@@ -40,6 +41,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
+  import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
   import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
@@ -62,6 +64,7 @@
   const router = useRouter()
 
   const { isAuthUserSuspended } = useAuthUser()
+  const { errorMessages } = useApp()
 
   const orderByList: string[] = ['created_at', 'username', 'workouts_count']
   const defaultOrderBy = 'created_at'
