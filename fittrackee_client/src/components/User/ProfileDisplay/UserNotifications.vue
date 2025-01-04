@@ -19,7 +19,10 @@
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/notifications')">
-        {{ $t('user.PROFILE.EDIT_PREFERENCES') }}
+        {{ $t('user.PROFILE.EDIT_NOTIFICATION_PREFERENCES') }}
+      </button>
+      <button @click="$router.push('/notifications')">
+        {{ capitalize($t('notifications.NOTIFICATIONS', 0)) }}
       </button>
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
     </div>
@@ -49,5 +52,8 @@
   h1 {
     font-size: 1.05em;
     font-weight: bold;
+  }
+  .profile-buttons {
+    flex-wrap: wrap;
   }
 </style>

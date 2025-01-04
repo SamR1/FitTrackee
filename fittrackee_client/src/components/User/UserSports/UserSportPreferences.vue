@@ -340,6 +340,7 @@
     .profile-buttons {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
     }
     .action-buttons {
       width: 70px;
