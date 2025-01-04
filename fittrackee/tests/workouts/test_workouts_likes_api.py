@@ -701,11 +701,10 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        workout_uuid = workout_cycling_user_1.short_id
 
         response = client.get(
-            f"{self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id
-            )}?page=2",
+            f"{self.route.format(workout_uuid=workout_uuid)}?page=2",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

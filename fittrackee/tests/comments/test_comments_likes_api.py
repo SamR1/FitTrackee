@@ -789,9 +789,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         response = client.get(
-            f"{self.route.format(
-                comment_uuid=comment.short_id
-            )}?page=2",
+            f"{self.route.format(comment_uuid=comment.short_id)}?page=2",
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
