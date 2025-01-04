@@ -217,7 +217,7 @@ const routes: RouteRecordRaw[] = [
             name: 'UserNotifications',
             component: UserNotifications,
             meta: {
-              title: 'user.PROFILE.TABS.NOTIFICATION_PREFERENCES',
+              title: 'user.PROFILE.TABS.NOTIFICATIONS',
             },
           },
           {
@@ -332,24 +332,38 @@ const routes: RouteRecordRaw[] = [
             name: 'FollowRequests',
             component: UsersList,
             props: { itemType: 'follow-requests' },
+            meta: {
+              title: 'user.PROFILE.TABS.FOLLOW-REQUESTS',
+            },
           },
           {
             path: 'blocked-users',
             name: 'BlockedUsers',
             component: UsersList,
             props: { itemType: 'blocked-users' },
+            meta: {
+              title: 'user.PROFILE.TABS.BLOCKED-USERS',
+            },
           },
           {
             path: 'followers',
             name: 'AuthUserFollowers',
             component: UserRelationships,
             props: { relationship: 'followers' },
+            meta: {
+              title: 'user.RELATIONSHIPS.FOLLOWER',
+              count: 0,
+            },
           },
           {
             path: 'following',
             name: 'AuthUserFollowing',
             component: UserRelationships,
             props: { relationship: 'following' },
+            meta: {
+              title: 'user.RELATIONSHIPS.FOLLOWING',
+              count: 0,
+            },
           },
           {
             path: 'suspension',
@@ -360,6 +374,9 @@ const routes: RouteRecordRaw[] = [
             path: 'moderation',
             name: 'Moderation',
             component: UserModeration,
+            meta: {
+              title: 'user.PROFILE.TABS.MODERATION',
+            },
             children: [
               {
                 path: '',
@@ -420,7 +437,7 @@ const routes: RouteRecordRaw[] = [
             name: 'UserNotificationsEdition',
             component: UserNotificationsEdition,
             meta: {
-              title: 'user.PROFILE.EDIT_NOTIFICATION_PREFERENCES',
+              title: 'user.PROFILE.EDIT_NOTIFICATIONS',
             },
           },
           {
