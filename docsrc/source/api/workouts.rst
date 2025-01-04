@@ -18,4 +18,5 @@ Workouts
     workouts.delete_workout,
     workouts.like_workout,
     workouts.undo_workout_like,
+    workouts.get_workout_likes,
     workouts.appeal_workout_suspension
