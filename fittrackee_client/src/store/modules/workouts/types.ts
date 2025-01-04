@@ -8,6 +8,7 @@ import type {
 import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
+import type { IUserLightProfile } from '@/types/user.ts'
 import type {
   ICommentForm,
   IWorkout,
@@ -23,6 +24,7 @@ import type {
   IWorkoutContentPayload,
   IWorkoutContentType,
   IWorkoutContentEdition,
+  ILikesPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -34,6 +36,7 @@ export interface IWorkoutsState {
   workoutContent: IWorkoutContentEdition
   success: null | string
   appealLoading: null | string
+  likes: IUserLightProfile[]
 }
 
 export interface IWorkoutsActions {
@@ -116,6 +119,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_LIKES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ILikesPayload
   ): void
 }
 

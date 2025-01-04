@@ -259,6 +259,12 @@ export interface ICommentPayload {
   commentId: string
 }
 
+export interface ILikesPayload {
+  objectId: string
+  objectType: 'comment' | 'workout'
+  page: number
+}
+
 export interface IAppealPayload {
   objectId: string
   objectType: 'comment' | 'workout'

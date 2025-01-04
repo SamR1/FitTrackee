@@ -27,6 +27,7 @@ import type {
   IExportRequest,
   IUserReportAction,
   IUserAppealPayload,
+  IGetUserProfilePayload,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -58,7 +59,7 @@ export interface IAuthUserActions {
 
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
-    updateUI: boolean
+    payload: IGetUserProfilePayload
   ): void
 
   [AUTH_USER_STORE.ACTIONS.GET_ACCOUNT_SUSPENSION](

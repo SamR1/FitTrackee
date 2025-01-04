@@ -44,10 +44,14 @@
                 }"
                 aria-hidden="true"
               />
-              <span class="likes-count" v-if="workoutObject.likes_count > 0">
-                {{ workoutObject.likes_count }}
-              </span>
             </button>
+            <router-link
+              :to="`/workouts/${workoutObject.workoutId}/likes`"
+              v-if="workoutObject.likes_count > 0"
+              class="likes-count"
+            >
+              {{ workoutObject.likes_count }}
+            </router-link>
             <button
               class="transparent icon-button"
               v-if="isWorkoutOwner"
@@ -106,9 +110,13 @@
                 liked: workoutObject.liked,
               }"
             />
-            <span class="likes-count" v-if="workoutObject.likes_count > 0">
+            <router-link
+              :to="`/workouts/${workoutObject.workoutId}/likes`"
+              v-if="workoutObject.likes_count > 0"
+              class="likes-count"
+            >
               {{ workoutObject.likes_count }}
-            </span>
+            </router-link>
           </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
@@ -256,6 +264,10 @@
         span {
           margin-right: $default-margin * 0.5;
         }
+      }
+      .likes-count {
+        font-weight: normal;
+        padding: 0 $default-margin * 0.5 0 $default-margin * 0.25;
       }
       .workout-date {
         font-size: 0.8em;

@@ -85,7 +85,10 @@ export interface IUserAccountPayload {
   password: string
   new_password?: string
 }
-
+export interface IGetUserProfilePayload {
+  updateUI?: boolean
+  light?: boolean
+}
 export interface IUserAccountUpdatePayload {
   token: LocationQueryValue | LocationQueryValue[]
   refreshUser?: boolean

@@ -24,6 +24,8 @@ from .models import Comment, CommentLike, get_comments
 
 comments_blueprint = Blueprint('comments', __name__)
 
+DEFAULT_COMMENT_LIKES_PER_PAGE = 10
+
 
 @comments_blueprint.route(
     "/workouts/<string:workout_short_id>/comments", methods=["POST"]
@@ -611,6 +613,94 @@ def undo_comment_like(
         'status': 'success',
         'comment': comment.serialize(auth_user),
     }, 200
+
+
+@comments_blueprint.route(
+    "/comments/<string:comment_short_id>/likes", methods=["GET"]
+)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
+@check_workout_comment(only_owner=False)
+def get_comment_likes(
+    auth_user: User, comment: Comment
+) -> Union[Dict, HttpResponse]:
+    """
+    Get users who like comment.
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/comments/WJgTwtqFpnPrHYAK5eX9Pw/likes HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "likes": [
+              {
+                "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                "followers": 0,
+                "following": 0,
+                "nb_workouts": 1,
+                "picture": false,
+                "role": "user",
+                "suspended_at": null,
+                "username": "Sam"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string comment_short_id: comment short id
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for comment with
+        ``private`` and ``followers_only`` visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``comment not found``
+    """
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    likes_pagination = (
+        User.query.join(CommentLike, User.id == CommentLike.user_id)
+        .filter(CommentLike.comment_id == comment.id)
+        .order_by(CommentLike.created_at.desc())
+        .paginate(
+            page=page, per_page=DEFAULT_COMMENT_LIKES_PER_PAGE, error_out=False
+        )
+    )
+    users = likes_pagination.items
+    return {
+        'status': 'success',
+        'data': {
+            'likes': [user.serialize(current_user=auth_user) for user in users]
+        },
+        'pagination': {
+            'has_next': likes_pagination.has_next,
+            'has_prev': likes_pagination.has_prev,
+            'page': likes_pagination.page,
+            'pages': likes_pagination.pages,
+            'total': likes_pagination.total,
+        },
+    }
 
 
 @comments_blueprint.route(

@@ -67,6 +67,7 @@ workouts_blueprint = Blueprint('workouts', __name__)
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
+DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -2052,6 +2053,108 @@ def undo_workout_like(
         'status': 'success',
         'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
     }, 200
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/likes', methods=['GET']
+)
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(only_owner=False)
+def get_workout_likes(
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get users who like the workout.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/likes HTTP/1.1
+
+    **Example responses**:
+
+    - success:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "likes": [
+              {
+                "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                "followers": 0,
+                "following": 0,
+                "nb_workouts": 1,
+                "picture": false,
+                "role": "user",
+                "suspended_at": null,
+                "username": "Sam"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    - workout not found:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+        {
+          "data": {
+            "likes": []
+          },
+          "status": "not found"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``workout not found``
+
+    """
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    likes_pagination = (
+        User.query.join(WorkoutLike, User.id == WorkoutLike.user_id)
+        .filter(WorkoutLike.workout_id == workout.id)
+        .order_by(WorkoutLike.created_at.desc())
+        .paginate(
+            page=page, per_page=DEFAULT_WORKOUT_LIKES_PER_PAGE, error_out=False
+        )
+    )
+    users = likes_pagination.items
+    return {
+        'status': 'success',
+        'data': {
+            'likes': [user.serialize(current_user=auth_user) for user in users]
+        },
+        'pagination': {
+            'has_next': likes_pagination.has_next,
+            'has_prev': likes_pagination.has_prev,
+            'page': likes_pagination.page,
+            'pages': likes_pagination.pages,
+            'total': likes_pagination.total,
+        },
+    }
 
 
 @workouts_blueprint.route(

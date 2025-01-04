@@ -23,4 +23,5 @@ export const workoutsState: IWorkoutsState = {
   },
   success: null,
   appealLoading: null,
+  likes: [],
 }

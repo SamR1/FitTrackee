@@ -979,6 +979,7 @@ class WorkoutLike(BaseModel):
         db.Integer,
         db.ForeignKey('workouts.id', ondelete="CASCADE"),
         nullable=False,
+        index=True,
     )
 
     user = db.relationship("User", lazy=True)

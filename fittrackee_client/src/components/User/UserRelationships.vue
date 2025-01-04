@@ -130,7 +130,7 @@
       flex-wrap: wrap;
 
       ::v-deep(.box) {
-        width: 40%;
+        width: 43%;
         @media screen and (max-width: $small-limit) {
           width: 100%;
         }
