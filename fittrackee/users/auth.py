@@ -345,13 +345,13 @@ def get_authenticated_user_profile(
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
-            "comment_like": True,
-            "follow": True,
-            "follow_request": True,
-            "follow_request_approved": True,
-            "mention": True,
-            "workout_comment": True,
-            "workout_like": True
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
           }
           "picture": false,
           "records": [
@@ -484,13 +484,13 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
-            "comment_like": True,
-            "follow": True,
-            "follow_request": True,
-            "follow_request_approved": True,
-            "mention": True,
-            "workout_comment": True,
-            "workout_like": True
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
           }
           "picture": false,
           "records": [
@@ -673,13 +673,13 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
-            "comment_like": True,
-            "follow": True,
-            "follow_request": True,
-            "follow_request_approved": True,
-            "mention": True,
-            "workout_comment": True,
-            "workout_like": True
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
           }
           "picture": false,
           "records": [
@@ -920,13 +920,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
-            "comment_like": True,
-            "follow": True,
-            "follow_request": True,
-            "follow_request_approved": True,
-            "mention": True,
-            "workout_comment": True,
-            "workout_like": True
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
           }
           "picture": false,
           "records": [
@@ -1323,13 +1323,13 @@ def edit_user_notifications_preferences(
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
-            "comment_like": True,
-            "follow": True,
-            "follow_request": True,
-            "follow_request_approved": True,
-            "mention": False,
-            "workout_comment": False,
-            "workout_like": False
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": false,
+            "workout_comment": false,
+            "workout_like": false
           }
           "picture": false,
           "records": [
