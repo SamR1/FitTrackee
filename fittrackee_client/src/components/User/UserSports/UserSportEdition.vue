@@ -78,7 +78,11 @@
           </select>
         </div>
       </div>
-      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+      <ErrorMessage
+        v-if="errorMessages"
+        :message="errorMessages"
+        :no-margin="true"
+      />
       <div class="form-buttons">
         <button class="confirm" type="submit" :disabled="authUserLoading">
           {{ $t('buttons.SUBMIT') }}
@@ -247,10 +251,6 @@
         padding: 0;
         width: 80px;
       }
-    }
-
-    .error-message {
-      margin: $default-margin 0;
     }
 
     .form-buttons {

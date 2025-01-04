@@ -1,31 +1,38 @@
 <template>
   <div class="users-list">
     <div v-if="items.length > 0">
-      <div v-for="user in items" :key="user.username" class="box item">
-        <UserPicture :user="user" />
-        <div class="user-name">
-          <router-link :to="`/users/${user.username}?from=users`">
-            {{ user.username }}
-          </router-link>
+      <div v-for="user in items" :key="user.username" class="box user-item">
+        <div class="item">
+          <UserPicture :user="user" />
+          <div class="user-name">
+            <router-link :to="`/users/${user.username}?from=users`">
+              {{ user.username }}
+            </router-link>
+          </div>
+          <div v-if="user.blocked" class="blocked-user">
+            <button @click="updateBlock(user.username, false)">
+              {{ $t('buttons.UNBLOCK') }}
+            </button>
+          </div>
+          <div v-else class="follow-requests-list-actions">
+            <button @click="updateFollowRequest(user.username, 'accept')">
+              <i class="fa fa-check" aria-hidden="true" />
+              {{ $t('buttons.ACCEPT') }}
+            </button>
+            <button
+              @click="updateFollowRequest(user.username, 'reject')"
+              class="danger"
+            >
+              <i class="fa fa-times" aria-hidden="true" />
+              {{ $t('buttons.REJECT') }}
+            </button>
+          </div>
         </div>
-        <div v-if="user.blocked" class="blocked-user">
-          <button @click="updateBlock(user.username, false)">
-            {{ $t('buttons.UNBLOCK') }}
-          </button>
-        </div>
-        <div v-else class="follow-requests-list-actions">
-          <button @click="updateFollowRequest(user.username, 'accept')">
-            <i class="fa fa-check" aria-hidden="true" />
-            {{ $t('buttons.ACCEPT') }}
-          </button>
-          <button
-            @click="updateFollowRequest(user.username, 'reject')"
-            class="danger"
-          >
-            <i class="fa fa-times" aria-hidden="true" />
-            {{ $t('buttons.REJECT') }}
-          </button>
-        </div>
+        <ErrorMessage
+          v-if="errorMessages && updatedUser && updatedUser === user.username"
+          :message="errorMessages"
+          :no-margin="true"
+        />
       </div>
     </div>
     <p v-else class="no-users-list">
@@ -43,6 +50,11 @@
       :pagination="pagination"
       :query="{}"
     />
+    <ErrorMessage
+      v-if="errorMessages"
+      :message="errorMessages"
+      :no-margin="true"
+    />
     <div class="profile-buttons">
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
     </div>
@@ -50,13 +62,14 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, onUnmounted, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, onBeforeMount, onUnmounted, ref, toRefs, watch } from 'vue'
+  import type { Ref, ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
+  import useApp from '@/composables/useApp.ts'
   import { AUTH_USER_STORE, USERS_STORE } from '@/store/constants'
   import type { IPagePayload, IPagination } from '@/types/api'
   import type {
@@ -75,9 +88,13 @@
   const route = useRoute()
   const store = useStore()
 
+  const { errorMessages } = useApp()
+
   const payload: IPagePayload = {
     page: 1,
   }
+
+  const updatedUser: Ref<string | null> = ref(null)
 
   const items: ComputedRef<IUserProfile[]> = computed(
     () =>
@@ -104,6 +121,7 @@
     )
   }
   function updateFollowRequest(username: string, action: TFollowRequestAction) {
+    storeUser(username)
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_FOLLOW_REQUESTS, {
       username,
       action,
@@ -111,6 +129,7 @@
     })
   }
   function updateBlock(username: string, block: boolean) {
+    storeUser(username)
     const payload: IUserRelationshipActionPayload = {
       username,
       action: `${block ? '' : 'un'}block`,
@@ -122,6 +141,9 @@
   function getQuery(query: LocationQuery): IPagePayload {
     payload.page = query.page ? +query.page : 1
     return payload
+  }
+  function storeUser(username: string) {
+    updatedUser.value = username
   }
 
   watch(
@@ -159,68 +181,81 @@
   @import '~@/scss/vars.scss';
 
   .users-list {
-    .item {
+    .user-item {
       display: flex;
-      ::v-deep(.user-picture) {
-        min-width: 15%;
-        img {
-          height: 60px;
-          width: 60px;
-        }
-        .no-picture {
-          font-size: 3.8em;
-        }
-      }
-
-      .user-name {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        flex-grow: 2;
-      }
-
-      .blocked-user,
-      .follow-requests-list-actions {
-        button {
-          text-transform: capitalize;
-        }
-      }
-      .blocked-user {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .follow-requests-list-actions {
-        display: flex;
-        flex-direction: column;
-        gap: $default-padding;
-
-        button {
-          display: flex;
-          gap: $default-padding;
-          .fa {
-            line-height: 20px;
-          }
-        }
-      }
-    }
-
-    @media screen and (max-width: $small-limit) {
+      flex-direction: column;
       .item {
+        display: flex;
+
         ::v-deep(.user-picture) {
-          margin-right: $default-margin;
-          min-width: 40px;
+          min-width: 15%;
+
           img {
-            height: 48px;
-            width: 48px;
+            height: 60px;
+            width: 60px;
           }
+
           .no-picture {
-            font-size: 3em;
+            font-size: 3.8em;
           }
         }
-        .follow-request {
-          .user-name {
-            padding-left: $default-padding;
+
+        .user-name {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          flex-grow: 2;
+        }
+
+        .blocked-user,
+        .follow-requests-list-actions {
+          button {
+            text-transform: capitalize;
+          }
+        }
+
+        .blocked-user {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .follow-requests-list-actions {
+          display: flex;
+          flex-direction: column;
+          gap: $default-padding;
+
+          button {
+            display: flex;
+            gap: $default-padding;
+
+            .fa {
+              line-height: 20px;
+            }
+          }
+        }
+      }
+
+      @media screen and (max-width: $small-limit) {
+        .item {
+          ::v-deep(.user-picture) {
+            margin-right: $default-margin;
+            min-width: 40px;
+
+            img {
+              height: 48px;
+              width: 48px;
+            }
+
+            .no-picture {
+              font-size: 3em;
+            }
+          }
+
+          .follow-request {
+            .user-name {
+              padding-left: $default-padding;
+            }
           }
         }
       }

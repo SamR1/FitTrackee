@@ -33,8 +33,9 @@
       v-if="authUserHasModeratorRights && !user.is_active"
     />
     <ErrorMessage
-      :message="errorMessages"
       v-if="errorMessages && !currentUserReporting"
+      :message="errorMessages"
+      :no-margin="true"
     />
     <div class="email-form form-box" v-if="displayUserEmailForm">
       <form

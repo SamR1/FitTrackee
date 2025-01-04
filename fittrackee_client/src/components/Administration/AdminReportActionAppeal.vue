@@ -28,7 +28,11 @@
           "
           @updateValue="updateReason"
         />
-        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <ErrorMessage
+          v-if="errorMessages"
+          :message="errorMessages"
+          :no-margin="true"
+        />
         <div class="appeal-actions-buttons">
           <button class="small approve" value="approve">
             {{ $t('buttons.APPROVE') }}
@@ -155,10 +159,6 @@
       dl {
         margin-bottom: -$default-margin;
       }
-    }
-
-    .error-message {
-      margin: $default-margin 0;
     }
   }
 </style>

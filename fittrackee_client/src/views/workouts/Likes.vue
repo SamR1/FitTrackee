@@ -22,7 +22,11 @@
             />
           </div>
           <div v-else class="no-likes">{{ $t('workouts.NO_LIKES') }}</div>
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+          <ErrorMessage
+            v-if="errorMessages"
+            :message="errorMessages"
+            :no-margin="true"
+          />
           <div>
             <button
               @click="
@@ -155,9 +159,6 @@
             width: 100%;
           }
         }
-      }
-      .error-message {
-        margin: $default-margin 0;
       }
     }
   }

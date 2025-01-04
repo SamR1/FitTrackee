@@ -50,8 +50,9 @@
       </template>
     </AlertMessage>
     <ErrorMessage
-      :message="errorMessages"
       v-if="errorMessages && updatedUser && updatedUser === user.username"
+      :message="errorMessages"
+      :no-margin="true"
     />
   </div>
 </template>

@@ -73,7 +73,11 @@
             {{ $t(`buttons.${readMore ? 'HIDE' : 'READ_MORE'}`) }}
           </button>
         </template>
-        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <ErrorMessage
+          v-if="errorMessages"
+          :message="errorMessages"
+          :no-margin="true"
+        />
       </template>
     </Card>
   </div>
@@ -192,9 +196,6 @@
       }
       .notes {
         font-style: italic;
-      }
-      .error-message {
-        margin: $default-margin 0;
       }
       .form-buttons {
         display: flex;

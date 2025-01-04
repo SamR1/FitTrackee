@@ -29,7 +29,11 @@
           </button>
         </div>
       </div>
-      <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+      <ErrorMessage
+        v-if="errorMessages"
+        :message="errorMessages"
+        :no-margin="true"
+      />
     </form>
   </div>
 </template>
@@ -108,9 +112,6 @@
       height: 15px;
       margin: 0 10px;
       width: 15px;
-    }
-    .error-message {
-      margin: $default-margin 0;
     }
   }
 </style>
