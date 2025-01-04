@@ -11,11 +11,13 @@ import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+import UserNotifications from '@/components/User/ProfileDisplay/UserNotifications.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
+import UserNotificationsEdition from '@/components/User/ProfileEdition/UserNotificationsEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
@@ -211,6 +213,14 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
+            path: 'notifications',
+            name: 'UserNotifications',
+            component: UserNotifications,
+            meta: {
+              title: 'user.PROFILE.TABS.NOTIFICATION_PREFERENCES',
+            },
+          },
+          {
             path: 'sports',
             name: 'UserSports',
             component: UserSports,
@@ -403,6 +413,14 @@ const routes: RouteRecordRaw[] = [
             component: UserPreferencesEdition,
             meta: {
               title: 'user.PROFILE.EDIT_PREFERENCES',
+            },
+          },
+          {
+            path: 'notifications',
+            name: 'UserNotificationsEdition',
+            component: UserNotificationsEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT_NOTIFICATION_PREFERENCES',
             },
           },
           {

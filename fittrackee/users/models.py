@@ -835,6 +835,11 @@ class User(BaseModel):
                         self.hide_profile_in_users_directory
                     ),
                     'sanctions_count': self.sanctions_count,
+                    'notification_preferences': (
+                        self.notification_preferences
+                        if self.notification_preferences
+                        else {}
+                    ),
                 },
             }
 
