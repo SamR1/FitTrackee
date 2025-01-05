@@ -225,6 +225,14 @@ Notifications
 
 - Users with administration rights can also receive notifications on user creation.
 - Users can mark notifications as read or unread.
+- Notifications can be disabled or enabled the following events in user preferences:
+
+  - follow request and follow
+  - follow request approval when follow request approval is manual
+  - like on comment or workout
+  - comment on workout
+  - mention on comment
+  - user registration (if authenticated user has administration rights)
 
 Dashboard
 =========
