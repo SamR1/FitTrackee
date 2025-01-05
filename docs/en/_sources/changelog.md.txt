@@ -1,5 +1,24 @@
 # Change log
 
+## Version 0.9.0b6 (2025/01/05)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+
+### Features and enhancements
+
+* [PR#677](https://github.com/SamR1/FitTrackee/pull/677) - Add notification preferences
+* [PR#678](https://github.com/SamR1/FitTrackee/pull/678) - Display users who like comment/workout
+
+### Bugs Fixed
+
+* [d743abf](https://github.com/SamR1/FitTrackee/commit/d743abf0e59a3c7cc1e11adbd9c8d0214d0c7da7) - display missing errors in user profile
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+
+
 ## Version 0.9.0b5 (2024/12/30)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
