@@ -21,6 +21,7 @@ import type {
 import type { IRootState } from '@/store/modules/root/types'
 import { deleteUserAccount } from '@/store/modules/users/actions'
 import type { IPagePayload } from '@/types/api'
+import type { TNotificationPreferences } from '@/types/notifications.ts'
 import type {
   IFollowRequestsActionPayload,
   ILoginOrRegisterData,
@@ -35,6 +36,7 @@ import type {
   IUserSportPreferencesPayload,
   IUserSportPreferencesResetPayload,
   IUserAppealPayload,
+  IGetUserProfilePayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
 
@@ -66,7 +68,9 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN,
         window.localStorage.authToken
       )
-      context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, true)
+      context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
+        updateUI: true,
+      })
     }
     // after logout in another tab
     if (
@@ -89,7 +93,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           window.localStorage.setItem('authToken', token)
           context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
           context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
             .then(() => router.push('/'))
         } else {
           handleError(context, null)
@@ -112,7 +116,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_SUCCESS, true)
           if (payload.refreshUser) {
             context
-              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
               .then(() => {
                 return router.push('/profile/edit/account')
               })
@@ -128,7 +132,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   },
   [AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE](
     context: ActionContext<IAuthUserState, IRootState>,
-    updateUI: boolean = false
+    payload: IGetUserProfilePayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
@@ -149,7 +153,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data
           )
-          if (profileNotLoaded || updateUI) {
+          if (profileNotLoaded || payload.updateUI) {
             if (res.data.data.language) {
               context.dispatch(
                 ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE,
@@ -161,13 +165,16 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
               res.data.data.use_dark_mode
             )
           }
-          context.commit(
-            ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
-            res.data.data
-          )
-          context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
-          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
-          context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+
+          if (!('light' in payload) || !payload.light) {
+            context.commit(
+              ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
+              res.data.data
+            )
+            context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+            context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+            context.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENT_TYPES)
+          }
 
           if (res.data.data.suspended_at === null) {
             store.dispatch(NOTIFICATIONS_STORE.ACTIONS.GET_UNREAD_STATUS)
@@ -262,7 +269,9 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             window.localStorage.setItem('authToken', token)
             context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
             context
-              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, true)
+              .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
+                updateUI: true,
+              })
               .then(() =>
                 router.push(
                   typeof data.redirectUrl === 'string' ? data.redirectUrl : '/'
@@ -341,7 +350,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             context
               .dispatch(AUTH_USER_STORE.ACTIONS.GET_FOLLOW_REQUESTS)
               .then(() =>
-                context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+                context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
               )
           }
         } else {
@@ -506,7 +515,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
             .then(() => router.push('/profile'))
         } else {
           handleError(context, null)
@@ -533,7 +542,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.status === 204) {
           context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
             .then(() => router.push('/profile'))
         } else {
           handleError(context, null)
@@ -604,7 +613,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           context
-            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+            .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
             .then(() => router.push('/profile'))
         } else {
           handleError(context, null)
@@ -700,6 +709,30 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           handleError(context, error)
         }
       })
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.UPDATE_USER_NOTIFICATIONS_PREFERENCES](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: TNotificationPreferences
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post('auth/profile/edit/notifications', payload)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
+            res.data.data
+          )
+          router.push('/profile/notifications')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
       .finally(() =>
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )

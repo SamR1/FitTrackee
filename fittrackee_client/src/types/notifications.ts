@@ -2,23 +2,26 @@ import type { IReportForModerator } from '@/types/reports'
 import type { IUserReportAction, IUserProfile } from '@/types/user'
 import type { IComment, IWorkout } from '@/types/workouts'
 
-export type TNotificationType =
+export type TNotificationTypeWithPreferences =
   | 'account_creation'
   | 'comment_like'
   | 'comment_reply'
-  | 'comment_suspension'
-  | 'comment_unsuspension'
   | 'follow'
   | 'follow_request'
   | 'follow_request_approved'
   | 'mention'
+  | 'workout_comment'
+  | 'workout_like'
+
+export type TNotificationType =
+  | TNotificationTypeWithPreferences
+  | 'comment_suspension'
+  | 'comment_unsuspension'
   | 'report'
   | 'suspension_appeal'
   | 'user_warning'
   | 'user_warning_appeal'
   | 'user_warning_lifting'
-  | 'workout_comment'
-  | 'workout_like'
   | 'workout_suspension'
   | 'workout_unsuspension'
 
@@ -45,4 +48,8 @@ export interface INotificationPayload {
   notificationId: number
   markedAsRead: boolean
   currentQuery: INotificationsPayload
+}
+
+export type TNotificationPreferences = {
+  [key in TNotificationTypeWithPreferences]: boolean | undefined
 }

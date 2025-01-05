@@ -784,14 +784,44 @@ class TestUserManagerServiceUserCreation:
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
 
-    def test_created_user_has_user_role(self, app: Flask) -> None:
+    @pytest.mark.parametrize('input_role', [{}, {"role": "user"}])
+    def test_created_user_has_user_role_when_role_not_provided(
+        self, app: Flask, input_role: dict
+    ) -> None:
         username = random_string()
         user_manager_service = UserManagerService(username=username)
 
-        new_user, _ = user_manager_service.create(email=random_email())
+        new_user, _ = user_manager_service.create(
+            email=random_email(), **input_role
+        )
 
         assert new_user
         assert new_user.role == UserRole.USER.value
+        assert new_user.is_active is False
+        assert new_user.confirmation_token is not None
+
+    @pytest.mark.parametrize('input_role', ['moderator', 'admin', 'owner'])
+    def test_it_creates_user_with_given_role(
+        self, app: Flask, input_role: str
+    ) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(
+            email=random_email(), role=input_role
+        )
+
+        assert new_user
+        assert new_user.role == UserRole[input_role.upper()].value
+        assert new_user.is_active is not True
+        assert new_user.confirmation_token is not None
+
+    def test_it_raises_error_when_role_is_invalid(self, app: Flask) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        with pytest.raises(InvalidUserRole):
+            user_manager_service.create(email=random_email(), role='invalid')
 
     def test_created_user_does_not_accept_privacy_policy(
         self, app: Flask

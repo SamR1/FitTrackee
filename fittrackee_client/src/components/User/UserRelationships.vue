@@ -24,6 +24,8 @@
           :key="user.username"
           :authUser="authUser"
           :user="user"
+          :updatedUser="updatedUser"
+          @updatedUserRelationship="storeUser"
           from="relationship"
         />
       </div>
@@ -36,6 +38,11 @@
     <p v-else class="no-relationships">
       {{ $t(`user.RELATIONSHIPS.NO_${relationship.toUpperCase()}`) }}
     </p>
+    <ErrorMessage
+      v-if="errorMessages"
+      :message="errorMessages"
+      :no-margin="true"
+    />
     <div class="profile-buttons">
       <button
         @click="
@@ -51,13 +58,14 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, onBeforeMount, watch, onUnmounted, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, onBeforeMount, onUnmounted, toRefs, ref, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
   import Pagination from '@/components/Common/Pagination.vue'
   import UserCard from '@/components/User/UserCard.vue'
+  import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
   import { USERS_STORE } from '@/store/constants'
   import type { IPagination } from '@/types/api'
@@ -80,6 +88,9 @@
   const route = useRoute()
 
   const { authUser } = useAuthUser()
+  const { errorMessages } = useApp()
+
+  const updatedUser: Ref<string | null> = ref(null)
 
   const payload: ComputedRef<IUserRelationshipsPayload> = computed(() => {
     return {
@@ -97,6 +108,9 @@
 
   function loadRelationships(payload: IUserRelationshipsPayload) {
     store.dispatch(USERS_STORE.ACTIONS.GET_RELATIONSHIPS, payload)
+  }
+  function storeUser(username: string) {
+    updatedUser.value = username
   }
 
   watch(
@@ -148,7 +162,7 @@
       flex-wrap: wrap;
 
       ::v-deep(.box) {
-        width: 40%;
+        width: 43%;
         @media screen and (max-width: $small-limit) {
           width: 100%;
         }

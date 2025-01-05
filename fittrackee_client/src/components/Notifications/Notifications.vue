@@ -22,6 +22,11 @@
         :query="query"
       />
     </template>
+    <div class="preferences-link">
+      <router-link to="/profile/edit/notifications">
+        {{ $t('user.PROFILE.EDIT_NOTIFICATION_PREFERENCES') }}
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -135,8 +140,12 @@
       &:hover {
         background-color: initial;
         color: var(--app-color);
-        text-decoration: underline;
       }
     }
+  }
+  .preferences-link {
+    font-size: 0.9em;
+    font-style: italic;
+    margin-left: $default-margin;
   }
 </style>

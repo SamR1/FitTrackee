@@ -6,8 +6,9 @@
   "ACTIVE_ACCOUNT": "The account is active",
   "ACTIVE_USER": "active user | active users",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
-  "APPEAL_IN_PROGRESS": "Appeal currently being processed.",
+  "APPEAL": "Appeal",
   "APPEAL_APPROVED": "Appeal approved.",
+  "APPEAL_IN_PROGRESS": "Appeal currently being processed.",
   "APPEAL_REJECTED": "Appeal rejected.",
   "APPEAL_SUBMITTED": "Appeal submitted.",
   "CONFIRM_ACCOUNT_DELETION": "Are you sure you want to delete your account? All data will be deleted, this cannot be undone.",
@@ -36,7 +37,6 @@
   "LOGOUT": "Logout",
   "LOGOUT_CONFIRMATION": "Are you sure you want to log out?",
   "LOG_IN": "log in",
-  "APPEAL": "Appeal",
   "NEW_PASSWORD": "New password",
   "NO_SPORT_FOUND": "No sport found.",
   "NO_USERS_FOUND": "No users found.",
@@ -81,6 +81,7 @@
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
     "EDIT": "Edit profile",
+    "EDIT_NOTIFICATION_PREFERENCES": "Edit notification preferences",
     "EDIT_PREFERENCES": "Edit preferences",
     "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
     "ELEVATION_CHART_START": {
@@ -113,6 +114,19 @@
     "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
     "MONDAY": "Monday",
+    "NOTIFICATIONS": {
+      "account_creation": "Someone registers",
+      "comment_like": "Someone likes your comment",
+      "comment_reply": "Someone reply to your comment",
+      "follow": "Someone follows you",
+      "follow_request": "Someone sends a follow request",
+      "follow_request_approved": "Your follow request is approved",
+      "mention": "Someone mentioned you",
+      "workout_comment": "Someone comments on your workout",
+      "workout_like": "Someone likes your workout"
+    },
+    "NOTIFICATIONS_EDITION": "Notification preferences edition",
+    "NOTIFICATION_PREFERENCES": "Notification preferences",
     "NO_SANCTIONS": "No sanctions",
     "PICTURE": "Picture",
     "PICTURE_EDITION": "Picture edition",
@@ -134,12 +148,12 @@
       "user_warning": "Warning ({date})",
       "workout_suspension": "Workout suspension ({date})"
     },
+    "SANCTIONS_RECEIVED": "Sanctions received",
     "SANCTION_APPEAL": {
       "APPROVED": "your appeal has been approved",
       "IN_PROGRESS": "your appeal is being processed",
       "REJECTED": "your appeal has been rejected"
     },
-    "SANCTIONS_RECEIVED": "Sanctions received",
     "SPORT": {
       "ACTION": "action",
       "COLOR": "color",
@@ -164,6 +178,7 @@
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",
       "MODERATION": "moderation",
+      "NOTIFICATIONS": "notifications",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
       "PRIVACY-POLICY": "privacy policy",
@@ -184,13 +199,13 @@
       "LABEL": "Units for distance",
       "METRIC": "Metric system (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "This user received {count} sanction.|This user received {count} sanctions.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtered",
       "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
       "LABEL": "GPX max speed strategy",
       "RAW_SPEED": "Raw"
-    },
-    "USER_RECEIVED_SANCTIONS": "This user received {count} sanction.|This user received {count} sanctions."
+    }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",
   "REGISTER": "Register",
@@ -226,9 +241,9 @@
   "USERNAME_INFO": "3 to 30 characters required, only alphanumeric characters and the underscore character \"_\" allowed.",
   "USER_PICTURE": "user picture",
   "USER_PROFILE": "user profile",
+  "WARNING_REASON": "Warning reason",
   "YOU": "you",
-  "YOU_CAN_APPEAL_ONCE": "You can appeal only once.",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}.",
   "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Your account has been suspended",
-  "WARNING_REASON": "Warning reason"
+  "YOU_CAN_APPEAL_ONCE": "You can appeal only once.",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "You have accepted the {0}."
 }

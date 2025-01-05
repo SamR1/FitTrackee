@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Outils tiers" href="third_party_tools.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Interface de ligne de commande - Documentation FitTrackee 0.9.0b4</title>
+        <title>Interface de ligne de commande - Documentation FitTrackee 0.9.0b6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b4
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b6
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b4
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b6
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -408,6 +408,9 @@ Commands:
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.8.4: </span>La préférence de l’utilisateur pour la langue de l’interface est ajoutée.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Ajout d’une option pour le rôle de l’utilisateur.</p>
+</div>
 <p>Créer un compte utilisateur.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -439,6 +442,9 @@ Commands:
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">LANGUAGE</span></code></p></td>
 <td><p>Préférence de l’utilisateur pour la langue de l’interface (code à deux lettres, ISO 639-1). Si elle n’est pas fournie ou prise en charge, la valeur par défaut est l’anglais (« en »).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--role</span> <span class="pre">[owner|admin|moderator|user]</span></code></p></td>
+<td><p>Rôle de l’utilisateur (valeur par défaut: “user”)</p></td>
 </tr>
 </tbody>
 </table>
@@ -496,7 +502,7 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--set-admin</span> <span class="pre">BOOLEAN</span></code></p></td>
 <td><p>[DÉPRÉCIÉ] Ajouter/supprimer des droits d’administration (lors de l’ajout de droits d’administration, le compte de l’utilisateur est également activé s’il ne l’est pas).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--set-role</span> <span class="pre">ROLE</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--set-role</span> <span class="pre">[owner|admin|moderator|user]</span></code></p></td>
 <td><p>Configurer le rôle (lors de la configuration des rôles “moderator”, “admin”  et “owner”, le compte de l’utilisateur est également activé s’il ne l’est pas.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--activate</span></code></p></td>
@@ -603,7 +609,7 @@ Commands:
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b22506fc"></script>
+</div><script src="_static/documentation_options.js?v=21a5088f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

@@ -43,6 +43,7 @@
       case 'EQUIPMENTS':
       case 'FOLLOW-REQUESTS':
       case 'MODERATION':
+      case 'NOTIFICATIONS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${

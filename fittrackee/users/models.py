@@ -5,8 +5,9 @@ from uuid import uuid4
 
 import jwt
 from flask import current_app
+from jsonschema import validate
 from sqlalchemy import and_, func
-from sqlalchemy.dialects.postgresql import UUID, insert
+from sqlalchemy.dialects.postgresql import JSONB, UUID, insert
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -29,6 +30,11 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 
+from .constants import (
+    NOTIFICATION_TYPES,
+    NOTIFICATIONS_PREFERENCES_SCHEMA,
+    USER_LINK_TEMPLATE,
+)
 from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyProcessedError,
@@ -46,42 +52,6 @@ from .utils.token import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
     from fittrackee.reports.models import ReportAction
-
-USER_LINK_TEMPLATE = (
-    '<a href="{profile_url}" target="_blank" rel="noopener noreferrer">'
-    '{username}</a>'
-)
-
-ADMINISTRATOR_NOTIFICATION_TYPES = [
-    'account_creation',
-]
-
-MODERATOR_NOTIFICATION_TYPES = [
-    'report',
-    'suspension_appeal',
-    'user_warning_appeal',
-]
-
-NOTIFICATION_TYPES = (
-    ADMINISTRATOR_NOTIFICATION_TYPES
-    + MODERATOR_NOTIFICATION_TYPES
-    + [
-        'comment_like',
-        'comment_reply',
-        'comment_suspension',
-        'comment_unsuspension',
-        'follow',
-        'follow_request',
-        'follow_request_approved',
-        'mention',
-        'user_warning',
-        'user_warning_lifting',
-        'workout_comment',
-        'workout_like',
-        'workout_suspension',
-        'workout_unsuspension',
-    ]
-)
 
 
 class FollowRequest(BaseModel):
@@ -148,15 +118,21 @@ def on_follow_request_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
+        to_user = User.query.filter_by(
+            id=new_follow_request.followed_user_id
+        ).first()
+        event_type = (
+            'follow' if new_follow_request.is_approved else 'follow_request'
+        )
+
+        if not to_user.is_notification_enabled(event_type):
+            return
+
         notification = Notification(
             from_user_id=new_follow_request.follower_user_id,
             to_user_id=new_follow_request.followed_user_id,
             created_at=new_follow_request.created_at,
-            event_type=(
-                'follow'
-                if new_follow_request.is_approved
-                else 'follow_request'
-            ),
+            event_type=event_type,
         )
         session.add(notification)
 
@@ -170,28 +146,50 @@ def on_follow_request_update(
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Connection) -> None:
             if follow_request.is_approved:
-                notification_table = Notification.__table__
-                connection.execute(
-                    notification_table.update()
-                    .where(
-                        notification_table.c.from_user_id
-                        == follow_request.follower_user_id,
-                        notification_table.c.to_user_id
-                        == follow_request.followed_user_id,
-                        notification_table.c.event_type == 'follow_request',
+                if follow_request.to_user.is_notification_enabled("follow"):
+                    follow_request_notification = Notification.query.filter_by(
+                        from_user_id=follow_request.follower_user_id,
+                        to_user_id=follow_request.followed_user_id,
+                        event_type="follow_request",
+                    ).first()
+
+                    if follow_request_notification:
+                        notification_table = Notification.__table__
+                        connection.execute(
+                            notification_table.update()
+                            .where(
+                                notification_table.c.from_user_id
+                                == follow_request.follower_user_id,
+                                notification_table.c.to_user_id
+                                == follow_request.followed_user_id,
+                                notification_table.c.event_type
+                                == 'follow_request',
+                            )
+                            .values(
+                                event_type='follow',
+                                marked_as_read=False,
+                            )
+                        )
+                    else:
+                        follow_notification = Notification(
+                            from_user_id=follow_request.follower_user_id,
+                            to_user_id=follow_request.followed_user_id,
+                            created_at=datetime.utcnow(),
+                            event_type='follow',
+                        )
+                        session.add(follow_notification)
+
+                if follow_request.from_user.is_notification_enabled(
+                    "follow_request_approved"
+                ):
+                    notification = Notification(
+                        from_user_id=follow_request.followed_user_id,
+                        to_user_id=follow_request.follower_user_id,
+                        created_at=datetime.utcnow(),
+                        event_type='follow_request_approved',
                     )
-                    .values(
-                        event_type='follow',
-                        marked_as_read=False,
-                    )
-                )
-                notification = Notification(
-                    from_user_id=follow_request.followed_user_id,
-                    to_user_id=follow_request.follower_user_id,
-                    created_at=datetime.utcnow(),
-                    event_type='follow_request_approved',
-                )
-                session.add(notification)
+                    session.add(notification)
+
             if (
                 not follow_request.is_approved
                 and follow_request.updated_at is not None
@@ -325,6 +323,7 @@ class User(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    notification_preferences = db.Column(JSONB, nullable=True)
     is_remote = db.Column(db.Boolean, default=False, nullable=False)
 
     workouts = db.relationship(
@@ -819,6 +818,27 @@ class User(BaseModel):
             "sanctions_count": result[2],
         }
 
+    def update_preferences(self, updated_preferences: Dict) -> None:
+        notification_preferences = {
+            **(
+                self.notification_preferences
+                if self.notification_preferences
+                else {}
+            ),
+            **updated_preferences,
+        }
+        validate(
+            instance=notification_preferences,
+            schema=NOTIFICATIONS_PREFERENCES_SCHEMA,
+        )
+        self.notification_preferences = notification_preferences
+        db.session.commit()
+
+    def is_notification_enabled(self, notification_type: str) -> bool:
+        if not self.notification_preferences:
+            return True
+        return self.notification_preferences.get(notification_type, True)
+
     def serialize(
         self,
         *,
@@ -962,6 +982,11 @@ class User(BaseModel):
                         self.hide_profile_in_users_directory
                     ),
                     'sanctions_count': self.sanctions_count,
+                    'notification_preferences': (
+                        self.notification_preferences
+                        if self.notification_preferences
+                        else {}
+                    ),
                 },
             }
 

@@ -261,7 +261,9 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
                     : USERS_STORE.MUTATIONS.UPDATE_USER_IN_RELATIONSHIPS,
                 res.data.data.users[0]
               )
-              context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+              context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
+                light: true,
+              })
             } else {
               handleError(context, null)
             }

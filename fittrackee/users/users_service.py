@@ -7,7 +7,12 @@ from sqlalchemy import func
 from fittrackee import db
 from fittrackee.federation.utils.user import get_user_from_username
 from fittrackee.reports.models import ReportAction
-from fittrackee.users.constants import USER_DATE_FORMAT, USER_TIMEZONE
+from fittrackee.users.constants import (
+    ADMINISTRATOR_NOTIFICATION_TYPES,
+    MODERATOR_NOTIFICATION_TYPES,
+    USER_DATE_FORMAT,
+    USER_TIMEZONE,
+)
 from fittrackee.users.exceptions import (
     InvalidEmailException,
     InvalidUserException,
@@ -21,8 +26,6 @@ from fittrackee.users.exceptions import (
     UserCreationException,
 )
 from fittrackee.users.models import (
-    ADMINISTRATOR_NOTIFICATION_TYPES,
-    MODERATOR_NOTIFICATION_TYPES,
     Notification,
     User,
 )
@@ -160,6 +163,7 @@ class UserManagerService:
         email: str,
         password: Optional[str] = None,
         check_email: bool = False,
+        role: Optional[str] = None,
     ) -> Tuple[Optional[User], Optional[str]]:
         if not password:
             password = secrets.token_urlsafe(30)
@@ -195,6 +199,12 @@ class UserManagerService:
         new_user.timezone = USER_TIMEZONE
         new_user.date_format = USER_DATE_FORMAT
         new_user.confirmation_token = secrets.token_urlsafe(30)
+
+        if role is not None:
+            if role not in UserRole.db_choices():
+                raise InvalidUserRole()
+            new_user.role = UserRole[role.upper()].value
+
         db.session.add(new_user)
         db.session.flush()
 
@@ -204,10 +214,11 @@ class UserManagerService:
         self,
         email: str,
         password: Optional[str] = None,
+        role: Optional[str] = None,
     ) -> Tuple[Optional[User], Optional[str]]:
         try:
             new_user, password = self.create_user(
-                email, password, check_email=True
+                email, password, check_email=True, role=role
             )
             if new_user:
                 new_user.language = 'en'

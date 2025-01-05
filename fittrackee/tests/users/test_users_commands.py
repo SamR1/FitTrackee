@@ -90,6 +90,7 @@ class TestCliUserCreate:
         assert user.is_active is True
         assert user.email == email
         assert bcrypt.check_password_hash(user.password, password)
+        assert user.role == UserRole.USER.value
 
     def test_it_displays_password_when_password_is_not_provided(
         self,
@@ -183,6 +184,52 @@ class TestCliUserCreate:
             'The user preference for interface language is: en'
             in result.output
         )
+
+    def test_it_creates_user_with_provided_role(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        runner = CliRunner()
+
+        runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                username,
+                "--email",
+                random_email(),
+                "--role",
+                "owner",
+            ],
+        )
+
+        user = User.query.filter_by(username=username).first()
+        assert user.role == UserRole.OWNER.value
+
+    def test_it_displays_error_when_role_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                random_string(),
+                "--email",
+                user_1.email,
+                "--role",
+                'invalid',
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert (
+            "Invalid value for '--role': 'invalid' is not one of "
+            "'owner', 'admin', 'moderator', 'user'."
+        ) in result.output
 
 
 class TestCliUserUpdate:

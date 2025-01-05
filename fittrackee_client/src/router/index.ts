@@ -11,11 +11,13 @@ import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
+import UserNotifications from '@/components/User/ProfileDisplay/UserNotifications.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
+import UserNotificationsEdition from '@/components/User/ProfileEdition/UserNotificationsEdition.vue'
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
@@ -62,6 +64,7 @@ import UsersView from '@/views/UsersView.vue'
 import AddWorkout from '@/views/workouts/AddWorkout.vue'
 import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
+import Likes from '@/views/workouts/Likes.vue'
 import Workout from '@/views/workouts/Workout.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
 
@@ -211,6 +214,14 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
+            path: 'notifications',
+            name: 'UserNotifications',
+            component: UserNotifications,
+            meta: {
+              title: 'user.PROFILE.TABS.NOTIFICATIONS',
+            },
+          },
+          {
             path: 'sports',
             name: 'UserSports',
             component: UserSports,
@@ -322,24 +333,38 @@ const routes: RouteRecordRaw[] = [
             name: 'FollowRequests',
             component: UsersList,
             props: { itemType: 'follow-requests' },
+            meta: {
+              title: 'user.PROFILE.TABS.FOLLOW-REQUESTS',
+            },
           },
           {
             path: 'blocked-users',
             name: 'BlockedUsers',
             component: UsersList,
             props: { itemType: 'blocked-users' },
+            meta: {
+              title: 'user.PROFILE.TABS.BLOCKED-USERS',
+            },
           },
           {
             path: 'followers',
             name: 'AuthUserFollowers',
             component: UserRelationships,
             props: { relationship: 'followers' },
+            meta: {
+              title: 'user.RELATIONSHIPS.FOLLOWER',
+              count: 0,
+            },
           },
           {
             path: 'following',
             name: 'AuthUserFollowing',
             component: UserRelationships,
             props: { relationship: 'following' },
+            meta: {
+              title: 'user.RELATIONSHIPS.FOLLOWING',
+              count: 0,
+            },
           },
           {
             path: 'suspension',
@@ -350,6 +375,9 @@ const routes: RouteRecordRaw[] = [
             path: 'moderation',
             name: 'Moderation',
             component: UserModeration,
+            meta: {
+              title: 'user.PROFILE.TABS.MODERATION',
+            },
             children: [
               {
                 path: '',
@@ -403,6 +431,14 @@ const routes: RouteRecordRaw[] = [
             component: UserPreferencesEdition,
             meta: {
               title: 'user.PROFILE.EDIT_PREFERENCES',
+            },
+          },
+          {
+            path: 'notifications',
+            name: 'UserNotificationsEdition',
+            component: UserNotificationsEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT_NOTIFICATIONS',
             },
           },
           {
@@ -548,6 +584,17 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/workouts/:workoutId/likes',
+    name: 'WorkoutLikes',
+    component: Likes,
+    props: { objectType: 'workout' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
     path: '/workouts/:workoutId/edit',
     name: 'EditWorkout',
     component: EditWorkout,
@@ -579,12 +626,34 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/workouts/:workoutId/comments/:commentId/likes',
+    name: 'WorkoutCommentLikes',
+    component: Likes,
+    props: { objectType: 'comment' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
     path: '/comments/:commentId',
     name: 'Comment',
     component: CommentView,
     meta: {
       allowedToSuspendedUser: false,
       withoutChecks: true,
+    },
+  },
+  {
+    path: '/comments/:commentId/likes',
+    name: 'CommentLikes',
+    component: Likes,
+    props: { objectType: 'comment' },
+    meta: {
+      title: 'workouts.LIKES',
+      withoutChecks: true,
+      allowedToSuspendedUser: false,
     },
   },
   {

@@ -98,7 +98,11 @@
             />
           </div>
         </div>
-        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <ErrorMessage
+          v-if="errorMessages"
+          :message="errorMessages"
+          :no-margin="true"
+        />
         <div class="form-buttons">
           <button class="confirm" type="submit" :disabled="equipmentsLoading">
             {{ $t('buttons.SUBMIT') }}
@@ -306,9 +310,6 @@
       .equipment-warning {
         margin-top: $default-margin * 0.5;
         margin-bottom: $default-margin;
-      }
-      .error-message {
-        margin: $default-margin 0;
       }
 
       .form-buttons {

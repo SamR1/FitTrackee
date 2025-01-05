@@ -98,6 +98,21 @@ class TestNotificationForFollowRequest:
         assert notification.event_type == 'follow_request'
         assert notification.event_object_id is None
 
+    def test_it_does_not_create_notification_when_disabled_in_preferences(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.update_preferences({"follow_request": False})
+
+        user_1.send_follow_request_to(user_2)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+            ).first()
+            is None
+        )
+
     def test_it_creates_notification_on_follow_when_user_automatically_approves_request(  # noqa
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -113,6 +128,23 @@ class TestNotificationForFollowRequest:
         assert notification.marked_as_read is False
         assert notification.event_type == 'follow'
         assert notification.event_object_id is None
+
+    def test_it_does_creates_notification_on_follow_when_user_automatically_approves_request_and_disabled_in_preferennces(  # noqa
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.manually_approves_followers = False
+        user_2.update_preferences({"follow": False})
+
+        user_1.send_follow_request_to(user_2)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+                event_type='follow',
+            ).first()
+            is None
+        )
 
     def test_it_does_not_create_notification_for_follower_when_user_automatically_approves_request(  # noqa
         self, app: Flask, user_1: User, user_2: User
@@ -143,6 +175,50 @@ class TestNotificationForFollowRequest:
         assert notification.event_type == 'follow'
         assert notification.event_object_id is None
 
+    def test_it_does_not_update_follow_request_notification_when_disabled_in_preferences(  # noqa
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.update_preferences({"follow_request": True, "follow": False})
+        user_1.send_follow_request_to(user_2)
+
+        user_2.approves_follow_request_from(user_1)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+                event_type="follow_request",
+            ).first()
+            is not None
+        )
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_1.id,
+                to_user_id=user_2.id,
+                event_type="follow",
+            ).first()
+            is None
+        )
+
+    def test_it_creates_follow_notification_when_user_approves_follow_request(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_2.update_preferences({"follow_request": False})
+        user_1.send_follow_request_to(user_2)
+        now = datetime.utcnow()
+
+        with travel(now, tick=False):
+            user_2.approves_follow_request_from(user_1)
+
+        notification = Notification.query.filter_by(
+            from_user_id=user_1.id,
+            to_user_id=user_2.id,
+        ).first()
+        assert notification.created_at == now
+        assert notification.marked_as_read is False
+        assert notification.event_type == 'follow'
+        assert notification.event_object_id is None
+
     def test_it_creates_notification_for_follower_when_user_approves_follow_request(  # noqa
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
@@ -160,6 +236,22 @@ class TestNotificationForFollowRequest:
         assert notification.marked_as_read is False
         assert notification.event_type == 'follow_request_approved'
         assert notification.event_object_id is None
+
+    def test_it_does_not_create_notification_for_follower_when_disabled_in_preferences(  # noqa
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1.update_preferences({"follow_request_approved": False})
+        user_1.send_follow_request_to(user_2)
+
+        user_2.approves_follow_request_from(user_1)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=user_2.id,
+                to_user_id=user_1.id,
+            ).first()
+            is None
+        )
 
     def test_it_deletes_notification_when_user_rejects_follow_request(
         self, app: Flask, user_1: User, user_2: User
@@ -216,13 +308,34 @@ class TestNotificationForFollowRequest:
         notification = Notification.query.filter_by(
             from_user_id=user_1.id,
             to_user_id=user_2.id,
+            event_type="follow_request",
         ).first()
         notification.marked_as_read = True
+
         user_2.approves_follow_request_from(user_1)
 
         assert notification.created_at == follow_request.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == 'follow'
+        assert notification.event_object_id is None
+
+    def test_it_does_not_updates_notification_when_user_approves_follow_request_and_disabled_in_preferences(  # noqa
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        follow_request = user_1.send_follow_request_to(user_2)
+        user_2.update_preferences({"follow": False})
+        notification = Notification.query.filter_by(
+            from_user_id=user_1.id,
+            to_user_id=user_2.id,
+            event_type="follow_request",
+        ).first()
+        notification.marked_as_read = True
+
+        user_2.approves_follow_request_from(user_1)
+
+        assert notification.created_at == follow_request.created_at
+        assert notification.marked_as_read is True
+        assert notification.event_type == "follow_request"
         assert notification.event_object_id is None
 
     @pytest.mark.parametrize('manually_approves_followers', [True, False])
@@ -347,6 +460,28 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         assert notification.marked_as_read is False
         assert notification.event_type == 'workout_like'
 
+    def test_it_does_not_create_notification_on_workout_like_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.update_preferences({"workout_like": False})
+
+        like = self.like_workout(user_2, workout_cycling_user_1)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=like.user_id,
+                to_user_id=workout_cycling_user_1.user_id,
+                event_object_id=workout_cycling_user_1.id,
+            ).first()
+            is None
+        )
+
     def test_it_deletes_notification_on_workout_like_delete(
         self,
         app: Flask,
@@ -455,6 +590,32 @@ class TestNotificationForWorkoutComment(NotificationTestCase):
         assert notification.created_at == comment.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == 'workout_comment'
+
+    def test_it_does_not_create_notification_on_workout_comment_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        user_1.update_preferences({"workout_comment": False})
+
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=comment.user_id,
+                to_user_id=workout_cycling_user_1.user_id,
+                event_object_id=comment.id,
+            ).first()
+            is None
+        )
 
     def test_it_deletes_notification_on_workout_comment_delete(
         self,
@@ -820,6 +981,29 @@ class TestNotificationForCommentLike(NotificationTestCase):
         assert notification.marked_as_read is False
         assert notification.event_type == 'comment_like'
 
+    def test_it_does_creates_notification_on_comment_like_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        comment = self.comment_workout(user_2, workout_cycling_user_1)
+        user_2.update_preferences({"comment_like": False})
+
+        like = self.like_comment(user_3, comment)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=like.user_id,
+                to_user_id=comment.user_id,
+                event_object_id=like.id,
+            ).first()
+            is None
+        )
+
     def test_it_deletes_notification_on_comment_like_delete(
         self,
         app: Flask,
@@ -1001,6 +1185,30 @@ class TestNotificationForMention(NotificationTestCase):
         assert notification.marked_as_read is False
         assert notification.event_type == 'mention'
 
+    def test_it_does_not_create_notification_on_mention_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_3.update_preferences({"mention": False})
+        comment = self.comment_workout(
+            user_2, workout_cycling_user_1, text=f"@{user_3.username}"
+        )
+        self.create_mention(user_3, comment)
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=comment.user_id,
+                to_user_id=user_3.id,
+                event_object_id=comment.id,
+            ).first()
+            is None
+        )
+
     def test_it_does_not_create_notification_when_mentioned_user_is_workout_owner(  # noqa
         self,
         app: Flask,
@@ -1059,6 +1267,58 @@ class TestNotificationForMention(NotificationTestCase):
         assert notifications[0].created_at == mention.created_at
         assert notifications[0].marked_as_read is False
         assert notifications[0].event_type == 'mention'
+
+    def test_it_does_not_create_notification_when_mentioned_user_is_workout_owner_and_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.update_preferences({"mention": False, "workout_comment": False})
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        self.create_mention(user_1, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_1.id,
+        ).all()
+        assert notifications == []
+
+    def test_it_creates_notification_when_mentioned_user_is_workout_owner_when_only_mention_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        user_1.update_preferences({"mention": False, "workout_comment": True})
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.comment_workout(
+            user_2,
+            workout_cycling_user_1,
+            text=f"@{user_1.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        self.create_mention(user_1, comment)
+
+        notifications = Notification.query.filter_by(
+            from_user_id=comment.user_id,
+            to_user_id=user_1.id,
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].created_at == comment.created_at
+        assert notifications[0].marked_as_read is False
+        assert notifications[0].event_type == 'workout_comment'
 
     def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
         self,

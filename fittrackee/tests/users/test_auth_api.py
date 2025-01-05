@@ -21,6 +21,7 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.token import get_user_token
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
@@ -301,6 +302,26 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert 'auth_token' not in data
 
+    def test_it_creates_user_with_user_role(self, app: Flask) -> None:
+        client = app.test_client()
+        username = self.random_string()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=username,
+                    email=self.random_email(),
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(username=username).first()
+        assert new_user.role == UserRole.USER.value
+
     def test_it_creates_user_with_default_date_format(
         self, app: Flask
     ) -> None:
@@ -527,6 +548,37 @@ class TestUserRegistration(ApiTestCaseMixin):
                 user_1_admin.id,
                 user_2_admin.id,
             ]
+
+    def test_it_does_not_create_notifications_for_admin_when_disabled_in_preferences(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2_admin: User,
+        account_confirmation_email_mock: Mock,
+    ) -> None:
+        user_1_admin.update_preferences({"account_creation": False})
+        email = self.random_email()
+        client = app.test_client()
+
+        client.post(
+            '/api/auth/register',
+            data=json.dumps(
+                dict(
+                    username=self.random_string(),
+                    email=email,
+                    password=self.random_string(),
+                    accepted_policy=True,
+                )
+            ),
+            content_type='application/json',
+        )
+
+        new_user = User.query.filter_by(email=email).first()
+        notifications = Notification.query.filter_by(
+            event_type='account_creation', event_object_id=new_user.id
+        ).all()
+        assert len(notifications) == 1
+        assert notifications[0].to_user_id == user_2_admin.id
 
 
 class TestUserLogin(ApiTestCaseMixin):
@@ -4736,3 +4788,157 @@ class TestPostUserSanctionAppeal(UserSuspensionTestCase):
         )
 
         self.assert_response_scope(response, can_access)
+
+
+class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
+    route = '/api/auth/profile/edit/notifications'
+
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json={},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_fields_are_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json={"mention": True},
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_fields_are_missing_for_admin(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json={
+                "comment_like": True,
+                "follow": True,
+                "follow_request": True,
+                "follow_request_approved": True,
+                "mention": False,
+                "workout_comment": False,
+                "workout_like": False,
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_fields_are_missing_for_owner(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json={
+                "comment_like": True,
+                "follow": True,
+                "follow_request": True,
+                "follow_request_approved": True,
+                "mention": False,
+                "workout_comment": False,
+                "workout_like": False,
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_a_notification_type_is_invalid(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json={
+                "comment_like": True,
+                "follow": True,
+                "follow_request": True,
+                "follow_request_approved": True,
+                "invalid": True,
+                "mention": False,
+                "workout_comment": False,
+                "workout_like": False,
+            },
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_notification_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.update_preferences(
+            {
+                "comment_like": True,
+                "follow": True,
+                "follow_request": True,
+                "follow_request_approved": True,
+                "mention": True,
+                "workout_comment": True,
+                "workout_like": True,
+            }
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        updated_notification_preferences = {
+            "comment_like": True,
+            "follow": True,
+            "follow_request": True,
+            "follow_request_approved": True,
+            "mention": False,
+            "workout_comment": False,
+            "workout_like": False,
+        }
+
+        response = client.post(
+            self.route,
+            content_type='application/json',
+            json=updated_notification_preferences,
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        db.session.refresh(user_1)
+        assert data["data"] == jsonify_dict(
+            user_1.serialize(current_user=user_1, light=False)
+        )
+        assert (
+            user_1.notification_preferences == updated_notification_preferences
+        )

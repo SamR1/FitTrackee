@@ -57,11 +57,9 @@
       </template>
     </AlertMessage>
     <ErrorMessage
+      v-if="errorMessages && updatedUser && updatedUser === user.username"
       :message="errorMessages"
-      v-if="
-        errorMessages &&
-        ((updatedUser && updatedUser === user.username) || !updatedUser)
-      "
+      :no-margin="true"
     />
   </div>
 </template>
@@ -84,19 +82,21 @@
     authUser: IAuthUserProfile
     user: IUserLightProfile
     updatedUser?: string | null
-    from?: string
+    from?: string | null
     hideRelationship?: boolean
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    from: null,
+    hideRelationship: false,
+  })
   const { authUser, from, hideRelationship, updatedUser, user } = toRefs(props)
 
   const route = useRoute()
 
   const { authUserHasModeratorRights } = useAuthUser()
+  const { errorMessages } = useApp()
 
   const emit = defineEmits(['updatedUserRelationship'])
-
-  const { errorMessages } = useApp()
 
   const suspensionDate: ComputedRef<string | null> = computed(() =>
     user.value.suspended_at

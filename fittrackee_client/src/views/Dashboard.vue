@@ -37,7 +37,7 @@
       </div>
     </div>
     <div
-      class="container privacy-policy-message"
+      class="container policy-container"
       v-if="authUser.accepted_privacy_policy !== true"
     >
       <PrivacyPolicyToAccept
@@ -105,7 +105,9 @@
   function updateDisplayColumn(target: string) {
     isSelected.value = target
   }
-  onBeforeMount(() => store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE))
+  onBeforeMount(() =>
+    store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
+  )
 </script>
 
 <style lang="scss" scoped>
@@ -132,7 +134,7 @@
       display: none;
     }
 
-    .privacy-policy-message {
+    .policy-container {
       display: flex;
       justify-content: center;
     }
@@ -188,7 +190,7 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .privacy-policy-message {
+      .policy-container {
         margin: 0 $default-margin * 0.5;
       }
     }

@@ -2,7 +2,12 @@ import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { ROOT_STORE, AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  ROOT_STORE,
+  WORKOUTS_STORE,
+  USERS_STORE,
+} from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import { WorkoutsMutations } from '@/store/modules/workouts/enums'
 import type {
@@ -19,6 +24,7 @@ import type {
   ICommentPayload,
   IComment,
   IAppealPayload,
+  ILikesPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -204,7 +210,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`workouts/${payload.workoutId}`)
       .then(() => {
         context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
         router.push('/')
       })
       .catch((error) => {
@@ -223,7 +229,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     authApi
       .patch(`workouts/${payload.workoutId}`, payload.data)
       .then(() => {
-        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
         context
           .dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
             workoutId: payload.workoutId,
@@ -302,7 +308,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(
             res.data.data.workouts.length === 1
@@ -328,7 +334,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post('workouts/no_gpx', payload)
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(`/workouts/${workout.id}`)
         }
@@ -522,5 +528,30 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, null)
       )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_LIKES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ILikesPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(
+        `${payload.objectType}s/${payload.objectId}/likes?page=${payload.page}`
+      )
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS,
+            res.data.data.likes
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
 }

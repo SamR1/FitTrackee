@@ -96,14 +96,16 @@
             }"
             aria-hidden="true"
           />
-          <span
-            class="likes-count"
-            v-if="comment.likes_count > 0"
-            aria-hidden="true"
-          >
-            {{ comment.likes_count }}
-          </span>
         </button>
+        <router-link
+          v-if="
+            !comment.suspended && !forNotification && comment.likes_count > 0
+          "
+          :to="getLikesUrl()"
+          class="likes-count"
+        >
+          {{ comment.likes_count }}
+        </router-link>
         <button
           v-if="displayCommentIcon()"
           class="transparent icon-button"
@@ -153,13 +155,13 @@
           }"
           aria-hidden="true"
         />
-        <span
-          class="likes-count"
+        <router-link
+          :to="getLikesUrl()"
           v-if="comment.likes_count > 0"
-          aria-hidden="true"
+          class="likes-count"
         >
           {{ comment.likes_count }}
-        </span>
+        </router-link>
       </div>
       <ReportForm
         v-if="isCommentReported()"
@@ -359,6 +361,13 @@
       comment
     )
   }
+  function getLikesUrl() {
+    let url = `/comments/${comment.value.id}/likes`
+    if (comment.value.workout_id) {
+      url = `/workouts/${comment.value.workout_id}${url}`
+    }
+    return url
+  }
 
   watch(
     () => route.params.workoutId,
@@ -476,11 +485,9 @@
       .add-comment-reply {
         margin: 0 0 40px;
       }
-      .likes {
-        .likes-count {
-          padding-left: $default-padding * 0.3;
-          font-size: 0.8em;
-        }
+      .likes-count {
+        margin-left: $default-padding * -0.5;
+        font-size: 0.8em;
       }
     }
   }

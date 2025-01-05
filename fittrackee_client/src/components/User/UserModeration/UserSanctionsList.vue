@@ -57,6 +57,11 @@
     <div v-else>
       <p class="no-sanctions">{{ $t('user.PROFILE.NO_SANCTIONS') }}</p>
     </div>
+    <ErrorMessage
+      v-if="errorMessages"
+      :message="errorMessages"
+      :no-margin="true"
+    />
     <div>
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
     </div>
@@ -101,6 +106,7 @@
   const store = useStore()
 
   const { displayOptions } = useApp()
+  const { errorMessages } = useApp()
 
   let query: Reactive<TPaginationPayload> = reactive(getQuery(route.query))
   const sanctions: ComputedRef<IReportAction[]> = computed(
