@@ -95,8 +95,10 @@
           />
         </button>
         <router-link
+          v-if="
+            !comment.suspended && !forNotification && comment.likes_count > 0
+          "
           :to="getLikesUrl()"
-          v-if="comment.likes_count > 0"
           class="likes-count"
         >
           {{ comment.likes_count }}
