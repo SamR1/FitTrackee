@@ -106,7 +106,9 @@
               </div>
             </div>
             <div class="form-item form-item-text">
-              <label for="notes"> {{ $t('workouts.DESCRIPTION') }}:</label>
+              <label for="description">
+                {{ $t('workouts.DESCRIPTION') }}:
+              </label>
               <div class="form-inputs-group">
                 <input
                   id="description"
@@ -165,7 +167,11 @@
             <div class="form-item">
               <label> {{ $t('workouts.DURATION') }}: </label>
               <div class="form-inputs-group">
+                <label for="duration_from" class="visually-hidden">
+                  {{ $t('workouts.FROM') }}
+                </label>
                 <input
+                  id="duration_from"
                   name="duration_from"
                   :value="$route.query.duration_from"
                   @change="handleFilterChange"
@@ -175,7 +181,11 @@
                   @keyup.enter="onFilter"
                 />
                 <span>{{ $t('workouts.TO') }}</span>
+                <label for="duration_to" class="visually-hidden">
+                  {{ $t('workouts.TO') }}
+                </label>
                 <input
+                  id="duration_to"
                   name="duration_to"
                   :value="$route.query.duration_to"
                   @change="handleFilterChange"

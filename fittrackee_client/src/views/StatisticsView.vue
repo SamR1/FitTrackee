@@ -4,6 +4,9 @@
       <Card>
         <template #title>
           {{ $t('statistics.STATISTICS') }}
+          <label class="visually-hidden" for="stats-type">
+            {{ $t('statistics.STATISTICS_TYPE') }}
+          </label>
           <select
             v-if="userSports.length > 0"
             class="stats-types"
