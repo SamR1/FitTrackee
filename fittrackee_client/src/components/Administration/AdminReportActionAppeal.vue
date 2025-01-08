@@ -20,6 +20,9 @@
         @submit.prevent="updateAppeal"
         class="appeal-actions"
       >
+        <label for="appeal-reason" class="visually-hidden">
+          {{ $t('administration.REASON') }}
+        </label>
         <CustomTextArea
           name="appeal-reason"
           :required="true"

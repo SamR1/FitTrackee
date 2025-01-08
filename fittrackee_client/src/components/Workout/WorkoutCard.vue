@@ -62,6 +62,8 @@
         class="workout-data"
         :class="{ 'without-elevation': !hasElevation(workout) }"
         @click="navigateToWorkout(workout)"
+        role="link"
+        tabindex="0"
       >
         <div class="img">
           <SportImage
