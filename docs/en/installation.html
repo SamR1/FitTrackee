@@ -288,23 +288,25 @@
         <article role="main" id="furo-main-content">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<div class="line-block">
-<div class="line"><strong>FitTrackee</strong> can be installed via a single <a class="reference external" href="https://pypi.org/project/fittrackee/">Python package from PyPI</a> or from sources after cloning the repository.</div>
-</div>
-<div class="line-block">
-<div class="line">For a single-user instance, it’s possible to disable registration. So all you need is Python and PostgreSQL. A <a class="reference external" href="cli.html#users">CLI</a> is available to manage user account.</div>
-</div>
+<p><strong>FitTrackee</strong> can be installed:</p>
+<ul class="simple">
+<li><p>via a single Python package from <a class="reference external" href="https://pypi.org/project/fittrackee/">PyPI</a>,</p></li>
+<li><p>from sources,</p></li>
+<li><p>with a <a class="reference external" href="installation.html#docker">Docker</a> image.</p></li>
+</ul>
+<p>Thanks to contributors, packages are also available on <a class="reference external" href="installation.html#yunohost">Yunohost</a> and <a class="reference external" href="installation.html#nixos">NixOS</a>.</p>
+<p>For a single-user instance, it’s possible to disable registration. So all you need is Python and PostgreSQL. A <a class="reference external" href="cli.html#users">CLI</a> is available to manage user account.</p>
 <div class="line-block">
 <div class="line">The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).</div>
 <div class="line">On other operating systems, some issues can be encountered and adaptations may be necessary.</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">Other installation guides are available thanks to contributors:</div>
-<div class="line">- <a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation on Uberspace Web hosting</a></div>
-<div class="line">- <a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation on Debian 12 net install (guide in German)</a></div>
-</div>
+<p>Other installation guides are available thanks to contributors:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation on Uberspace Web hosting</a></p></li>
+<li><p><a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation on Debian 12 net install (guide in German)</a></p></li>
+</ul>
 </div>
 <section id="main-dependencies">
 <h2>Main dependencies<a class="headerlink" href="#main-dependencies" title="Link to this heading">¶</a></h2>
@@ -511,7 +513,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UI_URL">
 <span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Link to this definition">¶</a></dt>
-<dd><p><strong>FitTrackee</strong> URL, needed for links in emails and mentions.</p>
+<dd><p><strong>FitTrackee</strong> URL, needed for links in emails and mentions on interface.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>UI_URL must contains url scheme (<code class="docutils literal notranslate"><span class="pre">https://</span></code>).</p>
@@ -694,8 +696,8 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <p><strong>FitTrackee</strong> API URL, only needed in dev environment.</p>
 </dd></dl>
 
-<section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h3>
+<section id="docker-compose">
+<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Link to this heading">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.8.13.</span></p>
 </div>
@@ -1098,11 +1100,11 @@ database credentials</strong>):</p></li>
 <h2>Upgrade<a class="headerlink" href="#upgrade" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<div class="line-block">
-<div class="line">Before upgrading, make a backup of all data:</div>
-<div class="line">- database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</div>
-<div class="line">- upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</div>
-</div>
+<p>Before upgrading, make a backup of all data:</p>
+<ul class="simple">
+<li><p>database (with <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> for instance)</p></li>
+<li><p>upload directory (see <a class="reference external" href="installation.html#environment-variables">Environment variables</a>)</p></li>
+</ul>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -1354,8 +1356,8 @@ server {
 <p>If needed, update configuration to handle larger files (see <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
 </section>
-<section id="id6">
-<h2>Docker<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Link to this heading">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.4.4.</span></p>
 </div>
@@ -1540,7 +1542,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#main-dependencies">Main dependencies</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#environment-variables">Environment variables</a><ul>
-<li><a class="reference internal" href="#docker">Docker</a></li>
+<li><a class="reference internal" href="#docker-compose">Docker Compose</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#emails">Emails</a></li>
@@ -1566,7 +1568,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </ul>
 </li>
 <li><a class="reference internal" href="#deployment">Deployment</a></li>
-<li><a class="reference internal" href="#id6">Docker</a><ul>
+<li><a class="reference internal" href="#docker">Docker</a><ul>
 <li><a class="reference internal" href="#production">Production</a></li>
 <li><a class="reference internal" href="#development">Development</a></li>
 </ul>

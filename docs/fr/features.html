@@ -291,8 +291,8 @@
 <div class="line-block">
 <div class="line"><strong>FitTrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers <strong>gpx</strong> et quelques statistiques à partir de vos activités sportives <strong>en plein air</strong>.</div>
 <div class="line">Des équipements peuvent être associés aux séances.</div>
-<div class="line">Si l’inscription est activée, plusieurs utilisateurs peuvent s’inscrire et interagir avec les autres utilisateurs (commentaires, « likes »). Les séances et commentaires sont visibles selon le niveau de visibilité configuré.</div>
 </div>
+<p>Si l’inscription est activée, plusieurs utilisateurs peuvent s’inscrire et interagir avec les autres utilisateurs (commentaires, « likes »). Les séances et commentaires sont visibles selon le niveau de visibilité configuré.</p>
 <p>Les fichier .gpx sont stockés dans un répertoire du serveur (<strong>sans aucun chiffrement</strong>).</p>
 <p>Avec la configuration par défaut, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> est utilisé comme serveur de tuile sur la page de détail de la séance et pour la génération des images statiques des traces.</p>
 <section id="workouts">
@@ -515,7 +515,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Répertoire des utilisateurs.</div>
-<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire dans les préférences utilisateur (masquée par défaut).</div>
+<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire dans les préférences utilisateur (profil masqué par défaut).</div>
 <div class="line">Cela impacte également la complétion des noms d’utilisateurs lors de la rédaction d’un commentaire (seuls les utilisateurs visibles dans le répertoire et les utilisateurs suivis sont proposés).</div>
 </div>
 </li>
@@ -530,8 +530,9 @@
 </div>
 </li>
 <li><div class="line-block">
-<div class="line">Un utilisateur peut envoyer des demandes de suivi à d’autres utilisateurs</div>
+<div class="line">Un utilisateur peut envoyer des demandes de suivi à d’autres utilisateurs.</div>
 <div class="line">Une demande de suivi peut être acceptée ou rejetée.</div>
+<div class="line">L’approbation d’une demande de suivi peut être manuelle ou automatique (manuelle par défaut, cf. préférences utilisateur).</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -577,9 +578,10 @@
 </ul>
 </section>
 <section id="likes">
-<h3>Likes<a class="headerlink" href="#likes" title="Lien vers cette rubrique">¶</a></h3>
+<h3>« Likes »<a class="headerlink" href="#likes" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Selon la visibilité de l’instance, un utilisateur peut ajouter ou supprimer « like » sur une séance ou un commentaire.</p></li>
+<li><p>La liste des utilisateurs ayant « liké » la séance ou le commentaire est disponible.</p></li>
 </ul>
 </section>
 <section id="notifications">
@@ -1005,6 +1007,37 @@
 <img alt="Tableau de bord sur FitTrackee" src="_images/dashboard.png" />
 </figure>
 </section>
+<section id="dashboard-on-mobile">
+<h3>Tableau de bord sur mobile<a class="headerlink" href="#dashboard-on-mobile" title="Lien vers cette rubrique">¶</a></h3>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-calendar.png"><img alt="Tableau de bord de FitTrackee sur mobile (calendrier)" src="_images/dashboard-mobile-calendar.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-stats.png"><img alt="Tableau de bord de FitTrackee sur mobile (statistiques)" src="_images/dashboard-mobile-stats.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+<tr class="row-even"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-latest-workouts.png"><img alt="Tableau de bord de FitTrackee sur mobile (dernières séances)" src="_images/dashboard-mobile-latest-workouts.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-records.png"><img alt="Tableau de bord de FitTrackee sur mobile (record)" src="_images/dashboard-mobile-records.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="workout-detail">
 <h3>Page de détail d’une séance<a class="headerlink" href="#workout-detail" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
@@ -1127,7 +1160,7 @@
 <li><a class="reference internal" href="#interactions">Interactions</a><ul>
 <li><a class="reference internal" href="#users">Utilisateurs</a></li>
 <li><a class="reference internal" href="#comments">Commentaires</a></li>
-<li><a class="reference internal" href="#likes">Likes</a></li>
+<li><a class="reference internal" href="#likes">« Likes »</a></li>
 <li><a class="reference internal" href="#notifications">Notifications</a></li>
 </ul>
 </li>
@@ -1152,6 +1185,7 @@
 <li><a class="reference internal" href="#translations">Traductions</a></li>
 <li><a class="reference internal" href="#screenshots">Captures d’écran</a><ul>
 <li><a class="reference internal" href="#id4">Tableau de bord</a></li>
+<li><a class="reference internal" href="#dashboard-on-mobile">Tableau de bord sur mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Page de détail d’une séance</a></li>
 <li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
 <li><a class="reference internal" href="#id5">Statistiques</a></li>

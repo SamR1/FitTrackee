@@ -1,17 +1,24 @@
 Installation
 ############
 
-| **FitTrackee** can be installed via a single `Python package from PyPI <https://pypi.org/project/fittrackee/>`__ or from sources after cloning the repository.
+**FitTrackee** can be installed:
 
-| For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
+- via a single Python package from `PyPI <https://pypi.org/project/fittrackee/>`__,
+- from sources,
+- with a `Docker <installation.html#docker>`__ image.
+
+Thanks to contributors, packages are also available on `Yunohost <installation.html#yunohost>`__ and `NixOS <installation.html#nixos>`__.
+
+For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
 
 | The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
 
 .. note::
-  | Other installation guides are available thanks to contributors:
-  | - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
-  | - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+  Other installation guides are available thanks to contributors:
+
+  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
+  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
 
 
 Main dependencies
@@ -151,7 +158,7 @@ deployment method.
 
 .. envvar:: UI_URL
 
-    **FitTrackee** URL, needed for links in emails and mentions.
+    **FitTrackee** URL, needed for links in emails and mentions on interface.
 
     .. warning::
         UI_URL must contains url scheme (``https://``).
@@ -273,8 +280,8 @@ deployment method.
 
     **FitTrackee** API URL, only needed in dev environment.
 
-Docker
-^^^^^^
+Docker Compose
+^^^^^^^^^^^^^^
 
 .. versionadded:: 0.8.13
 
@@ -634,9 +641,10 @@ Upgrade
 ~~~~~~~
 
 .. warning::
-    | Before upgrading, make a backup of all data:
-    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    Before upgrading, make a backup of all data:
+
+    - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
+    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
 .. warning::
 

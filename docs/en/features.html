@@ -291,8 +291,8 @@
 <div class="line-block">
 <div class="line"><strong>FitTrackee</strong> allows you to store and display <strong>gpx</strong> files and some statistics from your <strong>outdoor</strong> activities.</div>
 <div class="line">Equipments can be associated with workouts.</div>
-<div class="line">If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.</div>
 </div>
+<p>If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.</p>
 <p>Gpx files are stored in an upload directory (<strong>without encryption</strong>).</p>
 <p>With the default configuration, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> is used as tile server in Workout detail and for static map generation.</p>
 <section id="workouts">
@@ -515,7 +515,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Users directory.</div>
-<div class="line">A user can configure visibility in directory in the user preferences (hidden by default).</div>
+<div class="line">A user can configure visibility in directory in the user preferences (hidden profile by default).</div>
 <div class="line">This affects username completion when writing comments (only profiles visible in users directory or followed users are suggested).</div>
 </div>
 </li>
@@ -532,6 +532,7 @@
 <li><div class="line-block">
 <div class="line">User can send follow request to others users.</div>
 <div class="line">Follow request can be approved or rejected.</div>
+<div class="line">Follow request approval can be manual or automatic (manual by default, see user preferences).</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -580,6 +581,7 @@
 <h3>Likes<a class="headerlink" href="#likes" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Depending on visibility, a user can like or “unlike” a workout or a comment.</p></li>
+<li><p>The list of users who have liked the workout or comment is available.</p></li>
 </ul>
 </section>
 <section id="notifications">
@@ -1006,6 +1008,37 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Dashboard" src="_images/dashboard.png" />
 </figure>
 </section>
+<section id="dashboard-on-mobile">
+<h3>Dashboard on Mobile<a class="headerlink" href="#dashboard-on-mobile" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-calendar.png"><img alt="FitTrackee Dashboard on mobile (calendar)" src="_images/dashboard-mobile-calendar.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-stats.png"><img alt="FitTrackee Dashboard on mobile (statistics)" src="_images/dashboard-mobile-stats.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+<tr class="row-even"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-latest-workouts.png"><img alt="FitTrackee Dashboard on mobile (latest workouts)" src="_images/dashboard-mobile-latest-workouts.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-records.png"><img alt="FitTrackee Dashboard on mobile (records)" src="_images/dashboard-mobile-records.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="workout-detail">
 <h3>Workout detail<a class="headerlink" href="#workout-detail" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
@@ -1153,6 +1186,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 <li><a class="reference internal" href="#screenshots">Screenshots</a><ul>
 <li><a class="reference internal" href="#id4">Dashboard</a></li>
+<li><a class="reference internal" href="#dashboard-on-mobile">Dashboard on Mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Workout detail</a></li>
 <li><a class="reference internal" href="#workouts-list">Workouts list</a></li>
 <li><a class="reference internal" href="#id5">Statistics</a></li>
