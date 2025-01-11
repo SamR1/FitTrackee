@@ -145,8 +145,10 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_1 = Workout(
         user_id=1,
         sport_id=1,
-        # workout_date: 'Mon, 20 Mar 2017 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        # workout_date: 'Sun, 2 Apr 2017 22:00:00 GMT'
+        workout_date=datetime.datetime.strptime(
+            '02/04/2017 22:00', '%d/%m/%Y %H:%M'
+        ),
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
@@ -283,6 +285,7 @@ def three_workouts_2025_user_1() -> List[Workout]:
         update_workout(workout)
         db.session.add(workout)
         workouts.append(workout)
+        db.session.flush()
     db.session.commit()
     return workouts
 

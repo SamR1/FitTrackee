@@ -433,7 +433,7 @@ class TestGetWorkoutsWithOrder(ApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
@@ -763,7 +763,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -799,7 +799,7 @@ class TestGetWorkoutsWithFilters(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -1222,7 +1222,7 @@ class TestGetWorkoutsWithFiltersAndPagination(ApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
