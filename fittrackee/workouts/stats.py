@@ -216,7 +216,7 @@ def get_workouts_by_time(
             # 'weekm' => week starts on Monday
             #
             # Note: on PostgreSQL, week starts on Monday
-            time_format = 'YYYY-WW'
+            time_format = 'IYYY-IW'
         else:
             return InvalidPayloadErrorResponse('invalid time period', 'fail')
 
@@ -259,7 +259,7 @@ def get_workouts_by_time(
             date_key = row[7]
             if time and time.startswith("week"):
                 date_key = (
-                    datetime.strptime(date_key + '-1', "%Y-%W-%w") - delta
+                    datetime.strptime(date_key + '-1', "%G-%V-%u") - delta
                 ).strftime('%Y-%m-%d')
             sport_key = row[0]
             if date_key not in statistics:

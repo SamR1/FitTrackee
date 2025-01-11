@@ -628,6 +628,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+        three_workouts_2025_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_full.email
@@ -703,6 +704,24 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_workouts': 1,
                 }
             },
+            '2024-12-29': {
+                '1': {
+                    'total_ascent': None,
+                    'total_descent': None,
+                    'total_distance': 20.0,
+                    'total_duration': 3600,
+                    'total_workouts': 1,
+                }
+            },
+            '2025-01-05': {
+                '1': {
+                    'total_ascent': None,
+                    'total_descent': None,
+                    'total_distance': 40.0,
+                    'total_duration': 7200,
+                    'total_workouts': 2,
+                }
+            },
         }
 
     def test_it_gets_stats_by_week_for_week_13(
@@ -756,6 +775,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+        three_workouts_2025_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -830,6 +850,24 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_descent': None,
                     'total_distance': 10.0,
                     'total_duration': 3000,
+                    'total_workouts': 1,
+                }
+            },
+            '2024-12-30': {
+                '1': {
+                    'total_ascent': None,
+                    'total_descent': None,
+                    'total_distance': 40.0,
+                    'total_duration': 7200,
+                    'total_workouts': 2,
+                }
+            },
+            '2025-01-06': {
+                '1': {
+                    'total_ascent': None,
+                    'total_descent': None,
+                    'total_distance': 20.0,
+                    'total_duration': 3600,
                     'total_workouts': 1,
                 }
             },

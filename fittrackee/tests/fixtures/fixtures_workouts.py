@@ -262,6 +262,30 @@ def seven_workouts_user_1() -> List[Workout]:
 
 
 @pytest.fixture()
+def three_workouts_2025_user_1() -> List[Workout]:
+    workouts = []
+    for workout_date in [
+        '01/01/2025 08:00',
+        '05/01/2025 08:00',
+        '06/01/2025 08:00',
+    ]:
+        workout = Workout(
+            user_id=1,
+            sport_id=1,
+            workout_date=datetime.datetime.strptime(
+                workout_date, '%d/%m/%Y %H:%M'
+            ),
+            distance=20,
+            duration=datetime.timedelta(seconds=3600),
+        )
+        update_workout(workout)
+        db.session.add(workout)
+        workouts.append(workout)
+    db.session.commit()
+    return workouts
+
+
+@pytest.fixture()
 def workout_cycling_user_2() -> Workout:
     workout = Workout(
         user_id=2,
