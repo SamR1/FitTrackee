@@ -327,13 +327,13 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         assert len(data['data']['workouts']) == 2
         assert 'creation_date' in data['data']['workouts'][0]
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert '0:57:36' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][1]
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert '0:17:04' == data['data']['workouts'][1]['duration']
@@ -423,7 +423,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][5]['workout_date']
         )
         assert data['pagination'] == {
@@ -530,7 +530,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
@@ -682,7 +682,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         assert '0:57:36' == data['data']['workouts'][1]['duration']
         assert '0:57:36' == data['data']['workouts'][1]['moving']
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert '1:06:40' == data['data']['workouts'][2]['duration']
@@ -859,11 +859,11 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -899,7 +899,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -931,7 +931,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
@@ -1318,11 +1318,11 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {

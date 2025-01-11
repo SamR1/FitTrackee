@@ -42,7 +42,7 @@ For now only English and French are available and translations files are not yet
 
 ### How to install FitTrackee
 
-see [Installations instructions](https://samr1.github.io/FitTrackee/en/installation.html)
+see [Installations instructions](https://docs.fittrackee.org/en/installation.html)
 
 ### Pull Requests
 
