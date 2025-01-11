@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.8.13\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-29 19:50+0100\n"
+"POT-Creation-Date: 2025-01-11 20:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1907,7 +1907,7 @@ msgid "Translations"
 msgstr ""
 
 #: ../source/changelog.md:7
-msgid "PR#667 - Translations update (Galicien)"
+msgid "PR#667 - Translations update (Galician)"
 msgstr ""
 
 #: ../source/changelog.md:9
@@ -7199,7 +7199,7 @@ msgid "``https://<FITTRACKEE_HOST>/profile/apps/authorize?response_type=code&cli
 msgstr ""
 
 #: ../source/oauth.rst:0
-msgid "After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint `/api/oauth/token <https://samr1.github.io/FitTrackee/api/oauth2.html#post--api-oauth-token>`_)."
+msgid "After the authorization, FitTrackee redirects to the 3rd-party app, so the 3rd-party app can get the authorization code from the redirect URL and then fetches an access token with the client id and secret (endpoint `/api/oauth/token <api/oauth2.html#post--api-oauth-token>`_)."
 msgstr ""
 
 #: ../source/oauth.rst:0
