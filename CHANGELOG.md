@@ -179,7 +179,7 @@ Thanks to the contributors:
 - @qwerty287
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.8.8 (2024/09/01)
@@ -257,7 +257,7 @@ Thanks to the contributors:
 - @erral
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.8.6 (2024/08/03)
@@ -342,7 +342,7 @@ Thanks to the contributors:
 - @pluja
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.8.4 (2024/05/22)
@@ -495,7 +495,7 @@ Thanks to the contributors:
 
 ## Version 0.8.0 (2024/04/21)
 
-**FitTrackee** now lets you associate [equipment](https://samr1.github.io/FitTrackee/en/features.html#equipments) with workouts and filter workouts on notes.
+**FitTrackee** now lets you associate [equipment](https://docs.fittrackee.org/en/features.html#equipments) with workouts and filter workouts on notes.
 
 ### Features and enhancements
 
@@ -539,7 +539,7 @@ Thanks to the contributors:
 - @gallegonovato
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.32 (2024/03/10)
@@ -752,7 +752,7 @@ Thanks to the contributors:
 - @gallegonovato
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.26 (2023/11/19)
@@ -923,7 +923,7 @@ Thanks to the contributors:
 - @xmgz
 - Mariusz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.19 (2023/07/15)
@@ -975,7 +975,7 @@ Thanks to the contributors:
 - @gallegonovato
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.18 (2023/06/25)
@@ -1079,7 +1079,7 @@ Thanks to the contributors:
 - @jat255
 - @xmgz
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.15 (2023/04/12)
@@ -1137,7 +1137,7 @@ Thanks to the contributors:
 - mondstern from Weblate
 
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.14 (2023/03/08)
@@ -1185,7 +1185,7 @@ Thanks to the contributors:
 - @bjornclauw
 - @qwerty287
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.12 (2023/02/16)
@@ -1205,7 +1205,7 @@ Thanks to the contributors:
 ### Features and enhancements
 
 * [PR#265](https://github.com/SamR1/FitTrackee/pull/265) - Implementing alternative weather API (VisualCrossing.com)  
-  **Note**: A new environment variable must be to set to configure the weather data provider: `WEATHER_API_PROVIDER` (see [documentation](https://samr1.github.io/FitTrackee/en/installation.html#weather-data))
+  **Note**: A new environment variable must be to set to configure the weather data provider: `WEATHER_API_PROVIDER` (see [documentation](https://docs.fittrackee.org/en/installation.html#weather-data))
 
 ### Translations
 
@@ -1233,7 +1233,7 @@ FitTrackee is now available in Italian (thanks to @dperruso).
 * [c88a515](https://github.com/SamR1/FitTrackee/commit/c88a5158fea5f9e2fa8c41ecc2c100f6d9319371) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
 * [f96dcef](https://github.com/SamR1/FitTrackee/commit/f96dcef0dc69d00f65a036fa2e33c22612004cb1) - Translations update (German)
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.9 (2022/12/11)
@@ -1247,7 +1247,7 @@ FitTrackee is now available in Italian (thanks to @dperruso).
 * [PR#278](https://github.com/SamR1/FitTrackee/pull/278) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
 * [PR#282](https://github.com/SamR1/FitTrackee/pull/282) - Init italian translation files
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.8 (2022/11/30)
@@ -1279,7 +1279,7 @@ FitTrackee is now available in Dutch (thanks to @bjornclauw).
 * [PR#274](https://github.com/SamR1/FitTrackee/pull/274) - Tests parallelization
 * [PR#275](https://github.com/SamR1/FitTrackee/pull/275) - Disable worker entry point
 
-**Note:** `fittrackee_worker` command is disabled, please use existing flask-dramatiq CLI (see [documentation](https://samr1.github.io/FitTrackee/en/installation.html#from-pypi))
+**Note:** `fittrackee_worker` command is disabled, please use existing flask-dramatiq CLI (see [documentation](https://docs.fittrackee.org/en/installation.html#from-pypi))
 
 ## Version 0.7.6 (2022/11/09)
 
@@ -1341,7 +1341,7 @@ Thanks to @jat255
 
 * [PR#252](https://github.com/SamR1/FitTrackee/issues/252) - init Norwegian Bokmål translations files
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.7.2 (2022/09/21)
@@ -1380,7 +1380,7 @@ Thanks to @jat255
 
 * [PR#212](https://github.com/SamR1/FitTrackee/issues/212) - Translations update from Hosted Weblate (thanks to J. Lavoie)
 
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.6.12 (2022/09/14)
@@ -1401,7 +1401,7 @@ Thanks to @Skylan0916
 
 In this release 1 issue was closed.  
 **Note:** This release contains a fix on the last database migration that will be executed only on versions lower than v0.6.11 (no data differences with v0.6.11, the fix allows to execute the migration on Postgres<12)  
-(see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade)).
+(see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
 
 ## Version 0.6.11 (2022/07/27)
@@ -1423,7 +1423,7 @@ In this release 1 issue was closed.
 Thanks to @Fmstrat
 
 In this release 1 issue was closed.  
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ### Version 0.6.10 (2022/07/13)
@@ -1433,7 +1433,7 @@ In this release 1 issue was closed.
 #### Bugs Fixed
 
 * [#210](https://github.com/SamR1/FitTrackee/issues/210) - ERROR - could not download 6 tiles  
-  **Note**: for tile server requiring subdomains, see the new environment variable [`STATICMAP_SUBDOMAINS`](https://samr1.github.io/FitTrackee/en/installation.html#envvar-STATICMAP_SUBDOMAINS)
+  **Note**: for tile server requiring subdomains, see the new environment variable [`STATICMAP_SUBDOMAINS`](https://docs.fittrackee.org/en/installation.html#envvar-STATICMAP_SUBDOMAINS)
 
 ### Pull Requests
 
@@ -1513,10 +1513,10 @@ No new features in this release, only dependencies update and code refacto befor
 
 ## Version 0.6.5 (2022/04/24)
 
-It is now possible to start FitTrackee without a configured SMTP provider (see [documentation](https://samr1.github.io/FitTrackee/en/installation.html#emails)).
+It is now possible to start FitTrackee without a configured SMTP provider (see [documentation](https://docs.fittrackee.org/en/installation.html#emails)).
 It reduces pre-requisites for single-user instances.
 
-To manage users, a new [CLI](https://samr1.github.io/FitTrackee/en/cli.html) is available.
+To manage users, a new [CLI](https://docs.fittrackee.org/en/cli.html) is available.
 
 
 ### Issues Closed
@@ -1575,7 +1575,7 @@ In this release 1 issue was closed.
 
 ## Version 0.6.0 (2022/03/27)
 
-This version introduces some changes on [user registration](https://samr1.github.io/FitTrackee/en/features.html#account-preferences).  
+This version introduces some changes on [user registration](https://docs.fittrackee.org/en/features.html#account-preferences).  
 From now on, a user needs to confirm his account after registration (an email with confirmation instructions is sent after registration).
 
 
@@ -1600,7 +1600,7 @@ From now on, a user needs to confirm his account after registration (an email wi
 Thanks to @Fmstrat
 
 In this release 3 issues were closed.  
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.5.7 (2022/02/13)
@@ -1610,7 +1610,7 @@ Thanks to @DanielSiersleben for the report.
 
 And from now on, admin account is not created on application initialization.  
 A new command is added to set administration rights on the account created after registration 
-(see [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+(see [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 ### Issues Closed
 
@@ -1654,7 +1654,7 @@ In this release 1 issue was closed.
 
 
 In this release 1 issue was closed.  
-**Note:** This release contains database migration (see upgrade instructions in [documentation](https://samr1.github.io/FitTrackee/en/installation.html#upgrade))
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
 
 
 ## Version 0.5.5 (2022/01/19)
@@ -1883,9 +1883,9 @@ In this release 1 issue was closed.
 
 This version introduces some major changes:
 - Installation becomes more easy. **FitTrackee** can be now be installed from PyPi.  
-⚠️ Warning: please read [installation documentation](https://samr1.github.io/FitTrackee/en/installation.html), some environment variables and files have been renamed.
+⚠️ Warning: please read [installation documentation](https://docs.fittrackee.org/en/installation.html), some environment variables and files have been renamed.
 - It's now possible to change the tile provider for maps. The default tile server is now **OpenStreetMap**'s standard tile layer (replacing **ThunderForest Outdoors**), 
-see [Map tile server in documentation](https://samr1.github.io/FitTrackee/en/installation.html#map-tile-server).
+see [Map tile server in documentation](https://docs.fittrackee.org/en/installation.html#map-tile-server).
 
 ### Issues Closed
 
@@ -1900,8 +1900,8 @@ In this release 2 issues were closed.
 ## Version 0.3.0 - Administration (2020/07/15)
 
 This version introduces some major changes:
-- FitTrackee administration is now available (see [documentation](https://samr1.github.io/FitTrackee/en/features.html#administration))  
-⚠️ Warning: some application parameters move from environment variables to database (see [installation](https://samr1.github.io/FitTrackee/en/installation.html#environment-variables)).
+- FitTrackee administration is now available (see [documentation](https://docs.fittrackee.org/en/features.html#administration))  
+⚠️ Warning: some application parameters move from environment variables to database (see [installation](https://docs.fittrackee.org/en/installation.html#environment-variables)).
 - in order to send emails, Redis is now a mandatory dependency
 
 ### Issues Closed
@@ -2054,7 +2054,7 @@ In this release 7 issues were closed.
 - only activity owner can see his activity
 - no administration for now
 
-➡️ more informations: see [documentation](https://samr1.github.io/FitTrackee/) and [current issues](https://github.com/SamR1/FitTrackee/issues)
+➡️ more informations: see [documentation](https://docs.fittrackee.org/) and [current issues](https://github.com/SamR1/FitTrackee/issues)
 
 
 ### Issues Closed
