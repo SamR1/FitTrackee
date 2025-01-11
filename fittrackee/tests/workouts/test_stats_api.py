@@ -438,7 +438,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_workouts': 1,
                 }
             },
-            '2017-06': {
+            '2017-12': {
                 '1': {
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -523,7 +523,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_workouts': 1,
                 }
             },
-            '2017-06': {
+            '2017-12': {
                 '1': {
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
@@ -623,7 +623,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
     def test_it_gets_stats_by_week(
         self,
         app: Flask,
-        user_1_full: User,
+        user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
@@ -631,11 +631,11 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         three_workouts_2025_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_full.email
+            app, user_1.email
         )
 
         response = client.get(
-            f'/api/stats/{user_1_full.username}/by_time?time=week',
+            f'/api/stats/{user_1.username}/by_time?time=week',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
@@ -652,22 +652,13 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_workouts': 1,
                 }
             },
-            '2017-05-28': {
-                '1': {
-                    'total_ascent': 100.0,
-                    'total_descent': 80.0,
-                    'total_distance': 10.0,
-                    'total_duration': 3456,
-                    'total_workouts': 1,
-                }
-            },
             '2017-12-31': {
                 '1': {
-                    'total_ascent': 80.0,
-                    'total_descent': 100.0,
-                    'total_distance': 10.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+                    'total_ascent': 180.0,
+                    'total_descent': 180.0,
+                    'total_distance': 20.0,
+                    'total_duration': 4480,
+                    'total_workouts': 2,
                 }
             },
             '2018-02-18': {
@@ -799,7 +790,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     'total_workouts': 1,
                 }
             },
-            '2017-05-29': {
+            '2017-12-25': {
                 '1': {
                     'total_ascent': 100.0,
                     'total_descent': 80.0,
