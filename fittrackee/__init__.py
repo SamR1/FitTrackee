@@ -162,6 +162,15 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(notifications_blueprint, url_prefix='/api')
     app.register_blueprint(reports_blueprint, url_prefix='/api')
 
+    # ActivityPub federation
+    from .federation.federation import ap_federation_blueprint  # noqa
+    from .federation.nodeinfo import ap_nodeinfo_blueprint  # noqa
+    from .federation.webfinger import ap_webfinger_blueprint  # noqa
+
+    app.register_blueprint(ap_federation_blueprint, url_prefix='/federation')
+    app.register_blueprint(ap_nodeinfo_blueprint)
+    app.register_blueprint(ap_webfinger_blueprint, url_prefix='/.well-known')
+
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
         logging.getLogger('sqlalchemy').handlers = logging.getLogger(

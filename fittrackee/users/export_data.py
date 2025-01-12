@@ -58,6 +58,11 @@ class UserDataExporter:
                     'created_at': comment.created_at,
                     'id': comment.short_id,
                     'modification_date': comment.modification_date,
+                    'reply_to': (
+                        comment.parent_comment.short_id
+                        if comment.reply_to
+                        else None
+                    ),
                     'text': comment.text,
                     'text_visibility': comment.text_visibility.value,
                     'workout_id': (

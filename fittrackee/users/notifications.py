@@ -130,8 +130,10 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
 
     blocked_users = auth_user.get_blocked_user_ids()
     blocked_by_users = auth_user.get_blocked_by_user_ids()
-    following_ids = auth_user.get_following_user_ids()
-
+    (
+        local_following_ids,
+        remote_following_ids,
+    ) = auth_user.get_following_user_ids()
     notifications_pagination = (
         Notification.query.join(
             User,
@@ -155,11 +157,16 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                         and_(
                             (
                                 or_(
-                                    Notification.event_type
-                                    != "workout_comment",
+                                    Notification.event_type.not_in(
+                                        ['workout_comment', 'comment_reply']
+                                    ),
                                     and_(
-                                        Notification.event_type
-                                        == "workout_comment",
+                                        Notification.event_type.in_(
+                                            [
+                                                'workout_comment',
+                                                'comment_reply',
+                                            ]
+                                        ),
                                         Notification.from_user_id.not_in(
                                             blocked_by_users
                                         ),
@@ -167,10 +174,21 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                                             Comment.text_visibility
                                             == VisibilityLevel.PUBLIC,
                                             and_(
-                                                Comment.text_visibility
-                                                == VisibilityLevel.FOLLOWERS,
+                                                Comment.text_visibility.in_(
+                                                    [
+                                                        VisibilityLevel.FOLLOWERS,
+                                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                    ]
+                                                ),
                                                 Notification.from_user_id.in_(
-                                                    following_ids
+                                                    local_following_ids
+                                                ),
+                                            ),
+                                            and_(
+                                                Comment.text_visibility
+                                                == VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                Notification.from_user_id.in_(
+                                                    remote_following_ids
                                                 ),
                                             ),
                                         ),
@@ -338,6 +356,10 @@ def get_status(auth_user: User) -> Dict:
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
     """
+    (
+        local_following_ids,
+        remote_following_ids,
+    ) = auth_user.get_following_user_ids()
     unread_notifications = (
         Notification.query.join(
             User,
@@ -356,11 +378,16 @@ def get_status(auth_user: User) -> Dict:
                         and_(
                             (
                                 or_(
-                                    Notification.event_type
-                                    != "workout_comment",
+                                    Notification.event_type.not_in(
+                                        ['workout_comment', 'comment_reply']
+                                    ),
                                     and_(
-                                        Notification.event_type
-                                        == "workout_comment",
+                                        Notification.event_type.in_(
+                                            [
+                                                'workout_comment',
+                                                'comment_reply',
+                                            ]
+                                        ),
                                         Notification.from_user_id.not_in(
                                             auth_user.get_blocked_by_user_ids()
                                         ),
@@ -368,10 +395,21 @@ def get_status(auth_user: User) -> Dict:
                                             Comment.text_visibility
                                             == VisibilityLevel.PUBLIC,
                                             and_(
-                                                Comment.text_visibility
-                                                == VisibilityLevel.FOLLOWERS,
+                                                Comment.text_visibility.in_(
+                                                    [
+                                                        VisibilityLevel.FOLLOWERS,
+                                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                    ]
+                                                ),
                                                 Notification.from_user_id.in_(
-                                                    auth_user.get_following_user_ids()
+                                                    local_following_ids
+                                                ),
+                                            ),
+                                            and_(
+                                                Comment.text_visibility
+                                                == VisibilityLevel.FOLLOWERS_AND_REMOTE,  # noqa
+                                                Notification.from_user_id.in_(
+                                                    remote_following_ids
                                                 ),
                                             ),
                                         ),

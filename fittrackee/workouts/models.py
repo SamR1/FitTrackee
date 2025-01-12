@@ -1,7 +1,7 @@
 import datetime
 import os
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
@@ -16,6 +16,10 @@ from sqlalchemy.types import JSON, Enum
 from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
 from fittrackee.equipments.models import WorkoutEquipment
+from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.like import LikeObject
+from fittrackee.federation.objects.tombstone import TombstoneObject
+from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
@@ -280,6 +284,8 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
+    ap_id = db.Column(db.Text(), nullable=True)
+    remote_url = db.Column(db.Text(), nullable=True)
 
     segments = db.relationship(
         'WorkoutSegment',
@@ -714,6 +720,8 @@ class Workout(BaseModel):
             if self.bounds and can_see_map_data and additional_data
             else []
         )
+        if self.user.is_remote:
+            workout['remote_url'] = self.remote_url
         return workout
 
     @classmethod
@@ -747,6 +755,19 @@ class Workout(BaseModel):
             )
         return records
 
+    @federation_required
+    def get_activities(self, activity_type: str) -> Tuple[Dict, Dict]:
+        if activity_type in ['Create', 'Update']:
+            workout_object = WorkoutObject(self, activity_type=activity_type)
+            return workout_object.get_activity(), workout_object.get_activity(
+                is_note=True
+            )
+        # Delete activity
+        tombstone_object = TombstoneObject(self)
+        delete_activity = tombstone_object.get_activity()
+        # delete activities for workout and note are the same
+        return delete_activity, delete_activity
+
 
 @listens_for(Workout, 'after_insert')
 def on_workout_insert(
@@ -754,7 +775,11 @@ def on_workout_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        update_records(workout.user_id, workout.sport_id, connection, session)
+        # For now only create records for local workouts
+        if not workout.remote_url:
+            update_records(
+                workout.user_id, workout.sport_id, connection, session
+            )
 
 
 @listens_for(Workout, 'after_update')
@@ -996,6 +1021,14 @@ class WorkoutLike(BaseModel):
         self.created_at = (
             datetime.datetime.utcnow() if created_at is None else created_at
         )
+
+    def get_activity(self, is_undo: bool = False) -> Dict:
+        return LikeObject(
+            actor_ap_id=self.user.actor.activitypub_id,
+            target_object_ap_id=self.workout.ap_id,
+            like_id=self.id,
+            is_undo=is_undo,
+        ).get_activity()
 
 
 @listens_for(WorkoutLike, 'after_insert')

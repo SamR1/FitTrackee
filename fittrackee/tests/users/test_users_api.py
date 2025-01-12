@@ -10,6 +10,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.models import Actor
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
@@ -1810,6 +1811,27 @@ class TestGetUsersAsUnauthenticatedUser(ApiTestCaseMixin):
         self.assert_401(response)
 
 
+class TestGetRemoteUsers(ApiTestCaseMixin):
+    def test_it_returns_error_when_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            '/api/users/remote',
+            content_type='application/json',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_403(
+            response, 'error, federation is disabled for this instance'
+        )
+
+
 class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
         self, app: Flask, user_1: User
@@ -2881,6 +2903,21 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
         )
 
         self.assert_403(response, 'error, registration is disabled')
+
+    def test_it_deletes_actor_when_deleting_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        actor_id = user_2.actor_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.delete(
+            f'/api/users/{user_2.username}',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert Actor.query.filter_by(id=actor_id).first() is None
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from copy import copy
 from datetime import timedelta
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -27,6 +28,8 @@ from fittrackee.equipments.utils import (
     SPORT_EQUIPMENT_TYPES,
     handle_equipments,
 )
+from fittrackee.federation.tasks.inbox import send_to_remote_inbox
+from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
@@ -42,7 +45,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
-from fittrackee.visibility_levels import can_view
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
@@ -59,6 +62,7 @@ from .utils.workouts import (
     edit_workout,
     get_absolute_file_path,
     get_datetime_from_request_args,
+    get_ordered_workouts,
     process_files,
 )
 
@@ -68,6 +72,33 @@ DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
 DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
+
+
+def handle_workout_activities(workout: Workout, activity_type: str) -> None:
+    actor = workout.user.actor
+    if activity_type == 'Create':
+        workout.ap_id = f'{actor.activitypub_id}/workouts/{workout.short_id}'
+        workout.remote_url = (
+            f'https://{actor.domain.name}/' f'workouts/{workout.short_id}'
+        )
+        db.session.commit()
+    workout_activity, note_activity = workout.get_activities(
+        activity_type=activity_type
+    )
+    recipients = workout.user.get_followers_shared_inboxes()
+
+    if recipients['fittrackee']:
+        send_to_remote_inbox.send(
+            sender_id=actor.id,
+            activity=workout_activity,
+            recipients=recipients['fittrackee'],
+        )
+    if recipients['others']:
+        send_to_remote_inbox.send(
+            sender_id=actor.id,
+            activity=note_activity,
+            recipients=recipients['others'],
+        )
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -1226,6 +1257,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not workout_data or workout_data.get('sport_id') is None:
         return InvalidPayloadErrorResponse()
 
+    if not current_app.config['FEDERATION_ENABLED'] and (
+        workout_data.get('workout_visibility')
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
+        or workout_data.get('map_visibility')
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
+    ):
+        return InvalidPayloadErrorResponse()
+
     if "equipment_ids" in workout_data:
         try:
             equipments_list = handle_equipments(
@@ -1251,10 +1290,19 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     }
 
     try:
-        new_workouts = process_files(
-            auth_user, workout_data, workout_file, folders
+        new_workouts = get_ordered_workouts(
+            process_files(auth_user, workout_data, workout_file, folders)
         )
         if len(new_workouts) > 0:
+            if sending_activities_allowed(
+                workout_data.get('workout_visibility')
+            ):
+                workouts_to_send = new_workouts[:MAX_WORKOUTS_TO_SEND]
+                for new_workout in workouts_to_send:
+                    handle_workout_activities(
+                        new_workout, activity_type='Create'
+                    )
+
             response_object = {
                 'status': 'created',
                 'data': {
@@ -1456,6 +1504,13 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
+    if (
+        not current_app.config['FEDERATION_ENABLED']
+        and workout_data.get('workout_visibility')
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE
+    ):
+        return InvalidPayloadErrorResponse()
+
     ascent = workout_data.get('ascent')
     descent = workout_data.get('descent')
     try:
@@ -1502,6 +1557,9 @@ def post_workout_no_gpx(
         new_workout = create_workout(auth_user, workout_data)
         db.session.add(new_workout)
         db.session.commit()
+
+        if sending_activities_allowed(new_workout.workout_visibility):
+            handle_workout_activities(new_workout, activity_type='Create')
 
         return (
             {
@@ -1702,6 +1760,10 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
+        old_workout = (
+            copy(workout) if current_app.config['FEDERATION_ENABLED'] else None
+        )
+
         if not workout.gpx:
             try:
                 # for workout without gpx file, both elevation values must be
@@ -1760,6 +1822,25 @@ def update_workout(
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
+
+        if old_workout:
+            if workout.workout_visibility in (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            ):
+                if old_workout.workout_visibility in (
+                    VisibilityLevel.PRIVATE,
+                    VisibilityLevel.FOLLOWERS,
+                ):
+                    handle_workout_activities(workout, activity_type='Create')
+                else:
+                    handle_workout_activities(workout, activity_type='Update')
+
+            elif old_workout.workout_visibility in (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            ):
+                handle_workout_activities(old_workout, activity_type='Delete')
 
         return {
             'status': 'success',
@@ -1821,6 +1902,9 @@ def delete_workout(
 
     """
     try:
+        if sending_activities_allowed(workout.workout_visibility):
+            handle_workout_activities(workout, activity_type='Delete')
+
         # update equipments totals
         workout.equipments = []
         db.session.flush()
@@ -1938,6 +2022,13 @@ def like_workout(
         db.session.add(like)
         db.session.commit()
 
+        if current_app.config['FEDERATION_ENABLED'] and workout.user.is_remote:
+            like_activity = like.get_activity()
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=like_activity,
+                recipients=[workout.user.actor.shared_inbox_url],
+            )
     except IntegrityError:
         db.session.rollback()
     return {
@@ -2048,6 +2139,14 @@ def undo_workout_like(
     if like:
         db.session.delete(like)
         db.session.commit()
+
+        if current_app.config['FEDERATION_ENABLED'] and workout.user.is_remote:
+            undo_activity = like.get_activity(is_undo=True)
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=undo_activity,
+                recipients=[workout.user.actor.shared_inbox_url],
+            )
 
     return {
         'status': 'success',

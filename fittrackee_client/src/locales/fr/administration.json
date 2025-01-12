@@ -12,6 +12,7 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
+    "FEDERATION_ENABLED": "Fédération activée",
     "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
@@ -110,6 +111,8 @@
     },
     "TITLE": "Administration - Équipements"
   },
+  "FEDERATION_DISABLED": "La fédération de l'instance est actuellement désactivée.",
+  "FEDERATION_ENABLED": "La fédération de l'instance est actuellement activée.",
   "NEW_EMAIL": "Nouvelle adresse email",
   "NO_TEXT_ENTERED": "pas de texte saisi",
   "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",

@@ -28,6 +28,7 @@ class TestConfigModel:
         assert (
             serialized_app_config['admin_contact'] == app_config.admin_contact
         )
+        assert serialized_app_config['federation_enabled'] is False
         assert (
             serialized_app_config['gpx_limit_import']
             == app_config.gpx_limit_import
