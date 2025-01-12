@@ -16,6 +16,7 @@
         backgroundImage: `url(${imageUrl})`,
       }"
       :aria-label="$t('workouts.WORKOUT_MAP')"
+      @click="$emit('workoutLinkClicked')"
     />
     <div class="map-attribution">
       <a
@@ -44,6 +45,7 @@
     displayHover: false,
   })
   const { displayHover } = toRefs(props)
+
   const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
 </script>
 

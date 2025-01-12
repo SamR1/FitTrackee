@@ -31,6 +31,7 @@
   import { toRefs } from 'vue'
 
   import type { IWorkout } from '@/types/workouts'
+
   interface Props {
     displayHARecord: boolean
     workout: IWorkout
@@ -38,7 +39,6 @@
     sportColor: string | null
   }
   const props = defineProps<Props>()
-
   const { displayHARecord, workout, sportLabel, sportColor } = toRefs(props)
 </script>
 

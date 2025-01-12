@@ -14,8 +14,19 @@ from werkzeug.utils import secure_filename
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    can_view,
+    get_calculated_visibility,
+)
 
-from ..exceptions import InvalidGPXException, WorkoutException
+from ..constants import WORKOUT_DATE_FORMAT
+from ..exceptions import (
+    InvalidGPXException,
+    WorkoutException,
+    WorkoutForbiddenException,
+)
 from ..models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
@@ -50,7 +61,7 @@ def get_workout_datetime(
     if workout_date.tzinfo is None:
         naive_workout_date = workout_date
         if user_timezone and with_timezone:
-            pytz.utc.localize(naive_workout_date)
+            # pytz.utc.localize(naive_workout_date)
             workout_date_with_user_tz = pytz.utc.localize(
                 naive_workout_date
             ).astimezone(pytz.timezone(user_timezone))
@@ -120,7 +131,7 @@ def create_workout(
         workout_date=(
             gpx_data['start'] if gpx_data else workout_data['workout_date']
         ),
-        date_str_format=None if gpx_data else '%Y-%m-%d %H:%M',
+        date_str_format=None if gpx_data else WORKOUT_DATE_FORMAT,
         user_timezone=user.timezone,
         with_timezone=True,
     )
@@ -160,6 +171,32 @@ def create_workout(
     )
     new_workout.description = (
         description[:DESCRIPTION_MAX_CHARACTERS] if description else None
+    )
+
+    new_workout.workout_visibility = VisibilityLevel(
+        workout_data.get('workout_visibility', user.workouts_visibility.value)
+    )
+    new_workout.analysis_visibility = (
+        get_calculated_visibility(
+            visibility=VisibilityLevel(
+                workout_data.get(
+                    'analysis_visibility', user.analysis_visibility.value
+                )
+            ),
+            parent_visibility=new_workout.workout_visibility,
+        )
+        if gpx_data
+        else VisibilityLevel.PRIVATE
+    )
+    new_workout.map_visibility = (
+        get_calculated_visibility(
+            visibility=VisibilityLevel(
+                workout_data.get('map_visibility', user.map_visibility.value)
+            ),
+            parent_visibility=new_workout.analysis_visibility,
+        )
+        if gpx_data
+        else VisibilityLevel.PRIVATE
     )
 
     if title is not None and title != '':
@@ -254,11 +291,15 @@ def edit_workout(
         ]
     if workout_data.get('equipments_list') is not None:
         workout.equipments = workout_data.get('equipments_list')
+    if workout_data.get('workout_visibility') is not None:
+        workout.workout_visibility = VisibilityLevel(
+            workout_data.get('workout_visibility')
+        )
     if not workout.gpx:
         if workout_data.get('workout_date'):
             workout.workout_date, _ = get_workout_datetime(
                 workout_date=workout_data.get('workout_date', ''),
-                date_str_format='%Y-%m-%d %H:%M',
+                date_str_format=WORKOUT_DATE_FORMAT,
                 user_timezone=auth_user.timezone,
             )
 
@@ -281,6 +322,24 @@ def edit_workout(
 
         if 'descent' in workout_data:
             workout.descent = workout_data.get('descent')
+
+    else:
+        if workout_data.get('analysis_visibility') is not None:
+            analysis_visibility = VisibilityLevel(
+                workout_data.get('analysis_visibility')
+            )
+            workout.analysis_visibility = get_calculated_visibility(
+                visibility=analysis_visibility,
+                parent_visibility=workout.workout_visibility,
+            )
+        if workout_data.get('map_visibility') is not None:
+            map_visibility = VisibilityLevel(
+                workout_data.get('map_visibility')
+            )
+            workout.map_visibility = get_calculated_visibility(
+                visibility=map_visibility,
+                parent_visibility=workout.analysis_visibility,
+            )
     return workout
 
 
@@ -528,3 +587,22 @@ def get_average_speed(
         / total_workouts,
         2,
     )
+
+
+def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
+    return sorted(
+        workouts, key=lambda workout: workout.workout_date, reverse=True
+    )[:limit]
+
+
+def get_workout(
+    workout_short_id: str, auth_user: Optional[User], allow_admin: bool = False
+) -> Workout:
+    workout_uuid = decode_short_id(workout_short_id)
+    workout = Workout.query.filter(Workout.uuid == workout_uuid).first()
+    if not workout or (
+        not can_view(workout, 'workout_visibility', auth_user)
+        and not (allow_admin and auth_user and auth_user.has_admin_rights)
+    ):
+        raise WorkoutForbiddenException()
+    return workout

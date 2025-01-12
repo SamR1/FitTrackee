@@ -2,8 +2,15 @@
   <div id="workout-content">
     <Card>
       <template #title>
-        {{ $t(`workouts.${contentType}`) }}
+        {{
+          capitalize(
+            $t(
+              `workouts.${contentType === 'NOTES' ? 'PRIVATE_NOTES' : contentType}`
+            )
+          )
+        }}
         <button
+          v-if="allowEdition"
           class="transparent icon-button"
           :aria-label="$t(`buttons.EDIT`)"
           @click="editContent"
@@ -25,6 +32,10 @@
               :rows="contentType === 'NOTES' ? 2 : 5"
               @updateValue="updateContent"
             />
+            <div class="markdown-hints info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('workouts.MARKDOWN_SYNTAX') }}
+            </div>
             <div class="form-buttons">
               <button class="confirm" type="submit" :disabled="loading">
                 {{ $t('buttons.SUBMIT') }}
@@ -47,7 +58,7 @@
             v-html="
               displayedContent && displayedContent !== ''
                 ? linkifyAndClean(displayedContent)
-                : $t(`workouts.NO_${contentType}`)
+                : $t(`common.NO_${contentType}`)
             "
           />
           <button
@@ -62,18 +73,23 @@
             {{ $t(`buttons.${readMore ? 'HIDE' : 'READ_MORE'}`) }}
           </button>
         </template>
-        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+        <ErrorMessage
+          v-if="errorMessages"
+          :message="errorMessages"
+          :no-margin="true"
+        />
       </template>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, ref, watch } from 'vue'
+  import { capitalize, computed, toRefs, ref, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipmentError } from '@/types/equipments'
+  import type { ICustomTextareaData } from '@/types/forms'
   import type { IWorkoutContentEdition } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { linkifyAndClean } from '@/utils/inputs'
@@ -82,9 +98,11 @@
     content?: string | null
     contentType: 'DESCRIPTION' | 'NOTES'
     workoutId: string
+    allowEdition?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     content: () => '',
+    allowEdition: true,
   })
 
   const store = useStore()
@@ -127,8 +145,8 @@
     isEdition.value = true
     editedContent.value = content.value ? content.value : ''
   }
-  function updateContent(text: string) {
-    editedContent.value = text
+  function updateContent(textareaData: ICustomTextareaData) {
+    editedContent.value = textareaData.value
   }
   function onCancel() {
     isEdition.value = false
@@ -157,7 +175,6 @@
 
   #workout-content {
     ::v-deep(.card-title) {
-      text-transform: capitalize;
       .icon-button {
         cursor: pointer;
         padding: 0;
@@ -179,9 +196,6 @@
       }
       .notes {
         font-style: italic;
-      }
-      .error-message {
-        margin: $default-margin 0;
       }
       .form-buttons {
         display: flex;

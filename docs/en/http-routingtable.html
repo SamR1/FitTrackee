@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 --><title>HTTP Routing Table - FitTrackee 0.8.13 documentation</title>
+    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 --><title>HTTP Routing Table - FitTrackee 0.9.0b6 documentation</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.8.13
+      <a href="index.html"><div class="brand">FitTrackee 0.9.0b6
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -195,7 +195,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.8.13
+  <span class="sidebar-brand-text">FitTrackee 0.9.0b6
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -213,12 +213,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentication and account</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Comments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Equipments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Equipment Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Timeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Workouts</a></li>
 </ul>
@@ -300,7 +305,37 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/auth.html#get--api-auth-account-sanctions-(string-action_short_id)"><code class="xref">GET /api/auth/account/sanctions/(string:action_short_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/auth.html#get--api-auth-account-suspension"><code class="xref">GET /api/auth/account/suspension</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/auth.html#get--api-auth-blocked-users"><code class="xref">GET /api/auth/blocked-users</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/auth.html#get--api-auth-profile"><code class="xref">GET /api/auth/profile</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#get--api-comments-(string-comment_short_id)"><code class="xref">GET /api/comments/(string:comment_short_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#get--api-comments-(string-comment_short_id)-likes"><code class="xref">GET /api/comments/(string:comment_short_id)/likes</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -336,6 +371,30 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/follow_requests.html#get--api-follow-requests"><code class="xref">GET /api/follow-requests</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/notifications.html#get--api-notifications"><code class="xref">GET /api/notifications</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/notifications.html#get--api-notifications-types"><code class="xref">GET /api/notifications/types</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/notifications.html#get--api-notifications-unread"><code class="xref">GET /api/notifications/unread</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/oauth2.html#get--api-oauth-apps"><code class="xref">GET /api/oauth/apps</code></a></td><td>
     <em></em></td>
   </tr>
@@ -361,6 +420,24 @@
     <td></td>
     <td>
         <a href="api/records.html#get--api-records"><code class="xref">GET /api/records</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/reports.html#get--api-reports"><code class="xref">GET /api/reports</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/reports.html#get--api-reports-(int-report_id)"><code class="xref">GET /api/reports/(int:report_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/reports.html#get--api-reports-unresolved"><code class="xref">GET /api/reports/unresolved</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -396,6 +473,12 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/timeline.html#get--api-timeline"><code class="xref">GET /api/timeline</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/users.html#get--api-users"><code class="xref">GET /api/users</code></a></td><td>
     <em></em></td>
   </tr>
@@ -408,7 +491,31 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/users.html#get--api-users-(user_name)-followers"><code class="xref">GET /api/users/(user_name)/followers</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#get--api-users-(user_name)-following"><code class="xref">GET /api/users/(user_name)/following</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/users.html#get--api-users-(user_name)-picture"><code class="xref">GET /api/users/(user_name)/picture</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#get--api-users-(user_name)-sanctions"><code class="xref">GET /api/users/(user_name)/sanctions</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#get--api-users-(user_name)-workouts"><code class="xref">GET /api/users/(user_name)/workouts</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -438,6 +545,12 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/comments.html#get--api-workouts-(string-workout_short_id)-comments"><code class="xref">GET /api/workouts/(string:workout_short_id)/comments</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/workouts.html#get--api-workouts-(string-workout_short_id)-gpx"><code class="xref">GET /api/workouts/(string:workout_short_id)/gpx</code></a></td><td>
     <em></em></td>
   </tr>
@@ -451,6 +564,12 @@
     <td></td>
     <td>
         <a href="api/workouts.html#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)"><code class="xref">GET /api/workouts/(string:workout_short_id)/gpx/segment/(int:segment_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/workouts.html#get--api-workouts-(string-workout_short_id)-likes"><code class="xref">GET /api/workouts/(string:workout_short_id)/likes</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -487,6 +606,18 @@
     <td></td>
     <td>
         <a href="api/auth.html#post--api-auth-account-resend-confirmation"><code class="xref">POST /api/auth/account/resend-confirmation</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/auth.html#post--api-auth-account-sanctions-(string-action_short_id)-appeal"><code class="xref">POST /api/auth/account/sanctions/(string:action_short_id)/appeal</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/auth.html#post--api-auth-account-suspension-appeal"><code class="xref">POST /api/auth/account/suspension/appeal</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -534,6 +665,12 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/auth.html#post--api-auth-profile-edit-notifications"><code class="xref">POST /api/auth/profile/edit/notifications</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/auth.html#post--api-auth-profile-edit-preferences"><code class="xref">POST /api/auth/profile/edit/preferences</code></a></td><td>
     <em></em></td>
   </tr>
@@ -552,6 +689,24 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/comments.html#post--api-comments-(string-comment_short_id)-like"><code class="xref">POST /api/comments/(string:comment_short_id)/like</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#post--api-comments-(string-comment_short_id)-like-undo"><code class="xref">POST /api/comments/(string:comment_short_id)/like/undo</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#post--api-comments-(string-comment_short_id)-suspension-appeal"><code class="xref">POST /api/comments/(string:comment_short_id)/suspension/appeal</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/equipments.html#post--api-equipments"><code class="xref">POST /api/equipments</code></a></td><td>
     <em></em></td>
   </tr>
@@ -559,6 +714,24 @@
     <td></td>
     <td>
         <a href="api/equipments.html#post--api-equipments-(string-equipment_short_id)-refresh"><code class="xref">POST /api/equipments/(string:equipment_short_id)/refresh</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/follow_requests.html#post--api-follow-requests-(user_name)-accept"><code class="xref">POST /api/follow-requests/(user_name)/accept</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/follow_requests.html#post--api-follow-requests-(user_name)-reject"><code class="xref">POST /api/follow-requests/(user_name)/reject</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/notifications.html#post--api-notifications-mark-all-as-read"><code class="xref">POST /api/notifications/mark-all-as-read</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -594,7 +767,67 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/reports.html#post--api-reports"><code class="xref">POST /api/reports</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/reports.html#post--api-reports-(int-report_id)-actions"><code class="xref">POST /api/reports/(int:report_id)/actions</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#post--api-users-(user_name)-block"><code class="xref">POST /api/users/(user_name)/block</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#post--api-users-(user_name)-follow"><code class="xref">POST /api/users/(user_name)/follow</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#post--api-users-(user_name)-unblock"><code class="xref">POST /api/users/(user_name)/unblock</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/users.html#post--api-users-(user_name)-unfollow"><code class="xref">POST /api/users/(user_name)/unfollow</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/workouts.html#post--api-workouts"><code class="xref">POST /api/workouts</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#post--api-workouts-(string-workout_short_id)-comments"><code class="xref">POST /api/workouts/(string:workout_short_id)/comments</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/workouts.html#post--api-workouts-(string-workout_short_id)-like"><code class="xref">POST /api/workouts/(string:workout_short_id)/like</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/workouts.html#post--api-workouts-(string-workout_short_id)-like-undo"><code class="xref">POST /api/workouts/(string:workout_short_id)/like/undo</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/workouts.html#post--api-workouts-(string-workout_short_id)-suspension-appeal"><code class="xref">POST /api/workouts/(string:workout_short_id)/suspension/appeal</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -613,6 +846,12 @@
     <td></td>
     <td>
         <a href="api/auth.html#delete--api-auth-profile-reset-sports-(sport_id)"><code class="xref">DELETE /api/auth/profile/reset/sports/(sport_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#delete--api-comments-(string-comment_short_id)"><code class="xref">DELETE /api/comments/(string:comment_short_id)</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -642,7 +881,19 @@
   <tr>
     <td></td>
     <td>
+        <a href="api/reports.html#patch--api-appeals-(string-appeal_id)"><code class="xref">PATCH /api/appeals/(string:appeal_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api/auth.html#patch--api-auth-profile-edit-account"><code class="xref">PATCH /api/auth/profile/edit/account</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/comments.html#patch--api-comments-(string-comment_short_id)"><code class="xref">PATCH /api/comments/(string:comment_short_id)</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -661,6 +912,18 @@
     <td></td>
     <td>
         <a href="api/equipments.html#patch--api-equipments-(string-equipment_short_id)"><code class="xref">PATCH /api/equipments/(string:equipment_short_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/notifications.html#patch--api-notifications-(string-notification_id)"><code class="xref">PATCH /api/notifications/(string:notification_id)</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api/reports.html#patch--api-reports-(int-report_id)"><code class="xref">PATCH /api/reports/(int:report_id)</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -718,7 +981,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=09f58890"></script>
+</div><script src="_static/documentation_options.js?v=a929e48d"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

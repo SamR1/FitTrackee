@@ -13,19 +13,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, toRefs } from 'vue'
 
-  import type { IUserProfile } from '@/types/user'
+  import type { IUserLightProfile, IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
 
   interface Props {
-    user: IUserProfile
+    user: IUserProfile | IUserLightProfile
   }
   const props = defineProps<Props>()
+  const { user } = toRefs(props)
 
   const authUserPictureUrl = computed(() =>
-    props.user.picture
-      ? `${getApiUrl()}users/${props.user.username}/picture?${Date.now()}`
+    user.value.picture
+      ? `${getApiUrl()}users/${user.value.username}/picture?${Date.now()}`
       : ''
   )
 </script>

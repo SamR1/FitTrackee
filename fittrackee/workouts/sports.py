@@ -12,6 +12,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.roles import UserRole
 
 from .models import Sport
 
@@ -19,10 +20,16 @@ sports_blueprint = Blueprint('sports', __name__)
 
 
 @sports_blueprint.route('/sports', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@require_auth(
+    scopes=['workouts:read'],
+    optional_auth_user=True,
+    allow_suspended_user=True,
+)
 def get_sports(auth_user: User) -> Dict:
     """
-    Get all sports
+    Get all sports.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``workouts:read``
 
@@ -169,7 +176,7 @@ def get_sports(auth_user: User) -> Dict:
 
     :query boolean check_workouts: check if sport has workouts
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token if user is authenticated
 
     :statuscode 200: ``success``
     :statuscode 401:
@@ -181,18 +188,24 @@ def get_sports(auth_user: User) -> Dict:
     params = request.args.copy()
     check_workouts = params.get('check_workouts', 'false').lower() == 'true'
 
-    sport_preferences = {
-        p.sport_id: p
-        for p in UserSportPreference.query.filter_by(
-            user_id=auth_user.id
-        ).all()
-    }
+    sport_preferences = (
+        {
+            p.sport_id: p
+            for p in UserSportPreference.query.filter_by(
+                user_id=auth_user.id
+            ).all()
+        }
+        if auth_user
+        else {}
+    )
     sports = Sport.query.order_by(Sport.id).all()
     sports_data = []
     for sport in sports:
         sports_data.append(
             sport.serialize(
-                check_workouts=auth_user.admin and check_workouts,
+                check_workouts=(
+                    auth_user and auth_user.has_admin_rights and check_workouts
+                ),
                 sport_preferences=(
                     sport_preferences[sport.id].serialize()
                     if sport.id in sport_preferences
@@ -269,6 +282,8 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport not found``
 
     """
@@ -295,7 +310,7 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
 
 @sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@require_auth(scopes=['workouts:write'], as_admin=True)
+@require_auth(scopes=['workouts:write'], role=UserRole.ADMIN)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport.
@@ -303,6 +318,8 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     Authenticated user must be an admin.
 
     **Scope**: ``workouts:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 
@@ -358,12 +375,15 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: sport updated
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 

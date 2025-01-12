@@ -13,6 +13,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, exc
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -41,15 +42,17 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import can_view
 
-from .models import Sport, Workout, WorkoutEquipment
+from ..reports.models import ReportActionAppeal
+from .decorators import check_workout
+from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.visibility import can_view_workout
 from .utils.workouts import (
     WorkoutException,
     create_workout,
@@ -63,6 +66,8 @@ workouts_blueprint = Blueprint('workouts', __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
+MAX_WORKOUTS_TO_SEND = 5
+DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
 
 
 @workouts_blueprint.route('/workouts', methods=['GET'])
@@ -100,6 +105,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -110,7 +116,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "duration": "0:17:04",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -169,12 +178,25 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -215,12 +237,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
                             ``duration``, ``workout_date`` (default:
                             ``workout_date``)
-    :query string equipment_id: equipment id (if 'none', only workouts without
-                            equipments will be returned)
+    :query string equipment_id: equipment id (if ``none``, only workouts
+                            without equipments will be returned)
     :query string notes: any part (or all) of the workout notes,
                          notes matching is case-insensitive
     :query string description: any part of the workout description;
                          description matching is case-insensitive
+    :query string return_equipments: return workouts with equipment
+                         (by default, equipment is not returned).
+                         **Note**: It's not a filter.
+                         **Warning**: Needed for 3rd-party applications
+                         updating equipments.
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -230,6 +257,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -341,6 +370,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         else True
                     )
                 ),
+                Workout.suspended_at == None,  # noqa
             )
             .order_by(
                 (
@@ -353,10 +383,20 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         )
 
         workouts = workouts_pagination.items
+        with_equipments = (
+            params.get('return_equipments', 'false').lower() == 'true'
+        )
         return {
             'status': 'success',
             'data': {
-                'workouts': [workout.serialize(params) for workout in workouts]
+                'workouts': [
+                    workout.serialize(
+                        user=auth_user,
+                        params=params,
+                        with_equipments=with_equipments,
+                    )
+                    for workout in workouts
+                ]
             },
             'pagination': {
                 'has_next': workouts_pagination.has_next,
@@ -373,14 +413,13 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(only_owner=False)
 def get_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get a workout.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -401,6 +440,7 @@ def get_workout(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 16,
                 "bounds": [],
@@ -411,7 +451,10 @@ def get_workout(
                 "duration": "0:45:00",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 16,
                 "min_alt": null,
@@ -424,12 +467,25 @@ def get_workout(
                 "records": [],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": "biking on sunday morning",
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
-                "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT"
+                "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -452,50 +508,51 @@ def get_workout(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
 
     """
-    workout_uuid = decode_short_id(workout_short_id)
-    workout = Workout.query.filter_by(uuid=workout_uuid).first()
-    if not workout:
-        return DataNotFoundErrorResponse('workouts')
-
-    error_response = can_view_workout(auth_user.id, workout.user_id)
-    if error_response:
-        return error_response
-
     return {
         'status': 'success',
-        'data': {'workouts': [workout.serialize()]},
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
     }
 
 
 def get_workout_data(
-    auth_user: User,
+    auth_user: Optional[User],
     workout_short_id: str,
     data_type: str,
     segment_id: Optional[int] = None,
 ) -> Union[Dict, HttpResponse]:
-    """Get data from a workout gpx file"""
+    """Get data from workout gpx file"""
+    not_found_response = DataNotFoundErrorResponse(
+        data_type=data_type,
+        message=f'workout not found (id: {workout_short_id})',
+    )
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
     if not workout:
-        return DataNotFoundErrorResponse(
-            data_type=data_type,
-            message=f'workout not found (id: {workout_short_id})',
-        )
+        return not_found_response
 
-    error_response = can_view_workout(auth_user.id, workout.user_id)
-    if error_response:
-        return error_response
+    if not can_view(
+        workout,
+        'calculated_analysis_visibility'
+        if data_type == 'chart_data'
+        else 'calculated_map_visibility',
+        auth_user,
+    ):
+        return not_found_response
+
     if not workout.gpx or workout.gpx == '':
         return NotFoundErrorResponse(
             f'no gpx file for this workout (id: {workout_short_id})'
@@ -545,14 +602,12 @@ def get_workout_data(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/gpx', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_gpx(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for a workout displayed on map with Leaflet.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -578,13 +633,17 @@ def get_workout_gpx(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for this workout``
@@ -597,14 +656,12 @@ def get_workout_gpx(
 @workouts_blueprint.route(
     '/workouts/<string:workout_short_id>/chart_data', methods=['GET']
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_workout_chart_data(
-    auth_user: User, workout_short_id: str
+    auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
@@ -649,13 +706,17 @@ def get_workout_chart_data(
 
     :param string workout_short_id: workout short id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for this workout``
@@ -669,20 +730,18 @@ def get_workout_chart_data(
     '/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>',
     methods=['GET'],
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_gpx(
-    auth_user: User, workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get gpx file for a workout segment displayed on map with Leaflet.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -703,7 +762,8 @@ def get_segment_gpx(
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``
@@ -711,6 +771,9 @@ def get_segment_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -723,20 +786,18 @@ def get_segment_gpx(
     '<int:segment_id>',
     methods=['GET'],
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
 def get_segment_chart_data(
-    auth_user: User, workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
-
-    **Scope**: ``workouts:read``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/1 HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -776,7 +837,8 @@ def get_segment_chart_data(
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
 
-    :reqheader Authorization: OAuth 2.0 Bearer Token
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
 
     :statuscode 200: ``success``
     :statuscode 400: ``no gpx file for this workout``
@@ -784,6 +846,9 @@ def get_segment_chart_data(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -825,6 +890,8 @@ def download_workout_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
         - ``no gpx file for workout``
@@ -880,6 +947,8 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``map does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -966,76 +1035,122 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
       HTTP/1.1 201 CREATED
       Content-Type: application/json
 
-       {
+        {
           "data": {
             "workouts": [
               {
-                "ascent": null,
-                "ave_speed": 10.0,
-                "bounds": [],
+                "analysis_visibility": "private",
+                "ascent": 435.621,
+                "ave_speed": 13.14,
+                "bounds": [
+                  43.93706,
+                  4.517587,
+                  43.981933,
+                  4.560627
+                ],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
-                "descent": null,
+                "descent": 427.499,
                 "description": null,
-                "distance": 10.0,
-                "duration": "0:17:04",
+                "distance": 23.478,
+                "duration": "2:08:35",
                 "equipments": [],
-                "id": "kjxavSTUrJvoAh2wvCeGEF",
-                "map": null,
-                "max_alt": null,
-                "max_speed": 10.0,
-                "min_alt": null,
+                "id": "PsjeeXbJZ2JJNQcTCPxVvF",
+                "liked": false,
+                "likes_count": 0,
+                "map": "ac075ec36dc25dcc20c270d2005f0398",
+                "map_visibility": "private",
+                "max_alt": 158.41,
+                "max_speed": 25.59,
+                "min_alt": 55.03,
                 "modification_date": null,
-                "moving": "0:17:04",
-                "next_workout": 3,
-                "notes": null,
-                "pauses": null,
-                "previous_workout": null,
+                "moving": "1:47:11",
+                "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
+                "notes": "",
+                "pauses": "0:20:32",
+                "previous_workout": "HgzYFXgvWKCEpdq3vYk67q",
                 "records": [
                   {
-                    "id": 4,
-                    "record_type": "MS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 3,
-                    "record_type": "LD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": "0:17:04",
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF",
-                  },
-                  {
-                    "id": 2,
-                    "record_type": "FD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 1,
+                    "id": 6,
                     "record_type": "AS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 13.14,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 7,
+                    "record_type": "FD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 23.478,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 9,
+                    "record_type": "LD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": "1:47:11",
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 10,
+                    "record_type": "MS",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 25.59,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 8,
+                    "record_type": "HA",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 435.621,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
                   }
                 ],
-                "segments": [],
-                "sport_id": 1,
-                "title": null,
-                "user": "admin",
+                "segments": [
+                  {
+                    "ascent": 435.621,
+                    "ave_speed": 13.14,
+                    "descent": 427.499,
+                    "distance": 23.478,
+                    "duration": "2:08:35",
+                    "max_alt": 158.41,
+                    "max_speed": 25.59,
+                    "min_alt": 55.03,
+                    "moving": "1:47:11",
+                    "pauses": "0:20:32",
+                    "segment_id": 0,
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  }
+                ],
+                "sport_id": 4,
+                "suspended": false,
+                "suspended_at": null,
+                "title": "VTT dans le Gard",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 3,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "weather_end": null,
                 "weather_start": null,
-                "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "with_analysis": false,
+                "with_gpx": true,
+                "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -1043,10 +1158,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         }
 
     :form file: gpx file (allowed extensions: .gpx, .zip)
-    :form data: sport id, equipment id, description, title and notes,
+    :form data: sport id, equipment id, description, title, notes, visibility
+       for workout, analysis and map
        for example:
        ``{"sport_id": 1, "notes": "", "title": "", "description": "",
-       "equipment_ids": []}``.
+       "analysis_visibility": "private", "map_visibility": "private",
+       "workout_visibility": "private", "equipment_ids": []}``.
        Double quotes in notes, description and title must be escaped.
 
        The maximum length is 500 characters for notes, 10000 characters for
@@ -1060,7 +1177,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description, title and equipment ids are not mandatory.
+       Notes, description, title, equipment ids and visibility
+       for workout, analysis and map are not mandatory.
+       Visibility levels default to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1079,6 +1198,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 413: ``error during picture update: file size exceeds 1.0MB``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1138,7 +1259,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 'status': 'created',
                 'data': {
                     'workouts': [
-                        new_workout.serialize() for new_workout in new_workouts
+                        new_workout.serialize(user=auth_user, light=False)
+                        for new_workout in new_workouts
                     ]
                 },
             }
@@ -1185,6 +1307,7 @@ def post_workout_no_gpx(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -1193,8 +1316,12 @@ def post_workout_no_gpx(
                 "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "id": "Kd5wyhwLtVozw6o3AU5M4J",
+                "liked": false,
+                "likes_count": 0,
                 "equipments": [],
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -1244,19 +1371,35 @@ def post_workout_no_gpx(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
           "status": "success"
         }
 
+    :<json string analysis_visibility: analysis visibility
+        (``private``, ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json float ascent: workout ascent (not mandatory,
            must be provided with descent)
     :<json float descent: workout descent (not mandatory,
@@ -1270,6 +1413,9 @@ def post_workout_no_gpx(
         **Note**: for now only one equipment can be associated.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
+    :<json string map_visibility: map visibility
+        (``private``, ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
@@ -1277,6 +1423,9 @@ def post_workout_no_gpx(
         characters, otherwise it will be truncated)
     :<json string workout_date: workout date, in user timezone
         (format: ``%Y-%m-%d %H:%M``)
+    :<json string workout_visibility: workout visibility (``private``,
+        ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1292,6 +1441,8 @@ def post_workout_no_gpx(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -1355,7 +1506,11 @@ def post_workout_no_gpx(
         return (
             {
                 'status': 'created',
-                'data': {'workouts': [new_workout.serialize()]},
+                'data': {
+                    'workouts': [
+                        new_workout.serialize(user=auth_user, light=False)
+                    ]
+                },
             },
             201,
         )
@@ -1373,8 +1528,9 @@ def post_workout_no_gpx(
     '/workouts/<string:workout_short_id>', methods=['PATCH']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def update_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Update a workout.
@@ -1385,7 +1541,7 @@ def update_workout(
 
     .. sourcecode:: http
 
-      PATCH /api/workouts/1 HTTP/1.1
+      PATCH /api/workouts/2oRDfncv6vpRkfp3yrCYHt HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1399,6 +1555,7 @@ def update_workout(
           "data": {
             "workouts": [
               {
+                "analysis_visibility": "private",
                 "ascent": null,
                 "ave_speed": 10.0,
                 "bounds": [],
@@ -1408,7 +1565,11 @@ def update_workout(
                 "distance": 10.0,
                 "duration": "0:17:04",
                 "equipments": [],
+                "id": "2oRDfncv6vpRkfp3yrCYHt",
+                "liked": false,
+                "likes_count": 0,
                 "map": null,
+                "map_visibility": "private",
                 "max_alt": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -1458,13 +1619,26 @@ def update_workout(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "suspended": false,
+                "suspended_at": null,
                 "title": null,
-                "user": "admin",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
                 "uuid": "kjxavSTUrJvoAh2wvCeGEF"
                 "weather_end": null,
                 "weather_start": null,
+                "with_analysis": false,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
+                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_visibility": "private"
               }
             ]
           },
@@ -1473,6 +1647,8 @@ def update_workout(
 
     :param string workout_short_id: workout short id
 
+    :<json string analysis_visibility: analysis visibility
+        (``private``, ``followers_only`` or ``public``)
     :<json float ascent: workout ascent
         (only for workout without gpx, must be provided with descent)
     :<json float descent: workout descent
@@ -1483,19 +1659,23 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
-    :<json string notes: notes (max length: 500 characters, otherwise they
-        will be truncated)
-    :<json integer sport_id: workout sport id
-    :<json string title: workout title (max length: 255 characters, otherwise
-        it will be truncated)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
         **Note**: for now only one equipment can be associated.
         If an empty array, equipment for this workout will be removed.
+    :<json string map_visibility: map visibility
+        (``private``, ``followers_only`` or ``public``)
+    :<json string notes: notes (max length: 500 characters, otherwise they
+        will be truncated)
+    :<json integer sport_id: workout sport id
+    :<json string title: workout title (max length: 255 characters, otherwise
+        it will be truncated)
     :<json string workout_date: workout date in user timezone
         (format: ``%Y-%m-%d %H:%M``)
         (only for workout without gpx)
+    :<json string workout_visibility: workout visibility (``private``,
+        ``followers_only`` or ``public``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1511,6 +1691,8 @@ def update_workout(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -1520,15 +1702,6 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-
-        response_object = can_view_workout(auth_user.id, workout.user_id)
-        if response_object:
-            return response_object
-
         if not workout.gpx:
             try:
                 # for workout without gpx file, both elevation values must be
@@ -1587,9 +1760,12 @@ def update_workout(
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
+
         return {
             'status': 'success',
-            'data': {'workouts': [workout.serialize()]},
+            'data': {
+                'workouts': [workout.serialize(user=auth_user, light=False)]
+            },
         }
 
     except InvalidEquipmentsException as e:
@@ -1606,8 +1782,9 @@ def update_workout(
     '/workouts/<string:workout_short_id>', methods=['DELETE']
 )
 @require_auth(scopes=['workouts:write'])
+@check_workout()
 def delete_workout(
-    auth_user: User, workout_short_id: str
+    auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete a workout.
@@ -1637,20 +1814,13 @@ def delete_workout(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``workout not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-
     try:
-        workout_uuid = decode_short_id(workout_short_id)
-        workout = Workout.query.filter_by(uuid=workout_uuid).first()
-        if not workout:
-            return DataNotFoundErrorResponse('workouts')
-        error_response = can_view_workout(auth_user.id, workout.user_id)
-        if error_response:
-            return error_response
-
         # update equipments totals
         workout.equipments = []
         db.session.flush()
@@ -1664,4 +1834,400 @@ def delete_workout(
         ValueError,
         OSError,
     ) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(only_owner=False)
+def like_workout(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Add a "like" to a workout.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/HgzYFXgvWKCEpdq3vYk67q/like HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": [
+              {
+                "analysis_visibility": "private",
+                "ascent": 231.208,
+                "ave_speed": 13.12,
+                "bounds": [],
+                "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
+                "descent": 234.208,
+                "description": null,
+                "distance": 23.41,
+                "duration": "3:32:27",
+                "equipments": [],
+                "id": "HgzYFXgvWKCEpdq3vYk67q",
+                "liked": true,
+                "likes_count": 1,
+                "map": null,
+                "map_visibility": "private",
+                "max_alt": 104.44,
+                "max_speed": 25.59,
+                "min_alt": 19.0,
+                "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
+                "moving": "1:47:04",
+                "next_workout": null,
+                "notes": null,
+                "pauses": "1:23:51",
+                "previous_workout": null,
+                "records": [],
+                "segments": [],
+                "sport_id": 1,
+                "suspended": false,
+                "title": "Cycling (Sport) - 2016-04-26 16:42:27",
+                "user": {
+                  "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_analysis": false,
+                "with_gpx": false,
+                "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
+                "workout_visibility": "public"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``comment not found``
+    """
+    try:
+        like = WorkoutLike(user_id=auth_user.id, workout_id=workout.id)
+        db.session.add(like)
+        db.session.commit()
+
+    except IntegrityError:
+        db.session.rollback()
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
+    }, 200
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/like/undo', methods=['POST']
+)
+@require_auth(scopes=['workouts:write'])
+@check_workout(only_owner=False)
+def undo_workout_like(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Remove workout "like".
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/HgzYFXgvWKCEpdq3vYk67q/like/undo HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": [
+              {
+                "analysis_visibility": "private",
+                "ascent": 231.208,
+                "ave_speed": 13.12,
+                "bounds": [],
+                "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
+                "descent": 234.208,
+                "description": null,
+                "distance": 23.41,
+                "duration": "3:32:27",
+                "equipments": [],
+                "id": "HgzYFXgvWKCEpdq3vYk67q",
+                "liked": false,
+                "likes_count": 0,
+                "map": null,
+                "map_visibility": "private",
+                "max_alt": 104.44,
+                "max_speed": 25.59,
+                "min_alt": 19.0,
+                "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
+                "moving": "1:47:04",
+                "next_workout": null,
+                "notes": null,
+                "pauses": "1:23:51",
+                "previous_workout": null,
+                "records": [],
+                "segments": [],
+                "sport_id": 1,
+                "suspended": false,
+                "title": "Cycling (Sport) - 2016-04-26 16:42:27",
+                "user": {
+                  "created_at": "Sun, 24 Nov 2024 16:52:14 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 1,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_analysis": false,
+                "with_gpx": false,
+                "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
+                "workout_visibility": "public"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``comment not found``
+    """
+    like = WorkoutLike.query.filter_by(
+        user_id=auth_user.id, workout_id=workout.id
+    ).first()
+    if like:
+        db.session.delete(like)
+        db.session.commit()
+
+    return {
+        'status': 'success',
+        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
+    }, 200
+
+
+@workouts_blueprint.route(
+    '/workouts/<string:workout_short_id>/likes', methods=['GET']
+)
+@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@check_workout(only_owner=False)
+def get_workout_likes(
+    auth_user: Optional[User], workout: Workout, workout_short_id: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get users who like the workout.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/likes HTTP/1.1
+
+    **Example responses**:
+
+    - success:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "likes": [
+              {
+                "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                "followers": 0,
+                "following": 0,
+                "nb_workouts": 1,
+                "picture": false,
+                "role": "user",
+                "suspended_at": null,
+                "username": "Sam"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    - workout not found:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+        {
+          "data": {
+            "likes": []
+          },
+          "status": "not found"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``workout not found``
+
+    """
+    params = request.args.copy()
+    page = int(params.get('page', 1))
+    likes_pagination = (
+        User.query.join(WorkoutLike, User.id == WorkoutLike.user_id)
+        .filter(WorkoutLike.workout_id == workout.id)
+        .order_by(WorkoutLike.created_at.desc())
+        .paginate(
+            page=page, per_page=DEFAULT_WORKOUT_LIKES_PER_PAGE, error_out=False
+        )
+    )
+    users = likes_pagination.items
+    return {
+        'status': 'success',
+        'data': {
+            'likes': [user.serialize(current_user=auth_user) for user in users]
+        },
+        'pagination': {
+            'has_next': likes_pagination.has_next,
+            'has_prev': likes_pagination.has_prev,
+            'page': likes_pagination.page,
+            'pages': likes_pagination.pages,
+            'total': likes_pagination.total,
+        },
+    }
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=["workouts:write"])
+@check_workout(only_owner=True)
+def appeal_workout_suspension(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal workout suspension.
+
+    Only workout author can appeal the suspension.
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/2oRDfncv6vpRkfp3yrCYHt/suspension/appeal HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: appeal created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+        - ``workout is not suspended``
+        - ``workout has no suspension``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403: ``you do not have permissions``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    if not workout.suspended_at:
+        return InvalidPayloadErrorResponse("workout is not suspended")
+    suspension_action = workout.suspension_action
+    if not suspension_action:
+        return InvalidPayloadErrorResponse("workout has no suspension")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = ReportActionAppeal(
+            action_id=suspension_action.id, user_id=auth_user.id, text=text
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('Your workout has been suspended') }}{% endblock %}
+{% block preheader %}{{ _('Your workout has been suspended, it is no longer visible') }}.{% endblock %}
+{% block content %}<p>{{ _('Your workout has been suspended, it is no longer visible') }}.</p>
+                        {% if reason %}<p><strong>{{ _('Reason:') }}</strong> {{ reason }}</p>{% endif %}
+                        <table class="body-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td>
+                              <img class="user-picture" src="{{ user_image_url }}" alt="">
+                              <strong>{{ username }}</strong>
+                           </td>
+                          </tr>
+                          <tr>
+                            <td>{{ title }}</td>
+                          </tr>
+                          {% if map %}<tr>
+                            <td><img class="map" src="{{ map }}" alt=""></td>
+                          </tr>{% endif %}
+                          <tr>
+                            <td class="content-date"><a href="{{ workout_url }}" target="_blank">{{ workout_date }}</a></td>
+                          </tr>
+                        </table>
+                        <p>{{ _('If you think this is an error, you can appeal:') }}</p>
+                        <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td align="center">
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
+                                <tr>
+                                  <td align="center">
+                                    <a href="{{ workout_url }}" class="f-fallback button button--green" target="_blank">{{ _('Appeal') }}</a>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>{% endblock %}
+     {% block url_to_paste %}<table class="body-sub" role="presentation">
+                            <tr>
+                             <td>
+                                <p class="f-fallback sub">{{ _("If you're having trouble with the button above, copy and paste the URL below into your web browser.") }}</p>
+                                <p class="f-fallback sub">{{ workout_url }}</p>
+                              </td>
+                            </tr>
+                          </table>{% endblock %}

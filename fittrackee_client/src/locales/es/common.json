@@ -16,7 +16,8 @@
   "LABEL": "etiqueta",
   "MINUTES": "minuto|minutos",
   "NEXT": "siguiente",
-  "NO_DESCRIPTION": "sin descripción",
+  "NO_DESCRIPTION": "Sin descripción",
+  "NO_NOTES": "Sin notas",
   "PREVIOUS": "anterior",
   "SECONDS": "segundo|segundos",
   "SELECTS": {

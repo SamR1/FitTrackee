@@ -332,6 +332,13 @@ describe('getDateFormat', () => {
     },
     {
       inputParams: {
+        dateFormat: '',
+        language: 'fr',
+      },
+      expectedFormat: 'MM/dd/yyyy',
+    },
+    {
+      inputParams: {
         dateFormat: 'date_string',
         language: 'en',
       },

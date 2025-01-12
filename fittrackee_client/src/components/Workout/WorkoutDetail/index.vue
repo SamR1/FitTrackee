@@ -12,23 +12,58 @@
       <template #title>
         <WorkoutCardTitle
           v-if="sport"
+          :authUser="authUser"
           :sport="sport"
           :workoutObject="workoutObject"
+          :isWorkoutOwner="isWorkoutOwner"
           @displayModal="updateDisplayModal(true)"
         />
+        <ReportForm
+          v-if="workoutData.currentReporting"
+          :object-id="workoutObject.workoutId"
+          object-type="workout"
+        />
+        <div
+          class="report-submitted"
+          v-if="reportStatus === `workout-${workoutObject.workoutId}-created`"
+        >
+          <div class="info-box">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('common.REPORT_SUBMITTED') }}
+            </span>
+          </div>
+        </div>
       </template>
       <template #content>
-        <div class="workout-map-data">
+        <WorkoutActionAppeal
+          v-if="
+            displayMakeAppeal && workoutObject.suspended && workout.suspension
+          "
+          display-suspension-message
+          :action="workout.suspension"
+          :workout="workout"
+        />
+        <div
+          class="workout-map-data"
+          v-if="isWorkoutOwner || !workoutObject.suspended"
+        >
           <WorkoutMap
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
           />
           <WorkoutData
             :workoutObject="workoutObject"
-            :useImperialUnits="authUser.imperial_units"
-            :displayHARecord="authUser.display_ascent"
+            :useImperialUnits="displayOptions.useImperialUnits"
+            :displayHARecord="displayOptions.displayAscent"
           />
         </div>
+        <WorkoutVisibility
+          :workoutObject="workoutObject"
+          :useImperialUnits="displayOptions.useImperialUnits"
+          :displayHARecord="displayOptions.displayAscent"
+          v-if="workoutObject.workoutVisibility"
+        />
         <div class="workout-equipments" v-if="workoutObject.equipments">
           <EquipmentBadge
             v-for="equipment in workoutObject.equipments"
@@ -43,15 +78,21 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch } from 'vue'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
   import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
+  import ReportForm from '@/components/Common/ReportForm.vue'
+  import WorkoutActionAppeal from '@/components/Workout/WorkoutActionAppeal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
+  import useSports from '@/composables/useSports'
+  import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IDisplayOptions } from '@/types/application'
+  import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -59,17 +100,17 @@
     IWorkoutData,
     IWorkoutObject,
     IWorkoutSegment,
-    TCoordinates,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
 
   interface Props {
-    authUser: IAuthUserProfile
+    authUser?: IAuthUserProfile
     displaySegment: boolean
     sports: ISport[]
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
+    isWorkoutOwner: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -78,7 +119,9 @@
   const route = useRoute()
   const store = useStore()
 
-  const { authUser, markerCoordinates, workoutData } = toRefs(props)
+  const { getWorkoutSport } = useSports()
+
+  const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
@@ -91,15 +134,23 @@
       : null
   )
   const displayModal: Ref<boolean> = ref(false)
-  const sport = computed(() =>
-    props.sports
-      ? props.sports.find(
-          (sport) => sport.id === props.workoutData.workout.sport_id
-        )
-      : ({} as ISport)
+  const sport: ComputedRef<ISport | null> = computed(() =>
+    getWorkoutSport(workout.value)
+  )
+  const displayOptions: ComputedRef<IDisplayOptions> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
+  )
+  const reportStatus: ComputedRef<string | null> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
+  )
+  const displayMakeAppeal: ComputedRef<boolean> = computed(
+    () => workout.value.suspended_at !== null && isWorkoutOwner.value
+  )
+  const success: ComputedRef<null | string> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.SUCCESS]
   )
 
   function getWorkoutObjectUrl(
@@ -136,17 +187,21 @@
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
         props.workoutData.workout.workout_date,
-        props.authUser.timezone
+        displayOptions.value.timezone
       ),
-      props.authUser.date_format
+      displayOptions.value.dateFormat
     )
     return {
+      analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       equipments: segment ? null : workout.equipments,
+      liked: workout.liked,
+      likes_count: workout.likes_count,
+      mapVisibility: workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
@@ -156,19 +211,22 @@
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
       segmentId: segment ? segment.segment_id : null,
+      suspended: workout.suspended !== undefined ? workout.suspended : false,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
       workoutFullDate: formatDate(
         workout.workout_date,
-        authUser.value.timezone,
-        authUser.value.date_format
+        displayOptions.value.timezone,
+        displayOptions.value.dateFormat
       ),
       weatherStart: segment ? null : workout.weather_start,
+      with_analysis: workout.with_analysis,
       with_gpx: workout.with_gpx,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
+      workoutVisibility: workout.workout_visibility,
     }
   }
   function updateDisplayModal(value: boolean) {
@@ -189,6 +247,16 @@
       behavior: 'smooth',
     })
   }
+  function resetStatuses() {
+    if (reportStatus.value !== null) {
+      store.commit(REPORTS_STORE.MUTATIONS.SET_REPORT_STATUS, null)
+    }
+    if (success.value) {
+      store.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
+    }
+  }
+
+  onUnmounted(() => resetStatuses())
 
   watch(
     () => route.params.segmentId,
@@ -204,6 +272,7 @@
         displayModal.value = false
         scrollToTop()
       }
+      resetStatuses()
     }
   )
 </script>
@@ -213,10 +282,24 @@
   .workout-detail {
     display: flex;
     ::v-deep(.card) {
+      margin: 0 $default-margin;
       width: 100%;
       margin-bottom: 0;
       .card-title {
         padding: $default-padding $default-padding * 1.5;
+        .report-submitted {
+          display: flex;
+          .info-box {
+            padding: $default-padding $default-padding * 2;
+            margin: $default-margin * 0.5 0 0 $default-margin;
+          }
+        }
+        .report-form {
+          .error-message {
+            font-weight: normal;
+            margin: $default-margin 0;
+          }
+        }
       }
       .card-content {
         display: flex;
@@ -229,6 +312,15 @@
           display: flex;
           flex-wrap: wrap;
           gap: $default-padding;
+          margin-top: $default-margin * 0.5;
+        }
+        .appeal {
+          margin-top: $default-padding;
+        }
+
+        .appeal-button {
+          padding: 0 $default-padding;
+          font-size: 0.95em;
         }
         @media screen and (max-width: $medium-limit) {
           .workout-map-data {

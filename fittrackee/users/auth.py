@@ -44,19 +44,27 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.utils import get_readable_duration
+from fittrackee.users.users_service import UserManagerService
+from fittrackee.utils import decode_short_id, get_readable_duration
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    get_calculated_visibility,
+)
 from fittrackee.workouts.models import Sport
 
+from ..reports.models import ReportAction, ReportActionAppeal
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
+    BlockedUser,
+    Notification,
     User,
     UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from .roles import UserRole
 from .tasks import export_data
-from .utils.admin import UserManagerService
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.token import decode_user_token
@@ -65,18 +73,19 @@ auth_blueprint = Blueprint('auth', __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
+BLOCKED_USERS_PER_PAGE = 5
 
 
 def send_account_confirmation_email(user: User) -> None:
     if current_app.config['CAN_SEND_EMAILS']:
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         email_data = {
             'username': user.username,
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore  # noqa
             'browser_name': request.user_agent.browser,  # type: ignore
             'account_confirmation_url': (
-                f'{ui_url}/account-confirmation'
+                f'{fittrackee_url}/account-confirmation'
                 f'?token={user.confirmation_token}'
             ),
         }
@@ -180,9 +189,21 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         if new_user:
             new_user.language = language
             new_user.accepted_policy_date = datetime.datetime.utcnow()
-            db.session.add(new_user)
+            for admin in User.query.filter(
+                User.role == UserRole.ADMIN.value,
+                User.is_active == True,  # noqa
+            ).all():
+                if not admin.is_notification_enabled("account_creation"):
+                    continue
+                notification = Notification(
+                    from_user_id=new_user.id,
+                    to_user_id=admin.id,
+                    created_at=new_user.created_at,
+                    event_type='account_creation',
+                    event_object_id=new_user.id,
+                )
+                db.session.add(notification)
             db.session.commit()
-
             send_account_confirmation_email(new_user)
 
         return {'status': 'success'}, 200
@@ -274,12 +295,14 @@ def login_user() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
     """
     Get authenticated user info (profile, account, preferences).
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:read``
 
@@ -300,7 +323,7 @@ def get_authenticated_user_profile(
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -309,13 +332,27 @@ def get_authenticated_user_profile(
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
+          }
           "picture": false,
           "records": [
             {
@@ -364,6 +401,7 @@ def get_authenticated_user_profile(
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -377,7 +415,8 @@ def get_authenticated_user_profile(
           "use_dark_mode": null,
           "use_raw_gpx_speed": false,
           "username": "sam",
-          "weekm": false
+          "weekm": false,
+          "workouts_visibility": "private"
         },
         "status": "success"
       }
@@ -390,14 +429,19 @@ def get_authenticated_user_profile(
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
     """
-    return {'status': 'success', 'data': auth_user.serialize(auth_user)}
+    return {
+        'status': 'success',
+        'data': auth_user.serialize(current_user=auth_user, light=False),
+    }
 
 
 @auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -418,7 +462,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -427,13 +471,27 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
+          }
           "picture": false,
           "records": [
             {
@@ -482,6 +540,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -496,6 +555,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user profile updated",
         "status": "success"
@@ -550,7 +610,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user profile updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -559,7 +619,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user email and password.
@@ -571,6 +631,8 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
       - one to the current address to inform user
       - another one to the new address to confirm it.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -591,7 +653,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -600,13 +662,25 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
+          }
           "picture": false,
           "records": [
             {
@@ -655,6 +729,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -669,6 +744,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": false,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "private"
         },
         "message": "user account updated",
         "status": "success"
@@ -734,14 +810,14 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         if current_app.config['CAN_SEND_EMAILS']:
-            ui_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config['UI_URL']
             user_data = {
                 'language': get_language(auth_user.language),
                 'email': auth_user.email,
             }
             data = {
                 'username': auth_user.username,
-                'fittrackee_url': ui_url,
+                'fittrackee_url': fittrackee_url,
                 'operating_system': request.user_agent.platform,
                 'browser_name': request.user_agent.browser,
             }
@@ -763,7 +839,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     **data,
                     **{
                         'email_confirmation_url': (
-                            f'{ui_url}/email-update'
+                            f'{fittrackee_url}/email-update'
                             f'?token={auth_user.confirmation_token}'
                         )
                     },
@@ -777,7 +853,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
         return {
             'status': 'success',
             'message': 'user account updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -785,7 +861,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
@@ -800,6 +876,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
       - ``MMM. do, yyyy`` for ``en`` locale
       - ``d MMM yyyy`` for ``es``, ``fr``, ``gl``, ``it`` and ``nl`` locales
       - ``do MMM yyyy`` for ``de`` and ``nb`` locales
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -820,7 +898,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
       {
         "data": {
           "accepted_privacy_policy": true,
-          "admin": false,
+          "analysis_visibility": "private",
           "bio": null,
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
@@ -829,13 +907,27 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
           "language": "en",
           "last_name": null,
           "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "followers_only",
           "nb_sports": 3,
           "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": true,
+            "workout_comment": true,
+            "workout_like": true
+          }
           "picture": false,
           "records": [
             {
@@ -884,6 +976,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "role": "user",
           "sports_list": [
               1,
               4,
@@ -898,21 +991,32 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "use_raw_gpx_speed": true,
           "username": "sam"
           "weekm": true,
+          "workouts_visibility": "public"
         },
         "message": "user preferences updated",
         "status": "success"
       }
 
+    :<json string analysis_visibility: workout analysis visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json boolean hide_profile_in_users_directory: if ``true``, user does not
+                                                    appear in users directory
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
+    :<json string map_visibility: workout map visibility
+                  (``public``, ``followers_only``, ``private``)
+    :<json boolean manually_approves_followers: if ``false``, follow requests
+                  are automatically approved
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
-    :<json boolean use_dark_mode: Display interface with dark mode if true.
-                   If null, it uses browser preferences.
+    :<json boolean use_dark_mode: Display interface with dark mode if ``true``.
+                   If ``null``, it uses browser preferences.
     :<json boolean use_raw_gpx_speed: Use unfiltered gpx to calculate speeds
     :<json boolean weekm: does week start on Monday?
+    :<json string workouts_visibility: user workouts visibility
+                  (``public``, ``followers_only``, ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -929,15 +1033,20 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
+        'analysis_visibility',
         'date_format',
         'display_ascent',
+        'hide_profile_in_users_directory',
         'imperial_units',
         'language',
+        'manually_approves_followers',
+        'map_visibility',
         'start_elevation_at_zero',
         'timezone',
         'use_dark_mode',
         'use_raw_gpx_speed',
         'weekm',
+        'workouts_visibility',
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
@@ -951,6 +1060,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     use_dark_mode = post_data.get('use_dark_mode')
     timezone = post_data.get('timezone')
     weekm = post_data.get('weekm')
+    map_visibility = post_data.get('map_visibility')
+    analysis_visibility = post_data.get('analysis_visibility')
+    workouts_visibility = post_data.get('workouts_visibility')
+    manually_approves_followers = post_data.get('manually_approves_followers')
+    hide_profile_in_users_directory = post_data.get(
+        'hide_profile_in_users_directory'
+    )
 
     try:
         auth_user.date_format = date_format
@@ -962,12 +1078,25 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.use_dark_mode = use_dark_mode
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
+        auth_user.workouts_visibility = VisibilityLevel(workouts_visibility)
+        auth_user.analysis_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(analysis_visibility),
+            parent_visibility=auth_user.workouts_visibility,
+        )
+        auth_user.map_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(map_visibility),
+            parent_visibility=auth_user.analysis_visibility,
+        )
+        auth_user.manually_approves_followers = manually_approves_followers
+        auth_user.hide_profile_in_users_directory = (
+            hide_profile_in_users_directory
+        )
         db.session.commit()
 
         return {
             'status': 'success',
             'message': 'user preferences updated',
-            'data': auth_user.serialize(auth_user),
+            'data': auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -1036,6 +1165,8 @@ def edit_user_sport_preferences(
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
@@ -1142,6 +1273,182 @@ def edit_user_sport_preferences(
         return handle_error_and_return_response(e, db=db)
 
 
+@auth_blueprint.route('/auth/profile/edit/notifications', methods=['POST'])
+@require_auth(scopes=['profile:write'])
+def edit_user_notifications_preferences(
+    auth_user: User,
+) -> Union[Dict, HttpResponse]:
+    """
+    Edit authenticated user preferences for UI notifications.
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/preferences HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "data": {
+          "accepted_privacy_policy": true,
+          "analysis_visibility": "private",
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
+          "display_ascent": true,
+          "email": "sam@example.com",
+          "email_to_confirm": null,
+          "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
+          "imperial_units": false,
+          "is_active": true,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": false,
+            "workout_comment": false,
+            "workout_like": false
+          }
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "start_elevation_at_zero": false,
+          "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "use_dark_mode": null,
+          "use_raw_gpx_speed": false,
+          "username": "sam",
+          "weekm": false,
+          "workouts_visibility": "private"
+        },
+        "status": "success"
+      }
+
+    :<json boolean account_creation: notification for user registration
+           (only for user with administration rights)
+    :<json boolean comment_like: notification for comment likes
+    :<json boolean follow: notification for follow
+    :<json boolean follow_request: notification for follow requests
+    :<json boolean follow_request_approved: notification for follow request
+           approval
+    :<json boolean mention: notification for mention
+    :<json boolean workout_comment: notification for comments on workout
+    :<json boolean workout_like: notification for workout likes
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``user preferences updated``
+    :statuscode 400:
+        - ``invalid payload``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    preferences_data = request.get_json()
+    mandatory_data = {
+        "comment_like",
+        "follow",
+        "follow_request",
+        "follow_request_approved",
+        "mention",
+        "workout_comment",
+        "workout_like",
+    }
+    if not preferences_data or not preferences_data.keys() >= mandatory_data:
+        return InvalidPayloadErrorResponse()
+    if (
+        auth_user.role >= UserRole.ADMIN.value
+        and "account_creation" not in preferences_data
+    ):
+        return InvalidPayloadErrorResponse()
+
+    auth_user.update_preferences(preferences_data)
+    db.session.commit()
+
+    return {
+        "data": auth_user.serialize(current_user=auth_user, light=False),
+        "status": "success",
+    }
+
+
 @auth_blueprint.route(
     '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
 )
@@ -1177,6 +1484,8 @@ def reset_user_sport_preferences(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
@@ -1200,10 +1509,12 @@ def reset_user_sport_preferences(
 
 
 @auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -1289,10 +1600,12 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``profile:write``
 
@@ -1377,7 +1690,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     user = User.query.filter(User.email == email).first()
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
-        ui_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config['UI_URL']
         user_language = get_language(user.language)
         email_data = {
             'expiration_delay': get_readable_duration(
@@ -1386,9 +1699,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             ),
             'username': user.username,
             'password_reset_url': (
-                f'{ui_url}/password-reset?token={password_reset_token}'  # noqa
+                f'{fittrackee_url}/password-reset?token={password_reset_token}'  # noqa
             ),
-            'fittrackee_url': ui_url,
+            'fittrackee_url': fittrackee_url,
             'operating_system': request.user_agent.platform,  # type: ignore
             'browser_name': request.user_agent.browser,  # type: ignore
         }
@@ -1667,11 +1980,13 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/logout', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     User logout.
     If a valid token is provided, it will be blacklisted.
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -1733,16 +2048,18 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     The authenticated user accepts the privacy policy.
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /auth/account/privacy-policy HTTP/1.1
+      POST /api/auth/account/privacy-policy HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1784,16 +2101,18 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export/request', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Request a data export for authenticated user.
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /auth/account/export/request HTTP/1.1
+      POST /api/auth/account/export/request HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1857,7 +2176,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route('/auth/account/export', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get a data export info for authenticated user if a request exists.
@@ -1868,11 +2187,13 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     - export status (``in_progress``, ``successful`` and ``errored``)
     - file name and size (in bytes) when export is successful
 
+    Suspended user can access this endpoint.
+
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /auth/account/export HTTP/1.1
+      GET /api/auth/account/export HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1926,18 +2247,20 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 @auth_blueprint.route(
     '/auth/account/export/<string:file_name>', methods=['GET']
 )
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def download_data_export(
     auth_user: User, file_name: str
 ) -> Union[Response, HttpResponse]:
     """
-    Download a data export archive
+    Download a data export archive.
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
     .. sourcecode:: http
 
-      GET /auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
+      GET /api/auth/account/export/download/archive_rgjsR3fHr5Yp.zip HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1976,3 +2299,406 @@ def download_data_export(
         mimetype='application/zip',
         as_attachment=True,
     )
+
+
+@auth_blueprint.route('/auth/blocked-users', methods=['GET'])
+@require_auth(scopes=['profile:read'])
+def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get blocked users by authenticated user
+
+    **Scope**: ``profile:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/auth/blocked-users HTTP/1.1
+
+    - with parameters:
+
+    .. sourcecode:: http
+
+      GET /api/auth/blocked-users?page=1
+        HTTP/1.1
+
+    **Example responses**:
+
+    - with blocked users:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "blocked_users": [
+            {
+              "blocked": true,
+              "created_at": "Sun, 01 Dec 2024 17:27:49 GMT",
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "is_followed_by": "false",
+              "nb_workouts": 1,
+              "picture": false,
+              "role": "user",
+              "suspended_at": null,
+              "username": "Sam"
+            }
+          ],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - no blocked users:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "blocked_users": [],
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :query integer page: page if using pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    """
+    params = request.args.copy()
+    try:
+        page = int(params.get('page', 1))
+    except ValueError:
+        page = 1
+
+    paginated_relations = (
+        User.query.join(BlockedUser, User.id == BlockedUser.user_id)
+        .filter(BlockedUser.by_user_id == auth_user.id)
+        .order_by(BlockedUser.created_at.desc())
+        .paginate(page=page, per_page=BLOCKED_USERS_PER_PAGE, error_out=False)
+    )
+    return {
+        "status": "success",
+        "blocked_users": [
+            user.serialize(current_user=auth_user)
+            for user in paginated_relations.items
+        ],
+        "pagination": {
+            "has_next": paginated_relations.has_next,
+            "has_prev": paginated_relations.has_prev,
+            "page": paginated_relations.page,
+            "pages": paginated_relations.pages,
+            "total": paginated_relations.total,
+        },
+    }
+
+
+@auth_blueprint.route("/auth/account/suspension", methods=["GET"])
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+def get_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get suspension if exists for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/account/suspension HTTP/1.1
+
+    **Example responses**:
+
+    - suspension exists:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "status": "success",
+          "user_suspension": {
+            "action_type": "user_suspension",
+            "appeal": null,
+            "comment": null,
+            "created_at": "Wed, 04 Dec 2024 10:45:13 GMT",
+            "id": "mmy3qPL3vcFuKJGfFBnCJV",
+            "reason": "<SUSPENSION REASON>",
+            "workout": null
+          }
+        }
+
+    - no suspension:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 404 NOT FOUND
+      Content-Type: application/json
+
+        {
+          "status": "not found",
+          "message": "user account is not suspended"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``user account is not suspended``
+    """
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    return {
+        "status": "success",
+        "user_suspension": auth_user.suspension_action.serialize(auth_user),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/suspension/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+def appeal_user_suspension(
+    auth_user: User,
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal suspension for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/account/suspension/appeal HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :<json string text: text explaining appeal
+
+    :statuscode 201: appeal for suspension created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``user account is not suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    if auth_user.suspended_at is None or auth_user.suspension_action is None:
+        return NotFoundErrorResponse("user account is not suspended")
+
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = ReportActionAppeal(
+            action_id=auth_user.suspension_action.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route(
+    "/auth/account/sanctions/<string:action_short_id>", methods=["GET"]
+)
+@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+def get_user_sanction(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get sanction for authenticated user.
+
+    Suspended user can access this endpoint.
+
+    **Scope**: ``profile:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/account/sanctions/mmy3qPL3vcFuKJGfFBnCJV HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "sanction": {
+            "action_type": "user_suspension",
+            "appeal": {
+              "approved": null,
+              "created_at": "Wed, 04 Dec 2024 10:49:00 GMT",
+              "id": "7pDujhCVHyA4hv29JZQNgg",
+              "reason": null,
+              "text": "<APPEAL TEXT>",
+              "updated_at": null
+            },
+            "comment": null,
+            "created_at": "Wed, 04 Dec 2024 10:45:13 GMT",
+            "id": "mmy3qPL3vcFuKJGfFBnCJV",
+            "reason": "<SANCTION REASON>",
+            "workout": null
+          },
+          "status": "success"
+        }
+
+    :param string action_short_id: suspension id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404: ``no sanction found``
+    """
+    sanction = ReportAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not sanction:
+        return NotFoundErrorResponse("no sanction found")
+
+    return {
+        "status": "success",
+        "sanction": sanction.serialize(current_user=auth_user, full=True),
+    }, 200
+
+
+@auth_blueprint.route(
+    "/auth/account/sanctions/<string:action_short_id>/appeal",
+    methods=["POST"],
+)
+@require_auth(scopes=['profile:write'])
+def appeal_user_sanction(
+    auth_user: User, action_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Appeal a sanction
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/account/sanctions/6dxczvMrhkAR72shUz9Pwd/appeal HTTP/1.1
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 201 CREATED
+      Content-Type: application/json
+
+        {
+          "status": "success"
+        }
+
+    :param string action_short_id: sanction id
+
+    :<json string text: text explaining appeal
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 201: appeal created
+    :statuscode 400:
+        - ``no text provided``
+        - ``you can appeal only once``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``no sanction found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    sanction = ReportAction.query.filter_by(
+        uuid=decode_short_id(action_short_id), user_id=auth_user.id
+    ).first()
+
+    if not sanction:
+        return NotFoundErrorResponse("no sanction found")
+    text = request.get_json().get("text")
+    if not text:
+        return InvalidPayloadErrorResponse("no text provided")
+
+    try:
+        appeal = ReportActionAppeal(
+            action_id=sanction.id,
+            user_id=auth_user.id,
+            text=text,
+        )
+        db.session.add(appeal)
+        db.session.commit()
+        return {"status": "success"}, 201
+
+    except exc.IntegrityError:
+        return InvalidPayloadErrorResponse("you can appeal only once")
+    except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)

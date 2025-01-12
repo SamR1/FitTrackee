@@ -3,17 +3,16 @@
     <ul class="pagination">
       <li class="page-prev" :class="{ disabled: !pagination.has_prev }">
         <router-link
-          v-slot="{ navigate }"
+          v-if="pagination.has_prev"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, -1) }"
-          :disabled="!pagination.has_prev"
-          :tabindex="pagination.has_prev ? 0 : -1"
         >
-          <slot @click="pagination.has_next ? navigate : null">
-            {{ $t('common.PREVIOUS') }}
-            <i class="fa fa-chevron-left" aria-hidden="true" />
-          </slot>
+          {{ $t('common.PREVIOUS') }}
+          <i class="fa fa-chevron-left" aria-hidden="true" />
         </router-link>
+        <span v-else class="page-disabled-link">
+          {{ $t('common.PREVIOUS') }}
+        </span>
       </li>
       <li
         v-for="page in rangePagination(pagination.pages, pagination.page)"
@@ -32,17 +31,16 @@
       </li>
       <li class="page-next" :class="{ disabled: !pagination.has_next }">
         <router-link
-          v-slot="{ navigate }"
+          v-if="pagination.has_next"
           class="page-link"
           :to="{ path, query: getQuery(pagination.page, 1) }"
-          :disabled="!pagination.has_next"
-          :tabindex="pagination.has_next ? 0 : -1"
         >
-          <slot @click="pagination.has_next ? navigate : null">
-            {{ $t('common.NEXT') }}
-            <i class="fa fa-chevron-right" aria-hidden="true" />
-          </slot>
+          {{ $t('common.NEXT') }}
+          <i class="fa fa-chevron-right" aria-hidden="true" />
         </router-link>
+        <span v-else class="page-disabled-link">
+          {{ $t('common.NEXT') }}
+        </span>
       </li>
     </ul>
   </nav>
@@ -63,7 +61,6 @@
     query: TWorkoutsPayload | TPaginationPayload | IOauth2ClientsPayload
   }
   const props = defineProps<Props>()
-
   const { pagination, path, query } = toRefs(props)
 
   function getQuery(page: number, cursor?: number): LocationQuery {
@@ -100,15 +97,9 @@
         &.active {
           font-weight: bold;
         }
-
-        &.disabled {
-          cursor: default;
-          a {
-            cursor: default;
-            pointer-events: none;
-            color: var(--disabled-color);
-          }
-        }
+      }
+      .page-disabled-link {
+        color: var(--disabled-color);
       }
 
       .page {

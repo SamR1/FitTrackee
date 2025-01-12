@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Installation" href="installation.html" /><link rel="prev" title="Fonctionnalités" href="features.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>OAuth 2.0 - Documentation FitTrackee 0.8.13</title>
+        <title>OAuth 2.0 - Documentation FitTrackee 0.9.0b6</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.13
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b6
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.13
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b6
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
 </ul>
@@ -283,7 +288,9 @@
         <article role="main" id="furo-main-content">
           <section id="oauth-2-0">
 <h1>OAuth 2.0<a class="headerlink" href="#oauth-2-0" title="Lien vers cette rubrique">¶</a></h1>
-<p>(<em>nouveau dans la version in 0.7.0</em>)</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.7.0.</span></p>
+</div>
 <p>FitTrackee fournit une API REST (voir <a class="reference external" href="api/index.html">documentation</a>) dont la plupart des points d’accès nécessitent une authentification/autorisation.</p>
 <p>Pour permettre à une application tierce d’interagir avec les points d’accès de l’API, un client <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc6749">OAuth2</a> peut être créé dans les paramètres de l’utilisateur (onglet “apps”).</p>
 <div class="admonition warning">
@@ -298,12 +305,18 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">application:write</span></code> : permet d’accéder en écriture à la configuration de l’application (uniquement pour les utilisateurs ayant des droits d’administration),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipments:read</span></code> : accorde un accès en lecture aux points d’entrée des équipements (<em>nouveau dans la version 0.8.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipments:write</span></code> : accorde un accès en écriture aux points d’entrée des équipements (<em>nouveau dans la version 0.8.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">follow:read</span></code> : accorde un accès en lecture aux points d’entrée des demandes d’abonnements et des abonnés (<em>nouveau dans la version 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">follow:write</span></code> : accorde un accès en écriture aux points d’entrée des demandes d’abonnements et des abonnés (<em>nouveau dans la version 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notifications:read</span></code> : accorde un accès en lecture aux points d’entrée des notifications (<em>nouveau dans la version 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notifications:write</span></code> : accorde un accès en écriture aux points d’entrée des notifications (<em>nouveau dans la version 0.9.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">profile:read</span></code> : accorde un accès en lecture aux points d’entrée d’authentification/profil utilisateur,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">profile:write</span></code> : accorde l’accès en écriture aux points d’entrée d’authentification/profil utilisateur,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reports:read</span></code> : accorde un accès en lecture aux points d’entrée des signalements (<em>nouveau dans la version 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reports:write</span></code> : accorde un accès en écriture aux points d’entrée des signalements (<em>nouveau dans la version 0.9.0</em>),</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users:read</span></code> : accorde un accès en lecture aux points d’entrée des utilisateurs,</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users:write</span></code> : accorde un accès en écriture aux points d’entrée des utilisateurs,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code> : accorde un accès en lecture aux points d’entrée associés aux séances,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code> : accorde un accès en écriture aux points d’entrée associés aux séances.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:read</span></code> : accorde un accès en lecture aux points d’entrée des séances et des commentaires (<em>modifié dans la version 0.9.0</em>),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workouts:write</span></code> : accorde un accès en écriture aux points d’entrée des séances et aux commentaires (<em>modifié dans la version 0.9.0</em>).</p></li>
 </ul>
 </section>
 <section id="flow">
@@ -311,7 +324,7 @@
 <ul>
 <li><p>L’utilisateur crée une application (client) sur FitTrackee pour une application tierce.</p>
 <figure class="align-default">
-<img alt="Création d'un client OAuth2 sur FitTrackee" src="_images/fittrackee_screenshot-07.png" />
+<img alt="Création d'un client OAuth2 sur FitTrackee" src="_images/oauth2-client-creation.png" />
 </figure>
 <div class="line-block">
 <div class="line">Après l’enregistrement, l’identifiant et le secret du client sont affichés.</div>
@@ -322,7 +335,7 @@
 <div class="line">L’application tierce doit rediriger vers FitTrackee, afin que l’utilisateur puisse autoriser l’application tierce à accéder aux données de l’utilisateur sur FitTrackee.</div>
 </div>
 <figure class="align-default">
-<img alt="Autorisation de l'application sur FitTrackee" src="_images/fittrackee_screenshot-08.png" />
+<img alt="Autorisation de l'application sur FitTrackee" src="_images/oauth2-app-authorization.png" />
 </figure>
 <div class="line-block">
 <div class="line">L’URL pour l’autorisation est <code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_HOST&gt;/profile/apps/authorize</span></code>.</div>
@@ -459,7 +472,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=81796492"></script>
+</div><script src="_static/documentation_options.js?v=21a5088f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

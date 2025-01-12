@@ -94,15 +94,19 @@
     LTileLayer,
   } from '@vue-leaflet/vue-leaflet'
   import { computed, ref, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
-  import { ROOT_STORE } from '@/store/constants'
-  import type { TAppConfig } from '@/types/application'
+  import useApp from '@/composables/useApp'
   import type { GeoJSONData } from '@/types/geojson'
-  import type { IWorkoutData, TCoordinates } from '@/types/workouts'
-  import { useStore } from '@/use/useStore'
+  import type {
+    ILeafletObject,
+    TBounds,
+    TCenter,
+    TCoordinates,
+  } from '@/types/map'
+  import type { IWorkoutData } from '@/types/workouts'
   import { getApiUrl } from '@/utils'
 
   interface Props {
@@ -112,44 +116,26 @@
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
   })
-
-  const store = useStore()
-
   const { workoutData, markerCoordinates } = toRefs(props)
-  const workoutMap = ref<null | {
-    leafletObject: { fitBounds: (bounds: number[][]) => null }
-  }>(null)
-  const bounds = computed(() => getBounds())
-  const appConfig: ComputedRef<TAppConfig> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
-  )
-  const center = computed(() => getCenter(bounds))
-  const geoJson = computed(() =>
-    props.workoutData && props.workoutData.gpx
-      ? getGeoJson(props.workoutData.gpx)
+
+  const { appConfig } = useApp()
+
+  const isFullscreen: Ref<boolean> = ref(false)
+  const workoutMap: Ref<ILeafletObject | null> = ref(null)
+
+  const bounds: ComputedRef<TBounds> = computed(() => getBounds())
+  const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
+  const geoJson: ComputedRef<GeoJSONData> = computed(() =>
+    workoutData.value && workoutData.value.gpx
+      ? getGeoJson(workoutData.value.gpx)
       : {}
   )
-  const startMarkerCoordinates = computed(() =>
-    props.workoutData && props.workoutData.chartData.length > 0
-      ? {
-          latitude: props.workoutData.chartData[0].latitude,
-          longitude: props.workoutData.chartData[0].longitude,
-        }
-      : {}
+  const startMarkerCoordinates: ComputedRef<TCoordinates> = computed(() =>
+    getCoordinates('first')
   )
-  const endMarkerCoordinates = computed(() =>
-    props.workoutData && props.workoutData.chartData.length > 0
-      ? {
-          latitude:
-            props.workoutData.chartData[props.workoutData.chartData.length - 1]
-              .latitude,
-          longitude:
-            props.workoutData.chartData[props.workoutData.chartData.length - 1]
-              .longitude,
-        }
-      : {}
+  const endMarkerCoordinates: ComputedRef<TCoordinates> = computed(() =>
+    getCoordinates('last')
   )
-  const isFullscreen = ref(false)
 
   function getGeoJson(gpxContent: string): GeoJSONData {
     if (!gpxContent || gpxContent !== '') {
@@ -165,35 +151,45 @@
     }
     return {}
   }
-  function getCenter(bounds: ComputedRef<number[][]>): number[] {
+  function getCoordinates(position: 'first' | 'last'): TCoordinates {
+    const index =
+      position === 'first' ? 0 : workoutData.value.chartData.length - 1
+    return workoutData.value && workoutData.value.chartData.length > 0
+      ? {
+          latitude: workoutData.value.chartData[index].latitude,
+          longitude: workoutData.value.chartData[index].longitude,
+        }
+      : { latitude: null, longitude: null }
+  }
+  function getCenter(bounds: ComputedRef<TBounds>): TCenter {
     return [
       (bounds.value[0][0] + bounds.value[1][0]) / 2,
       (bounds.value[0][1] + bounds.value[1][1]) / 2,
     ]
   }
-  function fitBounds(bounds: number[][]) {
+  function fitBounds(bounds: TBounds): void {
     if (workoutMap.value?.leafletObject) {
       workoutMap.value?.leafletObject.fitBounds(bounds)
     }
   }
-  function getBounds() {
-    return props.workoutData
+  function getBounds(): TBounds {
+    return workoutData.value
       ? [
           [
-            props.workoutData.workout.bounds[0],
-            props.workoutData.workout.bounds[1],
+            workoutData.value.workout.bounds[0],
+            workoutData.value.workout.bounds[1],
           ],
           [
-            props.workoutData.workout.bounds[2],
-            props.workoutData.workout.bounds[3],
+            workoutData.value.workout.bounds[2],
+            workoutData.value.workout.bounds[3],
           ],
         ]
       : []
   }
-  function resetZoom() {
+  function resetZoom(): void {
     workoutMap.value?.leafletObject.fitBounds(getBounds())
   }
-  function toggleFullscreen() {
+  function toggleFullscreen(): void {
     isFullscreen.value = !isFullscreen.value
     if (!isFullscreen.value) {
       setTimeout(() => {

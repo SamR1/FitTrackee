@@ -37,10 +37,12 @@
       </div>
     </div>
     <div
-      class="container privacy-policy-message"
-      v-if="!authUser.accepted_privacy_policy"
+      class="container policy-container"
+      v-if="authUser.accepted_privacy_policy !== true"
     >
-      <PrivacyPolicyToAccept />
+      <PrivacyPolicyToAccept
+        :is-privacy-updated="authUser.accepted_privacy_policy === false"
+      />
     </div>
     <div class="container">
       <UserStatsCards :user="authUser" />
@@ -66,7 +68,7 @@
         />
         <Timeline
           :sports="sports"
-          :user="authUser"
+          :authUser="authUser"
           :class="{ 'is-hidden': !(isSelected === 'timeline') }"
         />
       </div>
@@ -79,8 +81,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount, ref } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import { onBeforeMount, ref } from 'vue'
+  import type { Ref } from 'vue'
 
   import Timeline from '@/components/Dashboard/Timeline.vue'
   import UserCalendar from '@/components/Dashboard/UserCalendar/index.vue'
@@ -88,26 +90,24 @@
   import UserRecords from '@/components/Dashboard/UserRecords/index.vue'
   import UserStatsCards from '@/components/Dashboard/UserStatsCards/index.vue'
   import PrivacyPolicyToAccept from '@/components/PrivacyPolicyToAccept.vue'
-  import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
-  const isSelected: Ref<string> = ref('calendar')
+  const { authUser } = useAuthUser()
+  const { sports } = useSports()
 
-  onBeforeMount(() => store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE))
+  const isSelected: Ref<string> = ref('calendar')
 
   function updateDisplayColumn(target: string) {
     isSelected.value = target
   }
+  onBeforeMount(() =>
+    store.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
+  )
 </script>
 
 <style lang="scss" scoped>
@@ -134,7 +134,7 @@
       display: none;
     }
 
-    .privacy-policy-message {
+    .policy-container {
       display: flex;
       justify-content: center;
     }
@@ -190,7 +190,7 @@
     }
 
     @media screen and (max-width: $small-limit) {
-      .privacy-policy-message {
+      .policy-container {
         margin: 0 $default-margin * 0.5;
       }
     }

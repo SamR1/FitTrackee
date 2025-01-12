@@ -6,13 +6,14 @@ from humanize import naturalsize
 
 from fittrackee import db
 from fittrackee.cli.app import app
-from fittrackee.config import SUPPORTED_LANGUAGES
+from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
 )
-from fittrackee.users.utils.admin import UserManagerService
+from fittrackee.users.roles import UserRole
+from fittrackee.users.users_service import UserManagerService
 from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.token import clean_blacklisted_tokens
 
@@ -45,15 +46,22 @@ def users_cli() -> None:
         f' Supported languages: {", ".join(SUPPORTED_LANGUAGES)}.'
     ),
 )
+@click.option(
+    '--role', type=click.Choice(UserRole.db_choices()), help='Set user role.'
+)
 def create_user(
-    username: str, email: str, password: Optional[str], lang: Optional[str]
+    username: str,
+    email: str,
+    password: Optional[str],
+    lang: Optional[str],
+    role: Optional[str],
 ) -> None:
     """Create an active user account."""
     with app.app_context():
         try:
             user_manager_service = UserManagerService(username)
             user, user_password = user_manager_service.create_user(
-                email=email, password=password, check_email=True
+                email=email, password=password, check_email=True, role=role
             )
             if user:
                 db.session.add(user)
@@ -78,8 +86,14 @@ def create_user(
 @click.option(
     '--set-admin',
     type=bool,
-    help='Add/remove admin rights (when adding admin rights, '
+    help='[DEPRECATED] Add/remove admin rights (when adding admin rights, '
     'it also activates user account if not active).',
+)
+@click.option(
+    '--set-role',
+    type=click.Choice(UserRole.db_choices()),
+    help='Set user role (when setting \'moderator\', \'admin\' and \'owner\' '
+    'role, it also activates user account if not active).',
 )
 @click.option('--activate', is_flag=True, help='Activate user account.')
 @click.option(
@@ -91,18 +105,34 @@ def create_user(
 def manage_user(
     username: str,
     set_admin: Optional[bool],
+    set_role: Optional[str],
     activate: bool,
     reset_password: bool,
     update_email: Optional[str],
 ) -> None:
     """Manage given user account."""
     with app.app_context():
+        role = None
+        if set_admin is not None:
+            click.echo(
+                "WARNING: --set-admin is deprecated. "
+                "Please use --set-role option instead."
+            )
+            role = 'admin' if set_admin else 'user'
+        if set_admin is not None and set_role is not None:
+            raise click.ClickException(
+                "--set-admin and --set-role can not be used together.",
+            )
+
+        if set_role:
+            role = set_role
+
         try:
             user_manager_service = UserManagerService(username)
-            _, is_user_updated, password = user_manager_service.update(
-                is_admin=set_admin,
+            _, is_user_updated, password, _ = user_manager_service.update(
+                role=role,
                 with_confirmation=False,
-                activate=activate,
+                activate=activate if activate else None,
                 reset_password=reset_password,
                 new_email=update_email,
             )

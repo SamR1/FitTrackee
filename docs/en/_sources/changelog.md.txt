@@ -1,5 +1,46 @@
 # Change log
 
+## Version 0.9.0b6 (2025/01/05)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+
+### Features and enhancements
+
+* [PR#677](https://github.com/SamR1/FitTrackee/pull/677) - Add notification preferences
+* [PR#678](https://github.com/SamR1/FitTrackee/pull/678) - Display users who like comment/workout
+
+### Bugs Fixed
+
+* [d743abf](https://github.com/SamR1/FitTrackee/commit/d743abf0e59a3c7cc1e11adbd9c8d0214d0c7da7) - display missing errors in user profile
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
+## Version 0.9.0b5 (2024/12/30)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+
+### Features and enhancements
+
+* [PR#675](https://github.com/SamR1/FitTrackee/pull/675) - CLI - create user with provided role
+
+### Bugs Fixed
+
+* [PR#671](https://github.com/SamR1/FitTrackee/pull/671) - Fix sport icon when unauthenticated user displays user profile
+* [PR#674](https://github.com/SamR1/FitTrackee/pull/674) - Fix display of privacy policy message with privacy extension
+* [2e9f9d](https://github.com/SamR1/FitTrackee/commit/2e9f9d69eb38d5f310236944d45b4b60d8faff20) - fix translations
+* [edc677](https://github.com/SamR1/FitTrackee/commit/edc6776c922925746762f7ac76c267feda7cde2f) - Fix notification icons
+
+### Misc
+
+* [174240](https://github.com/SamR1/FitTrackee/commit/174240f1d9dc702d4346c85e6add4022af2a88c6) - add tags input to docker image build job
+
+
 ## Version 0.8.13 (2024/12/29)
 
 ### Translations
@@ -33,6 +74,82 @@ Thanks to the contributors:
 - @xmgz
 
 
+## Version 0.9.0b4 (2024/12/23)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user detail
+* [#668](https://github.com/SamR1/FitTrackee/issues/668) - add analysis visibility
+* [PR#67](https://github.com/SamR1/FitTrackee/pull/670) - create notification when follow request is approved
+
+### Bugs Fixed
+
+* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
+
+### Translations
+
+* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
+
+Thanks to the contributors:
+- @xmgz
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
+## Version 0.9.0b3 (2024/12/18)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#660](https://github.com/SamR1/FitTrackee/issues/660) - mark notification as read on click on workout/comment/...
+
+### Bugs Fixed
+
+* [PR#659](https://github.com/SamR1/FitTrackee/pull/659) - API - get workouts list with equipment
+* [PR#662](https://github.com/SamR1/FitTrackee/pull/662) - Minor fixes and improvements
+
+### Misc
+
+* [189071](https://github.com/SamR1/FitTrackee/commit/189071a949ef7cb0c01e8dedcb267af742daefa4) - use uuid instead of id for notifications
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
+## Version 0.9.0b2 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [#657](https://github.com/SamR1/FitTrackee/issues/657) - can not display next workouts in timeline
+
+
+## Version 0.9.0b1 (2024/12/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1s part]
+  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
+  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
+  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
+  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
 ## Version 0.8.12 (2024/11/17)
 
 ### Bugs Fixed
@@ -42,6 +159,7 @@ Thanks to the contributors:
 ### Misc
 
 * [PR#651](https://github.com/SamR1/FitTrackee/pull/651) - Tests - add databases to parallelize more tests
+
 
 
 ## Version 0.8.11 (2024/10/30)

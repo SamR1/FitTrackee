@@ -15,6 +15,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
@@ -190,7 +191,10 @@ def get_workouts_by_time(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 404: ``user does not exist``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404:
+        - ``user does not exist``
 
     """
     try:
@@ -443,6 +447,8 @@ def get_workouts_by_sport(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``user does not exist``
         - ``sport does not exist``
@@ -529,12 +535,14 @@ def get_workouts_by_sport(
 
 
 @stats_blueprint.route('/stats/all', methods=['GET'])
-@require_auth(scopes=['workouts:read'], as_admin=True)
+@require_auth(scopes=['workouts:read'], role=UserRole.MODERATOR)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics.
 
     **Scope**: ``workouts:read``
+
+    **Minimum role**: Moderator
 
     **Example requests**:
 
@@ -567,11 +575,13 @@ def get_application_stats(auth_user: User) -> Dict:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     """
 
     total_workouts = Workout.query.filter().count()
-    nb_users = User.query.filter().count()
+    nb_users = User.query.filter(User.is_active == True).count()  # noqa
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
         .group_by(Workout.sport_id)

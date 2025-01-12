@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}{{ _('The suspension on your workout has been lifted') }}{% endblock %}
+{% block preheader %}{{ _('The suspension on your workout has been lifted, it is visible again') }}.{% endblock %}
+{% block content %}<p>{{ _('The suspension on your workout has been lifted, it is visible again') }}.</p>
+                        {% if reason %}<p><strong>{{ _('Reason:') }}</strong> {{ reason }}</p>{% endif %}
+                        <table class="body-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                          <tr>
+                            <td>
+                              <img class="user-picture" src="{{ user_image_url }}" alt="">
+                              <strong>{{ username }}</strong>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>{{ title }}</td>
+                          </tr>
+                          {% if map %}<tr>
+                            <td><img class="map" src="{{ map }}" alt=""></td>
+                          </tr>{% endif %}
+                          <tr>
+                            <td class="content-date"><a href="{{ workout_url }}" target="_blank">{{ workout_date }}</a></td>
+                          </tr>
+                        </table>{% endblock %}

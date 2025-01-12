@@ -12,6 +12,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
+from fittrackee.users.roles import UserRole
 
 from ..equipments.models import EquipmentType
 
@@ -19,10 +20,12 @@ equipment_types_blueprint = Blueprint('equipment_types', __name__)
 
 
 @equipment_types_blueprint.route('/equipment-types', methods=['GET'])
-@require_auth(scopes=['equipments:read'])
+@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
 def get_equipment_types(auth_user: User) -> Dict:
     """
-    Get all types of equipment
+    Get all types of equipment.
+
+    Suspended user can access this endpoint.
 
     **Scope**: ``equipments:read``
 
@@ -144,7 +147,7 @@ def get_equipment_types(auth_user: User) -> Dict:
     equipment_types = (
         EquipmentType.query.filter(
             EquipmentType.is_active == True  # noqa
-            if not auth_user.admin
+            if not auth_user.has_admin_rights
             else True
         )
         .order_by(EquipmentType.id)
@@ -154,7 +157,7 @@ def get_equipment_types(auth_user: User) -> Dict:
     for equipment_type in equipment_types:
         equipment_types_data.append(
             equipment_type.serialize(
-                is_admin=auth_user.admin,
+                is_admin=auth_user.has_admin_rights,
             )
         )
     return {
@@ -248,7 +251,9 @@ def get_equipment_type(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``equipment_type not found``
 
     """
@@ -256,14 +261,17 @@ def get_equipment_type(
         id=equipment_type_id
     ).first()
     if equipment_type:
-        if equipment_type.is_active is False and not auth_user.admin:
+        if (
+            equipment_type.is_active is False
+            and not auth_user.has_admin_rights
+        ):
             return DataNotFoundErrorResponse('equipment_types')
         return {
             'status': 'success',
             'data': {
                 'equipment_types': [
                     equipment_type.serialize(
-                        is_admin=auth_user.admin,
+                        is_admin=auth_user.has_admin_rights,
                     )
                 ]
             },
@@ -274,16 +282,16 @@ def get_equipment_type(
 @equipment_types_blueprint.route(
     '/equipment-types/<int:equipment_type_id>', methods=['PATCH']
 )
-@require_auth(scopes=['equipments:write'], as_admin=True)
+@require_auth(scopes=['equipments:write'], role=UserRole.ADMIN)
 def update_equipment_type(
     auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
     """
     Update a type of equipment to (de)activate it.
 
-    Authenticated user must be an admin.
-
     **Scope**: ``equipments:write``
+
+    **Minimum role**: Administrator
 
     **Example request**:
 
@@ -327,7 +335,9 @@ def update_equipment_type(
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
-    :statuscode 403: ``you do not have permissions``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``equipment_type not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
@@ -349,7 +359,7 @@ def update_equipment_type(
             'data': {
                 'equipment_types': [
                     equipment_type.serialize(
-                        is_admin=auth_user.admin,
+                        is_admin=auth_user.has_admin_rights,
                     )
                 ]
             },

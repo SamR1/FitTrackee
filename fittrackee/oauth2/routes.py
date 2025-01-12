@@ -36,7 +36,7 @@ def is_errored(url: str) -> Optional[str]:
 
 
 @oauth2_blueprint.route('/oauth/apps', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_clients(auth_user: User) -> Dict:
     """
     Get OAuth2 clients (apps) for authenticated user with pagination
@@ -44,6 +44,8 @@ def get_clients(auth_user: User) -> Dict:
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -187,6 +189,8 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     client_metadata = request.get_json()
     if not client_metadata:
@@ -248,7 +252,7 @@ def get_client(
 @oauth2_blueprint.route(
     '/oauth/apps/<string:client_client_id>', methods=['GET']
 )
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_client_by_client_id(
     auth_user: User, client_client_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -257,6 +261,8 @@ def get_client_by_client_id(
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -321,7 +327,7 @@ def get_client_by_client_id(
 
 
 @oauth2_blueprint.route('/oauth/apps/<int:client_id>/by_id', methods=['GET'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def get_client_by_id(
     auth_user: User, client_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -330,6 +336,8 @@ def get_client_by_id(
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -392,7 +400,7 @@ def get_client_by_id(
 
 
 @oauth2_blueprint.route('/oauth/apps/<int:client_id>', methods=['DELETE'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def delete_client(
     auth_user: User, client_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -401,6 +409,8 @@ def delete_client(
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -441,7 +451,7 @@ def delete_client(
 
 
 @oauth2_blueprint.route('/oauth/apps/<int:client_id>/revoke', methods=['POST'])
-@require_auth()
+@require_auth(allow_suspended_user=True)
 def revoke_client_tokens(
     auth_user: User, client_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -450,6 +460,8 @@ def revoke_client_tokens(
 
     This endpoint is only accessible by FitTrackee client (first-party
     application).
+
+    Suspended user can access this endpoint.
 
     **Example request**:
 
@@ -541,6 +553,8 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
     """
     data = request.form
     if (

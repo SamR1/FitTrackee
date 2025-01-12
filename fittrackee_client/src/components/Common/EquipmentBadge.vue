@@ -30,7 +30,6 @@
     sportId?: Number | null
   }
   const props = defineProps<Props>()
-
   const { equipment, sportId, workoutId } = toRefs(props)
 </script>
 

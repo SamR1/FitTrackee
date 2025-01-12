@@ -12,6 +12,7 @@ Authentication and account
     auth.edit_user_preferences,
     auth.edit_user_sport_preferences,
     auth.reset_user_sport_preferences,
+    auth.edit_user_notifications_preferences,
     auth.edit_picture,
     auth.del_picture,
     auth.request_password_reset,
@@ -22,4 +23,9 @@ Authentication and account
     auth.accept_privacy_policy,
     auth.get_user_data_export,
     auth.request_user_data_export,
-    auth.download_data_export
+    auth.download_data_export,
+    auth.get_blocked_users,
+    auth.get_user_suspension,
+    auth.appeal_user_suspension,
+    auth.get_user_sanction,
+    auth.appeal_user_sanction

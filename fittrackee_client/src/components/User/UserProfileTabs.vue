@@ -23,8 +23,7 @@
     edition: boolean
   }
   const props = defineProps<Props>()
-
-  const { tabs, selectedTab } = toRefs(props)
+  const { edition, selectedTab, tabs } = toRefs(props)
 
   onMounted(() => {
     const input = document.getElementById(`tab-${tabs.value[0]}`)
@@ -33,22 +32,26 @@
     }
   })
 
-  function getPath(tab: string) {
+  function getPath(tab: string): string {
     switch (tab) {
       case 'ACCOUNT':
       case 'PICTURE':
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'APPS':
+      case 'BLOCKED-USERS':
       case 'EQUIPMENTS':
+      case 'FOLLOW-REQUESTS':
+      case 'MODERATION':
+      case 'NOTIFICATIONS':
       case 'PREFERENCES':
       case 'SPORTS':
         return `/profile${
-          props.edition ? '/edit' : ''
+          edition.value ? '/edit' : ''
         }/${tab.toLocaleLowerCase()}`
       default:
       case 'PROFILE':
-        return `/profile${props.edition ? '/edit' : ''}`
+        return `/profile${edition.value ? '/edit' : ''}`
     }
   }
 </script>
@@ -76,6 +79,18 @@
       &.selected {
         background-color: var(--custom-checkbox-checked-bg-color);
         color: var(--custom-checkbox-checked-color);
+      }
+    }
+  }
+  @media screen and (max-width: $small-limit) {
+    .profile-tabs-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: $default-margin * 1;
+
+      .profile-tab {
+        padding-bottom: $default-padding * 0.5;
       }
     }
   }

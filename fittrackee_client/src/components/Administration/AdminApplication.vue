@@ -161,19 +161,18 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, reactive, onBeforeMount, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { capitalize, reactive, onBeforeMount, toRefs } from 'vue'
+  import type { Reactive } from 'vue'
   import { useRouter } from 'vue-router'
 
+  import useApp from '@/composables/useApp'
   import { ROOT_STORE } from '@/store/constants'
   import type { TAppConfig, TAppConfigForm } from '@/types/application'
-  import type { IEquipmentError } from '@/types/equipments'
   import { useStore } from '@/use/useStore'
   import { getFileSizeInMB } from '@/utils/files'
   import { convertToMarkdown } from '@/utils/inputs'
 
   interface Props {
-    appConfig: TAppConfig
     edition?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
@@ -181,10 +180,12 @@
   })
   const { edition } = toRefs(props)
 
-  const store = useStore()
   const router = useRouter()
+  const store = useStore()
 
-  const appData: TAppConfigForm = reactive({
+  const { appConfig, errorMessages } = useApp()
+
+  const appData: Reactive<TAppConfigForm> = reactive({
     admin_contact: '',
     max_users: 0,
     max_single_file_size: 0,
@@ -193,14 +194,6 @@
     about: '',
     privacy_policy: '',
     stats_workouts_limit: 0,
-  })
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onBeforeMount(() => {
-    if (props.appConfig) {
-      updateForm(props.appConfig)
-    }
   })
 
   function updateForm(appConfig: TAppConfig) {
@@ -219,7 +212,7 @@
     })
   }
   function onCancel() {
-    updateForm(props.appConfig)
+    updateForm(appConfig.value)
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     router.push('/admin/application')
   }
@@ -229,6 +222,12 @@
     formData.max_zip_file_size *= 1048576
     store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG, formData)
   }
+
+  onBeforeMount(() => {
+    if (appConfig.value) {
+      updateForm(appConfig.value)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -258,5 +257,9 @@
       margin-bottom: $default-margin;
       padding: $default-padding;
     }
+  }
+
+  .no-contact {
+    font-style: italic;
   }
 </style>

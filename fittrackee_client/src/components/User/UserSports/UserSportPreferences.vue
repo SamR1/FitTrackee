@@ -47,7 +47,9 @@
                 </span>
               </div>
             </th>
-            <th v-if="isEdition">{{ $t('user.PROFILE.SPORT.ACTION') }}</th>
+            <th v-if="isEdition && !authUser.suspended_at">
+              {{ $t('user.PROFILE.SPORT.ACTION') }}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -86,7 +88,7 @@
                 ({{ $t('user.PROFILE.SPORT.DISABLED_BY_ADMIN') }})
               </span>
               <i
-                v-if="loading && isSportInEdition(sport.id)"
+                v-if="authUserLoading && isSportInEdition(sport.id)"
                 class="fa fa-refresh fa-spin fa-fw"
               />
               <ErrorMessage
@@ -165,7 +167,10 @@
                 />
               </span>
             </td>
-            <td v-if="isEdition" class="action-buttons">
+            <td
+              v-if="isEdition && !authUser.suspended_at"
+              class="action-buttons"
+            >
               <span class="cell-heading">
                 {{ $t('user.PROFILE.SPORT.ACTION') }}
               </span>
@@ -177,19 +182,22 @@
               </button>
               <div v-if="isSportInEdition(sport.id)" class="edition-buttons">
                 <button
-                  :disabled="loading"
+                  :disabled="authUserLoading"
                   @click.prevent="updateSport(authUser)"
                 >
                   {{ $t('buttons.SUBMIT') }}
                 </button>
                 <button
-                  :disabled="loading"
+                  :disabled="authUserLoading"
                   class="warning"
                   @click.prevent="updateDisplayModal(true)"
                 >
                   {{ $t('buttons.RESET') }}
                 </button>
-                <button :disabled="loading" @click="updateSportInEdition(null)">
+                <button
+                  :disabled="authUserLoading"
+                  @click="updateSportInEdition(null)"
+                >
                   {{ $t('buttons.CANCEL') }}
                 </button>
               </div>
@@ -203,7 +211,10 @@
         </button>
       </div>
       <div v-else class="profile-buttons">
-        <button @click="$router.push('/profile/edit/sports')">
+        <button
+          v-if="!authUser.suspended_at"
+          @click="$router.push('/profile/edit/sports')"
+        >
           {{ $t('user.PROFILE.EDIT_SPORTS_PREFERENCES') }}
         </button>
         <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
@@ -216,34 +227,37 @@
   import { ref, toRefs, watch } from 'vue'
   import type { Ref } from 'vue'
 
-  import userSportComponent from '@/components/User/UserSports/userSportComponent'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
   import { ROOT_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { convertDistance } from '@/utils/units'
+
   interface Props {
     authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
     isEdition: boolean
   }
   const props = defineProps<Props>()
+  const { authUser, isEdition, translatedSports } = toRefs(props)
 
   const store = useStore()
 
-  const { authUser, isEdition, translatedSports } = toRefs(props)
+  const { errorMessages } = useApp()
   const {
     defaultColor,
     displayModal,
-    errorMessages,
-    loading,
     sportColors,
     sportPayload,
     resetSport,
     updateDisplayModal,
     updateIsActive,
     updateSport,
-  } = userSportComponent()
+  } = useSports()
+  const { authUserLoading } = useAuthUser()
 
   const hasEquipments: Ref<boolean> = ref(false)
 
@@ -279,7 +293,7 @@
   }
 
   watch(
-    () => loading.value,
+    () => authUserLoading.value,
     (newIsLoading) => {
       if (!newIsLoading && !errorMessages.value) {
         resetSportPayload()
@@ -294,6 +308,7 @@
   #user-sport-preferences {
     table {
       th {
+        padding-top: 0;
         text-transform: lowercase;
       }
     }
@@ -321,6 +336,11 @@
       .cell-heading {
         font-style: normal;
       }
+    }
+    .profile-buttons {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .action-buttons {
       width: 70px;

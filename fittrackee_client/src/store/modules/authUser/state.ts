@@ -1,5 +1,5 @@
 import type { IAuthUserState } from '@/store/modules/authUser/types'
-import type { IAuthUserProfile } from '@/types/user'
+import type { IUserReportAction, IAuthUserProfile } from '@/types/user'
 
 export const authUserState: IAuthUserState = {
   authToken: null,
@@ -8,4 +8,7 @@ export const authUserState: IAuthUserState = {
   isRegistrationSuccess: false,
   loading: false,
   exportRequest: null,
+  followRequests: [],
+  blockedUsers: [],
+  userReportAction: <IUserReportAction>{},
 }

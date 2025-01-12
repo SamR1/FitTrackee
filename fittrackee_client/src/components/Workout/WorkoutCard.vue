@@ -1,52 +1,57 @@
 <template>
-  <div class="timeline-workout">
+  <div class="timeline-workout workout-card">
     <div class="box">
-      <div class="workout-user-date">
-        <div class="workout-user">
-          <UserPicture :user="user" />
+      <div class="workout-card-title">
+        <div class="workout-user-date">
+          <div class="workout-user">
+            <UserPicture :user="user" />
+            <Username :user="user" />
+          </div>
           <router-link
-            v-if="user.username"
-            class="workout-user-name"
+            class="workout-title"
+            v-if="workout.id"
             :to="{
-              name: 'User',
-              params: { username: user.username },
+              name: 'Workout',
+              params: { workoutId: workout.id },
             }"
+            @click="$emit('workoutLinkClicked')"
           >
-            {{ user.username }}
+            {{ workout.title }}
           </router-link>
+          <div class="workout-date-visibility">
+            <time
+              class="workout-date"
+              v-if="workout.workout_date && user"
+              :datetime="workoutDateWithTZ"
+              :title="workoutDateWithTZ"
+            >
+              {{
+                formatDistance(new Date(workout.workout_date), new Date(), {
+                  addSuffix: true,
+                  locale,
+                })
+              }}
+            </time>
+            <VisibilityIcon
+              v-if="workout.workout_visibility"
+              :visibility="workout.workout_visibility"
+            />
+          </div>
         </div>
-        <router-link
-          class="workout-title"
-          v-if="workout.id"
-          :to="{
-            name: 'Workout',
-            params: { workoutId: workout.id },
-          }"
-        >
-          {{ workout.title }}
-        </router-link>
-        <time
-          class="workout-date"
-          v-if="workout.workout_date && user"
-          :datetime="workoutDateWithTZ"
-          :title="workoutDateWithTZ"
-        >
-          {{
-            formatDistance(new Date(workout.workout_date), new Date(), {
-              addSuffix: true,
-              locale,
-            })
-          }}
-        </time>
       </div>
       <div class="workout-map">
-        <StaticMap v-if="workout.with_gpx" :workout="workout" />
+        <StaticMap
+          v-if="workout.with_gpx"
+          :workout="workout"
+          @workoutLinkClicked="$emit('workoutLinkClicked')"
+        />
         <router-link
           v-else-if="workout.id"
           :to="{
             name: 'Workout',
             params: { workoutId: workout.id },
           }"
+          @click="$emit('workoutLinkClicked')"
         >
           <div class="no-map">
             {{ $t('workouts.NO_MAP') }}
@@ -56,14 +61,9 @@
       <div
         class="workout-data"
         :class="{ 'without-elevation': !hasElevation(workout) }"
-        @click="
-          workout.id
-            ? $router.push({
-                name: 'Workout',
-                params: { workoutId: workout.id },
-              })
-            : null
-        "
+        @click="navigateToWorkout(workout)"
+        role="link"
+        tabindex="0"
       >
         <div class="img">
           <SportImage
@@ -133,22 +133,23 @@
 
 <script setup lang="ts">
   import { formatDistance } from 'date-fns'
-  import type { Locale } from 'date-fns'
   import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
 
   import StaticMap from '@/components/Common/StaticMap.vue'
+  import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
-  import { ROOT_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import router from '@/router'
   import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
-  import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
-    user: IAuthUserProfile
+    user: IUserProfile
     useImperialUnits: boolean
+    dateFormat: string
+    timezone: string
     workout?: IWorkout
     sport?: ISport | null
   }
@@ -156,19 +157,15 @@
     workout: () => ({}) as IWorkout,
     sport: () => ({}) as ISport,
   })
+  const { dateFormat, sport, timezone, user, useImperialUnits, workout } =
+    toRefs(props)
 
-  const store = useStore()
+  const { locale } = useApp()
 
-  const { user, workout, sport, useImperialUnits } = toRefs(props)
-  const locale: ComputedRef<Locale> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.LOCALE]
-  )
+  const emit = defineEmits(['workoutLinkClicked'])
+
   const workoutDateWithTZ = computed(() =>
-    formatDate(
-      workout.value.workout_date,
-      user.value.timezone,
-      user.value.date_format
-    )
+    formatDate(workout.value.workout_date, timezone.value, dateFormat.value)
   )
 
   function hasElevation(workout: IWorkout): boolean {
@@ -177,11 +174,16 @@
     )
   }
   function hasUphillValue(workout: IWorkout): boolean {
-    return (
-      hasElevation(workout) &&
-      workout.ascent !== null &&
-      workout.descent !== null
-    )
+    return workout.ascent !== null && workout.descent !== null
+  }
+  function navigateToWorkout(workout: IWorkout) {
+    if (workout.id) {
+      router.push({
+        name: 'Workout',
+        params: { workoutId: workout.id },
+      })
+      emit('workoutLinkClicked')
+    }
   }
 </script>
 
@@ -206,6 +208,7 @@
         .workout-user {
           display: flex;
           ::v-deep(.user-picture) {
+            min-width: min-content;
             img {
               height: 25px;
               width: 25px;
@@ -221,10 +224,16 @@
             text-decoration: none;
           }
         }
-        .workout-date {
-          font-size: 0.85em;
-          font-style: italic;
-          white-space: nowrap;
+        .workout-date-visibility {
+          display: flex;
+          gap: 5px;
+          align-items: flex-end;
+
+          .workout-date {
+            font-size: 0.85em;
+            font-style: italic;
+            white-space: nowrap;
+          }
         }
         .workout-title {
           display: block;

@@ -46,7 +46,6 @@
     workouts: IWorkout[]
   }
   const props = defineProps<Props>()
-
   const {
     currentDay,
     displayHARecord,
@@ -57,9 +56,8 @@
     weekStartingMonday,
     workouts,
   } = toRefs(props)
-  const rows: Ref<Date[][]> = ref([])
 
-  onMounted(() => getDays())
+  const rows: Ref<Date[][]> = ref([])
 
   function getDays() {
     rows.value = []
@@ -93,6 +91,8 @@
     () => props.currentDay,
     () => getDays()
   )
+
+  onMounted(() => getDays())
 </script>
 
 <style lang="scss">

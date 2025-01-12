@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.8.13"
+version = "0.9.0b6"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -43,6 +43,8 @@ flask-sqlalchemy = "3.0.5"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
 humanize = "^4.11.0"
+jsonschema = "^4.23.0"
+nh3 = "^0.2.19"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 pyopenssl = "^24.3.0"
@@ -101,6 +103,11 @@ quote-style = "preserve"
 "fittrackee/application/app_config.py" = ["E501"]
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
+
+[tool.pytest.ini_options]
+markers = [
+    "disable_autouse_update_records_patch: disable records update",
+]
 
 [tool.bandit]
 exclude_dirs = ["fittrackee/tests/*", "fittrackee/migrations/*"]

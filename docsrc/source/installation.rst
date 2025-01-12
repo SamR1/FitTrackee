@@ -1,17 +1,24 @@
 Installation
 ############
 
-| **FitTrackee** can be installed via a single `Python package from PyPI <https://pypi.org/project/fittrackee/>`__ or from sources after cloning the repository.
+**FitTrackee** can be installed:
 
-| For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
+- via a single Python package from `PyPI <https://pypi.org/project/fittrackee/>`__,
+- from sources,
+- with a `Docker <installation.html#docker>`__ image.
+
+Thanks to contributors, packages are also available on `Yunohost <installation.html#yunohost>`__ and `NixOS <installation.html#nixos>`__.
+
+For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
 
 | The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
 
 .. note::
-  | Other installation guides are available thanks to contributors:
-  | - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
-  | - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+  Other installation guides are available thanks to contributors:
+
+  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
+  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
 
 
 Main dependencies
@@ -151,7 +158,10 @@ deployment method.
 
 .. envvar:: UI_URL
 
-    **FitTrackee** URL, needed for links in emails.
+    **FitTrackee** URL, needed for links in emails and mentions on interface.
+
+    .. warning::
+        UI_URL must contains url scheme (``https://``).
 
 
 .. envvar:: EMAIL_URL
@@ -270,8 +280,8 @@ deployment method.
 
     **FitTrackee** API URL, only needed in dev environment.
 
-Docker
-^^^^^^
+Docker Compose
+^^^^^^^^^^^^^^
 
 .. versionadded:: 0.8.13
 
@@ -320,6 +330,9 @@ Environment variables for ``docker-compose.yml``
 Emails
 ~~~~~~
 .. versionadded:: 0.3.0
+.. versionchanged:: 0.5.3  Credentials and port can be omitted
+.. versionchanged:: 0.6.5  Disable email sending
+.. versionchanged:: 0.7.24  Handle special characters in password
 
 To send emails, a valid ``EMAIL_URL`` must be provided:
 
@@ -327,14 +340,15 @@ To send emails, a valid ``EMAIL_URL`` must be provided:
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
 - with STARTTLS: ``smtp://username:password@smtp.example.com:587/?tls=True``
 
+Credentials can be omitted: ``smtp://smtp.example.com:25``.
+If ``:<port>`` is omitted, the port defaults to 25.
+
+Password can be encoded if it contains special characters.
+For instance with password ``passwordwith@and&and?``, the encoded password will be: ``passwordwith%40and%26and%3F``.
+
 .. warning::
     | If the email URL is invalid, the application may not start.
     | Sending emails with Office365 may not work if SMTP auth is disabled.
-
-.. versionchanged:: 0.5.3
-
-| Credentials can be omitted: ``smtp://smtp.example.com:25``.
-| If ``:<port>`` is omitted, the port defaults to 25.
 
 .. warning::
      | Since 0.6.0, newly created accounts must be confirmed (an email with confirmation instructions is sent after registration).
@@ -346,22 +360,21 @@ Emails sent by FitTrackee are:
 - email change (to old and new email addresses)
 - password change
 - notification when a data export archive is ready to download (*new in 0.7.13*)
+- suspension and warning (*new in 0.9.0*)
+- suspension and warning lifting (*new in 0.9.0*)
+- rejected appeal (*new in 0.9.0*)
 
-.. versionchanged:: 0.6.5
 
-For single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+On single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
 
 A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
-
-.. versionchanged:: 0.7.24
-
-Password can be encoded if it contains special characters.
-For instance with password ``passwordwith@and&and?``, the encoded password will be: ``passwordwith%40and%26and%3F``.
 
 
 Map tile server
 ~~~~~~~~~~~~~~~
 .. versionadded:: 0.4.0
+.. versionchanged:: 0.6.10 Handle tile server subdomains
+.. versionchanged:: 0.7.23 Default tile server (**OpenStreetMap**) no longer requires subdomains
 
 Default tile server is now **OpenStreetMap**'s standard tile layer (if environment variables are not initialized).
 The tile server can be changed by updating ``TILE_SERVER_URL`` and ``MAP_ATTRIBUTION`` variables (`list of tile servers <https://wiki.openstreetmap.org/wiki/Raster_tile_providers>`__).
@@ -374,9 +387,6 @@ To keep using **ThunderForest Outdoors**, the configuration is:
 .. note::
     | Check the terms of service of tile provider for map attribution.
 
-
-.. versionchanged:: 0.6.10
-
 Since the tile server can be used for static map generation, some servers require a subdomain.
 
 For instance, to set OSM France tile server, the expected values are:
@@ -387,9 +397,7 @@ For instance, to set OSM France tile server, the expected values are:
 
 The subdomain will be chosen randomly.
 
-.. versionadded:: 0.7.23
-
-The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
+The default tile server (**OpenStreetMap**) no longer requires subdomains.
 
 
 API rate limits
@@ -430,20 +438,20 @@ API rate limits
 
 Weather data
 ~~~~~~~~~~~~
-.. versionchanged:: 0.7.11
+.. versionchanged:: 0.7.11 Add Visual Crossing to weather providers
+.. versionchanged:: 0.7.15 Remove Darksky from weather providers
 
 The following weather data providers are supported by **FitTrackee**:
 
 - `Visual Crossing <https://www.visualcrossing.com>`__ (**note**: historical data are provided on hourly period)
 
+.. note::
+
+   **DarkSky** support is discontinued, since the service shut down on March 31, 2023.
+
 To configure a weather provider, set the following environment variables:
 
 - ``WEATHER_API_KEY``: the key to the corresponding weather provider
-
-
-.. versionchanged:: 0.7.15
-
-**DarkSky** support is discontinued, since the service shut down on March 31, 2023.
 
 
 Installation
@@ -511,11 +519,11 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ ftcli users update <username> --set-admin true
+   $ ftcli users update <username> --set-role owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -569,11 +577,11 @@ Dev environment
 
 - Open http://localhost:3000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make user-set-admin USERNAME=<username>
+   $ make user-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -620,11 +628,11 @@ Production environment
 
 - Open http://localhost:5000 and register
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make user-set-admin USERNAME=<username>
+   $ make user-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
@@ -633,9 +641,10 @@ Upgrade
 ~~~~~~~
 
 .. warning::
-    | Before upgrading, make a backup of all data:
-    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    Before upgrading, make a backup of all data:
+
+    - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
+    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
 .. warning::
 
@@ -804,10 +813,10 @@ Examples:
     WantedBy=multi-user.target
 
 
-.. note::
+.. seealso::
     To handle large files, a higher value for `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be set.
 
-.. note::
+.. seealso::
     More information on deployment with Gunicorn in its `documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__.
 
 - for task queue workers: ``fittrackee_workers.service``
@@ -882,7 +891,7 @@ Examples:
         }
     }
 
-.. note::
+.. seealso::
     If needed, update configuration to handle larger files (see `client_max_body_size <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_).
 
 
@@ -946,11 +955,11 @@ Development
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
-- To set admin rights to the newly created account, use the following command line:
+- To set owner role to the newly created account, use the following command line:
 
 .. code:: bash
 
-   $ make docker-set-admin USERNAME=<username>
+   $ make docker-set-role USERNAME=<username> ROLE=owner
 
 .. note::
     If the user account is inactive, it activates it.
