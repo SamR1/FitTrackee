@@ -53,8 +53,7 @@ class TestReadableDuration:
 
 class TestParseUserAgent:
     string = (
-        'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) '
-        'Gecko/20100101 Firefox/98.0'
+        'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0'
     )
 
     def test_it_returns_browser_name(self) -> None:

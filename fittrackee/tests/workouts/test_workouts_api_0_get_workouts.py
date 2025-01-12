@@ -1185,9 +1185,10 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         notes = self.random_string()
         seven_workouts_user_1[1].notes = notes
         seven_workouts_user_1[3].notes = self.random_string()
-        seven_workouts_user_1[5].notes = (
-            f"{self.random_string()} {notes.upper()} "
-            f"{self.random_string()}"
+        seven_workouts_user_1[
+            5
+        ].notes = (
+            f"{self.random_string()} {notes.upper()} {self.random_string()}"
         )
         workout_cycling_user_2.notes = notes
         client, auth_token = self.get_test_client_and_auth_token(

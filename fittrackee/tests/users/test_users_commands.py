@@ -58,8 +58,7 @@ class TestCliUserCreate:
 
         assert result.exit_code == 0
         assert result.output == (
-            'Error(s) occurred:\n'
-            'This user already exists. No action done.\n'
+            'Error(s) occurred:\nThis user already exists. No action done.\n'
         )
 
     def test_it_creates_user(

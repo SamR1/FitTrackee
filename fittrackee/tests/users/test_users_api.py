@@ -1265,8 +1265,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/users?order_by=suspended_at&order=asc&'
-            'with_suspended=true',
+            '/api/users?order_by=suspended_at&order=asc&with_suspended=true',
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 

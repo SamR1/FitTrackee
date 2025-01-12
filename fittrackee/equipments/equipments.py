@@ -362,8 +362,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         or equipment_data.get('equipment_type_id') is None
     ):
         return InvalidPayloadErrorResponse(
-            "the 'label' and 'equipment_type_id' parameters must be "
-            "provided"
+            "the 'label' and 'equipment_type_id' parameters must be provided"
         )
 
     label = equipment_data['label']

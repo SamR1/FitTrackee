@@ -35,7 +35,7 @@ API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(
     filename=log_file,
-    format='%(asctime)s - %(name)s - %(levelname)s - ' '%(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
 )
 appLog = logging.getLogger('fittrackee')

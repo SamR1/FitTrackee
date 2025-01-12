@@ -782,8 +782,7 @@ def get_segment_gpx(
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/chart_data/segment/'
-    '<int:segment_id>',
+    '/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>',
     methods=['GET'],
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)
