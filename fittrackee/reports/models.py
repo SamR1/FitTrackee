@@ -347,7 +347,7 @@ class ReportAction(BaseModel):
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
-        nullable=True,  # to keep log if an admin is deleted
+        nullable=True,  # to keep log if an moderator is deleted
     )
     report_id = db.Column(
         db.Integer,

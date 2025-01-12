@@ -269,7 +269,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         assert 'confirmation_token' not in serialized_user
 
-    def test_it_does_return_reports_info(
+    def test_it_does_not_return_reports_info(
         self, app: Flask, user_1: User
     ) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
@@ -312,7 +312,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         self.assert_user_profile(serialized_user, user_1_admin)
         assert serialized_user["blocked"] is False
 
-    def test_it_does_return_user_preferences(
+    def test_it_does_not_return_user_preferences(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
@@ -398,7 +398,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         self.assert_user_profile(serialized_user, user_1_moderator)
         assert serialized_user["blocked"] is False
 
-    def test_it_does_return_user_preferences(
+    def test_it_does_not_return_user_preferences(
         self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
@@ -482,7 +482,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         self.assert_user_profile(serialized_user, user_1)
         assert serialized_user["blocked"] is False
 
-    def test_it_does_return_user_preferences(
+    def test_it_does_not_return_user_preferences(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
@@ -512,7 +512,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
 
         assert 'confirmation_token' not in serialized_user
 
-    def test_it_does_return_reports_info(
+    def test_it_does_not_return_reports_info(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
@@ -1057,7 +1057,7 @@ class TestUserFollowers:
 
         assert user_1.followers.all() == [user_2]
 
-    def test_it_does_return_suspended_follower(
+    def test_it_does_not_return_suspended_follower(
         self,
         app: Flask,
         user_1: User,

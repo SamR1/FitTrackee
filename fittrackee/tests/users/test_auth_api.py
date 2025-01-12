@@ -588,9 +588,7 @@ class TestUserLogin(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_returns_error_if_user_does_not_exists(
-        self, app: Flask
-    ) -> None:
+    def test_it_returns_error_if_user_does_not_exist(self, app: Flask) -> None:
         client = app.test_client()
 
         response = client.post(

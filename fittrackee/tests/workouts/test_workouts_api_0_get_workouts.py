@@ -230,7 +230,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -270,7 +270,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -310,7 +310,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -350,7 +350,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -378,7 +378,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -403,7 +403,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -440,7 +440,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -478,7 +478,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -514,7 +514,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -550,7 +550,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -588,7 +588,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -624,7 +624,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -704,7 +704,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -778,7 +778,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -806,7 +806,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -843,7 +843,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -879,7 +879,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -915,7 +915,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -947,7 +947,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1015,7 +1015,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
@@ -1302,7 +1302,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1338,7 +1338,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

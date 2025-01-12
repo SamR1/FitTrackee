@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from typing import List
 
 import pytest
 from flask import Flask
@@ -496,7 +497,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -522,7 +523,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -548,7 +549,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -574,7 +575,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
