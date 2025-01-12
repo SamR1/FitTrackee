@@ -46,7 +46,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "stato admin",
         "CREATED_AT": "data di registrazione",
         "IS_ACTIVE": "stato account",
         "USERNAME": "nome utente",

@@ -61,7 +61,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "admin status",
         "CREATED_AT": "Registratie datum",
         "IS_ACTIVE": "Account status",
         "USERNAME": "gebruikersnaam",

@@ -61,7 +61,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "kudeatzailearen egoera",
         "CREATED_AT": "izen-emate data",
         "IS_ACTIVE": "kontuaren egoera",
         "USERNAME": "erabiltzaile-izena",
