@@ -61,7 +61,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "rol de admin",
         "CREATED_AT": "data de rexistro",
         "IS_ACTIVE": "estado da conta",
         "USERNAME": "identificador",

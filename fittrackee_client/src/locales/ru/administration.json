@@ -44,7 +44,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "статус администратора",
         "CREATED_AT": "дата регистрации",
         "USERNAME": "имя пользователя",
         "WORKOUTS_COUNT": "количество тренировок"
