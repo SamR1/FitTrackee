@@ -298,6 +298,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         ` "description": "${description}", "title": "${title}", ` +
         ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}],` +
         ` "workout_visibility": "${payload.workout_visibility}",` +
+        ` "analysis_visibility": "${payload.analysis_visibility}",` +
         ` "map_visibility": "${payload.map_visibility}"}`
     )
     authApi
