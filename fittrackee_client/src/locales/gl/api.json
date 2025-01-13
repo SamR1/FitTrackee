@@ -3,6 +3,7 @@
     "<time> is missing in gpx file": "falta o elemento <time> no ficheiro .gpx.",
     "Network Error": "Erro na rede.",
     "UNKNOWN": "Erro. Inténtao outra vez ou contacta coa administración.",
+    "a report already exists": "Xa enviaches unha denuncia.",
     "at least one file in zip archive exceeds size limit, please check the archive": "Polo menos un ficheiro no arquivo .zip excede o tamaño máximo, comproba o arquivo.",
     "completed request already exists": "Xa existe unha solicitude de exportación completa.",
     "email: valid email must be provided": "Correo: debes escribir un correo electrónico válido.",
