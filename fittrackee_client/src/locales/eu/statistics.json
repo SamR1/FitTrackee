@@ -9,6 +9,7 @@
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Saio guztien estatistikak:",
   "STATISTICS_ON_LAST_WORKOUTS": "Azken {count} saioen estatistikak:",
+  "STATISTICS_TYPE": "Estatistika mota",
   "STATISTICS_TYPES": {
     "by_sport": "kirolka",
     "by_time": "denbora tarteka"
