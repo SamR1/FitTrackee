@@ -97,7 +97,10 @@
                     </span>
                   </template>
                   <AlertMessage
-                    v-else-if="report.reported_user?.suspended_at !== null"
+                    v-else-if="
+                      report.reported_user &&
+                      report.reported_user.suspended_at !== null
+                    "
                     message="user.ACCOUNT_SUSPENDED_AT"
                     :param="reportedUserSuspensionDate"
                   >
@@ -142,6 +145,16 @@
                 <div class="report-comment-user" v-if="report.reported_by">
                   <UserPicture :user="report.reported_by" />
                   <Username :user="report.reported_by" />
+                </div>
+                <span class="deleted-object" v-else>
+                  {{ $t('admin.DELETED_USER') }}
+                </span>
+              </dd>
+              <dt>{{ $t('admin.APP_MODERATION.REPORTED_USER') }}:</dt>
+              <dd>
+                <div class="report-comment-user" v-if="report.reported_user">
+                  <UserPicture :user="report.reported_user" />
+                  <Username :user="report.reported_user" />
                 </div>
                 <span class="deleted-object" v-else>
                   {{ $t('admin.DELETED_USER') }}
