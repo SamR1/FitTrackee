@@ -1296,54 +1296,52 @@ class TestNotificationForMention(NotificationTestCase):
         assert "workout" not in serialized_notification
 
 
-class TestMultipleNotificationsForComment(NotificationTestCase):
-    def test_it_deletes_all_notifications_on_comment_with_mention_and_like_delete(  # noqa
+class TestMultipleNotificationsForComment(ReportMixin, NotificationTestCase):
+    def test_it_deletes_comment_notifications_on_comment_deletion(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
+        user_2_moderator: User,
         user_3: User,
+        user_4: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
-            user_2, workout_cycling_user_1, text=f"@{user_3.username}"
+            user_4,
+            workout_cycling_user_1,
+            text=f"@{user_3.username}",
+            text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment_id = comment.id
         self.create_mention(user_3, comment)
-        self.like_comment(user_3, comment)
+
+        self.like_comment(user_1, comment)
+        self.create_report(reporter=user_3, reported_object=comment)
+        self.create_report_comment_action(user_2_moderator, user_4, comment)
 
         db.session.delete(comment)
 
-        # workout_comment notification is deleted
         assert (
-            Notification.query.filter_by(
-                from_user_id=user_2.id,
-                to_user_id=user_1.id,
-                event_object_id=comment_id,
-                event_type="workout_comment",
-            ).first()
+            Notification.query.filter_by(event_type='workout_comment').first()
             is None
         )
-        # mention notification is deleted
         assert (
-            Notification.query.filter_by(
-                from_user_id=user_2.id,
-                to_user_id=user_3.id,
-                event_object_id=comment_id,
-                event_type="mention",
-            ).first()
+            Notification.query.filter_by(event_type='comment_like').first()
             is None
         )
-        # like notification is deleted
+        assert (
+            Notification.query.filter_by(event_type='mention').first() is None
+        )
+        assert (
+            Notification.query.filter_by(event_type='report').first()
+            is not None
+        )
         assert (
             Notification.query.filter_by(
-                from_user_id=user_2.id,
-                to_user_id=user_3.id,
-                event_object_id=comment_id,
-                event_type="comment_like",
+                event_type='comment_suspension'
             ).first()
-            is None
+            is not None
         )
 
 
