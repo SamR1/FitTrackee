@@ -15,19 +15,35 @@
           })
         }}
       </h1>
-      <template v-if="userSanction.comment">
+      <template v-if="'comment' in userSanction">
         <CommentForUser
+          v-if="userSanction.comment"
           :display-object-name="true"
           :comment="userSanction.comment"
         />
+        <template v-else>
+          <div class="deleted-object-type">
+            {{ $t('workouts.COMMENTS.COMMENT') }}:
+          </div>
+          <div class="deleted-object">
+            {{ $t('admin.DELETED_COMMENT') }}
+          </div>
+        </template>
       </template>
-      <template v-else-if="userSanction.workout">
+      <template v-else-if="'workout' in userSanction">
         <WorkoutForUser
+          v-if="userSanction.workout"
           :action="userSanction"
           :display-appeal="false"
           :display-object-name="true"
           :workout="userSanction.workout"
         />
+        <template v-else>
+          <div class="deleted-object-type">{{ $t('workouts.WORKOUT') }}:</div>
+          <div class="deleted-object">
+            {{ $t('admin.DELETED_WORKOUT') }}
+          </div>
+        </template>
       </template>
       <ActionAppeal
         :report-action="userSanction"
@@ -140,6 +156,14 @@
       button {
         text-transform: capitalize;
       }
+    }
+    .deleted-object-type {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+    .deleted-object {
+      font-style: italic;
+      text-transform: lowercase;
     }
   }
 </style>

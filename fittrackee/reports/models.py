@@ -486,16 +486,18 @@ class ReportAction(BaseModel):
                 ),
             }
         else:
-            action["comment"] = (
-                self.comment.serialize(user=current_user)
-                if self.comment_id
-                else None
-            )
-            action["workout"] = (
-                self.workout.serialize(user=current_user)
-                if self.workout_id
-                else None
-            )
+            if self.report.object_type == 'comment':
+                action["comment"] = (
+                    self.comment.serialize(user=current_user)
+                    if self.comment_id
+                    else None
+                )
+            if self.report.object_type == 'workout':
+                action["workout"] = (
+                    self.workout.serialize(user=current_user)
+                    if self.workout_id
+                    else None
+                )
 
         return action
 
