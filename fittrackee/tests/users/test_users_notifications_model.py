@@ -809,6 +809,51 @@ class TestNotificationForWorkoutReportAction(
         assert "report" not in serialized_notification
 
 
+class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
+    def test_it_deletes_workout_notifications_on_workout_deletion(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        user_4: User,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
+        self.like_workout(user_3, workout_cycling_user_2)
+        self.comment_workout(user_2, workout_cycling_user_2)
+        self.create_report(
+            reporter=user_4, reported_object=workout_cycling_user_2
+        )
+        self.create_report_workout_action(
+            user_1_admin, user_2, workout_cycling_user_2
+        )
+
+        db.session.delete(workout_cycling_user_2)
+
+        assert Workout.query.first() is None
+        assert WorkoutLike.query.first() is None
+        assert (
+            Notification.query.filter_by(event_type='workout_like').first()
+            is None
+        )
+        assert (
+            Notification.query.filter_by(event_type='workout_comment').first()
+            is None
+        )
+        assert (
+            Notification.query.filter_by(event_type='report').first()
+            is not None
+        )
+        assert (
+            Notification.query.filter_by(
+                event_type='workout_suspension'
+            ).first()
+            is not None
+        )
+
+
 class TestNotificationForCommentLike(NotificationTestCase):
     def test_it_creates_notification_on_comment_like(
         self,
