@@ -1,17 +1,17 @@
 {
-    "ANALYSIS_VISIBILITY": "Analisien ikusgaitasuna",
-    "COMMENT_LEVELS": {
-        "followers_only": "Jarraitzaileek bakarrik",
-        "private": "Pribatu (izendatutako erabiltzaileek bakarrik)",
-        "public": "Publikoa (edonork)"
-    },
-    "LEVELS": {
-        "private": "Pribatua (nik bakarrik)",
-        "public": "Publikoa (edonork)",
-        "followers_only": "Jarraitzaileek bakarrik"
-    },
-    "MAP_VISIBILITY": "Maparen ikusgaitasuna",
-    "VISIBILITY": "ikusgaitasuna",
-    "WORKOUTS_VISIBILITY": "Ekintzen datuen ikusgaitasuna",
-    "WORKOUT_VISIBILITY": "Ekintzen ikusgaitasuna"
+  "ANALYSIS_VISIBILITY": "Analisien ikusgaitasuna",
+  "COMMENT_LEVELS": {
+    "followers_only": "Jarraitzaileek bakarrik",
+    "private": "Pribatu (izendatutako erabiltzaileek bakarrik)",
+    "public": "Publikoa (edonork)"
+  },
+  "LEVELS": {
+    "followers_only": "Jarraitzaileek bakarrik",
+    "private": "Pribatua (nik bakarrik)",
+    "public": "Publikoa (edonork)"
+  },
+  "MAP_VISIBILITY": "Maparen ikusgaitasuna",
+  "VISIBILITY": "ikusgaitasuna",
+  "WORKOUTS_VISIBILITY": "Ekintzen datuen ikusgaitasuna",
+  "WORKOUT_VISIBILITY": "Ekintzen ikusgaitasuna"
 }
