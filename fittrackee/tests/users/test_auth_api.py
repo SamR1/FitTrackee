@@ -12,7 +12,6 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
-from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
     BlacklistedToken,
     Notification,
@@ -26,6 +25,7 @@ from fittrackee.users.utils.token import get_user_token
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
+from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
@@ -4595,7 +4595,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostUserSanctionAppeal(UserSuspensionTestCase):
+class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
     route = "/api/auth/account/sanctions/{action_short_id}/appeal"
 
     def test_it_returns_error_when_user_is_not_authenticated(
@@ -4710,6 +4710,68 @@ class TestPostUserSanctionAppeal(UserSuspensionTestCase):
         )
 
         self.assert_400(response, error_message='you can appeal only once')
+
+    def test_it_returns_error_when_reported_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        action = self.create_report_workout_action(
+            user_1_admin,
+            user_2,
+            workout_cycling_user_2,
+            action_type="workout_suspension",
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        response = client.post(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='workout has been deleted')
+
+    def test_it_returns_error_when_reported_comment_is_deleted(
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        action = self.create_report_comment_action(
+            user_1_admin, user_2, comment, action_type="comment_suspension"
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        db.session.delete(comment)
+        db.session.commit()
+
+        response = client.post(
+            self.route.format(action_short_id=action.short_id),
+            content_type='application/json',
+            data=json.dumps(dict(text=self.random_string())),
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        self.assert_400(response, error_message='comment has been deleted')
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

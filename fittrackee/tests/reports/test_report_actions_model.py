@@ -705,11 +705,9 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         assert serialized_action == {
             "action_type": report_action.action_type,
             "appeal": None,
-            "comment": None,
             "created_at": report_action.created_at,
             "reason": report_action.reason,
             "id": report_action.short_id,
-            "workout": None,
         }
 
     def test_it_serialized_action_with_appeal_for_user(
@@ -738,11 +736,9 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         assert serialized_action == {
             "action_type": report_action.action_type,
             "appeal": appeal.serialize(user_2),
-            "comment": None,
             "created_at": report_action.created_at,
             "id": report_action.short_id,
             "reason": report_action.reason,
-            "workout": None,
         }
 
     def test_it_raises_error_when_user_is_not_action_user(
@@ -804,11 +800,43 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         assert serialized_action == {
             "action_type": report_action.action_type,
             "appeal": None,
-            "comment": None,
             "created_at": report_action.created_at,
             "id": report_action.short_id,
             "reason": report_action.reason,
             "workout": workout_cycling_user_2.serialize(user=user_2),
+        }
+
+    def test_it_returns_serialized_workout_report_action_for_user_when_workout_is_deleted(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        report_action = ReportAction(
+            moderator_id=user_1_admin.id,
+            action_type="workout_suspension",
+            user_id=user_2.id,
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=workout_cycling_user_2
+            ).id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.add(report_action)
+        db.session.commit()
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+
+        serialized_action = report_action.serialize(user_2)
+
+        assert serialized_action == {
+            "action_type": report_action.action_type,
+            "appeal": None,
+            "created_at": report_action.created_at,
+            "id": report_action.short_id,
+            "reason": report_action.reason,
+            "workout": None,
         }
 
     def test_it_returns_serialized_workout_report_action_for_admin(
@@ -888,7 +916,46 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             "created_at": report_action.created_at,
             "id": report_action.short_id,
             "reason": report_action.reason,
-            "workout": None,
+        }
+
+    def test_it_returns_serialized_comment_report_action_for_user_when_comment_is_deleted(  # noqa
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_3,
+            workout_cycling_user_2,
+            text_visibility=VisibilityLevel.PUBLIC,
+        )
+        report_action = ReportAction(
+            moderator_id=user_1_admin.id,
+            action_type="comment_suspension",
+            report_id=self.create_report(
+                reporter=user_1_admin, reported_object=comment
+            ).id,
+            user_id=user_3.id,
+            comment_id=comment.id,
+        )
+        db.session.add(report_action)
+        db.session.commit()
+        db.session.delete(comment)
+        db.session.commit()
+
+        serialized_action = report_action.serialize(user_3)
+
+        assert serialized_action == {
+            "action_type": report_action.action_type,
+            "appeal": None,
+            "comment": None,
+            "created_at": report_action.created_at,
+            "id": report_action.short_id,
+            "reason": report_action.reason,
         }
 
     def test_it_returns_serialized_comment_report_action_for_admin(

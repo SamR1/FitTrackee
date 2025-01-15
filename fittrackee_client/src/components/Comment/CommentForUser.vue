@@ -33,6 +33,8 @@
   const { comment, displayObjectName } = toRefs(props)
 
   const { authUser } = useAuthUser()
+
+  defineEmits(['commentLinkClicked'])
 </script>
 
 <style scoped lang="scss">

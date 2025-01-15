@@ -15,28 +15,41 @@
           })
         }}
       </h1>
-      <template v-if="userSanction.comment">
+      <template v-if="'comment' in userSanction">
         <CommentForUser
+          v-if="userSanction.comment"
           :display-object-name="true"
           :comment="userSanction.comment"
         />
+        <template v-else>
+          <div class="deleted-object-type">
+            {{ $t('workouts.COMMENTS.COMMENT') }}:
+          </div>
+          <div class="deleted-object">
+            {{ $t('admin.DELETED_COMMENT') }}
+          </div>
+        </template>
       </template>
-      <template v-else-if="userSanction.workout">
+      <template v-else-if="'workout' in userSanction">
         <WorkoutForUser
+          v-if="userSanction.workout"
           :action="userSanction"
           :display-appeal="false"
           :display-object-name="true"
           :workout="userSanction.workout"
         />
+        <template v-else>
+          <div class="deleted-object-type">{{ $t('workouts.WORKOUT') }}:</div>
+          <div class="deleted-object">
+            {{ $t('admin.DELETED_WORKOUT') }}
+          </div>
+        </template>
       </template>
       <ActionAppeal
         :report-action="userSanction"
         :success="authUserSuccess"
         :loading="authUserLoading"
-        :can-appeal="
-          userSanction.action_type !== 'user_suspension' &&
-          !authUser.suspended_at
-        "
+        :can-appeal="!hideAppeal"
         @submitForm="submitAppeal"
       />
     </div>
@@ -91,6 +104,14 @@
   const userSanction: ComputedRef<IUserReportAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_SANCTION]
   )
+  const hideAppeal: ComputedRef<boolean> = computed(
+    () =>
+      authUser.value.suspended_at !== null ||
+      userSanction.value.action_type === 'user_suspension' ||
+      ('comment' in userSanction.value &&
+        userSanction.value.comment === null) ||
+      ('workout' in userSanction.value && userSanction.value.workout === null)
+  )
 
   function loadUserSanction() {
     store.dispatch(
@@ -140,6 +161,14 @@
       button {
         text-transform: capitalize;
       }
+    }
+    .deleted-object-type {
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+    .deleted-object {
+      font-style: italic;
+      text-transform: lowercase;
     }
   }
 </style>

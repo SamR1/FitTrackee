@@ -1166,15 +1166,15 @@ class Notification(BaseModel):
                 comment = Comment.query.filter_by(
                     id=report.reported_comment_id
                 ).first()
-                serialized_notification["comment"] = comment.serialize(
-                    user=to_user
+                serialized_notification["comment"] = (
+                    comment.serialize(user=to_user) if comment else None
                 )
             elif report.object_type == "workout":
                 workout = Workout.query.filter_by(
                     id=report.reported_workout_id
                 ).first()
-                serialized_notification["workout"] = workout.serialize(
-                    user=to_user
+                serialized_notification["workout"] = (
+                    workout.serialize(user=to_user) if workout else None
                 )
 
         return serialized_notification

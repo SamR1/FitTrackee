@@ -2684,6 +2684,13 @@ def appeal_user_sanction(
 
     if not sanction:
         return NotFoundErrorResponse("no sanction found")
+
+    if sanction.report.object_type == "comment" and not sanction.comment_id:
+        return InvalidPayloadErrorResponse("comment has been deleted")
+
+    if sanction.report.object_type == "workout" and not sanction.workout_id:
+        return InvalidPayloadErrorResponse("workout has been deleted")
+
     text = request.get_json().get("text")
     if not text:
         return InvalidPayloadErrorResponse("no text provided")
