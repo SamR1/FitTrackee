@@ -49,10 +49,7 @@
         :report-action="userSanction"
         :success="authUserSuccess"
         :loading="authUserLoading"
-        :can-appeal="
-          userSanction.action_type !== 'user_suspension' &&
-          !authUser.suspended_at
-        "
+        :can-appeal="!hideAppeal"
         @submitForm="submitAppeal"
       />
     </div>
@@ -106,6 +103,14 @@
 
   const userSanction: ComputedRef<IUserReportAction> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.USER_SANCTION]
+  )
+  const hideAppeal: ComputedRef<boolean> = computed(
+    () =>
+      authUser.value.suspended_at !== null ||
+      userSanction.value.action_type === 'user_suspension' ||
+      ('comment' in userSanction.value &&
+        userSanction.value.comment === null) ||
+      ('workout' in userSanction.value && userSanction.value.workout === null)
   )
 
   function loadUserSanction() {
