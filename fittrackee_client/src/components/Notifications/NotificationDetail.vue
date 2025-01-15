@@ -66,15 +66,17 @@
         </span>
         {{ notification.report_action.reason }}
       </div>
-      <template
-        v-if="displayCommentCard(notification.type) && notification.comment"
-      >
+      <template v-if="displayCommentNotification()">
         <CommentForUser
+          v-if="notification.comment"
           :display-object-name="notification.type.startsWith('user_warning')"
           :comment="notification.comment"
           :action="notification.report_action"
           @commentLinkClicked="markAsReadOnClick(notification)"
         />
+        <div class="deleted-object" v-else>
+          {{ $t('admin.DELETED_COMMENT') }}
+        </div>
       </template>
       <RelationshipDetail
         v-else-if="displayRelationshipCard(notification.type)"
@@ -92,21 +94,25 @@
         :report="notification.report"
         @reportButtonClicked="markAsReadOnClick(notification)"
       />
-      <template v-else-if="notification.workout">
+      <template v-else-if="displayWorkoutNotification()">
         <WorkoutForUser
+          v-if="notification.workout"
           :action="notification.report_action"
           :display-appeal="notification.type !== 'user_warning'"
           :display-object-name="notification.type.startsWith('user_warning')"
           :workout="notification.workout"
           @workoutLinkClicked="markAsReadOnClick(notification)"
         />
+        <div class="deleted-object" v-else>
+          {{ $t('admin.DELETED_WORKOUT') }}
+        </div>
       </template>
       <div
         class="auth-user"
         v-if="
           notification.report_action?.action_type === 'user_warning_lifting' &&
-          !notification.comment &&
-          !notification.workout
+          !('comment' in notification) &&
+          !('workout' in notification)
         "
       >
         <UserPicture :user="authUser" />
@@ -116,7 +122,7 @@
           </router-link>
         </div>
       </div>
-      <div v-if="notification.report_action?.action_type === 'user_warning'">
+      <div v-if="displayAppeal()">
         <div
           class="info-box appeal-in-progress"
           v-if="notification.report_action?.appeal?.approved === null"
@@ -127,7 +133,10 @@
           </span>
         </div>
         <router-link
-          v-else-if="!notification.report_action?.appeal"
+          v-else-if="
+            !notification.report_action?.appeal &&
+            notification.report_action?.id
+          "
           class="appeal-link"
           :to="`profile/moderation/sanctions/${notification.report_action.id}`"
           @click="markAsReadOnClick(notification)"
@@ -178,7 +187,7 @@
       updateReadStatus(notification.id, true)
     }
   }
-  function displayCommentCard(notificationType: TNotificationType): boolean {
+  function displayCommentNotification(): boolean {
     return (
       [
         'comment_like',
@@ -188,7 +197,19 @@
         'user_warning',
         'user_warning_lifting',
         'workout_comment',
-      ].includes(notificationType) && notification.value.comment !== undefined
+      ].includes(notification.value.type) && 'comment' in notification.value
+    )
+  }
+  function displayWorkoutNotification(): boolean {
+    return (
+      [
+        'workout_like',
+        'workout_suspension',
+        'workout_unsuspension',
+        'user_warning',
+        'user_warning_lifting',
+        'workout_comment',
+      ].includes(notification.value.type) && 'workout' in notification.value
     )
   }
   function displayRelationshipCard(notificationType: TNotificationType) {
@@ -198,6 +219,19 @@
       'follow_request',
       'follow_request_approved',
     ].includes(notificationType)
+  }
+  function displayAppeal() {
+    if (
+      !notification.value.report_action ||
+      notification.value.report_action.action_type !== 'user_warning'
+    ) {
+      return false
+    }
+    return !(
+      ('workout' in notification.value &&
+        notification.value.workout === null) ||
+      ('comment' in notification.value && notification.value.comment === null)
+    )
   }
   function getUserAction(notificationType: TNotificationType): string {
     switch (notificationType) {

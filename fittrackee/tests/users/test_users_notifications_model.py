@@ -564,7 +564,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         assert "report" not in serialized_notification
 
 
-class TestNotificationForWorkoutComment(NotificationTestCase):
+class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
     def test_it_creates_notification_on_workout_comment(
         self,
         app: Flask,
@@ -734,7 +734,7 @@ class TestNotificationForWorkoutReportAction(
     NotificationTestCase, ReportMixin
 ):
     @pytest.mark.parametrize("input_report_action", WORKOUT_ACTION_TYPES)
-    def test_it_creates_notification_on_comment_report_action(
+    def test_it_creates_notification_on_workout_report_action(
         self,
         app: Flask,
         user_1_moderator: User,
@@ -766,7 +766,7 @@ class TestNotificationForWorkoutReportAction(
         assert notification.event_type == input_report_action
 
     @pytest.mark.parametrize("input_report_action", WORKOUT_ACTION_TYPES)
-    def test_it_serializes_comment_action_notification(
+    def test_it_serializes_workout_action_notification(
         self,
         app: Flask,
         user_1_moderator: User,
@@ -808,6 +808,49 @@ class TestNotificationForWorkoutReportAction(
         assert "comment" not in serialized_notification
         assert "report" not in serialized_notification
 
+    @pytest.mark.parametrize("input_report_action", WORKOUT_ACTION_TYPES)
+    def test_it_serializes_workout_action_notification_when_workout_is_deleted(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_report_action: str,
+    ) -> None:
+        report = self.create_report(
+            reporter=user_3, reported_object=workout_cycling_user_2
+        )
+        report_action = self.create_report_action(
+            user_1_moderator,
+            user_2,
+            action_type=input_report_action,
+            report_id=report.id,
+            workout_id=workout_cycling_user_2.id,
+        )
+        db.session.delete(workout_cycling_user_2)
+        db.session.commit()
+        notification = Notification.query.filter_by(
+            from_user_id=user_1_moderator.id,
+            to_user_id=user_2.id,
+            event_object_id=workout_cycling_user_2.id,
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification[
+            "report_action"
+        ] == report_action.serialize(user_2)
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] is None
+        assert serialized_notification["id"] == notification.short_id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["type"] == input_report_action
+        assert serialized_notification["workout"] is None
+        assert "comment" not in serialized_notification
+        assert "report" not in serialized_notification
+
 
 class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
     def test_it_deletes_workout_notifications_on_workout_deletion(  # noqa
@@ -822,13 +865,21 @@ class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
     ) -> None:
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
         self.like_workout(user_3, workout_cycling_user_2)
-        self.comment_workout(user_2, workout_cycling_user_2)
+        self.comment_workout(user_3, workout_cycling_user_2)
         self.create_report(
             reporter=user_4, reported_object=workout_cycling_user_2
         )
-        self.create_report_workout_action(
-            user_1_admin, user_2, workout_cycling_user_2
-        )
+        action_types = [
+            "workout_suspension",
+            "user_warning",
+            "user_warning_lifting",
+            "workout_unsuspension",
+        ]
+        for action_type in action_types:
+            self.create_report_workout_action(
+                user_1_admin, user_2, workout_cycling_user_2, action_type
+            )
+        db.session.commit()
 
         db.session.delete(workout_cycling_user_2)
 
@@ -846,12 +897,14 @@ class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
             Notification.query.filter_by(event_type='report').first()
             is not None
         )
-        assert (
-            Notification.query.filter_by(
-                event_type='workout_suspension'
-            ).first()
-            is not None
-        )
+        for action_type in action_types:
+            assert (
+                Notification.query.filter_by(
+                    to_user_id=user_2.id,
+                    event_type=action_type,
+                ).first()
+                is not None
+            )
 
 
 class TestNotificationForCommentLike(NotificationTestCase):
@@ -1048,6 +1101,48 @@ class TestNotificationForCommentReportAction(
         ] == report_action.serialize(user_3)
         assert serialized_notification["created_at"] == notification.created_at
         assert serialized_notification["comment"] == comment.serialize(user_3)
+        assert serialized_notification["from"] is None
+        assert serialized_notification["id"] == notification.short_id
+        assert serialized_notification["marked_as_read"] is False
+        assert serialized_notification["type"] == input_report_action
+        assert "report" not in serialized_notification
+        assert "workout" not in serialized_notification
+
+    @pytest.mark.parametrize("input_report_action", COMMENT_ACTION_TYPES)
+    def test_it_serializes_comment_action_notification_when_comment_is_deleted(
+        self,
+        app: Flask,
+        user_1_moderator: User,
+        user_2: User,
+        user_3: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_report_action: str,
+    ) -> None:
+        comment = self.comment_workout(user_3, workout_cycling_user_2)
+        report = self.create_report(reporter=user_2, reported_object=comment)
+        report_action = self.create_report_action(
+            user_1_moderator,
+            user_3,
+            action_type=input_report_action,
+            report_id=report.id,
+            comment_id=comment.id,
+        )
+        db.session.delete(comment)
+        db.session.commit()
+        notification = Notification.query.filter_by(
+            from_user_id=user_1_moderator.id,
+            to_user_id=user_3.id,
+            event_object_id=comment.id,
+        ).first()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification[
+            "report_action"
+        ] == report_action.serialize(user_3)
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["comment"] is None
         assert serialized_notification["from"] is None
         assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
@@ -1318,7 +1413,17 @@ class TestMultipleNotificationsForComment(ReportMixin, NotificationTestCase):
 
         self.like_comment(user_1, comment)
         self.create_report(reporter=user_3, reported_object=comment)
-        self.create_report_comment_action(user_2_moderator, user_4, comment)
+        action_types = [
+            "comment_suspension",
+            "user_warning",
+            "user_warning_lifting",
+            "comment_unsuspension",
+        ]
+        for action_type in action_types:
+            self.create_report_comment_action(
+                user_2_moderator, user_4, comment, action_type
+            )
+        db.session.commit()
 
         db.session.delete(comment)
 
@@ -1337,12 +1442,14 @@ class TestMultipleNotificationsForComment(ReportMixin, NotificationTestCase):
             Notification.query.filter_by(event_type='report').first()
             is not None
         )
-        assert (
-            Notification.query.filter_by(
-                event_type='comment_suspension'
-            ).first()
-            is not None
-        )
+        for action_type in action_types:
+            assert (
+                Notification.query.filter_by(
+                    to_user_id=user_4.id,
+                    event_type=action_type,
+                ).first()
+                is not None
+            )
 
 
 class TestNotificationForReport(NotificationTestCase):
