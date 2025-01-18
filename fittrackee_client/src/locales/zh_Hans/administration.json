@@ -1,1 +1,151 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "任何对您的用户可能有用的其它信息。可以使用 Markdown 语法。",
+    "TEXT": "详细实例信息"
+  },
+  "ACTION": "操作",
+  "ACTIVATE_USER_ACCOUNT": "激活账号",
+  "ACTIVE": "活跃",
+  "ADMIN": "管理员",
+  "ADMINISTRATION": "管理",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "添加/移除管理员权限，删除用户账号。",
+  "APPLICATION": "应用",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "联系管理员邮箱",
+    "MAX_FILES_IN_ZIP_LABEL": "ZIP 归档文件最大数量",
+    "MAX_USERS_HELP": "如果为 0，则注册无限制。",
+    "MAX_USERS_LABEL": "最大活跃用户数量",
+    "NO_CONTACT_EMAIL": "无联系邮箱",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "上传文件最大大小（以 Mb 计）",
+    "STATS_WORKOUTS_LIMIT_HELP": "如果为 0，则锻炼次数无限制。",
+    "STATS_WORKOUTS_LIMIT_LABEL": "运动统计的最大锻炼次数",
+    "TITLE": "应用配置",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "ZIP 归档最大大小（以 Mb 计）"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "添加评论",
+      "MARK_AS_RESOLVED": "标记为已解决",
+      "MARK_AS_UNRESOLVED": "标记为未解决",
+      "SEND_WARNING_EMAIL": "发送警告",
+      "SUSPEND_ACCOUNT": "暂停用户账号",
+      "SUSPEND_CONTENT": "暂停内容",
+      "UNSUSPEND_ACCOUNT": "重新激活用户账号",
+      "UNSUSPEND_CONTENT": "重新激活内容"
+    },
+    "APPEAL": {
+      "APPROVED": "此申诉已被批准 {0}。",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "此申诉通过解除暂停而获得批准。",
+      "HIDE": "隐藏申诉",
+      "REASON_IS": "原因是：",
+      "REJECTED": "此申诉已被拒绝 {0}。",
+      "SEE": "查看申诉"
+    },
+    "DESCRIPTION": "报告管理。",
+    "NOTES_AND_ACTIONS": "备注和操作",
+    "NO_REPORTS_FOUND": "无报告",
+    "ORDER_BY": {
+      "CREATED_AT": "创建日期",
+      "UPDATED_AT": "更新日期"
+    },
+    "REASON": "原因",
+    "REPORT": "报告",
+    "REPORTED_BY": "报告人",
+    "REPORTED_CONTENT": "被报告内容",
+    "REPORTED_USER": "被报告用户",
+    "REPORTER": "报告人",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "该评论已被 {1} {2} 暂停。",
+      "comment_unsuspension": "该评论暂停已被 {1} {2} 解除。",
+      "report_reopening": "该报告已被 {1} {2} 重新打开。",
+      "report_resolution": "该报告已被 {1} {2} 标记为已解决。",
+      "user_suspension": "{0} 已被 {1} {2} 暂停。",
+      "user_unsuspension": "{0} 暂停已被 {1} {2} 解除。",
+      "user_warning": "警告已由 {1} {2} 发送给 {0}。",
+      "user_warning_lifting": "{0} 警告已被 {1} {2} 解除。",
+      "workout_suspension": "锻炼已被 {1} {2} 暂停。",
+      "workout_unsuspension": "锻炼暂停已被 {1} {2} 解除。"
+    },
+    "REPORT_NOTE": "备注人",
+    "RESOLVED": {
+      "FALSE": "未解决",
+      "TRUE": "已解决"
+    },
+    "RESOLVED_AT": "解决时间",
+    "RESOLVED_BY": "解决人",
+    "STATUS": "状态",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "添加评论、采取的操作或任何其他有用信息。",
+      "INFORMATION_VISIBLE_TO_USER": "此信息将对用户可见。",
+      "MARK_AS_RESOLVED": "说明解决的原因。",
+      "MARK_AS_UNRESOLVED": "说明未解决的原因。",
+      "SEND_WARNING_EMAIL": "说明警告的原因（非必填）。",
+      "SUSPEND": "说明暂停的原因（非必填）。",
+      "UNSUSPEND": "添加评论（非必填）。",
+      "UPDATE_APPEAL": "说明此申诉处理的原因。"
+    },
+    "TITLE": "管理",
+    "UNRESOLVED_REPORTS_EXIST": "存在未解决的报告。",
+    "VIEW_REPORT": "查看报告"
+  },
+  "BACK_TO_ADMIN": "返回管理员",
+  "CONFIRM_SUSPEND_ACCOUNT": "您确定要暂停 {0} 账号吗？",
+  "CONFIRM_SUSPEND_CONTENT": "你确定要暂停报告的内容吗？",
+  "CONFIRM_USER_ACCOUNT_DELETION": "您确定要删除 {0} 账号吗？所有数据将被删除，此操作不可撤销。",
+  "CONFIRM_USER_PASSWORD_RESET": "你确定要重置 {0} 密码吗？",
+  "CURRENT_EMAIL": "当前邮箱",
+  "DELETED_COMMENT": "已删除的评论",
+  "DELETED_USER": "已删除的用户",
+  "DELETED_WORKOUT": "已删除的锻炼",
+  "DELETE_USER": "删除用户",
+  "EMAIL_SENDING_DISABLED": "邮件发送已禁用。",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "启用/禁用设备类型。",
+  "ENABLE_DISABLE_SPORTS": "启用/禁用运动项目。",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "活跃",
+      "HAS_EQUIPMENTS": "设备已存在",
+      "IMAGE": "图像",
+      "LABEL": "标签"
+    },
+    "TITLE": "设备管理"
+  },
+  "NEW_EMAIL": "新邮箱",
+  "NO_TEXT_ENTERED": "未输入文本",
+  "PASSWORD_RESET_SUCCESSFUL": "密码已重置。",
+  "PRIVACY_POLICY_DESCRIPTION": "添加您自己的隐私政策，或留空以使用默认隐私政策。可以使用 Markdown 语法。",
+  "REGISTRATION_DISABLED": "当前注册已禁用。",
+  "REGISTRATION_ENABLED": "当前注册已启用。",
+  "RESET_USER_PASSWORD": "重置密码",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "活跃",
+      "HAS_WORKOUTS": "锻炼记录已存在",
+      "IMAGE": "图像",
+      "LABEL": "标签"
+    },
+    "TITLE": "运动项目管理"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "更新应用程序配置。",
+  "UPDATE_USER_EMAIL": "更新邮箱",
+  "USER": "用户",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "CREATED_AT": "注册日期",
+        "IS_ACTIVE": "账号状态",
+        "ROLE": "角色",
+        "USERNAME": "用户名",
+        "WORKOUTS_COUNT": "锻炼次数"
+      }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "更改角色",
+      "CHANGE_TO_ADMIN": "更改为管理员",
+      "CHANGE_TO_MODERATOR": "更改为版主",
+      "CHANGE_TO_USER": "更改为用户"
+    },
+    "TITLE": "管理 - 用户"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "邮箱地址已更新。"
+}
