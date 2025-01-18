@@ -1,57 +1,30 @@
+# Chinese (Simplified) translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-18 15:41+0100\n"
 "PO-Revision-Date: 2025-01-18 08:51+0000\n"
 "Last-Translator: Poesty Li <poesty7450@gmail.com>\n"
-"Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
-"projects/fittrackee/fittrackee-api-emails/zh_Hans/>\n"
 "Language: zh_Hans\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: Chinese (Simplified Han script) "
+"<https://hosted.weblate.org/projects/fittrackee/fittrackee-api-"
+"emails/zh_Hans/>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
 #, python-format
 msgid "Hi %(username)s,"
 msgstr "您好 %(username)s，"
-
-#: fittrackee/emails/templates/layout.html:238
-#: fittrackee/emails/templates/layout.txt:5
-msgid "Thanks,"
-msgstr "谢谢，"
-
-#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
-msgid "Appeal rejected"
-msgstr "申诉被驳回"
-
-#: fittrackee/emails/templates/data_export_ready/body.html:3
-msgid "A download link is available in your account."
-msgstr "下载链接可在您的账号中找到。"
-
-#: fittrackee/emails/templates/data_export_ready/body.html:4
-#: fittrackee/emails/templates/data_export_ready/body.txt:1
-msgid "You have requested an export of your account on FitTrackee."
-msgstr "您已请求导出 FitTrackee 上的账号。"
-
-#: fittrackee/emails/templates/data_export_ready/body.html:4
-#: fittrackee/emails/templates/data_export_ready/body.txt:2
-msgid "The archive is now ready to be downloaded from your account."
-msgstr "归档现已准备好，可以从您的账号下载。"
-
-#: fittrackee/emails/templates/password_change/body.html:5
-#: fittrackee/emails/templates/password_change/body.txt:4
-msgid ""
-"If this password change wasn't initiated by you, please change your "
-"password immediately or contact your administrator if your account is "
-"locked."
-msgstr "如果这次密码更改不是由您发起的，请立即更改密码，或者如果您的账号被锁定，请联"
-"系管理员。"
-
-#: fittrackee/emails/templates/password_reset_request/body.html:4
-msgid "Use the button below to reset it."
-msgstr "使用下面的按钮重置密码。"
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:6
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
@@ -64,6 +37,11 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr "出于安全考虑，此请求来自使用 %(browser_name)s 的 %(operating_system)s 设备。"
+
+#: fittrackee/emails/templates/layout.html:238
+#: fittrackee/emails/templates/layout.txt:5
+msgid "Thanks,"
+msgstr "谢谢，"
 
 #: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
@@ -178,6 +156,10 @@ msgstr "锻炼："
 msgid "Link:"
 msgstr "链接："
 
+#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
+msgid "Appeal rejected"
+msgstr "申诉被驳回"
+
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
@@ -240,6 +222,20 @@ msgstr "您的评论暂停已被解除，现在可见"
 msgid "Your archive is ready to be downloaded"
 msgstr "您的归档已准备好下载"
 
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "下载链接可在您的账号中找到。"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "您已请求导出 FitTrackee 上的账号。"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "归档现已准备好，可以从您的账号下载。"
+
 #: fittrackee/emails/templates/data_export_ready/body.html:11
 #: fittrackee/emails/templates/data_export_ready/body.txt:4
 msgid "Download your archive"
@@ -273,8 +269,7 @@ msgstr "您最近请求将 FitTrackee 账号的电子邮箱地址更改为："
 msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
-msgstr "如果这次电子邮箱更改不是您本人发起的，请立即更改密码，或在您的账号被锁定时联"
-"系管理员。"
+msgstr "如果这次电子邮箱更改不是您本人发起的，请立即更改密码，或在您的账号被锁定时联系管理员。"
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
@@ -319,6 +314,14 @@ msgstr "您的密码已更改。"
 msgid "The password for your FitTrackee account has been changed."
 msgstr "FitTrackee 账号的密码已被更改。"
 
+#: fittrackee/emails/templates/password_change/body.html:5
+#: fittrackee/emails/templates/password_change/body.txt:4
+msgid ""
+"If this password change wasn't initiated by you, please change your "
+"password immediately or contact your administrator if your account is "
+"locked."
+msgstr "如果这次密码更改不是由您发起的，请立即更改密码，或者如果您的账号被锁定，请联系管理员。"
+
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
 msgid "Password reset request"
@@ -335,6 +338,10 @@ msgstr "使用此链接重置您的密码。该链接仅在%(expiration_delay)s�
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "You recently requested to reset your password for your FitTrackee account."
 msgstr "您最近请求重置 FitTrackee 账号的密码。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+msgid "Use the button below to reset it."
+msgstr "使用下面的按钮重置密码。"
 
 #: fittrackee/emails/templates/password_reset_request/body.html:5
 #: fittrackee/emails/templates/password_reset_request/body.txt:2
@@ -432,3 +439,4 @@ msgstr "您的锻炼暂停已被解除"
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
 msgstr "您的锻炼暂停已被解除，现在可见"
+

@@ -14,7 +14,7 @@ import nlMessages from '@/locales/nl/nl'
 import plMessages from '@/locales/pl/pl'
 import ptMessages from '@/locales/pt/pt'
 import ruMessages from '@/locales/ru/ru'
-// import zhHansMessages from '@/locales/zh_Hans/zh_Hans'
+import zhHansMessages from '@/locales/zh_Hans/zh_Hans'
 
 export default createI18n({
   legacy: false,
@@ -36,6 +36,6 @@ export default createI18n({
     pl: plMessages,
     pt: ptMessages,
     ru: ruMessages,
-    // zh_Hans: zhHansMessages,
+    zh_Hans: zhHansMessages,
   },
 })
