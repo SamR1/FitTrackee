@@ -1,5 +1,72 @@
 # Change log
 
+## Version 0.9.0 (2025/01/18)
+
+**FitTrackee** now allows you to follow other users, view their workouts according to the level of visibility and interact with them.
+
+The default privacy policy has been updated, as well as the link to the documentation.
+
+**Note**: This version also includes the changes from the beta versions.
+
+### Features and enhancements
+
+* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1st part]
+  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
+  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
+  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
+  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
+  * [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user profile
+* [PR#675](https://github.com/SamR1/FitTrackee/pull/675) - CLI - create user with provided role
+* [#691](https://github.com/SamR1/FitTrackee/issues/691) Support Markdown syntax in description and notes 
+
+### Bugs Fixed
+
+* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
+* [#682](https://github.com/SamR1/FitTrackee/issues/682) - Monthly statistics are incorrect
+* [#683](https://github.com/SamR1/FitTrackee/issues/683) - User time zone is not taken into account in statistics
+* [#680](https://github.com/SamR1/FitTrackee/issues/680) - accessibility and style fixes
+
+### Translations
+
+* [PR#688](https://github.com/SamR1/FitTrackee/pull/688) - Translations update (Basque, Galician)
+* [PR#690](https://github.com/SamR1/FitTrackee/pull/690) - Translations update (English, French, Basque, Galician)
+* [PR#692](https://github.com/SamR1/FitTrackee/pull/692) - Translations update (French)
+* [PR#695](https://github.com/SamR1/FitTrackee/pull/695) - Translations update (Chinese)
+* [PR#696](https://github.com/SamR1/FitTrackee/pull/696) - Translations update (Galician)
+* [#697](https://github.com/SamR1/FitTrackee/issues/697) - [translations request] Chinese (Simplified Han script) (zh_Hans) 
+
+Translation status:
+- Basque: 72%
+- Bulgarian: 64%
+- Chinese (Simplified): 48%
+- Czech: 47%
+- Dutch: 64%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 64%
+- Italian: 53%
+- Norwegian Bokmål: 34%
+- Polish: 64%
+- Portuguese: 63%
+- Russian: 64%
+- Spanish: 64%
+
+### Misc
+
+* [PR#685](https://github.com/SamR1/FitTrackee/pull/685) - Update link to documentation
+
+Thanks to the contributors:
+- @erral
+- @xmgz
+- Poesty Li
+
+**Note:** If you upgrade from the v0.8.x, there are migrations to apply (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.0b6 (2025/01/05)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
@@ -139,7 +206,7 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1s part]
+* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1st part]
   * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
   * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
   * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
