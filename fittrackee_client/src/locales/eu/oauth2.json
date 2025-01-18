@@ -12,12 +12,16 @@
       "application:write_DESCRIPTION": "aplikazioaren konfiguraziorako idazketa baimena ematen du.",
       "equipments:read_DESCRIPTION": "<code>equipments</code> zerbitzuetarako irakurketa baimena ematen du.",
       "equipments:write_DESCRIPTION": "<code>equipments</code> zerbitzuetarako idazketa baimena ematen du.",
+      "follow:read_DESCRIPTION": "jarraitzeko eskaera eta jarraitzaileen inguruko zerbitzuei irakurketa baimena ematen die.",
+      "follow:write_DESCRIPTION": "jarraitzeko eskaera eta jarraitzaileen inguruko zerbitzuei idazketa baimena ematen die.",
+      "notifications:read_DESCRIPTION": "<code>jakinarazpenen</code> zerbitzuei irakurketa baimena ematen die.",
+      "notifications:write_DESCRIPTION": "<code>jakinarazpenen</code> zerbitzuei idazketa baimena ematen die.",
       "profile:read_DESCRIPTION": "<code>auth</code> zerbitzuetarako irakurketa baimena ematen du.",
       "profile:write_DESCRIPTION": "<code>auth</code> zerbitzuetarako idazketa baimena ematen du.",
       "users:read_DESCRIPTION": "<code>users</code> zerbitzuetarako irakurketa baimena ematen du.",
       "users:write_DESCRIPTION": "<code>users</code> zerbitzuetarako idazketa baimena ematen du.",
-      "workouts:read_DESCRIPTION": "<code>workouts</code> zerbitzuetarako irakurketa baimena ematen du.",
-      "workouts:write_DESCRIPTION": "<code>workouts</code> zerbitzuetarako idazketa baimena ematen du."
+      "workouts:read_DESCRIPTION": "ekintzen eta iruzkinen zerbitzuetarako irakurketa baimena ematen du.",
+      "workouts:write_DESCRIPTION": "ekintzen eta iruzkinen zerbitzuetarako idazketa baimena ematen du."
     },
     "URL": "Aplikazioaren URLa"
   },
@@ -31,7 +35,6 @@
   "NEW_APP": "Gehitu aplikazioa",
   "NO_APP": "Aplikazioa ez da aurkitu!",
   "NO_APPS": "ez dago aplikaziorik",
-  "NO_DESCRIPTION": "deskribapenik ez",
   "REVOKE_ALL_TOKENS": "Baliogabetu token guztiak",
   "TOKENS_REVOCATION_CONFIRMATION": "Ziur zaude token guztiak baliogabetu nahi dituzula?",
   "TOKENS_REVOKED": "Lotutako token guztiak baliogabetu egin dira."

@@ -14,7 +14,8 @@
   "LABEL": "popisek",
   "MINUTES": "minuta|minuty",
   "NEXT": "další",
-  "NO_DESCRIPTION": "bez popisu",
+  "NO_DESCRIPTION": "Bez popisu",
+  "NO_NOTES": "Žádné poznámky",
   "PREVIOUS": "předchozí",
   "SECONDS": "sekunda|sekundy",
   "SELECTS": {

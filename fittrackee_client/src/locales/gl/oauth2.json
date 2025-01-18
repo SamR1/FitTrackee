@@ -12,12 +12,18 @@
       "application:write_DESCRIPTION": "concede acceso a escritura na configuración da aplicación.",
       "equipments:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>equipments</code>.",
       "equipments:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>equipments</code>.",
+      "follow:read_DESCRIPTION": "concede permiso de lectura nos puntos de acceso relacionados con solicitudes de seguimento e seguidoras.",
+      "follow:write_DESCRIPTION": "concede permiso de escritura nos puntos de acceso para solicitudes de seguimento e seguidoras.",
+      "notifications:read_DESCRIPTION": "concede permiso de lectura para puntos de acceso para <code>notificacións</code>.",
+      "notifications:write_DESCRIPTION": "concede permiso de escritura para puntos de acceso de <code>notificacións</code>.",
       "profile:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>auth</code>.",
       "profile:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>auth</code>.",
+      "reports:read_DESCRIPTION": "concede permiso de lectura para puntos de acceso sobre <code>denuncias</code>.",
+      "reports:write_DESCRIPTION": "concede permisos de escritura para puntos de acceso sobre <code>denuncias</code>.",
       "users:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>users</code>.",
       "users:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>users</code>.",
-      "workouts:read_DESCRIPTION": "concede permiso de lectura aos puntos de acceso <code>workouts</code>.",
-      "workouts:write_DESCRIPTION": "concede permisos de escritura aos puntos de acceso <code>workouts</code>."
+      "workouts:read_DESCRIPTION": "concede permiso de lectura aos puntos de acceso de actividades e comentarios.",
+      "workouts:write_DESCRIPTION": "concede permiso de escritura aos puntos de acceso sobre actividades e comentarios."
     },
     "URL": "URL da aplicación"
   },
@@ -31,7 +37,6 @@
   "NEW_APP": "Engadir unha aplicación",
   "NO_APP": "Non se atopa a aplicación!",
   "NO_APPS": "sen aplicacións",
-  "NO_DESCRIPTION": "sen descrición",
   "REVOKE_ALL_TOKENS": "Revogar todas as chaves",
   "TOKENS_REVOCATION_CONFIRMATION": "Tes a certeza de querer eliminar todas as chaves de acceso?",
   "TOKENS_REVOKED": "Foron revogadas todas as chaves de acceso asociadas."

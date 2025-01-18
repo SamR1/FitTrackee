@@ -9,6 +9,7 @@
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statistiques sur toutes les séances :",
   "STATISTICS_ON_LAST_WORKOUTS": "Statistiques sur les {count} dernières séances :",
+  "STATISTICS_TYPE": "Type de statistique",
   "STATISTICS_TYPES": {
     "by_sport": "par sport",
     "by_time": "par période de temps"

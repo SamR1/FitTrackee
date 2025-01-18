@@ -1,7 +1,11 @@
 {
   "APP_ERROR": "A aplicación atopou algún problema.<br />Inténtao máis tarde ou contacta coa administración.",
   "NOT_FOUND": {
+    "COMMENT": "Non se atopa o comentario",
     "PAGE": "Non se atopa a páxina",
+    "REPORT": "Non se atopa a denuncia",
+    "SEGMENT": "Non se atopa o segmento",
+    "USER": "Non se atopa a usuaria",
     "WORKOUT": "Non se atopa o adestramento"
   },
   "SOMETHING_WRONG": "Algo fallou",

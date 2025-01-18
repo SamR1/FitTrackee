@@ -4,6 +4,7 @@ export const loadLanguagePackage = async (language: string) => {
   // no package available for
   // - Basque
   // - Bulgarian
+  // - Chinese
   // - Dutch (nl-NL)
   // - Galician
   // - Norwegian bokmål

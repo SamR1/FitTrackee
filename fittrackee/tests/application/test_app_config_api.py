@@ -1,10 +1,10 @@
 import json
 from datetime import datetime
 from typing import Optional
-from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.application.models import AppConfig
@@ -23,14 +23,15 @@ class TestGetConfig(ApiTestCaseMixin):
 
         response = client.get('/api/config')
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data'] == jsonify_dict(app_config.serialize())
 
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
     ) -> None:
+        app_config = AppConfig.query.first()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -40,9 +41,28 @@ class TestGetConfig(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        data = json.loads(response.data.decode())
         assert response.status_code == 200
+        data = json.loads(response.data.decode())
         assert 'success' in data['status']
+        assert data['data'] == jsonify_dict(app_config.serialize())
+
+    def test_it_gets_application_config_when_user_is_suspended(
+        self, app: Flask, suspended_user: User
+    ) -> None:
+        app_config = AppConfig.query.first()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            '/api/config',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert 'success' in data['status']
+        assert data['data'] == jsonify_dict(app_config.serialize())
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
@@ -425,10 +445,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         privacy_policy = self.random_string()
         privacy_policy_date = datetime.utcnow()
 
-        with patch(
-            'fittrackee.application.app_config.datetime'
-        ) as datetime_mock:
-            datetime_mock.utcnow = Mock(return_value=privacy_policy_date)
+        with travel(privacy_policy_date, tick=False):
             response = client.patch(
                 '/api/config',
                 content_type='application/json',
@@ -445,7 +462,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         ] == privacy_policy_date.strftime('%a, %d %b %Y %H:%M:%S GMT')
 
     @pytest.mark.parametrize('input_privacy_policy', ['', None])
-    def test_it_empties_privacy_policy_date_when_no_privacy_policy(
+    def test_it_return_default_privacy_policy_date_when_no_privacy_policy(
         self,
         app: Flask,
         user_1_admin: User,
@@ -470,7 +487,10 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
         assert data['data']['privacy_policy'] is None
-        assert data['data']['privacy_policy_date'] is None
+        assert (
+            data['data']['privacy_policy_date']
+            == app.config['DEFAULT_PRIVACY_POLICY_DATA']
+        )
 
     @pytest.mark.parametrize(
         'client_scope, can_access',

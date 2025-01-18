@@ -7,21 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-03-04 10:33+0100\n"
+"POT-Creation-Date: 2024-11-01 19:45+0100\n"
 "PO-Revision-Date: 2023-06-17 20:51+0000\n"
 "Last-Translator: Mariusz <rf4u2frd@duck.com>\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/pl/>\n"
 "Language: pl\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/pl/>\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.18.1\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.16.0\n"
 
-#: fittrackee/emails/templates/layout.html:215
+#: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
 #, python-format
 msgid "Hi %(username)s,"
@@ -30,7 +29,7 @@ msgstr "Cześć %(username)s,"
 #: fittrackee/emails/templates/account_confirmation/body.txt:6
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
-#: fittrackee/emails/templates/layout.html:218
+#: fittrackee/emails/templates/layout.html:235
 #: fittrackee/emails/templates/password_change/body.txt:3
 #: fittrackee/emails/templates/password_reset_request/body.txt:6
 #, python-format
@@ -41,12 +40,12 @@ msgstr ""
 "Dla bezpieczeństwa, to żądanie zostało wysłane z %(operating_system)s "
 "używającego %(browser_name)s."
 
-#: fittrackee/emails/templates/layout.html:221
+#: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
 msgstr "Dzięki,"
 
-#: fittrackee/emails/templates/layout.html:222
+#: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
 msgid "The FitTrackee Team"
 msgstr "Ekipa FitTrackee"
@@ -84,19 +83,143 @@ msgid ""
 msgstr "Jeśli nie zlecałeś(-aś) utworzenia konta, proszę zignoruj tę wiadomość."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/comment_suspension/body.html:37
 #: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
 #: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/user_warning/body.html:58
+#: fittrackee/emails/templates/workout_suspension/body.html:40
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Jeśli masz problem z powyższym przyciskiem, skopiuj i wklej poniższy adres "
-"do swojej przeglądarki."
+"Jeśli masz problem z powyższym przyciskiem, skopiuj i wklej poniższy "
+"adres do swojej przeglądarki."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
 msgstr "Użyj poniższego linka by potwierdzić swój adres e-mail."
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:3
+msgid "Your appeal has been rejected"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your account suspension has been rejected"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your warning has been rejected"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on the following content suspension has been rejected"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:6
+#: fittrackee/emails/templates/appeal_rejected/body.txt:3
+#: fittrackee/emails/templates/comment_suspension/body.txt:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:5
+#: fittrackee/emails/templates/user_warning/body.html:7
+#: fittrackee/emails/templates/user_warning/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.html:6
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:3
+msgid "Comment:"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:22
+#: fittrackee/emails/templates/appeal_rejected/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.html:23
+#: fittrackee/emails/templates/user_warning/body.txt:9
+#: fittrackee/emails/templates/user_warning_lifting/body.html:22
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:7
+#: fittrackee/emails/templates/workout_suspension/body.txt:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:5
+msgid "Workout:"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/body.txt:5
+#: fittrackee/emails/templates/appeal_rejected/body.txt:9
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:11
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:9
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:7
+msgid "Link:"
+msgstr ""
+
+#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
+msgid "Appeal rejected"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:2
+#: fittrackee/emails/templates/comment_suspension/subject.txt:1
+msgid "Your comment has been suspended"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:3
+#: fittrackee/emails/templates/comment_suspension/body.html:4
+#: fittrackee/emails/templates/comment_suspension/body.txt:1
+msgid "Your comment has been suspended, it is no longer visible"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:5
+#: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:3
+#: fittrackee/emails/templates/workout_suspension/body.html:5
+#: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
+msgid "Reason:"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:20
+#: fittrackee/emails/templates/comment_suspension/body.txt:7
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/user_warning/body.html:41
+#: fittrackee/emails/templates/user_warning/body.txt:13
+#: fittrackee/emails/templates/workout_suspension/body.html:23
+#: fittrackee/emails/templates/workout_suspension/body.txt:7
+msgid "If you think this is an error, you can appeal:"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_suspension/body.html:27
+#: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/user_warning/body.html:48
+#: fittrackee/emails/templates/workout_suspension/body.html:30
+msgid "Appeal"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
+msgstr ""
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
@@ -146,7 +269,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
-"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee na:"
+"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee "
+"na:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
@@ -154,8 +278,9 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
-"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zmień hasło do swojego konta "
-"lub skontaktuj się z administratorem, jeśli twoje konto jest zablokowane."
+"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zmień hasło do swojego "
+"konta lub skontaktuj się z administratorem, jeśli twoje konto jest "
+"zablokowane."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
@@ -171,8 +296,7 @@ msgstr "Użyj tego linku aby potwierdzić zmianę adresu e-mail."
 msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
-msgstr ""
-"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee."
+msgstr "Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
@@ -182,7 +306,8 @@ msgstr "Użyj poniższego przycisku aby potwierdzić ten adres."
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zignoruj proszę tę wiadomość."
+"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zignoruj proszę tę "
+"wiadomość."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
@@ -254,3 +379,81 @@ msgstr "Jeśli nie zlecałeś(-aś) resetu hasła, zignoruj proszę tę wiadomo�
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
 msgstr "Użyj poniższego linku aby je zresetować."
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+msgid "Your account has been suspended"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr ""
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr ""
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+msgid "Your account has been reactivated"
+msgstr ""
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr ""
+
+#: fittrackee/emails/templates/user_warning/body.html:2
+#: fittrackee/emails/templates/user_warning/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s"
+msgstr ""
+
+#: fittrackee/emails/templates/user_warning/body.html:3
+#: fittrackee/emails/templates/user_warning/body.html:4
+#: fittrackee/emails/templates/user_warning/body.txt:1
+msgid "You received a warning"
+msgstr ""
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:3
+#: fittrackee/emails/templates/user_warning_lifting/body.html:4
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:1
+msgid "Your warning has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_suspension/body.html:2
+#: fittrackee/emails/templates/workout_suspension/subject.txt:1
+msgid "Your workout has been suspended"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_suspension/body.html:3
+#: fittrackee/emails/templates/workout_suspension/body.html:4
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
+msgid "Your workout has been suspended, it is no longer visible"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr ""
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr ""
+

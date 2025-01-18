@@ -1,0 +1,442 @@
+# Chinese (Simplified) translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-18 15:41+0100\n"
+"PO-Revision-Date: 2025-01-18 08:51+0000\n"
+"Last-Translator: Poesty Li <poesty7450@gmail.com>\n"
+"Language: zh_Hans\n"
+"Language-Team: Chinese (Simplified Han script) "
+"<https://hosted.weblate.org/projects/fittrackee/fittrackee-api-"
+"emails/zh_Hans/>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: fittrackee/emails/templates/layout.html:232
+#: fittrackee/emails/templates/layout.txt:1
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "您好 %(username)s，"
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:6
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
+#: fittrackee/emails/templates/layout.html:235
+#: fittrackee/emails/templates/password_change/body.txt:3
+#: fittrackee/emails/templates/password_reset_request/body.txt:6
+#, python-format
+msgid ""
+"For security, this request was received from a %(operating_system)s "
+"device using %(browser_name)s."
+msgstr "出于安全考虑，此请求来自使用 %(browser_name)s 的 %(operating_system)s 设备。"
+
+#: fittrackee/emails/templates/layout.html:238
+#: fittrackee/emails/templates/layout.txt:5
+msgid "Thanks,"
+msgstr "谢谢，"
+
+#: fittrackee/emails/templates/layout.html:239
+#: fittrackee/emails/templates/layout.txt:6
+msgid "The FitTrackee Team"
+msgstr "FitTrackee 团队"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:2
+#: fittrackee/emails/templates/account_confirmation/subject.txt:1
+msgid "Confirm your account"
+msgstr "确认您的账号"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:3
+msgid "Use this link to confirm your account."
+msgstr "使用此链接确认您的账号。"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+#: fittrackee/emails/templates/account_confirmation/body.txt:1
+msgid "You have created an account on FitTrackee."
+msgstr "您已在 FitTrackee 创建了一个账号。"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+msgid "Use the button below to confirm your address email."
+msgstr "使用下面的按钮确认您的电子邮箱地址。"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:11
+#: fittrackee/emails/templates/account_confirmation/body.txt:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:11
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
+msgid "Verify your email"
+msgstr "验证您的电子邮箱"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:18
+#: fittrackee/emails/templates/account_confirmation/body.txt:7
+msgid ""
+"If this account creation wasn't initiated by you, please ignore this "
+"email."
+msgstr "如果这个账号不是您本人创建的，请忽略此邮件。"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/comment_suspension/body.html:37
+#: fittrackee/emails/templates/data_export_ready/body.html:22
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:22
+#: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/user_warning/body.html:58
+#: fittrackee/emails/templates/workout_suspension/body.html:40
+msgid ""
+"If you're having trouble with the button above, copy and paste the URL "
+"below into your web browser."
+msgstr "如果上面的按钮无法使用，请复制并粘贴下面的网址到您的网页浏览器。"
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:2
+msgid "Use the link below to confirm your address email."
+msgstr "使用下面的链接确认您的电子邮箱地址。"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s lifted"
+msgstr "%(username)s 的警告已解除"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:3
+msgid "Your appeal has been rejected"
+msgstr "您的申诉已被驳回"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your account suspension has been rejected"
+msgstr "您关于账号暂停的申诉已被驳回"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your warning has been rejected"
+msgstr "您关于警告的申诉已被驳回"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on the following content suspension has been rejected"
+msgstr "您关于以下内容暂停的申诉已被驳回"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:6
+#: fittrackee/emails/templates/appeal_rejected/body.txt:3
+#: fittrackee/emails/templates/comment_suspension/body.txt:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:5
+#: fittrackee/emails/templates/user_warning/body.html:7
+#: fittrackee/emails/templates/user_warning/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.html:6
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:3
+msgid "Comment:"
+msgstr "评论："
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:22
+#: fittrackee/emails/templates/appeal_rejected/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.html:23
+#: fittrackee/emails/templates/user_warning/body.txt:9
+#: fittrackee/emails/templates/user_warning_lifting/body.html:22
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:7
+#: fittrackee/emails/templates/workout_suspension/body.txt:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:5
+msgid "Workout:"
+msgstr "锻炼："
+
+#: fittrackee/emails/templates/appeal_rejected/body.txt:5
+#: fittrackee/emails/templates/appeal_rejected/body.txt:9
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:11
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:9
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:7
+msgid "Link:"
+msgstr "链接："
+
+#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
+msgid "Appeal rejected"
+msgstr "申诉被驳回"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:2
+#: fittrackee/emails/templates/comment_suspension/subject.txt:1
+msgid "Your comment has been suspended"
+msgstr "您的评论已被暂停"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:3
+#: fittrackee/emails/templates/comment_suspension/body.html:4
+#: fittrackee/emails/templates/comment_suspension/body.txt:1
+msgid "Your comment has been suspended, it is no longer visible"
+msgstr "您的评论已被暂停，不再可见"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:5
+#: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:3
+#: fittrackee/emails/templates/workout_suspension/body.html:5
+#: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
+msgid "Reason:"
+msgstr "原因："
+
+#: fittrackee/emails/templates/comment_suspension/body.html:20
+#: fittrackee/emails/templates/comment_suspension/body.txt:7
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/user_warning/body.html:41
+#: fittrackee/emails/templates/user_warning/body.txt:13
+#: fittrackee/emails/templates/workout_suspension/body.html:23
+#: fittrackee/emails/templates/workout_suspension/body.txt:7
+msgid "If you think this is an error, you can appeal:"
+msgstr "如果您认为这是一个错误，您可以提出申诉："
+
+#: fittrackee/emails/templates/comment_suspension/body.html:27
+#: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/user_warning/body.html:48
+#: fittrackee/emails/templates/workout_suspension/body.html:30
+msgid "Appeal"
+msgstr "申诉"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr "您的评论暂停已被解除"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
+msgstr "您的评论暂停已被解除，现在可见"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:2
+#: fittrackee/emails/templates/data_export_ready/subject.txt:1
+msgid "Your archive is ready to be downloaded"
+msgstr "您的归档已准备好下载"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "下载链接可在您的账号中找到。"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "您已请求导出 FitTrackee 上的账号。"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "归档现已准备好，可以从您的账号下载。"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:11
+#: fittrackee/emails/templates/data_export_ready/body.txt:4
+msgid "Download your archive"
+msgstr "下载您的归档"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:18
+#: fittrackee/emails/templates/data_export_ready/body.txt:5
+msgid ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
+msgstr "如果您未请求导出，请立即更改密码，或在您的账号被锁定时联系管理员。"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
+msgid "Email changed"
+msgstr "电子邮箱已更改"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:3
+msgid "Your email is being updated."
+msgstr "正在更新您的电子邮件。"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account to:"
+msgstr "您最近请求将 FitTrackee 账号的电子邮箱地址更改为："
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
+msgid ""
+"If this email change wasn't initiated by you, please change your password"
+" immediately or contact your administrator if your account is locked."
+msgstr "如果这次电子邮箱更改不是您本人发起的，请立即更改密码，或在您的账号被锁定时联系管理员。"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
+msgid "Confirm email change"
+msgstr "确认电子邮件更改"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:3
+msgid "Use this link to confirm email change."
+msgstr "使用此链接确认电子邮箱更改。"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account."
+msgstr "您最近请求更改 FitTrackee 账号的电子邮箱地址。"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+msgid "Use the button below to confirm this address."
+msgstr "使用下面的按钮确认此地址。"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
+msgid "If this email change wasn't initiated by you, please ignore this email."
+msgstr "如果这次电子邮箱更改不是您本人发起的，请忽略此邮件。"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
+msgid "Use the link below to confirm this address."
+msgstr "使用下面的链接确认此地址。"
+
+#: fittrackee/emails/templates/password_change/body.html:2
+#: fittrackee/emails/templates/password_change/subject.txt:1
+msgid "Password changed"
+msgstr "密码已更改"
+
+#: fittrackee/emails/templates/password_change/body.html:3
+msgid "Your password has been changed."
+msgstr "您的密码已更改。"
+
+#: fittrackee/emails/templates/password_change/body.html:4
+#: fittrackee/emails/templates/password_change/body.txt:1
+msgid "The password for your FitTrackee account has been changed."
+msgstr "FitTrackee 账号的密码已被更改。"
+
+#: fittrackee/emails/templates/password_change/body.html:5
+#: fittrackee/emails/templates/password_change/body.txt:4
+msgid ""
+"If this password change wasn't initiated by you, please change your "
+"password immediately or contact your administrator if your account is "
+"locked."
+msgstr "如果这次密码更改不是由您发起的，请立即更改密码，或者如果您的账号被锁定，请联系管理员。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:2
+#: fittrackee/emails/templates/password_reset_request/subject.txt:1
+msgid "Password reset request"
+msgstr "密码重置请求"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:3
+#, python-format
+msgid ""
+"Use this link to reset your password. The link is only valid for "
+"%(expiration_delay)s."
+msgstr "使用此链接重置您的密码。该链接仅在%(expiration_delay)s内有效。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "You recently requested to reset your password for your FitTrackee account."
+msgstr "您最近请求重置 FitTrackee 账号的密码。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+msgid "Use the button below to reset it."
+msgstr "使用下面的按钮重置密码。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:5
+#: fittrackee/emails/templates/password_reset_request/body.txt:2
+#, python-format
+msgid "This password reset link is only valid for %(expiration_delay)s."
+msgstr "此密码重置链接仅在%(expiration_delay)s内有效。"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:13
+#: fittrackee/emails/templates/password_reset_request/body.txt:4
+msgid "Reset your password"
+msgstr "重置您的密码"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:20
+#: fittrackee/emails/templates/password_reset_request/body.txt:7
+msgid "If you did not request a password reset, please ignore this email."
+msgstr "如果您未请求密码重置，请忽略此邮件。"
+
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "Use the link below to reset it."
+msgstr "使用下面的链接重置密码。"
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+msgid "Your account has been suspended"
+msgstr "您的账号已被暂停"
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr "您无法再使用您的账号，且您的个人资料不再可访问"
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr "您仍可登录以请求导出数据或删除账号"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+msgid "Your account has been reactivated"
+msgstr "您的账号已被重新激活"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr "您现在可以使用 FitTrackee 的所有功能"
+
+#: fittrackee/emails/templates/user_warning/body.html:2
+#: fittrackee/emails/templates/user_warning/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s"
+msgstr "对于%(username)s的警告"
+
+#: fittrackee/emails/templates/user_warning/body.html:3
+#: fittrackee/emails/templates/user_warning/body.html:4
+#: fittrackee/emails/templates/user_warning/body.txt:1
+msgid "You received a warning"
+msgstr "您收到了一个警告"
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:3
+#: fittrackee/emails/templates/user_warning_lifting/body.html:4
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:1
+msgid "Your warning has been lifted"
+msgstr "您的警告已被解除"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:2
+#: fittrackee/emails/templates/workout_suspension/subject.txt:1
+msgid "Your workout has been suspended"
+msgstr "您的锻炼已被暂停"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:3
+#: fittrackee/emails/templates/workout_suspension/body.html:4
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
+msgid "Your workout has been suspended, it is no longer visible"
+msgstr "您的锻炼已被暂停，不再可见"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr "您的锻炼暂停已被解除"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr "您的锻炼暂停已被解除，现在可见"
+

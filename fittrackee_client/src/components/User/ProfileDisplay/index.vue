@@ -9,20 +9,42 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import UserHeader from '@/components/User/ProfileDisplay/UserHeader.vue'
   import UserProfileTabs from '@/components/User/UserProfileTabs.vue'
+  import { AUTH_USER_STORE } from '@/store/constants'
   import type { IUserProfile } from '@/types/user'
+  import { useStore } from '@/use/useStore'
 
   interface Props {
     user: IUserProfile
     tab: string
   }
   const props = defineProps<Props>()
-
   const { user, tab } = toRefs(props)
-  const tabs = ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS']
+
+  const store = useStore()
+
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
+  )
+  const tabs = computed(() =>
+    isSuspended.value
+      ? ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS', 'MODERATION']
+      : [
+          'PROFILE',
+          'PREFERENCES',
+          'SPORTS',
+          'EQUIPMENTS',
+          'APPS',
+          'FOLLOW-REQUESTS',
+          'BLOCKED-USERS',
+          'NOTIFICATIONS',
+          'MODERATION',
+        ]
+  )
 </script>
 
 <style lang="scss" scoped>

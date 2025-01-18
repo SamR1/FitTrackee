@@ -6,13 +6,13 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation - Documentation FitTrackee 0.8.13</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+        <title>Installation - Documentation FitTrackee 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css?v=876feb3b" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=0cba77a2" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=00b9e757" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.8.13
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.13
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -215,12 +215,17 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l’API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/users.html">Utilisateurs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/workouts.html">Séances</a></li>
 </ul>
@@ -283,23 +288,25 @@
         <article role="main" id="furo-main-content">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Lien vers cette rubrique">¶</a></h1>
-<div class="line-block">
-<div class="line"><strong>FitTrackee</strong> peut être installé via un seul <a class="reference external" href="https://pypi.org/project/fittrackee/">paquet Python à partir de PyPI</a> ou à partir des sources après avoir cloné le dépôt.</div>
-</div>
-<div class="line-block">
-<div class="line">Dans le cas d’une instance avec un seul utilisateur, il est possible de désactiver l’inscription. Ainsi, seuls Python et PostgreSQL sont nécessaires. Une <a class="reference external" href="cli.html#users">interface de ligne de commande</a> est disponible pour gérer le compte utilisateur.</div>
-</div>
+<p><strong>FitTrackee</strong> peut être installé :</p>
+<ul class="simple">
+<li><p>grâce un simple paquet Python à partir de <a class="reference external" href="https://pypi.org/project/fittrackee/">PyPI</a>,</p></li>
+<li><p>à partir des sources,</p></li>
+<li><p>avec une image <a class="reference external" href="installation.html#docker">Docker</a>.</p></li>
+</ul>
+<p>Grâce aux contributeurs, des paquets sont également disponibles sur <a class="reference external" href="installation.html#yunohost">Yunohost</a> et <a class="reference external" href="installation.html#nixos">NixOS</a>.</p>
+<p>Dans le cas d’une instance avec un seul utilisateur, il est possible de désactiver l’inscription. Ainsi, seuls Python et PostgreSQL sont nécessaires. Une <a class="reference external" href="cli.html#users">interface de ligne de commande</a> est disponible pour gérer le compte utilisateur.</p>
 <div class="line-block">
 <div class="line">Les étapes suivantes décrivent l’installation sur des systèmes Linux (testées sur un système d’exploitation basé sur ArchLinux et sur Ubuntu en intégration continue).</div>
 <div class="line">Sur d’autres systèmes d’exploitations, des problèmes peuvent être rencontrés et des adaptations nécessaires.</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<div class="line-block">
-<div class="line">D’autres guides d’installation sont disponibles grâce aux contributeurs :</div>
-<div class="line">- <a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation sur l'hébergement web Uberspace (guide en anglais)</a></div>
-<div class="line">- <a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation sur Debian 12 net install (guide en allemand)</a></div>
-</div>
+<p>D’autres guides d’installation sont disponibles grâce aux contributeurs :</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://lab.uberspace.de/guide_fittrackee/">Installation sur l’hébergement web Uberspace</a> (guide en anglais)</p></li>
+<li><p><a class="reference external" href="https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/">Installation sur Debian 12 net install (guide en allemand)</a></p></li>
+</ul>
 </div>
 <section id="main-dependencies">
 <h2>Dépendances principales<a class="headerlink" href="#main-dependencies" title="Lien vers cette rubrique">¶</a></h2>
@@ -501,7 +508,11 @@
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-UI_URL">
 <span class="sig-name descname"><span class="pre">UI_URL</span></span><a class="headerlink" href="#envvar-UI_URL" title="Lien vers cette définition">¶</a></dt>
-<dd><p>URL de <strong>FitTrackee</strong>, nécessaire pour les liens dans les courriels.</p>
+<dd><p>URL de <strong>FitTrackee</strong>, nécessaire pour les liens dans les courriels et les mentions sur l’interface.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>UI_URL doit contenir le schéma d’URI (<code class="docutils literal notranslate"><span class="pre">https://</span></code>).</p>
+</div>
 </dd></dl>
 
 <dl class="std envvar">
@@ -680,12 +691,11 @@
 <p>URL de l’API de <strong>FitTrackee</strong>, nécessaire uniquement pour l’environnement de développement.</p>
 </dd></dl>
 
-<section id="docker">
-<h3>Docker<a class="headerlink" href="#docker" title="Lien vers cette rubrique">¶</a></h3>
+<section id="docker-compose">
+<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.8.13.</span></p>
 </div>
-<p>Variables d’environnement pour <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code></p>
 <dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-APP_PORT">
 <span class="sig-name descname"><span class="pre">APP_PORT</span></span><a class="headerlink" href="#envvar-APP_PORT" title="Lien vers cette définition">¶</a></dt>
@@ -741,25 +751,29 @@
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.3.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.5.3: </span>Les informations d’identification et le port peuvent être omis</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.5: </span>Désactivation de l’envoi des courriels</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.24: </span>Gestion des caractères spéciaux dans le mot de passe</p>
+</div>
 <p>Pour l’envoi des courriels, une valeur valide pour la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> doit être fourni :</p>
 <ul class="simple">
 <li><p>avec un SMTP server sans chiffrement : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:25</span></code></p></li>
 <li><p>avec SSL : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:465/?ssl=True</span></code></p></li>
 <li><p>avec STARTTLS : <code class="docutils literal notranslate"><span class="pre">smtp://username:password&#64;smtp.example.com:587/?tls=True</span></code></p></li>
 </ul>
+<p>Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>. Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code>, the port utilisé par défault est 25.</p>
+<p>Le mot de passe peut être encodé s’il contient des caractères spéciaux. Par exemple avec le mot de passe <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, le mot de passe encodé sera <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
 <div class="line">Si l’URL du serveur est invalide, l’envoi des courriels sera désactivé.</div>
 <div class="line">L’envoi de courriels avec Office365 peut ne pas fonctionner si l’authentification SMTP est désactivée.</div>
 </div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.5.3.</span></p>
-</div>
-<div class="line-block">
-<div class="line">Les informations d’identification peuvent être omises : <code class="docutils literal notranslate"><span class="pre">smtp://smtp.example.com:25</span></code>.</div>
-<div class="line">Si <code class="docutils literal notranslate"><span class="pre">:&lt;port&gt;</span></code> est omis, the port par défaut est 25.</div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -774,21 +788,23 @@
 <li><p>changement d’adresse électronique (vers l’ancienne et la nouvelle adresse)</p></li>
 <li><p>changement de mot de passe</p></li>
 <li><p>notification lorsqu’une archive d’export de données est prête à être téléchargée (<em>ajouté dans la version 0.7.13</em>)</p></li>
+<li><p>suspension et avertissement (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>levée de suspension et d’avertissement (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>appel rejeté (<em>nouveau dans la version 0.9.0</em>)</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.6.5.</span></p>
-</div>
 <p>Dans le cas des instances avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
 <p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.24.</span></p>
-</div>
-<p>Le mot de passe peut être encodé s’il contient des caractères spéciaux. Par exemple avec le mot de passe <code class="docutils literal notranslate"><span class="pre">passwordwith&#64;and&amp;and?</span></code>, le mot de passe encodé sera <code class="docutils literal notranslate"><span class="pre">passwordwith%40and%26and%3F</span></code>.</p>
 </section>
 <section id="map-tile-server">
 <h2>Serveur de tuiles<a class="headerlink" href="#map-tile-server" title="Lien vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.4.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.10: </span>Gestion des sous-domaines du serveur de tuile</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.23: </span>Le serveur de tuiles par défaut (<strong>OpenStreetMap</strong>) ne nécessite plus de sous-domaines.</p>
 </div>
 <p>Le serveur de tuiles par défaut est maintenant le serveur standard d”<strong>OpenStreetMap</strong> (si les variables d’environnements ne sont pas initialisées). Le serveur de tuile peut être changé en modifiant les variables <code class="docutils literal notranslate"><span class="pre">TILE_SERVER_URL</span></code> et <code class="docutils literal notranslate"><span class="pre">MAP_ATTRIBUTION</span></code> (<a class="reference external" href="https://wiki.openstreetmap.org/wiki/Raster_tile_providers">liste des serveurs de tuiles</a>).</p>
 <p>Pour conserver <strong>ThunderForest Outdoors</strong>, la configuration est :</p>
@@ -802,9 +818,6 @@
 <div class="line">Vérifier les conditions d’utilisation du fournisseur de tuiles pour l’attribution des cartes.</div>
 </div>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.6.10.</span></p>
-</div>
 <p>Depuis que le serveur de tuiles peut être utilisé pour la génération des images statiques de cartes, certains serveurs nécessitent un sous-domaine.</p>
 <p>Par exemple, pour configurer le serveur d'OSM France, les valeurs attendues sont :</p>
 <ul class="simple">
@@ -813,10 +826,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">STATICMAP_SUBDOMAINS=a,b,c</span></code></p></li>
 </ul>
 <p>Le sous-domaine sera choisi de manière aléatoire.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Ajouté dans la version 0.7.23.</span></p>
-</div>
-<p>L’URL par défaut a été mise à jour : le serveur de tuiles <strong>OpenStreetMap</strong> ne nécessite plus de sous-domaines.</p>
+<p>Le serveur de tuiles par défault (<strong>OpenStreetMap</strong>) ne nécessite plus de sous-domaines.</p>
 </section>
 <section id="api-rate-limits">
 <h2>Limitation d’accès à l’API<a class="headerlink" href="#api-rate-limits" title="Lien vers cette rubrique">¶</a></h2>
@@ -860,20 +870,23 @@ Commands:
 <section id="weather-data">
 <h2>Données météo<a class="headerlink" href="#weather-data" title="Lien vers cette rubrique">¶</a></h2>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.11.</span></p>
+<p><span class="versionmodified changed">Modifié dans la version 0.7.11: </span>Ajout de Visual Crossing parmi les fournisseurs de données météo.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.15: </span>Suppression de Darksky des fournisseurs de données météo.</p>
 </div>
 <p>Les fournisseurs de données météo suivants sont pris en charge par <strong>FitTrackee</strong> :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.visualcrossing.com">Visual Crossing</a> (<strong>note</strong> : les données historiques sont fournies sur une période d’une heure)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
+</div>
 <p>Pour configurer un fournisseur de données météo, initialiser les variables d’environnement suivantes :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code> : clé d’API correspondant au fournisseur de données météo</p></li>
 </ul>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.7.15.</span></p>
-</div>
-<p>Le support de <strong>DarkSky</strong> est interrompu, depuis l’arrêt du service le 31 Mars 2023.</p>
 </section>
 <section id="id2">
 <h2>Installation<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
@@ -947,9 +960,9 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-admin<span class="w"> </span><span class="nb">true</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>ftcli<span class="w"> </span>users<span class="w"> </span>update<span class="w"> </span>&lt;username&gt;<span class="w"> </span>--set-role<span class="w"> </span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1006,9 +1019,9 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:3000">http://localhost:3000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1025,11 +1038,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.8.13) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.9.0) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.13.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.8.13<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.0.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.9.0<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1058,9 +1071,9 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </div>
 <ul class="simple">
 <li><p>Ouvrir l’URL <a class="reference external" href="http://localhost:5000">http://localhost:5000</a> avec un navigateur et s’inscrire</p></li>
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>user-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1074,11 +1087,11 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <h2>Mise à jour<a class="headerlink" href="#upgrade" title="Lien vers cette rubrique">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<div class="line-block">
-<div class="line">Avant de procéder à la mise à jour, faire une sauvegarde de l’ensemble des données :</div>
-<div class="line">- base de données (avec <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> par exemple)</div>
-<div class="line">- répertoire des fichiers téléversés (voir <a class="reference external" href="installation.html#environment-variables">Variables d'environnement</a>)</div>
-</div>
+<p>Avant de procéder à la mise à jour, faire une sauvegarde de l’ensemble des données :</p>
+<ul class="simple">
+<li><p>base de données (avec la commande <a class="reference external" href="https://www.postgresql.org/docs/11/app-pgdump.html">pg_dump</a> par exemple)</p></li>
+<li><p>répertoire des fichiers téléversés (see <a class="reference external" href="installation.html#environment-variables">Variables d’environnement</a>)</p></li>
+</ul>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -1163,11 +1176,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.8.13) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.9.0) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.8.13.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.8.13/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.0.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.9.0/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1243,12 +1256,12 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Pour gérer les fichiers de taille importante, une valeur plus importante pour le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> peut être configurée.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Plus d’informations sur le déploiement avec Gunicorn dans sa <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
@@ -1323,13 +1336,13 @@ server {
 }
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
 <p>Si besoin, modifier la configuration pour gérer les fichiers de taille importante (cf. <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">client_max_body_size</a>).</p>
 </div>
 </section>
-<section id="id6">
-<h2>Docker<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h2>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Lien vers cette rubrique">¶</a></h2>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.4.4.</span></p>
 </div>
@@ -1347,7 +1360,7 @@ server {
 <p>Les images sont disponibles pour les plateformes <code class="docutils literal notranslate"><span class="pre">linux/amd64</span></code> et <code class="docutils literal notranslate"><span class="pre">linux/arm64</span></code>. Seule l’image <code class="docutils literal notranslate"><span class="pre">linux/amd64</span></code> a été testée.</p>
 </div>
 <ul class="simple">
-<li><p>créer un fichier <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> selon les besoins (voir l’exemple dans le dépôt) :</p>
+<li><p>créer un fichier <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> selon les besoins (voir l”<a class="reference external" href="https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml">exemple</a>  dans le dépôt) :</p>
 <ul>
 <li><p>l’installation minimale nécessite la base de données et l’application web</p></li>
 <li><p>pour activer les limitations d’accès à l’API, redis est requis</p></li>
@@ -1392,9 +1405,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-run
 </ul>
 <p>Ouvrir l’URL <a class="reference external" href="http://localhost:8025">http://localhost:8025</a> pour accéder à l’interface de <a class="reference external" href="https://github.com/mailhog/MailHog">MailHog</a> (outil de test)</p>
 <ul class="simple">
-<li><p>Pour donner les droits d’administration au compte nouvellement créé utiliser la ligne de commande suivante :</p></li>
+<li><p>Pour attribuer le rôle de propriétaire au compte nouvellement créé, utiliser la ligne de commande suivante :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-admin<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>docker-set-role<span class="w"> </span><span class="nv">USERNAME</span><span class="o">=</span>&lt;username&gt;<span class="w"> </span><span class="nv">ROLE</span><span class="o">=</span>owner
 </pre></div>
 </div>
 <div class="admonition note">
@@ -1514,7 +1527,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#main-dependencies">Dépendances principales</a></li>
 <li><a class="reference internal" href="#prerequisites">Prérequis</a></li>
 <li><a class="reference internal" href="#environment-variables">Variables d’environnement</a><ul>
-<li><a class="reference internal" href="#docker">Docker</a></li>
+<li><a class="reference internal" href="#docker-compose">Docker Compose</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#emails">Courriels</a></li>
@@ -1540,7 +1553,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </ul>
 </li>
 <li><a class="reference internal" href="#deployment">Déploiement</a></li>
-<li><a class="reference internal" href="#id6">Docker</a><ul>
+<li><a class="reference internal" href="#docker">Docker</a><ul>
 <li><a class="reference internal" href="#production">Production</a></li>
 <li><a class="reference internal" href="#development">Développement</a></li>
 </ul>
@@ -1558,7 +1571,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=81796492"></script>
+</div><script src="_static/documentation_options.js?v=b137f06f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

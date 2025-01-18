@@ -1,7 +1,10 @@
 {
   "APP_ERROR": "Aplikazioak erroreren bat duela dirudi.<br/>Saiatu berriz beranduxeago edo jarri kontaktuan kudeatzailearekin.",
   "NOT_FOUND": {
+    "COMMENT": "Iruzkina ez da aurkitu",
     "PAGE": "Orrialdea ez da aurkitu",
+    "SEGMENT": "Segmentua ez da aurkitu",
+    "USER": "Erabiltzailea ez da aurkitu",
     "WORKOUT": "Entrenamendua ez da aurkitu"
   },
   "SOMETHING_WRONG": "Zerbait gaizki irten da",

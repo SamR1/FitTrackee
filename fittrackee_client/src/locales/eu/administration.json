@@ -61,16 +61,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "kudeatzailearen egoera",
         "CREATED_AT": "izen-emate data",
         "IS_ACTIVE": "kontuaren egoera",
         "USERNAME": "erabiltzaile-izena",
         "WORKOUTS_COUNT": "entrenamendu kopurua"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Gehitu kudeatzaile baimenak",
-      "REMOVE_ADMIN_RIGHTS": "Kendu kudeatzaile baimenak"
     },
     "TITLE": "Kudeaketa - Erabiltzaileak"
   },

@@ -18,34 +18,21 @@
   import { useRoute } from 'vue-router'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
-  import {
-    AUTH_USER_STORE,
-    SPORTS_STORE,
-    WORKOUTS_STORE,
-  } from '@/store/constants'
-  import type { ISport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import useAuthUser from '@/composables/useAuthUser'
+  import useSports from '@/composables/useSports'
+  import { WORKOUTS_STORE } from '@/store/constants'
   import type { IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
   const route = useRoute()
   const store = useStore()
 
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
-  const sports: ComputedRef<ISport[]> = computed(
-    () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
-  )
+  const { authUser } = useAuthUser()
+  const { sports } = useSports()
+
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
   )
-
-  onBeforeMount(() => {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
-      workoutId: route.params.workoutId,
-    })
-  })
 
   watch(
     () => route.params.workoutId,
@@ -55,4 +42,10 @@
       }
     }
   )
+
+  onBeforeMount(() => {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+      workoutId: route.params.workoutId,
+    })
+  })
 </script>

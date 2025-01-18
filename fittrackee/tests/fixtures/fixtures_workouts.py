@@ -1,6 +1,6 @@
 import datetime
 from io import BytesIO
-from typing import Generator, List
+from typing import Generator, Iterator, List
 from unittest.mock import Mock, patch
 from uuid import uuid4
 
@@ -22,6 +22,19 @@ from ..utils import random_string
 byte_io = BytesIO()
 Image.new('RGB', (256, 256)).save(byte_io, 'PNG')
 byte_image = byte_io.getvalue()
+
+
+@pytest.fixture(autouse=True)
+def update_records_patch(request: pytest.FixtureRequest) -> Iterator[None]:
+    # allows to disable record creation/update on tests where
+    # records are not needed
+    if 'disable_autouse_update_records_patch' in request.keywords:
+        yield
+    else:
+        with patch(
+            'fittrackee.workouts.models.update_records', return_value=None
+        ):
+            yield
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -145,8 +158,10 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_1 = Workout(
         user_id=1,
         sport_id=1,
-        # workout_date: 'Mon, 20 Mar 2017 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        # workout_date: 'Sun, 2 Apr 2017 22:00:00 GMT'
+        workout_date=datetime.datetime.strptime(
+            '02/04/2017 22:00', '%d/%m/%Y %H:%M'
+        ),
         distance=5,
         duration=datetime.timedelta(seconds=1024),
     )
@@ -161,8 +176,10 @@ def seven_workouts_user_1() -> List[Workout]:
     workout_2 = Workout(
         user_id=1,
         sport_id=1,
-        # workout_date: 'Thu, 01 Jun 2017 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('01/06/2017', '%d/%m/%Y'),
+        # workout_date: 'Sun, 31 Dec 2017 23:00:00 GMT'
+        workout_date=datetime.datetime.strptime(
+            '31/12/2017 23:00', '%d/%m/%Y %H:%M'
+        ),
         distance=10,
         duration=datetime.timedelta(seconds=3456),
     )
@@ -258,6 +275,31 @@ def seven_workouts_user_1() -> List[Workout]:
     db.session.commit()
     workouts.append(workout_7)
 
+    return workouts
+
+
+@pytest.fixture()
+def three_workouts_2025_user_1() -> List[Workout]:
+    workouts = []
+    for workout_date in [
+        '01/01/2025 08:00',
+        '05/01/2025 08:00',
+        '06/01/2025 08:00',
+    ]:
+        workout = Workout(
+            user_id=1,
+            sport_id=1,
+            workout_date=datetime.datetime.strptime(
+                workout_date, '%d/%m/%Y %H:%M'
+            ),
+            distance=20,
+            duration=datetime.timedelta(seconds=3600),
+        )
+        update_workout(workout)
+        db.session.add(workout)
+        workouts.append(workout)
+        db.session.flush()
+    db.session.commit()
     return workouts
 
 

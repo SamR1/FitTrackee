@@ -6,54 +6,74 @@
         <AppStatsCards :appStatistics="appStatistics" />
         <div class="admin-menu description-list">
           <dl>
+            <template v-if="authUserHasAdminRights">
+              <dt>
+                <router-link id="adminLink" to="/admin/application">
+                  {{ $t('admin.APPLICATION') }}
+                </router-link>
+              </dt>
+              <dd class="application-config-details">
+                {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}
+                <span class="registration-status">
+                  {{
+                    $t(
+                      `admin.REGISTRATION_${
+                        appConfig.is_registration_enabled
+                          ? 'ENABLED'
+                          : 'DISABLED'
+                      }`
+                    )
+                  }}
+                </span>
+                <span
+                  class="email-sending-status"
+                  v-if="!appConfig.is_email_sending_enabled"
+                >
+                  <i class="fa fa-exclamation-triangle" aria-hidden="true" />
+                  {{ $t('admin.EMAIL_SENDING_DISABLED') }}
+                </span>
+              </dd>
+              <dt>
+                <router-link to="/admin/equipment-types">
+                  {{ capitalize($t('equipments.EQUIPMENT_TYPE', 0)) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.ENABLE_DISABLE_EQUIPMENT_TYPES') }}
+              </dd>
+            </template>
             <dt>
-              <router-link id="adminLink" to="/admin/application">
-                {{ $t('admin.APPLICATION') }}
+              <router-link id="adminLink" to="/admin/reports">
+                {{ $t('admin.APP_MODERATION.TITLE') }}
               </router-link>
             </dt>
             <dd class="application-config-details">
-              {{ $t('admin.UPDATE_APPLICATION_DESCRIPTION') }}<br />
-              <span class="registration-status">
-                {{
-                  $t(
-                    `admin.REGISTRATION_${
-                      appConfig.is_registration_enabled ? 'ENABLED' : 'DISABLED'
-                    }`
-                  )
-                }}
-              </span>
-              <span
-                class="email-sending-status"
-                v-if="!appConfig.is_email_sending_enabled"
+              {{ $t('admin.APP_MODERATION.DESCRIPTION') }}
+              <router-link
+                to="/admin/reports?resolved=false"
+                v-if="unresolvedReportsStatus"
               >
-                <i class="fa fa-exclamation-triangle" aria-hidden="true" />
-                {{ $t('admin.EMAIL_SENDING_DISABLED') }}
-              </span>
-            </dd>
-            <dt>
-              <router-link to="/admin/equipment-types">
-                {{ capitalize($t('equipments.EQUIPMENT_TYPE', 0)) }}
+                {{ $t('admin.APP_MODERATION.UNRESOLVED_REPORTS_EXIST') }}
               </router-link>
-            </dt>
-            <dd>
-              {{ $t('admin.ENABLE_DISABLE_EQUIPMENT_TYPES') }}
             </dd>
-            <dt>
-              <router-link to="/admin/sports">
-                {{ capitalize($t('workouts.SPORT', 0)) }}
-              </router-link>
-            </dt>
-            <dd>
-              {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
-            </dd>
-            <dt>
-              <router-link to="/admin/users">
-                {{ capitalize($t('admin.USER', 0)) }}
-              </router-link>
-            </dt>
-            <dd>
-              {{ $t('admin.ADMIN_RIGHTS_DELETE_USER_ACCOUNT') }}
-            </dd>
+            <template v-if="authUserHasAdminRights">
+              <dt>
+                <router-link to="/admin/sports">
+                  {{ capitalize($t('workouts.SPORT', 0)) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
+              </dd>
+              <dt>
+                <router-link to="/admin/users">
+                  {{ capitalize($t('user.USER', 0)) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.ADMIN_RIGHTS_DELETE_USER_ACCOUNT') }}
+              </dd>
+            </template>
           </dl>
         </div>
       </template>
@@ -62,22 +82,32 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, onMounted, toRefs } from 'vue'
+  import { capitalize, computed, onBeforeMount, onMounted } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import AppStatsCards from '@/components/Administration/AppStatsCards.vue'
   import Card from '@/components/Common/Card.vue'
-  import type { IAppStatistics, TAppConfig } from '@/types/application'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { REPORTS_STORE, ROOT_STORE } from '@/store/constants'
+  import type { IAppStatistics } from '@/types/application'
+  import { useStore } from '@/use/useStore'
 
-  interface Props {
-    appConfig: TAppConfig
-    appStatistics?: IAppStatistics
-  }
-  const props = withDefaults(defineProps<Props>(), {
-    appStatistics: () => ({}) as IAppStatistics,
-  })
+  const store = useStore()
 
-  const { appConfig, appStatistics } = toRefs(props)
+  const { appConfig } = useApp()
+  const { authUserHasAdminRights } = useAuthUser()
 
+  const appStatistics: ComputedRef<IAppStatistics> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_STATS]
+  )
+  const unresolvedReportsStatus: ComputedRef<boolean> = computed(
+    () => store.getters[REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS]
+  )
+
+  onBeforeMount(() =>
+    store.dispatch(REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS)
+  )
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')
     if (applicationLink) {

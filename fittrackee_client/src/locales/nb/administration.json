@@ -39,16 +39,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "administratorstatus",
         "CREATED_AT": "registreringsdato",
         "IS_ACTIVE": "kontostatus",
         "USERNAME": "brukernavn",
         "WORKOUTS_COUNT": "arbeidsøktantall"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Legg til administratorrettigheter",
-      "REMOVE_ADMIN_RIGHTS": "Fjern administratorrettigheter"
     },
     "TITLE": "Administrasjon — brukere"
   },

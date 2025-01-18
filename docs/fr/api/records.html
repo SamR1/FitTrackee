@@ -3,16 +3,16 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Sports" href="sports.html" /><link rel="prev" title="OAuth2" href="oauth2.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Signalements" href="reports.html" /><link rel="prev" title="Notifications" href="notifications.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Records - Documentation FitTrackee 0.8.13</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+        <title>Records - Documentation FitTrackee 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0cba77a2" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=00b9e757" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.13
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.13
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -215,12 +215,17 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="users.html">Utilisateurs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts.html">Séances</a></li>
 </ul>
@@ -393,6 +398,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -405,23 +414,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="sports.html">
+          <a class="next-page" href="reports.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Sports</div>
+                <div class="title">Signalements</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="oauth2.html">
+          <a class="prev-page" href="notifications.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">OAuth2</div>
+                <div class="title">Notifications</div>
                 
               </div>
             </a>
@@ -453,7 +462,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=81796492"></script>
+</div><script src="../_static/documentation_options.js?v=b137f06f"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

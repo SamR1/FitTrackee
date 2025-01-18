@@ -61,16 +61,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "admin status",
         "CREATED_AT": "Registratie datum",
         "IS_ACTIVE": "Account status",
         "USERNAME": "gebruikersnaam",
         "WORKOUTS_COUNT": "aantal trainingen"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Admin rechten toevoegen",
-      "REMOVE_ADMIN_RIGHTS": "Verwijder admin rechten"
     },
     "TITLE": "Administratie - Gebruikers"
   },

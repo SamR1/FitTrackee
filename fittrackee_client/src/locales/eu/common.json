@@ -6,17 +6,23 @@
   "CONTACT": "kontaktua",
   "DAY": "egun | egun",
   "DESCRIPTION": "Deskribapena",
+  "DISABLED": "desaktibatuta",
   "DISPLAYED": "Erakutsita",
   "DOCUMENTATION": "dokumentazioa",
+  "EDITED": "aldatuta",
+  "ENABLED": "aktibatuta",
   "HERE": "hemen",
   "HIDDEN": "Ezkutuan",
+  "HIDE": "Ezkutatu",
   "HOME": "Hasiera",
   "HOURS": "ordu|ordu",
   "INACTIVE": "inaktibo",
   "LABEL": "etiketa",
+  "LAST_UPDATED_ON": "Azken eguneraketa",
   "MINUTES": "minutu|minutu",
   "NEXT": "hurrengoa",
-  "NO_DESCRIPTION": "deskribapenik gabe",
+  "NO_DESCRIPTION": "Deskribapenik gabe",
+  "NO_NOTES": "Ez dago oharrik",
   "PREVIOUS": "aurrekoa",
   "SECONDS": "segundu|segundu",
   "SELECTS": {
@@ -33,5 +39,6 @@
     }
   },
   "TOTAL": "Guztira",
-  "TOTAL_DURATION_WITH_PAUSES": "iraupena guztira atsedenekin"
+  "TOTAL_DURATION_WITH_PAUSES": "iraupena guztira atsedenekin",
+  "TYPE": "mota"
 }

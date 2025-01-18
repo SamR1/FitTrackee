@@ -83,26 +83,17 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onBeforeMount } from 'vue'
-  import type { ComputedRef } from 'vue'
-  import { useI18n } from 'vue-i18n'
+  import { onBeforeMount } from 'vue'
 
-  import { ROOT_STORE, SPORTS_STORE } from '@/store/constants'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { ITranslatedSport } from '@/types/sports'
+  import useApp from '@/composables/useApp'
+  import useSports from '@/composables/useSports'
+  import { SPORTS_STORE } from '@/store/constants'
   import { useStore } from '@/use/useStore'
-  import { translateSports } from '@/utils/sports'
 
-  const { t } = useI18n()
   const store = useStore()
 
-  const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(store.getters[SPORTS_STORE.GETTERS.SPORTS], t)
-  )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
-
-  onBeforeMount(() => store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS, true))
+  const { errorMessages } = useApp()
+  const { translatedSports } = useSports()
 
   function updateSportStatus(id: number, isActive: boolean) {
     store.dispatch(SPORTS_STORE.ACTIONS.UPDATE_SPORTS, {
@@ -110,6 +101,8 @@
       isActive,
     })
   }
+
+  onBeforeMount(() => store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS, true))
 </script>
 
 <style lang="scss" scoped>

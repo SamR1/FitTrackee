@@ -2,7 +2,12 @@ import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
 import router from '@/router'
-import { ROOT_STORE, AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+import {
+  AUTH_USER_STORE,
+  ROOT_STORE,
+  WORKOUTS_STORE,
+  USERS_STORE,
+} from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import { WorkoutsMutations } from '@/store/modules/workouts/enums'
 import type {
@@ -10,11 +15,16 @@ import type {
   IWorkoutsState,
 } from '@/store/modules/workouts/types'
 import type {
+  ICommentForm,
   IWorkout,
   IWorkoutContentPayload,
   IWorkoutForm,
   IWorkoutPayload,
   TWorkoutsPayload,
+  ICommentPayload,
+  IComment,
+  IAppealPayload,
+  ILikesPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -25,13 +35,19 @@ const getWorkouts = (
 ): void => {
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   authApi
-    .get('workouts', {
+    .get(target.match('TIMELINE') ? 'timeline' : 'workouts', {
       params: payload,
     })
     .then((res) => {
       if (res.data.status === 'success') {
         context.commit(WORKOUTS_STORE.MUTATIONS[target], res.data.data.workouts)
-        if (target === WorkoutsMutations['SET_USER_WORKOUTS']) {
+        if (
+          [
+            WorkoutsMutations['SET_USER_WORKOUTS'],
+            WorkoutsMutations['SET_TIMELINE_WORKOUTS'],
+            WorkoutsMutations['ADD_TIMELINE_WORKOUTS'],
+          ].includes(target)
+        ) {
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
             res.data.pagination
@@ -44,6 +60,53 @@ const getWorkouts = (
     .catch((error) => handleError(context, error))
 }
 
+const reloadComment = (
+  context: ActionContext<IWorkoutsState, IRootState>,
+  commentId: string | undefined,
+  workoutId: string | undefined
+) => {
+  workoutId
+    ? context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, workoutId)
+    : context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT, commentId)
+}
+
+const handleCommentLike = (
+  context: ActionContext<IWorkoutsState, IRootState>,
+  comment: IComment,
+  undo = false
+) => {
+  authApi
+    .post(`comments/${comment.id}/like${undo ? '/undo' : ''}`)
+    .then((res) => {
+      if (res.data.status === 'success') {
+        reloadComment(context, comment.id, comment.workout_id)
+      }
+    })
+    .catch((error) => {
+      handleError(context, error)
+    })
+}
+
+const handleWorkoutLike = (
+  context: ActionContext<IWorkoutsState, IRootState>,
+  workoutId: string,
+  undo = false
+) => {
+  authApi
+    .post(`workouts/${workoutId}/like${undo ? '/undo' : ''}`)
+    .then((res) => {
+      if (res.data.status === 'success') {
+        context.commit(
+          WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
+          res.data.data.workouts[0]
+        )
+      }
+    })
+    .catch((error) => {
+      handleError(context, error)
+    })
+}
+
 export const actions: ActionTree<IWorkoutsState, IRootState> &
   IWorkoutsActions = {
   [WORKOUTS_STORE.ACTIONS.GET_CALENDAR_WORKOUTS](
@@ -53,7 +116,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS)
     getWorkouts(context, payload, WorkoutsMutations['SET_CALENDAR_WORKOUTS'])
   },
-  [WORKOUTS_STORE.ACTIONS.GET_USER_WORKOUTS](
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void {
@@ -94,7 +157,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
             res.data.data.workouts[0]
           )
-          if (res.data.data.workouts[0].with_gpx) {
+          if (res.data.data.workouts[0].with_analysis) {
             authApi
               .get(`workouts/${payload.workoutId}/chart_data${segmentUrl}`)
               .then((res) => {
@@ -105,6 +168,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
+          }
+          if (res.data.data.workouts[0].with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {
@@ -115,6 +180,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
+          }
+          if (!payload.segmentId) {
+            context.dispatch(
+              WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+              res.data.data.workouts[0].id
+            )
           }
         } else {
           context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
@@ -139,7 +210,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`workouts/${payload.workoutId}`)
       .then(() => {
         context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
         router.push('/')
       })
       .catch((error) => {
@@ -158,7 +229,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     authApi
       .patch(`workouts/${payload.workoutId}`, payload.data)
       .then(() => {
-        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
         context
           .dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
             workoutId: payload.workoutId,
@@ -225,7 +296,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       'data',
       `{"sport_id": ${payload.sport_id}, "notes": "${notes}",` +
         ` "description": "${description}", "title": "${title}", ` +
-        ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}]}`
+        ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}],` +
+        ` "workout_visibility": "${payload.workout_visibility}",` +
+        ` "analysis_visibility": "${payload.analysis_visibility}",` +
+        ` "map_visibility": "${payload.map_visibility}"}`
     )
     authApi
       .post('workouts', form, {
@@ -235,7 +309,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(
             res.data.data.workouts.length === 1
@@ -261,7 +335,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .post('workouts/no_gpx', payload)
       .then((res) => {
         if (res.data.status === 'created') {
-          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE)
+          context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(`/workouts/${workout.id}`)
         }
@@ -272,5 +346,209 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
+  },
+  [WORKOUTS_STORE.ACTIONS.ADD_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void {
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'new')
+    const data = {
+      text: payload.text,
+      text_visibility: payload.text_visibility,
+    }
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .post(`/workouts/${payload.workout_id}/comments`, data)
+      .then((res) => {
+        if (res.data.status === 'created') {
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            payload.workout_id
+          )
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION,
+            {}
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    commentId: string
+  ): void {
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'loading')
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`/comments/${commentId}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS, [
+            res.data.comment,
+          ])
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`/workouts/${workoutId}/comments`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS,
+            res.data.data.comments
+          )
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        handleError(
+          context,
+          error.status === 500 ? null : error,
+          'error when getting comments'
+        )
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'delete')
+    authApi
+      .delete(`comments/${payload.commentId}`)
+      .then((res) => {
+        if (res.status === 204) {
+          payload.workoutId
+            ? context.dispatch(
+                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+                payload.workoutId
+              )
+            : router.push('/')
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.EDIT_WORKOUT_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ICommentForm
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, payload.id)
+    authApi
+      .patch(`comments/${payload.id}`, {
+        text: payload.text,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          reloadComment(context, payload.id, payload.workout_id)
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_CURRENT_COMMENT_EDITION,
+            {}
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void {
+    handleCommentLike(context, comment)
+  },
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_COMMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    comment: IComment
+  ): void {
+    handleCommentLike(context, comment, true)
+  },
+  [WORKOUTS_STORE.ACTIONS.LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    handleWorkoutLike(context, workoutId)
+  },
+  [WORKOUTS_STORE.ACTIONS.UNDO_LIKE_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    handleWorkoutLike(context, workoutId, true)
+  },
+  [WORKOUTS_STORE.ACTIONS.MAKE_APPEAL](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IAppealPayload
+  ): void {
+    const objectId = `${payload.objectType}_${payload.objectId}`
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, objectId)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, null)
+    authApi
+      .post(`${payload.objectType}s/${payload.objectId}/suspension/appeal`, {
+        text: payload.text,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_SUCCESS, objectId)
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_APPEAL_LOADING, null)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_LIKES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: ILikesPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(
+        `${payload.objectType}s/${payload.objectId}/likes?page=${payload.page}`
+      )
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS,
+            res.data.data.likes
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_PAGINATION,
+            res.data.pagination
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
   },
 }

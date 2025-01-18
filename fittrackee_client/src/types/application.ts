@@ -17,19 +17,26 @@ export type TAppConfig = {
   max_users: number
   max_zip_file_size: number
   privacy_policy: string | null
-  privacy_policy_date: string | null
+  privacy_policy_date: string
   stats_workouts_limit: number
   version: string
   weather_provider: string | null
 }
 
+export interface IDisplayOptions {
+  dateFormat: string
+  displayAscent: boolean
+  timezone: string
+  useImperialUnits: boolean
+}
 export interface IApplication {
   statistics: IAppStatistics
   config: TAppConfig
+  displayOptions: IDisplayOptions
 }
 
 export type TAppConfigForm = {
-  [key: string]: number | string
+  [key: string]: number | string | boolean
   about: string
   admin_contact: string
   gpx_limit_import: number

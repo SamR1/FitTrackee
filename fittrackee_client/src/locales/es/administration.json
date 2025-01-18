@@ -61,16 +61,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "estatus de admin",
         "CREATED_AT": "data de registro",
         "IS_ACTIVE": "tipo de cuenta",
         "USERNAME": "identificador",
         "WORKOUTS_COUNT": "número de entramientos"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Otorgar permiso de admin",
-      "REMOVE_ADMIN_RIGHTS": "Retirar permiso de admin"
     },
     "TITLE": "Administración - Usuarios"
   },

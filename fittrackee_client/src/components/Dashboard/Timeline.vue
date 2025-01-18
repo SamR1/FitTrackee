@@ -1,11 +1,13 @@
 <template>
   <div id="timeline">
     <div class="section-title">{{ $t('workouts.LATEST_WORKOUTS') }}</div>
-    <div v-if="user.nb_workouts > 0 && workouts.length === 0">
+    <div v-if="authUser.nb_workouts > 0 && workouts.length === 0">
       <WorkoutCard
         v-for="index in [...Array(initWorkoutsCount).keys()]"
-        :user="user"
-        :useImperialUnits="user.imperial_units"
+        :user="authUser"
+        :useImperialUnits="authUser.imperial_units"
+        :dateFormat="dateFormat"
+        :timezone="authUser.timezone"
         :key="index"
       />
     </div>
@@ -18,12 +20,14 @@
             ? sports.filter((s) => s.id === workout.sport_id)[0]
             : null
         "
-        :user="user"
-        :useImperialUnits="user.imperial_units"
+        :user="workout.user"
+        :useImperialUnits="authUser.imperial_units"
+        :dateFormat="dateFormat"
+        :timezone="authUser.timezone"
         :key="workout.id"
       />
       <NoWorkouts v-if="workouts.length === 0" />
-      <div v-if="moreWorkoutsExist" class="more-workouts">
+      <div v-if="pagination.has_next" class="more-workouts">
         <button @click="loadMoreWorkouts">
           {{ $t('workouts.LOAD_MORE_WORKOUT') }}
         </button>
@@ -33,12 +37,14 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, onBeforeMount, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, ref, onBeforeMount, toRefs, onUnmounted } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
-  import { WORKOUTS_STORE } from '@/store/constants'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import type { IPagination } from '@/types/api.ts'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkout } from '@/types/workouts'
@@ -47,42 +53,61 @@
 
   interface Props {
     sports: ISport[]
-    user: IAuthUserProfile
+    authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { sports, authUser } = toRefs(props)
+
+  const { dateFormat } = useAuthUser()
 
   const store = useStore()
 
-  const { sports, user } = toRefs(props)
-  const page = ref(1)
   const per_page = 5
-  const initWorkoutsCount =
-    props.user.nb_workouts >= per_page ? per_page : props.user.nb_workouts
-  onBeforeMount(() => loadWorkouts())
+
+  const page: Ref<number> = ref(1)
+
+  const initWorkoutsCount: ComputedRef<number> = computed(() =>
+    authUser.value.nb_workouts >= per_page
+      ? per_page
+      : authUser.value.nb_workouts
+  )
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS]
   )
-  const moreWorkoutsExist: ComputedRef<boolean> = computed(() =>
-    workouts.value.length > 0
-      ? workouts.value[workouts.value.length - 1].previous_workout !== null
-      : false
+  const pagination: ComputedRef<IPagination> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
+  )
+  const isSuspended: ComputedRef<boolean> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.IS_SUSPENDED]
   )
 
   function loadWorkouts() {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
-      page: page.value,
-      per_page,
-      ...defaultOrder,
-    })
+    if (!isSuspended.value) {
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS, {
+        page: page.value,
+        per_page,
+        ...defaultOrder,
+      })
+    }
   }
   function loadMoreWorkouts() {
-    page.value += 1
-    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
-      page: page.value,
-      per_page,
-      ...defaultOrder,
-    })
+    if (!isSuspended.value) {
+      page.value += 1
+      store.dispatch(WORKOUTS_STORE.ACTIONS.GET_MORE_TIMELINE_WORKOUTS, {
+        page: page.value,
+        per_page,
+        ...defaultOrder,
+      })
+    }
   }
+
+  onBeforeMount(() => loadWorkouts())
+  onUnmounted(() =>
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
+      {} as IPagination
+    )
+  )
 </script>
 
 <style lang="scss" scoped>

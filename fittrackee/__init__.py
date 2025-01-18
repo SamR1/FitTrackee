@@ -20,12 +20,14 @@ from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.8.13'
+VERSION = __version__ = '0.9.0'
+DEFAULT_PRIVACY_POLICY_DATA = '2024-12-23 19:00:00'
 REDIS_URL = os.getenv('REDIS_URL', 'redis://')
 API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
     ','
@@ -33,7 +35,7 @@ API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(
     filename=log_file,
-    format='%(asctime)s - %(name)s - %(levelname)s - ' '%(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
 )
 appLog = logging.getLogger('fittrackee')
@@ -41,6 +43,7 @@ appLog = logging.getLogger('fittrackee')
 db = SQLAlchemy(
     engine_options={"future": True}, session_options={"future": True}
 )
+BaseModel: DeclarativeMeta = db.Model
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
@@ -128,26 +131,36 @@ def create_app(init_email: bool = True) -> Flask:
                 pass
 
     from .application.app_config import config_blueprint  # noqa
+    from .comments.comments import comments_blueprint  # noqa
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
     from .oauth2.routes import oauth2_blueprint  # noqa
+    from .reports.reports import reports_blueprint  # noqa
     from .users.auth import auth_blueprint  # noqa
+    from .users.follow_requests import follow_requests_blueprint  # noqa
+    from .users.notifications import notifications_blueprint  # noqa
     from .users.users import users_blueprint  # noqa
     from .workouts.records import records_blueprint  # noqa
     from .workouts.sports import sports_blueprint  # noqa
     from .workouts.stats import stats_blueprint  # noqa
+    from .workouts.timeline import timeline_blueprint  # noqa
     from .workouts.workouts import workouts_blueprint  # noqa
 
     app.register_blueprint(auth_blueprint, url_prefix='/api')
     app.register_blueprint(equipment_types_blueprint, url_prefix='/api')
     app.register_blueprint(equipments_blueprint, url_prefix='/api')
     app.register_blueprint(oauth2_blueprint, url_prefix='/api')
+    app.register_blueprint(comments_blueprint, url_prefix='/api')
     app.register_blueprint(config_blueprint, url_prefix='/api')
     app.register_blueprint(records_blueprint, url_prefix='/api')
     app.register_blueprint(sports_blueprint, url_prefix='/api')
     app.register_blueprint(stats_blueprint, url_prefix='/api')
     app.register_blueprint(users_blueprint, url_prefix='/api')
     app.register_blueprint(workouts_blueprint, url_prefix='/api')
+    app.register_blueprint(follow_requests_blueprint, url_prefix='/api')
+    app.register_blueprint(timeline_blueprint, url_prefix='/api')
+    app.register_blueprint(notifications_blueprint, url_prefix='/api')
+    app.register_blueprint(reports_blueprint, url_prefix='/api')
 
     if app.debug:
         logging.getLogger('sqlalchemy').setLevel(logging.WARNING)

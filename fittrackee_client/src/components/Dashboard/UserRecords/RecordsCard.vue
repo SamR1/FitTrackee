@@ -33,7 +33,6 @@
     sportTranslatedLabel: string
   }
   const props = defineProps<Props>()
-
   const { records, sportTranslatedLabel } = toRefs(props)
 
   const store = useStore()

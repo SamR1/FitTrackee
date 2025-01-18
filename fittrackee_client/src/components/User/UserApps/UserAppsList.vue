@@ -1,6 +1,6 @@
 <template>
   <div id="oauth2-apps-list">
-    <p class="apps-list">{{ $t('oauth2.APPS_LIST') }}</p>
+    <h1 class="apps-list">{{ $t('oauth2.APPS_LIST') }}</h1>
     <ul v-if="clients.length > 0">
       <li v-for="client in clients" :key="client.client_id">
         <router-link :to="{ name: 'UserApp', params: { id: client.id } }">
@@ -28,7 +28,10 @@
       :query="query"
     />
     <div class="app-list-buttons">
-      <button @click="$router.push('/profile/apps/new')">
+      <button
+        v-if="!authUser.suspended_at"
+        @click="$router.push('/profile/apps/new')"
+      >
         {{ $t('oauth2.NEW_APP') }}
       </button>
       <button @click="$router.push('/')">{{ $t('common.HOME') }}</button>
@@ -55,23 +58,19 @@
     authUser: IAuthUserProfile
   }
   const props = defineProps<Props>()
+  const { authUser } = toRefs(props)
 
   const store = useStore()
   const route = useRoute()
 
-  const { authUser } = toRefs(props)
+  let query: IOauth2ClientsPayload = getClientsQuery(route.query)
+
   const clients: ComputedRef<IOAuth2Client[]> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENTS]
   )
-
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[OAUTH2_STORE.GETTERS.CLIENTS_PAGINATION]
   )
-  let query: IOauth2ClientsPayload = getClientsQuery(route.query)
-
-  onBeforeMount(() => {
-    loadClients(query)
-  })
 
   function getClientsQuery(newQuery: LocationQuery): IOauth2ClientsPayload {
     const clientsQuery: IOauth2ClientsPayload = {}
@@ -91,12 +90,17 @@
       loadClients(query)
     }
   )
+
+  onBeforeMount(() => {
+    loadClients(query)
+  })
 </script>
 
 <style scoped lang="scss">
   @import '~@/scss/vars.scss';
 
   #oauth2-apps-list {
+    padding: 0 0 $default-padding;
     ul {
       list-style: square;
 

@@ -6,13 +6,13 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Dépannage" href="../troubleshooting/index.html" /><link rel="prev" title="Utilisateurs" href="users.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Séances - Documentation FitTrackee 0.8.13</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+        <title>Séances - Documentation FitTrackee 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=0cba77a2" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=00b9e757" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.8.13
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.8.13
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -215,12 +215,17 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeline.html">Flux de séances</a></li>
 <li class="toctree-l2"><a class="reference internal" href="users.html">Utilisateurs</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Séances</a></li>
 </ul>
@@ -312,6 +317,7 @@
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -322,7 +328,10 @@
 <span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -381,12 +390,25 @@
 <span class="w">          </span><span class="p">],</span>
 <span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
@@ -429,9 +451,10 @@
 <li><p><strong>order_by</strong> (<em>string</em>) – sorting criteria: <code class="docutils literal notranslate"><span class="pre">ave_speed</span></code>, <code class="docutils literal notranslate"><span class="pre">distance</span></code>,
 <code class="docutils literal notranslate"><span class="pre">duration</span></code>, <code class="docutils literal notranslate"><span class="pre">workout_date</span></code> (default:
 <code class="docutils literal notranslate"><span class="pre">workout_date</span></code>)</p></li>
-<li><p><strong>equipment_id</strong> (<em>string</em>) – id de l’équipement (si valeur à “none”, seules les séances sans équipements seront renvoyées)</p></li>
+<li><p><strong>equipment_id</strong> (<em>string</em>) – identifiant de l’équipement (si valeur à <code class="docutils literal notranslate"><span class="pre">none</span></code>, seules les séances sans équipements seront renvoyées)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – une partie (ou la totalité) des notes de la séance, la correspondance avec les notes ne tient pas compte des majuscules et des minuscules</p></li>
 <li><p><strong>description</strong> (<em>string</em>) – une partie de la description de la séance, la correspondance avec la description ne tient pas compte des majuscules et des minuscules</p></li>
+<li><p><strong>return_equipments</strong> (<em>string</em>) – renvoie les séances avec l’équipement (par défaut, l’équipement n’est pas renvoyé). <strong>Note</strong>: Il ne s’agit pas d’un filtre. <strong>Attention</strong>: nécessaire pour les applications tierces mettant à jour les équipements.</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -448,6 +471,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
@@ -458,7 +485,6 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Obtenir une séance.</p>
-<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
@@ -474,6 +500,7 @@
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -484,7 +511,10 @@
 <span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:45:00&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -497,12 +527,25 @@
 <span class="w">          </span><span class="nt">&quot;records&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;biking on sunday morning&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 07 Jul 2019 07:00:00 GMT&quot;</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 07 Jul 2019 07:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
@@ -532,7 +575,7 @@
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
@@ -544,7 +587,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
@@ -555,7 +602,6 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Obtenir un fichier gpx pour une séance affichée sur une carte avec Leaflet.</p>
-<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -582,7 +628,7 @@
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> pour la carte</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
@@ -592,6 +638,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
@@ -609,7 +660,6 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js.</p>
-<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -655,7 +705,7 @@
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> pour la carte</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
@@ -665,6 +715,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
@@ -682,9 +737,8 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/chart_data/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-chart_data-segment-(int-segment_id)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Récupérer les données d’une séance avec gpx pour les afficher avec Chart.js.</p>
-<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -729,7 +783,7 @@
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> pour la carte</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
@@ -740,6 +794,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
@@ -753,9 +812,8 @@
 <dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/gpx/segment/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">segment_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-gpx-segment-(int-segment_id)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Obtenir un fichier gpx pour le segment d’une séance pour l’afficher sur la carte avec Leaflet.</p>
-<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/0</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -781,7 +839,7 @@
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> pour la carte</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
@@ -792,6 +850,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
@@ -828,6 +891,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">map</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
@@ -892,6 +959,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">gpx</span> <span class="pre">file</span> <span class="pre">for</span> <span class="pre">workout</span></code></p></li>
@@ -916,76 +987,122 @@
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
-<span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">435.621</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.14</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="mf">43.93706</span><span class="p">,</span>
+<span class="w">            </span><span class="mf">4.517587</span><span class="p">,</span>
+<span class="w">            </span><span class="mf">43.981933</span><span class="p">,</span>
+<span class="w">            </span><span class="mf">4.560627</span>
+<span class="w">          </span><span class="p">],</span>
 <span class="w">          </span><span class="nt">&quot;creation_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 14 Jul 2019 13:51:01 GMT&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">427.499</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.478</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2:08:35&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ac075ec36dc25dcc20c270d2005f0398&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">158.41</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.59</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">55.03</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;modification_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;next_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;pauses&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;previous_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:47:11&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;next_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kd5wyhwLtVozw6o3AU5M4J&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;pauses&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:20:32&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;previous_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HgzYFXgvWKCEpdq3vYk67q&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;records&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MS&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LD&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FD&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span>
 <span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AS&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
+<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.14</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FD&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.478</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LD&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:47:11&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MS&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.59</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;record_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HA&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">435.621</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
 <span class="w">            </span><span class="p">}</span>
 <span class="w">          </span><span class="p">],</span>
-<span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
-<span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">435.621</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.14</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">427.499</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.478</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2:08:35&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">158.41</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.59</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">55.03</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:47:11&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;pauses&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:20:32&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;segment_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PsjeeXbJZ2JJNQcTCPxVvF&quot;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VTT dans le Gard&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:30 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
@@ -997,7 +1114,7 @@
 <dt class="field-odd">Paramètres de la forme<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>file</strong> – fichier gpx (extensions autorisées : .gpx, .zip)</p></li>
-<li><p><strong>data</strong> – id du sport, id de l’équipement, description, titre et notes, par exemple: <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;title&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;equipment_ids&quot;:</span> <span class="pre">[]}</span></code>. Les guillemets doubles dans les notes, la description et le titre doivent être échappés.  La longueur maximale est de 500 caractères pour les notes, de 10000 caractères pour la description et de 255 caractères pour le titre. Dans le cas contraire, ils seront tronqués.  Pour <cite>equipment_ids</cite>, l’id de l’équipement à associer à la séance. <strong>Note</strong>: pour le moment, seul un équipement peut être associé. Si non fourni et qu’il existe un équipement par défaut pour le sport, l’équipement par défaut sera associé.  Les notes, la description, le titre et l’id de l’équipement ne sont pas obligatoires.</p></li>
+<li><p><strong>data</strong> – id du sport, id de l’équipement, description, titre et notes, par exemple: <code class="docutils literal notranslate"><span class="pre">{&quot;sport_id&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;notes&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;title&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;description&quot;:</span> <span class="pre">&quot;&quot;,</span> <span class="pre">&quot;analysis_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span> <span class="pre">&quot;map_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span> <span class="pre">&quot;workout_visibility&quot;:</span> <span class="pre">&quot;private&quot;,</span> <span class="pre">&quot;equipment_ids&quot;:</span> <span class="pre">[]}</span></code>. Les guillemets doubles dans les notes, la description et le titre doivent être échappés.  La longueur maximale est de 500 caractères pour les notes, de 10000 caractères pour la description et de 255 caractères pour le titre. Dans le cas contraire, ils seront tronqués.  Pour <cite>equipment_ids</cite>, l’id de l’équipement à associer à la séance. <strong>Note</strong>: pour le moment, seul un équipement peut être associé. Si non fourni et qu’il existe un équipement par défaut pour le sport, l’équipement par défaut sera associé.  Les notes, la description, le titre, l’id de l’équipement et la visibilité pour la séance, l’analyse et la carte ne sont pas obligatoires.</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -1026,6 +1143,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.14">413 Request Entity Too Large</a></span> – <code class="docutils literal notranslate"><span class="pre">error</span> <span class="pre">during</span> <span class="pre">picture</span> <span class="pre">update:</span> <span class="pre">file</span> <span class="pre">size</span> <span class="pre">exceeds</span> <span class="pre">1.0MB</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
@@ -1051,6 +1172,7 @@
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1059,8 +1181,12 @@
 <span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Kd5wyhwLtVozw6o3AU5M4J&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -1110,13 +1236,26 @@
 <span class="w">          </span><span class="p">],</span>
 <span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
@@ -1127,16 +1266,19 @@
 <dl class="field-list simple">
 <dt class="field-odd">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>analysis_visibility</strong> (<em>string</em>) – visibilité pour l’analyse (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou <code class="docutils literal notranslate"><span class="pre">public</span></code>). Non obligatoire, si non fournie utilise la préférence utilisateur.</p></li>
 <li><p><strong>ascent</strong> (<em>float</em>) – dénivelé positif de la séance (non obligatoire, à fournir avec le dénivelé positif)</p></li>
 <li><p><strong>descent</strong> (<em>float</em>) – dénivelé négatif de la séance (non obligatoire, à fournir avec le dénivelé positif)</p></li>
 <li><p><strong>description</strong> (<em>string</em>) – description de la séance (non obligatoire, longueur max. : 10000 caractères, dans le cas contraire elle sera tronquée)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – distance de la séance en km</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – durée de la séance en secondes</p></li>
 <li><p><strong>equipment_ids</strong> (<em>array of strings</em>) – l’id de l’équipement à associer à cette séance. <strong>Note</strong>: pour le moment, un seul équipement peut être associé. Si non fourni et qu’il existe un équipement par défaut pour le sport, l’équipement par défaut sera associé.</p></li>
+<li><p><strong>map_visibility</strong> (<em>string</em>) – visibilité de la carte (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>). Non obligatoire, si non fournie utilise la préférence utilisateur.</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (non obligatoire, longueur max. : 500 caractères, dans le cas contraire elles seront tronquées)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – titre de la séance (non obligatoire, longueur max. : 255 caractères, dans le cas contraire il sera tronqué)</p></li>
 <li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance, dans le fuseau horaire de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>)</p></li>
+<li><p><strong>workout_visibility</strong> (<em>string</em>) – visibilité de la séance (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou <code class="docutils literal notranslate"><span class="pre">public</span></code>). Non obligatoire, si non fournie utilise la préférence utilisateur.</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -1162,6 +1304,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
@@ -1174,7 +1320,7 @@
 <dd><p>Mettre à jour une séance.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/workouts/1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/workouts/2oRDfncv6vpRkfp3yrCYHt</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 </pre></div>
 </div>
@@ -1186,6 +1332,7 @@
 <span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
@@ -1195,7 +1342,11 @@
 <span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:17:04&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2oRDfncv6vpRkfp3yrCYHt&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
@@ -1245,13 +1396,26 @@
 <span class="w">          </span><span class="p">],</span>
 <span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
 <span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="nt">&quot;kjxavSTUrJvoAh2wvCeGEF&quot;</span>
 <span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mon, 01 Jan 2018 00:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
@@ -1267,16 +1431,19 @@
 </dd>
 <dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
+<li><p><strong>analysis_visibility</strong> (<em>string</em>) – visibilité pour l’analyse (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou  <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 <li><p><strong>ascent</strong> (<em>float</em>) – dénivelé positif de la séance (seulement pour les séances sans gpx, doit être fourni avec le dénivelé négatif)</p></li>
 <li><p><strong>descent</strong> (<em>float</em>) – dénivelé négatif de la séance (seulement pour les séances sans gpx, doit être fourni avec le dénivelé positif)</p></li>
 <li><p><strong>description</strong> (<em>string</em>) – description de la séance (longueur max. : 10000 caractères, dans le cas contraire elle sera tronquée)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – distance de la séance en km (seulement pour les séances sans gpx)</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – durée de la séance en secondes (seulement pour les séances sans gpx)</p></li>
+<li><p><strong>equipment_ids</strong> (<em>array of strings</em>) – l’id de l’équipement à associer à cette séance (si un équipement est déjà associé, il sera remplacé). <strong>Note</strong>: pour le moment, un seul équipement peut être associé. Si la liste est vide, l’équipement sera supprimé.</p></li>
+<li><p><strong>map_visibility</strong> (<em>string</em>) – visibilité de la carte (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (longueur max. : 500 caractères, dans le cas contraire elles seront tronquées)</p></li>
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – titre de la séance (longueur max. : 255 caractères, dans le cas contraire il sera tronqué)</p></li>
-<li><p><strong>equipment_ids</strong> (<em>array of strings</em>) – l’id de l’équipement à associer à cette séance (si un équipement est déjà associé, il sera remplacé). <strong>Note</strong>: pour le moment, un seul équipement peut être associé. Si la liste est vide, l’équipement sera supprimé.</p></li>
 <li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance dans le fuseau horaire de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>) (seulement pour les séances sans gpx)</p></li>
+<li><p><strong>workout_visibility</strong> (<em>string</em>) – visibilité de la séance (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
@@ -1300,6 +1467,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
@@ -1344,6 +1515,351 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-workouts-(string-workout_short_id)-like">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/like</span></span><a class="headerlink" href="#post--api-workouts-(string-workout_short_id)-like" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajouter un « like » à une séance.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/HgzYFXgvWKCEpdq3vYk67q/like</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Exemple de réponse</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">231.208</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.12</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;creation_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Wed, 04 Dec 2024 09:18:26 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">234.208</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.41</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3:32:27&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HgzYFXgvWKCEpdq3vYk67q&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">104.44</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.59</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">19.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;modification_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Wed, 04 Dec 2024 16:45:14 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:47:04&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;next_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;pauses&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:23:51&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;previous_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;records&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cycling (Sport) - 2016-04-26 16:42:27&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 24 Nov 2024 16:52:14 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:27 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+</ul>
+</dd>
+<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">comment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-workouts-(string-workout_short_id)-like-undo">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/like/undo</span></span><a class="headerlink" href="#post--api-workouts-(string-workout_short_id)-like-undo" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprimer le « like » de la séance.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/HgzYFXgvWKCEpdq3vYk67q/like/undo</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Exemple de réponse</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;analysis_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ascent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">231.208</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;ave_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13.12</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;bounds&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;creation_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Wed, 04 Dec 2024 09:18:26 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;descent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">234.208</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">23.41</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3:32:27&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;equipments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HgzYFXgvWKCEpdq3vYk67q&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;liked&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;likes_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;map_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;private&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">104.44</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;max_speed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">25.59</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;min_alt&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">19.0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;modification_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Wed, 04 Dec 2024 16:45:14 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:47:04&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;next_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;pauses&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:23:51&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;previous_workout&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;records&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;segments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">          </span><span class="nt">&quot;sport_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cycling (Sport) - 2016-04-26 16:42:27&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 24 Nov 2024 16:52:14 GMT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;weather_end&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;weather_start&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_analysis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;with_gpx&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tue, 26 Apr 2016 14:42:27 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;workout_visibility&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;public&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+</ul>
+</dd>
+<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">comment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-workouts-(string-workout_short_id)-likes">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/likes</span></span><a class="headerlink" href="#get--api-workouts-(string-workout_short_id)-likes" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtenir la liste des utilisateurs qui ont « liké » la séance</p>
+<p><strong>Exemple de requête</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/workouts/kjxavSTUrJvoAh2wvCeGEF/likes</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Exemple de réponses</strong> :</p>
+<ul class="simple">
+<li><p>succès :</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;likes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sun, 31 Dec 2017 09:00:00 GMT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;followers&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;following&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;nb_workouts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;suspended_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sam&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>séance non trouvé :</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">404</span> <span class="ne">NOT FOUND</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;likes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;not found&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” pour la séance avec une visibilité <code class="docutils literal notranslate"><span class="pre">private</span></code> et <code class="docutils literal notranslate"><span class="pre">followers_only</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-workouts-(string-workout_short_id)-suspension-appeal">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/workouts/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">string:</span> </em><em class="sig-param"><span class="pre">workout_short_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/suspension/appeal</span></span><a class="headerlink" href="#post--api-workouts-(string-workout_short_id)-suspension-appeal" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Faire appel de la suspension de la séance.</p>
+<p>Seul l’auteur de la séance peut fait appel de la suspension.</p>
+<p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:write</span></code></p>
+<p><strong>Exemple de requête</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/workouts/2oRDfncv6vpRkfp3yrCYHt/suspension/appeal</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Exemple de réponse</strong> :</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">CREATED</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>workout_short_id</strong> (<em>string</em>) – identifiant court de la séance</p></li>
+</ul>
+</dd>
+<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – appel créé</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">text</span> <span class="pre">provided</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">can</span> <span class="pre">appeal</span> <span class="pre">only</span> <span class="pre">once</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">suspended</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">has</span> <span class="pre">no</span> <span class="pre">suspension</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
+</ul>
+</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
@@ -1406,7 +1922,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=81796492"></script>
+</div><script src="../_static/documentation_options.js?v=b137f06f"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

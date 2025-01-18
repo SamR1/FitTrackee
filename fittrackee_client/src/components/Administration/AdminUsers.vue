@@ -1,7 +1,7 @@
 <template>
   <div id="admin-users" class="admin-card">
     <Card>
-      <template #title>{{ capitalize($t('admin.USER', 0)) }}</template>
+      <template #title>{{ capitalize($t('user.USER', 0)) }}</template>
       <template #content>
         <button class="top-button" @click.prevent="$router.push('/admin')">
           {{ $t('admin.BACK_TO_ADMIN') }}
@@ -23,7 +23,6 @@
               <tr>
                 <th>#</th>
                 <th class="left-text">{{ $t('user.USERNAME') }}</th>
-                <th class="left-text">{{ $t('user.EMAIL') }}</th>
                 <th class="left-text">
                   {{ $t('user.PROFILE.REGISTRATION_DATE') }}
                 </th>
@@ -31,7 +30,8 @@
                   {{ capitalize($t('workouts.WORKOUT', 0)) }}
                 </th>
                 <th>{{ $t('admin.ACTIVE') }}</th>
-                <th>{{ $t('user.ADMIN') }}</th>
+                <th>{{ $t('user.ROLE') }}</th>
+                <th>{{ $t('user.SUSPENDED') }}</th>
                 <th>{{ $t('admin.ACTION') }}</th>
               </tr>
             </thead>
@@ -50,12 +50,10 @@
                   <router-link :to="`/admin/users/${user.username}`">
                     {{ user.username }}
                   </router-link>
-                </td>
-                <td>
-                  <span class="cell-heading">
-                    {{ $t('user.EMAIL') }}
-                  </span>
-                  {{ user.email }}
+                  <ErrorMessage
+                    :message="errorMessages"
+                    v-if="errorMessages && userInEdition === user.username"
+                  />
                 </td>
                 <td>
                   <span class="cell-heading">
@@ -88,10 +86,18 @@
                 </td>
                 <td class="text-center">
                   <span class="cell-heading">
-                    {{ $t('user.ADMIN') }}
+                    {{ $t('user.ROLE') }}
+                  </span>
+                  {{ $t(`user.ROLES.${user.role}`) }}
+                </td>
+                <td class="text-center">
+                  <span class="cell-heading">
+                    {{ $t('user.SUSPENDED') }}
                   </span>
                   <i
-                    :class="`fa fa${user.admin ? '-check' : ''}-square-o`"
+                    :class="`fa fa${
+                      user.suspended_at !== null ? '-check' : ''
+                    }-square-o`"
                     aria-hidden="true"
                   />
                 </td>
@@ -99,19 +105,38 @@
                   <span class="cell-heading">
                     {{ $t('admin.ACTION') }}
                   </span>
-                  <button
-                    :class="{ danger: user.admin }"
-                    :disabled="user.username === authUser.username"
-                    @click="updateUser(user.username, !user.admin)"
-                  >
-                    {{
-                      $t(
-                        `admin.USERS.TABLE.${
-                          user.admin ? 'REMOVE' : 'ADD'
-                        }_ADMIN_RIGHTS`
-                      )
-                    }}
-                  </button>
+                  <div class="roles">
+                    <div
+                      v-if="isUserInEdition(user.username)"
+                      class="roles-buttons"
+                    >
+                      <button
+                        v-for="role in getUserRoles(user.role)"
+                        :class="{
+                          danger: user.role === 'admin' || role === 'user',
+                        }"
+                        :key="role"
+                        @click="updateUser(user.username, role)"
+                      >
+                        {{
+                          $t(
+                            `admin.USERS.TABLE.CHANGE_TO_${role.toUpperCase()}`
+                          )
+                        }}
+                      </button>
+                      <button @click="userInEdition = ''">
+                        {{ $t('buttons.CANCEL') }}
+                      </button>
+                    </div>
+                    <div v-else>
+                      <button
+                        :disabled="isButtonDisabled(user)"
+                        @click="userInEdition = user.username"
+                      >
+                        {{ $t('admin.USERS.TABLE.CHANGE_ROLE') }}
+                      </button>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -122,7 +147,10 @@
             :pagination="pagination"
             :query="query"
           />
-          <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+          <ErrorMessage
+            :message="errorMessages"
+            v-if="userInEdition === '' && errorMessages"
+          />
           <button @click.prevent="$router.push('/admin')">
             {{ $t('admin.BACK_TO_ADMIN') }}
           </button>
@@ -136,12 +164,13 @@
   import {
     computed,
     reactive,
+    ref,
     watch,
     capitalize,
     onBeforeMount,
     onUnmounted,
   } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import type { Reactive, ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
 
@@ -149,10 +178,11 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import UsersNameFilter from '@/components/Users/UsersNameFilter.vue'
-  import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
+  import useApp from '@/composables/useApp'
+  import useAuthUser from '@/composables/useAuthUser'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination, TPaginationPayload } from '@/types/api'
-  import type { IEquipmentError } from '@/types/equipments'
-  import type { IAuthUserProfile, IUserProfile } from '@/types/user'
+  import type { IUserProfile, TUserRole, TUsersPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
@@ -161,42 +191,58 @@
   const route = useRoute()
   const router = useRouter()
 
-  const orderByList: string[] = [
+  const { errorMessages } = useApp()
+  const { authUser } = useAuthUser()
+
+  const orderByList = [
     'is_active',
-    'admin',
+    'role',
     'created_at',
     'username',
     'workouts_count',
   ]
   const defaultOrderBy = 'created_at'
-  let query: TPaginationPayload = reactive(
+
+  let query: Reactive<TPaginationPayload> = reactive(
     getQuery(route.query, orderByList, defaultOrderBy)
   )
-  const authUser: ComputedRef<IAuthUserProfile> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
-  )
+
   const users: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_PAGINATION]
   )
-  const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
-    computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
+  const isSuccess = computed(
+    () => store.getters[USERS_STORE.GETTERS.USERS_IS_SUCCESS]
+  )
+  const userInEdition: Ref<string> = ref('')
 
-  onBeforeMount(() => loadUsers(query))
-
-  function loadUsers(queryParams: TPaginationPayload) {
-    store.dispatch(USERS_STORE.ACTIONS.GET_USERS, queryParams)
+  function loadUsers(queryParams: TUsersPayload) {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_FOR_ADMIN, queryParams)
   }
   function searchUsers(username: Ref<string>) {
     reloadUsers('q', username.value)
   }
-
-  function updateUser(username: string, admin: boolean) {
+  function isUserInEdition(username: string) {
+    return userInEdition.value === username
+  }
+  function getUserRoles(role: TUserRole): TUserRole[] {
+    switch (role) {
+      case 'admin':
+        return ['moderator', 'user']
+      case 'moderator':
+        return ['admin', 'user']
+      case 'user':
+        return ['admin', 'moderator']
+      default:
+        return []
+    }
+  }
+  function updateUser(username: string, role: TUserRole) {
     store.dispatch(USERS_STORE.ACTIONS.UPDATE_USER, {
       username,
-      admin,
+      role,
     })
   }
   function reloadUsers(queryParam: string, queryValue: string) {
@@ -206,10 +252,13 @@
     }
     router.push({ path: '/admin/users', query })
   }
-
-  onUnmounted(() => {
-    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
-  })
+  function isButtonDisabled(user: IUserProfile) {
+    return (
+      user.username === authUser.value.username ||
+      user.suspended_at !== null ||
+      user.role === 'owner'
+    )
+  }
 
   watch(
     () => route.query,
@@ -218,6 +267,20 @@
       loadUsers(query)
     }
   )
+  watch(
+    () => isSuccess.value,
+    (newSuccess: boolean) => {
+      if (newSuccess) {
+        userInEdition.value = ''
+      }
+    }
+  )
+
+  onBeforeMount(() => loadUsers(query))
+  onUnmounted(() => {
+    store.dispatch(USERS_STORE.ACTIONS.EMPTY_USERS)
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_IS_SUCCESS, false)
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -242,6 +305,19 @@
     .left-text {
       text-align: left;
     }
+
+    .roles {
+      width: 120px;
+      display: flex;
+      justify-content: center;
+      margin: auto;
+      .roles-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $default-padding * 0.5;
+      }
+    }
     ::v-deep(.user-picture) {
       img {
         height: 30px;
@@ -253,12 +329,21 @@
     }
 
     @media screen and (max-width: $small-limit) {
+      .roles {
+        width: 45%;
+      }
       .top-button {
         display: block;
         margin-bottom: $default-margin * 2;
       }
       .pagination-center {
         margin-top: -3 * $default-margin;
+      }
+    }
+
+    @media screen and (max-width: $x-small-limit) {
+      .roles {
+        width: 100%;
       }
     }
   }

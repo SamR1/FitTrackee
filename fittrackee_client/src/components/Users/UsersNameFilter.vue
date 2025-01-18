@@ -1,6 +1,9 @@
 <template>
   <div class="users-filters">
     <div class="search-username">
+      <label for="username" class="visually-hidden">
+        {{ $t('user.USERNAME') }}
+      </label>
       <input
         id="username"
         name="username"
@@ -8,30 +11,39 @@
         @keyup.enter="searchUsers"
         :placeholder="$t('user.FILTER_ON_USERNAME')"
       />
-      <i
+      <button
         v-if="username !== ''"
-        class="fa fa-times"
-        aria-hidden="true"
-        @click="resetFilter"
-      />
+        class="transparent search-buttons"
+        :title="$t('buttons.CLEAR_FILTER')"
+      >
+        <i class="fa fa-times" aria-hidden="true" @click="resetFilter" />
+      </button>
     </div>
-    <i
-      class="fa fa-search"
-      :class="{ 'fa-disabled': username === '' }"
-      aria-hidden="true"
-      @click="searchUsers"
-    />
+    <button class="transparent search-buttons" :title="$t('buttons.SEARCH')">
+      <i
+        class="fa fa-search"
+        :class="{ 'fa-disabled': username === '' }"
+        aria-hidden="true"
+        @click="searchUsers"
+      />
+    </button>
   </div>
 </template>
 
 <script lang="ts" setup>
   import { ref } from 'vue'
+  import type { Ref } from 'vue'
   import { useRoute } from 'vue-router'
-
-  const route = useRoute()
-  const username = ref(route.query.q ? route.query.q : '')
+  import type { LocationQueryValue } from 'vue-router'
 
   const emit = defineEmits(['filterOnUsername'])
+
+  const route = useRoute()
+
+  const username: Ref<string | LocationQueryValue[]> = ref(
+    route.query.q ? route.query.q : ''
+  )
+
   function searchUsers() {
     if (username.value !== '') {
       emit('filterOnUsername', username)
@@ -81,6 +93,10 @@
       .fa-times {
         padding-right: 10px;
       }
+    }
+
+    .search-buttons {
+      padding: 0;
     }
   }
 

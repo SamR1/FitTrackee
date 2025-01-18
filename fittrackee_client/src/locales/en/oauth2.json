@@ -12,12 +12,18 @@
       "application:write_DESCRIPTION": "grants write access to application configuration.",
       "equipments:read_DESCRIPTION": "grants read access to <code>equipments</code> endpoints.",
       "equipments:write_DESCRIPTION": "grants write access to <code>equipments</code> endpoints.",
+      "follow:read_DESCRIPTION": "grants read access to endpoints related to follow requests and followers.",
+      "follow:write_DESCRIPTION": "grants write access to endpoints related to follow requests and followers.",
+      "notifications:read_DESCRIPTION": "grants read access to <code>notifications</code> endpoints.",
+      "notifications:write_DESCRIPTION": "grants write access to <code>notifications</code> endpoints.",
       "profile:read_DESCRIPTION": "grants read access to <code>auth</code> endpoints.",
       "profile:write_DESCRIPTION": "grants write access to <code>auth</code> endpoints.",
+      "reports:read_DESCRIPTION": "grants read access to <code>reports</code> endpoints.",
+      "reports:write_DESCRIPTION": "grants write access to <code>reports</code> endpoints.",
       "users:read_DESCRIPTION": "grants read access to <code>users</code> endpoints.",
       "users:write_DESCRIPTION": "grants write access to <code>users</code> endpoints.",
-      "workouts:read_DESCRIPTION": "grants read access to <code>workouts</code> endpoints.",
-      "workouts:write_DESCRIPTION": "grants write access to <code>workouts</code> endpoints."
+      "workouts:read_DESCRIPTION": "grants read access to workouts and comments endpoints.",
+      "workouts:write_DESCRIPTION": "grants write access to workouts and comments endpoints."
     },
     "URL": "Application URL"
   },
@@ -31,7 +37,6 @@
   "NEW_APP": "Add an application",
   "NO_APP": "Application not found!",
   "NO_APPS": "no applications",
-  "NO_DESCRIPTION": "no description",
   "REVOKE_ALL_TOKENS": "Revoke all tokens",
   "TOKENS_REVOCATION_CONFIRMATION": "Are you sure you want to revoke all tokens?",
   "TOKENS_REVOKED": "All existing associated tokens have been revoked."

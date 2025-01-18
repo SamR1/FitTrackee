@@ -61,16 +61,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "Adminstatus",
         "CREATED_AT": "Registrierungsdatum",
         "IS_ACTIVE": "Accountstatus",
         "USERNAME": "Nutzername",
         "WORKOUTS_COUNT": "Trainingsanzahl"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Administratorrechte hinzufügen",
-      "REMOVE_ADMIN_RIGHTS": "Administratorrechte entfernen"
     },
     "TITLE": "Administration - Benutzer"
   },

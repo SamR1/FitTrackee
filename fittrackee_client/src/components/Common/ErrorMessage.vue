@@ -1,5 +1,5 @@
 <template>
-  <div class="error-message">
+  <div class="error-message" :class="{ 'no-margin': noMargin }">
     <ul v-if="Array.isArray(message)">
       <li v-for="(subMessage, index) in message" :key="index">
         {{ $t(subMessage) }}
@@ -26,8 +26,9 @@
 
   interface Props {
     message: string | string[] | IEquipmentError
+    noMargin?: boolean
   }
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), { noMargin: false })
   const { message } = toRefs(props)
 </script>
 
@@ -41,5 +42,9 @@
 
     margin: $default-margin;
     padding: $default-padding;
+
+    &.no-margin {
+      margin: $default-margin 0;
+    }
   }
 </style>

@@ -30,8 +30,8 @@
     datasets: Record<number, Record<string, number>>
   }
   const props = defineProps<Props>()
-
   const { colors, datasets } = toRefs(props)
+
   let angleOffset = -90
   const cx = 16
   const cy = 16

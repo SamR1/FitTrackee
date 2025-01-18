@@ -46,16 +46,11 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "stato admin",
         "CREATED_AT": "data di registrazione",
         "IS_ACTIVE": "stato account",
         "USERNAME": "nome utente",
         "WORKOUTS_COUNT": "numero di workout"
       }
-    },
-    "TABLE": {
-      "ADD_ADMIN_RIGHTS": "Aggiungi permessi di amministratore",
-      "REMOVE_ADMIN_RIGHTS": "Rimuovi permessi di amministratore"
     }
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "L'indirizzo email è stato aggiornato."

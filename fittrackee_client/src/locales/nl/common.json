@@ -16,7 +16,8 @@
   "LABEL": "label",
   "MINUTES": "minuut|minuten",
   "NEXT": "volgende",
-  "NO_DESCRIPTION": "geen beschrijving",
+  "NO_DESCRIPTION": "Geen beschrijving",
+  "NO_NOTES": "Geen notities",
   "PREVIOUS": "vorige",
   "SECONDS": "seconde|secondes",
   "SELECTS": {

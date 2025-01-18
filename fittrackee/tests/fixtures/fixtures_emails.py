@@ -58,3 +58,75 @@ def account_confirmation_email_mock() -> Iterator[MagicMock]:
 def data_export_email_mock() -> Iterator[MagicMock]:
     with patch('fittrackee.users.export_data.data_export_email') as mock:
         yield mock
+
+
+@pytest.fixture()
+def user_suspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.user_suspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def user_unsuspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.user_unsuspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def user_warning_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.user_warning_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def user_warning_lifting_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.user_warning_lifting_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def comment_suspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.comment_suspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def comment_unsuspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.comment_unsuspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def workout_suspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.workout_suspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def workout_unsuspension_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.workout_unsuspension_email'
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture()
+def appeal_rejected_email_mock() -> Iterator[MagicMock]:
+    with patch(
+        'fittrackee.reports.reports_email_service.appeal_rejected_email'
+    ) as mock:
+        yield mock

@@ -109,13 +109,16 @@ export const dateStringFormats: Record<TLanguage, string> = {
   pl: 'd MMM yyyy',
   pt: 'd MMM yyyy',
   ru: 'd MMMM yyyy',
+  zh_Hans: 'y年M月d日',
 }
 
 export const getDateFormat = (
   dateFormat: string,
   language: TLanguage
 ): string => {
-  return dateFormat === 'date_string' ? dateStringFormats[language] : dateFormat
+  return dateFormat === 'date_string'
+    ? dateStringFormats[language]
+    : dateFormat || 'MM/dd/yyyy'
 }
 
 export const formatDate = (

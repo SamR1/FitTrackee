@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from flask import Flask
 
-from fittrackee import VERSION
+from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
 
@@ -14,7 +14,7 @@ class TestConfigModel:
     def test_application_config(
         self, app: Flask, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_PROVIDER', 'darksky')
+        monkeypatch.setenv('WEATHER_API_PROVIDER', 'visualcrossing')
         app_config = AppConfig.query.first()
         app_config.admin_contact = 'admin@example.com'
 
@@ -48,7 +48,7 @@ class TestConfigModel:
             == app_config.map_attribution
         )
         assert serialized_app_config['version'] == VERSION
-        assert serialized_app_config['weather_provider'] == 'darksky'
+        assert serialized_app_config['weather_provider'] == 'visualcrossing'
 
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
@@ -71,7 +71,7 @@ class TestConfigModel:
     @pytest.mark.parametrize(
         'input_weather_api_provider, expected_weather_provider',
         [
-            ('darksky', 'darksky'),
+            ('darksky', None),  # removed provider
             ('Visualcrossing', 'visualcrossing'),
             ('invalid_provider', None),
             ('', None),
@@ -93,10 +93,23 @@ class TestConfigModel:
             == expected_weather_provider
         )
 
-    def test_it_returns_privacy_policy(self, app: Flask) -> None:
+    def test_it_returns_only_privacy_policy_date_when_no_custom_privacy(
+        self, app: Flask
+    ) -> None:
+        app_config = AppConfig.query.first()
+
+        serialized_app_config = app_config.serialize()
+
+        assert serialized_app_config["privacy_policy"] is None
+        assert (
+            serialized_app_config["privacy_policy_date"]
+            == DEFAULT_PRIVACY_POLICY_DATA
+        )
+
+    def test_it_returns_custom_privacy_policy(self, app: Flask) -> None:
         app_config = AppConfig.query.first()
         privacy_policy = random_string()
-        privacy_policy_date = datetime.now()
+        privacy_policy_date = datetime.utcnow()
         app_config.privacy_policy = privacy_policy
         app_config.privacy_policy_date = privacy_policy_date
 
