@@ -1,6 +1,6 @@
 {
   "name": "fittrackee_client",
-  "version": "0.9.0b6",
+  "version": "0.9.0",
   "private": true,
   "type": "module",
   "scripts": {

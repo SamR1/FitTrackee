@@ -13,6 +13,8 @@
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
+[![Matrix](https://img.shields.io/matrix/fittrackee%3Amatrix.org?logo=matrix)](https://matrix.to/#/#fittrackee:matrix.org)
+[![Mastodon Follow](https://img.shields.io/mastodon/follow/109270806934115805?domain=fosstodon.org)](https://fosstodon.org/@FitTrackee)  
 ---
 
 Web application allowing tracking of outdoor activities (workouts) from GPX files, \
@@ -30,7 +32,7 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 ## Documentation
 
-- [List of features](https://docs.fittrackee.org/en/features.html)
+- [Features](https://docs.fittrackee.org/en/features.html)
 - [Installation instructions](https://docs.fittrackee.org/en/installation.html)
 - [Changelog](https://docs.fittrackee.org/en/changelog.html)
 
@@ -43,4 +45,5 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 FitTrackee uses [Weblate](https://hosted.weblate.org/engage/fittrackee/) for translation management.
 
+Status (on development branch, may differ from the released version):
 [![Translation status](https://hosted.weblate.org/widget/fittrackee/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)

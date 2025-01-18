@@ -318,7 +318,7 @@ Account & preferences
 .. note::
   Changing this preference will only affect next file uploads.
 
-- A user can set default visibility for workout data and map and analysis (*new in 0.9.0*).
+- A user can set default visibility for workout data, analysis and map (*new in 0.9.0*).
 - A user can set sport preferences (*new in 0.5.0*):
 
   - change sport color (used for sport image and charts)
@@ -536,8 +536,9 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Portuguese (*new in 0.8.4*)
 - Bulgarian (*new in 0.8.8*)
 - Russian (*new in 0.8.10*)
+- Chinese (Simplified Han script) (*new in 0.9.0*)
 
-Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
+Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
@@ -557,6 +558,7 @@ Dashboard on Mobile
 
 .. list-table::
    :header-rows: 0
+   :class: no-borders
 
    * - .. figure:: _images/dashboard-mobile-calendar.png
           :width: 300px
