@@ -13,3 +13,4 @@ export type TLanguage =
   | 'pl'
   | 'pt'
   | 'ru'
+// | 'zh_Hans'
