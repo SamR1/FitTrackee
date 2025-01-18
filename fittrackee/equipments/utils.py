@@ -89,8 +89,7 @@ def handle_equipments(
                 raise InvalidEquipmentException(
                     status="inactive",
                     message=(
-                        f"equipment with id {equipment_short_id} "
-                        "is inactive"
+                        f"equipment with id {equipment_short_id} is inactive"
                     ),
                     equipment_short_id=equipment_short_id,
                 )

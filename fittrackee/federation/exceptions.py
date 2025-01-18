@@ -12,7 +12,7 @@ class ActorNotFoundException(GenericException):
     def __init__(self, message: Optional[str] = None) -> None:
         super().__init__(
             status='error',
-            message=f'Actor not found{ f": {message}" if message else ""}.',
+            message=f'Actor not found{f": {message}" if message else ""}.',
         )
 
 
@@ -68,7 +68,7 @@ class RemoteActorException(GenericException):
         super().__init__(
             status='error',
             message=(
-                f'Invalid remote actor{ f": {message}" if message else ""}.'
+                f'Invalid remote actor{f": {message}" if message else ""}.'
             ),
         )
 

@@ -78,7 +78,7 @@ class TestWebfinger(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.get(
-            '/.well-known/webfinger?resource=acct:' f'{user_1.fullname}',
+            f'/.well-known/webfinger?resource=acct:{user_1.fullname}',
             content_type='application/json',
         )
 
@@ -92,7 +92,7 @@ class TestWebfinger(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.get(
-            '/.well-known/webfinger?resource=acct:' f'{actor_1.fullname}',
+            f'/.well-known/webfinger?resource=acct:{actor_1.fullname}',
             content_type='application/json',
         )
 
@@ -107,7 +107,7 @@ class TestWebfinger(ApiTestCaseMixin):
         client = app_with_federation.test_client()
 
         response = client.get(
-            '/.well-known/webfinger?resource=acct:' f'{actor_1.fullname}',
+            f'/.well-known/webfinger?resource=acct:{actor_1.fullname}',
             content_type='application/json',
         )
 
@@ -135,7 +135,7 @@ class TestWebfinger(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            '/.well-known/webfinger?resource=acct:' f'{app_actor.fullname}',
+            f'/.well-known/webfinger?resource=acct:{app_actor.fullname}',
             content_type='application/json',
         )
 

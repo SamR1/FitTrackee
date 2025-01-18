@@ -6,13 +6,13 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.0b6</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+        <title>Fonctionnalités - Documentation FitTrackee 0.9.0</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="_static/css/fork-awesome.min.css?v=876feb3b" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=0cba77a2" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=00b9e757" />
     
     
 
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0b6
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0b6
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -291,8 +291,8 @@
 <div class="line-block">
 <div class="line"><strong>FitTrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers <strong>gpx</strong> et quelques statistiques à partir de vos activités sportives <strong>en plein air</strong>.</div>
 <div class="line">Des équipements peuvent être associés aux séances.</div>
-<div class="line">Si l’inscription est activée, plusieurs utilisateurs peuvent s’inscrire et interagir avec les autres utilisateurs (commentaires, « likes »). Les séances et commentaires sont visibles selon le niveau de visibilité configuré.</div>
 </div>
+<p>Si l’inscription est activée, plusieurs utilisateurs peuvent s’inscrire et interagir avec les autres utilisateurs (commentaires, « likes »). Les séances et commentaires sont visibles selon le niveau de visibilité configuré.</p>
 <p>Les fichier .gpx sont stockés dans un répertoire du serveur (<strong>sans aucun chiffrement</strong>).</p>
 <p>Avec la configuration par défaut, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> est utilisé comme serveur de tuile sur la page de détail de la séance et pour la génération des images statiques des traces.</p>
 <section id="workouts">
@@ -515,7 +515,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Répertoire des utilisateurs.</div>
-<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire dans les préférences utilisateur (masquée par défaut).</div>
+<div class="line">Un utilisateur peut configurer sa visibilité dans le répertoire au niveau des préférences utilisateur (profil masqué par défaut).</div>
 <div class="line">Cela impacte également la complétion des noms d’utilisateurs lors de la rédaction d’un commentaire (seuls les utilisateurs visibles dans le répertoire et les utilisateurs suivis sont proposés).</div>
 </div>
 </li>
@@ -530,8 +530,9 @@
 </div>
 </li>
 <li><div class="line-block">
-<div class="line">Un utilisateur peut envoyer des demandes de suivi à d’autres utilisateurs</div>
+<div class="line">Un utilisateur peut envoyer des demandes de suivi à d’autres utilisateurs.</div>
 <div class="line">Une demande de suivi peut être acceptée ou rejetée.</div>
+<div class="line">L’approbation d’une demande de suivi peut être manuelle ou automatique (manuelle par défaut, cf. préférences utilisateur).</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -577,9 +578,10 @@
 </ul>
 </section>
 <section id="likes">
-<h3>Likes<a class="headerlink" href="#likes" title="Lien vers cette rubrique">¶</a></h3>
+<h3>« Likes »<a class="headerlink" href="#likes" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Selon la visibilité de l’instance, un utilisateur peut ajouter ou supprimer « like » sur une séance ou un commentaire.</p></li>
+<li><p>La liste des utilisateurs ayant « liké » la séance ou le commentaire est disponible.</p></li>
 </ul>
 </section>
 <section id="notifications">
@@ -611,7 +613,7 @@
 <li><p>« like » sur un commentaire ou une séance</p></li>
 <li><p>commentaire sur une séance</p></li>
 <li><p>mention dans un commentaire</p></li>
-<li><p>inscription d’un utilisateur (si l’utilisateur authentifié a les droitsd’administration</p></li>
+<li><p>inscription d’un utilisateur (si l’utilisateur authentifié a les droits d’administration)</p></li>
 </ul>
 </li>
 </ul>
@@ -715,7 +717,7 @@
 <p>La modification de cette préférence n’affectera que les prochains fichiers ajoutés.</p>
 </div>
 <ul class="simple">
-<li><p>Un utilisateur peut configurer la visibilité par défaut des séances d’une part et de la carte et de l’analyse d’autre part (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>Un utilisateur peut configurer la visibilité par défaut des séances, de l’analyse et de la carte (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>Un utilisateur peut définir des préférences en matière de sport (<em>nouveau dans la version 0.5.0</em>) :</p>
 <ul>
 <li><p>changer la couleur du sport (utilisée pour l’image du sport et les graphiques)</p></li>
@@ -913,7 +915,7 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Roles defined prior to version 0.9.0 remain unchanged.</p>
+<p>Les rôles définis avant la version 0.9.0 restent inchangés.</p>
 </div>
 <ul class="simple">
 <li><p>afficher et filtrer la liste des utilisateurs</p></li>
@@ -991,8 +993,9 @@
 <li><p>Portugais (<em>nouveau dans la version 0.8.4</em>)</p></li>
 <li><p>Bulgare (<em>nouveau dans la version 0.8.8</em>)</p></li>
 <li><p>Russe (<em>nouveau dans la version 0.8.10</em>)</p></li>
+<li><p>Chinois (Simplifié) (<em>nouveau dans la version 0.9.0</em>)</p></li>
 </ul>
-<p>État d’avancement de la traduction de l’application sur <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (peut différer de la version publiée) :</p>
+<p>État d’avancement de la traduction de l’application sur <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (branche de développement, peut différer de la version publiée) :</p>
 <figure class="align-default">
 <img alt="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" src="https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg" />
 </figure>
@@ -1004,6 +1007,37 @@
 <figure class="align-default">
 <img alt="Tableau de bord sur FitTrackee" src="_images/dashboard.png" />
 </figure>
+</section>
+<section id="dashboard-on-mobile">
+<h3>Tableau de bord sur mobile<a class="headerlink" href="#dashboard-on-mobile" title="Lien vers cette rubrique">¶</a></h3>
+<div class="table-wrapper no-borders docutils container">
+<table class="no-borders docutils align-default">
+<tbody>
+<tr class="row-odd"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-calendar.png"><img alt="Tableau de bord de FitTrackee sur mobile (calendrier)" src="_images/dashboard-mobile-calendar.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-stats.png"><img alt="Tableau de bord de FitTrackee sur mobile (statistiques)" src="_images/dashboard-mobile-stats.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+<tr class="row-even"><td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-latest-workouts.png"><img alt="Tableau de bord de FitTrackee sur mobile (dernières séances)" src="_images/dashboard-mobile-latest-workouts.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+<td><figure class="align-default">
+<a class="reference internal image-reference" href="_images/dashboard-mobile-records.png"><img alt="Tableau de bord de FitTrackee sur mobile (record)" src="_images/dashboard-mobile-records.png" style="width: 300px;" />
+</a>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="workout-detail">
 <h3>Page de détail d’une séance<a class="headerlink" href="#workout-detail" title="Lien vers cette rubrique">¶</a></h3>
@@ -1127,7 +1161,7 @@
 <li><a class="reference internal" href="#interactions">Interactions</a><ul>
 <li><a class="reference internal" href="#users">Utilisateurs</a></li>
 <li><a class="reference internal" href="#comments">Commentaires</a></li>
-<li><a class="reference internal" href="#likes">Likes</a></li>
+<li><a class="reference internal" href="#likes">« Likes »</a></li>
 <li><a class="reference internal" href="#notifications">Notifications</a></li>
 </ul>
 </li>
@@ -1152,6 +1186,7 @@
 <li><a class="reference internal" href="#translations">Traductions</a></li>
 <li><a class="reference internal" href="#screenshots">Captures d’écran</a><ul>
 <li><a class="reference internal" href="#id4">Tableau de bord</a></li>
+<li><a class="reference internal" href="#dashboard-on-mobile">Tableau de bord sur mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Page de détail d’une séance</a></li>
 <li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
 <li><a class="reference internal" href="#id5">Statistiques</a></li>
@@ -1172,7 +1207,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=21a5088f"></script>
+</div><script src="_static/documentation_options.js?v=b137f06f"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

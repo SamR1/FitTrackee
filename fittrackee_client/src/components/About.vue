@@ -80,7 +80,7 @@
   }
 
   function get_documentation_link() {
-    let link = 'https://samr1.github.io/FitTrackee/'
+    let link = 'https://docs.fittrackee.org/'
     if (appLanguage.value === 'fr') {
       link += 'fr/'
     }

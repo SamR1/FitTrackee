@@ -230,7 +230,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -270,7 +270,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -310,7 +310,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -327,13 +327,13 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         assert len(data['data']['workouts']) == 2
         assert 'creation_date' in data['data']['workouts'][0]
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert '0:57:36' == data['data']['workouts'][0]['duration']
         assert 'creation_date' in data['data']['workouts'][1]
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert '0:17:04' == data['data']['workouts'][1]['duration']
@@ -350,7 +350,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -378,7 +378,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -403,7 +403,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -423,7 +423,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][5]['workout_date']
         )
         assert data['pagination'] == {
@@ -440,7 +440,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -478,7 +478,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -514,7 +514,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -530,7 +530,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 5
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
@@ -550,7 +550,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -588,7 +588,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -624,7 +624,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -682,7 +682,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         assert '0:57:36' == data['data']['workouts'][1]['duration']
         assert '0:57:36' == data['data']['workouts'][1]['moving']
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert '1:06:40' == data['data']['workouts'][2]['duration']
@@ -704,7 +704,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -778,7 +778,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -806,7 +806,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -843,7 +843,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -859,11 +859,11 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -879,7 +879,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -899,7 +899,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -915,7 +915,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -931,7 +931,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 1
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert data['pagination'] == {
@@ -947,7 +947,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1015,7 +1015,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
@@ -1185,9 +1185,10 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         notes = self.random_string()
         seven_workouts_user_1[1].notes = notes
         seven_workouts_user_1[3].notes = self.random_string()
-        seven_workouts_user_1[5].notes = (
-            f"{self.random_string()} {notes.upper()} "
-            f"{self.random_string()}"
+        seven_workouts_user_1[
+            5
+        ].notes = (
+            f"{self.random_string()} {notes.upper()} {self.random_string()}"
         )
         workout_cycling_user_2.notes = notes
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1302,7 +1303,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1318,11 +1319,11 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         assert 'success' in data['status']
         assert len(data['data']['workouts']) == 2
         assert (
-            'Thu, 01 Jun 2017 00:00:00 GMT'
+            'Sun, 31 Dec 2017 23:00:00 GMT'
             == data['data']['workouts'][0]['workout_date']
         )
         assert (
-            'Mon, 20 Mar 2017 00:00:00 GMT'
+            'Sun, 02 Apr 2017 22:00:00 GMT'
             == data['data']['workouts'][1]['workout_date']
         )
         assert data['pagination'] == {
@@ -1338,7 +1339,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        seven_workouts_user_1: Workout,
+        seven_workouts_user_1: List[Workout],
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

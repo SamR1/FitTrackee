@@ -499,8 +499,15 @@ def on_comment_delete(
         from fittrackee.users.models import Notification
 
         # delete all notifications related to deleted comment
-        Notification.query.filter_by(
-            event_object_id=old_comment.id,
+        Notification.query.filter(
+            Notification.event_object_id == old_comment.id,
+            Notification.event_type.in_(
+                [
+                    'comment_like',
+                    'mention',
+                    'workout_comment',
+                ]
+            ),
         ).delete()
 
 

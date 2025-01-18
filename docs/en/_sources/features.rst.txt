@@ -3,7 +3,8 @@ Features
 
 | **FitTrackee** allows you to store and display **gpx** files and some statistics from your **outdoor** activities.
 | Equipments can be associated with workouts.
-| If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.
+
+If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.
 
 Gpx files are stored in an upload directory (**without encryption**).
 
@@ -166,7 +167,7 @@ Interactions
 Users
 -----
 - | Users directory.
-  | A user can configure visibility in directory in the user preferences (hidden by default).
+  | A user can configure visibility in directory in the user preferences (hidden profile by default).
   | This affects username completion when writing comments (only profiles visible in users directory or followed users are suggested).
 
 .. note::
@@ -175,6 +176,7 @@ Users
 - | User profile displays the last 5 visible workouts.
 - | User can send follow request to others users.
   | Follow request can be approved or rejected.
+  | Follow request approval can be manual or automatic (manual by default, see user preferences).
 - | In order to hide unwanted content, a user can block another user.
   | Blocking users hides their workouts on timeline and comments. Notifications from blocked users are not displayed.
   | Blocked users cannot see workouts and comments from users who have blocked them, or follow them (if they followed them, they are forced to unfollow them).
@@ -204,6 +206,7 @@ Likes
 -----
 
 - Depending on visibility, a user can like or "unlike" a workout or a comment.
+- The list of users who have liked the workout or comment is available.
 
 Notifications
 -------------
@@ -315,7 +318,7 @@ Account & preferences
 .. note::
   Changing this preference will only affect next file uploads.
 
-- A user can set default visibility for workout data and map and analysis (*new in 0.9.0*).
+- A user can set default visibility for workout data, analysis and map (*new in 0.9.0*).
 - A user can set sport preferences (*new in 0.5.0*):
 
   - change sport color (used for sport image and charts)
@@ -533,8 +536,9 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Portuguese (*new in 0.8.4*)
 - Bulgarian (*new in 0.8.8*)
 - Russian (*new in 0.8.10*)
+- Chinese (Simplified Han script) (*new in 0.9.0*)
 
-Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (may differ from the released version):
+Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
 
@@ -547,6 +551,27 @@ Dashboard
 
 .. figure:: _images/dashboard.png
    :alt: FitTrackee Dashboard
+
+
+Dashboard on Mobile
+-------------------
+
+.. list-table::
+   :header-rows: 0
+   :class: no-borders
+
+   * - .. figure:: _images/dashboard-mobile-calendar.png
+          :width: 300px
+          :alt: FitTrackee Dashboard on mobile (calendar)
+     - .. figure:: _images/dashboard-mobile-stats.png
+          :width: 300px
+          :alt: FitTrackee Dashboard on mobile (statistics)
+   * - .. figure:: _images/dashboard-mobile-latest-workouts.png
+          :width: 300px
+          :alt: FitTrackee Dashboard on mobile (latest workouts)
+     - .. figure:: _images/dashboard-mobile-records.png
+          :width: 300px
+          :alt: FitTrackee Dashboard on mobile (records)
 
 
 Workout detail

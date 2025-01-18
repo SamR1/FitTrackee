@@ -346,8 +346,7 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data['status'] == 'success'
         assert data['message'] == (
-            "Undo for a follow request to user "
-            f"'{user_2.username}' is sent."
+            f"Undo for a follow request to user '{user_2.username}' is sent."
         )
         assert user_1.following.count() == 0
 

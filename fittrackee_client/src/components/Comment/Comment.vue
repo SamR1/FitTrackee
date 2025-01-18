@@ -259,6 +259,8 @@
   const route = useRoute()
   const store = useStore()
 
+  defineEmits(['commentLinkClicked'])
+
   const { displayAppealForm } = useAppeal()
   const { displayOptions, locale } = useApp()
 

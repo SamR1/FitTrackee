@@ -59,6 +59,8 @@
   const { action, displayAppeal, displayObjectName, reportId, workout } =
     toRefs(props)
 
+  defineEmits(['workoutLinkClicked'])
+
   const { getWorkoutSport } = useSports()
   const { dateFormat, imperialUnits, timezone } = useAuthUser()
 

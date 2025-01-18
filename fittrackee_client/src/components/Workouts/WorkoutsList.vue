@@ -27,7 +27,11 @@
         <table>
           <thead :class="{ smaller: 'de' === appLanguage }">
             <tr>
-              <th class="sport-col" />
+              <th class="sport-col">
+                <span class="visually-hidden">
+                  {{ $t('workouts.SPORT') }}
+                </span>
+              </th>
               <th>{{ capitalize($t('workouts.WORKOUT', 1)) }}</th>
               <th>{{ capitalize($t('workouts.DATE')) }}</th>
               <th>{{ capitalize($t('workouts.DISTANCE')) }}</th>

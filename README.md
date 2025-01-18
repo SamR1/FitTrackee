@@ -13,6 +13,8 @@
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
+[![Matrix](https://img.shields.io/matrix/fittrackee%3Amatrix.org?logo=matrix)](https://matrix.to/#/#fittrackee:matrix.org)
+[![Mastodon Follow](https://img.shields.io/mastodon/follow/109270806934115805?domain=fosstodon.org)](https://fosstodon.org/@FitTrackee)  
 ---
 
 Web application allowing tracking of outdoor activities (workouts) from GPX files, \
@@ -30,17 +32,18 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 ## Documentation
 
-- [List of features](https://samr1.github.io/FitTrackee/en/features.html)
-- [Installation instructions](https://samr1.github.io/FitTrackee/en/installation.html)
-- [Changelog](https://samr1.github.io/FitTrackee/en/changelog.html)
+- [Features](https://docs.fittrackee.org/en/features.html)
+- [Installation instructions](https://docs.fittrackee.org/en/installation.html)
+- [Changelog](https://docs.fittrackee.org/en/changelog.html)
 
 **Under heavy development (some features may be unstable).**  
-(see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://samr1.github.io/FitTrackee) for more info.)  
+(see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more info.)  
 
-![FitTrackee Dashboard Screenshot](https://samr1.github.io/FitTrackee/en/_images/dashboard.png)
+![FitTrackee Dashboard Screenshot](https://docs.fittrackee.org/en/_images/dashboard.png)
 
 ## Translations
 
 FitTrackee uses [Weblate](https://hosted.weblate.org/engage/fittrackee/) for translation management.
 
+Status (on development branch, may differ from the released version):
 [![Translation status](https://hosted.weblate.org/widget/fittrackee/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)

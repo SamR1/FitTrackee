@@ -477,7 +477,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_raises_400_if_sport_does_not_exists(
+    def test_it_raises_400_if_sport_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
         token, workout_short_id = post_a_workout(app, gpx_file)
@@ -1453,7 +1453,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_500(response)
 
-    def test_it_returns_404_if_edited_workout_does_not_exists(
+    def test_it_returns_404_if_edited_workout_does_not_exist(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(

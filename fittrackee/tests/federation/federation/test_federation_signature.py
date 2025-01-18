@@ -186,8 +186,7 @@ class TestSignatureVerificationInstantiation(SignatureVerificationTestCase):
             ),
             (
                 'missing signature',
-                'keyId="key_id",'
-                'headers="(request-target) host date digest"',
+                'keyId="key_id",headers="(request-target) host date digest"',
             ),
         ],
     )

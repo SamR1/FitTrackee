@@ -39,7 +39,6 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "administratorstatus",
         "CREATED_AT": "registreringsdato",
         "IS_ACTIVE": "kontostatus",
         "USERNAME": "brukernavn",

@@ -79,7 +79,7 @@ def handle_workout_activities(workout: Workout, activity_type: str) -> None:
     if activity_type == 'Create':
         workout.ap_id = f'{actor.activitypub_id}/workouts/{workout.short_id}'
         workout.remote_url = (
-            f'https://{actor.domain.name}/' f'workouts/{workout.short_id}'
+            f'https://{actor.domain.name}/workouts/{workout.short_id}'
         )
         db.session.commit()
     workout_activity, note_activity = workout.get_activities(
@@ -813,8 +813,7 @@ def get_segment_gpx(
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/chart_data/segment/'
-    '<int:segment_id>',
+    '/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>',
     methods=['GET'],
 )
 @require_auth(scopes=['workouts:read'], optional_auth_user=True)

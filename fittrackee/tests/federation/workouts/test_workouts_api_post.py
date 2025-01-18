@@ -237,8 +237,7 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
             f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
         )
         assert workout.remote_url == (
-            f'https://{user_1.actor.domain.name}/'
-            f'workouts/{workout.short_id}'
+            f'https://{user_1.actor.domain.name}/workouts/{workout.short_id}'
         )
 
 
@@ -462,8 +461,7 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
             f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
         )
         assert workout.remote_url == (
-            f'https://{user_1.actor.domain.name}/'
-            f'workouts/{workout.short_id}'
+            f'https://{user_1.actor.domain.name}/workouts/{workout.short_id}'
         )
 
 

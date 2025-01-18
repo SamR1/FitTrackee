@@ -2,7 +2,15 @@
   "ACCOUNT_CONFIRMATION": "Confirmación da conta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non recibiches instrucións?",
   "ACCOUNT_CONFIRMATION_SENT": "Comproba o correo. Enviouse un correo de confirmación ao enderezo proporcionado.",
+  "ACCOUNT_SUSPENDED_AT": "Conta suspendida o {0].",
+  "ACTIVE_ACCOUNT": "A conta está activa",
+  "ACTIVE_USER": "usuaria activa | usuarias activas",
   "ALREADY_HAVE_ACCOUNT": "Xa tes unha conta?",
+  "APPEAL": "Apelar",
+  "APPEAL_APPROVED": "Apelación aprobada.",
+  "APPEAL_IN_PROGRESS": "Estase xestionando a apelación.",
+  "APPEAL_REJECTED": "Rexeitouse a apelación.",
+  "APPEAL_SUBMITTED": "Enviouse a apelación.",
   "CONFIRM_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta? Todos os datos serán borrados, e non poderás restablecelos.",
   "CURRENT_PASSWORD": "Contrasinal actual",
   "EMAIL": "Correo Electrónico",
@@ -32,6 +40,8 @@
   "NEW_PASSWORD": "Novo contrasinal",
   "NO_SPORT_FOUND": "Non se atopan deportes.",
   "NO_USERS_FOUND": "Non hai usuarias.",
+  "NO_WARNING_FOUND": "Non hai avisos.",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", so se mostran {0} desde esta instancia",
   "PASSWORD": "Contrasinal",
   "PASSWORD_FORGOTTEN": "Esqueciches o contrasinal?",
   "PASSWORD_INFO": "Require 8 caracteres como mínimo.",
@@ -61,14 +71,17 @@
     "WEAK": "feble"
   },
   "PASSWORD_UPDATED": "Actualizouse o teu contrasinal. Preme en {0} para acceder.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Por favor {0} a política de privacidade antes de continuar.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Edición da conta",
     "ASCENT_DATA": "Datos de ascensión (gravacións, total)",
     "BACK_TO_PROFILE": "Volver ao perfil",
     "BIO": "Bio",
     "BIRTH_DATE": "Data de nacemento",
+    "CREATED_REPORTS": "Denuncias creadas",
     "DATE_FORMAT": "Formato para as datas",
     "EDIT": "Editar perfil",
+    "EDIT_NOTIFICATION_PREFERENCES": "Editar preferencias das notificacións",
     "EDIT_PREFERENCES": "Editar preferencias",
     "EDIT_SPORTS_PREFERENCES": "Editar preferencias dos deportes",
     "ELEVATION_CHART_START": {
@@ -90,11 +103,30 @@
     "ERRORED_EMAIL_UPDATE": "{0} para cambiar o enderezo de correo electrónico ou contacta coa administración",
     "FIRST_DAY_OF_WEEK": "Primeiro día da semana",
     "FIRST_NAME": "Nome",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "Automáticamente",
+      "LABEL": "Aprobar solicitudes de seguimento",
+      "MANUALLY": "Manualmente"
+    },
     "INTERFACE": "Interface",
     "LANGUAGE": "Idioma",
     "LAST_NAME": "Apelido",
+    "LATEST_SANCTIONS_RECEIVED": "Últimas sancións recibidas",
     "LOCATION": "Localización",
     "MONDAY": "Luns",
+    "NOTIFICATIONS": {
+      "account_creation": "Alguén creou unha conta",
+      "comment_like": "Alguén gustou do teu comentario",
+      "follow": "Alguén seguiute",
+      "follow_request": "Alguén solicitou seguirte",
+      "follow_request_approved": "Aprobouse a túa solicitude de seguimento",
+      "mention": "Mencionáronte",
+      "workout_comment": "Alguén comentou a túa actividade",
+      "workout_like": "Algún gustou da túa actividade"
+    },
+    "NOTIFICATIONS_EDITION": "Edición das preferencias das notificacións",
+    "NOTIFICATION_PREFERENCES": "Preferencias das notificacións",
+    "NO_SANCTIONS": "Sen sancións",
     "PICTURE": "Fotografía",
     "PICTURE_EDITION": "Edición da foto",
     "PICTURE_REMOVE": "Eliminar foto",
@@ -102,7 +134,25 @@
     "PREFERENCES_EDITION": "Editar preferencias",
     "PRIVACY-POLICY_EDITION": "Política de privacidade",
     "PROFILE_EDITION": "Edición do perfil",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "Mostrado",
+      "HIDDEN": "Oculto",
+      "LABEL": "Perfil no directorio de usuarias"
+    },
     "REGISTRATION_DATE": "Data de rexistro",
+    "REPORTS_FROM_OTHER_USERS": "Denuncias de outras usuarias",
+    "SANCTIONS": {
+      "comment_suspension": "Comentar suspensión ({date})",
+      "user_suspension": "Suspensión da conta ({date})",
+      "user_warning": "Advertencia ({date})",
+      "workout_suspension": "Suspensión da actividade ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Sancións recibidas",
+    "SANCTION_APPEAL": {
+      "APPROVED": "aprobouse a túa apelación",
+      "IN_PROGRESS": "estase revisando a túa apelación",
+      "REJECTED": "rexeitouse a túa apelación"
+    },
     "SPORT": {
       "ACTION": "acción",
       "COLOR": "cor",
@@ -123,7 +173,11 @@
     "TABS": {
       "ACCOUNT": "conta",
       "APPS": "apps",
+      "BLOCKED-USERS": "usuarias bloqueadas",
       "EQUIPMENTS": "equipamentos",
+      "FOLLOW-REQUESTS": "solicitudes de seguimento",
+      "MODERATION": "moderación",
+      "NOTIFICATIONS": "notificacións",
       "PICTURE": "imaxe",
       "PREFERENCES": "preferencias",
       "PRIVACY-POLICY": "política de privacidade",
@@ -144,6 +198,7 @@
       "LABEL": "Unidades de distancia",
       "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
     },
+    "USER_RECEIVED_SANCTIONS": "A usuaria recibeu {count} sanción.|A usuaria recibeu {count} sancións.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrado",
       "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima.",
@@ -154,17 +209,40 @@
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
   "REGISTER": "Crear conta",
   "REGISTER_DISABLED": "Lamentámolo, pero non se permiten novas contas.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "bloqueada",
+    "FOLLOWER": "seguidora | seguidoras",
+    "FOLLOWING": "seguimento | seguimentos",
+    "FOLLOWS_YOU": "séguete",
+    "NO_FOLLOWERS": "Sen seguidoras.",
+    "NO_FOLLOWING": "Sen seguimentos.",
+    "NO_FOLLOW_REQUESTS": "Non hai solicitudes de seguimento pendentes."
+  },
+  "REPORT": "Denunciar",
   "RESENT_ACCOUNT_CONFIRMATION": "Reenviar o correo de confirmación de conta",
   "RESET_PASSWORD": "Restablece o contrasinal",
   "REVIEW": "revisar",
+  "ROLE": "Rol",
   "ROLES": {
-    "admin": "Admin"
+    "admin": "Admin",
+    "moderator": "Moderadora",
+    "owner": "Propietaria",
+    "user": "Usuaria"
   },
   "SHOW_PASSWORD": "mostrar contrasinal",
+  "SUSPENDED": "Suspendida",
+  "SUSPENDED_ACCOUNT": "Conta suspendida",
+  "SUSPENSION_REASON": "Razón da suspensión",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuaria está desactivada.",
   "TOGGLE_THEME": "Cambiar decorado (modo Claro ou Escuro)",
+  "USER": "usuaria | usuarias",
   "USERNAME": "Identificador",
   "USERNAME_INFO": "Require entre 3 e 30 caracteres, só se permiten alfanuméricos e o trazo baixo \"_\".",
   "USER_PICTURE": "foto da usuaria",
+  "USER_PROFILE": "perfil da usuaria",
+  "WARNING_REASON": "Razón do aviso",
+  "YOU": "ti",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "A túa conta foi suspendida",
+  "YOU_CAN_APPEAL_ONCE": "Só podes facer unha apelación.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Aceptaches a {0}."
 }

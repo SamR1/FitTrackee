@@ -807,6 +807,8 @@ def on_workout_delete(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
+        from fittrackee.users.models import Notification
+
         # Equipments must be removed before deleting workout
         # in order to recalculate equipments totals
         if old_workout.equipments:
@@ -822,6 +824,17 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error('gpx file not found when deleting workout')
+
+        Notification.query.filter(
+            Notification.event_object_id == old_workout.id,
+            Notification.to_user_id == old_workout.user_id,
+            Notification.event_type.in_(
+                [
+                    'workout_comment',
+                    'workout_like',
+                ]
+            ),
+        ).delete()
 
 
 @listens_for(Workout.equipments, 'append')

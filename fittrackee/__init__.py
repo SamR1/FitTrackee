@@ -26,7 +26,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.email import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.9.0b6'
+VERSION = __version__ = '0.9.0'
 DEFAULT_PRIVACY_POLICY_DATA = '2024-12-23 19:00:00'
 REDIS_URL = os.getenv('REDIS_URL', 'redis://')
 API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
@@ -35,7 +35,7 @@ API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
 log_file = os.getenv('APP_LOG')
 logging.basicConfig(
     filename=log_file,
-    format='%(asctime)s - %(name)s - %(levelname)s - ' '%(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y/%m/%d %H:%M:%S',
 )
 appLog = logging.getLogger('fittrackee')

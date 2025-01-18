@@ -25,10 +25,13 @@ class FollowRequestObject(BaseObject):
 
     def _get_actor_and_id(self) -> Tuple['Actor', str]:
         if self.type in [ActivityType.FOLLOW, ActivityType.UNDO]:
-            return self.from_actor, (
-                f'{self.from_actor.activitypub_id}#'
-                f'{"follow" if self.type ==ActivityType.FOLLOW else "undoe"}s/'
-                f'{self.to_actor.fullname}'
+            return (
+                self.from_actor,
+                (
+                    f'{self.from_actor.activitypub_id}#'
+                    f'{"follow" if self.type == ActivityType.FOLLOW else "undoe"}s/'  # noqa
+                    f'{self.to_actor.fullname}'
+                ),
             )
         return self.to_actor, (
             f'{self.to_actor.activitypub_id}#'

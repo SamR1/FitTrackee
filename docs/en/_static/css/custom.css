@@ -1,4 +1,5 @@
 article figure img {
+  margin: 10px 5px;
   border: solid 1px lightgrey;
 }
 
@@ -35,4 +36,13 @@ article figure img {
 }
 #furo-languages .languages-list a:hover {
   background-color: var(--color-sidebar-item-background--hover);
+}
+
+table.no-borders {
+  border: none;
+}
+
+table.no-borders th,
+table.no-borders td {
+  border: none;
 }

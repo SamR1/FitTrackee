@@ -1,1 +1,17 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "Visibilidade da análise",
+  "COMMENT_LEVELS": {
+    "followers_only": "Só para seguidoras",
+    "private": "Privada (só usuarias mencionadas)",
+    "public": "Pública (calquera)"
+  },
+  "LEVELS": {
+    "followers_only": "Só seguidoras",
+    "private": "Privada (só para min)",
+    "public": "Pública (calquera)"
+  },
+  "MAP_VISIBILITY": "Visibilidade do mapa",
+  "VISIBILITY": "visibilidade",
+  "WORKOUTS_VISIBILITY": "Visibilidade dos datos relativos á actividade",
+  "WORKOUT_VISIBILITY": "Visibilidade da actividade"
+}

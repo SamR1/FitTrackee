@@ -3,7 +3,7 @@
     "DESCRIPTION": "Calquera información adicional que poida ser útil para as túas usuarias. Pódese usar a sintaxe de Markdown.",
     "TEXT": "Información detallada da instancia"
   },
-  "ACTION": "Acción",
+  "ACTION": "Acción | Accións",
   "ACTIVATE_USER_ACCOUNT": "Activar conta",
   "ACTIVE": "Activa",
   "ADMIN": "Admin",
@@ -22,10 +22,81 @@
     "TITLE": "Configuración da aplicación",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño Máx. do arquivo zip (en MB)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Engadir un comentario",
+      "MARK_AS_RESOLVED": "Marcar como resolta",
+      "MARK_AS_UNRESOLVED": "Marcar como pendente",
+      "SEND_WARNING_EMAIL": "Enviar advertencia",
+      "SUSPEND_ACCOUNT": "Suspender a conta",
+      "SUSPEND_CONTENT": "Suspender contido",
+      "UNSUSPEND_ACCOUNT": "Reactivar conta da usuaria",
+      "UNSUSPEND_CONTENT": "Reactivar contido"
+    },
+    "APPEAL": {
+      "APPROVED": "Aprobouse a apelación {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Aprobouse a apelación levantando a suspensión.",
+      "HIDE": "Ocultar apelación",
+      "REASON_IS": "A razón é:",
+      "REJECTED": "Rexeitouse a apelación {0}.",
+      "SEE": "Ver apelación"
+    },
+    "DESCRIPTION": "Xestión de denuncias.",
+    "NOTES_AND_ACTIONS": "Notas e accións",
+    "NO_REPORTS_FOUND": "Sen denuncias",
+    "ORDER_BY": {
+      "CREATED_AT": "data de creación",
+      "UPDATED_AT": "data de actualización"
+    },
+    "REASON": "Razón",
+    "REPORT": "denuncia | denuncias",
+    "REPORTED_BY": "Denuncia por",
+    "REPORTED_CONTENT": "Contido da denuncia",
+    "REPORTED_USER": "Usuaria denunciada",
+    "REPORTER": "denunciante",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Suspendeuse o comentario por {1} {2}.",
+      "comment_unsuspension": "Levantouse a suspensión do comentario por {1} {2}.",
+      "report_reopening": "Volveuse abrir a denuncia por {1} {2}.",
+      "report_resolution": "Marcouse como resolta a denuncia por {1} {2}.",
+      "user_suspension": "Suspendeuse a {0} por {1} {2}.",
+      "user_unsuspension": "Levantouse a suspensión a {0} por {1} {2}.",
+      "user_warning": "Enviouse unha advertencia a {0} por {1} {2}.",
+      "user_warning_lifting": "Retirouse a advertencia a {0} por {1} {2}.",
+      "workout_suspension": "Suspendeuse a actividade por {1} {2}.",
+      "workout_unsuspension": "Levantouse a suspensión da actividade por {1} {2}."
+    },
+    "REPORT_NOTE": "Nota por",
+    "RESOLVED": {
+      "FALSE": "Sen resolver",
+      "TRUE": "Resolta"
+    },
+    "RESOLVED_AT": "Resolta o",
+    "RESOLVED_BY": "Resolta por",
+    "STATUS": "estado",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Engadir comentario, acción tomada ou outra información útil.",
+      "INFORMATION_VISIBLE_TO_USER": "Esta información será visible pola usuaria.",
+      "MARK_AS_RESOLVED": "Indicar a razón da resolución.",
+      "MARK_AS_UNRESOLVED": "Indicar a razón para a non-resolución.",
+      "SEND_WARNING_EMAIL": "Indicar a razón para a advertencia (non obrigatoria).",
+      "SUSPEND": "Indicar a razón para a suspensión (non obrigatoria).",
+      "UNSUSPEND": "Engadir un comentario (non obrigatorio).",
+      "UPDATE_APPEAL": "Indicar a razón para a xestión desta apelación."
+    },
+    "TITLE": "Moderación",
+    "UNRESOLVED_REPORTS_EXIST": "Hai denuncias sen resolver.",
+    "VIEW_REPORT": "Ver denuncia"
+  },
   "BACK_TO_ADMIN": "Volver a admin",
+  "CONFIRM_SUSPEND_ACCOUNT": "Tes certeza de querer suspender a conta {0}?",
+  "CONFIRM_SUSPEND_CONTENT": "Tes certeza de querer suspender o contido denunciado?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Tes a certeza de querer eliminar a conta {0}? Borraranse todos os datos, non hai volta atrás.",
   "CONFIRM_USER_PASSWORD_RESET": "Tes certeza de querer restablecer o contrasinal de {0}?",
   "CURRENT_EMAIL": "Enderezo actual",
+  "DELETED_COMMENT": "Comentario eliminado",
+  "DELETED_USER": "Usuaria eliminada",
+  "DELETED_WORKOUT": "Actividade eliminada",
   "DELETE_USER": "Eliminar usuaria",
   "EMAIL_SENDING_DISABLED": "O envío de correos está desactivado.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Activar/Desactivar tipos de equipamento.",
@@ -61,12 +132,18 @@
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
-        "ADMIN": "rol de admin",
         "CREATED_AT": "data de rexistro",
         "IS_ACTIVE": "estado da conta",
+        "ROLE": "rol",
         "USERNAME": "identificador",
         "WORKOUTS_COUNT": "número adestramentos"
       }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Cambiar rol",
+      "CHANGE_TO_ADMIN": "Cambiar a admin",
+      "CHANGE_TO_MODERATOR": "Cambiar a moderadora",
+      "CHANGE_TO_USER": "Cambiar a usuaria"
     },
     "TITLE": "Administración - Usuarias"
   },

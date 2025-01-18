@@ -67,7 +67,7 @@
       "workout_suspension": "La séance a été suspendue par {1} {2}.",
       "workout_unsuspension": "La suspension de la séance a été levée par {1} {2}."
     },
-    "REPORT_NOTE": "Note par ",
+    "REPORT_NOTE": "Note par",
     "RESOLVED": {
       "FALSE": "Non résolu",
       "TRUE": "Résolu"
@@ -90,9 +90,9 @@
     "VIEW_REPORT": "Voir le signalement"
   },
   "BACK_TO_ADMIN": "Revenir à l'admin",
-  "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
   "CONFIRM_SUSPEND_ACCOUNT": "Êtes-vous sûr de vouloir suspendre le compte de l'utilisateur {0} ?",
   "CONFIRM_SUSPEND_CONTENT": "Êtes-vous sûr de vouloir suspendre le contenu signalé ?",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Êtes-vous sûr de vouloir supprimer le compte de l'utilisateur {0} ? Toutes les données seront définitivement.",
   "CONFIRM_USER_PASSWORD_RESET": "Êtes-vous sûr de vouloir réinitialiser le mot de passe de l'utilisateur {0} ?",
   "CURRENT_EMAIL": "Adresse email actuelle",
   "DELETED_COMMENT": "Commentaire supprimé",

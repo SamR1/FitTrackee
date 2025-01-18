@@ -1,17 +1,24 @@
 Installation
 ############
 
-| **FitTrackee** can be installed via a single `Python package from PyPI <https://pypi.org/project/fittrackee/>`__ or from sources after cloning the repository.
+**FitTrackee** can be installed:
 
-| For a single-user instance, it's possible to disable registration. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
+- via a single Python package from `PyPI <https://pypi.org/project/fittrackee/>`__,
+- from sources,
+- with a `Docker <installation.html#docker>`__ image.
+
+Thanks to contributors, packages are also available on `Yunohost <installation.html#yunohost>`__ and `NixOS <installation.html#nixos>`__.
+
+For a single-user instance, registration can be disabled. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
 
 | The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
 
 .. note::
-  | Other installation guides are available thanks to contributors:
-  | - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
-  | - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+  Other installation guides are available thanks to contributors:
+
+  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
+  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
 
 
 Main dependencies
@@ -151,7 +158,7 @@ deployment method.
 
 .. envvar:: UI_URL
 
-    **FitTrackee** URL, needed for links in emails and mentions.
+    **FitTrackee** URL, needed for links in emails and mentions on interface.
 
     .. warning::
         UI_URL must contains url scheme (``https://``).
@@ -273,12 +280,10 @@ deployment method.
 
     **FitTrackee** API URL, only needed in dev environment.
 
-Docker
-^^^^^^
+Docker Compose
+^^^^^^^^^^^^^^
 
 .. versionadded:: 0.8.13
-
-Environment variables for ``docker-compose.yml``
 
 .. envvar:: APP_PORT
 
@@ -585,13 +590,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.8.13):
+-  Download the last release (for now, it is the release v0.9.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
-   $ tar -xzf v0.8.13.tar.gz
-   $ mv FitTrackee-0.8.13 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.0.tar.gz
+   $ tar -xzf v0.9.0.tar.gz
+   $ mv FitTrackee-0.9.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -634,9 +639,10 @@ Upgrade
 ~~~~~~~
 
 .. warning::
-    | Before upgrading, make a backup of all data:
-    | - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    | - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    Before upgrading, make a backup of all data:
+
+    - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
+    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
 .. warning::
 
@@ -722,13 +728,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.8.13) and overwrite existing files:
+- Download the last release (for now, it is the release v0.9.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.8.13.tar.gz
-   $ tar -xzf v0.8.13.tar.gz
-   $ cp -R FitTrackee-0.8.13/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.0.tar.gz
+   $ tar -xzf v0.9.0.tar.gz
+   $ cp -R FitTrackee-0.9.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -904,7 +910,7 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
 
     Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. Only ``linux/amd64`` image has been tested.
 
-- create a ``docker-compose.yml`` file as needed (see the example in the repository):
+- create a ``docker-compose.yml`` file as needed (see the `example <https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__ in the repository):
 
   - the minimal set up requires at least the database and the web application
   - to activate the rate limit, redis is required
