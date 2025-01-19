@@ -1,1 +1,12 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "Analyse-Sichtbarkeit",
+  "COMMENT_LEVELS": {
+    "followers_only": "Nur Follower",
+    "private": "Privat (nur erwähnte Nutzer)",
+    "public": "Öffentlich (Jeder)"
+  },
+  "MAP_VISIBILITY": "Karten-Sichtbarkeit",
+  "VISIBILITY": "Sichtbarkeit",
+  "WORKOUTS_VISIBILITY": "Sichtbarkeit von Trainingsdaten",
+  "WORKOUT_VISIBILITY": "Sichtbarkeit des Workouts"
+}
