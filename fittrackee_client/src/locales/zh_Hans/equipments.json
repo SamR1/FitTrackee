@@ -1,1 +1,18 @@
-{}
+{
+  "50_CHARACTERS_MAX": "最多50个字符",
+  "ADD_A_NEW_EQUIPMENT": "添加新装备",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "所有锻炼关联将被移除。",
+  "DEFAULT_FOR_SPORTS": "运动默认值",
+  "EDIT_EQUIPMENTS": "编辑装备",
+  "EQUIPMENT": "装备",
+  "EQUIPMENT_TYPE": "装备类型",
+  "ERRORS": {
+    "inactive": "装备\"{equipmentLabel}\"未激活。",
+    "invalid": "装备\"{equipmentLabel}\"对此运动无效。",
+    "not_found": "未找到装备。"
+  },
+  "NEW_EQUIPMENT": "新装备",
+  "NO_EQUIPMENT": "未找到装备。",
+  "NO_EQUIPMENTS": "无装备",
+  "WITHOUT_EQUIPMENTS": "无装备"
+}
