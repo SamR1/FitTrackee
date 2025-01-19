@@ -4,7 +4,7 @@
   "ACCOUNT_CONFIRMATION_SENT": "检查您的电子邮箱。新的确认邮件已发送到提供的地址。",
   "ACCOUNT_SUSPENDED_AT": "账号已于 {0} 被暂停。",
   "ACTIVE_ACCOUNT": "该账号是活跃的",
-  "ACTIVE_USER": "活跃用户 | 活跃用户",
+  "ACTIVE_USER": "活跃用户",
   "ALREADY_HAVE_ACCOUNT": "已有账号？",
   "APPEAL": "申诉",
   "APPEAL_APPROVED": "申诉已批准。",
@@ -33,10 +33,10 @@
   "I_WANT_TO_DELETE_MY_ACCOUNT": "我想删除我的账号",
   "LANGUAGE": "语言",
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "隐私政策已更新，请在继续之前{0}。",
-  "LOGIN": "登录",
+  "LOGIN": "登入",
   "LOGOUT": "登出",
   "LOGOUT_CONFIRMATION": "你确定要登出吗？",
-  "LOG_IN": "登录",
+  "LOG_IN": "登入",
   "NEW_PASSWORD": "新密码",
   "NO_SPORT_FOUND": "未找到运动。",
   "NO_USERS_FOUND": "未找到用户。",
@@ -75,6 +75,174 @@
   "PROFILE": {
     "ACCOUNT_EDITION": "账号编辑",
     "ASCENT_DATA": "爬升相关数据（记录，总计）",
-    "BACK_TO_PROFILE": "返回个人资料"
-  }
+    "BACK_TO_PROFILE": "返回个人资料",
+    "BIO": "个人简介",
+    "BIRTH_DATE": "出生日期",
+    "CREATED_REPORTS": "创建的报告",
+    "DATE_FORMAT": "日期显示格式",
+    "EDIT": "编辑个人资料",
+    "EDIT_NOTIFICATION_PREFERENCES": "编辑通知偏好",
+    "EDIT_PREFERENCES": "编辑偏好",
+    "EDIT_SPORTS_PREFERENCES": "编辑运动偏好",
+    "ELEVATION_CHART_START": {
+      "LABEL": "海拔图表起始于",
+      "MIN_ALT": "最低海拔",
+      "ZERO": "零"
+    },
+    "EQUIPMENTS": {
+      "ACTION": "操作",
+      "CONFIRM_EQUIPMENT_DELETION": "您确定要删除此设备 {0} 吗？",
+      "DESCRIPTION": "描述",
+      "DISABLED_BY_ADMIN": "被管理员禁用",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "此设备与锻炼相关联。",
+      "IS_ACTIVE": "活跃",
+      "LABEL": "标签",
+      "YOUR_EQUIPMENTS": "您的设备"
+    },
+    "EQUIPMENTS_EDITION": "设备编辑",
+    "ERRORED_EMAIL_UPDATE": "请 {0} 再次更改您的电子邮件地址或联系管理员",
+    "FIRST_DAY_OF_WEEK": "一周的第一天",
+    "FIRST_NAME": "名字",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "自动",
+      "LABEL": "关注请求批准",
+      "MANUALLY": "手动"
+    },
+    "INTERFACE": "界面",
+    "LANGUAGE": "语言",
+    "LAST_NAME": "姓氏",
+    "LATEST_SANCTIONS_RECEIVED": "最新收到的制裁",
+    "LOCATION": "位置",
+    "MONDAY": "星期一",
+    "NOTIFICATIONS": {
+      "account_creation": "有人注册",
+      "comment_like": "有人喜欢您的评论",
+      "follow": "有人关注您",
+      "follow_request": "有人发送关注请求",
+      "follow_request_approved": "您的关注请求已被批准",
+      "mention": "有人提到您",
+      "workout_comment": "有人评论您的锻炼",
+      "workout_like": "有人喜欢您的锻炼"
+    },
+    "NOTIFICATIONS_EDITION": "通知偏好编辑",
+    "NOTIFICATION_PREFERENCES": "通知偏好",
+    "NO_SANCTIONS": "没有制裁",
+    "PICTURE": "图片",
+    "PICTURE_EDITION": "图片编辑",
+    "PICTURE_REMOVE": "移除图片",
+    "PICTURE_UPDATE": "更新图片",
+    "PREFERENCES_EDITION": "偏好编辑",
+    "PRIVACY-POLICY_EDITION": "隐私政策",
+    "PROFILE_EDITION": "个人资料编辑",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "显示",
+      "HIDDEN": "隐藏",
+      "LABEL": "用户目录中的个人资料"
+    },
+    "REGISTRATION_DATE": "注册日期",
+    "REPORTS_FROM_OTHER_USERS": "来自其他用户的报告",
+    "SANCTIONS": {
+      "comment_suspension": "评论暂停（{date}）",
+      "user_suspension": "账户暂停（{date}）",
+      "user_warning": "警告（{date}）",
+      "workout_suspension": "锻炼暂停（{date}）"
+    },
+    "SANCTIONS_RECEIVED": "收到的制裁",
+    "SANCTION_APPEAL": {
+      "APPROVED": "您的上诉已被批准",
+      "IN_PROGRESS": "您的上诉正在处理中",
+      "REJECTED": "您的上诉已被拒绝"
+    },
+    "SPORT": {
+      "ACTION": "操作",
+      "COLOR": "颜色",
+      "CONFIRM_SPORT_RESET": "您确定要重置此运动吗？",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "您确定要重置此运动吗？所有默认设备将被移除。",
+      "DEFAULT_EQUIPMENTS": "默认设备",
+      "DISABLED_BY_ADMIN": "被管理员禁用",
+      "IS_ACTIVE": "活跃",
+      "LABEL": "标签",
+      "STOPPED_SPEED_THRESHOLD": "停止速度阈值"
+    },
+    "SPORTS_EDITION": "运动偏好编辑",
+    "SUCCESSFUL_EMAIL_UPDATE": "您的账户已成功更新。请检查您的电子邮件以确认您的新电子邮件地址。",
+    "SUCCESSFUL_REGISTRATION": "您的账户已成功创建。",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "激活您账户的链接已发送到提供的地址。",
+    "SUCCESSFUL_UPDATE": "您的账户已成功更新。",
+    "SUNDAY": "星期日",
+    "TABS": {
+      "ACCOUNT": "账号",
+      "APPS": "应用",
+      "BLOCKED-USERS": "已屏蔽用户",
+      "EQUIPMENTS": "设备",
+      "FOLLOW-REQUESTS": "关注请求",
+      "MODERATION": "管理",
+      "NOTIFICATIONS": "通知",
+      "PICTURE": "图片",
+      "PREFERENCES": "偏好设置",
+      "PRIVACY-POLICY": "隐私政策",
+      "PROFILE": "个人资料",
+      "SPORTS": "运动"
+    },
+    "THEME_MODE": {
+      "LABEL": "主题模式",
+      "VALUES": {
+        "DARK": "深色",
+        "DEFAULT": "浏览器偏好",
+        "LIGHT": "浅色"
+      }
+    },
+    "TIMEZONE": "时区",
+    "UNITS": {
+      "IMPERIAL": "英制系统 (英尺，英里，英里/小时，°F)",
+      "LABEL": "距离单位",
+      "METRIC": "公制系统 (米，公里，米/秒，°C)"
+    },
+    "USER_RECEIVED_SANCTIONS": "该用户收到 {count} 次处罚。",
+    "USE_RAW_GPX_SPEED": {
+      "FILTERED_SPEED": "已过滤",
+      "HELP": "如果过滤，在计算最大速度时将排除极端值（可能是 GPS 错误）。",
+      "LABEL": "GPX 最大速度策略",
+      "RAW_SPEED": "原始"
+    }
+  },
+  "READ_AND_ACCEPT_PRIVACY_POLICY": "我已阅读并同意{0}。",
+  "REGISTER": "注册",
+  "REGISTER_DISABLED": "抱歉，注册已禁用。",
+  "RELATIONSHIPS": {
+    "BLOCKED": "已屏蔽",
+    "FOLLOWER": "关注者",
+    "FOLLOWING": "正在关注",
+    "FOLLOWS_YOU": "关注了你",
+    "NO_FOLLOWERS": "暂无关注者。",
+    "NO_FOLLOWING": "暂无正在关注。",
+    "NO_FOLLOW_REQUESTS": "没有需要检查的关注请求。"
+  },
+  "REPORT": "举报",
+  "RESENT_ACCOUNT_CONFIRMATION": "重新发送账号确认邮件",
+  "RESET_PASSWORD": "重置密码",
+  "REVIEW": "审核",
+  "ROLE": "角色",
+  "ROLES": {
+    "admin": "管理员",
+    "moderator": "版主",
+    "owner": "所有者",
+    "user": "用户"
+  },
+  "SHOW_PASSWORD": "显示密码",
+  "SUSPENDED": "已暂停",
+  "SUSPENDED_ACCOUNT": "已暂停的账号",
+  "SUSPENSION_REASON": "暂停原因",
+  "THIS_USER_ACCOUNT_IS_INACTIVE": "该用户账号未激活。",
+  "TOGGLE_THEME": "切换主题（浅色或深色模式）",
+  "USER": "用户",
+  "USERNAME": "用户名",
+  "USERNAME_INFO": "需要3至30个字符，仅允许字母数字字符和下划线字符\"_\"。",
+  "USER_PICTURE": "用户图片",
+  "USER_PROFILE": "用户资料",
+  "WARNING_REASON": "警告原因",
+  "YOU": "你",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "你的账号已被暂停",
+  "YOU_CAN_APPEAL_ONCE": "你只能申诉一次。",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "你已接受{0}。"
 }

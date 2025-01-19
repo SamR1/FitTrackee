@@ -1,1 +1,56 @@
-{}
+{
+  "Cycling (Sport)": {
+    "LABEL": "骑行（运动）"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "骑行（交通）"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "骑行（徒步旅行）"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "骑行（虚拟）"
+  },
+  "Hiking": {
+    "LABEL": "徒步"
+  },
+  "Mountain Biking": {
+    "LABEL": "山地自行车"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "山地自行车（电动）"
+  },
+  "Mountaineering": {
+    "LABEL": "登山"
+  },
+  "Open Water Swimming": {
+    "LABEL": "开放水域游泳"
+  },
+  "Paragliding": {
+    "LABEL": "滑翔伞"
+  },
+  "Rowing": {
+    "LABEL": "划船"
+  },
+  "Running": {
+    "LABEL": "跑步"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "滑雪（高山）"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "滑雪（越野）"
+  },
+  "Snowshoes": {
+    "LABEL": "雪鞋"
+  },
+  "Swimrun": {
+    "LABEL": "游泳跑步"
+  },
+  "Trail": {
+    "LABEL": "越野"
+  },
+  "Walking": {
+    "LABEL": "步行"
+  }
+}
