@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
 
 import pytest
@@ -57,7 +57,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
         input_action_type: str,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         report_action = ReportAction(
             action_type=input_action_type,
@@ -85,7 +85,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
         user_3: User,
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         action_type = "report_resolution"
 
         with travel(now, tick=False):
@@ -109,7 +109,7 @@ class TestReportActionForReportModel(ReportActionTestCase):
     def test_it_does_not_store_user_id_when_action_is_for_report(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report = self.create_report(reporter=user_2, reported_object=user_3)
         action_type = "report_resolution"
 
@@ -167,7 +167,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
             ReportAction(
                 action_type=input_action_type,
                 moderator_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 report_id=self.create_report(
                     reporter=user_1_admin, reported_object=user_2
                 ).id,
@@ -177,7 +177,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         report_action = ReportAction(
             action_type="user_suspension",
@@ -205,7 +205,7 @@ class TestReportActionForUserModel(ReportActionTestCase):
             reporter=user_1_admin, reported_object=user_2
         ).id
         action_type = "user_suspension"
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_action = ReportAction(
             action_type=action_type,
             moderator_id=user_1_admin.id,
@@ -263,7 +263,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
             ReportAction(
                 action_type=input_action_type,
                 moderator_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 report_id=self.create_report(
                     reporter=user_1_admin,
                     reported_object=workout_cycling_user_2,
@@ -285,7 +285,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
             ReportAction(
                 action_type=input_action_type,
                 moderator_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 report_id=self.create_report(
                     reporter=user_1_admin,
                     reported_object=workout_cycling_user_2,
@@ -305,7 +305,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         report_action = ReportAction(
             action_type="workout_suspension",
@@ -338,7 +338,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_1_admin, reported_object=workout_cycling_user_2
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         report_action = ReportAction(
             action_type="workout_suspension",
             moderator_id=user_1_admin.id,
@@ -373,7 +373,7 @@ class TestReportActionForWorkoutModel(ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_1_admin, reported_object=workout_cycling_user_2
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         report_action = ReportAction(
             action_type="workout_suspension",
             moderator_id=user_1_admin.id,
@@ -423,7 +423,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
             ReportAction(
                 action_type=input_action_type,
                 moderator_id=user_1_admin.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 report_id=report_id,
                 user_id=user_2.id,
             )
@@ -453,7 +453,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
                 report_id=self.create_report(
                     reporter=user_2, reported_object=comment
                 ).id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
             )
 
     def test_it_creates_comment_report_action(
@@ -474,7 +474,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         report_action = ReportAction(
             action_type="comment_suspension",
@@ -514,7 +514,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         report_action = ReportAction(
             action_type="comment_suspension",
             moderator_id=user_1_admin.id,
@@ -556,7 +556,7 @@ class TestReportActionForCommentsModel(CommentMixin, ReportActionTestCase):
         report_id = self.create_report(
             reporter=user_2, reported_object=comment
         ).id
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         report_action = ReportAction(
             action_type="comment_suspension",
             moderator_id=user_1_admin.id,
@@ -1051,7 +1051,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
     ) -> None:
         appeal_text = self.random_string()
         report_action = self.create_report_user_action(user_1_admin, user_2)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         appeal = ReportActionAppeal(
             action_id=report_action.id,
@@ -1078,7 +1078,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         report_action = self.create_report_user_action(
             user_1_admin, user_2, action_type="user_warning"
         )
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         appeal = ReportActionAppeal(
             action_id=report_action.id,
@@ -1133,7 +1133,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
         db.session.add(report_action)
         appeal_text = self.random_string()
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         db.session.flush()
 
         appeal = ReportActionAppeal(
@@ -1197,7 +1197,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
         )
         db.session.add(report_action)
         appeal_text = self.random_string()
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         db.session.flush()
 
         appeal = ReportActionAppeal(
@@ -1223,7 +1223,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
     ) -> None:
         appeal_text = self.random_string()
         report_action = self.create_report_user_action(user_1_admin, user_2)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             appeal = ReportActionAppeal(

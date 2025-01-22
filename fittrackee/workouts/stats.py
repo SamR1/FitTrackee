@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Dict, List, Union
 
 from flask import Blueprint, current_app, request
@@ -17,6 +17,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
+from ..utils import get_datetime_in_utc
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
@@ -270,7 +271,7 @@ def get_workouts_by_time(
             date_key = row[7]
             if time and time.startswith("week"):
                 date_key = (
-                    datetime.strptime(date_key + '-1', "%G-%V-%u") - delta
+                    get_datetime_in_utc(date_key + '-1', "%G-%V-%u") - delta
                 ).strftime('%Y-%m-%d')
             sport_key = row[0]
             if date_key not in statistics:

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import jwt
@@ -23,7 +23,7 @@ def get_user_token(
         if password_reset
         else current_app.config['TOKEN_EXPIRATION_SECONDS']
     )
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     payload = {
         'exp': now
         + timedelta(days=expiration_days, seconds=expiration_seconds),

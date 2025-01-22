@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Union
 
 import pytest
@@ -127,7 +127,7 @@ class TestSanitizeInput:
 
 class TestGetDateStringForUser:
     @pytest.mark.parametrize(
-        'language, date_format, timezone, expected_date_string',
+        'language, date_format, timezone_string, expected_date_string',
         [
             ('en', 'MM/dd/yyyy', 'America/New_York', '07/14/2024 - 07:32:47'),
             ('fr', 'dd/MM/yyyy', 'Europe/Paris', '14/07/2024 - 13:32:47'),
@@ -161,16 +161,22 @@ class TestGetDateStringForUser:
         user_1: 'User',
         language: Union[str, None],
         date_format: str,
-        timezone: Union[str, None],
+        timezone_string: Union[str, None],
         expected_date_string: str,
     ) -> None:
-        naive_datetime = datetime(
-            year=2024, month=7, day=14, hour=11, minute=32, second=47
+        datetime_in_utc = datetime(
+            year=2024,
+            month=7,
+            day=14,
+            hour=11,
+            minute=32,
+            second=47,
+            tzinfo=timezone.utc,
         )
         user_1.language = language
         user_1.date_format = date_format
-        user_1.timezone = timezone
+        user_1.timezone = timezone_string
 
-        date_string = get_date_string_for_user(naive_datetime, user_1)
+        date_string = get_date_string_for_user(datetime_in_utc, user_1)
 
         assert date_string == expected_date_string

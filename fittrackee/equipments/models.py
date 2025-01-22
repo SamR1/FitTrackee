@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import Dict
 from uuid import uuid4
 
@@ -8,7 +7,7 @@ from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
 from fittrackee import db
-from fittrackee.utils import encode_uuid
+from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
 
 BaseModel: DeclarativeMeta = db.Model
 
@@ -57,7 +56,7 @@ class Equipment(BaseModel):
     equipment_type_id = db.Column(
         db.Integer, db.ForeignKey('equipment_types.id')
     )
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_date = db.Column(TZDateTime, default=aware_utc_now)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     total_distance = db.Column(
         db.Numeric(10, 3),

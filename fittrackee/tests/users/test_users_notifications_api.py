@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -675,7 +675,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -707,7 +707,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -744,7 +744,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
         db.session.add(like)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -784,7 +784,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -822,7 +822,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -862,7 +862,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -971,7 +971,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         self.create_user_report(user_2, user_3)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -1419,7 +1419,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
         db.session.add(like)
         db.session.flush()
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(

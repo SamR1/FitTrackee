@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -29,7 +29,7 @@ class TestMentionModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         mention = Mention(
             comment_id=comment.id, user_id=user_1.id, created_at=created_at
@@ -47,7 +47,7 @@ class TestMentionModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
 

@@ -10,6 +10,7 @@ from sqlalchemy.sql import text
 
 from fittrackee import BaseModel, db
 from fittrackee.users.models import User
+from fittrackee.utils import TZDateTime
 
 
 class AppConfig(BaseModel):
@@ -22,7 +23,7 @@ class AppConfig(BaseModel):
     )
     max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
     admin_contact = db.Column(db.String(255), nullable=True)
-    privacy_policy_date = db.Column(db.DateTime, nullable=True)
+    privacy_policy_date = db.Column(TZDateTime, nullable=True)
     privacy_policy = db.Column(db.Text, nullable=True)
     about = db.Column(db.Text, nullable=True)
     stats_workouts_limit = db.Column(db.Integer, default=10000, nullable=False)

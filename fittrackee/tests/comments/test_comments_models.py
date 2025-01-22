@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -25,7 +25,7 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         text = self.random_string()
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
@@ -48,7 +48,7 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             comment = self.create_comment(user_1, workout_cycling_user_1)
 
@@ -139,7 +139,7 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
         expected_report_action = self.create_report_comment_actions(
             user_1_admin, user_2, comment
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         assert comment.suspension_action == expected_report_action
 
@@ -190,7 +190,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
             text_visibility=input_visibility,
         )
         if suspended:
-            comment.suspended_at = datetime.utcnow()
+            comment.suspended_at = datetime.now(timezone.utc)
             suspended_at = {
                 "suspended": True,
                 "suspended_at": comment.suspended_at,
@@ -285,7 +285,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         expected_report_action = self.create_report_comment_actions(
             user_2_admin, user_1, comment
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         serialized_comment = comment.serialize(user_1)
 
@@ -590,7 +590,7 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
             with_mentions=True,
         )
         if suspended:
-            comment.suspended_at = datetime.utcnow()
+            comment.suspended_at = datetime.now(timezone.utc)
             suspended_at = {
                 "suspended": True,
                 "suspended_at": comment.suspended_at,
@@ -634,7 +634,7 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         serialized_comment = comment.serialize(user_1_moderator)
 
@@ -691,7 +691,7 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
             text_visibility=VisibilityLevel.FOLLOWERS,
             with_mentions=True,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         serialized_comment = comment.serialize(user_1_admin, for_report=True)
 

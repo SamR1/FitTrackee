@@ -1,6 +1,6 @@
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timezone
 from json import dumps, loads
 from typing import Dict, Optional, Union
 from uuid import uuid4
@@ -39,7 +39,7 @@ def get_date_string(
     date_format: str,
     date: Optional[datetime] = None,
 ) -> str:
-    date = date if date else datetime.utcnow()
+    date = date if date else datetime.now(timezone.utc)
     return date.strftime(date_format)
 
 

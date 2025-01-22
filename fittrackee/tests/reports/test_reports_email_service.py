@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict
 from unittest.mock import MagicMock
 
@@ -70,7 +70,7 @@ class TestReportEmailServiceForUserReactivation(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
 
@@ -109,7 +109,7 @@ class TestReportEmailServiceForUserWarning(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
@@ -388,7 +388,7 @@ class TestReportEmailServiceForUserWarningLifting(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
         user_warning = report_service.create_report_action(
@@ -696,7 +696,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
 
@@ -744,7 +744,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         db.session.delete(workout_cycling_user_2)
         db.session.flush()
         report_email_service = ReportEmailService()
@@ -890,7 +890,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
 
@@ -938,7 +938,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_email_service = ReportEmailService()
 
@@ -1034,7 +1034,7 @@ class TestReportEmailServiceForAppealRejected(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         report_action = self.create_report_workout_action(
             user_1_moderator, user_3, workout_cycling_user_2

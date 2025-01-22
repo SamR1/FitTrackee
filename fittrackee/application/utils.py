@@ -1,10 +1,10 @@
-from datetime import datetime
 from typing import Dict, List
 
 from flask import Flask
 
 from fittrackee import db
 
+from ..utils import get_datetime_in_utc
 from .models import AppConfig
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
@@ -39,7 +39,7 @@ def update_app_config_from_database(
     current_app.config['privacy_policy_date'] = (
         db_config.privacy_policy_date
         if db_config.privacy_policy
-        else datetime.strptime(
+        else get_datetime_in_utc(
             current_app.config['DEFAULT_PRIVACY_POLICY_DATA'],
             '%Y-%m-%d %H:%M:%S',
         )

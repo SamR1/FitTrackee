@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict
 from uuid import uuid4
 
@@ -424,7 +424,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
             app, gpx_file, workout_visibility=VisibilityLevel.PRIVATE
         )
         client = app.test_client()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.patch(
@@ -1149,7 +1149,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

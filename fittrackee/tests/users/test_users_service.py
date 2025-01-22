@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -559,7 +559,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
         report = self.generate_user_report(user_2_admin, user_1)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         user_manager_service = UserManagerService(
             username=user_1.username,
             moderator_id=user_2_admin.id,
@@ -578,7 +578,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_manager_service = UserManagerService(
             username=user_1.username, moderator_id=user_2_admin.id
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             _, user_updated, _, _ = user_manager_service.update(
@@ -597,7 +597,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
             username=user_1_admin.username,
             moderator_id=user_2_admin.id,
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             _, user_updated, _, _ = user_manager_service.update(
@@ -613,7 +613,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
         report = self.generate_user_report(user_2_admin, user_1)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         user_manager_service = UserManagerService(
             username=user_1.username,
             moderator_id=user_2_admin.id,
@@ -631,7 +631,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         self, app: Flask, user_1: User, user_2_admin: User
     ) -> None:
         report = self.generate_user_report(user_2_admin, user_1)
-        suspended_at = datetime.utcnow()
+        suspended_at = datetime.now(timezone.utc)
         user_1.suspended_at = suspended_at
         user_manager_service = UserManagerService(
             username=user_1.username,
@@ -664,9 +664,9 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
             moderator_id=user_1_admin.id, username=user_2.username
         )
         if input_suspended is False:
-            user_2.suspended_at = datetime.utcnow()
+            user_2.suspended_at = datetime.now(timezone.utc)
             db.session.commit()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             user_manager_service.update(

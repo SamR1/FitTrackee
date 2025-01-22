@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import Flask
 from time_machine import travel
@@ -17,7 +17,7 @@ class TestWorkoutLikeModel:
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         like = WorkoutLike(
             user_id=user_2.id,
@@ -37,7 +37,7 @@ class TestWorkoutLikeModel:
         user_2: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             like = WorkoutLike(
                 user_id=user_2.id,

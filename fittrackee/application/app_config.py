@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Union
 
 from flask import Blueprint, current_app, request
@@ -183,7 +183,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             privacy_policy = config_data.get('privacy_policy')
             config.privacy_policy = privacy_policy if privacy_policy else None
             config.privacy_policy_date = (
-                datetime.utcnow() if privacy_policy else None
+                datetime.now(timezone.utc) if privacy_policy else None
             )
 
         if config.max_zip_file_size < config.max_single_file_size:

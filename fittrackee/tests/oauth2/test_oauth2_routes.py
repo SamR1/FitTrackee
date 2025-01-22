@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
@@ -240,7 +240,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
@@ -656,7 +656,7 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
     ) -> None:
         oauth_client, code = self.create_authorized_oauth_client(app, user_1)
         client = app.test_client()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
@@ -806,7 +806,7 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
     ) -> None:
         oauth_client, token = self.generate_token(app, user_1)
         client = app.test_client()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
@@ -883,7 +883,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(app, user_1)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,

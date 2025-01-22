@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional, Union
 
 from sqlalchemy import func
@@ -92,7 +92,7 @@ class ReportService:
         )
         db.session.add(new_report_comment)
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report.updated_at = now
         report_action = None
         if resolved is not None:
@@ -139,7 +139,7 @@ class ReportService:
         if not reported_user:
             raise InvalidReportActionException("invalid 'username'")
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_action = None
         if action_type in ALL_USER_ACTION_TYPES:
             username = data.get("username")
@@ -193,7 +193,7 @@ class ReportService:
                     )
                     if appeal:
                         appeal.approved = None
-                        appeal.updated_at = datetime.utcnow()
+                        appeal.updated_at = datetime.now(timezone.utc)
                         db.session.flush()
 
         elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
@@ -248,7 +248,7 @@ class ReportService:
                 )
                 if appeal:
                     appeal.approved = None
-                    appeal.updated_at = datetime.utcnow()
+                    appeal.updated_at = datetime.now(timezone.utc)
                     db.session.flush()
             db.session.flush()
         else:
@@ -262,7 +262,7 @@ class ReportService:
         appeal.moderator_id = moderator.id
         appeal.approved = data["approved"]
         appeal.reason = data["reason"]
-        appeal.updated_at = datetime.utcnow()
+        appeal.updated_at = datetime.now(timezone.utc)
 
         action = appeal.action
         content = None
@@ -293,7 +293,7 @@ class ReportService:
                 new_report_action = ReportAction(
                     moderator_id=moderator.id,
                     action_type="user_warning_lifting",
-                    created_at=datetime.utcnow(),
+                    created_at=datetime.now(timezone.utc),
                     report_id=action.report_id,
                     user_id=action.user_id,
                 )
@@ -311,7 +311,7 @@ class ReportService:
                 new_report_action = ReportAction(
                     moderator_id=moderator.id,
                     action_type=f"{content_type}_unsuspension",
-                    created_at=datetime.utcnow(),
+                    created_at=datetime.now(timezone.utc),
                     report_id=action.report_id,
                     user_id=action.user_id,
                     **content_id,
