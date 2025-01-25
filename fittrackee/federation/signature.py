@@ -6,7 +6,7 @@ https://github.com/bookwyrm-social/bookwyrm
 import base64
 import hashlib
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 
 import requests
@@ -119,10 +119,12 @@ class SignatureVerification:
         if not self.date_str:
             return True
         try:
-            date = datetime.strptime(self.date_str, VALID_SIG_DATE_FORMAT)
+            date = datetime.strptime(
+                self.date_str, VALID_SIG_DATE_FORMAT
+            ).replace(tzinfo=timezone.utc)
         except ValueError:
             return True
-        delta = datetime.utcnow() - date
+        delta = datetime.now(timezone.utc) - date
         return delta.total_seconds() > VALID_DATE_DELTA
 
     def log_and_raise_error(self, error: str) -> None:

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from flask import Flask
@@ -40,7 +40,9 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         follow_request_from_user_3_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
-        follow_request_from_user_3_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_3_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -94,7 +96,9 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -229,7 +233,9 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

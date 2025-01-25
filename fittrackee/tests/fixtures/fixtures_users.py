@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 
 import pytest
 
@@ -15,7 +15,7 @@ def user_1() -> User:
     user = User(username='test', email='test@test.com', password='12345678')
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -28,7 +28,7 @@ def user_1_upper() -> User:
     user = User(username='TEST', email='TEST@TEST.COM', password='12345678')
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -44,7 +44,7 @@ def user_1_admin() -> User:
     admin.role = UserRole.ADMIN.value
     admin.hide_profile_in_users_directory = False
     admin.is_active = True
-    admin.accepted_policy = datetime.datetime.utcnow()
+    admin.accepted_policy = datetime.now(timezone.utc)
     db.session.add(admin)
     db.session.flush()
     admin.create_actor()
@@ -62,7 +62,7 @@ def user_1_moderator() -> User:
     moderator.role = UserRole.MODERATOR.value
     moderator.hide_profile_in_users_directory = False
     moderator.is_active = True
-    moderator.accepted_policy = datetime.datetime.utcnow()
+    moderator.accepted_policy = datetime.now(timezone.utc)
     db.session.add(moderator)
     moderator.create_actor()
     db.session.commit()
@@ -77,7 +77,7 @@ def user_1_owner() -> User:
     owner.role = UserRole.OWNER.value
     owner.hide_profile_in_users_directory = False
     owner.is_active = True
-    owner.accepted_policy = datetime.datetime.utcnow()
+    owner.accepted_policy = datetime.now(timezone.utc)
     db.session.add(owner)
     owner.create_actor()
     db.session.commit()
@@ -93,10 +93,10 @@ def user_1_full() -> User:
     user.location = 'somewhere'
     user.language = 'en'
     user.timezone = 'America/New_York'
-    user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
+    user.birth_date = datetime(1980, 1, 1, tzinfo=timezone.utc)
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.commit()
     return user
@@ -111,11 +111,11 @@ def user_1_raw_speed() -> User:
     user.location = 'somewhere'
     user.language = 'en'
     user.timezone = 'America/New_York'
-    user.birth_date = datetime.datetime.strptime('01/01/1980', '%d/%m/%Y')
+    user.birth_date = datetime(1980, 1, 1, tzinfo=timezone.utc)
     user.is_active = True
     user.hide_profile_in_users_directory = False
     user.use_raw_gpx_speed = True
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -129,7 +129,7 @@ def user_1_paris() -> User:
     user.timezone = 'Europe/Paris'
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -142,7 +142,7 @@ def user_2() -> User:
     user = User(username='toto', email='toto@toto.com', password='12345678')
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -156,7 +156,7 @@ def user_2_owner() -> User:
     user.is_active = True
     user.hide_profile_in_users_directory = False
     user.role = UserRole.OWNER.value
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.commit()
     return user
@@ -168,7 +168,7 @@ def user_2_admin() -> User:
     user.is_active = True
     user.hide_profile_in_users_directory = False
     user.role = UserRole.ADMIN.value
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.commit()
     return user
@@ -180,7 +180,7 @@ def user_2_moderator() -> User:
     user.is_active = True
     user.hide_profile_in_users_directory = False
     user.role = UserRole.MODERATOR.value
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -194,7 +194,7 @@ def user_3() -> User:
     user.is_active = True
     user.hide_profile_in_users_directory = False
     user.weekm = True
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -209,7 +209,7 @@ def user_3_admin() -> User:
     user.hide_profile_in_users_directory = False
     user.role = UserRole.ADMIN.value
     user.weekm = True
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.commit()
     return user
@@ -234,7 +234,7 @@ def inactive_user() -> User:
         username='inactive', email='inactive@example.com', password='12345678'
     )
     user.confirmation_token = random_string()
-    user.accepted_policy = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()
@@ -251,8 +251,8 @@ def suspended_user() -> User:
     )
     user.is_active = True
     user.hide_profile_in_users_directory = False
-    user.accepted_policy = datetime.datetime.utcnow()
-    user.suspended_at = datetime.datetime.utcnow()
+    user.accepted_policy = datetime.now(timezone.utc)
+    user.suspended_at = datetime.now(timezone.utc)
     db.session.add(user)
     db.session.flush()
     user.create_actor()

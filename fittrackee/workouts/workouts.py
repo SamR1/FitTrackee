@@ -23,7 +23,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.equipments.models import Equipment
+from fittrackee.equipments.models import Equipment, WorkoutEquipment
 from fittrackee.equipments.utils import (
     SPORT_EQUIPMENT_TYPES,
     handle_equipments,
@@ -31,6 +31,7 @@ from fittrackee.equipments.utils import (
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -47,9 +48,8 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
-from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
-from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
+from .models import Sport, Workout, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,

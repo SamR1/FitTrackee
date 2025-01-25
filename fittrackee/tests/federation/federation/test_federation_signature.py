@@ -1,6 +1,6 @@
 import base64
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 from unittest.mock import MagicMock, patch
 
@@ -94,7 +94,7 @@ class SignatureVerificationTestCase:
         date_str: Optional[str] = None,
     ) -> Dict:
         if date_str is None:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             date_str = now.strftime(VALID_SIG_DATE_FORMAT)
         digest = generate_digest(activity)
         signed_header = generate_signature_header(
@@ -130,7 +130,7 @@ class SignatureVerificationTestCase:
         date_str: Optional[str] = None,
     ) -> Dict:
         if date_str is None:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             date_str = now.strftime(VALID_SIG_DATE_FORMAT)
         signed_header = self._generate_signature_header_without_digest(
             host, '/inbox', date_str, actor
@@ -250,7 +250,7 @@ class TestSignatureDateVerification(SignatureVerificationTestCase):
     def test_it_returns_date_is_invalid_if_date_format_is_invalid(
         self,
     ) -> None:
-        date_str = datetime.utcnow().strftime('%d %b %Y %H:%M:%S')
+        date_str = datetime.now(timezone.utc).strftime('%d %b %Y %H:%M:%S')
         headers = self.generate_headers(date_str=date_str)
         request_mock = self.get_request_mock(headers=headers)
 
@@ -260,7 +260,8 @@ class TestSignatureDateVerification(SignatureVerificationTestCase):
 
     def test_it_returns_date_is_invalid_if_delay_exceeds_limit(self) -> None:
         headers = self.generate_headers(
-            date=datetime.utcnow() - timedelta(seconds=VALID_DATE_DELTA + 1)
+            date=datetime.now(timezone.utc)
+            - timedelta(seconds=VALID_DATE_DELTA + 1)
         )
         request_mock = self.get_request_mock(headers=headers)
 
@@ -270,7 +271,8 @@ class TestSignatureDateVerification(SignatureVerificationTestCase):
 
     def test_it_returns_date_is_valid_if_dela_is_below_limit(self) -> None:
         headers = self.generate_headers(
-            date=datetime.utcnow() - timedelta(seconds=VALID_DATE_DELTA - 1)
+            date=datetime.now(timezone.utc)
+            - timedelta(seconds=VALID_DATE_DELTA - 1)
         )
         request_mock = self.get_request_mock(headers=headers)
 
@@ -348,7 +350,9 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
-                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
+                    date_str=datetime.now(timezone.utc).strftime(
+                        VALID_SIG_DATE_FORMAT
+                    ),
                     algorithm='rsa-sha256',
                     digest=input_digest,
                 ),
@@ -397,7 +401,9 @@ class TestSignatureDigestVerification(SignatureVerificationTestCase):
             self.get_request_mock(
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
-                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
+                    date_str=datetime.now(timezone.utc).strftime(
+                        VALID_SIG_DATE_FORMAT
+                    ),
                     algorithm=input_algorithm,
                     digest=generate_digest(activity, input_algorithm),
                 ),
@@ -418,7 +424,9 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_valid_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     actor=user_1.actor,
-                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
+                    date_str=datetime.now(timezone.utc).strftime(
+                        VALID_SIG_DATE_FORMAT
+                    ),
                     activity=self.get_activity(actor=user_2.actor),
                 )
             )
@@ -498,7 +506,9 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     key_id=actor_1.activitypub_id,
-                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
+                    date_str=datetime.now(timezone.utc).strftime(
+                        VALID_SIG_DATE_FORMAT
+                    ),
                     algorithm=algorithm,
                     digest=generate_digest(activity),
                 ),
@@ -526,7 +536,9 @@ class TestSignatureVerify(SignatureVerificationTestCase):
                 self.generate_headers(
                     host=app_with_federation.config['AP_DOMAIN'],
                     key_id=actor_1.activitypub_id,
-                    date_str=datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT),
+                    date_str=datetime.now(timezone.utc).strftime(
+                        VALID_SIG_DATE_FORMAT
+                    ),
                     algorithm='rsa-sha256',
                     digest=random_string(),
                 ),

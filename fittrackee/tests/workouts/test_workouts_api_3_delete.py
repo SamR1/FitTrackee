@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from flask import Flask
@@ -221,7 +221,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         auth_token, workout_short_id = post_a_workout(
             app, gpx_file, workout_visibility=VisibilityLevel.PRIVATE
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client = app.test_client()
 
@@ -541,7 +541,7 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

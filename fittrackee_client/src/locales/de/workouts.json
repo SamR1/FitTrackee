@@ -5,6 +5,18 @@
   "AVERAGE_SPEED": "Durchschnittsgeschwindigkeit",
   "AVE_SPEED": "Durchschn. Geschwindigkeit",
   "BACK_TO_WORKOUT": "zurück zum Training",
+  "COMMENTS": {
+    "ADD": "einen Kommentar hinzufügen",
+    "COMMENT": "Kommentar | Kommentare",
+    "DELETE": "Kommentar löschen",
+    "DELETION_CONFIRMATION": "Bist Du sicher, dass Du diesen Kommentar löschen möchtest?",
+    "EDIT": "Kommentar editieren",
+    "LABEL": "Kommentar | Kommentare",
+    "LIKE_COMMENT": "Kommentar liken",
+    "NO_COMMENTS": "Keine Kommentare",
+    "REPORT": "Kommentar melden",
+    "SUSPENDED_COMMENT_BY_ADMIN": "Dieser Kommentar wurde von einem Administrator gesperrt."
+  },
   "DATE": "Datum",
   "DELETE_WORKOUT": "Workout löschen",
   "DESCENT": "Abstieg",

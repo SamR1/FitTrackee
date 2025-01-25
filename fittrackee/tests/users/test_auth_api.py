@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Dict, Optional, Union
 from unittest.mock import MagicMock, Mock, patch
@@ -357,7 +357,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         client = app.test_client()
         username = self.random_string()
         email = self.random_email()
-        accepted_policy_date = datetime.utcnow()
+        accepted_policy_date = datetime.now(timezone.utc)
 
         with travel(accepted_policy_date, tick=False):
             client.post(
@@ -2987,7 +2987,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_token_is_expired(
         self, app: Flask, user_1: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
 
@@ -3426,7 +3426,7 @@ class TestUserLogout(ApiTestCaseMixin):
     def test_it_returns_error_when_token_is_expired(
         self, app: Flask, user_1: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3540,7 +3540,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        accepted_policy_date = datetime.utcnow()
+        accepted_policy_date = datetime.now(timezone.utc)
 
         with travel(accepted_policy_date, tick=False):
             response = client.post(
@@ -3561,7 +3561,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
-        accepted_policy_date = datetime.utcnow()
+        accepted_policy_date = datetime.now(timezone.utc)
 
         with travel(accepted_policy_date, tick=False):
             response = client.post(
@@ -3675,7 +3675,8 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         completed_export_request.completed = True
@@ -3731,7 +3732,8 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         db.session.commit()
@@ -3756,7 +3758,8 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         completed_export_request.completed = True
@@ -3834,7 +3837,8 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_2.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         db.session.commit()
@@ -3861,7 +3865,8 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=user_1.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         db.session.commit()
@@ -3890,7 +3895,8 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
         completed_export_request = UserDataExport(
             user_id=suspended_user.id,
-            created_at=datetime.utcnow() - timedelta(hours=export_expiration),
+            created_at=datetime.now(timezone.utc)
+            - timedelta(hours=export_expiration),
         )
         db.session.add(completed_export_request)
         db.session.commit()
@@ -4253,7 +4259,7 @@ class TestGetUserSuspension(UserSuspensionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action = self.create_report_user_action(user_1_admin, user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -4338,7 +4344,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User, input_data: Dict
     ) -> None:
         self.create_report_user_action(user_1_admin, user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -4357,13 +4363,13 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action = self.create_report_user_action(user_1_admin, user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
         text = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -4388,7 +4394,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         action = self.create_report_user_action(user_1_admin, user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         appeal = ReportActionAppeal(
             action_id=action.id,
@@ -4706,7 +4712,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             app, user_2.email
         )
         text = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(

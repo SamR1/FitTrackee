@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional, Union
 
 from flask import current_app
@@ -46,7 +46,7 @@ class Domain(BaseModel):
     ) -> None:
         self.name = name
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
         self.software_name = software_name
         self.software_version = software_version
@@ -117,7 +117,7 @@ class Actor(BaseModel):
         remote_user_data: Optional[Dict] = None,
     ) -> None:
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
         self.domain_id = domain_id
         self.preferred_username = preferred_username
@@ -181,7 +181,7 @@ class Actor(BaseModel):
             'sharedInbox'
         )
         self.public_key = remote_user_data['publicKey']['publicKeyPem']
-        self.last_fetch_date = datetime.utcnow()
+        self.last_fetch_date = datetime.now(timezone.utc)
 
     def serialize(self) -> Dict:
         actor_dict = {

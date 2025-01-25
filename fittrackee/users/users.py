@@ -7,6 +7,7 @@ from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
 
 from fittrackee import appLog, db, limiter
+from fittrackee.dates import get_readable_duration
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -21,6 +22,7 @@ from fittrackee.federation.utils.user import (
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportAction
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -29,11 +31,9 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.utils import get_readable_duration
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
-from ..reports.models import ReportAction
 from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyRejectedError,

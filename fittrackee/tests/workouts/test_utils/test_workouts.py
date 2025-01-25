@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from statistics import mean
 from typing import List, Optional, Union
 
@@ -60,34 +60,48 @@ class TestWorkoutAverageSpeed:
 
 class TestWorkoutGetWorkoutDatetime:
     @pytest.mark.parametrize('input_workout_date', input_workout_dates)
-    def test_it_returns_naive_datetime(
+    def test_it_returns_datetime_in_utc(
         self, input_workout_date: Union[datetime, str]
     ) -> None:
-        naive_workout_date, _ = get_workout_datetime(
+        workout_date, _ = get_workout_datetime(
             workout_date=input_workout_date, user_timezone='Europe/Paris'
         )
 
-        assert naive_workout_date == datetime(
-            year=2022, month=6, day=11, hour=10, minute=23, second=00
+        assert workout_date == datetime(
+            year=2022,
+            month=6,
+            day=11,
+            hour=10,
+            minute=23,
+            second=00,
+            tzinfo=timezone.utc,
         )
 
-    def test_it_return_naive_datetime_when_no_user_timezone(self) -> None:
-        naive_workout_date, _ = get_workout_datetime(
+    def test_it_return_datetime_in_utc_when_no_user_timezone(self) -> None:
+        workout_date, _ = get_workout_datetime(
             workout_date='2022-06-11 12:23:00', user_timezone=None
         )
 
-        assert naive_workout_date == datetime(
-            year=2022, month=6, day=11, hour=12, minute=23, second=00
+        assert workout_date == datetime(
+            year=2022,
+            month=6,
+            day=11,
+            hour=12,
+            minute=23,
+            second=00,
+            tzinfo=timezone.utc,
         )
 
     @pytest.mark.parametrize('input_workout_date', input_workout_dates)
     def test_it_returns_datetime_with_user_timezone(
         self, input_workout_date: Union[datetime, str]
     ) -> None:
-        timezone = 'Europe/Paris'
+        user_timezone = 'Europe/Paris'
 
         _, workout_date_with_tz = get_workout_datetime(
-            input_workout_date, user_timezone=timezone, with_timezone=True
+            input_workout_date,
+            user_timezone=user_timezone,
+            with_user_timezone=True,
         )
 
         assert workout_date_with_tz == datetime(
@@ -98,7 +112,7 @@ class TestWorkoutGetWorkoutDatetime:
             minute=23,
             second=00,
             tzinfo=pytz.utc,
-        ).astimezone(pytz.timezone(timezone))
+        ).astimezone(pytz.timezone(user_timezone))
 
     def test_it_does_not_return_datetime_with_user_timezone_when_no_user_tz(
         self,
@@ -106,7 +120,7 @@ class TestWorkoutGetWorkoutDatetime:
         _, workout_date_with_tz = get_workout_datetime(
             workout_date='2022-06-11 12:23:00',
             user_timezone=None,
-            with_timezone=True,
+            with_user_timezone=True,
         )
 
         assert workout_date_with_tz is None
@@ -117,7 +131,7 @@ class TestWorkoutGetWorkoutDatetime:
         _, workout_date_with_tz = get_workout_datetime(
             workout_date='2022-06-11 12:23:00',
             user_timezone='Europe/Paris',
-            with_timezone=False,
+            with_user_timezone=False,
         )
 
         assert workout_date_with_tz is None

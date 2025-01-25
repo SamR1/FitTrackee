@@ -3,6 +3,7 @@ from typing import Dict, Optional, Tuple
 from flask import current_app
 
 from fittrackee.comments.models import Comment
+from fittrackee.dates import get_date_string_for_user
 from fittrackee.emails.tasks import (
     appeal_rejected_email,
     comment_suspension_email,
@@ -16,7 +17,6 @@ from fittrackee.emails.tasks import (
 )
 from fittrackee.users.models import User
 from fittrackee.users.utils.language import get_language
-from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Workout
 
 from .exceptions import InvalidReportActionException

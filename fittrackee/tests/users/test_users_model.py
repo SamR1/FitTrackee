@@ -1,5 +1,5 @@
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict
 from unittest.mock import Mock, patch
 
@@ -228,7 +228,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_true_user_did_accept_default_privacy_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.accepted_policy_date = datetime.utcnow()
+        user_1.accepted_policy_date = datetime.now(timezone.utc)
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
@@ -239,7 +239,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1.accepted_policy_date = datetime.strptime(
             app.config['DEFAULT_PRIVACY_POLICY_DATA'],
             '%Y-%m-%d %H:%M:%S',
-        ) - timedelta(days=1)
+        ).replace(tzinfo=timezone.utc) - timedelta(days=1)
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is False
@@ -247,9 +247,9 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_false_when_user_did_not_accept_last_custom_policy(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.accepted_policy_date = datetime.utcnow()
+        user_1.accepted_policy_date = datetime.now(timezone.utc)
         # custom privacy policy
-        app.config['privacy_policy_date'] = datetime.utcnow()
+        app.config['privacy_policy_date'] = datetime.now(timezone.utc)
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is False
@@ -258,8 +258,8 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         self, app: Flask, user_1: User
     ) -> None:
         # custom privacy policy
-        app.config['privacy_policy_date'] = datetime.utcnow()
-        user_1.accepted_policy_date = datetime.utcnow()
+        app.config['privacy_policy_date'] = datetime.now(timezone.utc)
+        user_1.accepted_policy_date = datetime.now(timezone.utc)
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user['accepted_privacy_policy'] is True
@@ -713,7 +713,7 @@ class TestUserModelToken:
         self, app: Flask, user_1: User
     ) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now + timedelta(seconds=61), tick=False):
             assert (
                 User.decode_auth_token(auth_token)
@@ -796,7 +796,7 @@ class TestUserSportModel:
 
 class TestUserDataExportSerializer:
     def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
 
         serialized_data_export = data_export.serialize()
@@ -809,7 +809,7 @@ class TestUserDataExportSerializer:
     def test_it_returns_successful_export(
         self, app: Flask, user_1: User
     ) -> None:
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
         data_export.completed = True
         data_export.file_name = random_string()
@@ -823,7 +823,7 @@ class TestUserDataExportSerializer:
         assert serialized_data_export["file_size"] == data_export.file_size
 
     def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
         data_export.completed = True
 
@@ -953,7 +953,9 @@ class TestUserFollowingModel:
         user_1: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         assert user_1.pending_follow_requests == []
 
     def test_user_approves_follow_request(
@@ -999,7 +1001,9 @@ class TestUserFollowingModel:
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
 
         with pytest.raises(FollowRequestAlreadyProcessedError):
             user_1.approves_follow_request_from(user_2)
@@ -1036,7 +1040,9 @@ class TestUserUnfollowModel:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
 
         user_1.unfollows(user_2)
 
@@ -1064,7 +1070,9 @@ class TestUserUnfollowModel:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
 
         user_1.unfollows(user_2)
 
@@ -1095,7 +1103,9 @@ class TestUserFollowers:
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
 
         assert user_1.followers.all() == [user_2]
 
@@ -1107,8 +1117,10 @@ class TestUserFollowers:
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         follow_request_from_user_2_to_user_1.is_approved = True
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
-        user_2.suspended_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
 
         assert user_1.followers.all() == []
 
@@ -1137,7 +1149,9 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
 
         assert user_1.following.all() == [user_2]
 
@@ -1149,8 +1163,10 @@ class TestUserFollowing:
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
-        user_2.suspended_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
 
         assert user_1.following.all() == []
 
@@ -1291,7 +1307,7 @@ class TestBlocksUser:
     def test_it_inits_created_at(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             user_1.blocks_user(user_2)
 
@@ -1516,7 +1532,7 @@ class TestUsersWithSuspensions(ReportMixin):
             user_id=user_2.id,
         )
         db.session.add(report_action)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         assert user_3.suspension_action is None
@@ -1543,7 +1559,7 @@ class TestUsersWithSuspensions(ReportMixin):
             report_id=report_id,
             user_id=user_2.id,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.add(expected_report_action)
         db.session.commit()
 
@@ -1583,7 +1599,7 @@ class TestUsersWithSuspensions(ReportMixin):
             user_id=user_2.id,
         )
         db.session.add(report_action)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         serialized_user = user_2.serialize(current_user=user_1_admin)
@@ -1605,7 +1621,7 @@ class TestUsersWithSuspensions(ReportMixin):
             user_id=user_2.id,
         )
         db.session.add(report_action)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         serialized_user = user_2.serialize(current_user=user_3)

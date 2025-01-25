@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 
 import pytest
@@ -78,7 +78,9 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         workout_cycling_user_1.modification_date = (
-            datetime.utcnow() if input_activity_type == "Update" else None
+            datetime.now(timezone.utc)
+            if input_activity_type == "Update"
+            else None
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
@@ -130,7 +132,9 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.modification_date = (
-            datetime.utcnow() if input_activity_type == "Update" else None
+            datetime.now(timezone.utc)
+            if input_activity_type == "Update"
+            else None
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
@@ -194,7 +198,9 @@ Duration: {workout.duration}</p>
             VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
         workout_cycling_user_1.modification_date = (
-            datetime.utcnow() if input_activity_type == "Update" else None
+            datetime.now(timezone.utc)
+            if input_activity_type == "Update"
+            else None
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
@@ -240,7 +246,9 @@ Duration: {workout.duration}</p>
         workout_cycling_user_1.title = self.random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.modification_date = (
-            datetime.utcnow() if input_activity_type == "Update" else None
+            datetime.now(timezone.utc)
+            if input_activity_type == "Update"
+            else None
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)

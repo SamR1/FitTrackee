@@ -1,1 +1,43 @@
-{}
+{
+  "ADD_A_NEW_APP": "添加新的 OAuth2 应用程序",
+  "APP": {
+    "CLIENT_ID": "ID",
+    "CLIENT_SECRET": "密钥",
+    "DESCRIPTION": "应用程序描述",
+    "ISSUE_AT": "颁发时间",
+    "NAME": "应用程序名称",
+    "REDIRECT_URL": "重定向 URL",
+    "SCOPE": {
+      "LABEL": "权限范围",
+      "application:write_DESCRIPTION": "授予应用程序配置的写入权限。",
+      "equipments:read_DESCRIPTION": "授予对 <code>equipments</code> 端点的读取权限。",
+      "equipments:write_DESCRIPTION": "授予对 <code>equipments</code> 端点的写入权限。",
+      "follow:read_DESCRIPTION": "授予对关注请求和关注者相关端点的读取权限。",
+      "follow:write_DESCRIPTION": "授予对关注请求和关注者相关端点的写入权限。",
+      "notifications:read_DESCRIPTION": "授予对 <code>notifications</code> 端点的读取权限。",
+      "notifications:write_DESCRIPTION": "授予对 <code>notifications</code> 端点的写入权限。",
+      "profile:read_DESCRIPTION": "授予对 <code>auth</code> 端点的读取权限。",
+      "profile:write_DESCRIPTION": "授予对 <code>auth</code> 端点的写入权限。",
+      "reports:read_DESCRIPTION": "授予对 <code>reports</code> 端点的读取权限。",
+      "reports:write_DESCRIPTION": "授予对 <code>reports</code> 端点的写入权限。",
+      "users:read_DESCRIPTION": "授予对 <code>users</code> 端点的读取权限。",
+      "users:write_DESCRIPTION": "授予对 <code>users</code> 端点的写入权限。",
+      "workouts:read_DESCRIPTION": "授予对锻炼和评论端点的读取权限。",
+      "workouts:write_DESCRIPTION": "授予对锻炼和评论端点的写入权限。"
+    },
+    "URL": "应用程序 URL"
+  },
+  "APPS_LIST": "OAuth2 应用程序",
+  "APP_CREATED_SUCCESSFULLY": "应用程序创建成功。请立即复制密钥，因为它将不会再次显示。",
+  "APP_DELETION_CONFIRMATION": "您确定要删除此应用程序吗？",
+  "APP_REQUESTING_ACCESS": "应用程序 {0} 正在请求：",
+  "AUTHORIZE_APP": "授权 {0} 使用您的账号？",
+  "COPY_TO_CLIPBOARD": "复制到剪贴板",
+  "DELETE_APP": "删除应用程序",
+  "NEW_APP": "添加应用程序",
+  "NO_APP": "未找到应用程序！",
+  "NO_APPS": "没有应用程序",
+  "REVOKE_ALL_TOKENS": "撤销所有令牌",
+  "TOKENS_REVOCATION_CONFIRMATION": "您确定要撤销所有令牌吗？",
+  "TOKENS_REVOKED": "所有现有的关联令牌已被撤销。"
+}

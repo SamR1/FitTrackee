@@ -11,13 +11,19 @@
       "LABEL": "Geltungsbereich",
       "application:write_DESCRIPTION": "erlaubt Schreibzugriff auf die Anwendungskonfiguration",
       "equipments:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>equipments</code>-Endpunkte",
-      "equipments:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>equipments</code>-Endpunkte",
+      "equipments:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>equipments</code>-Endpunkte.",
+      "follow:read_DESCRIPTION": "gewährt Lesezugriff auf Endpunkte, die sich auf Follow-Anfragen und Follower beziehen.",
+      "follow:write_DESCRIPTION": "gewährt Schreibzugriff auf Endpunkte, die sich auf Follow-Anfragen und Follower beziehen.",
+      "notifications:read_DESCRIPTION": "gewährt Lesezugriff auf <code>Benachrichtigungen</code> Endpunkte.",
+      "notifications:write_DESCRIPTION": "gewährt Schreibzugriff auf <code>Nachrichten</code>-Endpunkte.",
       "profile:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>auth</code>-Endpunkte",
-      "profile:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>auth</code>-Endpunkte",
+      "profile:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>auth</code>-Endpunkte.",
+      "reports:read_DESCRIPTION": "gewährt Lesezugriff auf die <code>Berichte</code> Endpunkte.",
+      "reports:write_DESCRIPTION": "gewährt Schreibzugriff auf <code>Berichte</code> Endpunkte.",
       "users:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>users</code>-Endpunkte",
       "users:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>users</code>-Endpunkte",
       "workouts:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>workouts</code>-Endpunkte",
-      "workouts:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>workouts</code>-Endpunkte"
+      "workouts:write_DESCRIPTION": "gewährt Schreibzugriff auf Workouts und Kommentar-Endpunkte."
     },
     "URL": "Anwendungs-URL"
   },

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -147,7 +147,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -175,7 +175,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -450,7 +450,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(

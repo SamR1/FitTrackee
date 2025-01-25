@@ -1,7 +1,9 @@
 {
   "APP_ERROR": "Bei der Anwendung scheinen einige Probleme aufgetreten zu sein.<br />Bitte versuche es später noch einmal oder kontaktiere den Administrator.",
   "NOT_FOUND": {
+    "COMMENT": "Kommentar nicht gefunden",
     "PAGE": "Seite nicht gefunden",
+    "REPORT": "Report nicht gefunden",
     "WORKOUT": "Training nicht gefunden"
   },
   "SOMETHING_WRONG": "Etwas lief schief",

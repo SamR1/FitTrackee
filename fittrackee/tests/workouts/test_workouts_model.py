@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
 import pytest
@@ -60,9 +60,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1.title = 'Test'
         db.session.commit()
         assert (
-            f'<Workout \'{sport_1_cycling.label}\' - 2018-01-01 00:00:00>'
-            == str(workout_cycling_user_1)
-        )
+            f'<Workout \'{sport_1_cycling.label}\' '
+            '- 2018-01-01 00:00:00+00:00>'
+        ) == str(workout_cycling_user_1)
 
     def test_short_id_returns_encoded_workout_uuid(
         self,
@@ -96,7 +96,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         expected_report_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
 
         assert (
             workout_cycling_user_2.suspension_action == expected_report_action
@@ -369,7 +369,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         expected_report_action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
@@ -545,7 +545,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_2_admin: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
@@ -1184,7 +1184,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(
@@ -1210,7 +1210,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_3, light=False
@@ -1608,7 +1608,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         input_for_report: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         self.create_comment(
             user_3,
             workout_cycling_user_1,
@@ -1638,7 +1638,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_3, light=False
@@ -2046,7 +2046,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(for_report=input_for_report)
@@ -2312,7 +2312,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
 
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_2.serialize(
@@ -2337,7 +2337,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         input_workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         expected_report_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )

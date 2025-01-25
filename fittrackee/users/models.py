@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import uuid4
 
@@ -20,6 +20,8 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.enums import ActivityType
 from fittrackee.federation.models import Actor, Domain
@@ -69,10 +71,8 @@ class FollowRequest(BaseModel):
         primary_key=True,
     )
     is_approved = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow
-    )
-    updated_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(TZDateTime, nullable=False, default=aware_utc_now)
+    updated_at = db.Column(TZDateTime, nullable=True)
 
     def __repr__(self) -> str:
         return (
@@ -174,7 +174,7 @@ def on_follow_request_update(
                         follow_notification = Notification(
                             from_user_id=follow_request.follower_user_id,
                             to_user_id=follow_request.followed_user_id,
-                            created_at=datetime.utcnow(),
+                            created_at=datetime.now(timezone.utc),
                             event_type='follow',
                         )
                         session.add(follow_notification)
@@ -185,7 +185,7 @@ def on_follow_request_update(
                     notification = Notification(
                         from_user_id=follow_request.followed_user_id,
                         to_user_id=follow_request.follower_user_id,
-                        created_at=datetime.utcnow(),
+                        created_at=datetime.now(timezone.utc),
                         event_type='follow_request_approved',
                     )
                     session.add(notification)
@@ -238,7 +238,7 @@ class BlockedUser(BaseModel):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
     )
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
 
     def __init__(
         self,
@@ -249,7 +249,7 @@ class BlockedUser(BaseModel):
         self.user_id = user_id
         self.by_user_id = by_user_id
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
 
@@ -269,10 +269,10 @@ class User(BaseModel):
     # source: https://www.postgresql.org/docs/current/indexes-unique.html
     email = db.Column(db.String(255), unique=True, nullable=True)
     password = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
     first_name = db.Column(db.String(80), nullable=True)
     last_name = db.Column(db.String(80), nullable=True)
-    birth_date = db.Column(db.DateTime, nullable=True)
+    birth_date = db.Column(TZDateTime, nullable=True)
     location = db.Column(db.String(80), nullable=True)
     bio = db.Column(db.String(200), nullable=True)
     picture = db.Column(db.String(255), nullable=True)
@@ -286,7 +286,7 @@ class User(BaseModel):
     email_to_confirm = db.Column(db.String(255), nullable=True)
     confirmation_token = db.Column(db.String(255), nullable=True)
     display_ascent = db.Column(db.Boolean, default=True, nullable=False)
-    accepted_policy_date = db.Column(db.DateTime, nullable=True)
+    accepted_policy_date = db.Column(TZDateTime, nullable=True)
     start_elevation_at_zero = db.Column(
         db.Boolean, default=True, nullable=False
     )
@@ -308,7 +308,7 @@ class User(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
-    suspended_at = db.Column(db.DateTime, nullable=True)
+    suspended_at = db.Column(TZDateTime, nullable=True)
     role = db.Column(
         db.Integer,
         CheckConstraint(
@@ -428,7 +428,7 @@ class User(BaseModel):
             else None  # no password for remote actor
         )
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
         self.is_remote = is_remote
 
@@ -519,7 +519,7 @@ class User(BaseModel):
         db.session.add(follow_request)
         if not target.manually_approves_followers:
             follow_request.is_approved = True
-            follow_request.updated_at = datetime.utcnow()
+            follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
 
         if current_app.config['FEDERATION_ENABLED']:
@@ -585,7 +585,7 @@ class User(BaseModel):
         if follow_request.updated_at is not None:
             raise FollowRequestAlreadyProcessedError()
         follow_request.is_approved = approved
-        follow_request.updated_at = datetime.utcnow()
+        follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
 
         if current_app.config['FEDERATION_ENABLED'] and user.actor.is_remote:
@@ -714,7 +714,7 @@ class User(BaseModel):
             .values(
                 user_id=user.id,
                 by_user_id=self.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
             )
             .on_conflict_do_nothing()
         )
@@ -1076,7 +1076,7 @@ class BlacklistedToken(BaseModel):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), unique=True, nullable=False)
     expired_at = db.Column(db.Integer, nullable=False)
-    blacklisted_on = db.Column(db.DateTime, nullable=False)
+    blacklisted_on = db.Column(TZDateTime, nullable=False)
 
     def __init__(
         self, token: str, blacklisted_on: Optional[datetime] = None
@@ -1089,7 +1089,7 @@ class BlacklistedToken(BaseModel):
         self.token = token
         self.expired_at = payload['exp']
         self.blacklisted_on = (
-            blacklisted_on if blacklisted_on else datetime.utcnow()
+            blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
 
     @classmethod
@@ -1107,12 +1107,8 @@ class UserDataExport(BaseModel):
         index=True,
         unique=True,
     )
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow
-    )
-    updated_at = db.Column(
-        db.DateTime, nullable=True, onupdate=datetime.utcnow
-    )
+    created_at = db.Column(TZDateTime, nullable=False, default=aware_utc_now)
+    updated_at = db.Column(TZDateTime, nullable=True, onupdate=aware_utc_now)
     completed = db.Column(db.Boolean, nullable=False, default=False)
     file_name = db.Column(db.String(100), nullable=True)
     file_size = db.Column(db.Integer, nullable=True)
@@ -1124,7 +1120,7 @@ class UserDataExport(BaseModel):
     ):
         self.user_id = user_id
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
     def serialize(self) -> Dict:
@@ -1184,7 +1180,7 @@ class Notification(BaseModel):
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
     )
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
     marked_as_read = db.Column(db.Boolean, nullable=False, default=False)
     event_object_id = db.Column(db.Integer, nullable=True)
     event_type = db.Column(db.String(50), nullable=False)

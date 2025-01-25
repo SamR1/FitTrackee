@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 import pytest
@@ -353,7 +353,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         comment = self.create_comment(
             user_2, workout_cycling_user_1, text_visibility=input_visibility
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
         comment_object = CommentObject(comment, 'Update')
 
@@ -396,7 +396,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
         comment_object = CommentObject(comment, 'Update')
 
@@ -439,7 +439,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
         comment_object = CommentObject(comment, 'Update')
 
@@ -489,7 +489,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             text=f"@{user_3.username} @{remote_user.fullname} great!",
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         comment_object = CommentObject(comment, 'Update')
 
         serialized_comment = comment_object.get_activity()
@@ -531,7 +531,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             text=f"@{user_3.username} @{remote_user.fullname} great!",
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         comment_object = CommentObject(comment, 'Update')
 
         serialized_comment = comment_object.get_activity()
@@ -574,7 +574,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             text=f"@{user_3.username} @{remote_user.fullname} great!",
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         comment_object = CommentObject(comment, 'Update')
 
         serialized_comment = comment_object.get_activity()

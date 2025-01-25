@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Tuple
 
 from fittrackee import appLog, db
@@ -344,7 +344,7 @@ class UpdateActivity(AbstractActivity):
             # workout date must be in GMT+00:00
             workout_to_update.workout_date = datetime.strptime(
                 workout_data['workout_date'], WORKOUT_DATE_FORMAT
-            )
+            ).replace(tzinfo=timezone.utc)
             workout_to_update.workout_visibility = self._get_visibility(
                 workout_data, actor
             )
@@ -376,7 +376,7 @@ class UpdateActivity(AbstractActivity):
             comment_to_update.text_visibility = self._get_visibility(
                 note_data, actor
             )
-            comment_to_update.modification_date = datetime.utcnow()
+            comment_to_update.modification_date = datetime.now(timezone.utc)
             comment_to_update.update_mentions()
             db.session.commit()
         except Exception as e:

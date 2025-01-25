@@ -1,7 +1,7 @@
 import os
 import secrets
 import zipfile
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Tuple, Union
 from uuid import UUID
 
@@ -43,12 +43,16 @@ def get_workout_datetime(
     workout_date: Union[datetime, str],
     user_timezone: Optional[str],
     date_str_format: Optional[str] = None,
-    with_timezone: bool = False,
+    with_user_timezone: bool = False,
 ) -> Tuple[datetime, Optional[datetime]]:
     """
-    Return naive datetime and datetime with user timezone if with_timezone
+    Return datetime in UTC and datetime in user timezone if with_user_timezone
+    is True.
+
+    Note: columns in Datetime are still stored without timezone.
+    Values must be in the UTC timezone before storing in database.
     """
-    workout_date_with_user_tz = None
+    workout_date_in_user_tz = None
 
     # workout w/o gpx
     if isinstance(workout_date, str):
@@ -59,22 +63,19 @@ def get_workout_datetime(
             workout_date = pytz.timezone(user_timezone).localize(workout_date)
 
     if workout_date.tzinfo is None:
-        naive_workout_date = workout_date
-        if user_timezone and with_timezone:
-            # pytz.utc.localize(naive_workout_date)
-            workout_date_with_user_tz = pytz.utc.localize(
-                naive_workout_date
-            ).astimezone(pytz.timezone(user_timezone))
+        workout_date_in_utc = workout_date.replace(tzinfo=timezone.utc)
+        if user_timezone and with_user_timezone:
+            workout_date_in_user_tz = workout_date_in_utc.astimezone(
+                pytz.timezone(user_timezone)
+            )
     else:
-        naive_workout_date = workout_date.astimezone(pytz.utc).replace(
-            tzinfo=None
-        )
-        if user_timezone and with_timezone:
-            workout_date_with_user_tz = workout_date.astimezone(
+        workout_date_in_utc = workout_date.astimezone(pytz.utc)
+        if user_timezone and with_user_timezone:
+            workout_date_in_user_tz = workout_date.astimezone(
                 pytz.timezone(user_timezone)
             )
 
-    return naive_workout_date, workout_date_with_user_tz
+    return workout_date_in_utc, workout_date_in_user_tz
 
 
 def get_datetime_from_request_args(
@@ -133,7 +134,7 @@ def create_workout(
         ),
         date_str_format=None if gpx_data else WORKOUT_DATE_FORMAT,
         user_timezone=user.timezone,
-        with_timezone=True,
+        with_user_timezone=True,
     )
 
     duration = (

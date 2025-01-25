@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from json import dumps
 from unittest.mock import Mock, patch
 from urllib.parse import urlparse
@@ -30,7 +30,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
     ) -> None:
         actor_1 = user_1.actor
         remote_actor = remote_user.actor
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
         digest = self.random_string()
@@ -68,7 +68,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
         actor_1 = user_1.actor
         remote_actor = remote_user.actor
         activity = {'foo': 'bar'}
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
         signed_header = self.random_string()

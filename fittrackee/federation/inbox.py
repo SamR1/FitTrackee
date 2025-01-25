@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from json import dumps
 from typing import Dict, Union
 from urllib.parse import urlparse
@@ -42,7 +42,7 @@ def inbox(request: Request) -> Union[Dict, HttpResponse]:
 
 
 def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
-    now_str = datetime.utcnow().strftime(VALID_SIG_DATE_FORMAT)
+    now_str = datetime.now(timezone.utc).strftime(VALID_SIG_DATE_FORMAT)
     parsed_inbox_url = urlparse(inbox_url)
     digest = generate_digest(activity)
     signed_header = generate_signature_header(

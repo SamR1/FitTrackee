@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 from unittest.mock import patch
 
@@ -168,7 +168,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

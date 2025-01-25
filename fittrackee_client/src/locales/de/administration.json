@@ -3,7 +3,7 @@
     "DESCRIPTION": "Zusätzliche Informationen, die für deine Nutzer nützlich sein könnten. Markdown-Syntax wird unterstützt.",
     "TEXT": "Detaillierte Instanz-Informationen"
   },
-  "ACTION": "Aktion",
+  "ACTION": "Aktion | Aktionen",
   "ACTIVATE_USER_ACCOUNT": "Aktiviere Konto",
   "ACTIVE": "Aktiv",
   "ADMIN": "Admin",
@@ -21,6 +21,18 @@
     "STATS_WORKOUTS_LIMIT_LABEL": "Maximale Workouts für Sport-Statistiken",
     "TITLE": "Anwendungskonfiguration",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. Größe des zip Archives (in Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Einen Kommmentar hinzufügen",
+      "MARK_AS_RESOLVED": "Als gelöst markieren",
+      "MARK_AS_UNRESOLVED": "Als ungelöst markieren",
+      "SEND_WARNING_EMAIL": "Eine Warnung senden",
+      "SUSPEND_ACCOUNT": "Benutzerkonto deaktivieren",
+      "SUSPEND_CONTENT": "Inhalt deaktivieren",
+      "UNSUSPEND_ACCOUNT": "Benutzerkonto reaktivieren",
+      "UNSUSPEND_CONTENT": "Inhalt reaktivieren"
+    }
   },
   "BACK_TO_ADMIN": "Zurück zu Admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Möchtest du wirklich das {0} Konto löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
@@ -55,7 +67,7 @@
     },
     "TITLE": "Sportarten Administration"
   },
-  "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwemdungskonfiguration.",
+  "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwendungskonfiguration.",
   "UPDATE_USER_EMAIL": "Aktualisiere E-Mail",
   "USER": "Nutzer",
   "USERS": {

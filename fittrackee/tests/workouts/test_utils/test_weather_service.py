@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 from unittest.mock import Mock, patch, sentinel
 
@@ -7,6 +7,7 @@ import pytz
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
+from fittrackee.dates import get_datetime_in_utc
 from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
 from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
@@ -56,7 +57,7 @@ class WeatherTestCase(BaseTestMixin):
 
 class TestVisualCrossingGetTimestamp(WeatherTestCase):
     def test_it_returns_expected_timestamp_as_integer(self) -> None:
-        time = datetime.utcnow()
+        time = datetime.now(timezone.utc)
         visual_crossing = VisualCrossing(api_key=self.api_key)
 
         timestamp = visual_crossing._get_timestamp(time)
@@ -75,16 +76,15 @@ class TestVisualCrossingGetTimestamp(WeatherTestCase):
     def test_it_returns_rounded_time(
         self, input_datetime: str, expected_datetime: str
     ) -> None:
-        time = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S')
+        date_format = '%Y-%m-%dT%H:%M:%S'
+        time = get_datetime_in_utc(input_datetime, date_format)
         visual_crossing = VisualCrossing(api_key=self.api_key)
 
         timestamp = visual_crossing._get_timestamp(time)
 
         assert (
             timestamp
-            == datetime.strptime(
-                expected_datetime, '%Y-%m-%dT%H:%M:%S'
-            ).timestamp()
+            == get_datetime_in_utc(expected_datetime, date_format).timestamp()
         )
 
 

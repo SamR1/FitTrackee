@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -44,7 +44,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -66,7 +66,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -289,7 +289,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
         db.session.add(like)
         db.session.flush()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
@@ -366,7 +366,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -507,7 +507,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -587,7 +587,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

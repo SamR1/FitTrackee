@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import pytest
@@ -443,7 +443,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             app, user_1_admin.email
         )
         privacy_policy = self.random_string()
-        privacy_policy_date = datetime.utcnow()
+        privacy_policy_date = datetime.now(timezone.utc)
 
         with travel(privacy_policy_date, tick=False):
             response = client.patch(
@@ -470,7 +470,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
     ) -> None:
         app_config = AppConfig.query.first()
         app_config.privacy_policy = self.random_string()
-        app_config.privacy_policy_date = datetime.utcnow()
+        app_config.privacy_policy_date = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email

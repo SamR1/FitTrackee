@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -138,7 +138,7 @@ def workout_w_shoes_equipment(
     workout = Workout(
         user_id=user_1.id,
         sport_id=sport_2_running.id,
-        workout_date=datetime.strptime('20/03/2017', '%d/%m/%Y'),
+        workout_date=datetime(2017, 3, 20, tzinfo=timezone.utc),
         distance=5,
         duration=timedelta(seconds=1024),
     )

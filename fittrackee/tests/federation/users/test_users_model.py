@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from flask import Flask
@@ -89,7 +89,9 @@ class TestFollowRequestModelWithFederation:
         actor_1 = user_1.actor
         actor_2 = user_2.actor
         follow_request_from_user_1_to_user_2.is_approved = True
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
         assert activity_object == {
@@ -117,7 +119,9 @@ class TestFollowRequestModelWithFederation:
         actor_1 = user_1.actor
         actor_2 = user_2.actor
         follow_request_from_user_1_to_user_2.is_approved = False
-        follow_request_from_user_1_to_user_2.updated_at = datetime.utcnow()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
         assert activity_object == {
@@ -192,8 +196,8 @@ class TestUserUnfollowModelWithFederation:
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_remote_user.is_approved = True
-        follow_request_from_user_1_to_remote_user.updated_at = (
-            datetime.utcnow()
+        follow_request_from_user_1_to_remote_user.updated_at = datetime.now(
+            timezone.utc
         )
         expected_activity = (
             follow_request_from_user_1_to_remote_user.get_activity(undo=True)

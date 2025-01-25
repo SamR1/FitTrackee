@@ -1,6 +1,6 @@
 import os
 import secrets
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Tuple
 from unittest.mock import Mock, call, patch
 
@@ -722,7 +722,7 @@ class UserDataExportTestCase:
     ) -> UserDataExport:
         user_data_export = UserDataExport(
             user_id=user.id,
-            created_at=datetime.utcnow() - timedelta(days=days),
+            created_at=datetime.now(timezone.utc) - timedelta(days=days),
         )
         db.session.add(user_data_export)
         user_data_export.completed = completed

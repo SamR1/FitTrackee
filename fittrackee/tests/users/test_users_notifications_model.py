@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 import pytest
@@ -77,7 +77,7 @@ class TestNotification:
             Notification(
                 from_user_id=user_1.id,
                 to_user_id=user_2.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
                 event_type=random_string(),
                 event_object_id=random_int(),
             )
@@ -205,7 +205,7 @@ class TestNotificationForFollowRequest:
     ) -> None:
         user_2.update_preferences({"follow_request": False})
         user_1.send_follow_request_to(user_2)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             user_2.approves_follow_request_from(user_1)
@@ -223,7 +223,7 @@ class TestNotificationForFollowRequest:
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         user_1.send_follow_request_to(user_2)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             user_2.approves_follow_request_from(user_1)

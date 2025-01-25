@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 import pytest
@@ -159,7 +159,7 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -312,7 +312,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = input_workout_visibility
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         user_1.blocks_user(user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(

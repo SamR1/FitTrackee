@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -91,7 +91,7 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         equipment_type_1_shoe_inactive: EquipmentType,
         equipment_type_2_bike: EquipmentType,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

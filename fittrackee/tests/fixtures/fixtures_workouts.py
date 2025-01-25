@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Generator, Iterator, List
 from unittest.mock import Mock, patch
@@ -95,9 +95,9 @@ def workout_cycling_user_1() -> Workout:
         user_id=1,
         sport_id=1,
         # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 1, 1, tzinfo=timezone.utc),
         distance=10,
-        duration=datetime.timedelta(seconds=3600),
+        duration=timedelta(seconds=3600),
     )
     update_workout(workout)
     db.session.add(workout)
@@ -111,9 +111,9 @@ def another_workout_cycling_user_1() -> Workout:
         user_id=1,
         sport_id=1,
         # workout_date: 'Mon, 01 Jan 2024 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('01/01/2024', '%d/%m/%Y'),
+        workout_date=datetime(2024, 1, 1, tzinfo=timezone.utc),
         distance=18,
-        duration=datetime.timedelta(seconds=3600),
+        duration=timedelta(seconds=3600),
     )
     update_workout(workout)
     db.session.add(workout)
@@ -130,7 +130,7 @@ def workout_cycling_user_1_segment(
         workout_uuid=workout_cycling_user_1.uuid,
         segment_id=0,
     )
-    workout_segment.duration = datetime.timedelta(seconds=6000)
+    workout_segment.duration = timedelta(seconds=6000)
     workout_segment.moving = workout_segment.duration
     workout_segment.distance = 5
     db.session.add(workout_segment)
@@ -144,9 +144,9 @@ def workout_running_user_1() -> Workout:
         user_id=1,
         sport_id=2,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('02/04/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
         distance=12,
-        duration=datetime.timedelta(seconds=6000),
+        duration=timedelta(seconds=6000),
     )
     update_workout(workout)
     db.session.add(workout)
@@ -161,11 +161,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Sun, 2 Apr 2017 22:00:00 GMT'
-        workout_date=datetime.datetime.strptime(
-            '02/04/2017 22:00', '%d/%m/%Y %H:%M'
-        ),
+        workout_date=datetime(2017, 4, 2, 22, tzinfo=timezone.utc),
         distance=5,
-        duration=datetime.timedelta(seconds=1024),
+        duration=timedelta(seconds=1024),
     )
     workout_1.title = "Workout 1 of 7"
     update_workout(workout_1)
@@ -179,11 +177,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Sun, 31 Dec 2017 23:00:00 GMT'
-        workout_date=datetime.datetime.strptime(
-            '31/12/2017 23:00', '%d/%m/%Y %H:%M'
-        ),
+        workout_date=datetime(2017, 12, 31, 23, tzinfo=timezone.utc),
         distance=10,
-        duration=datetime.timedelta(seconds=3456),
+        duration=timedelta(seconds=3456),
     )
     workout_2.title = "Workout 2 of 7"
     update_workout(workout_2)
@@ -197,9 +193,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('01/01/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 1, 1, tzinfo=timezone.utc),
         distance=10,
-        duration=datetime.timedelta(seconds=1024),
+        duration=timedelta(seconds=1024),
     )
     workout_3.title = "Workout 3 of 7"
     update_workout(workout_3)
@@ -213,11 +209,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Fri, 23 Feb 2018 10:00:00 GMT'
-        workout_date=datetime.datetime.strptime(
-            '23/02/2018 10:00', '%d/%m/%Y %H:%M'
-        ),
+        workout_date=datetime(2018, 2, 23, 10, tzinfo=timezone.utc),
         distance=1,
-        duration=datetime.timedelta(seconds=600),
+        duration=timedelta(seconds=600),
     )
     workout_4.title = "Workout 4 of 7"
     update_workout(workout_4)
@@ -231,9 +225,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Fri, 23 Feb 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('23/02/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 2, 23, tzinfo=timezone.utc),
         distance=10,
-        duration=datetime.timedelta(seconds=1000),
+        duration=timedelta(seconds=1000),
     )
     workout_5.title = "Workout 5 of 7"
     update_workout(workout_5)
@@ -247,9 +241,9 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Sun, 01 Apr 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('01/04/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 4, 1, tzinfo=timezone.utc),
         distance=8,
-        duration=datetime.timedelta(seconds=6000),
+        duration=timedelta(seconds=6000),
     )
     workout_6.title = "Workout 6 of 7"
     update_workout(workout_6)
@@ -263,12 +257,12 @@ def seven_workouts_user_1() -> List[Workout]:
         user_id=1,
         sport_id=1,
         # workout_date: 'Wed, 09 May 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('09/05/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 5, 9, tzinfo=timezone.utc),
         distance=10,
-        duration=datetime.timedelta(seconds=3600),
+        duration=timedelta(seconds=3600),
     )
     workout_7.title = "Workout 7 of 7"
-    workout_7.moving = datetime.timedelta(seconds=3000)
+    workout_7.moving = timedelta(seconds=3000)
     workout_7.ave_speed = float(workout_7.distance) / (
         workout_7.moving.seconds / 3600
     )
@@ -284,18 +278,16 @@ def seven_workouts_user_1() -> List[Workout]:
 def three_workouts_2025_user_1() -> List[Workout]:
     workouts = []
     for workout_date in [
-        '01/01/2025 08:00',
-        '05/01/2025 08:00',
-        '06/01/2025 08:00',
+        datetime(2025, 1, 1, tzinfo=timezone.utc),
+        datetime(2025, 1, 5, tzinfo=timezone.utc),
+        datetime(2025, 1, 6, tzinfo=timezone.utc),
     ]:
         workout = Workout(
             user_id=1,
             sport_id=1,
-            workout_date=datetime.datetime.strptime(
-                workout_date, '%d/%m/%Y %H:%M'
-            ),
+            workout_date=workout_date,
             distance=20,
-            duration=datetime.timedelta(seconds=3600),
+            duration=timedelta(seconds=3600),
         )
         update_workout(workout)
         db.session.add(workout)
@@ -311,11 +303,33 @@ def workout_cycling_user_2() -> Workout:
         user_id=2,
         sport_id=1,
         # workout_date: 'Tue, 23 Jan 2018 00:00:00 GMT'
-        workout_date=datetime.datetime.strptime('23/01/2018', '%d/%m/%Y'),
+        workout_date=datetime(2018, 1, 23, tzinfo=timezone.utc),
         distance=15,
-        duration=datetime.timedelta(seconds=3600),
+        duration=timedelta(seconds=3600),
     )
     update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def remote_cycling_workout(remote_user: User) -> Workout:
+    workout = Workout(
+        user_id=remote_user.id,
+        sport_id=1,
+        workout_date=datetime(2022, 1, 1, tzinfo=timezone.utc),
+        distance=10,
+        duration=timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    remote_domain = remote_user.actor.domain.name
+    remote_id = random_short_id()
+    workout.ap_id = (
+        f"https://{remote_domain}/federation/user/{remote_user.username}/"
+        f"workouts/{remote_id}"
+    )
+    workout.remote_url = f"https://{remote_domain}/workouts/{remote_id}"
     db.session.add(workout)
     db.session.commit()
     return workout
@@ -425,28 +439,6 @@ track_points_part_2 = (
     '        <time>2018-03-13T12:48:55Z</time>'
     '      </trkpt>'
 )
-
-
-@pytest.fixture()
-def remote_cycling_workout(remote_user: User) -> Workout:
-    workout = Workout(
-        user_id=remote_user.id,
-        sport_id=1,
-        workout_date=datetime.datetime.strptime('01/01/2022', '%d/%m/%Y'),
-        distance=10,
-        duration=datetime.timedelta(seconds=3600),
-    )
-    update_workout(workout)
-    remote_domain = remote_user.actor.domain.name
-    remote_id = random_short_id()
-    workout.ap_id = (
-        f"https://{remote_domain}/federation/user/{remote_user.username}/"
-        f"workouts/{remote_id}"
-    )
-    workout.remote_url = f"https://{remote_domain}/workouts/{remote_id}"
-    db.session.add(workout)
-    db.session.commit()
-    return workout
 
 
 @pytest.fixture()

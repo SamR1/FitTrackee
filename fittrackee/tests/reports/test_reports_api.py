@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 from unittest.mock import MagicMock, patch
 
@@ -270,7 +270,7 @@ class TestPostCommentReport(ReportTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -541,7 +541,7 @@ class TestPostWorkoutReport(ReportTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -789,7 +789,7 @@ class TestPostUserReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1348,7 +1348,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         reports = self.create_reports(
             user_2, user_3, user_4, workout_cycling_user_2
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         reports[1].updated_at = now
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
@@ -1422,7 +1422,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         reports = self.create_reports(
             user_2, user_3, user_4, workout_cycling_user_2
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         reports[1].updated_at = now
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
@@ -1937,7 +1937,7 @@ class TestPatchReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -1971,7 +1971,7 @@ class TestPatchReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -2000,13 +2000,13 @@ class TestPatchReport(ReportTestCase):
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         report.resolved = True
-        report.resolved_at = datetime.utcnow()
+        report.resolved_at = datetime.now(timezone.utc)
         report.resolved_by = user_1_moderator.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -2038,14 +2038,14 @@ class TestPatchReport(ReportTestCase):
             reporter=user_3, reported_object=user_2_admin
         )
         report.resolved = True
-        resolved_time = datetime.utcnow()
+        resolved_time = datetime.now(timezone.utc)
         report.resolved_at = resolved_time
         report.resolved_by = user_2_admin.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment_time = datetime.utcnow()
+        comment_time = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(comment_time, tick=False):
@@ -2268,7 +2268,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -2294,7 +2294,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
@@ -2340,7 +2340,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2373,7 +2373,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         if input_action_type == "user_unsuspension":
-            user_2.suspended_at = datetime.utcnow()
+            user_2.suspended_at = datetime.now(timezone.utc)
             db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2509,7 +2509,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_unsuspension_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2684,7 +2684,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -2721,7 +2721,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
@@ -2755,7 +2755,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route.format(report_id=report.id),
@@ -2890,7 +2890,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -3048,7 +3048,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3083,9 +3083,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3120,7 +3120,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route.format(report_id=report.id),
@@ -3190,7 +3190,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3266,7 +3266,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             with_mentions=True,
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -3787,14 +3787,14 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.patch(
@@ -3825,7 +3825,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3854,7 +3854,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3882,7 +3882,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()

@@ -1,5 +1,5 @@
-import datetime
 import os
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 from uuid import UUID, uuid4
@@ -15,6 +15,8 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.objects.like import LikeObject
@@ -35,9 +37,8 @@ if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
 
     from fittrackee.equipments.models import Equipment
+    from fittrackee.reports.models import ReportAction
     from fittrackee.users.models import User
-
-    from ..reports.models import ReportAction
 
 
 EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {
@@ -117,8 +118,8 @@ def update_records(
 
 
 def format_value(
-    value: Union[Decimal, datetime.timedelta], attribute: str
-) -> Union[float, datetime.timedelta]:
+    value: Union[Decimal, timedelta], attribute: str
+) -> Union[float, timedelta]:
     return float(value) if attribute == 'distance' else value  # type: ignore
 
 
@@ -244,11 +245,9 @@ class Workout(BaseModel):
     )
     title = db.Column(db.String(TITLE_MAX_CHARACTERS), nullable=True)
     gpx = db.Column(db.String(255), nullable=True)
-    creation_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    modification_date = db.Column(
-        db.DateTime, onupdate=datetime.datetime.utcnow
-    )
-    workout_date = db.Column(db.DateTime, index=True, nullable=False)
+    creation_date = db.Column(TZDateTime, default=aware_utc_now)
+    modification_date = db.Column(TZDateTime, onupdate=aware_utc_now)
+    workout_date = db.Column(TZDateTime, index=True, nullable=False)
     duration = db.Column(db.Interval, nullable=False)
     pauses = db.Column(db.Interval, nullable=True)
     moving = db.Column(db.Interval, nullable=True)
@@ -278,7 +277,7 @@ class Workout(BaseModel):
         server_default='PRIVATE',
         nullable=False,
     )
-    suspended_at = db.Column(db.DateTime, nullable=True)
+    suspended_at = db.Column(TZDateTime, nullable=True)
     analysis_visibility = db.Column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
@@ -324,9 +323,9 @@ class Workout(BaseModel):
         self,
         user_id: int,
         sport_id: int,
-        workout_date: datetime.datetime,
+        workout_date: datetime,
         distance: float,
-        duration: datetime.timedelta,
+        duration: timedelta,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
@@ -579,8 +578,15 @@ class Workout(BaseModel):
             return workout
 
         if is_owner:
-            date_from = params.get('from') if params else None
-            date_to = params.get('to') if params else None
+            if params and user:
+                from .utils.workouts import get_datetime_from_request_args
+
+                date_from, date_to = get_datetime_from_request_args(
+                    params, user
+                )
+            else:
+                date_from, date_to = (None, None)
+
             distance_from = params.get('distance_from') if params else None
             distance_to = params.get('distance_to') if params else None
             duration_from = params.get('duration_from') if params else None
@@ -596,18 +602,8 @@ class Workout(BaseModel):
                     Workout.user_id == self.user_id,
                     Workout.sport_id == sport_id if sport_id else True,
                     Workout.workout_date <= self.workout_date,
-                    (
-                        Workout.workout_date
-                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                        if date_from
-                        else True
-                    ),
-                    (
-                        Workout.workout_date
-                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                        if date_to
-                        else True
-                    ),
+                    Workout.workout_date >= date_from if date_from else True,
+                    Workout.workout_date <= date_to if date_to else True,
                     (
                         Workout.distance >= float(distance_from)
                         if distance_from
@@ -658,18 +654,8 @@ class Workout(BaseModel):
                     Workout.user_id == self.user_id,
                     Workout.sport_id == sport_id if sport_id else True,
                     Workout.workout_date >= self.workout_date,
-                    (
-                        Workout.workout_date
-                        >= datetime.datetime.strptime(date_from, '%Y-%m-%d')
-                        if date_from
-                        else True
-                    ),
-                    (
-                        Workout.workout_date
-                        <= datetime.datetime.strptime(date_to, '%Y-%m-%d')
-                        if date_to
-                        else True
-                    ),
+                    Workout.workout_date >= date_from if date_from else True,
+                    Workout.workout_date <= date_to if date_to else True,
                     (
                         Workout.distance >= float(distance_from)
                         if distance_from
@@ -925,7 +911,7 @@ class Record(BaseModel):
     )
     workout_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
     record_type = db.Column(Enum(*record_types, name="record_types"))
-    workout_date = db.Column(db.DateTime, nullable=False)
+    workout_date = db.Column(TZDateTime, nullable=False)
     _value = db.Column("value", db.Integer, nullable=True)
 
     def __str__(self) -> str:
@@ -944,11 +930,11 @@ class Record(BaseModel):
         self.workout_date = workout.workout_date
 
     @hybrid_property
-    def value(self) -> Optional[Union[datetime.timedelta, float]]:
+    def value(self) -> Optional[Union[timedelta, float]]:
         if self._value is None:
             return None
         if self.record_type == 'LD':
-            return datetime.timedelta(seconds=self._value)
+            return timedelta(seconds=self._value)
         elif self.record_type in ['AS', 'MS']:
             return float(self._value / 100)
         else:  # 'FD' or 'HA'
@@ -1007,7 +993,7 @@ class WorkoutLike(BaseModel):
         ),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -1027,12 +1013,12 @@ class WorkoutLike(BaseModel):
         self,
         user_id: int,
         workout_id: int,
-        created_at: Optional[datetime.datetime] = None,
+        created_at: Optional[datetime] = None,
     ) -> None:
         self.user_id = user_id
         self.workout_id = workout_id
         self.created_at = (
-            datetime.datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
     def get_activity(self, is_undo: bool = False) -> Dict:

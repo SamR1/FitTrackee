@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Union
 from unittest.mock import patch
 
@@ -525,11 +525,11 @@ class WorkoutActivitiesTestCase(RandomMixin):
             if isinstance(remote_actor, RandomActor)
             else f'https://{remote_actor.domain.name}'
         )
-        workout_date = datetime.utcnow().strftime(WORKOUT_DATE_FORMAT)
+        workout_date = datetime.now(timezone.utc).strftime(WORKOUT_DATE_FORMAT)
         workout_distance = self.random_int(max_value=999)
         workout_short_id = self.random_short_id()
         workout_url = f'{remote_domain}/workouts/{workout_short_id}'
-        published = datetime.utcnow().strftime(DATE_FORMAT)
+        published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
         activity: Dict = {
             "@context": AP_CTX,
             "id": (
@@ -597,7 +597,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         if workout:
             actor: Actor = workout.user.actor
             remote_domain = f'https://{workout.user.actor.domain.name}'
-            published = datetime.utcnow().strftime(DATE_FORMAT)
+            published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
             activity = {
                 "@context": AP_CTX,
                 "id": (
@@ -624,7 +624,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
                     "moving": str(workout.moving),
                     "sport_id": workout.sport_id,
                     "title": workout.title,
-                    "workout_date": datetime.utcnow().strftime(
+                    "workout_date": datetime.now(timezone.utc).strftime(
                         WORKOUT_DATE_FORMAT
                     ),
                 },
@@ -1060,7 +1060,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
         assert workout.workout_date == datetime.strptime(
             new_workout_date, WORKOUT_DATE_FORMAT
-        )
+        ).replace(tzinfo=timezone.utc)
 
     def test_it_updates_remote_workout_modification_date(
         self,
@@ -1143,7 +1143,7 @@ class CommentActivitiesTestCase(RandomMixin):
             f'{remote_domain}/workouts/{workout_short_id}'
             f'/comment/{comment_short_id}'
         )
-        published = datetime.utcnow().strftime(DATE_FORMAT)
+        published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
         activity: Dict = {
             "@context": AP_CTX,
             "id": f"{comment_ap_id}/activity",
@@ -1582,7 +1582,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        remote_comment.modification_date = datetime.utcnow()
+        remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = {
             **remote_comment.get_activity("Update"),
             'actor': remote_user_2.actor.activitypub_id,
@@ -1615,7 +1615,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        remote_comment.modification_date = datetime.utcnow()
+        remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         comment_activity["object"]["content"] = self.random_string()
         activity = get_activity_instance({'type': comment_activity['type']})(
@@ -1644,7 +1644,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
                 text=f"@{remote_user.fullname}",
                 text_visibility=VisibilityLevel.PUBLIC,
             )
-            remote_comment.modification_date = datetime.utcnow()
+            remote_comment.modification_date = datetime.now(timezone.utc)
             comment_activity = remote_comment.get_activity("Update")
             comment_activity["object"]["content"] = f"@{random_actor.fullname}"
             activity = get_activity_instance(
@@ -1694,7 +1694,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        remote_comment.modification_date = datetime.utcnow()
+        remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         activity = get_activity_instance({'type': comment_activity['type']})(
             activity_dict=comment_activity
@@ -1718,7 +1718,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        remote_comment.modification_date = datetime.utcnow()
+        remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         comment_activity["to"] = [remote_user.actor.followers_url]
         comment_activity["cc"] = [remote_user.actor.activitypub_id]
@@ -1749,7 +1749,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        remote_comment.modification_date = datetime.utcnow()
+        remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         del comment_activity["object"]["content"]
         activity = get_activity_instance({'type': comment_activity['type']})(

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 from flask import Flask
@@ -57,7 +57,9 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         follow_request_from_user_1_to_user_2.is_approved = False
-        follow_request_from_user_1_to_user_2.updated_at = datetime.now()
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 
 import pytest
@@ -348,7 +348,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment_text = self.random_string()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -724,7 +724,7 @@ class TestPostWorkoutCommentReply(
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -759,7 +759,7 @@ class TestPostWorkoutCommentReply(
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -995,7 +995,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1029,7 +1029,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1060,7 +1060,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1175,7 +1175,7 @@ class TestGetWorkoutCommentAsFollower(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1210,7 +1210,7 @@ class TestGetWorkoutCommentAsFollower(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1291,7 +1291,7 @@ class TestGetWorkoutCommentAsOwner(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1323,7 +1323,7 @@ class TestGetWorkoutCommentAsOwner(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1393,7 +1393,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client = app.test_client()
 
@@ -1607,7 +1607,7 @@ class TestGetWorkoutCommentWithReplies(
             text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=comment,
         )
-        reply.suspended_at = datetime.utcnow()
+        reply.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1918,7 +1918,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2061,7 +2061,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2137,7 +2137,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2229,7 +2229,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 workout_cycling_user_2,
                 text_visibility=VisibilityLevel.PUBLIC,
             )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2563,7 +2563,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2868,7 +2868,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3161,7 +3161,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3196,7 +3196,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         self.create_report_comment_action(user_2_admin, user_1, comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3226,7 +3226,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )
@@ -3235,7 +3235,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             app, user_1.email
         )
         text = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3270,7 +3270,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )

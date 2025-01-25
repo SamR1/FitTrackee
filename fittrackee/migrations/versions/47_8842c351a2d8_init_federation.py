@@ -6,7 +6,7 @@ Create Date: 2021-01-10 16:02:43.811023
 
 """
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from alembic import op
 import sqlalchemy as sa
@@ -39,7 +39,7 @@ def upgrade():
     )
     # create local domain (even if federation is not enabled)
     domain = remove_url_scheme(os.environ['UI_URL'])
-    created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+    created_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     op.execute(
         "INSERT INTO domains (name, created_at, is_allowed, software_name)"
         f"VALUES ('{domain}', '{created_at}'::timestamp, True, 'fittrackee')"
@@ -139,7 +139,7 @@ def upgrade():
         op.execute(
             f"UPDATE users SET is_remote = False WHERE users.id = {user.id}"
         )
-        created_at = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        created_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         public_key, private_key = generate_keys()
         op.execute(
             "INSERT INTO actors ("

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -65,7 +65,9 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
         follow_request_from_user_3_to_user_1: FollowRequest,
         follow_request_from_user_3_to_user_2: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -361,7 +363,7 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -406,7 +408,9 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -481,7 +485,7 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -526,7 +530,9 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        follow_request_from_user_2_to_user_1.updated_at = datetime.utcnow()
+        follow_request_from_user_2_to_user_1.updated_at = datetime.now(
+            timezone.utc
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

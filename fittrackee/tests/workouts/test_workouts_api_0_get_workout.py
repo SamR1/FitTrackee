@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from unittest.mock import mock_open, patch
 
@@ -59,7 +59,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -103,7 +103,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -160,7 +160,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
         user_2.approves_follow_request_from(user_1)
         user_2.approves_follow_request_from(user_3)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -190,7 +190,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -270,7 +270,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
     ) -> None:
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -311,7 +311,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         self.create_comment(
             user_3,
             workout_cycling_user_2,
@@ -339,7 +339,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         self.create_comment(
             user_1,
             workout_cycling_user_2,
@@ -462,7 +462,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -499,7 +499,7 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client = app.test_client()
 
@@ -609,7 +609,7 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
     ) -> None:
         gpx_content = self.random_string()
         workout_cycling_user_1.gpx = 'file.gpx'
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -751,7 +751,7 @@ class TestGetWorkoutGpxAsFollower(
             followed=user_2,
         )
         gpx_content = self.random_string()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -873,7 +873,7 @@ class TestGetWorkoutGpxAsUser(
             workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
         )
         gpx_content = self.random_string()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1060,7 +1060,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = 'file.gpx'
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1172,7 +1172,7 @@ class TestGetWorkoutChartDataAsFollower(
             follower=user_1,
             followed=user_2,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1296,7 +1296,7 @@ class TestGetWorkoutChartDataAsUser(
             app, user_1.email
         )
         workout_cycling_user_2.gpx = 'file.gpx'
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.get(
@@ -1486,7 +1486,7 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
         gpx_file_with_segments: str,
     ) -> None:
         workout_cycling_user_1.gpx = 'file.gpx'
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1606,7 +1606,7 @@ class TestGetWorkoutSegmentGpxAsFollower(
             follower=user_2,
             followed=user_1,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1736,7 +1736,7 @@ class TestGetWorkoutSegmentGpxAsUser(
         self.init_test_data_for_public_workout(
             workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1928,7 +1928,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2048,7 +2048,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
             follower=user_2,
             followed=user_1,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -2186,7 +2186,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
             map_visibility=VisibilityLevel.PRIVATE,
         )
         workout_cycling_user_1.gpx = 'file.gpx'
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -2456,7 +2456,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = 'file.gpx'
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
