@@ -454,7 +454,7 @@ class User(BaseModel):
     @workouts_count.expression  # type: ignore
     def workouts_count(self) -> int:
         return (
-            select([func.count(Workout.id)])
+            select(func.count(Workout.id))
             .where(Workout.user_id == self.id)
             .label('workouts_count')
         )

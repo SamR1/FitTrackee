@@ -8,14 +8,11 @@ from authlib.integrations.sqla_oauth2 import (
 )
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
 
-from fittrackee import db
-
-BaseModel: DeclarativeMeta = db.Model
+from fittrackee import BaseModel, db
 
 
 class OAuth2Client(BaseModel, OAuth2ClientMixin):

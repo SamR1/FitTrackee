@@ -800,7 +800,7 @@ def refresh_equipment(
         return DataNotFoundErrorResponse('equipments')
 
     try:
-        totals = dict(
+        totals = (
             db.session.query(
                 func.sum(Workout.distance).label('total_distance'),
                 func.sum(Workout.duration).label('total_duration'),
@@ -810,6 +810,7 @@ def refresh_equipment(
             .join(WorkoutEquipment)
             .filter(WorkoutEquipment.c.equipment_id == equipment.id)
             .first()
+            ._asdict()
         )
         equipment.total_distance = (
             0.0

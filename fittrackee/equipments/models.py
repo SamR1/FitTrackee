@@ -2,17 +2,13 @@ from typing import Dict
 from uuid import uuid4
 
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
-from fittrackee import db
+from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.utils import encode_uuid
-
-BaseModel: DeclarativeMeta = db.Model
-
 
 WorkoutEquipment = db.Table(
     'workout_equipments',
